@@ -1,0 +1,5 @@
+chapter:BuildingGenerators[Building generators with Franca]
+
+todo[Explain how generators can be build in general using the Franca Model API
+and how Xtend can be used to do this effectively. Give examples.]
+

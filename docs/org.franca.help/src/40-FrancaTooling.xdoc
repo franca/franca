@@ -1,0 +1,69 @@
+chapter:FrancaTooling[Franca Tools User's Guide]
+
+section:FrancaTooling_Editor[Franca IDL Editor]
+
+The core tool for Franca users is the nice textual editor which can be used
+to review and edit Franca IDL files. The Franca IDL Editor is a textual editor
+which is similar to Eclipse's text-based editors like in JDT or CDT.
+It is provided as Eclipse plugin and can be installed in any Eclipse environment
+which provides modeling support (tested.
+The following screenshot shows Franca in action:
+
+img[images/franca_editor_screenshot_1.png][Screenshot of Franca IDL editor with
+	content assist and validation markers.][ ][ ]
+
+The editor provides syntax highlighting,
+code completion, content assist, folding, online validation, a helpful outline view,
+jump-to-definition and find-references with shortcuts, and many more features.
+
+
+The most important keyboard short-cuts in this editor are:
+
+table[
+	tr[
+		td[e[Shortcut]]
+		td[e[Function]]
+		td[e[Description]]
+	]
+	tr[
+		td[Ctrl-/]
+		td[Toggle comment]
+		td[Toggle comment for line / selection.]
+	]
+	tr[
+		td[Ctrl-Space]
+		td[Content Assist]
+		td[Context sensitive suggestions for possible values.]
+	]
+	tr[
+		td[F3 or Ctrl-MouseClick]
+		td[Jump to definition]
+		td[Jumps to the definition of the reference under cursor.]
+	]
+]
+
+
+You may download a nice cheat sheet with more keyboard shortcuts
+link[http://5ise.quanxinquanyi.de/2012/01/13/xtext-end-user-domain-experts-cheat-sheet/][here].
+
+todo[More detail about the Franca IDL Editor will be provided soon.]
+
+
+section:FrancaTooling_Generators[Franca IDL HTML Generator]
+
+The HTML generator for Franca IDL files is provided as Java class
+e[HTMLGenerator]. It is located in package e[org.franca.generators.html]
+and provided by Eclipse plugin e[org.franca.generators].
+In this plugin, a helper Java class e[FrancaGenerators] is provided which
+should be used to run the HTML generator:
+
+code[Java][
+FModel fmodel = FrancaIDLHelpers.instance().loadModel(inputfile);
+FrancaGenerators.instance().genHTML(fmodel, "html-gen-dir");
+] 
+
+The HTML generator is implemented using the link[http://www.xtend-lang.org][Xtend2]
+language. The Xtend-builder automatically creates the Java class mentioned
+above from this implementation. 
+
+

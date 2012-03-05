@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Franca example generators plugin
+Bundle-SymbolicName: org.franca.generators
+Bundle-Version: 0.7.0.qualifier
+Bundle-Activator: org.franca.generators.Activator
+Bundle-Vendor: Harman Infotainment Division
+Require-Bundle: org.eclipse.core.runtime,
+ org.franca.core,
+ org.eclipse.xtext.xbase.lib;bundle-version="2.1.0",
+ org.eclipse.xtext.xtend2.lib;bundle-version="2.1.0",
+ org.eclipse.xtext.generator;bundle-version="2.1.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
+Export-Package: org.franca.generators

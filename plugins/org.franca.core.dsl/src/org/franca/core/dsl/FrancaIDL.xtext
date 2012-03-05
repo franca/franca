@@ -1,0 +1,322 @@
+/*******************************************************************************
+* Copyright (c) 2012 Harman International (http://www.harman.com).
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+*
+* 2012-01-16: Klaus Birken (initial version)
+*******************************************************************************/
+grammar org.franca.core.dsl.FrancaIDL with org.eclipse.xtext.common.Terminals 
+
+// the Franca ecore model (it is not generated from this grammar)
+import "http://core.franca.org" 
+
+import "http://www.eclipse.org/emf/2002/Ecore" as ecore
+
+
+// **************************************************************
+// model root
+
+FModel returns FModel:
+	{FModel}
+	'package' name=FQN
+	(imports+=Import)*
+	(
+		interfaces+=FInterface |
+		types+=FArrayType |
+		types+=FEnumerationType |
+		types+=FStructType |
+		types+=FUnionType |
+		types+=FMapType |
+		types+=FTypeDef
+	)*
+    ;
+
+
+// **************************************************************
+// interface
+
+FInterface returns FInterface:
+	{FInterface}
+	(comment=FAnnotationBlock)?
+	'interface'	name=EString ('extends' base=[FInterface|FQN])?
+	'{'
+		('version' version=FVersion)?
+		(attributes+=FAttribute)*
+		(methods+=FMethod)*
+		(broadcasts+=FBroadcast)*
+		(contract=FContract)?
+		(types+=FType)*
+    '}';
+
+FVersion returns FVersion:
+	{FVersion}
+	'{'
+		('major' major=EInt)?
+		('minor' minor=EInt)?
+    '}';
+
+
+// **************************************************************
+// attributes
+
+FAttribute:
+	(comment=FAnnotationBlock)?
+	'attribute'	type=FTypeRef name=EString
+	;
+
+
+// **************************************************************
+// methods / broadcasts
+
+FMethod returns FMethod:
+	{FMethod}
+	(comment=FAnnotationBlock)?
+	'method' name=EString
+	'{'
+		('in' '{' (inArgs+=FArgument)* '}' )?
+		('out' '{' (outArgs+=FArgument)* '}' )?
+		('error'
+			( errorEnum=[FEnumerationType|FQN] |
+			  errors=FEnumerationTypeBody )
+		)?
+    '}';
+
+
+FBroadcast returns FBroadcast:
+	{FBroadcast}
+	(comment=FAnnotationBlock)?
+	'broadcast' name=EString
+	'{'
+		('out' '{' (outArgs+=FArgument)* '}' )?
+    '}';
+
+FArgument:
+	(comment=FAnnotationBlock)?
+	type=FTypeRef name=EString;
+
+
+// **************************************************************
+// type system
+
+FTypeRef returns FTypeRef:
+	predefined=FBasicTypeId | derived=[FType|FQN]
+	;
+
+enum FBasicTypeId returns FBasicTypeId:
+	undefined = 'undefined' |
+	Int8 = 'Int8' |
+	UInt8 = 'UInt8' |
+	Int16 = 'Int16' |
+	UInt16 = 'UInt16' |
+	Int32 = 'Int32' |
+	UInt32 = 'UInt32' |
+	Int64 = 'Int64' |
+	UInt64 = 'UInt64' |
+	Boolean = 'Boolean' |
+	String = 'String' |
+	Float = 'Float' |
+	Double = 'Double';
+
+FType returns FType:
+	FArrayType |
+	FEnumerationType |
+	FStructType |
+	FUnionType |
+	FMapType |
+	FTypeDef;
+
+FArrayType returns FArrayType:
+	{FArrayType}
+	(comment=FAnnotationBlock)?
+	'array' name=EString 'of' elementType=FTypeRef;
+
+FTypeDef returns FTypeDef:
+	{FTypeDef}
+	(comment=FAnnotationBlock)?
+	'typedef' name=EString 'is' actualType=FTypeRef
+	; 
+
+FStructType returns FStructType:
+	{FStructType}
+	(comment=FAnnotationBlock)?
+	'struct' name=EString ('extends' base=[FStructType|FQN])?
+	'{'
+		(elements+=FField)*
+    '}';
+
+FUnionType returns FUnionType:
+	{FUnionType}
+	(comment=FAnnotationBlock)?
+	'union' name=EString ('extends' base=[FUnionType|FQN])?
+	'{'
+		(elements+=FField)*
+    '}';
+
+FEnumerationType returns FEnumerationType:
+	{FEnumerationType}
+	(comment=FAnnotationBlock)?
+	'enumeration' name=EString
+	('extends' base=[FEnumerationType|FQN])?
+	'{'
+		(enumerators+=FEnumerator)*
+    '}';
+
+FEnumerationTypeBody returns FEnumerationType:
+	{FEnumerationType}
+	('extends' base=[FEnumerationType|FQN])?
+	'{'
+		(enumerators+=FEnumerator)*
+    '}';
+
+FEnumerator returns FEnumerator:
+	{FEnumerator}
+	(comment=FAnnotationBlock)?
+	name=EString ('=' value=EString)?
+    ;
+    
+FMapType returns FMapType:
+	{FMapType}
+	(comment=FAnnotationBlock)?
+	'map' name=EString '{'
+		keyType=FTypeRef 'to' valueType=FTypeRef
+	'}';
+
+FField:
+	(comment=FAnnotationBlock)?
+	type=FTypeRef name=EString;
+
+
+FTypedElement:
+	FField |
+	FAttribute |
+	FArgument;
+
+
+// **************************************************************
+// interface contract
+
+FContract returns FContract:
+	{FContract}
+	'contract' '{'
+		stateGraph=FStateGraph
+	'}';
+
+FStateGraph returns FStateGraph:
+	{FStateGraph}
+	'PSM' '{'
+		(
+			states+=FState |
+			//trPoints+=TrPoint |
+			//chPoints+=ChoicePoint |
+			transitions+=FTransition
+		)*
+	'}';
+
+FState returns FState:
+	{FState}
+	(comment=FAnnotationBlock)?
+	'state' name=EString;
+
+FTransition: FInitialTransition | FNonInitialTransition;
+FNonInitialTransition: FTriggeredTransition /* | GuardedTransition | ContinuationTransition | CPBranchTransition*/;
+
+FInitialTransition:
+	'transition' /*name=EString*/ 'initial' '->' to=FTransitionTerminal 
+	(comment=FAnnotationBlock)?
+	'{'	'}';
+
+FTriggeredTransition:
+	'transition' /*name=EString*/ from=FTransitionTerminal '->' to=FTransitionTerminal 
+	(comment=FAnnotationBlock)?
+	'{'
+		// currently only one trigger per transition is supported
+		//triggers+=FTrigger ('or' triggers+=FTrigger)*
+		triggers+=FTrigger
+	'}';
+
+FTransitionTerminal: FStateTerminal /* | TrPointTerminal | SubStateTrPointTerminal | ChoicepointTerminal */;
+
+FStateTerminal:
+	state=[FState|ID];
+
+
+FTrigger:
+		'<'
+			events+=FEventOnIf ('|' events+=FEventOnIf)*
+			(guard=FGuard)?
+		'>'
+;
+
+FEventOnIf:
+	('call' call=[FMethod|EString]) |
+	('signal' signal=[FBroadcast|EString]) |
+	('set' set=[FAttribute|EString]) |
+	('update' update=[FAttribute|EString])
+;
+
+FGuard:
+	'guard' plainCondition=STRING;
+
+
+// **************************************************************
+// annotations
+
+FAnnotationBlock returns FAnnotationBlock:
+	'<**' (elements+=FAnnotation)+ '**>';
+
+FAnnotation returns FAnnotation:
+	type=FAnnotationType comment=CommentString;
+
+enum FAnnotationType returns FAnnotationType:
+	undefined = 'undefined' |
+	description = '@description' |
+	author = '@author' |
+	experimental = '@experimental' |
+	deprecated = '@deprecated' |
+	see = '@see' |
+	param = '@param' |
+	high_volume = '@high-volume' |
+	high_frequency = '@high-frequency' |
+	source_uri = '@source-uri' | 
+	source_alias = '@source-alias' | 
+	details = '@details'
+	;
+
+
+// **************************************************************
+// basic types
+
+EString returns ecore::EString:
+	STRING | ID;
+
+EInt returns ecore::EInt:
+	'-'? INT;
+
+terminal CommentString returns ecore::EString:
+	':' ( ('\\' ('b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\')) | !('\\'|'*'|'@') )*
+;
+
+// **************************************************************
+// general
+
+// HOWTO: use a combination of URI global scopes and namespace aware local scope provider
+// this is configured in the work flow by
+//			fragment = scoping.ImportURIScopingFragment {}
+// and by overriding configureIScopeProviderDelegate in the runtime module with 
+//			ImportedNamespaceAwareLocalScopeProvider
+// the attribute 'importedNamespace' is picked up by the ImportedNamespaceAwareLocalScopeProvider
+// the attribute 'importURI' is picked up by the ImportUriGlobalScopeProvider
+// THANKS to www.eclipse.org/etrice for this solution!
+Import :
+	'import' (importedNamespace=ImportedFQN 'from' | 'model') importURI=STRING;
+
+ImportedFQN:
+	FQN ('.' '*')?;
+
+FQN:
+	ID ('.' ID)*;
+
+
+// **************************************************************

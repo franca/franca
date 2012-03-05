@@ -1,0 +1,748 @@
+chapter:FrancaIDL[Franca IDL Reference]
+
+The core of Franca IDL is the support for ref:FIDL_Interface[interface definitions], consisting of
+attributes, methods and broadcasts. Those definitions will be based on a ref:FIDL_Types[type system],
+which provides a variety of primitive and user-defined types. 
+Additionally, the dynamic behaviour of interfaces can be specified using ref:FIDL_Contracts[contracts]
+consisting of protocol state machines.
+Finally, Franca IDL supports Java-doc like tagged comments, called ref:FIDL_Comments[structured comments]
+and language features like e[packages] and e[imports] which can be used for defining interfaces using
+ref:FIDL_MultipleFiles[multiple Franca IDL files].
+
+
+section:FIDL_Types[Data types]
+
+Franca supports a predefined set of primitive data types and a variety of user-defined types.
+User-defined types may be arrays, type aliases, structures, unions, enumerations or maps.
+User-defined types can refer to primitive types or other, previously defined types. 
+
+section2:FIDL_PrimitiveTypes[Primitive types]
+
+The primitive types supported by Franca are listed in the following table.
+
+table[
+	tr[
+		td[e[Type name]]
+		td[e[Description]]
+	]
+	tr[
+		td[code[Franca][UInt8]]
+		td[unsigned 8-bit integer (range 0..255)]
+	]
+	tr[
+		td[code[Franca][Int8]]
+		td[signed 8-bit integer (range -128..127)]
+	]
+	tr[
+		td[code[Franca][UInt16]]
+		td[unsigned 16-bit integer (range 0..65535)]
+	]
+	tr[
+		td[code[Franca][Int16]]
+		td[signed 16-bit integer (range -32768..32767)]
+	]
+	tr[
+		td[code[Franca][UInt32]]
+		td[signed 32-bit integer (range 0..4294967295)]
+	]
+	tr[
+		td[code[Franca][Int32]]
+		td[signed 32-bit integer (range -2147483648..2147483647)]
+	]
+	tr[
+		td[code[Franca][UInt64]]
+		td[signed 64-bit integer]
+	]
+	tr[
+		td[code[Franca][Int64]]
+		td[signed 64-bit integer]
+	]
+	tr[
+		td[code[Franca][Boolean]]
+		td[boolean value, which can take one of two values: false or true.]
+	]
+	tr[
+		td[code[Franca][Float]]
+		td[floating point number (4 bytes, range +/- 3.4e +/- 38, ~7 digits)]
+	]
+	tr[
+		td[code[Franca][Double]]
+		td[double precision floating point number (8 bytes, range +/- 1.7e +/- 308, ~15 digits)]
+	]
+	tr[
+		td[code[Franca][String]]
+		td[character string]
+	]
+]
+
+
+The actual physical encoding of the primitives types depends on the target language.
+A default encoding will be defined as part of Franca's deployment model. 
+Exceptions from this default encoding can be defined in the target-language-specific
+deployment model.
+ 
+
+section2:FIDL_Types_Array[Arrays]
+
+One-dimensional arrays can be defined by 
+code[Franca][
+array ExampleArray of UInt8
+] 
+
+The array's element type can be any primitive or user-defined type, including another array.
+This can be used to define multi-dimensional arrays:
+code[Franca][
+array ExampleArrayRow of UInt8
+array ExampleArray of ExampleArrayRow
+] 
+
+
+section2:FIDL_Types_Enum[Enumerations]
+
+section3:FIDL_Types_Enum_Basic[Basic enumerations]
+
+Enumerations can be defined by
+code[Franca][
+enumeration ExampleEnumeration {
+	VALUE_1
+	VALUE_2
+	VALUE_3
+	// ...
+}
+]
+
+Values for the enumeration identifiers can be defined optionally.
+They are defined as string constants which usually will contain an integer number:
+code[Franca][
+enumeration ExampleEnumeration {
+	VALUE_1 = "10"
+	VALUE_2 = "20"
+	VALUE_3 = "30"
+	// ...
+}
+]
+
+section3:FIDL_Types_Enum_Inheritance[Enumeration inheritance]
+
+Enumeration types support e[inheritance] by using the keyword e[extends].
+This allows to derive a new enumeration type from an existing one and add
+further enumerators to the base enumeration. Only single inheritance is allowed for
+each enumeration - however, a chain or tree of enumerations can be build. Example:
+code[Franca][
+enumeration BaseEnumeration {
+	VALUE_1
+	VALUE_2
+}
+
+enumeration DerivedEnumeration extends BaseEnumeration {
+	VALUE_3
+	VALUE_4
+}
+]
+
+If the target language doesn't support inheritance for enumeration types, the e[extends]-chain
+will be transformed into a flat enumeration consisting of all enumerators of the base type(s)
+and those of the derived type.
+ 
+
+section2:FIDL_Types_Struct[Structures]
+
+A e[struct] (also called e[record], e[tuple], or e[compound data]) is a value that contains
+other values, typically in fixed number and sequence and typically indexed by names.
+The elements of structs are usually called e[fields] or e[members] (source: Wikipedia).
+
+section3:FIDL_Types_Struct_Basic[Basic structs]
+
+User-defined structures can be defined by specifying the structure's members, with a type and name for
+each member: 
+code[Franca][
+struct ExampleStruct {
+	UInt8 member1
+	String member2
+	ExampleArray member3
+}
+]
+Element types might be predefined types or user-defined types. This allows e.g. nested structures or
+arrays of structures.
+
+section3:FIDL_Types_Struct_Inheritance[Struct inheritance]
+
+Struct types support e[inheritance] by using the keyword e[extends].
+This allows to derive a new structure type from an existing one and add
+further structure members to the base's members. Only single inheritance is allowed for
+each structure definition - however, a chain or tree of structures can be build. Example:
+code[Franca][
+struct BaseStruct {
+	UInt8 member1
+	ExampleArray member2
+}
+
+struct DerivedStruct extends BaseStruct {
+	ExampleArray member3
+}
+]
+
+If the target language doesn't support inheritance for structure types, the e[extends]-chain
+will be transformed into a flat structure consisting of all members of the base
+type(s) and those of the derived type.
+
+
+section2:FIDL_Types_Union[Unions (aka variants)]
+
+A e[union] is a value that may have any of several representations or formats;
+or a data structure that consists of a variable which may hold such a value (source: Wikipedia).
+
+section3:FIDL_Types_Union_Basic[Basic unions]
+
+Unions can be defined by specifying its possible value types, together with a name for
+each representation. As a union will have only one representation at a time, the order of
+the union's elements is not important. Example of a union definition: 
+code[Franca][
+union ExampleUnion {
+	UInt32 element1
+	Float element2
+}
+]
+Element types might be predefined types or user-defined types.
+This allows e.g. nested unions, or unions of structures.
+
+section3:FIDL_Types_Union_Inheritance[Union inheritance]
+
+Union types support e[inheritance] by using the keyword e[extends].
+This allows to derive a new union type from an existing one and add
+further elements to the base union. Only single inheritance is allowed for
+each union definition - however, a chain or tree of unions can be build. Example:
+code[Franca][
+union BaseUnion {
+	UInt32 genericRepresentation
+}
+
+union DerivedUnion extends BaseUnion {
+	Float aFloat
+	String aString
+}
+]
+
+If the target language doesn't support inheritance for union types, the e[extends]-chain
+will be transformed into a flat union consisting of all elements of the base
+type(s) and those of the derived type.
+
+
+section2:FIDL_Types_Map[Maps (aka dictionaries)]
+
+Maps represent key/value-stores and are typically implemented by B-trees or hashes.
+The definition for Maps with Franca IDL specifies the key type and the value type.
+Example:
+code[Franca][
+map ExampleMap {
+	Int16 to ExampleStruct
+}
+]
+
+Key types as well as value types might be primitive or user-defined types. 
+NB: In some target languages, key types might be restricted to primitive types.
+
+
+section2:FIDL_Types_TypeDef[Type definitions (aka aliases)]
+
+Type definitions can be used to create new type names which are simple aliases for
+existing primitive or user-defined types. Example:
+code[Franca][
+typedef ExampleAlias is UInt32
+]
+
+
+
+section:FIDL_Interface[Interface definition]
+
+Each interface in Franca consists of some metadata (e.g., interface name and version number),
+the actual interface definition (consisting of attributes, methods and broadcasts), an optional
+ref:FIDL_Contracts[contract] specifying the dynamic behaviour of the interface and, last but not least,
+user-defined ref:FIDL_Types[data types].  
+
+section2:FIDL_Interface_Basic[Basic interface definition]
+
+section3:FIDL_Interface_Basic_Structure[Interface name, version and contents]
+
+The basic interface definition using Franca includes an interface name and a version number (major/minor
+scheme):
+code[Franca][
+interface ExampleInterface {
+	version { major 5 minor 0 }
+	
+	// put attributes here
+	// put methods here
+	// put broadcasts here
+	
+	// put optional contract here
+	
+	// put type definitions here
+}
+]
+
+The order of the elements of an interface has been chosen deliberately and cannot be changed.
+
+The name of an interface has to be a fully qualified name, i.e., a list of segments which are
+separated by dots. The fully qualified name thus defines a path which is to be interpreted
+relatively to the package name specified at the beginning of each Franca file. Example:
+code[Franca][
+interface examples.franca.ExampleInterface {
+	// ...
+}
+]
+
+section3:FIDL_Interface_Basic_Versioning[Interface versioning and change compatibility]
+
+The specification of a major/minor version number is optional, but is strongly recommended.
+Changes in the major number indicate changes which are not backward compatible.
+Example use cases for e[incompatible] changes:
+ul[
+	item[remove attribute, method or broadcast]
+	item[remove element from struct or union]
+	item[rename an attribute]
+	item[rename a method or broadcast, or one of its arguments]
+	item[rename a user-defined data-type]
+	item[add a contract to an interface which previously didn't have any]
+	item[tighten the constrains for the dynamic behaviour of an interface (i.e., its contract)]
+]
+Interface designers should try hard to avoid incompatible changes, or at least provide
+periods during which a feature is marked as deprecated before it is removed completely. 
+
+Changes in the minor number indicate changes which are backward compatible.
+Example use cases for backward e[compatible] changes:
+ul[
+	item[add attribute, method or broadcast]
+	item[add an argument for a method or broadcast (*)]
+	item[add a parameter for a struct or union (*)]
+	item[remove a contract from an interface]
+	item[ease restrictions on the dynamic behaviour of an interface (i.e., its contract)]
+] 
+
+(*) In some target IDLs, adding arguments for methods or broadcast or adding members to
+structs might be regarded as incompatible change. It might be hard to map the version numbers
+between Franca and those IDLs.
+
+
+section3:FIDL_Interface_Basic_Inheritance[Interface inheritance]
+
+Franca supports interface e[inheritance] by using the keyword e[extends].
+This allows to derive a new interface from an existing one and add
+further elements to the base's members. Only single inheritance is allowed for
+each interface definition - however, a chain or tree of interface can be build. Example:
+code[Franca][
+interface BaseInterface {
+	// ...
+}
+
+interface DerivedInterface extends BaseInterface {
+	// ...
+}
+]
+
+The following table lists all interface members and how their semantics is handled
+with respect to interface inheritance.
+
+table[
+	tr[
+		td[e[interface element]]
+		td[e[inheritance semantics]]
+	]
+	tr[
+		td[attributes]
+		td[All attributes of the base interface are inherited by the derived interface.
+		   Overloading of attributes is not allowed (i.e., attribute with same name in 
+		   base and derived interface).
+		]
+	]
+	tr[
+		td[methods]
+		td[All methods of the base interface are inherited by the derived interface.
+		   Overloading of methods is not allowed (i.e., method with same name in 
+		   base and derived interface). This might change in a future release of Franca.
+		   It is not possible for a derived interface to add a parameter to a method
+		   of its base interface. 
+		]
+	]
+	tr[
+		td[broadcasts]
+		td[All broadcasts of the base interface are inherited by the derived interface.
+		   Overloading of broadcasts is not allowed (i.e., broadcast with same name in 
+		   base and derived interface). This might change in a future release of Franca.
+		   It is not possible for a derived interface to add a parameter to a broadcast
+		   of its base interface. 
+		]
+	]
+	tr[
+		td[contract]
+		td[The contract of the base interface is inherited by the derived interface.
+		   It is not possible currently to redefine the inherited contract.
+		   This will change in a future release of Franca (this will allow extending
+		   the contract of its base interface by the derived interface).
+		]
+	]
+	tr[
+		td[type definitions]
+		td[All types of the base interface are inherited by the derived interface.
+		   Redefining of types is not allowed (i.e., type with same name in 
+		   base and derived interface).
+		]
+	]
+]
+
+If the target language doesn't support inheritance for interfaces, the e[extends]-chain
+will be transformed into a flat interface definition consisting of all elements of the base
+interface(s) and those of the derived interface.
+
+
+section2:FIDL_Interface_Attribute[Attributes]
+
+An e[attribute] is a property on the provider side, which is defined as part of the interface
+with its type and name:
+
+code[Franca][
+interface ExampleInterface {
+	attribute UInt32 someAttribute
+	attribute ExampleArray otherAttribute 
+}
+]
+
+Attributes might have primitive types or user-defined types. 
+
+The interface provider holds the data for its attributes and is able to change their values.
+The clients of an interface might actively read its attributes' values.
+The clients also might register for changes of this attribute and will get change
+notifications afterwards. 
+
+For target IPC platforms which do not support attributes, code might be generated to add
+this support. Typically, a getAttribute method and a registerForUpdate method would be provided.
+
+
+section2:FIDL_Interface_Method[Methods]
+
+section3:FIDL_Interface_Method_Basic[Basic method syntax]
+
+A e[method] in a Franca interface is called by one of the clients using the interface;
+the response will be sent by the server. Therefore, a method definition will contain 
+a set of e[in]-arguments and a set of e[out]-arguments, each with own type and name.
+Example:
+
+code[Franca][
+interface Calculator {
+	method divide {
+		in {
+			UInt32 dividend
+			UInt32 divisor
+		}
+		out {
+			UInt32 quotient
+			UInt32 remainder
+		}	
+	}
+}
+]
+
+Arguments might have primitive types or user-defined types.
+The runtime behaviour of a method call (e.g., blocking vs. non-blocking) is subject to
+implementation by the underlying target IPC stack. Thus, it will not be specified as part
+of the interface definition in the IDL. This information will be stored in an additional
+deployment model, instead. 
+
+section3:FIDL_Interface_Method_Errors[Declaration of method errors]
+
+If a problem occurs during execution of the method on server side, the server
+might issue an e[error] instead of sending the normal reply with its e[out]-arguments.
+This semantics can be defined as in the following example:
+
+code[Franca][
+interface Calculator {
+	method divide {
+		in {
+			UInt32 dividend
+			UInt32 divisor
+		}
+		out {
+			UInt32 quotient
+			UInt32 remainder
+		}
+		error {
+			DIVISION_BY_ZERO
+			OVERFLOW
+			UNDERFLOW
+		}
+	}
+}
+]
+
+The component providing the e[Calculator] interface will either return a reply
+with the e[out]-arguments or reply with an error code as specified by the 
+nameless enumeration defined as part of the method specification.
+
+
+In fact, the syntax above is the same as with the definition of
+ref:FIDL_Types_Enum[enumerations]. I.e., optional values and structured comments
+can be added to each of the enumerators. Moreover, a reference to a base enumerator
+can be added using the keyword e[extends] - this allows inheriting of common
+error codes:  
+
+code[Franca][
+interface Calculator {
+	method divide {
+		in {
+			UInt32 dividend
+			UInt32 divisor
+		}
+		out {
+			UInt32 quotient
+			UInt32 remainder
+		}
+		error extends GenericErrors {
+			DIVISION_BY_ZERO
+			OVERFLOW
+			UNDERFLOW
+		}			
+	}
+
+	enumeration GenericErrors {
+		INVALID_PARAMATERS
+		// ...
+	}
+}
+]
+
+
+Finally, it is possible to directly reference a separately defined e[enumeration],
+which might also be located in a different Franca file. Example:
+
+code[Franca][
+interface Calculator {
+	method divide {
+		in {
+			UInt32 dividend
+			UInt32 divisor
+		}
+		out {
+			UInt32 quotient
+			UInt32 remainder
+		}
+		error CalcErrors
+	}
+
+	enumeration CalcErrors {
+		DIVISION_BY_ZERO
+		OVERFLOW
+		UNDERFLOW
+	}
+}
+]
+
+
+section2:FIDL_Interface_Broadcast[Broadcasts]
+
+A e[broadcast] in a Franca interface is called by the server and will received by
+all clients using the interface. A broadcast definition will contain a set of
+e[out]-arguments, each with own type and name.
+Example:
+
+code[Franca][
+interface ExampleInterface {
+	broadcast buttonClicked {
+		out {
+			ButtonId id
+			Boolean isLongPress
+		}
+	}
+}
+]
+
+Arguments might have primitive types or user-defined types.
+
+
+section:FIDL_Contracts[Contracts]
+
+section2:FIDL_Contracts_Basic[Basic concept of contracts]
+
+For each Franca interface, a e[contract] might be specified which defines the 
+dynamic behaviour of the interface. Generally, if a contract is part of the interface,
+all interactions of clients and providers of this interface have to obey the 
+specification in the contract. This is different from behaviour specification by
+sequences (e.g., MSCs in MOST), which provides a set of allowed sequences, but
+in general doesn't require that all legal sequences have been specified.
+
+In order to specify the dynamic behaviour of a Franca interface, 
+a e[PSM] (short for: e[Protocol State Machine]) is defined which specifies 
+the allowed states e[of the connection] and the allowed transitions between those
+states. Example:
+
+code[Franca][
+// specification of dynamic behaviour on the interface 
+contract {
+	PSM {
+		state idle
+		state working
+		
+		transition initial -> idle { }
+		transition idle -> working {
+			< call setActivePlayer >
+		}
+		transition working -> idle {
+			< signal attachOutput >
+		}
+	}
+}
+]
+
+The client/server connection specified by this interface can have two states:
+ul[
+	item[e[idle]: The client is allowed to call the e[setActivePlayer] method.
+		No other interaction via the interface is allowed.
+		This is the initial state.
+		If the client calls the e[setActivePlayer] method, the state will change to e[working].
+	]
+	item[e[working]: The server is allowed to send the broadcast e[attachOutput].
+		No other interaction via the interface is allowed.
+		After this broadcast has been sent, the state will change to e[idle]. 
+	]
+]
+
+section2:FIDL_Contracts_PSM[Protocol state machines]
+
+The e[Protocol State Machines] used for specifying Franca's interface contracts
+use e[events] to specify the transitions from one state to another.
+Valid events might be:
+ul[
+	item[e[call]: A method call including the server's reply.]
+	item[e[signal]: A broadcast sent by the server.]
+	item[e[set]: An attribute value has been changed by a client.]
+	item[e[update]: An attribute value has been changed by the server.]
+]
+
+A transition will be triggered by one out of a set of events. The actual 
+transition can be guarded by a boolean condition.
+A future extension of Franca's PSMs will provide e[state variables] as 
+addition to the actual state machine. The values of these variables can
+be set during entry or exit of states or when a transition is taken. 
+The boolean guards can check the values of either message arguments,
+attribute values or state variable values.
+
+
+section2:FIDL_Contracts_Exploits[Exploiting contract information]
+
+The contract information can be used in a variety of ways:
+ul[
+	item[Development tools used for the implementation of components could
+		use the information to guide the developer through the software design
+		process. 
+	]
+	item[Test code could be generated on client or server side which 
+		checks for correct sequences at runtime.
+	]
+	item[Target traces can be analysed offline by validating sequences against the contract.]
+]
+
+The e[contract]-feature in Franca is still in its experimental phase. However,
+by specifying the proper and allowed behaviour of interfaces in a consistent way
+the value and expressiveness of interface definitions can be increased to a large extent.
+
+
+section:FIDL_Comments[Comments]
+
+Franca supports two kinds of comments: unstructured and structured comments.
+
+section2:FIDL_CommentsUnstructured[Unstructured comments]
+
+Unstructured comments are usually one-line and multi-line comments as well known
+from C, C++ or Java. Examples:
+
+code[Franca][
+	// this is a one-line unstructured comment
+	typedef TypeOne is UInt8
+	
+	/* this is a multi-line unstructured comment,
+	   it could be used also for one-liners :-)    */
+	typedef TypeTwo is Int16
+]
+
+
+section2:FIDL_CommentsStructured[Structured comments]
+
+Structured comments consist of tagged meta-information as known for example from JavaDoc.
+Each tag is started with an @-sign. The set of available tags is part of the Franca specification.
+
+code[Franca][
+	<** @description : Currently active player. All other players will
+	                   reject any requests.
+	    @author      : E. Wiggin                                      **>
+	attribute tPlayer activePlayer
+]
+
+Downstream tools can access the tags and their string content and use them
+for analysis and code generation.
+
+
+section:FIDL_MultipleFiles[Fully qualified names, packages, and multiple files]
+
+section2:FIDL_MultipleFiles_FQN[Fully qualified names]
+
+All top-level elements of Franca (i.e., interfaces and user-defined data-types which
+have been defined outside of interfaces) are accessed by their e[fully qualified name].
+A fully qualified name (or short: e[FQN]) is a sequence of identifiers (at least one)
+separated by dots. The following example shows an interface identified by a FQN: 
+code[Franca][
+interface examples.franca.ExampleInterface {
+	// ...
+}
+]
+
+
+section2:FIDL_MultipleFiles_Package[Package declarations]
+
+Each Franca file starts with a e[package]-declaration (similar to Java). 
+This puts all user-defined types and interfaces defined in that file into
+the package. The absolute reference for this top-level element is computed
+by concatening the package's FQN and the element's FQN. Example:
+
+code[Franca][
+package org.franca.examples
+interface simple.ExampleInterface {
+	// this interface can be globally accessed by the FQN
+	//   org.franca.examples.simple.ExampleInterface
+}
+]
+
+
+section2:FIDL_MultipleFiles_Imports[Imports and namespace resolution]
+
+If elements in one Franca file need elements from another file, they can reference
+the latter only if a corresponding e[import] statement is provided.
+There are two kinds of imports. e[Model imports] will import all visible 
+top-level elements in the imported file. However, these elements have to be
+referenced with their absolute FQN. 
+
+code[Franca][
+package org.franca.examples.demo
+
+// model import
+import model "basic_types.fidl"
+
+interface ExampleInterface {
+	// ...
+}
+]
+
+
+e[Namespace imports] will import all visible elements in the given namespace of the 
+imported file. These elements can be referenced with a FQN which is relative to the 
+given namespace.
+ 
+code[Franca][
+package org.franca.examples.demo
+
+// namespace import
+import org.franca.examples.demo.* from "basic_types.fidl"
+
+interface ExampleInterface {
+	// ...
+}
+]
+
+

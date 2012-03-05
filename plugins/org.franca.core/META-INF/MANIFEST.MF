@@ -1,0 +1,23 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Franca core plugin
+Bundle-SymbolicName: org.franca.core;singleton:=true
+Bundle-Version: 0.7.0.qualifier
+Bundle-ClassPath: .
+Bundle-Vendor: Harman Infotainment Division
+Bundle-Localization: plugin
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: org.franca.core,
+ org.franca.core.framework,
+ org.franca.core.franca,
+ org.franca.core.franca.impl,
+ org.franca.core.franca.util
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.emf.ecore;visibility:=reexport,
+ org.eclipse.emf.mwe.utils,
+ org.apache.log4j,
+ org.apache.commons.logging;visibility:=reexport,
+ org.eclipse.emf.mwe2.launch,
+ org.eclipse.emf.mwe2.lib
+Bundle-ActivationPolicy: lazy
+Import-Package: org.apache.commons.logging

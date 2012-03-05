@@ -1,0 +1,4 @@
+chapter:BuildingTransformations[Building transformations to/from Franca]
+
+todo[Explain how transformations can be build in general using the Franca Model API
+and how Xtend can be used to do this effectively. Give examples.]

@@ -1,0 +1,40 @@
+chapter:FrancaModelAPI[Franca Model API]
+
+section:FrancaModelGeneral[How can Franca models be accessed programmatically?]
+
+The Franca model infrastructure is based on the
+link[http://www.eclipse.org/modeling/emf/][Eclipse Modeling Framework (EMF)].
+The ref:FrancaConcepts_IDL_CoreModel_Basic[Franca core model] is implemented as
+a EMF e[ecore]-model. EMF provides a tool to generate a Java API from this e[ecore]-model.
+
+In Franca, this Java API is provided by the e[org.franca.core] Eclipse plugin.
+The Java interfaces for the API are located in package e[org.franca.core.franca].
+
+
+section:FrancaModelAPIReference[Franca Model API Reference]
+
+For each concept of Franca IDL, there is a Java interface in the API.
+As all these concepts have names which are quite common in the software
+architecture domain, all these API interfaces are prefixed with the
+letter "F" (for Franca). Examples: e[FInterface], e[FAttribute], e[FMethod].
+
+The following properties are common for most of these entities:
+
+ul[
+	item[e[name]: most of the Franca API entities have a name.]
+	item[e[comment]: most of the Franca API entities can have a structured comment.
+		The structured comment (of type e[FAnnotationBlock]) is optional and
+		might contain 0..* annotations. 
+	]
+]
+
+The API offers a singleton class e[FrancaFactory], which should be used
+to create new instances of any model entities. See information about
+link[http://www.eclipse.org/modeling/emf/][EMF] to find out how the
+factory works. The second singleton class of the API is the e[FrancaPackage],
+which does the initialisation of the model and provides meta-information
+like ids and others.
+
+
+todo[Describe the Java API for Franca models in detail.]
+

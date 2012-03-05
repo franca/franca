@@ -1,0 +1,26 @@
+module org.franca.core.GenerateEmfSources
+
+import org.eclipse.emf.mwe.utils.*
+
+var projectName = "org.franca.core"
+var runtimeProject = "../${projectName}"
+
+/**
+ * This Workflow will generate the EMF Java Api based on genmodel
+ */
+Workflow {
+
+	bean = StandaloneSetup {
+		scanClassPath = true
+		platformUri = "${runtimeProject}/.."
+	}
+	
+	component = DirectoryCleaner {
+        directory = "${runtimeProject}/src-gen"
+    }
+
+	component = org.eclipse.emf.mwe2.ecore.EcoreGenerator {
+		genModel = "platform:/resource/org.franca.core/model/franca.genmodel"
+		srcPath = ""
+	}
+}

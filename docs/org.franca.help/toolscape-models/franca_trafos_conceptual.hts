@@ -1,0 +1,78 @@
+/** **************************************************************************
+ * FRANCA CONCEPTUAL FRAMEWORK ARCHITECTURE
+ *
+ * 2012-02-16 kbirken, initial version
+ *
+ * ************************************************************************** */
+ 
+// relative path for generation of diagrams from this model
+generate_to = "../src/images-gen"
+
+
+// **************************************************************************
+
+// the Franca plugins
+plugin org.franca.core
+plugin org.franca.generators
+
+// some dummy plugins
+plugin org.idl1
+plugin org.idl2
+plugin org.idl3
+plugin org.franca.connectors.idl1
+plugin org.franca.connectors.idl2
+plugin org.franca.connectors.idl3
+
+
+// **************************************************************************
+
+model Franca_IDL {
+	purpose "Central IDL model - base for generators and common IDL"
+	file franca.ecore
+	in org.franca.core
+}
+
+model Other_IDL1 {
+	purpose ""
+	file idl1.ecore
+	in org.idl1
+}
+
+model Other_IDL2 {
+	purpose ""
+	file idl2.ecore
+	in org.idl2
+}
+
+model Other_IDL3 {
+	purpose ""
+	file idl3.ecore
+	in org.idl3
+}
+
+
+// **************************************************************************
+
+transformation IDL1_to_Franca {
+	source Other_IDL1
+	target Franca_IDL
+	in org.franca.connectors.idl1
+	reverse Franca_to_IDL1
+}
+
+transformation IDL2_to_Franca {
+	source Other_IDL2
+	target Franca_IDL
+	in org.franca.connectors.idl2
+	reverse Franca_to_IDL2
+}
+
+transformation IDL3_to_Franca {
+	source Other_IDL3
+	target Franca_IDL
+	in org.franca.connectors.idl3
+	reverse Franca_to_IDL3
+}
+
+
+// **************************************************************************
