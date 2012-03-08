@@ -73,6 +73,10 @@ table[
 		td[code[Franca][String]]
 		td[character string]
 	]
+	tr[
+		td[code[Franca][ByteBuffer]]
+		td[buffer of bytes (aka BLOB)]
+	]
 ]
 
 

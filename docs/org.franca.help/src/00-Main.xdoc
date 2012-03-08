@@ -25,7 +25,7 @@ codelanguage-def[Franca]
 	array,of,struct,union,typedef,is,map,to,enumeration,
 	extends,
 	Int8,UInt8,Int16,UInt16,Int32,UInt32,Int64,UInt64,
-	Boolean,String,Float,Double,
+	Boolean,String,Float,Double,ByteBuffer,
 	contract,PSM,state,transition,initial,
 	call,signal,set,update,guard
 ]

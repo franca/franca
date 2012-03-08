@@ -21,6 +21,7 @@
       <genEnumLiterals ecoreEnumLiteral="franca.ecore#//FBasicTypeId/String"/>
       <genEnumLiterals ecoreEnumLiteral="franca.ecore#//FBasicTypeId/Float"/>
       <genEnumLiterals ecoreEnumLiteral="franca.ecore#//FBasicTypeId/Double"/>
+      <genEnumLiterals ecoreEnumLiteral="franca.ecore#//FBasicTypeId/ByteBuffer"/>
     </genEnums>
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="franca.ecore#//FAnnotationType">
       <genEnumLiterals ecoreEnumLiteral="franca.ecore#//FAnnotationType/undefined"/>

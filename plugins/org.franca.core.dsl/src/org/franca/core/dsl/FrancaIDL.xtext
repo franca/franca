@@ -117,7 +117,8 @@ enum FBasicTypeId returns FBasicTypeId:
 	Boolean = 'Boolean' |
 	String = 'String' |
 	Float = 'Float' |
-	Double = 'Double';
+	Double = 'Double' |
+	ByteBuffer = 'ByteBuffer' ;
 
 FType returns FType:
 	FArrayType |

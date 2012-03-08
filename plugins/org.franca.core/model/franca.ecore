@@ -70,6 +70,7 @@
     <eLiterals name="String" value="10" literal="String"/>
     <eLiterals name="Float" value="11" literal="Float"/>
     <eLiterals name="Double" value="12" literal="Double"/>
+    <eLiterals name="ByteBuffer" value="13" literal="ByteBuffer"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FArrayType" eSuperTypes="#//FType">
     <eStructuralFeatures xsi:type="ecore:EReference" name="elementType" eType="#//FTypeRef"
