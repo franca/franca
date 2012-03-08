@@ -18,12 +18,15 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.franca.core.franca.FAttribute;
+import org.franca.core.franca.FBasicTypeId;
 import org.franca.core.franca.FBroadcast;
 import org.franca.core.franca.FInterface;
 import org.franca.core.franca.FMethod;
 import org.franca.core.franca.FModel;
 import org.franca.core.franca.FStateGraph;
 import org.franca.core.franca.FType;
+import org.franca.core.franca.FTypeDef;
+import org.franca.core.franca.FTypeRef;
 import org.franca.core.franca.FrancaPackage;
 
 import com.google.common.collect.Lists;
@@ -32,6 +35,9 @@ import com.google.common.collect.Lists;
 public class FrancaHelpers {
 	// configuration data
 	private ResourceSet resourceSet = null;
+
+	// *****************************************************************************
+	// constructor(s)
 
 	private FrancaHelpers() {
 		// register the appropriate resource factory to handle all file extensions for Franca
@@ -42,11 +48,13 @@ public class FrancaHelpers {
 		resourceSet = new ResourceSetImpl();
 	}
 
+	
+	// *****************************************************************************
+	// model save/load
+
 	public boolean saveModel (FModel model, String fileName) {
 		return saveFrancaModel(resourceSet, model, fileName + ".franca");
 	}
-	
-	
 	
 	private static boolean saveFrancaModel (ResourceSet resourceSet, FModel model, String filename) {
 		URI fileUri = URI.createFileURI(new File(filename).getAbsolutePath());
@@ -70,7 +78,6 @@ public class FrancaHelpers {
 
 	
 	// *****************************************************************************
-
 	// helpers for model navigation
 	
 	public static FInterface getEnclosingInterface (EObject obj) {
@@ -134,7 +141,7 @@ public class FrancaHelpers {
 	}
 	
 	/** Returns true if any of the base interfaces has a contract definition */
-	public static Boolean hasBaseContract (FInterface api) {
+	public static boolean hasBaseContract (FInterface api) {
 		if (api.getBase()!=null) {
 			return api.getBase().getContract()!=null || hasBaseContract(api.getBase());
 		}
@@ -143,9 +150,91 @@ public class FrancaHelpers {
 	
 
 	// *****************************************************************************
+	// type system
 	
+	/** Returns true if the referenced type is any kind of integer. */
+	public static boolean isInteger (FTypeRef typeRef) {
+		if (typeRef.getDerived() == null) {
+			int id = typeRef.getPredefined().getValue();
+			if (	id==FBasicTypeId.INT8_VALUE  || id==FBasicTypeId.UINT8_VALUE  ||
+					id==FBasicTypeId.INT16_VALUE || id==FBasicTypeId.UINT16_VALUE ||
+					id==FBasicTypeId.INT32_VALUE || id==FBasicTypeId.UINT32_VALUE ||
+					id==FBasicTypeId.INT64_VALUE || id==FBasicTypeId.UINT64_VALUE   )
+			{
+				return true;
+			}
+		} else {
+			FType type = typeRef.getDerived();
+			if (type instanceof FTypeDef) {
+				FTypeDef typedef = (FTypeDef)type;
+				return isInteger(typedef.getActualType());
+			}
+		}
+		return false;
+	}
+
+	/** Returns true if the referenced type is float or double. */
+	public static boolean isFloatingPoint (FTypeRef typeRef) {
+		if (typeRef.getDerived() == null) {
+			int id = typeRef.getPredefined().getValue();
+			if (id==FBasicTypeId.FLOAT_VALUE || id==FBasicTypeId.DOUBLE_VALUE) {
+				return true;
+			}
+		} else {
+			FType type = typeRef.getDerived();
+			if (type instanceof FTypeDef) {
+				FTypeDef typedef = (FTypeDef)type;
+				return isFloatingPoint(typedef.getActualType());
+			}
+		}
+		return false;
+	}
+
+	/** Returns true if the referenced type is any number. */
+	public static boolean isNumber (FTypeRef typeRef) {
+		return isInteger(typeRef) || isFloatingPoint(typeRef);
+	}
+	
+	/** Returns true if the referenced type is a string. */
+	public static boolean isString (FTypeRef typeRef) {
+		if (typeRef.getDerived() == null) {
+			int id = typeRef.getPredefined().getValue();
+			if (id==FBasicTypeId.STRING_VALUE) {
+				return true;
+			}
+		} else {
+			FType type = typeRef.getDerived();
+			if (type instanceof FTypeDef) {
+				FTypeDef typedef = (FTypeDef)type;
+				return isString(typedef.getActualType());
+			}
+		}
+		return false;
+	}
+
+	/** Returns true if the referenced type is a boolean value. */
+	public static boolean isBoolean (FTypeRef typeRef) {
+		if (typeRef.getDerived() == null) {
+			int id = typeRef.getPredefined().getValue();
+			if (id==FBasicTypeId.BOOLEAN_VALUE) {
+				return true;
+			}
+		} else {
+			FType type = typeRef.getDerived();
+			if (type instanceof FTypeDef) {
+				FTypeDef typedef = (FTypeDef)type;
+				return isBoolean(typedef.getActualType());
+			}
+		}
+		return false;
+	}
+
+	
+	// *****************************************************************************
 	// singleton
+	
 	private static FrancaHelpers instance = null;
+	
 	public static FrancaHelpers instance() {
 		if (instance==null) {
 			instance = new FrancaHelpers();
