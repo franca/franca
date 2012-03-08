@@ -13,6 +13,8 @@ The Java interfaces for the API are located in package e[org.franca.core.franca]
 
 section:FrancaModelAPIReference[Franca Model API Reference]
 
+section2:FrancaModelAPIReference_General[General remarks]
+
 For each concept of Franca IDL, there is a Java interface in the API.
 As all these concepts have names which are quite common in the software
 architecture domain, all these API interfaces are prefixed with the
@@ -35,6 +37,20 @@ factory works. The second singleton class of the API is the e[FrancaPackage],
 which does the initialisation of the model and provides meta-information
 like ids and others.
 
+section2:FrancaModelAPIReference_UserDefinedTypes[User-defined types]
+
+User-defined types in Franca IDL can be defined on two levels:
+ul[
+	item[e[List<FType> FModel.types]: on package level]
+	item[e[List<FType> FInterface.types]: as part of an interface]
+]
+
+The user-defined types e[referenced] by the elements of an interface
+will not always be part of the e[FInterface.types] list. 
+I.e., e[declaration] and e[usage] of user-defined types are separated.
+
+
+section2:FrancaModelAPIReference_ThereIsMore[Final remarks]
 
 todo[Describe the Java API for Franca models in detail.]
 
