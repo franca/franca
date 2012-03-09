@@ -424,9 +424,9 @@
 		<url>http://code.google.com/a/eclipselabs.org/hosting/</url>
 	</organization>
 	<scm>
-		<developerConnection>https://code.google.com/a/eclipselabs.org/TODO</developerConnection>
-		<url>https://code.google.com/a/eclipselabs.org/TODO</url>
-		<connection>https://code.google.com/a/eclipselabs.org/TODO</connection>
+		<developerConnection>https://code.google.com/a/eclipselabs.org/franca</developerConnection>
+		<url>https://code.google.com/a/eclipselabs.org/franca</url>
+		<connection>https://code.google.com/a/eclipselabs.org/franca</connection>
 	</scm>
     <!--
 	<ciManagement>
