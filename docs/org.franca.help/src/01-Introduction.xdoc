@@ -39,7 +39,7 @@ section:Intro_FrancaArchitecture[Franca framework architecture]
 
 Especially for system integrators, it is time and again necessary to combine
 software components or subsystems which use different kinds of 
-inter-process-communication (IPC) and different IDLs. Posssible reasons for this
+inter-process-communication (IPC) and different IDLs. Possible reasons for this
 are:
 ul[
 	item[the need for integration of 3rd-party and legacy components]
