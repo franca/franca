@@ -10,6 +10,9 @@
 	</parent>
 
 	<artifactId>org.franca.core</artifactId>
+	<name>Franca core plugin</name>
+	<version>0.7.0-SNAPSHOT</version>
+	<description>This Eclipse plugin contains the Franca ecore model and some central base classes and tools for the Franca framework.</description>
 	<packaging>eclipse-plugin</packaging>
 	<build>
 		<resources>
@@ -61,8 +64,8 @@
 							<jvmSettings>
 								<fork>true</fork>
 								<jvmArgs>
-									<jvmArg>-Xms100m</jvmArg>
-									<jvmArg>-Xmx700m</jvmArg>
+									<jvmArg>-Xms128m</jvmArg>
+									<jvmArg>-Xmx512m</jvmArg>
 									<jvmArg>-XX:MaxPermSize=128m</jvmArg>
 								</jvmArgs>
 							</jvmSettings>
@@ -72,7 +75,4 @@
 			</plugin>
 		</plugins>
 	</build>
-	<name>Franca core plugin</name>
-	<version>0.7.0-SNAPSHOT</version>
-	<description>This Eclipse plugin contains the Franca ecore model and some central base classes and tools for the Franca framework.</description>
 </project>

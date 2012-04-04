@@ -9,6 +9,7 @@
 		<relativePath>../../releng/org.franca.parent/pom.xml</relativePath>
 	</parent>
 	<artifactId>org.franca.core.dsl.ui</artifactId>
+	<name>Franca IDL UI plugin</name>
 	<version>0.7.0-SNAPSHOT</version>
 	<packaging>eclipse-plugin</packaging>
 	<build>
