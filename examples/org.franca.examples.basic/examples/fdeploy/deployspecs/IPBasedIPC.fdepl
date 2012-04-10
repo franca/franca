@@ -1,0 +1,20 @@
+
+/*
+ * This is a specification for the deployment of IP-based IPC stacks.
+ * This is just an example, an actual deployment specification will
+ * have to take into account platform-specific details, like proper
+ * names for the properties and other stuff.
+ */
+specification org.franca.examples.deployspecs.IPBasedIPC
+{
+	// interface providers will have some process name
+	for providers {
+		ProcessName:   String;
+	}
+
+	// provided interfaces must have an IP address and an optional IP port number.	
+	for instances {
+		IPAddress:     String;
+		Port:          Integer   (optional);	
+	}
+}
