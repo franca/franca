@@ -7,6 +7,7 @@ import org.eclipse.xtext.formatting.impl.AbstractDeclarativeFormatter;
 import org.eclipse.xtext.formatting.impl.FormattingConfig;
 import org.eclipse.xtext.Keyword;
 import org.eclipse.xtext.util.Pair;
+import org.franca.core.dsl.services.FrancaIDLGrammarAccess;
 
 /**
  * This class contains custom formatting description.
@@ -20,7 +21,7 @@ public class FrancaIDLFormatter extends AbstractDeclarativeFormatter {
 	
 	@Override
 	protected void configureFormatting(FormattingConfig c) {
-		org.franca.core.dsl.services.FrancaIDLGrammarAccess f = (org.franca.core.dsl.services.FrancaIDLGrammarAccess) getGrammarAccess();
+		FrancaIDLGrammarAccess f = (FrancaIDLGrammarAccess) getGrammarAccess();
 		
 		for(Pair<Keyword, Keyword> pair: f.findKeywordPairs("{", "}")) {
 			c.setIndentation(pair.getFirst(), pair.getSecond());
