@@ -17,6 +17,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.xtext.Constants;
+import org.franca.core.framework.ModelFileFinder;
 import org.franca.core.franca.FModel;
 
 import com.google.common.collect.Lists;
@@ -87,7 +88,8 @@ public class FrancaIDLHelpers {
 		File f = new File(fileName);
 		String folderName = f.getParentFile().getAbsolutePath();
 		//System.out.println("path: " + f.getParentFile().getAbsolutePath());
-		for (String fn : getSourceFiles(folderName)) {
+		List<String> modelFiles = new ModelFileFinder(fileExtension).getSourceFiles(folderName);
+		for (String fn : modelFiles) {
 			//System.out.println("- resource file " + fn);
 			resourceSet.getResource(URI.createFileURI(fn), true);
 		}
@@ -121,34 +123,6 @@ public class FrancaIDLHelpers {
 	}
 
 
-	/**
-	 * Collect all model files in a given directory subtree.
-	 * 
-	 * @param folderName the subtree root
-	 * @return the list of model files
-	 * @throws IOException
-	 */
-	private List<String> getSourceFiles (String folderName) throws IOException {
-		List<String> result = Lists.newArrayList();
-		File folder = new File(folderName);
-		for (String s : folder.list()) {
-			File f = new File(folder.getAbsolutePath() + '/' + s);
-			String relativePath = folderName + '/' + s;
-			if (isModelFile(f)) {
-				result.add(relativePath);
-			}
-			else if (f.isDirectory()) {
-				result.addAll(getSourceFiles(relativePath));
-			}
-		}		
-		return result;
-	}
-	
-	private boolean isModelFile (File f) {
-		return f.isFile() && f.getName().endsWith("." + fileExtension);
-	}
-	
-	
 	// singleton
 	private static FrancaIDLHelpers instance = null;
 	public static FrancaIDLHelpers instance() {
