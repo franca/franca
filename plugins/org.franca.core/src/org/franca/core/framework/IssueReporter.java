@@ -57,6 +57,16 @@ public class IssueReporter {
 		case TransformationBase.Issue.FEATURE_NOT_HANDLED_YET:
 			ret = "TODO: Transformation should handle feature";
 			break;
+		case TransformationBase.Issue.FEATURE_NOT_FULLY_SUPPORTED:
+			ret = "Transformation handles partially the feature";
+			break;
+		case TransformationBase.Issue.IMPORT_ERROR:
+			ret = "Error when importing from other IDL";
+			break;
+		case TransformationBase.Issue.IMPORT_WARNING:
+			ret = "Warning when importing from other IDL";
+			break;
+
 		default:
 			ret = "Transformation issued unspecified problem (id=" + issue.getReason() + ") with feature";
 		}

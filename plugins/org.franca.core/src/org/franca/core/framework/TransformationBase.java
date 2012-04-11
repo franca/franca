@@ -57,8 +57,25 @@ public class TransformationBase {
 		 * should be. This indicates that the transformation flaw will be fixed
 		 * in a future version of the transformation.
 		 */
-		public static final int FEATURE_NOT_HANDLED_YET   = 9;
+		public static final int FEATURE_NOT_HANDLED_YET   = 4;
 
+		/**
+		 * Issue id: A feature of the source model is not fully supported. 
+		 * Some information can be lost or the whole information can be lost for certain cases. 
+		 */
+		public static final int FEATURE_NOT_FULLY_SUPPORTED   = 5;
+		
+		/**
+		 * Issue id: Some error was detected when importing into Franca, the imported model is not consistent.  
+		 */
+		public static final int  IMPORT_ERROR  = 6;
+		
+		/**
+		 * Issue id: Some non critical inconsistency was detected when importing into Franca, the imported model is not consistent.  
+		 */
+		public static final int  IMPORT_WARNING  = 7;
+
+		
 		private final int reason;
 		private final EClass clazz;
 		private final int featureId;
@@ -105,8 +122,15 @@ public class TransformationBase {
 		 */
 		public String getFeatureString() {
 			EStructuralFeature feature = clazz.getEStructuralFeature(featureId);
-			String featureType = feature.getEType().getName();
-			return featureType + " " + clazz.getName() + "." + feature.getName();
+			if (feature != null)
+			{
+				String featureType = feature.getEType().getName();
+				return featureType + " " + clazz.getName() + "." + feature.getName();
+			}
+			else
+			{
+				return null;
+			}
 		}
 		
 		@Override
