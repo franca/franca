@@ -16,22 +16,21 @@ interface PlayerAPI {
 		in {
 			<** @description : The player to be activated. **>
 			tPlayer player
-			Int32 newparam
 		}
 		out {
 			<** @description : Result code of the requested operation. **>
 			tResultCode resultCode
-			tExampleUnion otherStuff
 		}
 	}
 
-	method add {
+	<** @description : Get a player name and description from its ID. **>
+	method getPlayerInfo {
 		in {
-			UInt32 a
-			UInt32 b
+			tPlayer player
 		}
 		out {
-			UInt32 result
+			String name
+			String description
 		}	
 	}
 	
@@ -85,13 +84,6 @@ interface PlayerAPI {
 
 		<** @description : The number of effect (LFE) channels. **>
 		UInt8 effect
-	}
-	
-	<** @description : This is an example for a union data structure **>
-	union tExampleUnion {
-		UInt32 asInteger
-		String asString
-		tPlayer asEnum
 	}
 }
 

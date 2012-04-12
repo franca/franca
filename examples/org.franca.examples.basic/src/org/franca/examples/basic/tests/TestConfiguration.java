@@ -10,4 +10,10 @@ public class TestConfiguration {
 	public static String francaFile =
 			"franca/demo1.fidl";
 
+	public static String fdeployArchFile =
+			"fdeploy/demo1_arch.fdepl";
+
+	public static String fdeployInterfaceFile =
+			"fdeploy/demo1.fdepl";
+
 }

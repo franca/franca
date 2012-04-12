@@ -1,9 +1,12 @@
 
+// import the deployment specification
 import "deployspecs/SampleDeploySpec.fdepl"
+
+// import the actual Franca interfaces we want to deploy 
 import "../franca/demo1.fidl"
 
 
-/*
+/**
  * The definition of the runtime instance "ExampleServer", which
  * provides two instances of the PlayerAPI interface. Franca's deployment
  * modeling is used here to specify the information needed for building
@@ -17,11 +20,13 @@ define org.franca.examples.deployspecs.SampleDeploySpec
 	instance org.franca.examples.demo.PlayerAPI {
 		IPAddress = "192.168.1.50"
 		Port = 8765
+		
+		AccessControl = subnet
 	}	
 
 	instance org.franca.examples.demo.PlayerAPI {
 		IPAddress = "192.168.1.50"
 		Port = 7654
-	}	
+	}
 }
 

@@ -1,9 +1,12 @@
 
+// import the deployment specification
 import "deployspecs/SampleDeploySpec.fdepl"
+
+// import the actual Franca interfaces we want to deploy 
 import "../franca/demo1.fidl"
 
 
-/*
+/**
  * This is an example for defining all required deployment information
  * for the interface PlayerAPI (defined in demo1.fidl). The specification
  * used for defining which deployment information is mandatory or optional
@@ -41,8 +44,7 @@ define org.franca.examples.deployspecs.SampleDeploySpec
 			}
 		}
 	}
-	
-	
 }
+
 
 

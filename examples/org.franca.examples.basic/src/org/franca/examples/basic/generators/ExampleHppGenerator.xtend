@@ -5,8 +5,16 @@ import org.franca.core.franca.FMethod
 import org.franca.core.franca.FTypeRef
 import org.franca.core.franca.FBasicTypeId
 
+/**
+ * This is an example code generator for plain Franca interfaces without
+ * attached deployment information.
+ */
 class ExampleHppGenerator {
 
+	/**
+	 * This function is called from outside and generates code from a 
+	 * Franca interface definition.
+	 */
 	def generateInterface (FInterface api) '''
 		#ifndef __C«api.name.toUpperCase»_hpp__
 		#define __C«api.name.toUpperCase»_hpp__

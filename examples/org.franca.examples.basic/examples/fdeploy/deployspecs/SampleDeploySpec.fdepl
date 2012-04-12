@@ -1,7 +1,9 @@
 
+// import the base specification
 import "IPBasedIPC.fdepl"
 
-/*
+
+/**
  * This is an example specification for Franca's deployment model.
  * It inherits from the IPBasedIPC example specification.
  */
