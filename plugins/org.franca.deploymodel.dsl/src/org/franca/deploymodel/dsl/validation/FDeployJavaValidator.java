@@ -1,0 +1,493 @@
+package org.franca.deploymodel.dsl.validation;
+
+import java.util.List;
+import java.util.Set;
+
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.xtext.validation.Check;
+import org.eclipse.xtext.validation.ValidationMessageAcceptor;
+import org.franca.core.framework.FrancaHelpers;
+import org.franca.core.franca.FArgument;
+import org.franca.core.franca.FArrayType;
+import org.franca.core.franca.FAttribute;
+import org.franca.core.franca.FBroadcast;
+import org.franca.core.franca.FField;
+import org.franca.core.franca.FInterface;
+import org.franca.core.franca.FMethod;
+import org.franca.core.franca.FStructType;
+import org.franca.core.franca.FType;
+import org.franca.core.franca.FTypeRef;
+import org.franca.core.franca.FrancaPackage;
+import org.franca.deploymodel.dsl.FDInterfaceMapper;
+import org.franca.deploymodel.dsl.FDModelHelper;
+import org.franca.deploymodel.dsl.FDSpecificationExtender;
+import org.franca.deploymodel.dsl.fDeploy.FDArgument;
+import org.franca.deploymodel.dsl.fDeploy.FDArray;
+import org.franca.deploymodel.dsl.fDeploy.FDAttribute;
+import org.franca.deploymodel.dsl.fDeploy.FDBoolean;
+import org.franca.deploymodel.dsl.fDeploy.FDBroadcast;
+import org.franca.deploymodel.dsl.fDeploy.FDComplexValue;
+import org.franca.deploymodel.dsl.fDeploy.FDDeclaration;
+import org.franca.deploymodel.dsl.fDeploy.FDElement;
+import org.franca.deploymodel.dsl.fDeploy.FDEnum;
+import org.franca.deploymodel.dsl.fDeploy.FDEnumType;
+import org.franca.deploymodel.dsl.fDeploy.FDInteger;
+import org.franca.deploymodel.dsl.fDeploy.FDInterface;
+import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance;
+import org.franca.deploymodel.dsl.fDeploy.FDMethod;
+import org.franca.deploymodel.dsl.fDeploy.FDPredefinedTypeId;
+import org.franca.deploymodel.dsl.fDeploy.FDProperty;
+import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl;
+import org.franca.deploymodel.dsl.fDeploy.FDPropertyFlag;
+import org.franca.deploymodel.dsl.fDeploy.FDPropertyHost;
+import org.franca.deploymodel.dsl.fDeploy.FDProvider;
+import org.franca.deploymodel.dsl.fDeploy.FDSpecification;
+import org.franca.deploymodel.dsl.fDeploy.FDString;
+import org.franca.deploymodel.dsl.fDeploy.FDStruct;
+import org.franca.deploymodel.dsl.fDeploy.FDStructField;
+import org.franca.deploymodel.dsl.fDeploy.FDType;
+import org.franca.deploymodel.dsl.fDeploy.FDTypeRef;
+import org.franca.deploymodel.dsl.fDeploy.FDValue;
+import org.franca.deploymodel.dsl.fDeploy.FDValueArray;
+import org.franca.deploymodel.dsl.fDeploy.FDeployPackage;
+import org.franca.deploymodel.dsl.validation.ValidationHelpers;
+import org.franca.deploymodel.dsl.validation.ValidationMessageReporter;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+
+ 
+
+public class FDeployJavaValidator extends AbstractFDeployJavaValidator
+	implements ValidationMessageReporter {
+
+	/**
+	 * An issue ID for the "Missing mandatory property" error.
+	 * Issue data will contain a comma separated string with the missing properties
+	 */
+	public static final String MISSING_MANDATORY_PROPERTIES  = "MISSING_MANDATORY_PROPERTIES";
+
+	private final String msg = " must be specified because of mandatory properties";
+
+	
+	// *****************************************************************************
+	// basic checks
+	
+	@Check
+	public void checkMethodArgs (FDMethod method) {
+		for(FDArgument arg : method.getInArguments()) {
+			if (! method.getTarget().getInArgs().contains(arg.getTarget())) {
+				error("Invalid input argument '" + arg.getTarget().getName() + "'",
+						arg, FDeployPackage.Literals.FD_ARGUMENT__TARGET, -1);
+			}
+		}
+		for(FDArgument arg : method.getOutArguments()) {
+			if (! method.getTarget().getOutArgs().contains(arg.getTarget())) {
+				error("Invalid output argument '" + arg.getTarget().getName() + "'",
+						arg, FDeployPackage.Literals.FD_ARGUMENT__TARGET, -1);
+			}
+		}
+	}
+
+	
+	// *****************************************************************************
+	// validate specifications
+	
+	@Check
+	public void checkPropertyName (FDPropertyDecl prop) {
+		String n = prop.getName();
+		if (! Character.isUpperCase(n.charAt(0))) {
+			error("Property names must begin with an uppercase character",
+					FDeployPackage.Literals.FD_PROPERTY_DECL__NAME);
+		}
+	}
+	
+	@Check
+	public void checkSpecification (FDSpecification spec) {
+		List<FDPropertyDecl> decls = Lists.newArrayList();
+		for(FDDeclaration decl : spec.getDeclarations()) {
+			decls.addAll(decl.getProperties());
+		}
+		ValidationHelpers.checkDuplicates(this, decls,
+				FDeployPackage.Literals.FD_PROPERTY_DECL__NAME, "property name");
+	}
+	
+	@Check
+	public void checkBaseSpec (FDSpecification spec) {
+		Set<FDSpecification> visited = Sets.newHashSet();
+		FDSpecification s = spec;
+		FDSpecification last = null;
+		do {
+			visited.add(s);
+			last = s;
+			s = s.getBase();
+			if (s!=null && visited.contains(s)) {
+				error("Inheritance cycle for specification " + last.getName(), last,
+						FDeployPackage.Literals.FD_SPECIFICATION__BASE, -1);
+				return;
+			}
+		} while (s != null);
+	}
+
+	
+	// *****************************************************************************
+	// check for missing properties
+	
+	@Check
+	public void checkPropertiesComplete (FDProvider elem) {
+		// check own properties
+		FDSpecification spec = FDModelHelper.getRootElement(elem).getSpec();
+		checkElementProperties(spec, elem, FDeployPackage.Literals.FD_PROVIDER__NAME);
+	}
+	
+	
+	@Check
+	public void checkPropertiesComplete (FDInterface elem) {
+		// check own properties
+		FDSpecification spec = FDModelHelper.getRootElement(elem).getSpec();
+		checkElementProperties(spec, elem, FDeployPackage.Literals.FD_INTERFACE__TARGET);
+		
+		// check child elements recursively
+		FDSpecificationExtender specHelper = new FDSpecificationExtender(spec);
+		FDInterfaceMapper mapper = new FDInterfaceMapper(elem);
+		FInterface target = elem.getTarget();
+		for(FAttribute tc : target.getAttributes()) {
+			FDAttribute c = (FDAttribute) mapper.getFDElement(tc);
+			if (c==null) {
+				if (mustBeDefined(specHelper, tc.getType())) {
+					error("Attribute '" + tc.getName() + "'" + msg,
+							FDeployPackage.Literals.FD_INTERFACE__TARGET);
+				}
+			} else {
+				checkElementProperties(spec, c, FDeployPackage.Literals.FD_ATTRIBUTE__TARGET);
+			}
+		}
+
+		for(FMethod tc : target.getMethods()) {
+			FDMethod c = (FDMethod) mapper.getFDElement(tc);
+			if (c==null) {
+				if (mustBeDefined(specHelper, tc)) {
+					error("Method '" + tc.getName() + "'" + msg,
+							FDeployPackage.Literals.FD_INTERFACE__TARGET);
+				}
+			} else {
+				checkElementProperties(spec, c, FDeployPackage.Literals.FD_METHOD__TARGET);
+				checkArgumentList(specHelper, mapper, spec, tc.getInArgs(), c,
+						"Input", FDeployPackage.Literals.FD_METHOD__TARGET);
+				checkArgumentList(specHelper, mapper, spec, tc.getOutArgs(), c,
+						"Output", FDeployPackage.Literals.FD_METHOD__TARGET);
+			}
+		}
+
+		for(FBroadcast tc : target.getBroadcasts()) {
+			FDBroadcast c = (FDBroadcast) mapper.getFDElement(tc);
+			if (c==null) {
+				if (mustBeDefined(specHelper, tc)) {
+					error("Broadcast '" + tc.getName() + "'" + msg,
+							FDeployPackage.Literals.FD_INTERFACE__TARGET);
+				}
+			} else {
+				checkElementProperties(spec, c, FDeployPackage.Literals.FD_BROADCAST__TARGET);
+				checkArgumentList(specHelper, mapper, spec, tc.getOutArgs(), c,
+						"Output", FDeployPackage.Literals.FD_BROADCAST__TARGET);
+			}
+		}
+
+		for(FType tc : target.getTypes()) {
+			if (tc instanceof FArrayType) {
+				FDArray c = (FDArray) mapper.getFDElement(tc);
+				if (c==null) {
+					if (mustBeDefined(specHelper, (FArrayType)tc)) {
+						error("Array '" + tc.getName() + "'" + msg,
+								FDeployPackage.Literals.FD_INTERFACE__TARGET);
+					}
+				} else {
+					checkElementProperties(spec, c, FDeployPackage.Literals.FD_ARRAY__TARGET);
+				}
+			} else if (tc instanceof FStructType) {
+				FDStruct c = (FDStruct) mapper.getFDElement(tc);
+				if (c==null) {
+					if (mustBeDefined(specHelper, (FStructType)tc)) {
+						error("Struct '" + tc.getName() + "'" + msg,
+								FDeployPackage.Literals.FD_INTERFACE__TARGET);
+					}
+				} else {
+					checkElementProperties(spec, c, FDeployPackage.Literals.FD_STRUCT__TARGET);
+					checkStructFieldsList(specHelper, mapper, spec, ((FStructType) tc).getElements(), c,
+							FDeployPackage.Literals.FD_STRUCT__TARGET);
+				}
+			}
+		}
+	}
+
+	private void checkArgumentList (FDSpecificationExtender specHelper,
+			FDInterfaceMapper mapper, FDSpecification spec, List<FArgument> args,
+			FDElement parent, String tag, EStructuralFeature feature)
+	{
+		for(FArgument tc : args) {
+			FDArgument c = (FDArgument) mapper.getFDElement(tc);
+			if (c==null) {
+				if (mustBeDefined(specHelper, tc.getType())) {
+					error(tag + " argument '" + tc.getName() + "'" + msg, parent, feature, -1);
+				}
+			} else {
+				checkElementProperties(spec, c, FDeployPackage.Literals.FD_ARGUMENT__TARGET);
+			}
+		}
+	}
+	
+	private void checkStructFieldsList (FDSpecificationExtender specHelper,
+			FDInterfaceMapper mapper, FDSpecification spec, List<FField> fields,
+			FDElement parent, EStructuralFeature feature)
+	{
+		for(FField tc : fields) {
+			FDStructField c = (FDStructField) mapper.getFDElement(tc);
+			if (c==null) {
+				if (mustBeDefined(specHelper, tc.getType())) {
+					error("Struct field '" + tc.getName() + "'" + msg, parent, feature, -1);
+				}
+			} else {
+				checkElementProperties(spec, c, FDeployPackage.Literals.FD_STRUCT_FIELD__TARGET);
+			}
+		}
+	}
+	
+	private boolean mustBeDefined (FDSpecificationExtender specHelper, FMethod target) {
+		if (specHelper.isMandatory(FDPropertyHost.METHODS))
+			return true;
+		
+		if (target.getInArgs().isEmpty() && target.getOutArgs().isEmpty())
+			return false;
+		
+		if (specHelper.isMandatory(FDPropertyHost.ARGUMENTS))
+			return true;
+
+		for(FArgument arg : target.getInArgs()) {
+			if (mustBeDefined(specHelper, arg.getType()))
+				return true;
+		}
+		
+		for(FArgument arg : target.getOutArgs()) {
+			if (mustBeDefined(specHelper, arg.getType()))
+				return true;
+		}
+		
+		return false;
+	}
+	
+	private boolean mustBeDefined (FDSpecificationExtender specHelper, FBroadcast target) {
+		if (specHelper.isMandatory(FDPropertyHost.BROADCASTS))
+			return true;
+		
+		if (target.getOutArgs().isEmpty())
+			return false;
+		
+		if (specHelper.isMandatory(FDPropertyHost.ARGUMENTS))
+			return true;
+
+		for(FArgument arg : target.getOutArgs()) {
+			if (mustBeDefined(specHelper, arg.getType()))
+				return true;
+		}
+		
+		return false;
+	}
+	
+	private boolean mustBeDefined (FDSpecificationExtender specHelper, FArrayType target) {
+		if (specHelper.isMandatory(FDPropertyHost.ARRAYS))
+			return true;
+		
+		return false;
+	}
+	
+	private boolean mustBeDefined (FDSpecificationExtender specHelper, FStructType target) {
+		// activate this is STRUCTS gets a property host
+//		if (specHelper.isMandatory(FDPropertyHost.STRUCTS))
+//			return true;
+		
+		if (target.getElements().isEmpty())
+			return false;
+		
+		if (specHelper.isMandatory(FDPropertyHost.STRUCT_FIELDS))
+			return true;
+
+		for(FField f : target.getElements()) {
+			if (mustBeDefined(specHelper, f.getType()))
+				return true;
+		}
+		
+		return false;
+	}
+	
+	private boolean mustBeDefined (FDSpecificationExtender specHelper, FTypeRef target) {
+		if (specHelper.isMandatory(FDPropertyHost.ARGUMENTS))
+			return true;
+
+		if (FrancaHelpers.isString(target)) {
+			if (specHelper.isMandatory(FDPropertyHost.STRINGS)) {
+				return true;
+			}
+		} else if (FrancaHelpers.isInteger(target)) {
+			if (specHelper.isMandatory(FDPropertyHost.INTEGERS) || specHelper.isMandatory(FDPropertyHost.NUMBERS)) {
+				return true;
+			}
+		} else if (FrancaHelpers.isFloatingPoint(target)) {
+			if (specHelper.isMandatory(FDPropertyHost.FLOATS) || specHelper.isMandatory(FDPropertyHost.NUMBERS)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	
+	// *****************************************************************************
+
+	@Check
+	public void checkPropertiesComplete (FDInterfaceInstance elem) {
+		// check own properties
+		FDSpecification spec = FDModelHelper.getRootElement(elem).getSpec();
+		checkElementProperties(spec, elem, FDeployPackage.Literals.FD_INTERFACE_INSTANCE__TARGET);
+	}
+	
+
+	private void checkElementProperties (FDSpecification spec, FDElement elem, EStructuralFeature feature)
+	{
+		List<FDPropertyDecl> decls = FDModelHelper.getAllPropertyDecls(spec, elem);
+		List<String> missing = Lists.newArrayList();
+		for(FDPropertyDecl decl : decls) {
+			if (FDModelHelper.isMandatory(decl)) {
+				if (! contains(elem.getProperties(), decl)) {
+					missing.add(decl.getName());
+				}
+			}
+		}
+		
+		if (! missing.isEmpty()) {
+			String issue = "";
+			String msg = missing.size()==1 ? "property " : "properties ";
+			boolean sep = false; 
+			for(String s : missing) {
+				if (sep) {
+					issue += ", ";
+					msg += ", ";
+				}
+				sep = true;
+				issue += s;
+				msg += "'" + s + "'";
+			}
+			
+			error("Missing mandatory " + msg, elem, feature, -1,
+					MISSING_MANDATORY_PROPERTIES, issue);
+		}
+	}
+
+
+	private boolean contains (List<FDProperty> properties, FDPropertyDecl decl) {
+		for(FDProperty p : properties) {
+			if (p.getDecl()==decl) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	
+	// *****************************************************************************
+	// type system
+	
+	@Check
+	public void checkPropertyFlagType (FDPropertyFlag flag) {
+		if (flag.getDefault()==null)
+			return;
+		
+		FDPropertyDecl decl = (FDPropertyDecl)flag.eContainer();
+		FDTypeRef typeRef = decl.getType();
+		FDComplexValue value = flag.getDefault();
+		if (value.getSingle()!=null) {
+			if (typeRef.getArray()!=null)
+				error("Default must be an array!", FDeployPackage.Literals.FD_PROPERTY_FLAG__DEFAULT);
+			else
+				checkValueType(typeRef, value.getSingle(), FDeployPackage.Literals.FD_PROPERTY_FLAG__DEFAULT, -1);
+		} else if (value.getArray()!=null) {
+			if (typeRef.getArray()==null) {
+				error("Default must be a single type, not an array!", FDeployPackage.Literals.FD_PROPERTY_FLAG__DEFAULT);
+			} else
+				checkValueArrayType(typeRef, value.getArray());
+		}
+	}
+
+	@Check
+	public void checkPropertyValueType (FDProperty prop) {
+		FDTypeRef typeRef = prop.getDecl().getType();
+		FDComplexValue value = prop.getValue();
+		if (value.getSingle()!=null) {
+			if (typeRef.getArray()!=null)
+				error("Invalid type, expected array!", FDeployPackage.Literals.FD_PROPERTY__VALUE);
+			else
+				checkValueType(typeRef, value.getSingle(), FDeployPackage.Literals.FD_PROPERTY__VALUE, -1);
+		} else if (value.getArray()!=null) {
+			if (typeRef.getArray()==null)
+				error("Invalid array type, expected single value!", FDeployPackage.Literals.FD_PROPERTY__VALUE);
+			else
+				checkValueArrayType(typeRef, value.getArray());
+		}
+	}
+	
+	private void checkValueType (FDTypeRef typeRef, FDValue value, EReference literal, int index) {
+		if (typeRef.getComplex()==null) {
+			// this is a predefined type
+			switch (typeRef.getPredefined().getValue()) {
+			case FDPredefinedTypeId.INTEGER_VALUE:
+				if (! (value instanceof FDInteger)) {
+					error("Invalid type, expected Integer constant",
+							value.eContainer(), literal, index);
+				}
+				break;
+			case FDPredefinedTypeId.STRING_VALUE:
+				if (! (value instanceof FDString)) {
+					error("Invalid type, expected String constant",
+							value.eContainer(), literal, index);
+				}
+				break;
+			case FDPredefinedTypeId.BOOLEAN_VALUE:
+				if (! (value instanceof FDBoolean)) {
+					error("Invalid type, expected 'true' or 'false'",
+							value.eContainer(), literal, index);
+				}
+				break;
+			}
+		} else {
+			FDType type = typeRef.getComplex();
+			if (type instanceof FDEnumType) {
+				if (! (value instanceof FDEnum)) {
+					error("Invalid type, expected enumerator",
+							value.eContainer(), literal, index);
+				}
+			}
+		}
+	}
+	
+	private void checkValueArrayType (FDTypeRef typeRef, FDValueArray array) {
+		int i = 0;
+		for(FDValue value : array.getValues()) {
+			checkValueType(typeRef, value, FDeployPackage.Literals.FD_VALUE_ARRAY__VALUES, i);
+			i++;
+		}
+	}
+
+	
+	// *****************************************************************************
+	// ValidationMessageReporter interface
+
+	public void reportError(String message, EObject object, EStructuralFeature feature)
+	{
+		error(message, object, feature, ValidationMessageAcceptor.INSIGNIFICANT_INDEX);
+	}
+
+	public void reportWarning(String message, EObject object, EStructuralFeature feature)
+	{
+		warning(message, object, feature, ValidationMessageAcceptor.INSIGNIFICANT_INDEX);
+	}
+}

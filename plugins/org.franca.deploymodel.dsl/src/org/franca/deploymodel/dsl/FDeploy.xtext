@@ -1,0 +1,189 @@
+/*******************************************************************************
+* Copyright (c) 2012 Harman International (http://www.harman.com).
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+*
+* 2012-03-06: Klaus Birken (initial version)
+*******************************************************************************/
+grammar org.franca.deploymodel.dsl.FDeploy with org.eclipse.xtext.common.Terminals
+
+generate fDeploy "http://www.franca.org/deploymodel/dsl/FDeploy"
+
+// the Franca IDL ecore model
+import "http://core.franca.org" as fidl
+
+// the Ecore ecore model
+import "http://www.eclipse.org/emf/2002/Ecore" as ecore
+
+
+// **************************************************************
+// model root
+
+FDModel:
+	(imports+=Import)*
+	(specifications+=FDSpecification)*
+	(deployments+=FDRootElement)*
+	;
+
+Import :
+	'import' importURI=STRING;
+	
+
+// **************************************************************
+// property definition (meta part)
+
+FDSpecification:
+	'specification' name=FQN ('extends' base=[FDSpecification|FQN])? '{'
+		(declarations+=FDDeclaration)*
+	'}';
+
+FDDeclaration: 
+	'for' host=FDPropertyHost '{'
+		properties+=FDPropertyDecl*
+	'}';
+
+FDPropertyDecl:
+	name=ID ':' type=FDTypeRef
+		('(' flags+=FDPropertyFlag (',' flags+=FDPropertyFlag)* ')')?
+	';' ;
+
+FDPropertyFlag:
+	optional='optional' |
+	'default:' default=FDComplexValue;
+
+
+enum FDPropertyHost:
+	providers | instances |
+	interfaces |
+	attributes | methods | broadcasts |
+	arguments |
+	struct_fields | arrays |
+	strings | numbers | integers | floats;
+
+
+// **************************************************************
+// deployment model type system
+
+FDTypeRef:
+	(predefined=FDPredefinedTypeId | complex=FDType) (array='[]')?;
+
+enum FDPredefinedTypeId:
+	Integer | String | Boolean;
+
+FDType:
+	FDEnumType;
+
+FDEnumType:
+	'{' enumerators+=FDEnumerator (',' enumerators+=FDEnumerator)* '}';
+
+FDEnumerator:
+	name=ID;
+
+
+// **************************************************************
+// content definition (model part)
+
+FDRootElement:
+	FDProvider | FDInterface;
+
+FDElement:
+	FDRootElement | FDInterfaceInstance |
+	FDAttribute | FDMethod | FDBroadcast | FDArgument |
+	FDTypeDef | FDStructField;
+
+FDProvider:
+	'define' spec=[FDSpecification|FQN] 'for' 'provider' name=FQN '{'
+		properties+=FDProperty*
+		instances+=FDInterfaceInstance*
+	'}';
+
+FDInterfaceInstance:
+	'instance' target=[fidl::FInterface|FQN] '{'
+		properties+=FDProperty*
+	'}';
+
+FDInterface:
+	'define' spec=[FDSpecification|FQN] 'for' 'interface' target=[fidl::FInterface|FQN] '{'
+		properties+=FDProperty*
+		attributes+=FDAttribute*		
+		methods+=FDMethod*		
+		broadcasts+=FDBroadcast*
+		types+=FDTypeDef*
+	'}';
+
+FDAttribute:
+	'attribute' target=[fidl::FAttribute|FQN] '{'
+		properties+=FDProperty*
+	'}';
+
+FDMethod:
+	'method' target=[fidl::FMethod|FQN] '{'
+		properties+=FDProperty*
+		('in' '{' inArguments+=FDArgument* '}')?
+		('out' '{' outArguments+=FDArgument* '}')?
+	'}';
+
+FDBroadcast:
+	'broadcast' target=[fidl::FBroadcast|FQN] '{'
+		properties+=FDProperty*
+		('out' '{' outArguments+=FDArgument* '}')?
+	'}';
+
+
+FDArgument:
+	target=[fidl::FArgument|FQN] '{'
+		properties+=FDProperty*
+	'}';
+
+
+FDTypeDef: FDArray | FDStruct;
+
+FDArray:
+	'array' target=[fidl::FArrayType|FQN] '{'
+		properties+=FDProperty*
+	'}';
+
+FDStruct:
+	'struct' target=[fidl::FStructType|FQN] '{'
+		properties+=FDProperty*
+		fields+=FDStructField*
+	'}';
+
+FDStructField:
+	target=[fidl::FField|FQN] '{'
+		properties+=FDProperty*
+	'}';
+
+
+// **************************************************************
+// property definition 
+
+FDProperty:
+	decl=[FDPropertyDecl|ID] '=' value=FDComplexValue;
+
+FDComplexValue:
+	single=FDValue | array=FDValueArray;
+
+FDValueArray:
+	'{' values+=FDValue (',' values+=FDValue)* '}';
+	
+FDValue:
+	FDInteger | FDString | FDEnum | FDBoolean;
+	
+FDInteger:	value=INT;
+FDString:	value=STRING;
+FDEnum:     value=[FDEnumerator|ID];
+FDBoolean:  value=('false'|'true');
+
+
+// **************************************************************
+// general
+
+FQN:
+	ID ('.' ID)*;
+
+
+// **************************************************************
+	

@@ -8,8 +8,7 @@
 
 	<groupId>org.franca</groupId>
 	<artifactId>org.franca.parent</artifactId>
-	<name>Franca parent project</name>
-	<version>0.7.0-SNAPSHOT</version>
+	<version>0.7.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<properties>
@@ -22,8 +21,10 @@
 
     <modules>
             <module>../../plugins/org.franca.core</module>
-			<module>../../plugins/org.franca.core.dsl</module>
-			<module>../../plugins/org.franca.core.dsl.ui</module>
+            <module>../../plugins/org.franca.core.dsl</module>
+            <module>../../plugins/org.franca.core.dsl.ui</module>
+            <module>../../plugins/org.franca.deploymodel.dsl</module>
+            <module>../../plugins/org.franca.deploymodel.dsl.ui</module>
 			<module>../../plugins/org.franca.generators</module>
 			<!-- 
 			   <module>../../docs/org.franca.help</module>
@@ -33,6 +34,7 @@
     </modules>
 
 	<build>
+		<sourceDirectory>src</sourceDirectory>
 		<plugins>
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
@@ -206,7 +208,7 @@
 							</goals>
 							<configuration>
 								<sources>
-									<source>src-gen</source>
+									<source>${project.build.directory}/src-gen</source>
 								</sources>
 								<sources>
 									<source>${project.build.directory}/xtend-gen</source>
@@ -218,7 +220,7 @@
 				<plugin>
 					<groupId>org.eclipse.dash.maven</groupId>
 					<artifactId>eclipse-signing-maven-plugin</artifactId>
-					<version>1.0.2</version>
+					<version>1.0.5</version>
 				</plugin>
 				<plugin>
 					<groupId>org.fornax.toolsupport</groupId>
@@ -228,7 +230,7 @@
 				<plugin>
 					<groupId>org.eclipse.xtend2</groupId>
 					<artifactId>xtend-maven-plugin</artifactId>
-					<version>2.2.1</version>
+					<version>2.2.2</version>
 					<configuration>
 						<!-- need to prefix by basedir to generate to currently built module -->
 						<outputDirectory>${basedir}/xtend-gen</outputDirectory>

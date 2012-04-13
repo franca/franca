@@ -104,7 +104,7 @@ on this concept.
 
 section:FrancaConcepts_DeploymentModels[Franca Deployment Models]
 
-The contents of the Franca core model and the IDL are restricted to
+The contents of the Franca core model and the IDL are deliberately restricted to
 the actual interface specification. Additionally, there is a lot of information
 regarding to interfaces and APIs which are related to the implementation
 of the interfaces on a target platform and the actual deployment of these
@@ -126,7 +126,21 @@ be defined with the target platform in mind.
 
 As the information which must be stored in a deployment model is equally important
 as soon as a Franca IDL interface is incarnated on a real target, the Franca Framework
-will provide support for defining and creating deployment models. 
+provides support for defining and creating deployment models.
+A separate Franca Deployment Language is available, which contains of two parts:
+ul[
+	item[specification of deployment properties (done only once per deployment target platform]
+	item[definition of actual values for deployment properties (done for every Franca interface
+		which has to be deployed on the target platform)
+	]
+]
+
+As it is important that deployment properties can be accessed easily during code generation,
+validation, etc., Franca provides some infrastructure for retrieving the deployment data
+attached to various interface entities easily.
+
+See chapter ref:DeploymentModels[Franca Deployment Models] for more details 
+about deployment concepts, their relation to Franca IDL and some examples.
 
 
 section:FrancaConcepts_AddingFeatures[Guidelines for adding new features to Franca IDL]

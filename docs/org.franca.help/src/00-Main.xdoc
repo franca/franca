@@ -1,6 +1,6 @@
 document[Franca User Guide]
 
-authors[Release 0.1.4-SNAPSHOT]
+authors[Release 0.2.0-SNAPSHOT]
 
 codelanguage-def[Java]
 [
@@ -30,6 +30,17 @@ codelanguage-def[Franca]
 	call,signal,set,update,guard
 ]
 
+codelanguage-def[FDeploy]
+[
+	import,
+	specification,extends,for,optional,default,
+	define,provider,instance,interface, 
+	attribute,method,broadcast,in,out,
+	array,struct,
+	false,true
+]
+
+
 chapter-ref[Introduction]
 
 chapter-ref[GettingStarted]
@@ -41,6 +52,8 @@ chapter-ref[FrancaIDL]
 chapter-ref[FrancaTooling]
 
 chapter-ref[FrancaModelAPI]
+
+chapter-ref[DeploymentModels]
 
 chapter-ref[BuildingGenerators]
 

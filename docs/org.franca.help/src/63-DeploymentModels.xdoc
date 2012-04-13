@@ -1,0 +1,301 @@
+chapter:DeploymentModels[Franca Deployment Models]
+
+Franca deployment models offer the possibility to enhance Franca IDL interface
+specifications with additional information. This is a way to ensure that Franca IDL
+interfaces contain the core information needed to describe the semantics of APIs.
+All additional information is stored in some deployment model.
+
+Information stored in Franca deployment models is related to the implementation
+of the interfaces on a target platform and the actual deployment of these
+interfaces on the platform. Some examples for this kind of data:
+ul[
+	item[How are the data types encoded on the target platform (e.g., endianness, padding)?]
+	item[Are calls blocking or non-blocking?]
+	item[How can the instances of an interface be found and addressed (i.e., service discovery)?]
+	item[Which quality-of-service promises are valid?]
+]
+
+The section ref:FrancaConcepts_AddingFeatures[Guidelines for adding new features to Franca IDL]
+in the ref:FrancaConcepts[Concepts] chapter provides some guidelines
+for deciding whether new features belong to the Franca IDL itself or to
+the deployment model.
+
+The actual information in a deployment model depends heavily on the target IPC framework.
+Therefore, there is no generic deployment model (on a similar abstraction level as
+Franca IDL itself). Instead, the properties of the actual deployment model for the
+target platform can only be defined with the target platform in mind. This requires
+a flexible deployment modeling language which can be used to define the specification
+of the required deployment information as well as the actual property values for the
+concrete interfaces defined with Franca IDL.
+
+
+section:DeploymentModels_Concepts[Deployment model concepts]
+
+This section explains some basic concepts of Franca deployment models.
+
+section2:DeploymentModels_Concepts_Toplevel[Deployment specifications and definitions]
+
+As the information which must be stored in a deployment model is equally important
+as soon as a Franca IDL interface is incarnated on a real target, the Franca Framework
+provides support for defining and creating deployment models.
+
+A separate Franca Deployment Language is available, which contains of two parts:
+ul[
+	item[e[specification] of deployment properties (done only once per deployment target platform]
+	item[e[definition] of actual values for deployment properties (done for every Franca interface
+		which has to be deployed on the target platform)
+	]
+]
+
+
+section2:DeploymentModels_Concepts_Properties[Deployment properties]
+
+e[Properties] are the basic units of information in deployment models.
+Each specification defines which properties are available by defining their e[name],
+their e[type], their e[host] and some flags (e.g., a default value for the property, or
+if the property is mandatory or optional). Properties can be defined freely; there
+are no predefined properties. This ensures maximum flexibility when writing specifications.
+
+The property e[host] defines at what locations in a definition this property applies;
+this is a similar concept as e[pointcuts] in aspect-oriented programming. There is
+a variety of hosts, e.g., e[interface], e[method], e[number], e[argument] or e[string].
+
+todo[A table will be added here which lists all available hosts relevant for
+interfaces and the corresponding locations in the deployment definitions.]
+
+In a deployment e[definition] for a given specification, concrete e[values] 
+have to be assigned to each property. Depending on the e[host] definition and the
+optional/default flags on the specification side, properties will be mandatory at
+certain locations. This will be enforced by the deployment model editor and 
+the underlying validation checks.
+ 
+
+section2:DeploymentModels_Concepts_Providers[Providers and interface instances]
+
+Most properties will be attached to concrete locations of Franca interfaces,
+like methods, arguments or similar entities. However, the scope of the deployment concept
+usually contains components which provide interfaces (i.e., servers). Moreover,
+interface providers might offer several interfaces and even multiple instances of
+the same interface. Deployment models often have to support this, e.g., in order to
+define network addresses on the interface instance level. 
+
+These concepts are supported by Franca deployment models by the e[host] definitions
+e[providers] and e[instances].
+
+todo[A table will be added here which lists all available hosts relevant for
+providers and the corresponding locations in the deployment definitions.]
+
+
+section:DeploymentModels_Specifications[Defining deployment specifications]
+
+This section explains how deployment specifications for a concrete target platform
+are defined.
+
+section2:DeploymentModels_Specifications_SimpleExample[Introductory example]
+
+Let's start with a concrete deployment example. The following deployment model
+contains both the specifiation part and the definition part.
+In the e[specification], the two properties e[CallSemantics] and e[IsOptional]
+are introduced. Both are defined for the e[methods] host, which indicates that
+those properties will be relevant for all methods defined in a Franca IDL interface. 
+
+The property e[CallSemantics] has an enumeration type with the constant values
+e[synchronous] and e[asynchronous]. As there is no further flag here, the property
+is mandatory and has to be set for all methods under the given specification e[MySpec].
+The property e[IsOptional] of boolean type is also mandatory. Using this specification,
+it has to be specified for every method of a Franca IDL interface if the method is
+called synchronously or asynchronously (property e[CallSemantics]) 
+and if the method has to be implemented by the server or not (property e[IsOptional]). 
+
+code[FDeploy][
+import "PlayerAPI.fidl"
+
+specification MySpec
+{
+	for methods {
+		CallSemantics: {synchronous, asynchronous};
+		IsOptional:    Boolean;
+	}
+}
+
+define MySpec for interface PlayerAPI
+{
+	method setActivePlayer {
+		CallSemantics = synchronous
+		IsOptional = false
+	}
+}
+]
+
+The second part of the introductory example shows the application of the
+specification e[MySpec] for the Franca interface e[PlayerAPI]. In order to write
+this deployment definition, an e[import] statement has to be given at the
+beginning which includes the e[fidl]-file which contains the interface definition.
+
+The example interface e[PlayerAPI] contains exactly one method. In the deployment
+definition, we now have to enrich this method with the two mandatory properties defined
+in the specification. In the example, we define that method e[setActivePlayer] will
+be called synchronously and has to be provided by every server offering the
+interface e[PlayerAPI].
+
+
+section2:DeploymentModels_Specifications_Interfaces[Deployment specification for interfaces]
+
+This section provides a more elaborate example of deployment specifications.
+It shows the full range of types, single types vs. arrays. It also shows how to
+define default values for properties.  
+
+code[FDeploy][
+specification org.deployspecs.SampleDeploySpec
+{
+	for methods {
+		CallSemantics: {synchronous, asynchronous} (default: asynchronous);
+		Priority:      {low, medium, high}         (default: low);		
+		IsOptional:    Boolean;
+		Range:         Integer\[\]                   (default: {1, 2, 3});
+	}
+	
+	for attributes {
+		IsReadOnly:    Boolean                     (default: false);
+		Groups:        {g1, g2, g3, g4}\[\];
+	}
+	
+	for strings {
+		Encoding:      {utf8, unicode};
+	}
+}
+]
+
+
+section2:DeploymentModels_Specifications_Providers[Providers and interface instances]
+
+This is a specification for the deployment of IP-based IPC stacks.
+This is just an example, an actual deployment specification will
+have to take into account platform-specific details, like proper
+names for the properties and other stuff.
+
+code[FDeploy][
+specification org.deployspecs.IPBasedIPC
+{
+	for providers {
+		ProcessName:     String;
+	}
+
+	for instances {
+		IPAddress:       String;
+		Port:            Integer                     (optional);	
+		AccessControl:   { local, subnet, global }   (default: global);
+	}
+}
+] 
+
+
+
+section2:DeploymentModels_Specifications_SpecificationInheritance[Specification Inheritance]
+
+Specifications can inherit from base specifications. Example:
+
+code[FDeploy][
+specification org.deployspecs.DerivedSpec
+	extends org.deployspecs.IPBasedIPC
+{
+	// put specification details here
+}
+]
+
+This allows to build a hierarchy of specifications (i.e., a specification ontology).
+
+
+section:DeploymentModels_Definitions[Defining deployment definitions]
+
+This section describes how deployment definitions are created based on 
+deployment specifications.
+
+section2:DeploymentModels_Definitions_Interfaces[Interface deployment]
+
+This section provides a more elaborate example of deployment definitions for
+a Franca interface.
+
+code[FDeploy][
+import "deployspecs/SampleDeploySpec.fdepl"
+import "../franca/demo1.fidl"
+
+define SampleDeploySpec for interface org.franca.examples.demo.PlayerAPI
+{
+	attribute activePlayer {
+		IsReadOnly = true
+		Groups = { g1, g2 }
+	}
+	
+	method setActivePlayer {
+		Priority = medium
+		IsOptional = false
+	}
+
+	method getPlayerInfo {
+		CallSemantics = synchronous
+		Priority = low
+		IsOptional = true
+		
+		out {
+			name {
+				Encoding = utf8
+			}
+			description {
+				Encoding = unicode
+			}
+		}
+	}
+}
+]
+
+
+section2:DeploymentModels_Definitions_Providers[Deployment of interface providers]
+
+This section provides a detailed example of deployment definitions for
+interface providers and interface instances.
+
+code[FDeploy][
+import "deployspecs/SampleDeploySpec.fdepl"
+import "../franca/demo1.fidl"
+
+define SampleDeploySpec for provider ExampleServer
+{
+	ProcessName = "server1.exe"
+	
+	instance org.franca.examples.demo.PlayerAPI {
+		IPAddress = "192.168.1.50"
+		Port = 8765
+		AccessControl = subnet
+	}	
+
+	instance org.franca.examples.demo.PlayerAPI {
+		IPAddress = "192.168.1.50"
+		Port = 7654
+	}
+}
+]
+
+
+section:DeploymentModels_GeneratorSupport[Generator support for deployment]
+
+It is important that deployment properties can be accessed easily during code generation,
+testcase generation and other post-procesing steps. Franca provides some infrastructure
+for retrieving the deployment data attached to various interface entities easily.
+
+The example project e[org.franca.examples.basic] contains two example generators
+in the package e[org.franca.examples.basic.generators]:
+ul[ 
+	item[e[ExampleHppGeneratorWithDeployment]: This example code generator shows
+		how deployment information can be accessed during traversal of an actual
+		Franca IDL interface.
+	]
+	item[e[ExampleRuntimeConfigGenerator]: This example generator shows
+		how deployment information can be accessed, which is not directly linked
+		to an actual Franca IDL interface (e.g., interface providers and instances).
+	]
+]
+
+todo[The code generator support for Franca deployment models will be explained in
+some more detail here.]
+
