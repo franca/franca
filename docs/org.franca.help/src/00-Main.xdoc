@@ -24,8 +24,10 @@ codelanguage-def[Franca]
 	in,out,error,
 	array,of,struct,union,typedef,is,map,to,enumeration,
 	extends,
+	
 	Int8,UInt8,Int16,UInt16,Int32,UInt32,Int64,UInt64,
 	Boolean,String,Float,Double,ByteBuffer,
+	
 	contract,PSM,state,transition,initial,
 	call,signal,set,update,guard
 ]
@@ -34,9 +36,14 @@ codelanguage-def[FDeploy]
 [
 	import,
 	specification,extends,for,optional,default,
+	
+	providers,instances,interfaces,attributes,methods,broadcasts,arguments,
+	struct_fields,arrays,strings,numbers,integers,floats,
+	
 	define,provider,instance,interface, 
 	attribute,method,broadcast,in,out,
 	array,struct,
+	
 	false,true
 ]
 

@@ -5,7 +5,30 @@ specifications with additional information. This is a way to ensure that Franca 
 interfaces contain the core information needed to describe the semantics of APIs.
 All additional information is stored in some deployment model.
 
-Information stored in Franca deployment models is related to the implementation
+The following diagram shows how Franca supports the various artifacts which have
+to be described when defining software architectures. The base elements are 
+e[interface definitions]. Those are completely supported by the Franca IDL. 
+All other architecture artifacts are based on these interface definitions,
+among them:
+ul[
+	item[interface instances or ports,]
+	item[components like servers providing interface instances, as well as clients
+		requiring interface	instances,]
+	item[architectural layers where these components live,]
+	item[and the actual transport layer properties with aspects like 
+		serialization, encoding or quality of service.]
+]
+
+img[images/franca_idl_and_deploy_overview.png][Architecture and interface artifacts
+and how Franca supports their definition.][ ][ ]
+
+This information is typically supported by Franca's configurable deployment models.
+However, Franca deployment models will not completely replace architecture definition
+languages (ADLs) or UML models. Instead, deployment models provide a means to store
+all information which is directly related to Franca interfaces. The deployment information
+usually e[refines] the interfaces defined in Franca IDL.
+
+Contents of Franca deployment models are related to the implementation
 of the interfaces on a target platform and the actual deployment of these
 interfaces on the platform. Some examples for this kind of data:
 ul[
@@ -35,11 +58,16 @@ This section explains some basic concepts of Franca deployment models.
 
 section2:DeploymentModels_Concepts_Toplevel[Deployment specifications and definitions]
 
-As the information which must be stored in a deployment model is equally important
-as soon as a Franca IDL interface is incarnated on a real target, the Franca Framework
-provides support for defining and creating deployment models.
+An interface defined with Franca IDL is independent of any target platform. 
+Some code generator will be used to map this interface onto a real target platform,
+e.g., generating C++ classes and their implementations in order to implement
+the interface on a system were components are connected with D-Bus or another 
+IPC mechanism.
 
-A separate Franca Deployment Language is available, which contains of two parts:
+In many cases, this generator will need additional information, which does
+not belong into the IDL definition. This information will be stored in an instance
+of Franca's deployment models. In order to do this, a separate Franca Deployment Language
+is available, which consists of two parts:
 ul[
 	item[e[specification] of deployment properties (done only once per deployment target platform]
 	item[e[definition] of actual values for deployment properties (done for every Franca interface
@@ -47,6 +75,22 @@ ul[
 	]
 ]
 
+The following diagram shows how e[deployment specifications], e[deployment definitions] and
+the actual Franca IDL interfaces are related. A specification is created for a given target
+platform (or code generator for this platform). Based on this specification, one deployment
+e[definition] has to be provided for each actual Franca IDL interface. The specification
+describes which additional information has to be provided for an interface on this target
+platform - the definition lists this information for one concrete interface.
+  
+img[images/franca_deployment_interfaces.png][Franca deployment: specifications,
+definitions and actual interfaces.][ ][ ]
+
+It is important to remember here that each Franca IDL interface can be deployed on 
+many different target platforms. Thus, there might be many deployment definitions
+(based on different deployment specifications) for the same interface. This is essentially
+the advantage of the IDL/deployment separation: The core part of each interface definition
+(the Franca IDL part) can be re-used in multiple environments.
+  
 
 section2:DeploymentModels_Concepts_Properties[Deployment properties]
 
@@ -56,12 +100,115 @@ their e[type], their e[host] and some flags (e.g., a default value for the prope
 if the property is mandatory or optional). Properties can be defined freely; there
 are no predefined properties. This ensures maximum flexibility when writing specifications.
 
-The property e[host] defines at what locations in a definition this property applies;
-this is a similar concept as e[pointcuts] in aspect-oriented programming. There is
-a variety of hosts, e.g., e[interface], e[method], e[number], e[argument] or e[string].
+The following example shows one property as part of a deployment specification.
+The property is named e[PerformanceImpact]; it is located at the host e[methods].
+The property is of e[enumeration] type, with to enum values e[none], e[medium] and
+e[substantial]. It has the flag e[optional].
 
-todo[A table will be added here which lists all available hosts relevant for
-interfaces and the corresponding locations in the deployment definitions.]
+code[FDeploy][
+specification MySpec
+{
+	for methods {
+		PerformanceImpact: {none, medium, substantial}   (optional);
+	}
+}
+]
+
+The e[host] attribute of a property defines at what locations in a definition
+this property applies; this is a similar concept as e[pointcuts] in aspect-oriented
+programming (but there are also some differences to that concept).
+
+There is a variety of hosts; the following table lists those related to
+Franca interfaces. Note that the properties for some hosts will
+be applied to several locations of a Franca IDL interface.
+
+table[
+	tr[
+		td[e[Name of host]]
+		td[e[Description]]
+		td[e[Impacted Franca IDL elements]]
+		td[e[Example]]
+	]
+	tr[
+		td[code[FDeploy][interfaces]]
+		td[Properties related to whole Franca IDL interfaces (but not its instances)]
+		td[code[Franca][interface]]
+		td[locally or globally accessible?]
+	]
+	tr[
+		td[code[FDeploy][attributes]]
+		td[Properties related to attributes of a Franca IDL interface]
+		td[code[Franca][attribute]]
+		td[flag: read-only or read/write?]
+	]
+	tr[
+		td[code[FDeploy][methods]]
+		td[Properties related to methods of a Franca IDL interface]
+		td[code[Franca][method]]
+		td[calling style (blocking/non-blocking)]
+	]
+	tr[
+		td[code[FDeploy][broadcasts]]
+		td[Properties related to broadcasts of a Franca IDL interface]
+		td[code[Franca][broadcast]]
+		td[priority]
+	]
+	tr[
+		td[code[FDeploy][arguments]]
+		td[Properties related to the arguments of methods and broadcasts]
+		td[input and output arguments of code[Franca][method], output arguments of code[Franca][broadcast]]
+		td[flag: is optional?]
+	]
+	tr[
+		td[code[FDeploy][struct_fields]]
+		td[Properties related to fields of struct definitions]
+		td[fields of code[Franca][struct]]
+		td[alignment / padding]
+	]
+	tr[
+		td[code[FDeploy][arrays]]
+		td[Properties related to array definitions]
+		td[code[Franca][array]]
+		td[alignment, maximum length]
+	]
+	tr[
+		td[code[FDeploy][strings]]
+		td[Properties related to string variables]
+		td[all entities with predefined type code[Franca][String]:
+			code[Franca][attribute] members,
+			arguments of code[Franca][method] and code[Franca][broadcast],
+			code[Franca][struct] fields
+		]
+		td[encoding (ASCII, Unicode, ...)]
+	]
+	tr[
+		td[code[FDeploy][integers]]
+		td[Properties related to all integer numbers]
+		td[all entities with predefined type code[Franca][Int8], code[Franca][UInt8], ...:
+			code[Franca][attribute] members,
+			arguments of code[Franca][method] and code[Franca][broadcast],
+			code[Franca][struct] fields
+		]
+		td[allowed range, little vs. big endian]
+	]
+	tr[
+		td[code[FDeploy][floats]]
+		td[Properties related to all float numbers]
+		td[all entities with predefined type code[Franca][Float] or code[Franca][Double]:
+			code[Franca][attribute] members,
+			arguments of code[Franca][method] and code[Franca][broadcast],
+			code[Franca][struct] fields
+		]
+		td[encoding (ISO...)]
+	]
+	tr[
+		td[code[FDeploy][numbers]]
+		td[Properties related to integer or float numbers]
+		td[all entities of code[FDeploy][integers] and code[FDeploy][floats] combined]
+		td[alignment]
+	]
+]
+
 
 In a deployment e[definition] for a given specification, concrete e[values] 
 have to be assigned to each property. Depending on the e[host] definition and the
@@ -82,14 +229,33 @@ define network addresses on the interface instance level.
 These concepts are supported by Franca deployment models by the e[host] definitions
 e[providers] and e[instances].
 
-todo[A table will be added here which lists all available hosts relevant for
-providers and the corresponding locations in the deployment definitions.]
+table[
+	tr[
+		td[e[Name of host]]
+		td[e[Description]]
+		td[e[Impacted Franca IDL elements]]
+		td[e[Example]]
+	]
+	tr[
+		td[code[FDeploy][providers]]
+		td[Properties of interface providers]
+		td[n/a]
+		td[process name, deployment node]
+	]
+	tr[
+		td[code[FDeploy][instances]]
+		td[Properties related to instances of a Franca IDL interface (e.g., port)]
+		td[n/a]
+		td[network address of the interface instance]
+	]
+]
 
 
 section:DeploymentModels_Specifications[Defining deployment specifications]
 
 This section explains how deployment specifications for a concrete target platform
 are defined.
+
 
 section2:DeploymentModels_Specifications_SimpleExample[Introductory example]
 
@@ -138,12 +304,30 @@ in the specification. In the example, we define that method e[setActivePlayer] w
 be called synchronously and has to be provided by every server offering the
 interface e[PlayerAPI].
 
+Note: For typical applications of the deployment modeling concept, specifications
+and definitions will be stored as separate file. This is because usually the specification
+will be owned by a platform architect or a framework team, whereas the actual definitions
+will be created by the responsible architects and developers, who also define the
+actual interfaces with Franca IDL. 
+
 
 section2:DeploymentModels_Specifications_Interfaces[Deployment specification for interfaces]
 
 This section provides a more elaborate example of deployment specifications.
 It shows the full range of types, single types vs. arrays. It also shows how to
-define default values for properties.  
+define default values for properties. Note that the actual names of properties 
+(and all their attributes) can be freely chosen by the specification designer. 
+There are no predefined properties. However, the designer has to ensure that 
+property names will be unique (the deployment editor will take care of this
+by validating the property names online).
+
+The specification name is fully qualified in order to allow a hierarchical 
+organization of specifications. Each property can be either defined as single
+value or as array. For example, property code[FDeploy][Range] has been defined
+as array of integers, and the default value is an array which contains the 
+values 1, 2 and 3. Property code[FDeploy][Groups] is an array of enumeration
+values g1, g2, g3 and g4. Thus, values for this property might be an abitrary subset
+of this enumeration.
 
 code[FDeploy][
 specification org.deployspecs.SampleDeploySpec
@@ -166,13 +350,17 @@ specification org.deployspecs.SampleDeploySpec
 }
 ]
 
+The example shows some properties for which reasonable default values have been defined.
+All properties which are neither optional nor have defaults are e[mandatory]. Those
+properties must be defined at all impacted locations of the deployment definition
+(the locations are determined by the e[host] of the property).
+
 
 section2:DeploymentModels_Specifications_Providers[Providers and interface instances]
 
-This is a specification for the deployment of IP-based IPC stacks.
-This is just an example, an actual deployment specification will
-have to take into account platform-specific details, like proper
-names for the properties and other stuff.
+This is a specification for the deployment of IP-based IPC stacks. This is just an
+example, an actual deployment specification for IP-based stacks will have to take
+into account more platform-specific details.
 
 code[FDeploy][
 specification org.deployspecs.IPBasedIPC
@@ -189,6 +377,11 @@ specification org.deployspecs.IPBasedIPC
 }
 ] 
 
+The interesting part of this example is the usage of the property e[hosts]
+code[FDeploy][providers] and code[FDeploy][instances]. Those properties will
+not be related to actual entities of a Franca IDL interface, but to some additional 
+architecture-related parts instead. This is depicted by the outer ring in 
+the overview diagram at the beginning of this chapter. 
 
 
 section2:DeploymentModels_Specifications_SpecificationInheritance[Specification Inheritance]
@@ -206,6 +399,7 @@ specification org.deployspecs.DerivedSpec
 This allows to build a hierarchy of specifications (i.e., a specification ontology).
 
 
+
 section:DeploymentModels_Definitions[Defining deployment definitions]
 
 This section describes how deployment definitions are created based on 
@@ -214,7 +408,16 @@ deployment specifications.
 section2:DeploymentModels_Definitions_Interfaces[Interface deployment]
 
 This section provides a more elaborate example of deployment definitions for
-a Franca interface.
+a Franca interface. The specification for this deployment is located in the
+separate file e[SampleDeploySpec.fdepl], which is imported in the first line
+of the example. The second line is another import statement; it imports the
+actual France IDL interface which should be refined by the deployment data 
+in the remaining parts of this file.
+
+The deployment definition for the interface e[PlayerAPI] explicitly references
+the specification e[SampleDeploySpec]. You should compare this example with 
+the specification from section
+ref:DeploymentModels_Specifications_Interfaces[Deployment specification for interfaces].
 
 code[FDeploy][
 import "deployspecs/SampleDeploySpec.fdepl"
@@ -249,11 +452,27 @@ define SampleDeploySpec for interface org.franca.examples.demo.PlayerAPI
 }
 ]
 
+Note that the structure of the deployment definition resembles the structure of
+the interface definition in Franca IDL itself.
+ 
 
 section2:DeploymentModels_Definitions_Providers[Deployment of interface providers]
 
-This section provides a detailed example of deployment definitions for
-interface providers and interface instances.
+This section provides a detailed example of deployment definitions for interface
+providers and interface instances. The specification for this deployment is again
+located in the separate file e[SampleDeploySpec.fdepl], which is imported in
+the first line of the example (same as in previous example). The second line is
+another import statement; it imports the actual France IDL interface which
+will be referred to by the deployment data in the remaining part of this file.
+
+The deployment definition for the provider e[ExampleServer] explicitly references
+the specification e[SampleDeploySpec]. If you compare this with 
+the specification from section
+ref:DeploymentModels_Specifications_Interfaces[Deployment specification for interfaces],
+you will not find any property declarations for hosts e[providers] or e[instances]. 
+These declarations are inherited from the base specification e[IPBasedIPC]. 
+See section ref:DeploymentModels_Specifications_SpecificationInheritance[Specification Inheritance]
+for the inheritance feature of Franca deployment models.
 
 code[FDeploy][
 import "deployspecs/SampleDeploySpec.fdepl"
@@ -275,6 +494,14 @@ define SampleDeploySpec for provider ExampleServer
 	}
 }
 ]
+
+In the example definition above, the component e[ExampleServer] is defined which provides
+two instances of the same Franca interface e[PlayerAPI]. The instances can be addressed
+with the same IP address, but different port numbers. The first instance of this interface
+can be accessed by clients in the same subnet only. The second instance can be accessed
+globally, because this value has been defined as default in the e[IPBasedIPC]-specification
+and hasn't been overridden in the example above. This is just an example which shows the
+difference between actual interface definitions and their instances.  
 
 
 section:DeploymentModels_GeneratorSupport[Generator support for deployment]
