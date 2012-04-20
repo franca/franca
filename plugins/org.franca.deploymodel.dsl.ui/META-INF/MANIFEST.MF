@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: org.franca.deploymodel.dsl.ui
+Bundle-Name: Franca Deployment Model UI plugin
 Bundle-Vendor: Harman Infotainment Division
 Bundle-Version: 0.7.1.qualifier
 Bundle-SymbolicName: org.franca.deploymodel.dsl.ui; singleton:=true
