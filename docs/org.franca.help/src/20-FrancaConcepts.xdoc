@@ -80,7 +80,8 @@ separate Eclipse plugin, e.g. e[org.franca.connectors.dbus] for handling
 DBus Introspection XML files. 
 
 See chapter ref:BuildingTransformations[Bulding Transformations] for more details 
-on this concept. 
+on this concept. In chapter ref:FrancaConnectors[Franca Connectors] the currently
+supported connectors are listed and explained in some more detail.
 
 
 

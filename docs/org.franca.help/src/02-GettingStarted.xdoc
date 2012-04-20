@@ -27,6 +27,7 @@ ol[
 	item[
 		After installing the Eclipse distribution and starting it (e[eclipse.exe]),
 		the "Select a workspace" dialog will be shown. Select an existing workspace or create a new one.
+		Franca is using Java 6. Please ensure that Eclipse is running with a JDK1.6.x installation.
 	]    
 
 	item[
@@ -35,7 +36,19 @@ ol[
 		site there: e[http://download.itemis.com/updates/milestones].
 		This will allow to satisfy additional dependencies needed for Franca installation.
 	]
-	
+
+	item[
+		Install e[Eclipse Xtend] via e[Help > Eclipse Marketplace...].
+		The downloads involved with this might get stuck due to server/network traffic.
+		If this is the case, try to increase the download timeouts by adding the following
+		lines to the e[eclipse.ini] file of your Eclipse installation (put them right
+		after the -vmargs line) and restarting Eclipse afterwards:
+code[Config][
+-Dorg.eclipse.ecf.provider.filetransfer.retrieve.closeTimeout=9000
+-Dorg.eclipse.ecf.provider.filetransfer.retrieve.readTimeout=9000
+]
+	]
+		
 	item[
 		The off-the-shelf Franca distribution is provided as a standard Eclipse update site.
 		You may download the latest update site as a zip archive from the
@@ -46,7 +59,14 @@ ol[
 		Now select e[Help > Install New Software ...] from the menu,
 		click the e[Add...] button and select e[Archive...]. Browse your file system
 		in order to find the zip archive file containing the Franca update site.
-		Complete the installation process. 
+		Complete the installation process by installing the feature e[Franca Feature].
+		Optionally install the e[Franca D-Bus support Feature], which will provide
+		the D-Bus connector for Franca.
+		See chapter ref:FrancaConnectors[Franca Connectors] for more details on the
+		currently supported connectors and how to install them.
+	]
+	
+	item[  
 		Now you may use the Franca IDL editor and all additional tooling.
 	]
 ]

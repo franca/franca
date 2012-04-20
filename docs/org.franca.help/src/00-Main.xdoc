@@ -1,6 +1,12 @@
 document[Franca User Guide]
 
-authors[Release 0.2.0-SNAPSHOT]
+authors[Release 0.2.1-SNAPSHOT]
+
+
+codelanguage-def[Config]
+[
+	dummy
+]
 
 codelanguage-def[Java]
 [
@@ -65,4 +71,6 @@ chapter-ref[DeploymentModels]
 chapter-ref[BuildingGenerators]
 
 chapter-ref[BuildingTransformations]
+
+chapter-ref[FrancaConnectors]
 

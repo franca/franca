@@ -1,0 +1,36 @@
+chapter:FrancaConnectors[Franca connectors]
+
+The integration of Franca with other IDLs or (more generally:) models is
+supported by e[Franca connectors]. A e[connector] is yet another Eclipse plugin,
+which offers means to load and save models of the other IDL and transformations
+to and from Franca IDL models.
+
+This chapter lists the connectors that are currently supported by Franca out of the box.
+The connectors can be selected during installation by choosing an additional feature
+provided by the Franca update site.
+
+Note that most connectors will require additional plugins which provide the model or API
+(or both) for the 3rd party IDL. Thus, for installing some of those connector features,
+it may be necessary to install the required plugins first.
+
+
+section:FrancaConnectors_DBus[Franca support for D-Bus Introspection]
+
+e[D-Bus Introspection] is an XML format which defines D-Bus interfaces.
+More details on the D-Bus IPC and D-Bus Introspection can be found
+link[http://www.freedesktop.org/wiki/Software/dbus][at freedesktop.org].
+
+The Franca connector plugin for D-Bus is called e[org.franca.connectors.dbus].
+It requires the plugin e[model.emf.dbusxml], which is available as open-source
+project e[dbus-emf-model]
+link[http://code.google.com/a/eclipselabs.org/p/dbus-emf-model/][on Eclipse Labs].
+An update site is available for e[dbus-emf-model]:
+
+link[http://dbus-emf-model.eclipselabs.org.codespot.com/git/update_site/releases/][
+	 http://dbus-emf-model.eclipselabs.org.codespot.com/git/update_site/releases/]
+
+If you install the e[Franca D-Bus support Feature] via e[Help > Install New Software...],
+the e[model.emf.dbusxml] plugin will be installed automatically from this update site.
+ 
+
+
