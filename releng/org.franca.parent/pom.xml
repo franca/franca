@@ -8,7 +8,7 @@
 
 	<groupId>org.franca</groupId>
 	<artifactId>org.franca.parent</artifactId>
-	<version>0.7.1-SNAPSHOT</version>
+	<version>0.7.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<properties>
@@ -296,6 +296,11 @@
 			<id>itemis</id>
 			<layout>p2</layout>
 			<url>http://download.itemis.de/updates/</url>
+		</repository>
+		<repository>
+			<id>dbus-emf-model-repo</id>
+			<layout>p2</layout>
+			<url>http://dbus-emf-model.eclipselabs.org.codespot.com/git/update_site/releases/</url>
 		</repository>
 	</repositories>			
 

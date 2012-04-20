@@ -2,14 +2,14 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Franca basic examples
 Bundle-SymbolicName: org.franca.examples.basic
-Bundle-Version: 0.7.1
+Bundle-Version: 0.7.2
 Bundle-Vendor: Harman Infotainment Division
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.junit
 Require-Bundle: org.junit4;bundle-version="4.8.1",
- org.franca.core;bundle-version="0.7.0",
- org.franca.core.dsl;bundle-version="0.7.0",
- org.franca.generators;bundle-version="0.7.0",
+ org.franca.core;bundle-version="0.7.1",
+ org.franca.core.dsl;bundle-version="0.7.1",
+ org.franca.generators;bundle-version="0.7.1",
  org.eclipse.xtext.xbase.lib;bundle-version="2.2.1",
- org.eclipse.xtend2.lib;bundle-version="2.2.1",
+ org.eclipse.xtext.xtend2.lib;bundle-version="2.2.0",
  org.franca.deploymodel.dsl;bundle-version="0.7.1"
