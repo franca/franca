@@ -24,7 +24,6 @@ import org.franca.core.franca.FTypeRef
 import org.franca.core.franca.FTypedElement
 import org.franca.core.franca.FUnionType
 import org.franca.core.franca.FModelElement
-import org.franca.core.franca.FField
 
 import java.util.List
 
