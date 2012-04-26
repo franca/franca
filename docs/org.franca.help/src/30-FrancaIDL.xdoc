@@ -88,7 +88,10 @@ deployment model.
 
 section2:FIDL_Types_Array[Arrays]
 
-One-dimensional arrays can be defined by 
+There are two ways of defining array types: explicitly named arrays or implicit
+array types without a name.
+
+Explicitly named, one-dimensional arrays can be defined by 
 code[Franca][
 array ExampleArray of UInt8
 ] 
@@ -99,6 +102,17 @@ code[Franca][
 array ExampleArrayRow of UInt8
 array ExampleArray of ExampleArrayRow
 ] 
+
+Implicit ("inline") array types are defined by attaching square brackets (e.g., code[Franca][UInt8\[\]])
+to any other type definition. This can be done for attributes, struct members, and
+arguments of methods and broadcasts. See more examples below. Note: Inline arrays can only be defined
+one-dimensional. If multi-dimensional arrays are needed, only one dimension can be defined as unnamed
+array. 
+
+The syntax for defining implicit array types doesn't support specifying fixed array sizes or
+array size limits. If you want to define such properties for arrays, you might use Franca's
+ref:FrancaConcepts_DeploymentModels[deployment model] feature.
+ 
 
 
 section2:FIDL_Types_Enum[Enumerations]
@@ -157,17 +171,19 @@ The elements of structs are usually called e[fields] or e[members] (source: Wiki
 
 section3:FIDL_Types_Struct_Basic[Basic structs]
 
-User-defined structures can be defined by specifying the structure's members, with a type and name for
-each member: 
+User-defined structures can be defined by specifying the structure's members, with a type
+and name for each member: 
 code[Franca][
 struct ExampleStruct {
 	UInt8 member1
 	String member2
 	ExampleArray member3
+	UInt16\[\] member4
 }
 ]
 Element types might be predefined types or user-defined types. This allows e.g. nested structures or
-arrays of structures.
+arrays of structures. Element types may also be arrays, e.g., e[member4] is an unnamed array of type
+code[Franca][UInt16]. 
 
 section3:FIDL_Types_Struct_Inheritance[Struct inheritance]
 
@@ -406,11 +422,13 @@ with its type and name:
 code[Franca][
 interface ExampleInterface {
 	attribute UInt32 someAttribute
-	attribute ExampleArray otherAttribute 
+	attribute ExampleArray otherAttribute
+	attribute String\[\] arrayAttribute
 }
 ]
 
-Attributes might have primitive types or user-defined types. 
+Attributes might have primitive types or user-defined types. They also can be defined
+as inline, unnamed arrays (e.g., the attribute e[arrayAttribute] in the example above). 
 
 The interface provider holds the data for its attributes and is able to change their values.
 The clients of an interface might actively read its attributes' values.
@@ -445,11 +463,26 @@ interface Calculator {
 }
 ]
 
-Arguments might have primitive types or user-defined types.
+Arguments might have primitive types or user-defined types. Arguments may be also 
+specified as unnamed, inline arrays as in the following example:
+
+code[Franca][
+interface LetterCount {
+	method count {
+		in {
+			String\[\] words
+		}
+		out {
+			UInt16\[\] counts
+		}	
+	}
+}
+]
+
 The runtime behaviour of a method call (e.g., blocking vs. non-blocking) is subject to
 implementation by the underlying target IPC stack. Thus, it will not be specified as part
 of the interface definition in the IDL. This information will be stored in an additional
-deployment model, instead. 
+ref:FrancaConcepts_DeploymentModels[deployment model], instead. 
 
 section3:FIDL_Interface_Method_Errors[Declaration of method errors]
 
