@@ -4,7 +4,6 @@ import model.emf.dbusxml.DbusxmlFactory
 import model.emf.dbusxml.DirectionType
 
 import org.franca.core.franca.FAnnotation
-import org.franca.core.franca.FAnnotationBlock
 import org.franca.core.franca.FAnnotationType
 import org.franca.core.franca.FArgument
 import org.franca.core.franca.FArrayType
@@ -57,7 +56,7 @@ class Franca2DBusTransformation {
 			
 	def create DbusxmlFactory::eINSTANCE.createPropertyType transformAttribute (FAttribute src) {
 		name = src.name
-		type = transformType2TypeString(src.type)
+		type = transformType2TypeString(src.type, src.array!=null)
 	}
 
 	def create DbusxmlFactory::eINSTANCE.createMethodType transformMethod (FMethod src) {
@@ -77,7 +76,7 @@ class Franca2DBusTransformation {
 	def create DbusxmlFactory::eINSTANCE.createArgType transformArgument (FArgument src, DirectionType dir) {
 		direction = dir
 		name = src.name
-		type = transformType2TypeString(src.type)
+		type = transformType2TypeString(src.type, src.array!=null)
 		doc = src.createDoc
 	}
 
@@ -157,7 +156,7 @@ class Franca2DBusTransformation {
 	}			
 
 
-	def  annotationComments(FModelElement src, FAnnotationType annotationType) {								
+	def annotationComments(FModelElement src, FAnnotationType annotationType) {								
 		if(src.comment != null) {
 			src.comment.elements.filter([FAnnotation a | a.type == annotationType])
 		}
@@ -199,7 +198,16 @@ class Franca2DBusTransformation {
 	}
 
 	
-	def String transformType2TypeString (FTypeRef src) {
+	def String transformType2TypeString (FTypeRef src, boolean isArray) {
+		val simple = src.transformSingleType2TypeString
+		if (isArray) {
+			'a' + simple
+		} else {
+			simple
+		}
+	}
+
+	def String transformSingleType2TypeString (FTypeRef src) {
 		if (src.derived==null) {
 			src.transformBasicType
 		} else {
@@ -210,7 +218,7 @@ class Franca2DBusTransformation {
 				FUnionType:		  type.transformVariantType
 				FEnumerationType: type.transformEnumType
 				FMapType:         type.transformMapType
-				FTypeDef:         type.actualType.transformType2TypeString
+				FTypeDef:         type.actualType.transformSingleType2TypeString
 			}
 		}
 	}
@@ -234,13 +242,13 @@ class Franca2DBusTransformation {
 	}
 
 	def String transformArrayType (FArrayType src) {
-		'a' + src.elementType.transformType2TypeString
+		'a' + src.elementType.transformSingleType2TypeString
 	}
 
 	def String transformStructType (FStructType src) {
 		var ts = "("
 		for(e : src.elements) {
-			ts = ts + e.type.transformType2TypeString
+			ts = ts + e.type.transformType2TypeString(e.array!=null)
 		}
 		ts = ts + ")"
 		// TODO: handle src.base
@@ -262,7 +270,8 @@ class Franca2DBusTransformation {
 			// not_supported: DBus supports only basic types as dict-key
 			'?' 
 		}
-		'a{' + src.keyType.transformType2TypeString + src.valueType.transformType2TypeString + '}' 
+		'a{' + src.keyType.transformSingleType2TypeString +
+				src.valueType.transformSingleType2TypeString + '}' 
 	}
 }
 

@@ -63,7 +63,7 @@ FVersion returns FVersion:
 
 FAttribute:
 	(comment=FAnnotationBlock)?
-	'attribute'	type=FTypeRef name=EString
+	'attribute'	type=FTypeRef (array='[]')? name=EString
 	;
 
 
@@ -94,7 +94,7 @@ FBroadcast returns FBroadcast:
 
 FArgument:
 	(comment=FAnnotationBlock)?
-	type=FTypeRef name=EString;
+	type=FTypeRef (array='[]')? name=EString;
 
 
 // **************************************************************
@@ -186,7 +186,7 @@ FMapType returns FMapType:
 
 FField:
 	(comment=FAnnotationBlock)?
-	type=FTypeRef name=EString;
+	type=FTypeRef (array='[]')? name=EString;
 
 
 FTypedElement:
