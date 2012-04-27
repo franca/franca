@@ -89,7 +89,7 @@ section:FrancaConcepts_IDL_Generators[Franca Generator Framework]
 
 The Franca core model is also used as a starting point for generating code and
 other artifacts. As EMF provides a generated ref:FrancaModelAPI[Java API]
-out of of Franca's core model, a plethora of tools can be used for building
+out of Franca's core model, a plethora of tools can be used for building
 generators. We recommend to use the link[http://www.xtend-lang.org][Xtend2]
 language for this, as it is a simple and productive way of implementing
 generators based on a Java API.
@@ -99,7 +99,7 @@ ref:FrancaTooling_Generators[HTML Generator], which generates nice HTML pages
 out of Franca IDL interfaces. This generator can serve as an example of how
 to build generators for Franca models with Xtend2. 
 
-See chapter ref:BuildingGenerators[Bulding Generators] for more details 
+See chapter ref:BuildingGenerators[Building Generators] for more details 
 on this concept. 
 
 
