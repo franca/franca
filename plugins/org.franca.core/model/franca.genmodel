@@ -137,11 +137,12 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FTriggeredTransition/triggers"/>
     </genClasses>
     <genClasses ecoreClass="franca.ecore#//FTrigger">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FTrigger/events"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FTrigger/event"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FTrigger/guard"/>
     </genClasses>
     <genClasses ecoreClass="franca.ecore#//FEventOnIf">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FEventOnIf/call"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FEventOnIf/respond"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FEventOnIf/signal"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FEventOnIf/set"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FEventOnIf/update"/>

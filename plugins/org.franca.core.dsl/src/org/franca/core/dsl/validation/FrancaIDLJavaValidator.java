@@ -15,6 +15,7 @@ import org.franca.core.framework.FrancaHelpers;
 import org.franca.core.franca.FArrayType;
 import org.franca.core.franca.FBroadcast;
 import org.franca.core.franca.FCompoundType;
+import org.franca.core.franca.FContract;
 import org.franca.core.franca.FEnumerationType;
 import org.franca.core.franca.FInterface;
 import org.franca.core.franca.FMapType;
@@ -108,6 +109,14 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 			error("Interface cannot overwrite base contract", api.getContract(),
 					FrancaPackage.Literals.FINTERFACE__CONTRACT, -1);
 		}
+	}
+	
+	
+	// *****************************************************************************
+	
+	@Check
+	public void checkContract(FContract contract) {
+		ContractValidator.checkContract(this, contract);
 	}
 	
 	

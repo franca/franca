@@ -245,13 +245,14 @@ FStateTerminal:
 
 FTrigger:
 		'<'
-			events+=FEventOnIf ('|' events+=FEventOnIf)*
+			event=FEventOnIf
 			(guard=FGuard)?
 		'>'
 ;
 
 FEventOnIf:
 	('call' call=[FMethod|EString]) |
+	('respond' respond=[FMethod|EString]) |
 	('signal' signal=[FBroadcast|EString]) |
 	('set' set=[FAttribute|EString]) |
 	('update' update=[FAttribute|EString])

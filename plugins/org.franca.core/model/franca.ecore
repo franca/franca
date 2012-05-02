@@ -161,13 +161,14 @@
         eType="#//FTrigger" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FTrigger">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="events" upperBound="-1"
-        eType="#//FEventOnIf" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="event" eType="#//FEventOnIf"
+        containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="guard" eType="#//FGuard"
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FEventOnIf">
     <eStructuralFeatures xsi:type="ecore:EReference" name="call" eType="#//FMethod"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="respond" eType="#//FMethod"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="signal" eType="#//FBroadcast"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="set" eType="#//FAttribute"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="update" eType="#//FAttribute"/>
