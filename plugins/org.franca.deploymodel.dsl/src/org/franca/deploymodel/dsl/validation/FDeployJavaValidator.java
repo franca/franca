@@ -13,6 +13,8 @@ import org.franca.core.franca.FArgument;
 import org.franca.core.franca.FArrayType;
 import org.franca.core.franca.FAttribute;
 import org.franca.core.franca.FBroadcast;
+import org.franca.core.franca.FEnumerationType;
+import org.franca.core.franca.FEnumerator;
 import org.franca.core.franca.FField;
 import org.franca.core.franca.FInterface;
 import org.franca.core.franca.FMethod;
@@ -33,6 +35,8 @@ import org.franca.deploymodel.dsl.fDeploy.FDDeclaration;
 import org.franca.deploymodel.dsl.fDeploy.FDElement;
 import org.franca.deploymodel.dsl.fDeploy.FDEnum;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumType;
+import org.franca.deploymodel.dsl.fDeploy.FDEnumValue;
+import org.franca.deploymodel.dsl.fDeploy.FDEnumeration;
 import org.franca.deploymodel.dsl.fDeploy.FDInteger;
 import org.franca.deploymodel.dsl.fDeploy.FDInterface;
 import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance;
@@ -218,6 +222,18 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 					checkStructFieldsList(specHelper, mapper, spec, ((FStructType) tc).getElements(), c,
 							FDeployPackage.Literals.FD_STRUCT__TARGET);
 				}
+			} else if (tc instanceof FEnumerationType) {
+				FDEnumeration c = (FDEnumeration) mapper.getFDElement(tc);
+				if (c==null) {
+					if (mustBeDefined(specHelper, (FEnumerationType)tc)) {
+						error("Enumeration '" + tc.getName() + "'" + msg,
+								FDeployPackage.Literals.FD_INTERFACE__TARGET);
+					}
+				} else {
+					checkElementProperties(spec, c, FDeployPackage.Literals.FD_ENUMERATION__TARGET);
+					checkEnumeratorsList(specHelper, mapper, spec, ((FEnumerationType) tc).getEnumerators(), c,
+							FDeployPackage.Literals.FD_ENUMERATION__TARGET);
+				}
 			}
 		}
 	}
@@ -250,6 +266,22 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 				}
 			} else {
 				checkElementProperties(spec, c, FDeployPackage.Literals.FD_STRUCT_FIELD__TARGET);
+			}
+		}
+	}
+	
+	private void checkEnumeratorsList (FDSpecificationExtender specHelper,
+			FDInterfaceMapper mapper, FDSpecification spec, List<FEnumerator> enumerators,
+			FDElement parent, EStructuralFeature feature)
+	{
+		for(FEnumerator tc : enumerators) {
+			FDEnumValue c = (FDEnumValue) mapper.getFDElement(tc);
+			if (c==null) {
+				if (specHelper.isMandatory(FDPropertyHost.ENUMERATORS)) {
+					error("Enumerator '" + tc.getName() + "'" + msg, parent, feature, -1);
+				}
+			} else {
+				checkElementProperties(spec, c, FDeployPackage.Literals.FD_ENUM_VALUE__TARGET);
 			}
 		}
 	}
@@ -303,7 +335,7 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 	}
 	
 	private boolean mustBeDefined (FDSpecificationExtender specHelper, FStructType target) {
-		// activate this is STRUCTS gets a property host
+		// activate this if STRUCTS gets a property host (currently not defined in FDeploy.xtext)
 //		if (specHelper.isMandatory(FDPropertyHost.STRUCTS))
 //			return true;
 		
@@ -318,6 +350,19 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 				return true;
 		}
 		
+		return false;
+	}
+	
+	private boolean mustBeDefined (FDSpecificationExtender specHelper, FEnumerationType target) {
+		if (specHelper.isMandatory(FDPropertyHost.ENUMERATIONS))
+			return true;
+		
+		if (target.getEnumerators().isEmpty())
+			return false;
+		
+		if (specHelper.isMandatory(FDPropertyHost.ENUMERATORS))
+			return true;
+
 		return false;
 	}
 	

@@ -16,6 +16,8 @@ import org.franca.deploymodel.dsl.fDeploy.FDArray;
 import org.franca.deploymodel.dsl.fDeploy.FDAttribute;
 import org.franca.deploymodel.dsl.fDeploy.FDBroadcast;
 import org.franca.deploymodel.dsl.fDeploy.FDElement;
+import org.franca.deploymodel.dsl.fDeploy.FDEnumValue;
+import org.franca.deploymodel.dsl.fDeploy.FDEnumeration;
 import org.franca.deploymodel.dsl.fDeploy.FDInterface;
 import org.franca.deploymodel.dsl.fDeploy.FDMethod;
 import org.franca.deploymodel.dsl.fDeploy.FDStruct;
@@ -85,6 +87,11 @@ public class FDInterfaceMapper {
 				mapping.put(((FDStruct) t).getTarget(), t);
 				for(FDStructField f : ((FDStruct) t).getFields()) {
 					mapping.put(f.getTarget(), f);
+				}
+			} else if (t instanceof FDEnumeration) {
+				mapping.put(((FDEnumeration) t).getTarget(), t);
+				for(FDEnumValue e : ((FDEnumeration) t).getEnumerators()) {
+					mapping.put(e.getTarget(), e);
 				}
 			}
 		}

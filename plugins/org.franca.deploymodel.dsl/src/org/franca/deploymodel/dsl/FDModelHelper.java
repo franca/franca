@@ -29,6 +29,8 @@ import org.franca.deploymodel.dsl.fDeploy.FDAttribute;
 import org.franca.deploymodel.dsl.fDeploy.FDBroadcast;
 import org.franca.deploymodel.dsl.fDeploy.FDDeclaration;
 import org.franca.deploymodel.dsl.fDeploy.FDElement;
+import org.franca.deploymodel.dsl.fDeploy.FDEnumValue;
+import org.franca.deploymodel.dsl.fDeploy.FDEnumeration;
 import org.franca.deploymodel.dsl.fDeploy.FDInterface;
 import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance;
 import org.franca.deploymodel.dsl.fDeploy.FDMethod;
@@ -257,6 +259,10 @@ public class FDModelHelper {
 			return FDPropertyHost.ARRAYS;
 		} else if (elem instanceof FDStructField) {
 			return FDPropertyHost.STRUCT_FIELDS;
+		} else if (elem instanceof FDEnumeration) {
+			return FDPropertyHost.ENUMERATIONS;
+		} else if (elem instanceof FDEnumValue) {
+			return FDPropertyHost.ENUMERATORS;
 		}
 		
 		return null;

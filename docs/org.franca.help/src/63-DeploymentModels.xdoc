@@ -166,6 +166,18 @@ table[
 		td[alignment / padding]
 	]
 	tr[
+		td[code[FDeploy][enumerations]]
+		td[Properties related to enumeration definitions]
+		td[code[Franca][enumeration]]
+		td[flag: generate enum values?]
+	]
+	tr[
+		td[code[FDeploy][enumerators]]
+		td[Properties related to enumerators]
+		td[values of code[Franca][enumeration]]
+		td[renaming, filtering]
+	]
+	tr[
 		td[code[FDeploy][arrays]]
 		td[Properties related to array definitions]
 		td[code[Franca][array]]

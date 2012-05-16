@@ -44,11 +44,11 @@ codelanguage-def[FDeploy]
 	specification,extends,for,optional,default,
 	
 	providers,instances,interfaces,attributes,methods,broadcasts,arguments,
-	struct_fields,arrays,strings,numbers,integers,floats,
+	struct_fields,arrays,enumerations,enumerators,strings,numbers,integers,floats,
 	
 	define,provider,instance,interface, 
 	attribute,method,broadcast,in,out,
-	array,struct,
+	array,struct,enumeration,
 	
 	false,true
 ]

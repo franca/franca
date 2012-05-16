@@ -60,6 +60,7 @@ enum FDPropertyHost:
 	attributes | methods | broadcasts |
 	arguments |
 	struct_fields | arrays |
+	enumerations | enumerators |
 	strings | numbers | integers | floats;
 
 
@@ -91,7 +92,7 @@ FDRootElement:
 FDElement:
 	FDRootElement | FDInterfaceInstance |
 	FDAttribute | FDMethod | FDBroadcast | FDArgument |
-	FDTypeDef | FDStructField;
+	FDTypeDef | FDStructField | FDEnumeration | FDEnumValue;
 
 FDProvider:
 	'define' spec=[FDSpecification|FQN] 'for' 'provider' name=FQN '{'
@@ -138,7 +139,7 @@ FDArgument:
 	'}';
 
 
-FDTypeDef: FDArray | FDStruct;
+FDTypeDef: FDArray | FDStruct | FDEnumeration;
 
 FDArray:
 	'array' target=[fidl::FArrayType|FQN] '{'
@@ -153,6 +154,17 @@ FDStruct:
 
 FDStructField:
 	target=[fidl::FField|FQN] '{'
+		properties+=FDProperty*
+	'}';
+
+FDEnumeration:
+	'enumeration' target=[fidl::FEnumerationType|FQN] '{'
+		properties+=FDProperty*
+		enumerators+=FDEnumValue*
+	'}';
+
+FDEnumValue:
+	target=[fidl::FEnumerator|FQN] '{'
 		properties+=FDProperty*
 	'}';
 
