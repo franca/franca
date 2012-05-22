@@ -5,13 +5,15 @@
 * which accompanies this distribution, and is available at
 * http://www.eclipse.org/legal/epl-v10.html
 *******************************************************************************/
-package org.franca.core.framework;
+package org.franca.deploymodel.core;
 
-import org.franca.core.franca.FModel;
+import org.franca.core.framework.IModelContainer;
+import org.franca.core.framework.IModelPersistenceManager;
+import org.franca.deploymodel.dsl.fDeploy.FDModel;
 
-public interface IFrancaConnector extends IModelPersistenceManager {
+public interface IFrancaDeployConnector extends IModelPersistenceManager {
 
-	// conversion to/from Franca models
-	public FModel toFranca (IModelContainer model);
-	public IModelContainer fromFranca (FModel fmodel);
+	// conversion to/from Franca deployment models
+	public FDModel toFranca (IModelContainer model);
+	public IModelContainer fromFranca (FDModel fmodel);
 }
