@@ -189,24 +189,29 @@ FField:
 	type=FTypeRef (array='[]')? name=EString;
 
 
+FDeclaration:
+	type=FTypeRef (array='[]')? name=EString;
+
 FTypedElement:
 	FField |
 	FAttribute |
-	FArgument;
+	FArgument |
+	FDeclaration;
 
 
 // **************************************************************
 // interface contract
 
-FContract returns FContract:
+FContract:
 	{FContract}
 	'contract' '{'
-		stateGraph=FStateGraph
+		('vars' '{' (variables+=FDeclaration ';')* '}')?
+		'PSM' stateGraph=FStateGraph
 	'}';
 
-FStateGraph returns FStateGraph:
+FStateGraph:
 	{FStateGraph}
-	'PSM' '{'
+	'{'
 		(
 			states+=FState |
 			//trPoints+=TrPoint |
@@ -215,7 +220,7 @@ FStateGraph returns FStateGraph:
 		)*
 	'}';
 
-FState returns FState:
+FState:
 	{FState}
 	(comment=FAnnotationBlock)?
 	'state' name=EString;
@@ -232,9 +237,12 @@ FTriggeredTransition:
 	'transition' /*name=EString*/ from=FTransitionTerminal '->' to=FTransitionTerminal 
 	(comment=FAnnotationBlock)?
 	'{'
+		('[' guard=FGuard ']')?
+
 		// currently only one trigger per transition is supported
-		//triggers+=FTrigger ('or' triggers+=FTrigger)*
-		triggers+=FTrigger
+		trigger=FTrigger
+		
+		(action=FBlockExpression)?
 	'}';
 
 FTransitionTerminal: FStateTerminal /* | TrPointTerminal | SubStateTrPointTerminal | ChoicepointTerminal */;
@@ -244,22 +252,55 @@ FStateTerminal:
 
 
 FTrigger:
-		'<'
-			event=FEventOnIf
-			(guard=FGuard)?
-		'>'
-;
+	event=FEventOnIf;
 
 FEventOnIf:
-	('call' call=[FMethod|EString]) |
-	('respond' respond=[FMethod|EString]) |
-	('signal' signal=[FBroadcast|EString]) |
-	('set' set=[FAttribute|EString]) |
-	('update' update=[FAttribute|EString])
+	('call'    '(' call=[FMethod|EString]      ')') |
+	('respond' '(' respond=[FMethod|EString]   ')') |
+	('signal'  '(' signal=[FBroadcast|EString] ')') |
+	('set'     '(' set=[FAttribute|EString]    ')') |
+	('update'  '(' update=[FAttribute|EString] ')')
 ;
 
 FGuard:
 	'guard' plainCondition=STRING;
+
+	
+FExpression returns FExpression:
+	FAssignment;
+
+FAssignment returns FExpression:
+	{FAssignment}
+	lhs=[FDeclaration|ID] '=' rhs=AdditiveExpression;
+
+FBlockExpression returns FExpression: 
+	{FBlockExpression}
+	'{'
+		(expressions+=FExpression)*
+	'}';
+
+AdditiveExpression returns FExpression:
+  MultiplicativeExpression
+  ({FBinaryOperation.left=current} op=('+'|'-') right=MultiplicativeExpression)*;
+
+MultiplicativeExpression returns FExpression:
+  PrimaryExpression
+  ({FBinaryOperation.left=current} op=('*'|'/') right=PrimaryExpression)*;
+
+PrimaryExpression returns FExpression:
+  FTypedElementRef |
+  FConstant |
+  '(' FExpression ')';
+
+FTypedElementRef returns FExpression:
+	{FTypedElementRef}
+	element=[FTypedElement|EString];
+
+FConstant returns FExpression:
+	FIntegerConstant;
+
+FIntegerConstant:
+	val=EInt;
 
 
 // **************************************************************

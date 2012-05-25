@@ -20,6 +20,7 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.franca.core.franca.FAttribute;
 import org.franca.core.franca.FBasicTypeId;
 import org.franca.core.franca.FBroadcast;
+import org.franca.core.franca.FContract;
 import org.franca.core.franca.FInterface;
 import org.franca.core.franca.FMethod;
 import org.franca.core.franca.FModel;
@@ -96,6 +97,16 @@ public class FrancaHelpers {
 			x = x.eContainer();
 			if (x instanceof FStateGraph)
 				return (FStateGraph)x;
+		} while (x!=null);
+		return null;
+	}
+	
+	public static FContract getContract (EObject obj) {
+		EObject x = obj;
+		do {
+			x = x.eContainer();
+			if (x instanceof FContract)
+				return (FContract)x;
 		} while (x!=null);
 		return null;
 	}

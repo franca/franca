@@ -89,6 +89,7 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FTypedElement/type"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute franca.ecore#//FTypedElement/array"/>
     </genClasses>
+    <genClasses ecoreClass="franca.ecore#//FVariable"/>
     <genClasses ecoreClass="franca.ecore#//FStructType">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FStructType/base"/>
     </genClasses>
@@ -107,9 +108,6 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute franca.ecore#//FTypeRef/predefined"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FTypeRef/derived"/>
     </genClasses>
-    <genClasses ecoreClass="franca.ecore#//FContract">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FContract/stateGraph"/>
-    </genClasses>
     <genClasses ecoreClass="franca.ecore#//FAnnotation">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute franca.ecore#//FAnnotation/type"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute franca.ecore#//FAnnotation/comment"/>
@@ -117,6 +115,11 @@
     <genClasses ecoreClass="franca.ecore#//FAnnotationBlock">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FAnnotationBlock/elements"/>
     </genClasses>
+    <genClasses ecoreClass="franca.ecore#//FContract">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FContract/stateGraph"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FContract/variables"/>
+    </genClasses>
+    <genClasses ecoreClass="franca.ecore#//FDeclaration"/>
     <genClasses ecoreClass="franca.ecore#//FStateGraph">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FStateGraph/states"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FStateGraph/transitions"/>
@@ -134,11 +137,12 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FNonInitialTransition/from"/>
     </genClasses>
     <genClasses ecoreClass="franca.ecore#//FTriggeredTransition">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FTriggeredTransition/triggers"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FTriggeredTransition/guard"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FTriggeredTransition/trigger"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FTriggeredTransition/action"/>
     </genClasses>
     <genClasses ecoreClass="franca.ecore#//FTrigger">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FTrigger/event"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FTrigger/guard"/>
     </genClasses>
     <genClasses ecoreClass="franca.ecore#//FEventOnIf">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FEventOnIf/call"/>
@@ -154,5 +158,25 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FUnionType/base"/>
     </genClasses>
     <genClasses ecoreClass="franca.ecore#//FField"/>
+    <genClasses ecoreClass="franca.ecore#//FBlockExpression">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FBlockExpression/expressions"/>
+    </genClasses>
+    <genClasses ecoreClass="franca.ecore#//FAssignment">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FAssignment/lhs"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FAssignment/rhs"/>
+    </genClasses>
+    <genClasses ecoreClass="franca.ecore#//FExpression"/>
+    <genClasses ecoreClass="franca.ecore#//FTypedElementRef">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FTypedElementRef/element"/>
+    </genClasses>
+    <genClasses ecoreClass="franca.ecore#//FConstant"/>
+    <genClasses ecoreClass="franca.ecore#//FIntegerConstant">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute franca.ecore#//FIntegerConstant/val"/>
+    </genClasses>
+    <genClasses ecoreClass="franca.ecore#//FBinaryOperation">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FBinaryOperation/left"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute franca.ecore#//FBinaryOperation/op"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FBinaryOperation/right"/>
+    </genClasses>
   </genPackages>
 </genmodel:GenModel>

@@ -29,7 +29,7 @@ public class ContractValidator {
 			Object obj = contents.next();
 			if (obj instanceof FTriggeredTransition) {
 				FTriggeredTransition tt = (FTriggeredTransition)obj;
-				FEventOnIf ev = tt.getTriggers().get(0).getEvent();
+				FEventOnIf ev = tt.getTrigger().getEvent();
 				if (ev.getSet()!=null) {
 					usedAttributes.add(ev.getSet());
 				} else if (ev.getUpdate()!=null) {
@@ -57,7 +57,7 @@ public class ContractValidator {
 						e, FrancaPackage.Literals.FMODEL_ELEMENT__NAME);
 			}
 		}
-		for(FAttribute e : api.getAttributes()) {
+		for(FBroadcast e : api.getBroadcasts()) {
 			if (! usedBroadcasts.contains(e)) {
 				reporter.reportWarning("Broadcast is not covered by contract, not needed?",
 						e, FrancaPackage.Literals.FMODEL_ELEMENT__NAME);
