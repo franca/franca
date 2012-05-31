@@ -20,7 +20,6 @@ import org.eclipse.xtext.Constants;
 import org.franca.core.framework.ModelFileFinder;
 import org.franca.core.franca.FModel;
 
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Provider;
@@ -34,6 +33,10 @@ public class FrancaIDLHelpers {
 	@Inject @Named(Constants.FILE_EXTENSIONS)
 	private String fileExtension;
 
+	public String getFileExtension()
+	{
+		return fileExtension;
+	}
 	
 	/**
 	 * Load Franca IDL model file (*.fidl) and all imported files recursively.
@@ -76,7 +79,6 @@ public class FrancaIDLHelpers {
 		}
 		return saveFrancaIDLModel(model, fn);
 	}
-	
 	
 	private FModel loadFrancaIDLModel (String fileName)
 			throws IOException {
@@ -122,7 +124,7 @@ public class FrancaIDLHelpers {
 		return true;
 	}
 
-
+	
 	// singleton
 	private static FrancaIDLHelpers instance = null;
 	public static FrancaIDLHelpers instance() {

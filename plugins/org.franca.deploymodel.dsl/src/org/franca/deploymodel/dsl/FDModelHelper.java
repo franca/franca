@@ -19,6 +19,8 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.xtext.Constants;
+import org.eclipse.xtext.util.CancelIndicator;
+import org.franca.core.dsl.FrancaIDLHelpers;
 import org.franca.core.dsl.FrancaIDLStandaloneSetup;
 import org.franca.core.framework.FrancaHelpers;
 import org.franca.core.framework.ModelFileFinder;
@@ -40,6 +42,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDProvider;
 import org.franca.deploymodel.dsl.fDeploy.FDRootElement;
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification;
 import org.franca.deploymodel.dsl.fDeploy.FDStructField;
+import org.franca.deploymodel.dsl.fDeploy.Import;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -48,14 +51,14 @@ import com.google.inject.Injector;
 import com.google.inject.Provider;
 import com.google.inject.name.Named;
 
-public class FDModelHelper {
+public class FDModelHelper implements CancelIndicator {
 	
 	@Inject 
 	private Provider<ResourceSet> resourceSetProvider;
 	
 	@Inject @Named(Constants.FILE_EXTENSIONS)
 	private String fileExtension;
-
+	
 	/**
 	 * Load Franca Deployment model file (*.fdepl) and all imported files recursively.
 	 * 
@@ -63,6 +66,7 @@ public class FDModelHelper {
 	 * @return the root entity of the FDeploy model
 	 */
 	public FDModel loadModel (String fileName) {
+		if (fileName == null) return null;
 		String fn = fileName;
 		if (! fileName.endsWith("." + fileExtension)) {
 			fileName += "." + fileExtension;
@@ -106,11 +110,19 @@ public class FDModelHelper {
 		
 		// add all existing resources to resourceSet
 		File f = new File(fileName);
-		String folderName = f.getParentFile().getAbsolutePath();
+		String folderName;
+		if (f.getParentFile() != null)
+		{
+		   folderName = f.getParentFile().getAbsolutePath();
+		}
+		else
+		{
+		   folderName = ".";
+		}
 		//System.out.println("path: " + f.getParentFile().getAbsolutePath());
 		List<String> extensions = Lists.newArrayList();
 		extensions.add(fileExtension);
-		extensions.add("fidl");
+		extensions.add(FrancaIDLHelpers.instance().getFileExtension());
 		List<String> modelFiles = new ModelFileFinder(extensions).getSourceFiles(folderName);
 		for (String fn : modelFiles) {
 			//System.out.println("- resource file " + fn);
@@ -132,12 +144,31 @@ public class FDModelHelper {
 
 	
 	private boolean saveFDeployModel (FDModel model, String filename) {
+		
+		URI fdeplUri = URI.createFileURI(new File(filename).getAbsolutePath());
 		ResourceSet resourceSet = resourceSetProvider.get();
-		URI fileUri = URI.createFileURI(new File(filename).getAbsolutePath());
-		Resource res = resourceSet.createResource(fileUri);
-		res.getContents().add(model);
+		//resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(FrancaIDLHelpers.instance().getFileExtension(), new FrancaFactoryImpl());
+		
+		Resource fdeplRes = resourceSet.createResource(fdeplUri);
+		fdeplRes.getContents().add(model);
+		
+		for (Import fdeplImport : model.getImports())
+		{
+			String importFilename;
+			URI fdeplImportURI;
+			Resource res;
+			
+			importFilename = new File(fdeplImport.getImportURI()).getName();
+	        fdeplImportURI = URI.createFileURI(importFilename);
+	        if (!fdeplImportURI.hasAbsolutePath())
+	        {
+	        	//fdeplImportURI.
+	        }
+	        res = resourceSet.createResource(fdeplImportURI);
+            res.getContents().add(resourceSet.getEObject(fdeplImportURI, true));
+		}
 		try {
-			res.save(Collections.EMPTY_MAP);
+			fdeplRes.save(Collections.EMPTY_MAP);
 	        System.out.println("Created Franca deployment model file " + filename);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -281,5 +312,11 @@ public class FDModelHelper {
 			}
 		}
 		return true;
+	}
+
+	@Override
+	public boolean isCanceled() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }
