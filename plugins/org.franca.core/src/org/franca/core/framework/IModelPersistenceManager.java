@@ -7,11 +7,10 @@
 *******************************************************************************/
 package org.franca.core.framework;
 
-import org.franca.core.franca.FModel;
-
-public interface IFrancaConnector extends IModelPersistenceManager {
-
-	// conversion to/from Franca models
-	public FModel toFranca (IModelContainer model);
-	public IModelContainer fromFranca (FModel fmodel);
+public interface IModelPersistenceManager {
+	
+	// load/save of non-Franca models
+	public IModelContainer loadModel (String filename);
+	public boolean saveModel (IModelContainer model, String filename);
+	
 }

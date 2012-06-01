@@ -155,6 +155,8 @@ class FDeployGenerator implements IGenerator {
 				//case FDPropertyHost::INTEGERS:      genGetter("FArgument")
 				//case FDPropertyHost::STRINGS:       genGetter("FArgument")
 				case FDPropertyHost::STRUCT_FIELDS: genGetter("FMethod")
+				case FDPropertyHost::ENUMERATIONS:  genGetter("FEnumerationType")
+				case FDPropertyHost::ENUMERATORS:   genGetter("FEnumerator")
 				//case FDPropertyHost::ARRAYS:        genGetter("FArgument")
 				default: genGetter("EObject")  // reasonable default
 			}

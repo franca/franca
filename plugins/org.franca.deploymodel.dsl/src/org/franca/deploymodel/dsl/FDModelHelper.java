@@ -20,10 +20,8 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.xtext.Constants;
 import org.eclipse.xtext.util.CancelIndicator;
-import org.franca.core.dsl.FrancaIDLHelpers;
 import org.franca.core.dsl.FrancaIDLStandaloneSetup;
 import org.franca.core.framework.FrancaHelpers;
-import org.franca.core.framework.ModelFileFinder;
 import org.franca.core.franca.FTypeRef;
 import org.franca.deploymodel.dsl.fDeploy.FDArgument;
 import org.franca.deploymodel.dsl.fDeploy.FDArray;
@@ -31,6 +29,8 @@ import org.franca.deploymodel.dsl.fDeploy.FDAttribute;
 import org.franca.deploymodel.dsl.fDeploy.FDBroadcast;
 import org.franca.deploymodel.dsl.fDeploy.FDDeclaration;
 import org.franca.deploymodel.dsl.fDeploy.FDElement;
+import org.franca.deploymodel.dsl.fDeploy.FDEnumValue;
+import org.franca.deploymodel.dsl.fDeploy.FDEnumeration;
 import org.franca.deploymodel.dsl.fDeploy.FDInterface;
 import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance;
 import org.franca.deploymodel.dsl.fDeploy.FDMethod;
@@ -58,6 +58,11 @@ public class FDModelHelper implements CancelIndicator {
 	
 	@Inject @Named(Constants.FILE_EXTENSIONS)
 	private String fileExtension;
+	
+	public String getFileExtension()
+	{
+		return fileExtension;
+	}
 	
 	/**
 	 * Load Franca Deployment model file (*.fdepl) and all imported files recursively.
@@ -102,24 +107,17 @@ public class FDModelHelper implements CancelIndicator {
 		return saveFDeployModel(model, fn);
 	}
 	
-	
 	private FDModel loadFDeployModel (String fileName) throws IOException {
+		return loadModel(URI.createFileURI(fileName));
+	}
+	
+	public FDModel loadModel (URI uri) {
 		
 		// prepare ResourceSet
 		ResourceSet resourceSet = resourceSetProvider.get();
 		
 		// add all existing resources to resourceSet
-		File f = new File(fileName);
-		String folderName;
-		if (f.getParentFile() != null)
-		{
-		   folderName = f.getParentFile().getAbsolutePath();
-		}
-		else
-		{
-		   folderName = ".";
-		}
-		//System.out.println("path: " + f.getParentFile().getAbsolutePath());
+/*
 		List<String> extensions = Lists.newArrayList();
 		extensions.add(fileExtension);
 		extensions.add(FrancaIDLHelpers.instance().getFileExtension());
@@ -128,26 +126,45 @@ public class FDModelHelper implements CancelIndicator {
 			//System.out.println("- resource file " + fn);
 			resourceSet.getResource(URI.createFileURI(fn), true);
 		}
-
-		// load actual resource
-		Resource resource = resourceSet.getResource(URI.createFileURI(fileName), true);
+*/
+		Resource resource = resourceSet.getResource(uri, true);
 		HashMap<String,Object> options = new HashMap<String,Object>();
+		FDModel model = null;
 		try {
+			// load URI
 			resource.load(options);
+			model = (FDModel)resource.getContents().get(0);
+			//and all its imports
+			for (Import fdeplImport : model.getImports())
+			{
+				String importFilename;
+				URI fdeplImportURI;
+				Resource res;
+				
+				importFilename = new File(fdeplImport.getImportURI()).getName();
+		        fdeplImportURI = URI.createFileURI(importFilename);
+		        res = resourceSet.createResource(fdeplImportURI);
+	            res.getContents().add(resourceSet.getEObject(fdeplImportURI, true));
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
 		}
 		
-		return (FDModel)resource.getContents().get(0);
+		return model;
 	}
 
-	
+
+	/**
+	 * 
+	 * @param model, the mode to be saved, all the imported files are available
+	 * @param filename, the filename to save the model
+	 * @return
+	 */
 	private boolean saveFDeployModel (FDModel model, String filename) {
 		
 		URI fdeplUri = URI.createFileURI(new File(filename).getAbsolutePath());
 		ResourceSet resourceSet = resourceSetProvider.get();
-		//resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(FrancaIDLHelpers.instance().getFileExtension(), new FrancaFactoryImpl());
 		
 		Resource fdeplRes = resourceSet.createResource(fdeplUri);
 		fdeplRes.getContents().add(model);
@@ -160,10 +177,6 @@ public class FDModelHelper implements CancelIndicator {
 			
 			importFilename = new File(fdeplImport.getImportURI()).getName();
 	        fdeplImportURI = URI.createFileURI(importFilename);
-	        if (!fdeplImportURI.hasAbsolutePath())
-	        {
-	        	//fdeplImportURI.
-	        }
 	        res = resourceSet.createResource(fdeplImportURI);
             res.getContents().add(resourceSet.getEObject(fdeplImportURI, true));
 		}
@@ -175,7 +188,34 @@ public class FDModelHelper implements CancelIndicator {
 		}
 		return true;
 	}
+	
+	/**
+	 * 
+	 * @param container, a container with all the models and their corresponding filenames to be saved
+	 * @return
+	 */
+	public boolean saveDeployment (DeploymentContainer container, String outDirectory) {
+		ResourceSet resourceSet = resourceSetProvider.get();
 
+		for (PersistentModel persModel : container)
+		{
+			Resource res;
+			
+			res = resourceSet.createResource(URI.createFileURI(/*outDirectory + */persModel.getFilename()));
+			res.getContents().add(persModel.getModel());
+		}
+		for (int i = 0 ; i < resourceSet.getResources().size(); i++)
+		{
+			Resource res = resourceSet.getResources().get(i);
+			try {
+			   System.out.println("Saving " + res.getURI());
+			   res.save(Collections.EMPTY_MAP);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return true;
+	}
 	
 	// singleton
 	private static FDModelHelper instance = null;
@@ -288,6 +328,10 @@ public class FDModelHelper implements CancelIndicator {
 			return FDPropertyHost.ARRAYS;
 		} else if (elem instanceof FDStructField) {
 			return FDPropertyHost.STRUCT_FIELDS;
+		} else if (elem instanceof FDEnumeration) {
+			return FDPropertyHost.ENUMERATIONS;
+		} else if (elem instanceof FDEnumValue) {
+			return FDPropertyHost.ENUMERATORS;
 		}
 		
 		return null;

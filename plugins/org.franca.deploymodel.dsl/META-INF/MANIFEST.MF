@@ -7,9 +7,12 @@ Bundle-SymbolicName: org.franca.deploymodel.dsl; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.xtext.generator;resolution:=optional,
  org.eclipse.emf.mwe2.launch;resolution:=optional,
- org.franca.core.dsl;bundle-version="0.7.0";visibility:=reexport
-Import-Package: org.eclipse.xtend2.lib,
- org.eclipse.xtext.xbase.lib
+ org.franca.core.dsl;bundle-version="0.7.0";visibility:=reexport,
+ org.eclipse.xtext,
+ org.eclipse.xtext.util,
+ org.eclipse.emf.ecore,
+ org.eclipse.emf.common,
+ org.antlr.runtime
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.franca.deploymodel.core,
  org.franca.deploymodel.dsl,
@@ -24,4 +27,6 @@ Export-Package: org.franca.deploymodel.core,
  org.franca.deploymodel.dsl.scoping,
  org.franca.deploymodel.dsl.services,
  org.franca.deploymodel.dsl.validation
-
+Import-Package: org.apache.log4j,
+ org.eclipse.xtext.xbase.lib,
+ org.eclipse.xtend2.lib

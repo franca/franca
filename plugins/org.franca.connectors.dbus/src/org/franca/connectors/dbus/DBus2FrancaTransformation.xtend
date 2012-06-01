@@ -19,6 +19,7 @@ import org.franca.core.franca.FrancaFactory
 import org.franca.core.franca.FBasicTypeId
 import org.franca.core.franca.FType
 import org.franca.core.franca.FTypeRef
+import org.franca.core.franca.FTypedElement
 import org.franca.core.franca.FAnnotationType
 
 import java.util.List
@@ -26,7 +27,7 @@ import java.util.List
 class DBus2FrancaTransformation {
 
 	List<FType> newTypes
-
+	
 	def create FrancaFactory::eINSTANCE.createFModel transform (NodeType src) {
 		name = src.name
 		interfaces.addAll(src.interface.map [transformInterface])
@@ -59,7 +60,9 @@ class DBus2FrancaTransformation {
 	def create FrancaFactory::eINSTANCE.createFAttribute transformAttribute (PropertyType src) {
 		val nameNormal = src.name.normalizeId 
 		name = nameNormal
-		type = src.type.transformTypeSig(nameNormal)
+		val te = src.type.transformTypeSig(nameNormal) 
+		type = te.type
+		array = if (te.isArray) "[]" else null
 	}
 
 	def create FrancaFactory::eINSTANCE.createFMethod transformMethod (MethodType src) {
@@ -82,7 +85,9 @@ class DBus2FrancaTransformation {
 
 	def create FrancaFactory::eINSTANCE.createFArgument transformArg (ArgType src, String namespace) {
 		name = src.name.normalizeId
-		type = src.type.transformTypeSig(namespace + "_" + name)
+		val te = src.type.transformTypeSig(namespace + "_" + name) 
+		type = te.type
+		array = if (te.isArray) "[]" else null
 		if(src.doc != null && src.primitiveType) {
 			comment = src.doc.transformAnnotationBlock()
 		}					
@@ -103,7 +108,7 @@ class DBus2FrancaTransformation {
 	}
 	// ANNOTATION
 
-	def transformTypeSig (String typeSig, String namespace) {
+	def TypedElem transformTypeSig (String typeSig, String namespace) {
 		//println("DBus2FrancaTransformation: parsing type-sig " + typeSig + " in namespace " + namespace)
 
 		// as DBus doesn't have a detailed typesystem, we have to use an artificial typesystem here
@@ -113,7 +118,27 @@ class DBus2FrancaTransformation {
 		srcType.transformType(namespace)
 	}
 
-	def FTypeRef transformType (DBusType src, String namespace) {
+	/**
+	 * Transform an arbitrary type and create a Franca inline
+	 * array "[]" if outermost DBusType is an array.
+	 */
+	def TypedElem transformType (DBusType src, String namespace) {
+		//println("  transformType(" + src + ", " + namespace + ")")
+		switch (src) {
+			DBusBasicType: new TypedElem(src.transformBasicType)
+			DBusDictType: new TypedElem(src.transformDictType(namespace).encapsulateTypeRef)
+			DBusArrayType: src.createInlineArrayType(namespace)
+			DBusStructType: new TypedElem(src.transformStructType(namespace).encapsulateTypeRef)
+			default: new TypedElem()
+		}
+	}	
+	
+	/**
+	 * Transform an arbitrary type, but create an explicit Franca array type
+	 * if outermost DBusType is an array.
+	 */
+	def FTypeRef transformTypeNoInlineArray (DBusType src, String namespace) {
+		//println("  transformTypeNoInlineArray(" + src + ", " + namespace + ")")
 		switch (src) {
 			DBusBasicType: src.transformBasicType
 			DBusDictType: src.transformDictType(namespace).encapsulateTypeRef
@@ -140,22 +165,26 @@ class DBus2FrancaTransformation {
 			case DBusBasicType::DBUS_TYPE_VARIANT: predefined = FBasicTypeId::UNDEFINED // not_supported yet
 			default: predefined = FBasicTypeId::UNDEFINED
 		}
-		//newTypes.add(it)
-		return it
+		it
 	}
 
 	def encapsulateTypeRef (FType type) {
-		var it = FrancaFactory::eINSTANCE.createFTypeRef
+		val it = FrancaFactory::eINSTANCE.createFTypeRef
 		derived = type;
 		return it
 	}
+
+	def createInlineArrayType (DBusArrayType src, String namespace) {
+		val elementType = src.elementType.transformTypeNoInlineArray(namespace)
+		new TypedElem(elementType, true);
+	}	
 	
 	def create FrancaFactory::eINSTANCE.createFArrayType transformArrayType (DBusArrayType src, String namespace) {
 		name = "t" + namespace + "Array"
 		comment = createAnnotationBlock("array generated for DBus argument " + namespace)
 		
-		var ns = if (src.containsArray) namespace+"Elem" else namespace
-		elementType = src.elementType.transformType(ns)
+		val ns = namespace + "Elem"
+		elementType = src.elementType.transformTypeNoInlineArray(ns)
 		newTypes.add(it)
 	}
 
@@ -165,7 +194,7 @@ class DBus2FrancaTransformation {
 		var i = 1
 		for(e : src.elementTypes) {
 			elements.add(e.transformField(namespace, "elem" + i))
-			i = i+1
+			i = i + 1
 		}
 		newTypes.add(it)
 	}
@@ -173,26 +202,28 @@ class DBus2FrancaTransformation {
 	def create FrancaFactory::eINSTANCE.createFMapType transformDictType (DBusDictType src, String namespace) {
 		name = "t" + namespace + "Dict"
 		//comment = createAnnotationBlock("...")
-		keyType = src.keyType.transformType(namespace+"Key")
-		valueType = src.valueType.transformType(namespace+"Value")
+		keyType = src.keyType.transformTypeNoInlineArray(namespace+"Key")
+		valueType = src.valueType.transformTypeNoInlineArray(namespace+"Value")
 		newTypes.add(it)
 	}
 
 	def create FrancaFactory::eINSTANCE.createFField transformField (DBusType src, String namespace, String elementName) {
 		// struct members do not have a name in DBus
 		name = elementName
-		type = src.transformType(namespace)
+		val te = src.transformType(namespace)
+		type = te.type
+		array = if (te.isArray) "[]" else null
 	}
 
 
 	def createAnnotationBlock (String comment) {
-		var it = FrancaFactory::eINSTANCE.createFAnnotationBlock
+		val it = FrancaFactory::eINSTANCE.createFAnnotationBlock
 		elements.add(comment.transformDescription)
 		return it		
 	}
 	
 	def transformDescription (String description) {
-		var it = FrancaFactory::eINSTANCE.createFAnnotation
+		val it = FrancaFactory::eINSTANCE.createFAnnotation
 		type = FAnnotationType::DESCRIPTION
 		comment = description
 		return it 
