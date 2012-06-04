@@ -88,8 +88,15 @@ public class FrancaIDLHelpers {
 		
 		// add all existing resources to resourceSet
 		File f = new File(fileName);
-		String folderName = f.getParentFile().getAbsolutePath();
-		//System.out.println("path: " + f.getParentFile().getAbsolutePath());
+		String folderName = null;
+		if (f.getParentFile() != null)
+		{
+			folderName = f.getParentFile().getAbsolutePath();
+		}
+		else
+		{
+			folderName = ".";
+		}
 		List<String> modelFiles = new ModelFileFinder(fileExtension).getSourceFiles(folderName);
 		for (String fn : modelFiles) {
 			//System.out.println("- resource file " + fn);

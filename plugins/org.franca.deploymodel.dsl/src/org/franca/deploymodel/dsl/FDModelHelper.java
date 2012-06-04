@@ -112,21 +112,9 @@ public class FDModelHelper implements CancelIndicator {
 	}
 	
 	public FDModel loadModel (URI uri) {
-		
 		// prepare ResourceSet
 		ResourceSet resourceSet = resourceSetProvider.get();
 		
-		// add all existing resources to resourceSet
-/*
-		List<String> extensions = Lists.newArrayList();
-		extensions.add(fileExtension);
-		extensions.add(FrancaIDLHelpers.instance().getFileExtension());
-		List<String> modelFiles = new ModelFileFinder(extensions).getSourceFiles(folderName);
-		for (String fn : modelFiles) {
-			//System.out.println("- resource file " + fn);
-			resourceSet.getResource(URI.createFileURI(fn), true);
-		}
-*/
 		Resource resource = resourceSet.getResource(uri, true);
 		HashMap<String,Object> options = new HashMap<String,Object>();
 		FDModel model = null;
@@ -144,7 +132,7 @@ public class FDModelHelper implements CancelIndicator {
 				importFilename = new File(fdeplImport.getImportURI()).getName();
 		        fdeplImportURI = URI.createFileURI(importFilename);
 		        res = resourceSet.createResource(fdeplImportURI);
-	            res.getContents().add(resourceSet.getEObject(fdeplImportURI, true));
+		        res.load(options);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -196,19 +184,18 @@ public class FDModelHelper implements CancelIndicator {
 	 */
 	public boolean saveDeployment (DeploymentContainer container, String outDirectory) {
 		ResourceSet resourceSet = resourceSetProvider.get();
-
+		resourceSet.setURIConverter(new DeploymentURIConverter(resourceSet.getURIConverter(), outDirectory));
+		
 		for (PersistentModel persModel : container)
 		{
 			Resource res;
-			
-			res = resourceSet.createResource(URI.createFileURI(/*outDirectory + */persModel.getFilename()));
+			res = resourceSet.createResource(URI.createFileURI(persModel.getFilename()));
 			res.getContents().add(persModel.getModel());
 		}
 		for (int i = 0 ; i < resourceSet.getResources().size(); i++)
 		{
 			Resource res = resourceSet.getResources().get(i);
 			try {
-			   System.out.println("Saving " + res.getURI());
 			   res.save(Collections.EMPTY_MAP);
 			} catch (IOException e) {
 				e.printStackTrace();
