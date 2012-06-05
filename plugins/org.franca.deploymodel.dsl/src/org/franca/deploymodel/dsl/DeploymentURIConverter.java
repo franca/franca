@@ -14,12 +14,17 @@ import org.eclipse.emf.ecore.resource.URIHandler;
 public class DeploymentURIConverter implements URIConverter {
 
 	URIConverter mOrigURICOnverter = null;
-	String mOutDirectory = null;
+	String mInOutDirectory = null;
+	
+	public void setInOutDirectory(String inOutDirectory)
+	{
+		mInOutDirectory = inOutDirectory;
+	}
 	
 	public DeploymentURIConverter(URIConverter origURICOnverter, String outDirectory)
 	{
-		mOrigURICOnverter = origURICOnverter;
-		mOutDirectory = outDirectory;
+        mOrigURICOnverter = origURICOnverter;
+		mInOutDirectory = outDirectory;
 	}
 
 	@Override
@@ -49,13 +54,22 @@ public class DeploymentURIConverter implements URIConverter {
 
 	@Override
 	public InputStream createInputStream(URI uri) throws IOException {
-		return mOrigURICOnverter.createInputStream(uri);
+		URI tmpURI = null;
+		
+		tmpURI = URI.createFileURI(mInOutDirectory + uri.path());
+		System.out.println("Loading " + tmpURI);
+		return mOrigURICOnverter.createInputStream(tmpURI);
 	}
 
 	@Override
 	public InputStream createInputStream(URI uri, Map<?, ?> options)
 			throws IOException {
-		return mOrigURICOnverter.createInputStream(uri, options);
+		URI tmpURI = null;
+		
+		tmpURI = URI.createFileURI(mInOutDirectory + uri.path());
+		System.out.println("Loading " + tmpURI);
+
+		return mOrigURICOnverter.createInputStream(tmpURI, options);
 	}
 
 	@Override
@@ -65,11 +79,11 @@ public class DeploymentURIConverter implements URIConverter {
 		if (uri.isPlatform())
 		{
 			//in case of using plugin internal models, e.g. some_ip then copy the resource to the output directory too
-			tmpURI = URI.createFileURI(mOutDirectory + uri.lastSegment());
+			tmpURI = URI.createFileURI(mInOutDirectory + uri.lastSegment());
 		}
 		else
 		{
-			tmpURI = URI.createFileURI(mOutDirectory + uri.path());
+			tmpURI = URI.createFileURI(mInOutDirectory + uri.path());
 		}
 		System.out.println("Saving " + tmpURI);
 		return mOrigURICOnverter.createOutputStream(tmpURI);
@@ -78,8 +92,8 @@ public class DeploymentURIConverter implements URIConverter {
 	@Override
 	public OutputStream createOutputStream(URI uri, Map<?, ?> options)
 			throws IOException {
-		System.out.println("Saving " + URI.createFileURI(mOutDirectory + uri.path()));
-		return mOrigURICOnverter.createOutputStream(URI.createFileURI(mOutDirectory + uri.path()), options);
+		System.out.println("Saving " + URI.createFileURI(mInOutDirectory + uri.path()));
+		return mOrigURICOnverter.createOutputStream(URI.createFileURI(mInOutDirectory + uri.path()), options);
 	}
 
 	@Override
