@@ -27,32 +27,26 @@ public class DeploymentURIConverter implements URIConverter {
 		mInOutDirectory = outDirectory;
 	}
 
-	@Override
 	public URI normalize(URI uri) {
 		return mOrigURICOnverter.normalize(uri);
 	}
 
-	@Override
 	public Map<URI, URI> getURIMap() {
 		return mOrigURICOnverter.getURIMap();
 	}
 
-	@Override
 	public EList<URIHandler> getURIHandlers() {
 		return mOrigURICOnverter.getURIHandlers();
 	}
 
-	@Override
 	public URIHandler getURIHandler(URI uri) {
 		return mOrigURICOnverter.getURIHandler(uri);
 	}
 
-	@Override
 	public EList<ContentHandler> getContentHandlers() {
 		return mOrigURICOnverter.getContentHandlers();
 	}
 
-	@Override
 	public InputStream createInputStream(URI uri) throws IOException {
 		URI tmpURI = null;
 		
@@ -61,7 +55,6 @@ public class DeploymentURIConverter implements URIConverter {
 		return mOrigURICOnverter.createInputStream(tmpURI);
 	}
 
-	@Override
 	public InputStream createInputStream(URI uri, Map<?, ?> options)
 			throws IOException {
 		URI tmpURI = null;
@@ -72,7 +65,6 @@ public class DeploymentURIConverter implements URIConverter {
 		return mOrigURICOnverter.createInputStream(tmpURI, options);
 	}
 
-	@Override
 	public OutputStream createOutputStream(URI uri) throws IOException {
 		URI tmpURI = null;
 		
@@ -89,35 +81,29 @@ public class DeploymentURIConverter implements URIConverter {
 		return mOrigURICOnverter.createOutputStream(tmpURI);
 	}
 
-	@Override
 	public OutputStream createOutputStream(URI uri, Map<?, ?> options)
 			throws IOException {
 		System.out.println("Saving " + URI.createFileURI(mInOutDirectory + uri.path()));
 		return mOrigURICOnverter.createOutputStream(URI.createFileURI(mInOutDirectory + uri.path()), options);
 	}
 
-	@Override
 	public void delete(URI uri, Map<?, ?> options) throws IOException {
 		mOrigURICOnverter.delete(uri, options);
 	}
 
-	@Override
 	public Map<String, ?> contentDescription(URI uri, Map<?, ?> options)
 			throws IOException {
 		return mOrigURICOnverter.contentDescription(uri, options);
 	}
 
-	@Override
 	public boolean exists(URI uri, Map<?, ?> options) {
 		return mOrigURICOnverter.exists(uri, options);
 	}
 
-	@Override
 	public Map<String, ?> getAttributes(URI uri, Map<?, ?> options) {
 		return mOrigURICOnverter.getAttributes(uri, options);
 	}
 
-	@Override
 	public void setAttributes(URI uri, Map<String, ?> attributes,
 			Map<?, ?> options) throws IOException {
 		mOrigURICOnverter.setAttributes(uri, attributes, options);

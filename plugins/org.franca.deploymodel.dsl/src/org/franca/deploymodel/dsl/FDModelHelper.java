@@ -139,10 +139,10 @@ public class FDModelHelper implements CancelIndicator {
             if (fdeplImportURI.isRelative()) {
                if (uri.isRelative()) {
                   resourceSet.setURIConverter(new DeploymentURIConverter(xtextURICOnverter, 
-                     System.getProperty("user.dir") + "/" + uri.trimSegments(uri.segmentCount() - 1) + "/"));
+                     System.getProperty("user.dir") + "/" + uri.trimSegments(1) + "/"));
                } else {
                   resourceSet.setURIConverter(new DeploymentURIConverter(xtextURICOnverter, 
-                     uri.trimSegments(uri.segmentCount() - 1) + "/"));
+                     uri.trimSegments(1) + "/"));
                }
             }
             res = resourceSet.createResource(fdeplImportURI);
