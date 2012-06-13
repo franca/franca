@@ -350,7 +350,6 @@ public class FDModelHelper implements CancelIndicator {
       return true;
    }
 
-   @Override
    public boolean isCanceled() {
       // TODO Auto-generated method stub
       return false;
