@@ -13,99 +13,91 @@ import org.eclipse.emf.ecore.resource.URIHandler;
 
 public class DeploymentURIConverter implements URIConverter {
 
-	URIConverter mOrigURICOnverter = null;
-	String mInOutDirectory = null;
-	
-	public void setInOutDirectory(String inOutDirectory)
-	{
-		mInOutDirectory = inOutDirectory;
-	}
-	
-	public DeploymentURIConverter(URIConverter origURICOnverter, String outDirectory)
-	{
-        mOrigURICOnverter = origURICOnverter;
-		mInOutDirectory = outDirectory;
-	}
+   URIConverter mOrigURICOnverter = null;
+   String mInOutDirectory = null;
 
-	public URI normalize(URI uri) {
-		return mOrigURICOnverter.normalize(uri);
-	}
+   public void setInOutDirectory(String inOutDirectory) {
+      mInOutDirectory = URI.createFileURI(inOutDirectory).path().replaceAll("/+", "/");
+   }
 
-	public Map<URI, URI> getURIMap() {
-		return mOrigURICOnverter.getURIMap();
-	}
+   public DeploymentURIConverter(URIConverter origURICOnverter, String outDirectory) {
+      mOrigURICOnverter = origURICOnverter;
+      setInOutDirectory(outDirectory);
+   }
 
-	public EList<URIHandler> getURIHandlers() {
-		return mOrigURICOnverter.getURIHandlers();
-	}
+   public URI normalize(URI uri) {
+      return mOrigURICOnverter.normalize(uri);
+   }
 
-	public URIHandler getURIHandler(URI uri) {
-		return mOrigURICOnverter.getURIHandler(uri);
-	}
+   public Map<URI, URI> getURIMap() {
+      return mOrigURICOnverter.getURIMap();
+   }
 
-	public EList<ContentHandler> getContentHandlers() {
-		return mOrigURICOnverter.getContentHandlers();
-	}
+   public EList<URIHandler> getURIHandlers() {
+      return mOrigURICOnverter.getURIHandlers();
+   }
 
-	public InputStream createInputStream(URI uri) throws IOException {
-		URI tmpURI = null;
-		
-		tmpURI = URI.createFileURI(mInOutDirectory + uri.path());
-		System.out.println("Loading " + tmpURI);
-		return mOrigURICOnverter.createInputStream(tmpURI);
-	}
+   public URIHandler getURIHandler(URI uri) {
+      return mOrigURICOnverter.getURIHandler(uri);
+   }
 
-	public InputStream createInputStream(URI uri, Map<?, ?> options)
-			throws IOException {
-		URI tmpURI = null;
-		
-		tmpURI = URI.createFileURI(mInOutDirectory + uri.path());
-		System.out.println("Loading " + tmpURI);
+   public EList<ContentHandler> getContentHandlers() {
+      return mOrigURICOnverter.getContentHandlers();
+   }
 
-		return mOrigURICOnverter.createInputStream(tmpURI, options);
-	}
+   public InputStream createInputStream(URI uri) throws IOException {
+      URI tmpURI = null;
 
-	public OutputStream createOutputStream(URI uri) throws IOException {
-		URI tmpURI = null;
-		
-		if (uri.isPlatform())
-		{
-			//in case of using plugin internal models, e.g. some_ip then copy the resource to the output directory too
-			tmpURI = URI.createFileURI(mInOutDirectory + uri.lastSegment());
-		}
-		else
-		{
-			tmpURI = URI.createFileURI(mInOutDirectory + uri.path());
-		}
-		System.out.println("Saving " + tmpURI);
-		return mOrigURICOnverter.createOutputStream(tmpURI);
-	}
+      tmpURI = URI.createFileURI(mInOutDirectory + uri.path());
+      System.out.println("Loading " + tmpURI);
+      return mOrigURICOnverter.createInputStream(tmpURI);
+   }
 
-	public OutputStream createOutputStream(URI uri, Map<?, ?> options)
-			throws IOException {
-		System.out.println("Saving " + URI.createFileURI(mInOutDirectory + uri.path()));
-		return mOrigURICOnverter.createOutputStream(URI.createFileURI(mInOutDirectory + uri.path()), options);
-	}
+   public InputStream createInputStream(URI uri, Map<?, ?> options) throws IOException {
+      URI tmpURI = null;
 
-	public void delete(URI uri, Map<?, ?> options) throws IOException {
-		mOrigURICOnverter.delete(uri, options);
-	}
+      tmpURI = URI.createFileURI(mInOutDirectory + uri.path());
+      System.out.println("Loading " + tmpURI);
 
-	public Map<String, ?> contentDescription(URI uri, Map<?, ?> options)
-			throws IOException {
-		return mOrigURICOnverter.contentDescription(uri, options);
-	}
+      return mOrigURICOnverter.createInputStream(tmpURI, options);
+   }
 
-	public boolean exists(URI uri, Map<?, ?> options) {
-		return mOrigURICOnverter.exists(uri, options);
-	}
+   public OutputStream createOutputStream(URI uri) throws IOException {
+      URI tmpURI = null;
 
-	public Map<String, ?> getAttributes(URI uri, Map<?, ?> options) {
-		return mOrigURICOnverter.getAttributes(uri, options);
-	}
+      if (uri.isPlatform()) {
+         // in case of using plugin internal models, e.g. some_ip then copy the
+         // resource to the output directory too
+         tmpURI = URI.createFileURI(mInOutDirectory + uri.lastSegment());
+      } else {
+         tmpURI = URI.createFileURI(mInOutDirectory + uri.path());
+      }
+      System.out.println("Saving " + tmpURI);
+      return mOrigURICOnverter.createOutputStream(tmpURI);
+   }
 
-	public void setAttributes(URI uri, Map<String, ?> attributes,
-			Map<?, ?> options) throws IOException {
-		mOrigURICOnverter.setAttributes(uri, attributes, options);
-	}
+   public OutputStream createOutputStream(URI uri, Map<?, ?> options) throws IOException {
+      System.out.println("Saving " + URI.createFileURI(mInOutDirectory + uri.path()));
+      return mOrigURICOnverter.createOutputStream(URI.createFileURI(mInOutDirectory + uri.path()), options);
+   }
+
+   public void delete(URI uri, Map<?, ?> options) throws IOException {
+      mOrigURICOnverter.delete(uri, options);
+   }
+
+   public Map<String, ?> contentDescription(URI uri, Map<?, ?> options) throws IOException {
+      return mOrigURICOnverter.contentDescription(uri, options);
+   }
+
+   public boolean exists(URI uri, Map<?, ?> options) {
+      return mOrigURICOnverter.exists(uri, options);
+   }
+
+   public Map<String, ?> getAttributes(URI uri, Map<?, ?> options) {
+      return mOrigURICOnverter.getAttributes(uri, options);
+   }
+
+   public void setAttributes(URI uri, Map<String, ?> attributes, Map<?, ?> options) throws IOException {
+      mOrigURICOnverter.setAttributes(uri, attributes, options);
+   }
 }
