@@ -16,6 +16,11 @@ import java.util.Set;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.franca.core.franca.FArgument;
+import org.franca.core.franca.FBroadcast;
+import org.franca.core.franca.FMethod;
+import org.franca.core.franca.FrancaPackage;
+import org.franca.core.franca.FBasicTypeId;
 
 //TODO: this class is not depending on a particular DSL, should be factored to a common helper package
 public class ValidationHelpers
@@ -36,7 +41,7 @@ public class ValidationHelpers
       // iterate (once!) over all types in the model
       for(EObject i : items)
       {
-         String name = i.eGet(feature).toString();
+         String name = toName(i);
 
          // if the name already occurred we have a duplicate name and hence an error
          if(firstOccurrenceOfName.get(name) != null)
@@ -61,6 +66,66 @@ public class ValidationHelpers
       return nErrors;
    }
 
+ 
+   /**
+    * Helper function that computes the name of a method, broadcast including its signature. 
+    * Used to identify uniquely the element in a restricted scope. 
+    * 
+    * @param e the object to get the name
+    * @return the name
+    */
+   private static String toName(EObject e)
+   {
+      String name = new String();
+
+      if (e instanceof FMethod)
+      {
+         FMethod method = (FMethod) e;
+         
+         name += method.getName();
+         for (FArgument arg: method.getInArgs())
+         {
+            name += getTypeName(arg);
+         }
+         for (FArgument arg: method.getOutArgs())
+         {
+            name += getTypeName(arg);
+         }
+      } else if (e instanceof FBroadcast)
+      {
+         FBroadcast broadcast = (FBroadcast) e;
+         
+         name += broadcast.getName();
+         for (FArgument arg: broadcast.getOutArgs())
+         {
+            name += getTypeName(arg);
+         }   
+      } else 
+      {
+         name = e.eGet(FrancaPackage.Literals.FMODEL_ELEMENT__NAME).toString();
+      }
+      return name;
+   }
+   
+   private static String getTypeName(FArgument arg)
+   {
+      String typeName = new String();
+      
+      if (arg.getArray() != null) 
+      {
+         typeName += arg.getArray();
+      }
+      if (arg.getType().getPredefined().getValue() != FBasicTypeId.UNDEFINED_VALUE)
+      {
+         typeName += arg.getType().getPredefined().getLiteral();
+      }
+      if (arg.getType().getDerived().getName() != null)
+      {
+         typeName += arg.getType().getDerived().getName();
+      }
+      return typeName;
+   }
+   
    public static class Entry
    {
       public EObject object;
