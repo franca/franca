@@ -17,7 +17,7 @@ public class DeploymentURIConverter implements URIConverter {
    String mInOutDirectory = null;
 
    public void setInOutDirectory(String inOutDirectory) {
-      mInOutDirectory = URI.createFileURI(inOutDirectory).devicePath().replaceAll("/+", "/");
+      mInOutDirectory = URI.createFileURI(inOutDirectory + "/").devicePath().replaceAll("/+", "/");
    }
 
    public DeploymentURIConverter(URIConverter origURICOnverter, String outDirectory) {
