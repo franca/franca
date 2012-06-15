@@ -12,6 +12,7 @@ import org.eclipse.xtext.scoping.Scopes;
 import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider;
 import org.franca.core.franca.FArgument;
 import org.franca.core.franca.FArrayType;
+import org.franca.core.franca.FEnumerationType;
 import org.franca.core.franca.FStructType;
 import org.franca.core.franca.FType;
 import org.franca.deploymodel.dsl.FDModelHelper;
@@ -21,6 +22,8 @@ import org.franca.deploymodel.dsl.fDeploy.FDAttribute;
 import org.franca.deploymodel.dsl.fDeploy.FDBroadcast;
 import org.franca.deploymodel.dsl.fDeploy.FDElement;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumType;
+import org.franca.deploymodel.dsl.fDeploy.FDEnumValue;
+import org.franca.deploymodel.dsl.fDeploy.FDEnumeration;
 import org.franca.deploymodel.dsl.fDeploy.FDInterface;
 import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance;
 import org.franca.deploymodel.dsl.fDeploy.FDMethod;
@@ -77,6 +80,15 @@ public class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 		return Scopes.scopeFor(items);
 	}
 
+	public IScope scope_FDEnumeration_target (FDInterface ctxt, EReference ref) {
+		List<FType> items = Lists.newArrayList();
+		for(FType t : ctxt.getTarget().getTypes()) {
+			if (t instanceof FEnumerationType)
+				items.add(t);
+		}
+		return Scopes.scopeFor(items);
+	}
+
 
 	
 	public IScope scope_FDArgument_target (FDMethod ctxt, EReference ref) {
@@ -95,6 +107,10 @@ public class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 
 	public IScope scope_FDStructField_target (FDStruct ctxt, EReference ref) {
 		return Scopes.scopeFor(ctxt.getTarget().getElements());
+	}
+
+	public IScope scope_FDEnumValue_target (FDEnumeration ctxt, EReference ref) {
+		return Scopes.scopeFor(ctxt.getTarget().getEnumerators());
 	}
 
 	
@@ -137,6 +153,14 @@ public class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 	}
 
 	public IScope scope_FDProperty_decl (FDStructField owner, EReference ref) {
+		return getPropertyDecls(owner);
+	}
+
+	public IScope scope_FDProperty_decl (FDEnumeration owner, EReference ref) {
+		return getPropertyDecls(owner);
+	}
+
+	public IScope scope_FDProperty_decl (FDEnumValue owner, EReference ref) {
 		return getPropertyDecls(owner);
 	}
 

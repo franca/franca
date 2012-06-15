@@ -5,13 +5,23 @@
 * which accompanies this distribution, and is available at
 * http://www.eclipse.org/legal/epl-v10.html
 *******************************************************************************/
-package org.franca.core.framework;
+package org.franca.deploymodel.dsl;
 
-import org.franca.core.franca.FModel;
+/**
+ * Version number of the Franca Deployment IDL.
+ * Major/minor numbers are handled according to the Apache schema.
+ * 
+ * @author KBirken
+ */
+public class FDeployIDLVersion {
+	private static final int major = 1;
+	private static final int minor = 0;
 
-public interface IFrancaConnector extends IModelPersistenceManager {
+	public static int getMajor() {
+		return major;
+	}
 
-	// conversion to/from Franca models
-	public FModel toFranca (IModelContainer model);
-	public IModelContainer fromFranca (FModel fmodel);
+	public static int getMinor() {
+		return minor;
+	}
 }

@@ -5,6 +5,23 @@ package org.franca.deploymodel.dsl.ui.labeling;
 
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 import org.eclipse.xtext.ui.label.DefaultEObjectLabelProvider;
+import org.franca.core.franca.FType;
+import org.franca.deploymodel.dsl.fDeploy.FDArgument;
+import org.franca.deploymodel.dsl.fDeploy.FDArray;
+import org.franca.deploymodel.dsl.fDeploy.FDAttribute;
+import org.franca.deploymodel.dsl.fDeploy.FDBoolean;
+import org.franca.deploymodel.dsl.fDeploy.FDBroadcast;
+import org.franca.deploymodel.dsl.fDeploy.FDEnum;
+import org.franca.deploymodel.dsl.fDeploy.FDEnumerator;
+import org.franca.deploymodel.dsl.fDeploy.FDInteger;
+import org.franca.deploymodel.dsl.fDeploy.FDInterface;
+import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance;
+import org.franca.deploymodel.dsl.fDeploy.FDMethod;
+import org.franca.deploymodel.dsl.fDeploy.FDProperty;
+import org.franca.deploymodel.dsl.fDeploy.FDString;
+import org.franca.deploymodel.dsl.fDeploy.FDStruct;
+import org.franca.deploymodel.dsl.fDeploy.FDStructField;
+import org.franca.deploymodel.dsl.fDeploy.Import;
 
 import com.google.inject.Inject;
 
@@ -20,15 +37,123 @@ public class FDeployLabelProvider extends DefaultEObjectLabelProvider {
 		super(delegate);
 	}
 
-/*
-	//Labels and icons can be computed like this:
-	
-	String text(MyModel ele) {
-	  return "my "+ele.getName();
+	public String text(FDMethod element) {
+	   return element.getTarget().getName();
 	}
-	 
-    String image(MyModel ele) {
-      return "MyModel.gif";
-    }
-*/
+	
+	public String text(FDInterfaceInstance element) {
+		return element.getTarget().getName();
+	}
+	
+	public String text(FDInterface element) {
+		return element.getTarget().getName();
+	}
+	
+	public String text(FDAttribute element) {
+		return element.getTarget().getName();
+	}
+	
+	public String text(FDBroadcast element) {
+		return element.getTarget().getName();
+	}
+
+	public String text(FDArgument element) {
+		return element.getTarget().getName();
+	}
+	
+	public String text(FDArray element) {
+		return element.getTarget().getName();
+	}
+
+	public String text(FDStructField element) {
+		return element.getTarget().getName();
+	}
+	
+	public String text(FDStruct element) {
+		return element.getTarget().getName();
+	}
+
+	
+	public String text(FDProperty element) {
+		return element.getDecl().getName();
+	}
+	
+	public String text(FDInteger element) {
+		return String.valueOf(element.getValue());
+	}
+	
+	public String text(FDString element) {
+		return element.getValue();
+	}
+	
+	public String text(FDBoolean element) {
+		return element.getValue();
+	}
+	
+	public String text(FDEnum element) {
+		return element.getValue().getName();
+	}
+	
+	public String image(FDInterface element) 
+	{ 
+		return "interface.png"; 
+	}
+
+	public String image(FDAttribute element) 
+	{ 
+		return "attribute.gif"; 
+	}
+
+	public String image(FDMethod element) 
+	{ 
+		return "method.gif"; 
+	}
+
+	public String image(FDStructField element) 
+	{ 
+		return "field.gif"; 
+	}
+
+	public String image(FDEnum element) 
+	{ 
+		return "enum.gif"; 
+	}
+
+	public String image(FDEnumerator element) 
+	{ 
+		return "enumerator.gif"; 
+	}
+	
+	public String image(FType element) 
+	{ 
+		return "types.gif"; 
+	}
+
+	public String image(FDStruct element) 
+	{ 
+		return "struct.gif"; 
+	}
+
+	public String image(Import element) 
+	{ 
+		return "import.gif"; 
+	}
+	
+	public String image(FDBroadcast element) 
+	{ 
+		return "event.png"; 
+	}
+	
+	public String image(FDArgument element) 
+	{
+		if (element.eContainer() instanceof FDBroadcast 
+				|| (element.eContainer() instanceof FDMethod && ((FDMethod)element.eContainer()).getOutArguments().contains(element)))
+		{
+			return "overlay-out.gif";
+		}
+		else
+		{
+			return "overlay-in.gif";
+		}
+	}
 }

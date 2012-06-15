@@ -64,9 +64,14 @@ public class FrancaIDLFormatter extends AbstractDeclarativeFormatter {
 		c.setLinewrap(2).around(f.getFArrayTypeRule());
 		c.setLinewrap(2).around(f.getFEnumerationTypeRule());
 		c.setLinewrap(1).around(f.getFEnumeratorRule());
+		c.setLinewrap(1).around(f.getFFieldRule());
 		c.setLinewrap(2).around(f.getFStructTypeRule());
 		c.setLinewrap(1).after(f.getFTypedElementRule());
 		c.setLinewrap(2).around(f.getFMapTypeRule());
 		c.setLinewrap(2).around(f.getFTypeDefRule());
+		
+		//version information
+		c.setLinewrap(1).after(f.getFVersionAccess().getMajorAssignment_2_1());
+		c.setLinewrap(1).after(f.getFVersionAccess().getMinorAssignment_3_1());
 	}
 }

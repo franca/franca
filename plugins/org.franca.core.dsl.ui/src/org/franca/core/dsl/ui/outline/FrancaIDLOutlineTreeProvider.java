@@ -4,11 +4,15 @@
 package org.franca.core.dsl.ui.outline;
 
 import org.eclipse.xtext.ui.editor.outline.impl.DefaultOutlineTreeProvider;
+import org.franca.core.franca.FTypeDef;
 
 /**
  * customization of the default outline structure
  * 
  */
 public class FrancaIDLOutlineTreeProvider extends DefaultOutlineTreeProvider {
-	
+
+	protected boolean _isLeaf(FTypeDef feature) {
+	    return true;
+	} 
 }

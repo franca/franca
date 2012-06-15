@@ -3,7 +3,10 @@
 */
 package org.franca.deploymodel.dsl.ui.outline;
 
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.xtext.ui.editor.outline.IOutlineNode;
 import org.eclipse.xtext.ui.editor.outline.impl.DefaultOutlineTreeProvider;
+import org.franca.deploymodel.dsl.fDeploy.FDProperty;
 
 /**
  * customization of the default outline structure
@@ -11,4 +14,10 @@ import org.eclipse.xtext.ui.editor.outline.impl.DefaultOutlineTreeProvider;
  */
 public class FDeployOutlineTreeProvider extends DefaultOutlineTreeProvider {
 	
+	protected void _createChildren(IOutlineNode parentNode, FDProperty node) {
+		// skip FDComplexValue node in the outline
+	    for (EObject element : node.getValue().eContents()) {
+	        createNode(parentNode, element);
+	    }
+	}
 }
