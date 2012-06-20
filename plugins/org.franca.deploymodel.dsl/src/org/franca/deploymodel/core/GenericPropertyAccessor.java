@@ -9,6 +9,7 @@ package org.franca.deploymodel.core;
 
 import java.util.List;
 
+import org.eclipse.emf.ecore.EObject;
 import org.franca.deploymodel.dsl.FDModelHelper;
 import org.franca.deploymodel.dsl.fDeploy.FDBoolean;
 import org.franca.deploymodel.dsl.fDeploy.FDComplexValue;
@@ -197,7 +198,7 @@ public class GenericPropertyAccessor {
 	}
 
 	
-	private FDComplexValue getDefault (FDPropertyDecl decl) {
+	public static FDComplexValue getDefault (FDPropertyDecl decl) {
 		for(FDPropertyFlag flag : decl.getFlags()) {
 			if (flag.getDefault()!=null) {
 				return flag.getDefault();
@@ -206,4 +207,56 @@ public class GenericPropertyAccessor {
 		return null;
 	}
 	
+	/**
+	 * Returns the belonging property declaration of a deployment element.
+	 * 
+	 * @param property
+	 * @return
+	 */
+   public static FDPropertyDecl getPropertyDecl(EObject property) {
+      EObject current = property;
+
+      while (current != null && !(current instanceof FDPropertyDecl))
+         current = current.eContainer();
+      return (FDPropertyDecl) current;
+   }
+
+   /**
+    * Checks if the EObject is part of a deployment specification.
+    * 
+    * @param property
+    * @return
+    */
+   public static boolean isSpecification(EObject property) {
+      EObject current = property;
+
+      while (current != null) {
+         if (current instanceof FDPropertyDecl)
+            return true;
+         if (current instanceof FDProperty)
+            return false;
+         current = current.eContainer();
+      }
+
+      return false;
+   }
+
+   /**
+    * Checks if the EObject is the default value for its belonging property.
+    * 
+    * @param element 
+    * @return true if the EObject is the default value
+    */
+   public static boolean isDefault(EObject element) {
+      FDPropertyDecl decl = getPropertyDecl(element);
+      FDComplexValue value = getDefault(decl);
+
+      if (value != null && value.getSingle() != null) {
+         if (value.getSingle() instanceof FDEnum)
+            return ((FDEnum) value.getSingle()).getValue() == element;
+         else
+            return value.getSingle() == element;
+      }
+      return false;
+   }
 }
