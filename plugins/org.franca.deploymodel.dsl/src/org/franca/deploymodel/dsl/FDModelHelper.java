@@ -7,23 +7,17 @@
  *******************************************************************************/
 package org.franca.deploymodel.dsl;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.URIConverter;
 import org.eclipse.xtext.Constants;
-import org.eclipse.xtext.util.CancelIndicator;
 import org.franca.core.dsl.FrancaIDLStandaloneSetup;
 import org.franca.core.framework.FrancaHelpers;
 import org.franca.core.franca.FTypeRef;
+import org.franca.core.utils.ModelPersistenceHandler;
 import org.franca.deploymodel.dsl.fDeploy.FDArgument;
 import org.franca.deploymodel.dsl.fDeploy.FDArray;
 import org.franca.deploymodel.dsl.fDeploy.FDAttribute;
@@ -52,44 +46,63 @@ import com.google.inject.Injector;
 import com.google.inject.Provider;
 import com.google.inject.name.Named;
 
-public class FDModelHelper implements CancelIndicator {
+public class FDModelHelper {
 
    @Inject
-   private Provider<ResourceSet> resourceSetProvider;
-
-   @Inject  @Named(Constants.FILE_EXTENSIONS)
+   @Named(Constants.FILE_EXTENSIONS)
    private String fileExtension;
 
    public String getFileExtension() {
       return fileExtension;
    }
 
+   @Inject
+   private Provider<ResourceSet> resourceSetProvider;
+
    /**
-    * Load Franca Deployment model file (*.fdepl) and all imported files
-    * recursively.
+    * Load Franca Deployment model file (*.fdepl) and all imported files recursively.
     * 
-    * @param fileName name of FDeploy file (suffix .fdepl is optional)
+    * @param fileName
+    *           name of FDeploy file (suffix .fdepl is optional)
     * @return the root entity of the FDeploy model
     */
    public FDModel loadModel(String fileName) {
-      if (fileName == null)
-         return null;
+      return loadModel(fileName, null);
+   }
+
+   /**
+    * Load Franca Deployment model file (*.fdepl) and all imported files recursively.
+    * 
+    * @param fileName
+    *           name of FDeploy file (suffix .fdepl is optional)
+    * @param prependPath
+    *           @see ModelPersistenceHandler.loadModel, work relatively to a path
+    * @return the root entity of the FDeploy model
+    */
+   @SuppressWarnings("unused")
+   public FDModel loadModel(String fileName, String prependPath) {
       String fn = fileName;
-      if (!fileName.endsWith("." + fileExtension)) {
-         fileName += "." + fileExtension;
-      }
-      FDModel model = null;
-      try {
-         model = loadFDeployModel(fn);
-      } catch (IOException e) {
-         e.printStackTrace();
+
+      if (fn == null)
          return null;
+      if (!fn.endsWith("." + fileExtension)) {
+         fn += "." + fileExtension;
+      }
+      // load root model
+      ModelPersistenceHandler persistenceHandler = new ModelPersistenceHandler(resourceSetProvider.get(), prependPath);
+      FDModel model = (FDModel) persistenceHandler.loadModel(fn);
+
+      // and all its imports
+      for (Import fdeplImport : model.getImports()) {
+         if (persistenceHandler.loadModel(fdeplImport.getImportURI()) == null) {
+            System.out.println("Could not load imported file " + fdeplImport.getImportURI());
+         }
       }
 
       if (model == null) {
-         System.out.println("Error: Could not load Franca deployment model from file " + fn);
+         System.out.println("Error: Could not load Franca Deployment model from file " + fn);
       } else {
-         System.out.println("Loaded Franca deployment model " + fileName);
+         System.out.println("Loaded Franca Deployment model from file " + fn);
       }
       return model;
    }
@@ -97,121 +110,51 @@ public class FDModelHelper implements CancelIndicator {
    /**
     * Save a Franca Deployment model to file (*.fdepl).
     * 
-    * @param model  the root of model to be saved
-    * @param fileName name of Franca deployment model file (suffix .fdepl is optional)
+    * @param model
+    *           the root of model to be saved
+    * @param fileName
+    *           name of Franca deployment model file (suffix .fdepl is optional)
     * @return true if save could be completed successfully
     */
    public boolean saveModel(FDModel model, String fileName) {
+      return saveModel(model, fileName, null);
+   }
+
+   /**
+    * Save a Franca Deployment model to file (*.fdepl).
+    * 
+    * @param model
+    *           the root of model to be saved
+    * @param fileName
+    *           name of Franca deployment model file (suffix .fdepl is optional)
+    * @param prependPath
+    *           @see ModelPersistenceHandler.saveModel, work relatively to a path
+    * @return true if save could be completed successfully
+    */
+   public boolean saveModel(FDModel model, String fileName, String prependPath) {
       String fn = fileName;
+      boolean ret = true;
+
+      if (fn == null)
+         return false;
       if (!fn.endsWith("." + fileExtension)) {
          fn += "." + fileExtension;
       }
-      return saveFDeployModel(model, fn);
-   }
+      ModelPersistenceHandler persistenceHandler = new ModelPersistenceHandler(model.eResource().getResourceSet(),
+            prependPath);
 
-   private FDModel loadFDeployModel(String fileName) throws IOException {
-      return loadModel(URI.createFileURI(fileName));
-   }
+      // save the model itself
+      ret = ret && persistenceHandler.saveModel(model, fn);
 
-   public FDModel loadModel(URI uri) {
-      // prepare ResourceSet
-      ResourceSet resourceSet = resourceSetProvider.get();
-      URIConverter xtextURICOnverter = resourceSet.getURIConverter();
-
-      if (uri.isRelative()) {
-         resourceSet
-               .setURIConverter(new DeploymentURIConverter(xtextURICOnverter, System.getProperty("user.dir") + "/"));
-      }
-
-      Resource resource = resourceSet.getResource(uri, true);
-      HashMap<String, Object> options = new HashMap<String, Object>();
-      FDModel model = null;
-      try {
-         // load URI
-         resource.load(options);
-         model = (FDModel) resource.getContents().get(0);
-         // and all its imports
-         for (Import fdeplImport : model.getImports()) {
-            URI fdeplImportURI;
-            Resource res;
-
-            fdeplImportURI = URI.createFileURI(fdeplImport.getImportURI());
-            if (fdeplImportURI.isRelative()) {
-               if (uri.isRelative()) {
-                  resourceSet.setURIConverter(new DeploymentURIConverter(xtextURICOnverter, 
-                     System.getProperty("user.dir") + "/" + uri.trimSegments(1) + "/"));
-               } else {
-                  resourceSet.setURIConverter(new DeploymentURIConverter(xtextURICOnverter, 
-                     uri.trimSegments(1) + "/"));
-               }
-            }
-            res = resourceSet.createResource(fdeplImportURI);
-            res.load(options);
-         }
-      } catch (IOException e) {
-         e.printStackTrace();
-         return null;
-      }
-
-      return model;
-   }
-
-   /**
-    * 
-    * @param model, the mode to be saved, all the imported files are available
-    * @param filename, the filename to save the model
-    * @return
-    */
-   private boolean saveFDeployModel(FDModel model, String filename) {
-
-      URI fdeplUri = URI.createFileURI(new File(filename).getAbsolutePath());
-      ResourceSet resourceSet = resourceSetProvider.get();
-
-      Resource fdeplRes = resourceSet.createResource(fdeplUri);
-      fdeplRes.getContents().add(model);
-
+      // and all model imports
       for (Import fdeplImport : model.getImports()) {
-         String importFilename;
-         URI fdeplImportURI;
-         Resource res;
+         ret = ret
+               && persistenceHandler.saveModel(
+                     model.eResource().getResourceSet().getResource(URI.createURI(fdeplImport.getImportURI()), false)
+                           .getContents().get(0), fdeplImport.getImportURI());
+      }
 
-         importFilename = new File(fdeplImport.getImportURI()).getName();
-         fdeplImportURI = URI.createFileURI(importFilename);
-         res = resourceSet.createResource(fdeplImportURI);
-         res.getContents().add(resourceSet.getEObject(fdeplImportURI, true));
-      }
-      try {
-         fdeplRes.save(Collections.EMPTY_MAP);
-         System.out.println("Created Franca deployment model file " + filename);
-      } catch (IOException e) {
-         e.printStackTrace();
-      }
-      return true;
-   }
-
-   /**
-    * 
-    * @param container, a container with all the models and their corresponding  filenames to be saved
-    * @return
-    */
-   public boolean saveDeployment(DeploymentContainer container, String outDirectory) {
-      ResourceSet resourceSet = resourceSetProvider.get();
-      resourceSet.setURIConverter(new DeploymentURIConverter(resourceSet.getURIConverter(), outDirectory));
-
-      for (PersistentModel persModel : container) {
-         Resource res;
-         res = resourceSet.createResource(URI.createFileURI(persModel.getFilename()));
-         res.getContents().add(persModel.getModel());
-      }
-      for (int i = 0; i < resourceSet.getResources().size(); i++) {
-         Resource res = resourceSet.getResources().get(i);
-         try {
-            res.save(Collections.EMPTY_MAP);
-         } catch (IOException e) {
-            e.printStackTrace();
-         }
-      }
-      return true;
+      return ret;
    }
 
    // singleton
@@ -348,10 +291,5 @@ public class FDModelHelper implements CancelIndicator {
          }
       }
       return true;
-   }
-
-   public boolean isCanceled() {
-      // TODO Auto-generated method stub
-      return false;
    }
 }
