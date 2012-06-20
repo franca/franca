@@ -43,6 +43,7 @@ public class FrancaIDLFormatter extends AbstractDeclarativeFormatter {
 		c.setLinewrap(2).before(f.getFAnnotationBlockRule());
 		c.setLinewrap(1).after(f.getFAnnotationBlockRule());
 		c.setLinewrap(1).bounds(f.getFAnnotationRule(), f.getFAnnotationRule());
+		c.setNoLinewrap().after(f.getFAnnotationTypeRule());
 		
 		c.setLinewrap(0, 1, 2).before(f.getSL_COMMENTRule());
 		c.setLinewrap(0, 1, 2).before(f.getML_COMMENTRule());
@@ -59,16 +60,30 @@ public class FrancaIDLFormatter extends AbstractDeclarativeFormatter {
 		c.setLinewrap(1).around(f.getFBroadcastRule());
 		c.setLinewrap(1).around(f.getFArgumentRule());
 
+		
 		// types
-		c.setLinewrap(2).around(f.getFTypeRule());
-		c.setLinewrap(2).around(f.getFArrayTypeRule());
-		c.setLinewrap(2).around(f.getFEnumerationTypeRule());
+		c.setLinewrap(1).before(f.getFTypeRule());
+		c.setLinewrap(2).after(f.getFTypeRule());
+		
+		c.setLinewrap(1).before(f.getFArrayTypeRule());
+		c.setLinewrap(2).after(f.getFArrayTypeRule());
+		
+		c.setLinewrap(1).before(f.getFEnumerationTypeRule());
+		c.setLinewrap(2).after(f.getFEnumerationTypeRule());
+		
+		c.setLinewrap(1).before(f.getFStructTypeRule());
+		c.setLinewrap(2).after(f.getFStructTypeRule());
+		
+		c.setLinewrap(1).before(f.getFMapTypeRule());
+		c.setLinewrap(2).after(f.getFMapTypeRule());
+		
+		c.setLinewrap(1).before(f.getFTypeDefRule());
+		c.setLinewrap(2).after(f.getFTypeDefRule());
+		
+		c.setLinewrap(1).after(f.getFTypedElementRule());
 		c.setLinewrap(1).around(f.getFEnumeratorRule());
 		c.setLinewrap(1).around(f.getFFieldRule());
-		c.setLinewrap(2).around(f.getFStructTypeRule());
-		c.setLinewrap(1).after(f.getFTypedElementRule());
-		c.setLinewrap(2).around(f.getFMapTypeRule());
-		c.setLinewrap(2).around(f.getFTypeDefRule());
+		
 		
 		//version information
 		c.setLinewrap(1).after(f.getFVersionAccess().getMajorAssignment_2_1());
