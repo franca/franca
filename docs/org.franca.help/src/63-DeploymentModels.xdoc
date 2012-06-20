@@ -69,7 +69,7 @@ not belong into the IDL definition. This information will be stored in an instan
 of Franca's deployment models. In order to do this, a separate Franca Deployment Language
 is available, which consists of two parts:
 ul[
-	item[e[specification] of deployment properties (done only once per deployment target platform]
+	item[e[specification] of deployment properties (done only once per deployment target platform)]
 	item[e[definition] of actual values for deployment properties (done for every Franca interface
 		which has to be deployed on the target platform)
 	]
