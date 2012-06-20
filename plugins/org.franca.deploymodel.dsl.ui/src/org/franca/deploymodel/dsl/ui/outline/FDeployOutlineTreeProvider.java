@@ -6,7 +6,13 @@ package org.franca.deploymodel.dsl.ui.outline;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.ui.editor.outline.IOutlineNode;
 import org.eclipse.xtext.ui.editor.outline.impl.DefaultOutlineTreeProvider;
+import org.franca.deploymodel.core.GenericPropertyAccessor;
+import org.franca.deploymodel.dsl.fDeploy.FDComplexValue;
+import org.franca.deploymodel.dsl.fDeploy.FDEnumType;
 import org.franca.deploymodel.dsl.fDeploy.FDProperty;
+import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl;
+import org.franca.deploymodel.dsl.fDeploy.FDTypeRef;
+import org.franca.deploymodel.dsl.fDeploy.FDValue;
 
 /**
  * customization of the default outline structure
@@ -14,10 +20,50 @@ import org.franca.deploymodel.dsl.fDeploy.FDProperty;
  */
 public class FDeployOutlineTreeProvider extends DefaultOutlineTreeProvider {
 	
-	protected void _createChildren(IOutlineNode parentNode, FDProperty node) {
-		// skip FDComplexValue node in the outline
-	    for (EObject element : node.getValue().eContents()) {
-	        createNode(parentNode, element);
-	    }
-	}
+   protected void _createChildren(IOutlineNode parentNode, FDProperty node) {
+      // skip FDComplexValue node in the outline
+      for (EObject element : node.getValue().eContents()) {
+         createNode(parentNode, element);
+      }
+   }
+
+   protected void _createChildren(IOutlineNode parentNode, FDTypeRef node) {
+      if (node.getComplex() != null)
+         for (EObject element : node.getComplex().eContents())
+            createNode(parentNode, element);
+      if (node.getPredefined() != null)
+         createNode(parentNode, node);
+   }
+   
+   /**
+    * Skips all intermediary nodes in the outline and go directly to the default value and alternatives.
+    * Used in the outline of a deployment specification.
+    * 
+    * @param parentNode
+    * @param node
+    */
+   protected void _createChildren(IOutlineNode parentNode, FDPropertyDecl node) {
+      // 
+
+      if (node.getType().getComplex() != null)
+         for (EObject element : node.getType().getComplex().eContents())
+            createNode(parentNode, element);
+
+     
+         FDComplexValue value = GenericPropertyAccessor.getDefault(node);
+         if (value != null && (node.getType().getComplex() == null || !(node.getType().getComplex() instanceof FDEnumType)))
+            if (value.getSingle() != null)
+               createNode(parentNode, value.getSingle());
+            else
+               for (FDValue arrayVal : value.getArray().getValues())
+                  createNode(parentNode, arrayVal);
+   }
+  
+   protected boolean _isLeaf(FDPropertyDecl feature) {
+      if (feature.getFlags().size() == 0
+            || (feature.getFlags().size() == 1 && feature.getFlags().get(0).getOptional() != null))
+         return true;
+      return false;
+   }
+
 }
