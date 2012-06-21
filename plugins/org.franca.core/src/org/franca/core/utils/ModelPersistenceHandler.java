@@ -22,19 +22,14 @@ public class ModelPersistenceHandler {
     */
    private String prependPath;
    
-   /**
-    *  Flag to indicate that we must set a new relative path when saving the root model. The imported files will inherit
-    *  this path.
-    */
-   private boolean isFirstPersistenceAction = true;
    
    /**
     * Creating an object used to save or to load a set of related models from files.
     *
-    * Working relatively to a path example: model is in prependPath/fileName and is importing a file like importedFile.
-    * The importedFile is to be found in prependPath. 
+    * Working relatively to a path example: model is in prependPath/model.fidl and is importing a file like importedFile.fidl.
+    * The importedFile.fidl is to be found in prependPath. 
     * 
-    * Working with absolute path example: model is in /my/nice/path/to/model.fidl and importing importedFile. The 
+    * Working with absolute path example: model is in /my/nice/path/to/model.fidl and importing importedFile.fidl. The 
     * importedFile is to be found in /my/nice/path/to/
 
     * @param newResourceSet the resource set to save all the loaded files/ where all the models to be saved exist
@@ -44,6 +39,10 @@ public class ModelPersistenceHandler {
    {
       resourceSet = newResourceSet;  
       prependPath = newPrependPath;
+      if (prependPath != null)
+      {
+         resourceSet.setURIConverter(new FrancaURIConverter(prependPath));
+      }
    }
 
    /**
@@ -58,7 +57,11 @@ public class ModelPersistenceHandler {
       HashMap<String,Object> options = new HashMap<String,Object>();
       Resource resource =null;
       
-      uri = setEffectiveRelativePath(uri, resourceSet, prependPath);
+      if (prependPath == null)
+      {
+         prependPath = uri.trimSegments(1).toString();
+         resourceSet.setURIConverter(new FrancaURIConverter(prependPath));
+      }
       options.put(XMLResource.OPTION_DEFER_ATTACHMENT, true);
       options.put(XMLResource.OPTION_DEFER_IDREF_RESOLUTION, true);
       try {
@@ -82,8 +85,17 @@ public class ModelPersistenceHandler {
    {
       URI uri = URI.createFileURI(fileName);
       
-      uri = setEffectiveRelativePath(uri, resourceSet, prependPath);
-      
+      if (prependPath == null)
+      {
+         prependPath = uri.trimSegments(1).toString();
+         resourceSet.setURIConverter(new FrancaURIConverter(prependPath));
+      }
+      if (model.eResource() == null) {
+         // create a resource containing the model
+         Resource resource = resourceSet.createResource(URI.createURI(fileName));
+         resource.getContents().add(model);
+      }
+
       try {
          model.eResource().save(Collections.EMPTY_MAP);
       } catch (IOException e) {
@@ -93,29 +105,11 @@ public class ModelPersistenceHandler {
       return true;
    }
    
-   /**
-    * Helper method to be used on loading and saving models.
-    * 
-    * @param uri the URI of the file to be saved
-    * @param resourceSet the resource set the model belongs to
-    * @param prependPath a path to work relatively
-    */
-   private URI setEffectiveRelativePath(URI uri, ResourceSet resourceSet, String prependPath)
-   {
-      if (!uri.isRelative())
-      {
-         //if /my/nice/path/to/model.fidl => load all files relatively to path /my/nice/path/to/
-         resourceSet.setURIConverter(new FrancaURIConverter(uri.trimSegments(1).toString()));
-      } else if (prependPath != null) {
-         //if model.fidl => load all files relatively to prependPath/
-         resourceSet.setURIConverter(new FrancaURIConverter(prependPath));
-      } else if (isFirstPersistenceAction) {
-         //if a/relative/path/model.fidl => load file model.fidl relatively to a/relative/path
-         resourceSet.setURIConverter(new FrancaURIConverter(uri.trimSegments(1).toString()));
-         uri = URI.createURI(uri.lastSegment());
-      }
-      isFirstPersistenceAction = false;
-      return uri;
+   public ResourceSet getResourceSet() {
+      return resourceSet;
    }
 
+   public String getPrependPath() {
+      return prependPath;
+   }
 }
