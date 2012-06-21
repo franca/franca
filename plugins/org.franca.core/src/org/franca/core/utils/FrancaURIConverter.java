@@ -50,31 +50,41 @@ public class FrancaURIConverter implements URIConverter {
    }
 
    public InputStream createInputStream(URI uri) throws IOException {
-      URI tmpURI = URI.createFileURI(relativePath + uri.path());
+      URI tmpURI = computeURI(uri);
       
       System.out.println("Loading " + tmpURI);
       return xTextURIConverter.createInputStream(tmpURI);
    }
 
    public InputStream createInputStream(URI uri, Map<?, ?> options) throws IOException {
-      URI tmpURI = URI.createURI(relativePath + uri.path());
+      URI tmpURI = computeURI(uri);
       
       System.out.println("Loading " + tmpURI);
       return xTextURIConverter.createInputStream(tmpURI, options);
    }
 
    public OutputStream createOutputStream(URI uri) throws IOException {
-      URI tmpURI = URI.createURI(relativePath + uri.path());
+      URI tmpURI = computeURI(uri);
       
       System.out.println("Saving " + tmpURI);
       return xTextURIConverter.createOutputStream(tmpURI);
    }
 
    public OutputStream createOutputStream(URI uri, Map<?, ?> options) throws IOException {
-      URI tmpURI = URI.createURI(relativePath + uri.path());
+      URI tmpURI = computeURI(uri);
       
       System.out.println("Saving " + tmpURI);
       return xTextURIConverter.createOutputStream(URI.createURI(relativePath + uri.path()), options);
+   }
+
+   private URI computeURI(URI uri) {
+      URI tmpURI = uri;
+
+      if (uri.isRelative()) {
+         tmpURI = URI.createURI(relativePath + uri.toString());
+      }
+
+      return tmpURI;
    }
 
    public void delete(URI uri, Map<?, ?> options) throws IOException {

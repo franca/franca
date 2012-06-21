@@ -53,29 +53,41 @@ public class FrancaIDLHelpers {
     * 
     * @return the root entity of the Franca IDL model
     */
-   @SuppressWarnings("unused")
    public FModel loadModel(String fileName, String prependPath) {
-      if (fileName == null)
-         return null;
-      if (!fileName.endsWith("." + fileExtension)) {
-         fileName += "." + fileExtension;
-      }
       ModelPersistenceHandler persistenceHandler = new ModelPersistenceHandler(resourceSetProvider.get(), prependPath);
 
-      // load root model
-      FModel model = (FModel) persistenceHandler.loadModel(fileName);
+      return loadModelRec(fileName, persistenceHandler);
+   }
 
-      // and all its imports
+   /**
+    * Recursive helper function.
+    * 
+    * @param model
+    * @param fileName
+    * @param persistenceHandler
+    * @return
+    */
+   @SuppressWarnings("unused")
+   public FModel loadModelRec(String fileName, ModelPersistenceHandler persistenceHandler) {
+      String fn = fileName;
+
+      if (fn == null)
+         return null;
+      if (!fn.endsWith("." + fileExtension)) {
+         fn += "." + fileExtension;
+      }
+      // load root model
+      FModel model = (FModel) persistenceHandler.loadModel(fn);
+
+      // and all its imports recursively
       for (Import fidlImport : model.getImports()) {
-         if (persistenceHandler.loadModel(fidlImport.getImportURI()) == null) {
-            System.out.println("Could not load imported file " + fidlImport.getImportURI());
-         }
+         loadModelRec(fidlImport.getImportURI(), persistenceHandler);
       }
 
       if (model == null) {
-         System.out.println("Error: Could not load Franca IDL model from file " + fileName);
+         System.out.println("Error: Could not load Franca IDL model from file " + fn);
       } else {
-         System.out.println("Loaded Franca IDL model from file " + fileName);
+         System.out.println("Loaded Franca IDL model from file " + fn);
       }
       return model;
    }
@@ -106,28 +118,48 @@ public class FrancaIDLHelpers {
     * @return true if save could be completed successfully
     */
    public boolean saveModel(FModel model, String fileName, String prependPath) {
+      ResourceSet resourceSet = null;
+
+      if (model.eResource() == null) {
+         // create a new ResourceSet for this new created model
+         resourceSet = resourceSetProvider.get();
+      } else {
+         // use the existing ResourceSet associated to the model
+         resourceSet = model.eResource().getResourceSet();
+      }
+      ModelPersistenceHandler persistenceHandler = new ModelPersistenceHandler(resourceSet, prependPath);
+      return saveModelRec(model, fileName, persistenceHandler);
+   }
+
+   /**
+    * Recursive helper function.
+    * 
+    * @param model
+    * @param fileName
+    * @param persistenceHandler
+    * @return
+    */
+   private boolean saveModelRec(FModel model, String fileName, ModelPersistenceHandler persistenceHandler) {
       String fn = fileName;
       boolean ret = true;
 
       if (!fn.endsWith("." + fileExtension)) {
          fn += "." + fileExtension;
       }
-      ModelPersistenceHandler persistenceHandler = new ModelPersistenceHandler(model.eResource().getResourceSet(),
-            prependPath);
-
-      // save all model imports
+      // save all model imports recursively
       for (Import fidlImport : model.getImports()) {
          ret = ret
-               && persistenceHandler.saveModel(
-                     model.eResource().getResourceSet().getResource(URI.createURI(fidlImport.getImportURI()), false)
-                           .getContents().get(0), fidlImport.getImportURI());
+               && saveModelRec((FModel) persistenceHandler.getResourceSet().getResource(URI.createURI(fidlImport.getImportURI()), false)
+                     .getContents().get(0), fidlImport.getImportURI(), persistenceHandler);
       }
       // save the root model
       ret = ret && persistenceHandler.saveModel(model, fn);
 
       return ret;
+      
    }
-
+   
+   
    // singleton
    private static FrancaIDLHelpers instance = null;
 

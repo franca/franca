@@ -14,8 +14,10 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.xtext.Constants;
+import org.franca.core.dsl.FrancaIDLHelpers;
 import org.franca.core.dsl.FrancaIDLStandaloneSetup;
 import org.franca.core.framework.FrancaHelpers;
+import org.franca.core.franca.FModel;
 import org.franca.core.franca.FTypeRef;
 import org.franca.core.utils.ModelPersistenceHandler;
 import org.franca.deploymodel.dsl.fDeploy.FDArgument;
@@ -76,11 +78,30 @@ public class FDModelHelper {
     * @param fileName
     *           name of FDeploy file (suffix .fdepl is optional)
     * @param prependPath
-    *           @see ModelPersistenceHandler.loadModel, work relatively to a path
+    * @see ModelPersistenceHandler.loadModel, work relatively to a path
     * @return the root entity of the FDeploy model
     */
-   @SuppressWarnings("unused")
    public FDModel loadModel(String fileName, String prependPath) {
+      ModelPersistenceHandler persistenceHandler = new ModelPersistenceHandler(resourceSetProvider.get(), prependPath);
+
+      return (FDModel) loadModelRec(fileName, persistenceHandler);
+   }
+
+   /**
+    * Recursive helper function.
+    * 
+    * @param model
+    * @param fileName
+    * @param persistenceHandler
+    * @return
+    */
+   @SuppressWarnings("unused")
+   public EObject loadModelRec(String fileName, ModelPersistenceHandler persistenceHandler) {
+
+      //a FDModel can references FModels, if a FModel is to be saved then forward the request to FrancaIDLHelpers
+      if (fileName.endsWith(FrancaIDLHelpers.instance().getFileExtension())) {
+         FrancaIDLHelpers.instance().loadModel(fileName, persistenceHandler.getPrependPath());
+      }
       String fn = fileName;
 
       if (fn == null)
@@ -89,14 +110,11 @@ public class FDModelHelper {
          fn += "." + fileExtension;
       }
       // load root model
-      ModelPersistenceHandler persistenceHandler = new ModelPersistenceHandler(resourceSetProvider.get(), prependPath);
       FDModel model = (FDModel) persistenceHandler.loadModel(fn);
 
-      // and all its imports
+      // and all its imports recursively
       for (Import fdeplImport : model.getImports()) {
-         if (persistenceHandler.loadModel(fdeplImport.getImportURI()) == null) {
-            System.out.println("Could not load imported file " + fdeplImport.getImportURI());
-         }
+         loadModelRec(fdeplImport.getImportURI(), persistenceHandler);
       }
 
       if (model == null) {
@@ -128,10 +146,38 @@ public class FDModelHelper {
     * @param fileName
     *           name of Franca deployment model file (suffix .fdepl is optional)
     * @param prependPath
-    *           @see ModelPersistenceHandler.saveModel, work relatively to a path
+    * @see ModelPersistenceHandler.saveModel, work relatively to a path
     * @return true if save could be completed successfully
     */
    public boolean saveModel(FDModel model, String fileName, String prependPath) {
+      ResourceSet resourceSet = null;
+
+      if (model.eResource() == null) {
+         // create a new ResourceSet for this new created model
+         resourceSet = resourceSetProvider.get();
+      } else {
+         // use the existing ResourceSet associated to the model
+         resourceSet = model.eResource().getResourceSet();
+      }
+      ModelPersistenceHandler persistenceHandler = new ModelPersistenceHandler(resourceSet, prependPath);
+
+      return saveModelRec(model, fileName, persistenceHandler);
+   }
+
+   /**
+    * Recursive helper function.
+    * 
+    * @param model
+    * @param fileName
+    * @param persistenceHandler
+    * @return
+    */
+   private boolean saveModelRec(EObject model, String fileName, ModelPersistenceHandler persistenceHandler) {
+
+      //a FDModel can references FModels, if a FModel is to be saved then forward the request to FrancaIDLHelpers
+      if (model instanceof FModel) {
+         return FrancaIDLHelpers.instance().saveModel((FModel) model, fileName, persistenceHandler.getPrependPath());
+      }
       String fn = fileName;
       boolean ret = true;
 
@@ -140,18 +186,15 @@ public class FDModelHelper {
       if (!fn.endsWith("." + fileExtension)) {
          fn += "." + fileExtension;
       }
-      ModelPersistenceHandler persistenceHandler = new ModelPersistenceHandler(model.eResource().getResourceSet(),
-            prependPath);
-
-      // save the model itself
+      // save the root model
       ret = ret && persistenceHandler.saveModel(model, fn);
 
-      // and all model imports
-      for (Import fdeplImport : model.getImports()) {
+      // save all model imports recursively
+      for (Import fdeplImport : ((FDModel) model).getImports()) {
          ret = ret
-               && persistenceHandler.saveModel(
-                     model.eResource().getResourceSet().getResource(URI.createURI(fdeplImport.getImportURI()), false)
-                           .getContents().get(0), fdeplImport.getImportURI());
+               && saveModelRec(
+                     persistenceHandler.getResourceSet().getResource(URI.createURI(fdeplImport.getImportURI()), false)
+                           .getContents().get(0), fdeplImport.getImportURI(), persistenceHandler);
       }
 
       return ret;
