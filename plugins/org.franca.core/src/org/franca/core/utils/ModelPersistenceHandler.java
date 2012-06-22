@@ -53,7 +53,7 @@ public class ModelPersistenceHandler {
     * @return the root model 
     */
    public EObject loadModel(String fileName) {
-      URI uri = URI.createFileURI(fileName);
+      URI uri = URI.createURI(fileName);
       HashMap<String,Object> options = new HashMap<String,Object>();
       Resource resource =null;
       
@@ -61,6 +61,7 @@ public class ModelPersistenceHandler {
       {
          prependPath = uri.trimSegments(1).toString();
          resourceSet.setURIConverter(new FrancaURIConverter(prependPath));
+         uri = URI.createURI(uri.lastSegment());
       }
       options.put(XMLResource.OPTION_DEFER_ATTACHMENT, true);
       options.put(XMLResource.OPTION_DEFER_IDREF_RESOLUTION, true);
@@ -83,12 +84,13 @@ public class ModelPersistenceHandler {
     */
    public boolean saveModel(EObject model, String fileName)
    {
-      URI uri = URI.createFileURI(fileName);
+      URI uri = URI.createURI(fileName);
       
       if (prependPath == null)
       {
          prependPath = uri.trimSegments(1).toString();
          resourceSet.setURIConverter(new FrancaURIConverter(prependPath));
+         uri = URI.createURI(uri.lastSegment());
       }
       if (model.eResource() == null) {
          // create a resource containing the model
