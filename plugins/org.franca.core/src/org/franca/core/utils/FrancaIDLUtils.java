@@ -20,8 +20,9 @@ import org.franca.core.franca.FType;
 import org.franca.core.franca.FTypeDef;
 import org.franca.core.franca.FTypeRef;
 import org.franca.core.franca.FUnionType;
-import org.franca.core.utils.Digraph.Edge;
-import org.franca.core.utils.Digraph.HasCyclesException;
+import org.franca.core.utils.digraph.Digraph;
+import org.franca.core.utils.digraph.Edge;
+import org.franca.core.utils.digraph.Digraph.HasCyclesException;
 
 /**
  * Utilities for Franca.
@@ -52,7 +53,7 @@ public class FrancaIDLUtils {
             FType childType = specificType.getElementType().getDerived();
 
             if (childType != null) {
-               typesDigraph.addEdge(new Digraph.Node<FType>(ftype), new Digraph.Node<FType>(childType));
+               typesDigraph.addEdge(ftype, childType);
             }
          }
          if (ftype instanceof FEnumerationType) {
@@ -60,7 +61,7 @@ public class FrancaIDLUtils {
             FType childType = specificType.getBase();
 
             if (childType != null) {
-               typesDigraph.addEdge(new Digraph.Node<FType>(ftype), new Digraph.Node<FType>(childType));
+               typesDigraph.addEdge(ftype, childType);
             }
          }
          if (ftype instanceof FStructType) {
@@ -68,13 +69,13 @@ public class FrancaIDLUtils {
             FType childType = specificType.getBase();
 
             if (childType != null) {
-               typesDigraph.addEdge(new Digraph.Node<FType>(ftype), new Digraph.Node<FType>(childType));
+               typesDigraph.addEdge(ftype, childType);
             }
             for (Iterator<FField> filedsIt = specificType.getElements().iterator(); filedsIt.hasNext();) {
                childType = filedsIt.next().getType().getDerived();
 
                if (childType != null) {
-                  typesDigraph.addEdge(new Digraph.Node<FType>(ftype), new Digraph.Node<FType>(childType));
+                  typesDigraph.addEdge(ftype, childType);
                }
             }
          }
@@ -83,13 +84,13 @@ public class FrancaIDLUtils {
             FType childType = specificType.getBase();
 
             if (childType != null) {
-               typesDigraph.addEdge(new Digraph.Node<FType>(ftype), new Digraph.Node<FType>(childType));
+               typesDigraph.addEdge(ftype, childType);
             }
             for (Iterator<FField> filedsIt = specificType.getElements().iterator(); filedsIt.hasNext();) {
                childType = filedsIt.next().getType().getDerived();
 
                if (childType != null) {
-                  typesDigraph.addEdge(new Digraph.Node<FType>(ftype), new Digraph.Node<FType>(childType));
+                  typesDigraph.addEdge(ftype, childType);
                }
             }
          }
@@ -98,11 +99,11 @@ public class FrancaIDLUtils {
             FType childType = specificType.getKeyType().getDerived();
 
             if (childType != null) {
-               typesDigraph.addEdge(new Digraph.Node<FType>(ftype), new Digraph.Node<FType>(childType));
+               typesDigraph.addEdge(ftype, childType);
             }
             childType = specificType.getValueType().getDerived();
             if (childType != null) {
-               typesDigraph.addEdge(new Digraph.Node<FType>(ftype), new Digraph.Node<FType>(childType));
+               typesDigraph.addEdge(ftype, childType);
             }
          }
          if (ftype instanceof FTypeRef) {
@@ -110,7 +111,7 @@ public class FrancaIDLUtils {
             FType childType = specificType.getDerived();
 
             if (childType != null) {
-               typesDigraph.addEdge(new Digraph.Node<FType>(ftype), new Digraph.Node<FType>(childType));
+               typesDigraph.addEdge(ftype, childType);
             }
 
          }
@@ -119,7 +120,7 @@ public class FrancaIDLUtils {
             FType childType = specificType.getActualType().getDerived();
 
             if (childType != null) {
-               typesDigraph.addEdge(new Digraph.Node<FType>(ftype), new Digraph.Node<FType>(childType));
+               typesDigraph.addEdge(ftype, childType);
             }
          }
 
@@ -130,12 +131,12 @@ public class FrancaIDLUtils {
       } catch (HasCyclesException e) {
          e.printStackTrace();
          String cycles = new String();
-         for (Iterator<Digraph.Edge<FType>> it = typesDigraph.edgesIterator(); it.hasNext();)
+         for (Iterator<Edge<FType>> it = typesDigraph.edgesIterator(); it.hasNext();)
          {
             Edge<FType> edge = it.next();
-            cycles += "(" + ((FType)edge.from.nodeType).getName() + "->" + ((FType)edge.to.nodeType).getName() + ")";
+            cycles += "(" + edge.from.value.getName() + "->" + edge.to.value.getName() + ")";
          }
-         System.out.println("The cycles detected in: " + cycles);
+         System.out.println("Cycles were detected in: " + cycles);
       }
       return null;
    }
