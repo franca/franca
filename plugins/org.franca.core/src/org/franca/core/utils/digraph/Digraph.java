@@ -37,6 +37,13 @@ public class Digraph<T> {
 	}
 
 	/**
+	 * Exception to signal that an operation is tried on an edge not existing in the digraph.
+	 */
+	static public class NotExistingEdge extends Exception {
+		private static final long serialVersionUID = -2629709105411250583L;	
+	}
+
+	/**
 	 * Holds all the digraph nodes.
 	 */
 	Set<Node<T>> nodes = new HashSet<Node<T>>();
@@ -88,9 +95,9 @@ public class Digraph<T> {
 		if (!nodesMap.containsKey(toNode)) {
 			addNode(toNode);
 		}
-		nodesMap.get(fromNode).outEdges.add(nodesMap.get(toNode));
-		nodesMap.get(toNode).inEdges.add(nodesMap.get(fromNode));
-		countEdges++;
+		if (nodesMap.get(fromNode).outEdges.add(nodesMap.get(toNode))
+				&& nodesMap.get(toNode).inEdges.add(nodesMap.get(fromNode)))
+			countEdges++;
 	}
 
 	/**
@@ -98,17 +105,21 @@ public class Digraph<T> {
 	 * 
 	 * @param fromNode
 	 * @param toNode
+	 * @throws NotExistingEdge 
 	 */
-	public void removeEdge(T fromNode, T toNode) {
+	public void removeEdge(T fromNode, T toNode) throws NotExistingEdge {
+
 		if (!nodesMap.containsKey(fromNode)) {
-			return;
+			throw new NotExistingEdge();
 		}
 		if (!nodesMap.containsKey(toNode)) {
-			return;
+			throw new NotExistingEdge();
 		}
 		if (nodesMap.get(fromNode).outEdges.remove(nodesMap.get(toNode))
 				&& nodesMap.get(toNode).inEdges.remove(nodesMap.get(fromNode)))
 			countEdges--;
+		else
+			throw new NotExistingEdge();
 	}
 
 	/**
@@ -147,11 +158,19 @@ public class Digraph<T> {
 		while (!S.empty()) {
 			Node<T> n = S.pop();
 			L.add((T) n.value);
-			for (Iterator<Node<T>> it = n.outEdges.iterator(); it.hasNext();) {
-				Node<T> m = it.next();
-				removeEdge(n.value, m.value);
-				if (m.inEdges.size() == 0) {
-					S.push(m);
+			List<Node<T>> outEdges = new ArrayList<Node<T>>();
+			
+			outEdges.addAll(n.outEdges);
+			for (Iterator<Node<T>> it = outEdges.iterator(); it.hasNext();) {
+				try {
+					Node<T> m = it.next();
+					removeEdge(n.value, m.value);
+					if (m.inEdges.size() == 0)
+						S.push(m);
+				}
+				catch (NotExistingEdge edgeEx)
+				{
+					edgeEx.printStackTrace();
 				}
 			}
 		}
@@ -164,11 +183,14 @@ public class Digraph<T> {
 				removedEdges = false;
 				for (Iterator<Node<T>> it = nodes.iterator(); it.hasNext();) {
 					Node<T> node = it.next();
-					//search the nodes with only incoming edges and remove all its edges from the digraph
+					// search the nodes with only incoming edges and remove all its edges from the digraph
 					if (node.outEdges.size() == 0) {
-						for (Iterator<Node<T>> inIt = node.inEdges.iterator(); inIt.hasNext();)
-						{
-							removeEdge(inIt.next().value, node.value);
+						for (Iterator<Node<T>> inIt = node.inEdges.iterator(); inIt.hasNext();) {
+							try {
+								removeEdge(inIt.next().value, node.value);
+							} catch (NotExistingEdge e) {
+								e.printStackTrace();
+							}
 							removedEdges = true;
 						}
 					}
@@ -197,5 +219,34 @@ public class Digraph<T> {
 	public Iterator<Edge<T>> edgesIterator() {
 		return new EdgesIterator<T>(this);
 	}
+	
+	public String toString()
+	{
+		String tmp = "Digraph:";
+		/*
+		for (Iterator<Node<T>> nodesIt = nodes.iterator(); nodesIt.hasNext();)
+		{
+			Node<T> node = nodesIt.next();
+			
+			for (Iterator<Node<T>> edgesIt = node.inEdges.iterator(); edgesIt.hasNext();)
+				tmp += "(" + edgesIt.next().value + "->" + node.value + "),";
+			for (Iterator<Node<T>> edgesIt = node.outEdges.iterator(); edgesIt.hasNext();)
+				tmp += "(" + node.value + "->" + edgesIt.next().value + "),";
 
+		}*/
+		for (Iterator<T> it = nodesIterator(); it.hasNext();)
+		{
+			tmp += it.next() + ",";
+		}
+		tmp += "\n";
+		tmp = "Edges: ";
+		for (Iterator<Edge<T>> it = edgesIterator(); it.hasNext();)
+		{
+			Edge<T> edge = it.next();
+			tmp += "(" + edge.from.value + "->" + edge.to.value + "),";  
+		}
+		tmp += "\n";
+		
+		return tmp;
+	}
 }

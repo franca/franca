@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.franca.core.utils.digraph.*;
 import org.franca.core.utils.digraph.Digraph.HasCyclesException;
+import org.franca.core.utils.digraph.Digraph.NotExistingEdge;
 
 /**
  * Testcase for the Franca=>HTML transformation toolchain.
@@ -52,7 +53,11 @@ public class DigraphTest {
 			}
 			System.out.println("Cycles were detected in: " + cycles);
 		}
-		digraph.removeEdge("A", "B");
+		try {
+			digraph.removeEdge("A", "B");
+		} catch (NotExistingEdge e1) {
+			e1.printStackTrace();
+		}
 		digraphAsString ="Digraph:";
 		for (Iterator<Edge<String>> it = digraph.edgesIterator(); it.hasNext();) {
 			Edge<String> edge = it.next();

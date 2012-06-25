@@ -31,8 +31,8 @@ public class EdgesIterator<T> implements Iterator<Edge<T>> {
 			return null;
 		// reach the next edge
 		while (!edgesIt.hasNext()) {
-			currentNode = nodesIt.next();
-			edgesIt = currentNode.outEdges.iterator();
+		   currentNode = nodesIt.next();
+		   edgesIt = currentNode.outEdges.iterator();
 		}
 		currentEdge++;
 		return new Edge<T>(currentNode, edgesIt.next());
