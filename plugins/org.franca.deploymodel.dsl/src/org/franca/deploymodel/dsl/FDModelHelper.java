@@ -7,6 +7,7 @@
  *******************************************************************************/
 package org.franca.deploymodel.dsl;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -17,9 +18,9 @@ import org.eclipse.xtext.Constants;
 import org.franca.core.dsl.FrancaIDLHelpers;
 import org.franca.core.dsl.FrancaIDLStandaloneSetup;
 import org.franca.core.framework.FrancaHelpers;
-import org.franca.core.franca.FModel;
 import org.franca.core.franca.FTypeRef;
 import org.franca.core.utils.ModelPersistenceHandler;
+import org.franca.core.utils.ImportsProvider;
 import org.franca.deploymodel.dsl.fDeploy.FDArgument;
 import org.franca.deploymodel.dsl.fDeploy.FDArray;
 import org.franca.deploymodel.dsl.fDeploy.FDAttribute;
@@ -48,291 +49,267 @@ import com.google.inject.Injector;
 import com.google.inject.Provider;
 import com.google.inject.name.Named;
 
-public class FDModelHelper {
+public class FDModelHelper implements ImportsProvider {
 
-   @Inject
-   @Named(Constants.FILE_EXTENSIONS)
-   private String fileExtension;
+	@Inject
+	@Named(Constants.FILE_EXTENSIONS)
+	private String fileExtension;
 
-   public String getFileExtension() {
-      return fileExtension;
-   }
+	public String getFileExtension() {
+		return fileExtension;
+	}
 
-   @Inject
-   private Provider<ResourceSet> resourceSetProvider;
+	@Inject
+	private Provider<ResourceSet> resourceSetProvider;
 
-   /**
-    * Load Franca Deployment model file (*.fdepl) and all imported files recursively.
-    * 
-    * @param fileName
-    *           name of FDeploy file (suffix .fdepl is optional)
-    * @return the root entity of the FDeploy model
-    */
-   public FDModel loadModel(String fileName) {
-      return loadModel(fileName, null);
-   }
+	/**
+	 * Load Franca Deployment model file (*.fdepl) and all imported files recursively.
+	 * 
+	 * @param filename
+	 *            name of FDeploy file (suffix .fdepl is optional)
+	 * @return the root entity of the FDeploy model
+	 */
+	public FDModel loadModel(String filename) {
+		URI uri = URI.createURI(filename);
+		
+		if (uri.segmentCount() > 1) {
+			return loadModel(uri.lastSegment(), uri.trimSegments(1).toString() + "/");
+		} else {
+			return loadModel(filename, "");
+		}
+	}
 
-   /**
-    * Load Franca Deployment model file (*.fdepl) and all imported files recursively.
-    * 
-    * @param fileName
-    *           name of FDeploy file (suffix .fdepl is optional)
-    * @param prependPath
-    * @see ModelPersistenceHandler.loadModel, work relatively to a path
-    * @return the root entity of the FDeploy model
-    */
-   public FDModel loadModel(String fileName, String prependPath) {
-      ModelPersistenceHandler persistenceHandler = new ModelPersistenceHandler(resourceSetProvider.get(), prependPath);
+	/**
+	 * Load Franca Deployment model file (*.fdepl) and all imported files recursively.
+	 * 
+	 * @param filename
+	 *            name of FDeploy file (suffix .fdepl is optional)
+	 * @param cwd
+	 * @see ModelPersistenceHandler.loadModel, work relatively to a path
+	 * @return the root entity of the FDeploy model
+	 */
+	public FDModel loadModel(String filename, String cwd) {
+		ModelPersistenceHandler persistenceHandler = new ModelPersistenceHandler(resourceSetProvider.get());
+		String fn = filename;
+		
+		if (fn == null)
+			return null;
+		if (!fn.endsWith("." + fileExtension)) {
+			fn += "." + fileExtension;
+		}
 
-      return (FDModel) loadModelRec(fileName, persistenceHandler);
-   }
+		return (FDModel) persistenceHandler.loadModel(fn, cwd);
+	}
 
-   /**
-    * Recursive helper function.
-    * 
-    * @param model
-    * @param fileName
-    * @param persistenceHandler
-    * @return
-    */
-   @SuppressWarnings("unused")
-   public EObject loadModelRec(String fileName, ModelPersistenceHandler persistenceHandler) {
+	/**
+	 * Save a Franca Deployment model to file (*.fdepl).
+	 * 
+	 * @param model
+	 *            the root of model to be saved
+	 * @param filename
+	 *            name of Franca deployment model file (suffix .fdepl is optional)
+	 * @return true if save could be completed successfully
+	 */
+	public boolean saveModel(FDModel model, String filename) {
+		URI uri = URI.createURI(filename);
+		
+		if (uri.segmentCount() > 1) {
+			return saveModel(model, uri.lastSegment(), uri.trimSegments(1).toString() + "/");
+		} else {
+			return saveModel(model, filename, "");
+		}
+	}
 
-      //a FDModel can references FModels, if a FModel is to be saved then forward the request to FrancaIDLHelpers
-      if (fileName.endsWith(FrancaIDLHelpers.instance().getFileExtension())) {
-         FrancaIDLHelpers.instance().loadModel(fileName, persistenceHandler.getPrependPath());
-      }
-      String fn = fileName;
+	/**
+	 * Save a Franca Deployment model to file (*.fdepl).
+	 * 
+	 * @param model
+	 *            the root of model to be saved
+	 * @param filename
+	 *            name of Franca deployment model file (suffix .fdepl is optional)
+	 * @param cwd
+	 * @see ModelPersistenceHandler.saveModel, work relatively to a path
+	 * @return true if save could be completed successfully
+	 */
+	public boolean saveModel(FDModel model, String filename, String cwd) {
+		ResourceSet resourceSet = null;
+		String fn = filename;
+		
+		if (fn == null)
+			return false;
+		if (!fn.endsWith("." + fileExtension)) {
+			fn += "." + fileExtension;
+		}
+		
+		if (model.eResource() == null) {
+			// create a new ResourceSet for this new created model
+			resourceSet = resourceSetProvider.get();
+		} else {
+			// use the existing ResourceSet associated to the model
+			resourceSet = model.eResource().getResourceSet();
+		}
+		ModelPersistenceHandler persistenceHandler = new ModelPersistenceHandler(resourceSet);
 
-      if (fn == null)
-         return null;
-      if (!fn.endsWith("." + fileExtension)) {
-         fn += "." + fileExtension;
-      }
-      // load root model
-      FDModel model = (FDModel) persistenceHandler.loadModel(fn);
+		return persistenceHandler.saveModel(model, fn, cwd);
+	}
 
-      // and all its imports recursively
-      for (Import fdeplImport : model.getImports()) {
-         loadModelRec(fdeplImport.getImportURI(), persistenceHandler);
-      }
+	// singleton
+	private static FDModelHelper instance = null;
 
-      if (model == null) {
-         System.out.println("Error: Could not load Franca Deployment model from file " + fn);
-      } else {
-         System.out.println("Loaded Franca Deployment model from file " + fn);
-      }
-      return model;
-   }
+	public static FDModelHelper instance() {
+		if (instance == null) {
+			// register the appropriate resource factory to handle all file extensions for the Franca core model
+			new FrancaIDLStandaloneSetup().createInjectorAndDoEMFRegistration();
 
-   /**
-    * Save a Franca Deployment model to file (*.fdepl).
-    * 
-    * @param model
-    *           the root of model to be saved
-    * @param fileName
-    *           name of Franca deployment model file (suffix .fdepl is optional)
-    * @return true if save could be completed successfully
-    */
-   public boolean saveModel(FDModel model, String fileName) {
-      return saveModel(model, fileName, null);
-   }
+			Injector injector = new FDeployStandaloneSetup().createInjectorAndDoEMFRegistration();
+			instance = injector.getInstance(FDModelHelper.class);
+			ModelPersistenceHandler.registerFileExtensionHandler(instance.fileExtension, instance);
+			ModelPersistenceHandler.registerFileExtensionHandler(FrancaIDLHelpers.instance().getFileExtension(), FrancaIDLHelpers.instance());
+		}
+		return instance;
+	}
 
-   /**
-    * Save a Franca Deployment model to file (*.fdepl).
-    * 
-    * @param model
-    *           the root of model to be saved
-    * @param fileName
-    *           name of Franca deployment model file (suffix .fdepl is optional)
-    * @param prependPath
-    * @see ModelPersistenceHandler.saveModel, work relatively to a path
-    * @return true if save could be completed successfully
-    */
-   public boolean saveModel(FDModel model, String fileName, String prependPath) {
-      ResourceSet resourceSet = null;
+	// *****************************************************************************
+	// model navigation
 
-      if (model.eResource() == null) {
-         // create a new ResourceSet for this new created model
-         resourceSet = resourceSetProvider.get();
-      } else {
-         // use the existing ResourceSet associated to the model
-         resourceSet = model.eResource().getResourceSet();
-      }
-      ModelPersistenceHandler persistenceHandler = new ModelPersistenceHandler(resourceSet, prependPath);
+	public static FDModel getModel(EObject obj) {
+		EObject x = obj;
+		do {
+			if (x instanceof FDModel)
+				return (FDModel) x;
+			x = x.eContainer();
+		} while (x != null);
+		return null;
+	}
 
-      return saveModelRec(model, fileName, persistenceHandler);
-   }
+	public static FDRootElement getRootElement(FDElement obj) {
+		EObject x = obj;
+		do {
+			if (x instanceof FDRootElement)
+				return (FDRootElement) x;
+			x = x.eContainer();
+		} while (x != null);
+		return null;
+	}
 
-   /**
-    * Recursive helper function.
-    * 
-    * @param model
-    * @param fileName
-    * @param persistenceHandler
-    * @return
-    */
-   private boolean saveModelRec(EObject model, String fileName, ModelPersistenceHandler persistenceHandler) {
+	// *****************************************************************************
 
-      //a FDModel can references FModels, if a FModel is to be saved then forward the request to FrancaIDLHelpers
-      if (model instanceof FModel) {
-         return FrancaIDLHelpers.instance().saveModel((FModel) model, fileName, persistenceHandler.getPrependPath());
-      }
-      String fn = fileName;
-      boolean ret = true;
+	public static final List<FDPropertyDecl> getAllPropertyDecls(FDSpecification spec, FDElement elem) {
+		Set<FDPropertyHost> hosts = Sets.newHashSet(getMainHost(elem));
 
-      if (fn == null)
-         return false;
-      if (!fn.endsWith("." + fileExtension)) {
-         fn += "." + fileExtension;
-      }
-      // save the root model
-      ret = ret && persistenceHandler.saveModel(model, fn);
+		FTypeRef typeRef = null;
+		if (elem instanceof FDAttribute) {
+			typeRef = ((FDAttribute) elem).getTarget().getType();
+		} else if (elem instanceof FDArgument) {
+			typeRef = ((FDArgument) elem).getTarget().getType();
+		} else if (elem instanceof FDStructField) {
+			typeRef = ((FDStructField) elem).getTarget().getType();
+		}
+		if (typeRef != null) {
+			if (FrancaHelpers.isInteger(typeRef))
+				hosts.add(FDPropertyHost.INTEGERS);
+			else if (FrancaHelpers.isFloatingPoint(typeRef))
+				hosts.add(FDPropertyHost.FLOATS);
+			else if (FrancaHelpers.isString(typeRef))
+				hosts.add(FDPropertyHost.STRINGS);
+		}
 
-      // save all model imports recursively
-      for (Import fdeplImport : ((FDModel) model).getImports()) {
-         ret = ret
-               && saveModelRec(
-                     persistenceHandler.getResourceSet().getResource(URI.createURI(fdeplImport.getImportURI()), false)
-                           .getContents().get(0), fdeplImport.getImportURI(), persistenceHandler);
-      }
+		// if looking for INTEGERS or FLOATS, we also look for NUMBERS
+		if (hosts.contains(FDPropertyHost.INTEGERS) || hosts.contains(FDPropertyHost.FLOATS))
+			hosts.add(FDPropertyHost.NUMBERS);
 
-      return ret;
-   }
+		return getAllPropertyDeclsHelper(spec, hosts);
+	}
 
-   // singleton
-   private static FDModelHelper instance = null;
+	public static final List<FDPropertyDecl> getAllPropertyDecls(FDSpecification spec, FDPropertyHost host) {
+		Set<FDPropertyHost> hosts = Sets.newHashSet(host);
+		return getAllPropertyDeclsHelper(spec, hosts);
+	}
 
-   public static FDModelHelper instance() {
-      if (instance == null) {
-         // register the appropriate resource factory to handle all file extensions for the Franca core model
-         new FrancaIDLStandaloneSetup().createInjectorAndDoEMFRegistration();
+	private static final List<FDPropertyDecl> getAllPropertyDeclsHelper(FDSpecification spec, Set<FDPropertyHost> hosts) {
+		List<FDPropertyDecl> properties = Lists.newArrayList();
+		if (spec.getBase() != null) {
+			// get declarations from base spec recursively
+			properties.addAll(getAllPropertyDeclsHelper(spec.getBase(), hosts));
+		}
 
-         Injector injector = new FDeployStandaloneSetup().createInjectorAndDoEMFRegistration();
-         instance = injector.getInstance(FDModelHelper.class);
-      }
-      return instance;
-   }
+		// get all declarations selected by one member of hosts set
+		for (FDDeclaration decl : spec.getDeclarations()) {
+			if (hosts.contains(decl.getHost())) {
+				properties.addAll(decl.getProperties());
+			}
+		}
 
-   // *****************************************************************************
-   // model navigation
+		return properties;
+	}
 
-   public static FDModel getModel(EObject obj) {
-      EObject x = obj;
-      do {
-         if (x instanceof FDModel)
-            return (FDModel) x;
-         x = x.eContainer();
-      } while (x != null);
-      return null;
-   }
+	private static FDPropertyHost getMainHost(FDElement elem) {
+		if (elem instanceof FDProvider) {
+			return FDPropertyHost.PROVIDERS;
+		} else if (elem instanceof FDInterfaceInstance) {
+			return FDPropertyHost.INSTANCES;
+		} else if (elem instanceof FDInterface) {
+			return FDPropertyHost.INTERFACES;
+		} else if (elem instanceof FDAttribute) {
+			return FDPropertyHost.ATTRIBUTES;
+		} else if (elem instanceof FDMethod) {
+			return FDPropertyHost.METHODS;
+		} else if (elem instanceof FDBroadcast) {
+			return FDPropertyHost.BROADCASTS;
+		} else if (elem instanceof FDArgument) {
+			return FDPropertyHost.ARGUMENTS;
+		} else if (elem instanceof FDArray) {
+			return FDPropertyHost.ARRAYS;
+		} else if (elem instanceof FDStructField) {
+			return FDPropertyHost.STRUCT_FIELDS;
+		} else if (elem instanceof FDEnumeration) {
+			return FDPropertyHost.ENUMERATIONS;
+		} else if (elem instanceof FDEnumValue) {
+			return FDPropertyHost.ENUMERATORS;
+		}
 
-   public static FDRootElement getRootElement(FDElement obj) {
-      EObject x = obj;
-      do {
-         if (x instanceof FDRootElement)
-            return (FDRootElement) x;
-         x = x.eContainer();
-      } while (x != null);
-      return null;
-   }
+		return null;
+	}
 
-   // *****************************************************************************
+	// *****************************************************************************
 
-   public static final List<FDPropertyDecl> getAllPropertyDecls(FDSpecification spec, FDElement elem) {
-      Set<FDPropertyHost> hosts = Sets.newHashSet(getMainHost(elem));
+	public static boolean hasMandatoryProperties(List<FDPropertyDecl> decls) {
+		for (FDPropertyDecl decl : decls) {
+			if (isMandatory(decl))
+				return true;
+		}
+		return false;
+	}
 
-      FTypeRef typeRef = null;
-      if (elem instanceof FDAttribute) {
-         typeRef = ((FDAttribute) elem).getTarget().getType();
-      } else if (elem instanceof FDArgument) {
-         typeRef = ((FDArgument) elem).getTarget().getType();
-      } else if (elem instanceof FDStructField) {
-         typeRef = ((FDStructField) elem).getTarget().getType();
-      }
-      if (typeRef != null) {
-         if (FrancaHelpers.isInteger(typeRef))
-            hosts.add(FDPropertyHost.INTEGERS);
-         else if (FrancaHelpers.isFloatingPoint(typeRef))
-            hosts.add(FDPropertyHost.FLOATS);
-         else if (FrancaHelpers.isString(typeRef))
-            hosts.add(FDPropertyHost.STRINGS);
-      }
+	public static boolean isMandatory(FDPropertyDecl decl) {
+		for (FDPropertyFlag flag : decl.getFlags()) {
+			if (flag.getOptional() != null || flag.getDefault() != null) {
+				// property declaration is either optional or has a default
+				return false;
+			}
+		}
+		return true;
+	}
 
-      // if looking for INTEGERS or FLOATS, we also look for NUMBERS
-      if (hosts.contains(FDPropertyHost.INTEGERS) || hosts.contains(FDPropertyHost.FLOATS))
-         hosts.add(FDPropertyHost.NUMBERS);
+	public Iterator<String> importsIterator(EObject model) {
+		if (!(model instanceof FDModel))
+			return null;
+		final FDModel fdModel = (FDModel) model;
+		
+		return new Iterator<String>(){
+			Iterator<Import> it = fdModel.getImports().iterator();
 
-      return getAllPropertyDeclsHelper(spec, hosts);
-   }
+			public boolean hasNext() {
+				return it.hasNext();
+			}
 
-   public static final List<FDPropertyDecl> getAllPropertyDecls(FDSpecification spec, FDPropertyHost host) {
-      Set<FDPropertyHost> hosts = Sets.newHashSet(host);
-      return getAllPropertyDeclsHelper(spec, hosts);
-   }
+			public String next() {
+				return it.next().getImportURI();
+			}
 
-   private static final List<FDPropertyDecl> getAllPropertyDeclsHelper(FDSpecification spec, Set<FDPropertyHost> hosts) {
-      List<FDPropertyDecl> properties = Lists.newArrayList();
-      if (spec.getBase() != null) {
-         // get declarations from base spec recursively
-         properties.addAll(getAllPropertyDeclsHelper(spec.getBase(), hosts));
-      }
-
-      // get all declarations selected by one member of hosts set
-      for (FDDeclaration decl : spec.getDeclarations()) {
-         if (hosts.contains(decl.getHost())) {
-            properties.addAll(decl.getProperties());
-         }
-      }
-
-      return properties;
-   }
-
-   private static FDPropertyHost getMainHost(FDElement elem) {
-      if (elem instanceof FDProvider) {
-         return FDPropertyHost.PROVIDERS;
-      } else if (elem instanceof FDInterfaceInstance) {
-         return FDPropertyHost.INSTANCES;
-      } else if (elem instanceof FDInterface) {
-         return FDPropertyHost.INTERFACES;
-      } else if (elem instanceof FDAttribute) {
-         return FDPropertyHost.ATTRIBUTES;
-      } else if (elem instanceof FDMethod) {
-         return FDPropertyHost.METHODS;
-      } else if (elem instanceof FDBroadcast) {
-         return FDPropertyHost.BROADCASTS;
-      } else if (elem instanceof FDArgument) {
-         return FDPropertyHost.ARGUMENTS;
-      } else if (elem instanceof FDArray) {
-         return FDPropertyHost.ARRAYS;
-      } else if (elem instanceof FDStructField) {
-         return FDPropertyHost.STRUCT_FIELDS;
-      } else if (elem instanceof FDEnumeration) {
-         return FDPropertyHost.ENUMERATIONS;
-      } else if (elem instanceof FDEnumValue) {
-         return FDPropertyHost.ENUMERATORS;
-      }
-
-      return null;
-   }
-
-   // *****************************************************************************
-
-   public static boolean hasMandatoryProperties(List<FDPropertyDecl> decls) {
-      for (FDPropertyDecl decl : decls) {
-         if (isMandatory(decl))
-            return true;
-      }
-      return false;
-   }
-
-   public static boolean isMandatory(FDPropertyDecl decl) {
-      for (FDPropertyFlag flag : decl.getFlags()) {
-         if (flag.getOptional() != null || flag.getDefault() != null) {
-            // property declaration is either optional or has a default
-            return false;
-         }
-      }
-      return true;
-   }
+			public void remove() {
+				//operation not allowed
+			}
+		};
+	}
 }
