@@ -55,8 +55,6 @@ import org.franca.deploymodel.dsl.fDeploy.FDTypeRef;
 import org.franca.deploymodel.dsl.fDeploy.FDValue;
 import org.franca.deploymodel.dsl.fDeploy.FDValueArray;
 import org.franca.deploymodel.dsl.fDeploy.FDeployPackage;
-import org.franca.deploymodel.dsl.validation.ValidationHelpers;
-import org.franca.deploymodel.dsl.validation.ValidationMessageReporter;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
