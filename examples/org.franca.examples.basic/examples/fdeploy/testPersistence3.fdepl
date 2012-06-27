@@ -1,0 +1,18 @@
+// This file is used to test persistence handling, mainly the usecase where the 
+// same file(basic_types.fidl) is included from different places using relative
+// paths
+
+// import the actual Franca interfaces we want to deploy 
+import "../franca/derived/testPersistence2.fidl"
+
+//import the deployment specification
+import "deployspecs/SampleDeploySpec.fdepl"
+
+define org.franca.examples.deployspecs.SampleDeploySpec
+	for interface org.franca.examples.demo.TestInterface2
+{
+	attribute b {
+		IsReadOnly = true
+		Groups = { g1, g2 }
+	}
+}

@@ -1,0 +1,8 @@
+package org.franca.examples.demo
+
+import org.franca.examples.demo.* from "basic_types.fidl"
+
+interface TestInterface1
+{
+    attribute UInt32 a
+} 

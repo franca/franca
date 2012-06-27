@@ -7,11 +7,15 @@
  *******************************************************************************/
 package org.franca.core.dsl;
 
+import java.util.Iterator;
+
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.xtext.Constants;
 import org.franca.core.franca.FModel;
 import org.franca.core.franca.Import;
+import org.franca.core.utils.ImportsProvider;
 import org.franca.core.utils.ModelPersistenceHandler;
 
 import com.google.inject.Inject;
@@ -19,155 +23,140 @@ import com.google.inject.Injector;
 import com.google.inject.Provider;
 import com.google.inject.name.Named;
 
-public class FrancaIDLHelpers {
+public class FrancaIDLHelpers implements ImportsProvider {
 
-   @Inject
-   private Provider<ResourceSet> resourceSetProvider;
+	@Inject
+	private Provider<ResourceSet> resourceSetProvider;
 
-   @Inject
-   @Named(Constants.FILE_EXTENSIONS)
-   private String fileExtension;
+	@Inject
+	@Named(Constants.FILE_EXTENSIONS)
+	private String fileExtension;
 
-   public String getFileExtension() {
-      return fileExtension;
-   }
+	public String getFileExtension() {
+		return fileExtension;
+	}
 
-   /**
-    * Load Franca IDL model file (*.fidl) and all imported files recursively.
-    * 
-    * @param fileName
-    *           name of Franca file (suffix .fidl is optional)
-    * @return the root entity of the Franca IDL model
-    */
-   public FModel loadModel(String fileName) {
-      return loadModel(fileName, null);
-   }
+	/**
+	 * Load Franca IDL model file (*.fidl) and all imported files recursively.
+	 * 
+	 * @param filename
+	 *            name of Franca file (suffix .fidl is optional)
+	 * @return the root entity of the Franca IDL model
+	 */
+	public FModel loadModel(String filename) {
+		URI uri = URI.createURI(filename);
+		
+		if (uri.segmentCount() > 1) {
+			return loadModel(uri.lastSegment(), uri.trimSegments(1).toString() + "/");
+		} else {
+			return loadModel(filename, "");
+		}
+	}
 
-   /**
-    * Load Franca IDL model file (*.fidl) and all imported files recursively.
-    * 
-    * @param fileName
-    *           name of Franca file (suffix .fidl is optional)
-    * @param prependPath
-    *           if not null work relatively to this path
-    * 
-    * @return the root entity of the Franca IDL model
-    */
-   public FModel loadModel(String fileName, String prependPath) {
-      ModelPersistenceHandler persistenceHandler = new ModelPersistenceHandler(resourceSetProvider.get(), prependPath);
+	/**
+	 * Recursive helper function.
+	 * 
+	 * @param model
+	 * @param filename
+	 * @param persistenceHandler
+	 * @return
+	 */
+	public FModel loadModel(String filename, String cwd) {
+		ModelPersistenceHandler persistenceHandler = new ModelPersistenceHandler(resourceSetProvider.get());
+		String fn = filename;
 
-      return loadModelRec(fileName, persistenceHandler);
-   }
+		if (fn == null)
+			return null;
+		if (!fn.endsWith("." + fileExtension)) {
+			fn += "." + fileExtension;
+		}
 
-   /**
-    * Recursive helper function.
-    * 
-    * @param model
-    * @param fileName
-    * @param persistenceHandler
-    * @return
-    */
-   @SuppressWarnings("unused")
-   public FModel loadModelRec(String fileName, ModelPersistenceHandler persistenceHandler) {
-      String fn = fileName;
+		return (FModel) persistenceHandler.loadModel(fn, cwd);
+	}
 
-      if (fn == null)
-         return null;
-      if (!fn.endsWith("." + fileExtension)) {
-         fn += "." + fileExtension;
-      }
-      // load root model
-      FModel model = (FModel) persistenceHandler.loadModel(fn);
+	/**
+	 * Save a Franca IDL model to file (*.fidl).
+	 * 
+	 * @param model
+	 *            the root of model to be saved
+	 * @param filename
+	 *            name of Franca file (suffix .fidl is optional)
+	 * @return true if save could be completed successfully
+	 */
+	public boolean saveModel(FModel model, String filename) {
+		URI uri = URI.createURI(filename);
+		
+		if (uri.segmentCount() > 1) {
+			return saveModel(model, uri.lastSegment(), uri.trimSegments(1).toString() + "/");
+		} else {
+			return saveModel(model, filename, "");
+		}
+	}
 
-      // and all its imports recursively
-      for (Import fidlImport : model.getImports()) {
-         loadModelRec(fidlImport.getImportURI(), persistenceHandler);
-      }
+	/**
+	 * Save a Franca IDL model to file (*.fidl).
+	 * 
+	 * @param model
+	 *            the root of model to be saved
+	 * @param filename
+	 *            name of Franca file (suffix .fidl is optional)
+	 * @param cwd
+	 *            if not null work relatively to this path
+	 * 
+	 * @return true if save could be completed successfully
+	 */
+	public boolean saveModel(FModel model, String filename, String cwd) {
+		ResourceSet resourceSet = null;
+		String fn = filename;
+		
+		if (fn == null)
+			return false;
+		if (!fn.endsWith("." + fileExtension)) {
+			fn += "." + fileExtension;
+		}
+		if (model.eResource() == null) {
+			// create a new ResourceSet for this new created model
+			resourceSet = resourceSetProvider.get();
+		} else {
+			// use the existing ResourceSet associated to the model
+			resourceSet = model.eResource().getResourceSet();
+		}
+		ModelPersistenceHandler persistenceHandler = new ModelPersistenceHandler(resourceSet);
 
-      if (model == null) {
-         System.out.println("Error: Could not load Franca IDL model from file " + fn);
-      } else {
-         System.out.println("Loaded Franca IDL model from file " + fn);
-      }
-      return model;
-   }
+		return persistenceHandler.saveModel(model, fn, cwd);
+	}
 
-   /**
-    * Save a Franca IDL model to file (*.fidl).
-    * 
-    * @param model
-    *           the root of model to be saved
-    * @param fileName
-    *           name of Franca file (suffix .fidl is optional)
-    * @return true if save could be completed successfully
-    */
-   public boolean saveModel(FModel model, String fileName) {
-      return saveModel(model, fileName, null);
-   }
+	// singleton
+	private static FrancaIDLHelpers instance = null;
 
-   /**
-    * Save a Franca IDL model to file (*.fidl).
-    * 
-    * @param model
-    *           the root of model to be saved
-    * @param fileName
-    *           name of Franca file (suffix .fidl is optional)
-    * @param prependPath
-    *           if not null work relatively to this path
-    * 
-    * @return true if save could be completed successfully
-    */
-   public boolean saveModel(FModel model, String fileName, String prependPath) {
-      ResourceSet resourceSet = null;
+	public static FrancaIDLHelpers instance() {
+		if (instance == null) {
+			Injector injector = new FrancaIDLStandaloneSetup().createInjectorAndDoEMFRegistration();
+			instance = injector.getInstance(FrancaIDLHelpers.class);
+			ModelPersistenceHandler.registerFileExtensionHandler(instance.fileExtension, instance);
+		}
+		return instance;
+	}
 
-      if (model.eResource() == null) {
-         // create a new ResourceSet for this new created model
-         resourceSet = resourceSetProvider.get();
-      } else {
-         // use the existing ResourceSet associated to the model
-         resourceSet = model.eResource().getResourceSet();
-      }
-      ModelPersistenceHandler persistenceHandler = new ModelPersistenceHandler(resourceSet, prependPath);
-      return saveModelRec(model, fileName, persistenceHandler);
-   }
+	public Iterator<String> importsIterator(EObject model) {
+		if (!(model instanceof FModel))
+			return null;
+		final FModel idlModel = (FModel) model;
+		
+		return new Iterator<String>(){
+			Iterator<Import> it = idlModel.getImports().iterator();
 
-   /**
-    * Recursive helper function.
-    * 
-    * @param model
-    * @param fileName
-    * @param persistenceHandler
-    * @return
-    */
-   private boolean saveModelRec(FModel model, String fileName, ModelPersistenceHandler persistenceHandler) {
-      String fn = fileName;
-      boolean ret = true;
+			public boolean hasNext() {
+				return it.hasNext();
+			}
 
-      if (!fn.endsWith("." + fileExtension)) {
-         fn += "." + fileExtension;
-      }
-      // save all model imports recursively
-      for (Import fidlImport : model.getImports()) {
-         ret = ret
-               && saveModelRec((FModel) persistenceHandler.getResourceSet().getResource(URI.createURI(fidlImport.getImportURI()), false)
-                     .getContents().get(0), fidlImport.getImportURI(), persistenceHandler);
-      }
-      // save the root model
-      ret = ret && persistenceHandler.saveModel(model, fn);
+			public String next() {
+				return it.next().getImportURI();
+			}
 
-      return ret;
-      
-   }
-   
-   
-   // singleton
-   private static FrancaIDLHelpers instance = null;
-
-   public static FrancaIDLHelpers instance() {
-      if (instance == null) {
-         Injector injector = new FrancaIDLStandaloneSetup().createInjectorAndDoEMFRegistration();
-         instance = injector.getInstance(FrancaIDLHelpers.class);
-      }
-      return instance;
-   }
+			public void remove() {
+				//operation not allowed
+			}
+		};
+	}
 }

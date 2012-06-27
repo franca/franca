@@ -5,7 +5,8 @@ Bundle-SymbolicName: org.franca.examples.basic
 Bundle-Version: 0.7.3
 Bundle-Vendor: Harman Infotainment Division
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: org.junit
+Import-Package: org.franca.core.utils.digraph,
+ org.junit
 Require-Bundle: org.junit4;bundle-version="4.8.1",
  org.franca.core;bundle-version="0.7.1",
  org.franca.core.dsl;bundle-version="0.7.1",
