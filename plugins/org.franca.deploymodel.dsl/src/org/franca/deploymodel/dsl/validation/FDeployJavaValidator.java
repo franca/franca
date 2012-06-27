@@ -21,7 +21,6 @@ import org.franca.core.franca.FMethod;
 import org.franca.core.franca.FStructType;
 import org.franca.core.franca.FType;
 import org.franca.core.franca.FTypeRef;
-import org.franca.core.franca.FrancaPackage;
 import org.franca.deploymodel.dsl.FDInterfaceMapper;
 import org.franca.deploymodel.dsl.FDModelHelper;
 import org.franca.deploymodel.dsl.FDSpecificationExtender;

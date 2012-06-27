@@ -16,11 +16,6 @@ import java.util.Set;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.franca.core.franca.FArgument;
-import org.franca.core.franca.FBroadcast;
-import org.franca.core.franca.FMethod;
-import org.franca.core.franca.FrancaPackage;
-import org.franca.core.franca.FBasicTypeId;
 
 //TODO: this class is not depending on a particular DSL, should be factored to a common helper package
 public class ValidationHelpers {
