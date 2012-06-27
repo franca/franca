@@ -68,8 +68,8 @@ public class ModelPersistenceHandler {
 		Resource resource = null;
 
 		if (cwd != null && cwd.length() > 0) {
-			//System.out.println("(" + uri + "," + URI.createURI(cwd + filename) + ")");
-			resourceSet.getURIConverter().getURIMap().put(fileURI, URI.createURI(cwdURI.toString() + "/" + fileURI.toString()));
+			//System.out.println("(" + fileURI + "," + cwdURI.toString() + "/" + fileURI.toString() + ")");
+			resourceSet.getURIConverter().getURIMap().put(fileURI, URI.createURI((cwdURI.toString() + "/" + fileURI.toString()).replaceAll("/+", "/")));
 		}
 
 		//load root model
