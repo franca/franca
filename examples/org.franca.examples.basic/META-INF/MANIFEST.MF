@@ -13,4 +13,6 @@ Require-Bundle: org.junit4;bundle-version="4.8.1",
  org.franca.generators;bundle-version="0.7.1",
  org.eclipse.xtext.xbase.lib;bundle-version="2.2.1",
  org.eclipse.xtext.xtend2.lib;bundle-version="2.2.0",
- org.franca.deploymodel.dsl;bundle-version="0.7.1"
+ org.franca.deploymodel.dsl;bundle-version="0.7.1",
+ org.eclipse.xtext;bundle-version="2.2.1",
+ org.apache.log4j;bundle-version="1.2.15"
