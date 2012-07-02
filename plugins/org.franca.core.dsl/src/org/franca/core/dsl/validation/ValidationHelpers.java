@@ -1,10 +1,10 @@
 /*******************************************************************************
-* Copyright (c) 2012 Harman International (http://www.harman.com).
-* All rights reserved. This program and the accompanying materials
-* are made available under the terms of the Eclipse Public License v1.0
-* which accompanies this distribution, and is available at
-* http://www.eclipse.org/legal/epl-v10.html
-*******************************************************************************/
+ * Copyright (c) 2012 Harman International (http://www.harman.com).
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************/
 package org.franca.core.dsl.validation;
 
 import java.util.ArrayList;
@@ -16,16 +16,27 @@ import java.util.Set;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.franca.core.franca.FArgument;
+import org.franca.core.franca.FBroadcast;
+import org.franca.core.franca.FMethod;
+import org.franca.core.franca.FrancaPackage;
+import org.franca.core.franca.FBasicTypeId;
 
 //TODO: this class is not depending on a particular DSL, should be factored to a common helper package
-public class ValidationHelpers
-{
+public class ValidationHelpers {
+
+   /**
+    * When checking for duplicates we need to get the name of a model element.
+    */
+   private static NameProvider nameProvider;
+
+   public static void setNameProvider(NameProvider newNameProvider) {
+      nameProvider = newNameProvider;
+   }
 
    // simple helper for finding duplicates in ELists
-   public static <T extends EObject> int checkDuplicates(
-         ValidationMessageReporter reporter, Iterable<T> items,
-         EStructuralFeature feature, String description)
-   {
+   public static <T extends EObject> int checkDuplicates(ValidationMessageReporter reporter, Iterable<T> items,
+         EStructuralFeature feature, String description) {
       int nErrors = 0;
       String msg = "Duplicate " + description + ' ';
 
@@ -34,26 +45,21 @@ public class ValidationHelpers
       Set<String> duplicateNames = new HashSet<String>();
 
       // iterate (once!) over all types in the model
-      for(EObject i : items)
-      {
-         String name = i.eGet(feature).toString();
+      for (EObject i : items) {
+         String name = nameProvider.getName(i);
 
          // if the name already occurred we have a duplicate name and hence an error
-         if(firstOccurrenceOfName.get(name) != null)
-         {
+         if (firstOccurrenceOfName.get(name) != null) {
             duplicateNames.add(name);
             reporter.reportError(msg + "'" + name + "'", i, feature);
             nErrors++;
-         }
-         else
-         {
+         } else {
             firstOccurrenceOfName.put(name, i);
          }
       }
 
       // now create the error for the first occurrence of a duplicate name
-      for(String s : duplicateNames)
-      {
+      for (String s : duplicateNames) {
          reporter.reportError(msg + "'" + s + "'", firstOccurrenceOfName.get(s), feature);
          nErrors++;
       }
@@ -61,43 +67,36 @@ public class ValidationHelpers
       return nErrors;
    }
 
-   public static class Entry
-   {
+   public static class Entry {
       public EObject object;
-      public String  name;
+      public String name;
 
-      public Entry(EObject object, String name)
-      {
+      public Entry(EObject object, String name) {
          this.object = object;
          this.name = name;
       }
    }
 
-   public static class NameList
-   {
+   public static class NameList {
       private List<Entry> list = new ArrayList<Entry>();
 
-      public void add(EObject object, String name)
-      {
+      public void add(EObject object, String name) {
          list.add(new Entry(object, name));
       }
 
-      public Iterable<Entry> iterable()
-      {
+      public Iterable<Entry> iterable() {
          return list;
       }
    }
 
-   public static NameList createNameList()
-   {
+   public static NameList createNameList() {
       return new NameList();
    }
 
    // more complex helper for finding duplicates in arbitrary sets of EObjects
    // (the EObject names must be determined by the caller)
-   public static int checkDuplicates(ValidationMessageReporter reporter, NameList items,
-		   EStructuralFeature feature, String description)
-   {
+   public static int checkDuplicates(ValidationMessageReporter reporter, NameList items, EStructuralFeature feature,
+         String description) {
       int nErrors = 0;
       String msg = "Duplicate " + description + ' ';
 
@@ -106,24 +105,19 @@ public class ValidationHelpers
       Set<String> duplicateNames = new HashSet<String>();
 
       // iterate (once!) over all types in the model
-      for(Entry p : items.iterable())
-      {
+      for (Entry p : items.iterable()) {
          // if the name already occurred we have a duplicate name and hence an error
-         if(firstOccurrenceOfName.get(p.name) != null)
-         {
+         if (firstOccurrenceOfName.get(p.name) != null) {
             duplicateNames.add(p.name);
             reporter.reportError(msg + p.name, p.object, feature);
             nErrors++;
-         }
-         else
-         {
+         } else {
             firstOccurrenceOfName.put(p.name, p.object);
          }
       }
 
       // now create the error for the first occurrence of a duplicate name
-      for(String s : duplicateNames)
-      {
+      for (String s : duplicateNames) {
          reporter.reportError(msg + "'" + s + "'", firstOccurrenceOfName.get(s), feature);
          nErrors++;
       }

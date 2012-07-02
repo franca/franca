@@ -28,6 +28,12 @@ public class FDeployFormatter extends AbstractDeclarativeFormatter {
 		c.setLinewrap(0, 1, 2).before(f.getML_COMMENTRule());
 		c.setLinewrap(0, 1, 1).after(f.getML_COMMENTRule());
 		
+
+		c.setLinewrap(1).around(f.getImportRule());
+		c.setLinewrap(2).before(f.getFDSpecificationRule());
+		c.setLinewrap(2).before(f.getFDInterfaceRule());
+		c.setLinewrap(2).around(f.getFDMethodRule());
+		
 		// generic formatting of curly bracket sections
 		for(Pair<Keyword, Keyword> pair: f.findKeywordPairs("{", "}")) {
 			c.setIndentation(pair.getFirst(), pair.getSecond());

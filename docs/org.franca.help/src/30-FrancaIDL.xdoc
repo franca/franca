@@ -71,14 +71,25 @@ table[
 	]
 	tr[
 		td[code[Franca][String]]
-		td[character string]
+		td[character string, see caveat below]
 	]
 	tr[
 		td[code[Franca][ByteBuffer]]
-		td[buffer of bytes (aka BLOB)]
+		td[buffer of bytes (aka BLOB), see caveat below]
 	]
 ]
 
+Caveat: APIs should use arguments of type code[Franca][String] or
+code[Franca][ByteBuffer] only for transporting payload data which is
+not parsed by the server component which offers the interface.
+A useful example for code[Franca][ByteBuffer] arguments is a 
+protocol layer which examines the header of an incoming data
+package, but doesn't look at the payload data.
+If the server does e[deep packet inspection] or similar on the
+incoming data, the argument is used as a tunnel for a protocol
+which is not specified by the API. This bypass of the API definition
+weakens the API abstraction and will inevitably lead to integration
+issues and runtime problems.
 
 The actual physical encoding of the primitives types depends on the target language.
 A default encoding will be defined as part of Franca's deployment model. 

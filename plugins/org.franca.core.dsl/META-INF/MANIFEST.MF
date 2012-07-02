@@ -5,19 +5,9 @@ Bundle-Vendor: Harman Infotainment Division
 Bundle-Version: 0.7.3.qualifier
 Bundle-SymbolicName: org.franca.core.dsl; singleton:=true
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.eclipse.xtext;bundle-version="2.1.0";visibility:=reexport,
- org.eclipse.xtext.xbase;bundle-version="2.1.0";resolution:=optional;visibility:=reexport,
- org.apache.log4j;bundle-version="1.2.15";visibility:=reexport,
- org.apache.commons.logging;bundle-version="1.0.4";resolution:=optional;visibility:=reexport,
- org.eclipse.xtext.generator;resolution:=optional,
- org.eclipse.emf.codegen.ecore;resolution:=optional,
- org.eclipse.emf.mwe.utils;resolution:=optional,
+Require-Bundle: org.eclipse.xtext.generator;resolution:=optional,
  org.eclipse.emf.mwe2.launch;resolution:=optional,
- org.franca.core;bundle-version="0.7.3";visibility:=reexport,
- org.eclipse.xtext.util,
- org.antlr.runtime
-Import-Package: org.apache.log4j,
- org.apache.commons.logging
+ org.franca.core;bundle-version="0.7.3";visibility:=reexport
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.franca.core.dsl,
  org.franca.core.dsl.services,

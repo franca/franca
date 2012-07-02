@@ -20,6 +20,11 @@ public class FDModelExtender {
 
 	private FDModel fdmodel;
 	
+	public FDModel getFDModel()
+	{
+		return fdmodel;
+	}
+	
 	// analysis data cached for a given FDModel
 //	private Map<FDInterface,FDInterfaceMapper> interfaceMappers;
 	

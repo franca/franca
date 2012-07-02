@@ -10,10 +10,31 @@ package org.franca.deploymodel.core;
 import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
+import org.franca.core.franca.FArgument;
+import org.franca.core.franca.FArrayType;
+import org.franca.core.franca.FAttribute;
+import org.franca.core.franca.FBroadcast;
+import org.franca.core.franca.FEnumerationType;
+import org.franca.core.franca.FEnumerator;
+import org.franca.core.franca.FField;
 import org.franca.core.franca.FInterface;
+import org.franca.core.franca.FMethod;
+import org.franca.core.franca.FStructType;
+import org.franca.core.franca.FTypeDef;
 import org.franca.deploymodel.dsl.FDInterfaceMapper;
+import org.franca.deploymodel.dsl.fDeploy.FDArgument;
+import org.franca.deploymodel.dsl.fDeploy.FDArray;
+import org.franca.deploymodel.dsl.fDeploy.FDAttribute;
+import org.franca.deploymodel.dsl.fDeploy.FDBroadcast;
 import org.franca.deploymodel.dsl.fDeploy.FDElement;
+import org.franca.deploymodel.dsl.fDeploy.FDEnumValue;
+import org.franca.deploymodel.dsl.fDeploy.FDEnumeration;
 import org.franca.deploymodel.dsl.fDeploy.FDInterface;
+import org.franca.deploymodel.dsl.fDeploy.FDMethod;
+import org.franca.deploymodel.dsl.fDeploy.FDStruct;
+import org.franca.deploymodel.dsl.fDeploy.FDStructField;
+import org.franca.deploymodel.dsl.fDeploy.FDTypeDef;
+import org.franca.deploymodel.dsl.fDeploy.FDeployFactory;
 
 /**
  * This class provides type-safe access to deployment properties which are
@@ -50,63 +71,103 @@ public class FDeployedInterface {
 
 	
 	public Boolean getBoolean (EObject obj, String property) {
-		FDElement elem = mapper.getFDElement(obj);
-		if (elem==null)
-			return null;
-		return gpa.getBoolean(elem, property);
+		return gpa.getBoolean(getFDElement(obj), property);
 	}
 
 	public List<Boolean> getBooleanArray (EObject obj, String property) {
-		FDElement elem = mapper.getFDElement(obj);
-		if (elem==null)
-			return null;
-		return gpa.getBooleanArray(elem, property);
+		return gpa.getBooleanArray(getFDElement(obj), property);
 	}
 	
 
 
 	public Integer getInteger (EObject obj, String property) {
-		FDElement elem = mapper.getFDElement(obj);
-		if (elem==null)
-			return null;
-		return gpa.getInteger(elem, property);
+		return gpa.getInteger(getFDElement(obj), property);
 	}
 
 	public List<Integer> getIntegerArray (EObject obj, String property) {
-		FDElement elem = mapper.getFDElement(obj);
-		if (elem==null)
-			return null;
-		return gpa.getIntegerArray(elem, property);
+		return gpa.getIntegerArray(getFDElement(obj), property);
 	}
 
 	
 	public String getString (EObject obj, String property) {
-		FDElement elem = mapper.getFDElement(obj);
-		if (elem==null)
-			return null;
-		return gpa.getString(elem, property);
+		return gpa.getString(getFDElement(obj), property);
 	}
 	
 	public List<String> getStringArray (EObject obj, String property) {
-		FDElement elem = mapper.getFDElement(obj);
-		if (elem==null)
-			return null;
-		return gpa.getStringArray(elem, property);
+		return gpa.getStringArray(getFDElement(obj), property);
 	}
 
 
 	public String getEnum (EObject obj, String property) {
-		FDElement elem = mapper.getFDElement(obj);
-		if (elem==null)
-			return null;
-		return gpa.getEnum(elem, property);
+		return gpa.getEnum(getFDElement(obj), property);
 	}
 
 	public List<String> getEnumArray (EObject obj, String property) {
-		FDElement elem = mapper.getFDElement(obj);
-		if (elem==null)
-			return null;
-		return gpa.getEnumArray(elem, property);
+		return gpa.getEnumArray(getFDElement(obj), property);
 	}
+
+   public FDElement createDummyFDEelement(EObject obj) {
+      FDElement el = null;
+
+      if (obj instanceof FAttribute) {
+         el = FDeployFactory.eINSTANCE.createFDAttribute();
+         ((FDAttribute) el).setTarget((FAttribute) obj);
+      }
+      else if (obj instanceof FMethod)
+      {
+         el = FDeployFactory.eINSTANCE.createFDMethod();
+         ((FDMethod) el).setTarget((FMethod) obj);
+      }
+      else if (obj instanceof FBroadcast)
+      {
+         el = FDeployFactory.eINSTANCE.createFDBroadcast();
+         ((FDBroadcast) el).setTarget((FBroadcast) obj);
+      }
+      else if (obj instanceof FArgument)
+      {
+         el = FDeployFactory.eINSTANCE.createFDArgument();
+         ((FDArgument) el).setTarget((FArgument) obj);
+      }
+      else if (obj instanceof FArrayType)
+      {
+         el = FDeployFactory.eINSTANCE.createFDArray();
+         ((FDArray) el).setTarget((FArrayType) obj);
+      }
+      else if (obj instanceof FStructType)
+      {
+         el = FDeployFactory.eINSTANCE.createFDStruct();
+         ((FDStruct) el).setTarget((FStructType) obj);
+      } 
+      else if (obj instanceof FStructType)
+      {
+         el = FDeployFactory.eINSTANCE.createFDStruct();
+         ((FDStruct) el).setTarget((FStructType) obj);
+      }
+      else if (obj instanceof FField)
+      {
+         el = FDeployFactory.eINSTANCE.createFDStructField();
+         ((FDStructField) el).setTarget((FField) obj);
+      }
+      else if (obj instanceof FEnumerationType)
+      {
+         el = FDeployFactory.eINSTANCE.createFDEnumeration();
+         ((FDEnumeration) el).setTarget((FEnumerationType) obj);
+      }
+      else if (obj instanceof FEnumerator)
+      {
+         el = FDeployFactory.eINSTANCE.createFDEnumValue();
+         ((FDEnumValue) el).setTarget((FEnumerator) obj);
+      }
+      return el;
+   }
+
+   private FDElement getFDElement(EObject obj)
+   {
+      FDElement elem = mapper.getFDElement(obj);
+      if (elem == null)
+         //just to get a default value if any configured
+         elem = createDummyFDEelement(obj);
+      return elem;
+   }
 }
 
