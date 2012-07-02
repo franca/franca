@@ -21,7 +21,6 @@ import org.franca.core.franca.FMethod;
 import org.franca.core.franca.FStructType;
 import org.franca.core.franca.FType;
 import org.franca.core.franca.FTypeRef;
-import org.franca.core.franca.FrancaPackage;
 import org.franca.deploymodel.dsl.FDInterfaceMapper;
 import org.franca.deploymodel.dsl.FDModelHelper;
 import org.franca.deploymodel.dsl.FDSpecificationExtender;
@@ -56,8 +55,6 @@ import org.franca.deploymodel.dsl.fDeploy.FDTypeRef;
 import org.franca.deploymodel.dsl.fDeploy.FDValue;
 import org.franca.deploymodel.dsl.fDeploy.FDValueArray;
 import org.franca.deploymodel.dsl.fDeploy.FDeployPackage;
-import org.franca.deploymodel.dsl.validation.ValidationHelpers;
-import org.franca.deploymodel.dsl.validation.ValidationMessageReporter;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;

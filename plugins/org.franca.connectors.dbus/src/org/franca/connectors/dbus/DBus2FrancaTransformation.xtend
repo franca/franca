@@ -19,7 +19,6 @@ import org.franca.core.franca.FrancaFactory
 import org.franca.core.franca.FBasicTypeId
 import org.franca.core.franca.FType
 import org.franca.core.franca.FTypeRef
-import org.franca.core.franca.FTypedElement
 import org.franca.core.franca.FAnnotationType
 
 import java.util.List

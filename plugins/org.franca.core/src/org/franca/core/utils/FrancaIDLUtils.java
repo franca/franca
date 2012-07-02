@@ -21,7 +21,6 @@ import org.franca.core.franca.FTypeDef;
 import org.franca.core.franca.FTypeRef;
 import org.franca.core.franca.FUnionType;
 import org.franca.core.utils.digraph.Digraph;
-import org.franca.core.utils.digraph.Edge;
 import org.franca.core.utils.digraph.Digraph.HasCyclesException;
 
 /**
