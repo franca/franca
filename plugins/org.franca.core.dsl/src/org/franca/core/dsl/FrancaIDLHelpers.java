@@ -44,10 +44,10 @@ public class FrancaIDLHelpers implements ImportsProvider {
 	 * @return the root entity of the Franca IDL model
 	 */
 	public FModel loadModel(String filename) {
-		URI uri = URI.createURI(filename);
+		URI fileURI = ModelPersistenceHandler.normalizeURI(URI.createFileURI(filename));
 		
-		if (uri.segmentCount() > 1) {
-			return loadModel(uri.lastSegment(), uri.trimSegments(1).toString() + "/");
+		if (fileURI.segmentCount() > 1) {
+			return loadModel(fileURI.lastSegment(), fileURI.trimSegments(1).toString() + "/");
 		} else {
 			return loadModel(filename, "");
 		}
