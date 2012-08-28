@@ -141,30 +141,20 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FDeclaration" eSuperTypes="#//FTypedElement"/>
   <eClassifiers xsi:type="ecore:EClass" name="FStateGraph">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="initial" eType="#//FState"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="states" upperBound="-1"
         eType="#//FState" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FState" eSuperTypes="#//FModelElement">
     <eStructuralFeatures xsi:type="ecore:EReference" name="transitions" upperBound="-1"
         eType="#//FTransition" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="FState" eSuperTypes="#//FModelElement"/>
   <eClassifiers xsi:type="ecore:EClass" name="FTransition" eSuperTypes="#//FModelElement">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="to" eType="#//FTransitionTerminal"
-        containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="FTransitionTerminal"/>
-  <eClassifiers xsi:type="ecore:EClass" name="FStateTerminal" eSuperTypes="#//FTransitionTerminal">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="state" eType="#//FState"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="FInitialTransition" eSuperTypes="#//FTransition"/>
-  <eClassifiers xsi:type="ecore:EClass" name="FNonInitialTransition" eSuperTypes="#//FTransition">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="from" eType="#//FTransitionTerminal"
-        containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="FTriggeredTransition" eSuperTypes="#//FNonInitialTransition">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="guard" eType="#//FGuard"
-        containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="trigger" eType="#//FTrigger"
         containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="guard" eType="#//FGuard"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="to" eType="#//FState"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="action" eType="#//FExpression"
         containment="true"/>
   </eClassifiers>
@@ -180,7 +170,8 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="update" eType="#//FAttribute"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FGuard">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="plainCondition" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="condition" eType="#//FExpression"
+        containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FUnionType" eSuperTypes="#//FCompoundType">
     <eStructuralFeatures xsi:type="ecore:EReference" name="base" eType="#//FUnionType"/>

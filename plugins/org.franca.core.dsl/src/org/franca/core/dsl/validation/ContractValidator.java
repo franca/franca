@@ -12,7 +12,6 @@ import org.franca.core.franca.FEventOnIf;
 import org.franca.core.franca.FInterface;
 import org.franca.core.franca.FMethod;
 import org.franca.core.franca.FTransition;
-import org.franca.core.franca.FTriggeredTransition;
 import org.franca.core.franca.FrancaPackage;
 
 import com.google.common.collect.Lists;
@@ -27,8 +26,8 @@ public class ContractValidator {
 		TreeIterator<Object> contents = EcoreUtil.getAllContents(contract.getStateGraph(), true);
 		while (contents.hasNext()) {
 			Object obj = contents.next();
-			if (obj instanceof FTriggeredTransition) {
-				FTriggeredTransition tt = (FTriggeredTransition)obj;
+			if (obj instanceof FTransition) {
+				FTransition tt = (FTransition)obj;
 				FEventOnIf ev = tt.getTrigger().getEvent();
 				if (ev.getSet()!=null) {
 					usedAttributes.add(ev.getSet());

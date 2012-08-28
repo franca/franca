@@ -210,45 +210,24 @@ FContract:
 	'}';
 
 FStateGraph:
-	{FStateGraph}
-	'{'
-		(
-			states+=FState |
-			//trPoints+=TrPoint |
-			//chPoints+=ChoicePoint |
-			transitions+=FTransition
-		)*
+	{FStateGraph} '{'
+		'initial' initial=[FState|ID]
+		states+=FState*
 	'}';
 
 FState:
 	{FState}
 	(comment=FAnnotationBlock)?
-	'state' name=EString;
-
-FTransition: FInitialTransition | FNonInitialTransition;
-FNonInitialTransition: FTriggeredTransition /* | GuardedTransition | ContinuationTransition | CPBranchTransition*/;
-
-FInitialTransition:
-	'transition' /*name=EString*/ 'initial' '->' to=FTransitionTerminal 
-	(comment=FAnnotationBlock)?
-	'{'	'}';
-
-FTriggeredTransition:
-	'transition' /*name=EString*/ from=FTransitionTerminal '->' to=FTransitionTerminal 
-	(comment=FAnnotationBlock)?
-	'{'
-		('[' guard=FGuard ']')?
-
-		// currently only one trigger per transition is supported
-		trigger=FTrigger
-		
-		(action=FBlockExpression)?
+	'state' name=EString '{'
+		transitions+=FTransition*
 	'}';
 
-FTransitionTerminal: FStateTerminal /* | TrPointTerminal | SubStateTrPointTerminal | ChoicepointTerminal */;
-
-FStateTerminal:
-	state=[FState|ID];
+FTransition:
+	'on' trigger=FTrigger
+		(guard=FGuard)?
+		'->' to=[FState|ID]
+		(action=FBlockExpression)?
+	;
 
 
 FTrigger:
@@ -263,7 +242,7 @@ FEventOnIf:
 ;
 
 FGuard:
-	'guard' plainCondition=STRING;
+	'[' condition=LogicalOrExpression ']';
 
 	
 FExpression returns FExpression:
@@ -271,13 +250,29 @@ FExpression returns FExpression:
 
 FAssignment returns FExpression:
 	{FAssignment}
-	lhs=[FDeclaration|ID] '=' rhs=AdditiveExpression;
+	lhs=[FDeclaration|ID] '=' rhs=LogicalOrExpression;
 
 FBlockExpression returns FExpression: 
 	{FBlockExpression}
 	'{'
 		(expressions+=FExpression)*
 	'}';
+
+LogicalOrExpression returns FExpression:
+  LogicalAndExpression
+  ({FBinaryOperation.left=current} op='||' right=LogicalAndExpression)*;
+
+LogicalAndExpression returns FExpression:
+  EqualityExpression
+  ({FBinaryOperation.left=current} op='&&' right=EqualityExpression)*;
+
+EqualityExpression returns FExpression:
+  RelationalExpression
+  ({FBinaryOperation.left=current} op=('=='|'!=') right=RelationalExpression)*;
+
+RelationalExpression returns FExpression:
+  AdditiveExpression
+  ({FBinaryOperation.left=current} op=('<'|'>'|'<='|'>=') right=AdditiveExpression)*;
 
 AdditiveExpression returns FExpression:
   MultiplicativeExpression

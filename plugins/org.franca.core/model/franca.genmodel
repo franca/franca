@@ -121,25 +121,17 @@
     </genClasses>
     <genClasses ecoreClass="franca.ecore#//FDeclaration"/>
     <genClasses ecoreClass="franca.ecore#//FStateGraph">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FStateGraph/initial"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FStateGraph/states"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FStateGraph/transitions"/>
     </genClasses>
-    <genClasses ecoreClass="franca.ecore#//FState"/>
+    <genClasses ecoreClass="franca.ecore#//FState">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FState/transitions"/>
+    </genClasses>
     <genClasses ecoreClass="franca.ecore#//FTransition">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FTransition/trigger"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FTransition/guard"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FTransition/to"/>
-    </genClasses>
-    <genClasses ecoreClass="franca.ecore#//FTransitionTerminal"/>
-    <genClasses ecoreClass="franca.ecore#//FStateTerminal">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FStateTerminal/state"/>
-    </genClasses>
-    <genClasses ecoreClass="franca.ecore#//FInitialTransition"/>
-    <genClasses ecoreClass="franca.ecore#//FNonInitialTransition">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FNonInitialTransition/from"/>
-    </genClasses>
-    <genClasses ecoreClass="franca.ecore#//FTriggeredTransition">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FTriggeredTransition/guard"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FTriggeredTransition/trigger"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FTriggeredTransition/action"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FTransition/action"/>
     </genClasses>
     <genClasses ecoreClass="franca.ecore#//FTrigger">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FTrigger/event"/>
@@ -152,7 +144,7 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FEventOnIf/update"/>
     </genClasses>
     <genClasses ecoreClass="franca.ecore#//FGuard">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute franca.ecore#//FGuard/plainCondition"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FGuard/condition"/>
     </genClasses>
     <genClasses ecoreClass="franca.ecore#//FUnionType">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FUnionType/base"/>

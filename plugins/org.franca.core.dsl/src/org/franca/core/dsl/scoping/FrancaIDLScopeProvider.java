@@ -20,9 +20,8 @@ import org.franca.core.franca.FEventOnIf;
 import org.franca.core.franca.FMethod;
 import org.franca.core.franca.FState;
 import org.franca.core.franca.FStateGraph;
-import org.franca.core.franca.FStateTerminal;
+import org.franca.core.franca.FTransition;
 import org.franca.core.franca.FTrigger;
-import org.franca.core.franca.FTriggeredTransition;
 
 import com.google.common.collect.Lists;
 
@@ -35,39 +34,13 @@ import com.google.common.collect.Lists;
  */
 public class FrancaIDLScopeProvider extends AbstractDeclarativeScopeProvider {
 
-	/**
-	 * returns a flat list of State scopes for a {@link FStateTerminal}
-	 * @param st - the transition endpoint or terminal
-	 * @param ref - not used
-	 * @return a list of scopes
-	 */
-	public IScope scope_FStateTerminal_state(FStateTerminal st, EReference ref) {
-		return getStateScopes(st);
-	}
-
-	
-	private IScope getStateScopes(EObject obj) {
-		final List<IEObjectDescription> scopes = Lists.newArrayList();
-
-		// first state in container hierarchy
-		FStateGraph parent = FrancaHelpers.getStateGraph(obj);
-
-		// collect states of my parent
-		if (parent != null) {
-			for (FState s : parent.getStates()) {
-				scopes.add(EObjectDescription.create(s.getName(), s));
-			}
-		}
-		return new SimpleScope(IScope.NULLSCOPE, scopes);
-	}
-
 	
 	public IScope scope_FAssignment_lhs (FContract contract, EReference ref) {
 		return Scopes.scopeFor(contract.getVariables());
 	}
 
 	
-	public IScope scope_FTypedElementRef_element (FTriggeredTransition tr, EReference ref) {
+	public IScope scope_FTypedElementRef_element (FTransition tr, EReference ref) {
 		final List<EObject> scopes = Lists.newArrayList();
 
 		// add state variables of the enclosing contract to this scope
