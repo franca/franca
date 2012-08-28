@@ -36,7 +36,9 @@ public class FDeployFormatter extends AbstractDeclarativeFormatter {
 		
 		// generic formatting of curly bracket sections
 		for(Pair<Keyword, Keyword> pair: f.findKeywordPairs("{", "}")) {
-			c.setIndentation(pair.getFirst(), pair.getSecond());
+			c.setIndentationIncrement().after(pair.getFirst());
+			c.setIndentationDecrement().before(pair.getSecond());
+//			c.setIndentation(pair.getFirst(), pair.getSecond());
 			c.setLinewrap(1).after(pair.getFirst());
 			c.setLinewrap(1).before(pair.getSecond());
 			c.setLinewrap(1).after(pair.getSecond());
