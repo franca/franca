@@ -49,15 +49,12 @@ interface PlayerAPI {
 	// specification of dynamic behaviour on the interface 
 	contract {
 		PSM {
-			state idle
-			state working
-			
-			transition initial -> idle { }
-			transition idle -> working {
-				< call setActivePlayer >
+			initial idle
+			state idle {
+				on call setActivePlayer -> working
 			}
-			transition working -> idle {
-				< signal attachOutput >
+			state working {
+				on signal attachOutput -> idle
 			}
 		}
 	}
