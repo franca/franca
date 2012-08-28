@@ -45,12 +45,12 @@ public class FrancaIDLScopeProvider extends AbstractDeclarativeScopeProvider {
 
 		// add state variables of the enclosing contract to this scope
 		FContract contract = FrancaHelpers.getContract(tr);
-		System.out.println("Scope " + tr.getTrigger().getEvent().toString());
+//		System.out.println("Scope " + tr.getTrigger().getEvent().toString());
 		if (contract!=null) { 
 			scopes.addAll(contract.getVariables());
-			for(FDeclaration d : contract.getVariables()) {
-				System.out.println("  var " + d.getName());
-			}
+//			for(FDeclaration d : contract.getVariables()) {
+//				System.out.println("  var " + d.getName());
+//			}
 		}
 
 		// add the trigger's parameters to this scope
