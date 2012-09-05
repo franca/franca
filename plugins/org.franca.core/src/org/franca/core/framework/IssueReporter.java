@@ -7,6 +7,8 @@
 *******************************************************************************/
 package org.franca.core.framework;
 
+import java.util.Set;
+
 /**
  * A helper class which provides human-readable representations of 
  * issues recorded during a model2model transformation.
@@ -21,14 +23,27 @@ public class IssueReporter {
 	 * 
 	 * @param trafo  the transformation
 	 * @return the report string (usually multi-line)
+	 * 
+	 * @deprecated Use getReportString(Set<TransformationIssue> issues) instead
 	 */
 	public static String getReportString (TransformationBase trafo) {
-		if (trafo.getIssues().isEmpty()) {
+		return getReportString(trafo.getIssues());
+	}
+
+
+	/**
+	 * Provide a human-readable report for all issues during a transformation.
+	 * 
+	 * @param logger  the transformation logger
+	 * @return the report string (usually multi-line)
+	 */
+	public static String getReportString (Set<TransformationIssue> issues) {
+		if (issues.isEmpty()) {
 			return "Transformation completed without issues.";
 		}
 		
-		String res = "Transformation completed with " + trafo.getIssues().size() + " issues:\n";
-		for(TransformationBase.Issue issue : trafo.getIssues()) {
+		String res = "Transformation completed with " + issues.size() + " issues:\n";
+		for(TransformationIssue issue : issues) {
 			res += "\t" + getIssueString(issue);
 		}
 		return res;
@@ -41,29 +56,29 @@ public class IssueReporter {
 	 * @param issue  the transformation issue
 	 * @return human-readable string describing the issue
 	 */
-	public static String getIssueString (TransformationBase.Issue issue) {
+	public static String getIssueString (TransformationIssue issue) {
 		String feature = issue.getFeatureString();
 		String ret = "";
 		switch (issue.getReason()) {
-		case TransformationBase.Issue.FEATURE_NOT_SUPPORTED:
+		case TransformationIssue.FEATURE_NOT_SUPPORTED:
 			ret = "Transformation does not support feature";
 			break;
-		case TransformationBase.Issue.FEATURE_IS_IGNORED:
+		case TransformationIssue.FEATURE_IS_IGNORED:
 			ret = "Transformation deliberately ignores feature";
 			break;
-		case TransformationBase.Issue.FEATURE_UNSUPPORTED_VALUE:
+		case TransformationIssue.FEATURE_UNSUPPORTED_VALUE:
 			ret = "Transformation doesn't support the value of this feature";
 			break;
-		case TransformationBase.Issue.FEATURE_NOT_HANDLED_YET:
+		case TransformationIssue.FEATURE_NOT_HANDLED_YET:
 			ret = "TODO: Transformation should handle feature";
 			break;
-		case TransformationBase.Issue.FEATURE_NOT_FULLY_SUPPORTED:
+		case TransformationIssue.FEATURE_NOT_FULLY_SUPPORTED:
 			ret = "Transformation handles partially the feature";
 			break;
-		case TransformationBase.Issue.IMPORT_ERROR:
+		case TransformationIssue.IMPORT_ERROR:
 			ret = "Error when importing from other IDL";
 			break;
-		case TransformationBase.Issue.IMPORT_WARNING:
+		case TransformationIssue.IMPORT_WARNING:
 			ret = "Warning when importing from other IDL";
 			break;
 

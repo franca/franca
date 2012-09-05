@@ -14,14 +14,20 @@ import org.eclipse.emf.ecore.EObject;
 import com.google.common.collect.Sets;
 
 /**
- * The base class for all transformations to/from Franca models to/from other models.
+ * A logger extension for transformations to/from Franca models to/from other models.
  * 
  * @author kbirken
- * @deprecated Use org.franca.core.framework.TransformationLogger instead.
  */
-public class TransformationBase {
+public class TransformationLogger {
 	
 	private Set<TransformationIssue> issues = Sets.newHashSet();
+	
+	/**
+	 * Clear the issue store.
+	 */
+	public void clearIssues() {
+		issues.clear();
+	}
 	
 	/**
 	 * Add an issue during transformation. Duplicate issues will be detected and
