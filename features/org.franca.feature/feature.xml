@@ -2,7 +2,7 @@
 <feature
       id="org.franca.feature"
       label="%featureName"
-      version="0.7.5.qualifier"
+      version="0.7.6.qualifier"
       provider-name="%providerName">
 
    <description>
