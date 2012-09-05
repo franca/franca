@@ -34,8 +34,8 @@ codelanguage-def[Franca]
 	Int8,UInt8,Int16,UInt16,Int32,UInt32,Int64,UInt64,
 	Boolean,String,Float,Double,ByteBuffer,
 	
-	contract,PSM,state,transition,initial,
-	call,signal,set,update,guard
+	contract,PSM,vars,state,transition,initial,
+	call,respond,signal,set,update
 ]
 
 codelanguage-def[FDeploy]

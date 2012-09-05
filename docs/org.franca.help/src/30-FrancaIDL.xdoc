@@ -625,15 +625,12 @@ code[Franca][
 // specification of dynamic behaviour on the interface 
 contract {
 	PSM {
-		state idle
-		state working
-		
-		transition initial -> idle { }
-		transition idle -> working {
-			< call setActivePlayer >
+		initial idle
+		state idle {
+			on call setActivePlayer -> working
 		}
-		transition working -> idle {
-			< signal attachOutput >
+		state working {
+			on signal attachOutput -> idle
 		}
 	}
 }
@@ -658,20 +655,93 @@ The e[Protocol State Machines] used for specifying Franca's interface contracts
 use e[events] to specify the transitions from one state to another.
 Valid events might be:
 ul[
-	item[e[call]: A method call including the server's reply.]
+	item[e[call]: A method call initiated by the client.]
+	item[e[respond]: The server's response for a client's method call.]
 	item[e[signal]: A broadcast sent by the server.]
-	item[e[set]: An attribute value has been changed by a client.]
-	item[e[update]: An attribute value has been changed by the server.]
+	item[e[set]: An attribute's value is being changed by a client.]
+	item[e[update]: An indication by the server that an attribute's value has been changed.]
 ]
 
 A transition will be triggered by one out of a set of events. The actual 
 transition can be guarded by a boolean condition.
-A future extension of Franca's PSMs will provide e[state variables] as 
-addition to the actual state machine. The values of these variables can
-be set during entry or exit of states or when a transition is taken. 
+
+section2:FIDL_Contracts_Actions[Transition actions]
+
+For each transition of a PSM, an optional e[action] can be defined.
+The action consists of a set of statements which will be executed each time
+the transition is triggered. Note that the execution of these statements
+will usually not be implemented by real code on the target system. 
+Instead, it will be interpreted during some analysis of the interaction
+on the interface. 
+
+All e[actions] are defined in terms of an e[action language], which is
+part of Franca IDL. This action language is purposefully small and simple
+in order to allow static analysis and interpretation of the actions.
+
+Here is an example which shows the syntax of actions:
+code[Franca][
+contract {
+	PSM {
+		initial idle
+		state idle {
+			on call setActivePlayer -> working {
+				// put action code here
+			}	
+		}
+		state working {
+			on signal attachOutput -> idle {
+				// put action code here
+			}
+		}
+	}
+}
+]
+
+The elements of the action language are still subject to development
+and will be described in a later version of this document.   
+
+
+section2:FIDL_Contracts_StateVars[State variables]
+
+A PSM can refer to e[state variables] which have been defined as part
+of the contract. The state variables are statically typed.
+Any guard or action of a transition can refer to the state variables.
 The boolean guards can check the values of either message arguments,
 attribute values or state variable values.
 
+The following examples enhances the contract defined above by a state variable
+and an action counting the number of e[setActivePlayer] method calls.
+The two transitions of state e[working] are guarded; the guards are checking
+the value of the state variable. After 100 interactions, the PSM will
+enter state e[silence] and will not accept any more events.
+The contract specifies an interface which allows a maximum of 100 calls of 
+method e[setActicePlayer]. As the e[silence] state doesn't have any outgoing 
+transitions, the system will have to be restarted in order to allow further
+activities on this interface.
+code[Franca][
+contract {
+	vars {
+		UInt32 count;
+	}
+	PSM {
+		initial idle
+		state idle {
+			on call setActivePlayer -> working {
+				count = count + 1
+			}	
+		}
+		state working {
+			on signal attachOutput \[count<100\] -> idle
+			on signal attachOutput \[count>=100\] -> silence
+		}
+		state silence { }
+	}
+}
+]
+
+In a future release of Franca IDL there will be mandatory extensions
+for defining the value domains of the state variables (e.g., ranges for 
+integer values). This will allow model checking of PSMs. 
 
 section2:FIDL_Contracts_Exploits[Exploiting contract information]
 
@@ -687,7 +757,7 @@ ul[
 	item[Target traces can be analysed offline by validating sequences against the contract.]
 ]
 
-The e[contract]-feature in Franca is still in its experimental phase. However,
+The e[contract]-feature in Franca is still under development. However,
 by specifying the proper and allowed behaviour of interfaces in a consistent way
 the value and expressiveness of interface definitions can be increased to a large extent.
 
