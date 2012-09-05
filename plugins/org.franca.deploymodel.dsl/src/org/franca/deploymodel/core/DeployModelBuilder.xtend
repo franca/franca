@@ -159,7 +159,12 @@ class DeployModelBuilder {
 		var propertyDecls = FDModelHelper::getAllPropertyDecls(spec, elem)
 		
 		// find property declaration
-		return propertyDecls.findFirst(d | d.name == property)
+		val pdecl = propertyDecls.findFirst(d | d.name == property)
+		if (pdecl==null)
+			throw new Exception("DeployModelBuilder: No property '" + property +
+				"' in specification '"  + spec.name + "' for element " + elem.toString)
+
+		return pdecl
 	}
 	
 	/** Create property object for element. */
