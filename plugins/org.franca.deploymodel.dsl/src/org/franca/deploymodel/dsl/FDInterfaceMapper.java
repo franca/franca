@@ -23,6 +23,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDMethod;
 import org.franca.deploymodel.dsl.fDeploy.FDStruct;
 import org.franca.deploymodel.dsl.fDeploy.FDStructField;
 import org.franca.deploymodel.dsl.fDeploy.FDTypeDef;
+import org.franca.deploymodel.dsl.fDeploy.FDTypes;
 
 import com.google.common.collect.Maps;
 
@@ -40,13 +41,23 @@ public class FDInterfaceMapper {
 	Map<EObject, FDElement> mapping = Maps.newHashMap();
 	
 	/**
-	 * The constructor of FDInterfaceMapper will initialize the mapper
-	 * from a given deployment definition for this interface.
+	 * This constructor of FDInterfaceMapper will initialize the mapper
+	 * from a given deployment definition for an interface.
 	 * 
 	 * @param fdi  the deployment definition for the FInterface. 
 	 */
 	public FDInterfaceMapper (FDInterface fdi) {
 		init(fdi);
+	}
+
+	/**
+	 * The constructor of FDInterfaceMapper will initialize the mapper
+	 * from a given deployment definition for some global type definitions.
+	 * 
+	 * @param fdt  the deployment definition for a list of types. 
+	 */
+	public FDInterfaceMapper (FDTypes fdt) {
+		initTypes(fdt.getTypes());
 	}
 
 
@@ -72,15 +83,19 @@ public class FDInterfaceMapper {
 		}
 		for(FDMethod e : fdi.getMethods()) {
 			mapping.put(e.getTarget(), e);
-			init(e.getInArguments());
-			init(e.getOutArguments());
+			initArguments(e.getInArguments());
+			initArguments(e.getOutArguments());
 		}
 		for(FDBroadcast e : fdi.getBroadcasts()) {
 			mapping.put(e.getTarget(), e);
-			init(e.getOutArguments());
+			initArguments(e.getOutArguments());
 		}
 		
-		for(FDTypeDef t : fdi.getTypes()) {
+		initTypes(fdi.getTypes());
+	}
+		
+	private void initTypes (List<FDTypeDef> fdTypes) {
+		for(FDTypeDef t : fdTypes) {
 			if (t instanceof FDArray) {
 				mapping.put(((FDArray) t).getTarget(), t);
 			} else if (t instanceof FDStruct) {
@@ -97,7 +112,7 @@ public class FDInterfaceMapper {
 		}
 	}
 	
-	private void init (List<FDArgument> args) {
+	private void initArguments (List<FDArgument> args) {
 		for(FDArgument arg : args) {
 			mapping.put(arg.getTarget(), arg);
 		}

@@ -1,5 +1,6 @@
 package org.franca.deploymodel.dsl.validation;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -51,7 +52,9 @@ import org.franca.deploymodel.dsl.fDeploy.FDString;
 import org.franca.deploymodel.dsl.fDeploy.FDStruct;
 import org.franca.deploymodel.dsl.fDeploy.FDStructField;
 import org.franca.deploymodel.dsl.fDeploy.FDType;
+import org.franca.deploymodel.dsl.fDeploy.FDTypeDef;
 import org.franca.deploymodel.dsl.fDeploy.FDTypeRef;
+import org.franca.deploymodel.dsl.fDeploy.FDTypes;
 import org.franca.deploymodel.dsl.fDeploy.FDValue;
 import org.franca.deploymodel.dsl.fDeploy.FDValueArray;
 import org.franca.deploymodel.dsl.fDeploy.FDeployPackage;
@@ -138,6 +141,19 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 		checkElementProperties(spec, elem, FDeployPackage.Literals.FD_PROVIDER__NAME);
 	}
 	
+	@Check
+	public void checkPropertiesComplete (FDTypes elem) {
+		// we do not check own properties - there will be none
+		FDSpecification spec = FDModelHelper.getRootElement(elem).getSpec();
+		//checkElementProperties(spec, elem, FDeployPackage.Literals.FD_TYPES__PACKAGE);
+
+		// check child elements recursively
+		FDSpecificationExtender specHelper = new FDSpecificationExtender(spec);
+		FDInterfaceMapper mapper = new FDInterfaceMapper(elem);
+		checkTypes(elem.getPackage().getTypes(), specHelper, mapper, spec,
+				FDeployPackage.Literals.FD_TYPES__PACKAGE);
+	}
+	
 	
 	@Check
 	public void checkPropertiesComplete (FDInterface elem) {
@@ -190,14 +206,22 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 						"Output", FDeployPackage.Literals.FD_BROADCAST__TARGET);
 			}
 		}
-
-		for(FType tc : target.getTypes()) {
+		
+		checkTypes(target.getTypes(), specHelper, mapper, spec,
+				FDeployPackage.Literals.FD_INTERFACE__TARGET);
+	}
+	
+	
+	private void checkTypes (List<FType> types, FDSpecificationExtender specHelper,
+			FDInterfaceMapper mapper, FDSpecification spec,
+			EStructuralFeature parentFeature)
+	{
+		for(FType tc : types) {
 			if (tc instanceof FArrayType) {
 				FDArray c = (FDArray) mapper.getFDElement(tc);
 				if (c==null) {
 					if (mustBeDefined(specHelper, (FArrayType)tc)) {
-						error("Array '" + tc.getName() + "'" + msg,
-								FDeployPackage.Literals.FD_INTERFACE__TARGET);
+						error("Array '" + tc.getName() + "'" + msg, parentFeature);
 					}
 				} else {
 					checkElementProperties(spec, c, FDeployPackage.Literals.FD_ARRAY__TARGET);
@@ -206,8 +230,7 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 				FDStruct c = (FDStruct) mapper.getFDElement(tc);
 				if (c==null) {
 					if (mustBeDefined(specHelper, (FStructType)tc)) {
-						error("Struct '" + tc.getName() + "'" + msg,
-								FDeployPackage.Literals.FD_INTERFACE__TARGET);
+						error("Struct '" + tc.getName() + "'" + msg, parentFeature);
 					}
 				} else {
 					checkElementProperties(spec, c, FDeployPackage.Literals.FD_STRUCT__TARGET);
@@ -218,8 +241,7 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 				FDEnumeration c = (FDEnumeration) mapper.getFDElement(tc);
 				if (c==null) {
 					if (mustBeDefined(specHelper, (FEnumerationType)tc)) {
-						error("Enumeration '" + tc.getName() + "'" + msg,
-								FDeployPackage.Literals.FD_INTERFACE__TARGET);
+						error("Enumeration '" + tc.getName() + "'" + msg, parentFeature);
 					}
 				} else {
 					checkElementProperties(spec, c, FDeployPackage.Literals.FD_ENUMERATION__TARGET);

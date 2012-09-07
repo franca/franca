@@ -35,6 +35,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDStruct;
 import org.franca.deploymodel.dsl.fDeploy.FDStructField;
 import org.franca.deploymodel.dsl.fDeploy.FDType;
 import org.franca.deploymodel.dsl.fDeploy.FDTypeRef;
+import org.franca.deploymodel.dsl.fDeploy.FDTypes;
 
 import com.google.common.collect.Lists;
 
@@ -46,6 +47,36 @@ import com.google.common.collect.Lists;
  *
  */
 public class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
+
+	public IScope scope_FDArray_target (FDTypes ctxt, EReference ref) {
+		List<FType> items = Lists.newArrayList();
+		for(FType t : ctxt.getPackage().getTypes()) {
+			if (t instanceof FArrayType)
+				items.add(t);
+		}
+		return Scopes.scopeFor(items);
+	}
+
+	public IScope scope_FDStruct_target (FDTypes ctxt, EReference ref) {
+		List<FType> items = Lists.newArrayList();
+		for(FType t : ctxt.getPackage().getTypes()) {
+			if (t instanceof FStructType)
+				items.add(t);
+		}
+		return Scopes.scopeFor(items);
+	}
+
+	public IScope scope_FDEnumeration_target (FDTypes ctxt, EReference ref) {
+		List<FType> items = Lists.newArrayList();
+		for(FType t : ctxt.getPackage().getTypes()) {
+			if (t instanceof FEnumerationType)
+				items.add(t);
+		}
+		return Scopes.scopeFor(items);
+	}
+
+	
+	// *****************************************************************************
 
 	public IScope scope_FDAttribute_target (FDInterface ctxt, EReference ref) {
 		return Scopes.scopeFor(ctxt.getTarget().getAttributes());

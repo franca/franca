@@ -87,7 +87,7 @@ FDEnumerator:
 // content definition (model part)
 
 FDRootElement:
-	FDProvider | FDInterface;
+	FDProvider | FDTypes | FDInterface;
 
 FDElement:
 	FDRootElement | FDInterfaceInstance |
@@ -103,6 +103,12 @@ FDProvider:
 FDInterfaceInstance:
 	'instance' target=[fidl::FInterface|FQN] '{'
 		properties+=FDProperty*
+	'}';
+
+FDTypes:
+	'define' spec=[FDSpecification|FQN] 'for' 'types' package=[fidl::FModel|FQN] '{'
+		properties+=FDProperty*  // just for being compatible with FDElement, there will be no properties
+		types+=FDTypeDef*
 	'}';
 
 FDInterface:
