@@ -14,6 +14,7 @@ import org.franca.core.franca.FArrayType;
 import org.franca.core.franca.FEnumerationType;
 import org.franca.core.franca.FStructType;
 import org.franca.core.franca.FType;
+import org.franca.core.franca.FUnionType;
 import org.franca.deploymodel.dsl.FDModelHelper;
 import org.franca.deploymodel.dsl.fDeploy.FDArgument;
 import org.franca.deploymodel.dsl.fDeploy.FDArray;
@@ -23,6 +24,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDElement;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumType;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumValue;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumeration;
+import org.franca.deploymodel.dsl.fDeploy.FDField;
 import org.franca.deploymodel.dsl.fDeploy.FDInterface;
 import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance;
 import org.franca.deploymodel.dsl.fDeploy.FDMethod;
@@ -32,10 +34,10 @@ import org.franca.deploymodel.dsl.fDeploy.FDPropertyFlag;
 import org.franca.deploymodel.dsl.fDeploy.FDProvider;
 import org.franca.deploymodel.dsl.fDeploy.FDRootElement;
 import org.franca.deploymodel.dsl.fDeploy.FDStruct;
-import org.franca.deploymodel.dsl.fDeploy.FDStructField;
 import org.franca.deploymodel.dsl.fDeploy.FDType;
 import org.franca.deploymodel.dsl.fDeploy.FDTypeRef;
 import org.franca.deploymodel.dsl.fDeploy.FDTypes;
+import org.franca.deploymodel.dsl.fDeploy.FDUnion;
 
 import com.google.common.collect.Lists;
 
@@ -65,6 +67,16 @@ public class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 		}
 		return Scopes.scopeFor(items);
 	}
+
+	public IScope scope_FDUnion_target (FDTypes ctxt, EReference ref) {
+		List<FType> items = Lists.newArrayList();
+		for(FType t : ctxt.getPackage().getTypes()) {
+			if (t instanceof FUnionType)
+				items.add(t);
+		}
+		return Scopes.scopeFor(items);
+	}
+	
 
 	public IScope scope_FDEnumeration_target (FDTypes ctxt, EReference ref) {
 		List<FType> items = Lists.newArrayList();
@@ -108,6 +120,15 @@ public class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 		return Scopes.scopeFor(items);
 	}
 
+	public IScope scope_FDUnion_target (FDInterface ctxt, EReference ref) {
+		List<FType> items = Lists.newArrayList();
+		for(FType t : ctxt.getTarget().getTypes()) {
+			if (t instanceof FUnionType)
+				items.add(t);
+		}
+		return Scopes.scopeFor(items);
+	}
+
 	public IScope scope_FDEnumeration_target (FDInterface ctxt, EReference ref) {
 		List<FType> items = Lists.newArrayList();
 		for(FType t : ctxt.getTarget().getTypes()) {
@@ -133,7 +154,11 @@ public class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 		return Scopes.scopeFor(ctxt.getTarget().getOutArgs());
 	}
 
-	public IScope scope_FDStructField_target (FDStruct ctxt, EReference ref) {
+	public IScope scope_FDField_target (FDStruct ctxt, EReference ref) {
+		return Scopes.scopeFor(ctxt.getTarget().getElements());
+	}
+
+	public IScope scope_FDField_target (FDUnion ctxt, EReference ref) {
 		return Scopes.scopeFor(ctxt.getTarget().getElements());
 	}
 
@@ -180,7 +205,11 @@ public class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 		return getPropertyDecls(owner);
 	}
 
-	public IScope scope_FDProperty_decl (FDStructField owner, EReference ref) {
+	public IScope scope_FDProperty_decl (FDUnion owner, EReference ref) {
+		return getPropertyDecls(owner);
+	}
+
+	public IScope scope_FDProperty_decl (FDField owner, EReference ref) {
 		return getPropertyDecls(owner);
 	}
 

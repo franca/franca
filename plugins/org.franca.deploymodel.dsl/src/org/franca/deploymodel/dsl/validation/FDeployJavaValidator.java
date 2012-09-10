@@ -1,6 +1,5 @@
 package org.franca.deploymodel.dsl.validation;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -22,6 +21,7 @@ import org.franca.core.franca.FMethod;
 import org.franca.core.franca.FStructType;
 import org.franca.core.franca.FType;
 import org.franca.core.franca.FTypeRef;
+import org.franca.core.franca.FUnionType;
 import org.franca.deploymodel.dsl.FDInterfaceMapper;
 import org.franca.deploymodel.dsl.FDModelHelper;
 import org.franca.deploymodel.dsl.FDSpecificationExtender;
@@ -37,6 +37,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDEnum;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumType;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumValue;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumeration;
+import org.franca.deploymodel.dsl.fDeploy.FDField;
 import org.franca.deploymodel.dsl.fDeploy.FDInteger;
 import org.franca.deploymodel.dsl.fDeploy.FDInterface;
 import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance;
@@ -50,11 +51,10 @@ import org.franca.deploymodel.dsl.fDeploy.FDProvider;
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification;
 import org.franca.deploymodel.dsl.fDeploy.FDString;
 import org.franca.deploymodel.dsl.fDeploy.FDStruct;
-import org.franca.deploymodel.dsl.fDeploy.FDStructField;
 import org.franca.deploymodel.dsl.fDeploy.FDType;
-import org.franca.deploymodel.dsl.fDeploy.FDTypeDef;
 import org.franca.deploymodel.dsl.fDeploy.FDTypeRef;
 import org.franca.deploymodel.dsl.fDeploy.FDTypes;
+import org.franca.deploymodel.dsl.fDeploy.FDUnion;
 import org.franca.deploymodel.dsl.fDeploy.FDValue;
 import org.franca.deploymodel.dsl.fDeploy.FDValueArray;
 import org.franca.deploymodel.dsl.fDeploy.FDeployPackage;
@@ -234,8 +234,19 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 					}
 				} else {
 					checkElementProperties(spec, c, FDeployPackage.Literals.FD_STRUCT__TARGET);
-					checkStructFieldsList(specHelper, mapper, spec, ((FStructType) tc).getElements(), c,
-							FDeployPackage.Literals.FD_STRUCT__TARGET);
+					checkFieldsList(specHelper, mapper, spec, ((FStructType) tc).getElements(), c,
+							FDeployPackage.Literals.FD_STRUCT__TARGET, "Struct");
+				}
+			} else if (tc instanceof FUnionType) {
+				FDUnion c = (FDUnion) mapper.getFDElement(tc);
+				if (c==null) {
+					if (mustBeDefined(specHelper, (FUnionType)tc)) {
+						error("Union '" + tc.getName() + "'" + msg, parentFeature);
+					}
+				} else {
+					checkElementProperties(spec, c, FDeployPackage.Literals.FD_UNION__TARGET);
+					checkFieldsList(specHelper, mapper, spec, ((FUnionType) tc).getElements(), c,
+							FDeployPackage.Literals.FD_UNION__TARGET, "Union");
 				}
 			} else if (tc instanceof FEnumerationType) {
 				FDEnumeration c = (FDEnumeration) mapper.getFDElement(tc);
@@ -268,18 +279,18 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 		}
 	}
 	
-	private void checkStructFieldsList (FDSpecificationExtender specHelper,
+	private void checkFieldsList (FDSpecificationExtender specHelper,
 			FDInterfaceMapper mapper, FDSpecification spec, List<FField> fields,
-			FDElement parent, EStructuralFeature feature)
+			FDElement parent, EStructuralFeature feature, String tag)
 	{
 		for(FField tc : fields) {
-			FDStructField c = (FDStructField) mapper.getFDElement(tc);
+			FDField c = (FDField) mapper.getFDElement(tc);
 			if (c==null) {
 				if (mustBeDefined(specHelper, tc.getType())) {
-					error("Struct field '" + tc.getName() + "'" + msg, parent, feature, -1);
+					error(tag + " field '" + tc.getName() + "'" + msg, parent, feature, -1);
 				}
 			} else {
-				checkElementProperties(spec, c, FDeployPackage.Literals.FD_STRUCT_FIELD__TARGET);
+				checkElementProperties(spec, c, FDeployPackage.Literals.FD_FIELD__TARGET);
 			}
 		}
 	}
@@ -357,6 +368,25 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 			return false;
 		
 		if (specHelper.isMandatory(FDPropertyHost.STRUCT_FIELDS))
+			return true;
+
+		for(FField f : target.getElements()) {
+			if (mustBeDefined(specHelper, f.getType()))
+				return true;
+		}
+		
+		return false;
+	}
+	
+	private boolean mustBeDefined (FDSpecificationExtender specHelper, FUnionType target) {
+		// activate this if UNIONS gets a property host (currently not defined in FDeploy.xtext)
+//		if (specHelper.isMandatory(FDPropertyHost.UNIONS))
+//			return true;
+		
+		if (target.getElements().isEmpty())
+			return false;
+		
+		if (specHelper.isMandatory(FDPropertyHost.UNION_FIELDS))
 			return true;
 
 		for(FField f : target.getElements()) {

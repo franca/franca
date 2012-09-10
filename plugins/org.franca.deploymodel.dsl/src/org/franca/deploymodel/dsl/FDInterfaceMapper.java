@@ -18,12 +18,13 @@ import org.franca.deploymodel.dsl.fDeploy.FDBroadcast;
 import org.franca.deploymodel.dsl.fDeploy.FDElement;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumValue;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumeration;
+import org.franca.deploymodel.dsl.fDeploy.FDField;
 import org.franca.deploymodel.dsl.fDeploy.FDInterface;
 import org.franca.deploymodel.dsl.fDeploy.FDMethod;
 import org.franca.deploymodel.dsl.fDeploy.FDStruct;
-import org.franca.deploymodel.dsl.fDeploy.FDStructField;
 import org.franca.deploymodel.dsl.fDeploy.FDTypeDef;
 import org.franca.deploymodel.dsl.fDeploy.FDTypes;
+import org.franca.deploymodel.dsl.fDeploy.FDUnion;
 
 import com.google.common.collect.Maps;
 
@@ -100,7 +101,12 @@ public class FDInterfaceMapper {
 				mapping.put(((FDArray) t).getTarget(), t);
 			} else if (t instanceof FDStruct) {
 				mapping.put(((FDStruct) t).getTarget(), t);
-				for(FDStructField f : ((FDStruct) t).getFields()) {
+				for(FDField f : ((FDStruct) t).getFields()) {
+					mapping.put(f.getTarget(), f);
+				}
+			} else if (t instanceof FDUnion) {
+				mapping.put(((FDUnion) t).getTarget(), t);
+				for(FDField f : ((FDUnion) t).getFields()) {
 					mapping.put(f.getTarget(), f);
 				}
 			} else if (t instanceof FDEnumeration) {

@@ -20,6 +20,7 @@ import org.franca.core.franca.FField;
 import org.franca.core.franca.FInterface;
 import org.franca.core.franca.FMethod;
 import org.franca.core.franca.FStructType;
+import org.franca.core.franca.FUnionType;
 import org.franca.deploymodel.dsl.FDInterfaceMapper;
 import org.franca.deploymodel.dsl.fDeploy.FDArgument;
 import org.franca.deploymodel.dsl.fDeploy.FDArray;
@@ -31,7 +32,8 @@ import org.franca.deploymodel.dsl.fDeploy.FDEnumeration;
 import org.franca.deploymodel.dsl.fDeploy.FDInterface;
 import org.franca.deploymodel.dsl.fDeploy.FDMethod;
 import org.franca.deploymodel.dsl.fDeploy.FDStruct;
-import org.franca.deploymodel.dsl.fDeploy.FDStructField;
+import org.franca.deploymodel.dsl.fDeploy.FDUnion;
+import org.franca.deploymodel.dsl.fDeploy.FDField;
 import org.franca.deploymodel.dsl.fDeploy.FDeployFactory;
 
 /**
@@ -141,10 +143,15 @@ public class FDeployedInterface {
          el = FDeployFactory.eINSTANCE.createFDStruct();
          ((FDStruct) el).setTarget((FStructType) obj);
       }
+      else if (obj instanceof FUnionType)
+      {
+         el = FDeployFactory.eINSTANCE.createFDUnion();
+         ((FDUnion) el).setTarget((FUnionType) obj);
+      }
       else if (obj instanceof FField)
       {
-         el = FDeployFactory.eINSTANCE.createFDStructField();
-         ((FDStructField) el).setTarget((FField) obj);
+         el = FDeployFactory.eINSTANCE.createFDField();
+         ((FDField) el).setTarget((FField) obj);
       }
       else if (obj instanceof FEnumerationType)
       {

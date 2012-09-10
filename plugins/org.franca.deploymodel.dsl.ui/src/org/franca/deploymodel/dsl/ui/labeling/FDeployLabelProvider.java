@@ -17,6 +17,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDBroadcast;
 import org.franca.deploymodel.dsl.fDeploy.FDDeclaration;
 import org.franca.deploymodel.dsl.fDeploy.FDEnum;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumerator;
+import org.franca.deploymodel.dsl.fDeploy.FDField;
 import org.franca.deploymodel.dsl.fDeploy.FDInteger;
 import org.franca.deploymodel.dsl.fDeploy.FDInterface;
 import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance;
@@ -25,7 +26,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDProperty;
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl;
 import org.franca.deploymodel.dsl.fDeploy.FDString;
 import org.franca.deploymodel.dsl.fDeploy.FDStruct;
-import org.franca.deploymodel.dsl.fDeploy.FDStructField;
+import org.franca.deploymodel.dsl.fDeploy.FDUnion;
 import org.franca.deploymodel.dsl.fDeploy.Import;
 
 import com.google.inject.Inject;
@@ -73,11 +74,15 @@ public class FDeployLabelProvider extends DefaultEObjectLabelProvider {
       return element.getTarget().getName();
    }
 
-   public String text(FDStructField element) {
+   public String text(FDField element) {
       return element.getTarget().getName();
    }
 
    public String text(FDStruct element) {
+      return element.getTarget().getName();
+   }
+
+   public String text(FDUnion element) {
       return element.getTarget().getName();
    }
 
@@ -142,7 +147,7 @@ public class FDeployLabelProvider extends DefaultEObjectLabelProvider {
       return "method.gif";
    }
 
-   public String image(FDStructField element) {
+   public String image(FDField element) {
       return "field.gif";
    }
 
@@ -159,8 +164,12 @@ public class FDeployLabelProvider extends DefaultEObjectLabelProvider {
    }
 
    public String image(FDStruct element) {
-      return "struct.gif";
-   }
+	      return "struct.gif";
+	   }
+
+   public String image(FDUnion element) {
+	      return "struct.gif"; // TODO: different image for unions?
+	   }
 
    public String image(Import element) {
       return "import.gif";
@@ -189,7 +198,9 @@ public class FDeployLabelProvider extends DefaultEObjectLabelProvider {
       case METHODS:
          return "method.gif";
       case STRUCT_FIELDS:
-         return "field.gif";
+          return "field.gif";
+      case UNION_FIELDS:
+          return "field.gif";
       case ENUMERATIONS:
          return "enum.gif";
       case ENUMERATORS:

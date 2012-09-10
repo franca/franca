@@ -19,8 +19,8 @@ import org.franca.core.dsl.FrancaIDLHelpers;
 import org.franca.core.dsl.FrancaIDLStandaloneSetup;
 import org.franca.core.framework.FrancaHelpers;
 import org.franca.core.franca.FTypeRef;
-import org.franca.core.utils.ModelPersistenceHandler;
 import org.franca.core.utils.ImportsProvider;
+import org.franca.core.utils.ModelPersistenceHandler;
 import org.franca.deploymodel.dsl.fDeploy.FDArgument;
 import org.franca.deploymodel.dsl.fDeploy.FDArray;
 import org.franca.deploymodel.dsl.fDeploy.FDAttribute;
@@ -29,6 +29,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDDeclaration;
 import org.franca.deploymodel.dsl.fDeploy.FDElement;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumValue;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumeration;
+import org.franca.deploymodel.dsl.fDeploy.FDField;
 import org.franca.deploymodel.dsl.fDeploy.FDInterface;
 import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance;
 import org.franca.deploymodel.dsl.fDeploy.FDMethod;
@@ -39,7 +40,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDPropertyHost;
 import org.franca.deploymodel.dsl.fDeploy.FDProvider;
 import org.franca.deploymodel.dsl.fDeploy.FDRootElement;
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification;
-import org.franca.deploymodel.dsl.fDeploy.FDStructField;
+import org.franca.deploymodel.dsl.fDeploy.FDStruct;
 import org.franca.deploymodel.dsl.fDeploy.Import;
 
 import com.google.common.collect.Lists;
@@ -202,8 +203,8 @@ public class FDModelHelper implements ImportsProvider {
 			typeRef = ((FDAttribute) elem).getTarget().getType();
 		} else if (elem instanceof FDArgument) {
 			typeRef = ((FDArgument) elem).getTarget().getType();
-		} else if (elem instanceof FDStructField) {
-			typeRef = ((FDStructField) elem).getTarget().getType();
+		} else if (elem instanceof FDField) {
+			typeRef = ((FDField) elem).getTarget().getType();
 		}
 		if (typeRef != null) {
 			if (FrancaHelpers.isInteger(typeRef))
@@ -260,8 +261,11 @@ public class FDModelHelper implements ImportsProvider {
 			return FDPropertyHost.ARGUMENTS;
 		} else if (elem instanceof FDArray) {
 			return FDPropertyHost.ARRAYS;
-		} else if (elem instanceof FDStructField) {
-			return FDPropertyHost.STRUCT_FIELDS;
+		} else if (elem instanceof FDField) {
+			if (elem.eContainer() instanceof FDStruct)
+				return FDPropertyHost.STRUCT_FIELDS;
+			else // FDUnion
+				return FDPropertyHost.UNION_FIELDS;
 		} else if (elem instanceof FDEnumeration) {
 			return FDPropertyHost.ENUMERATIONS;
 		} else if (elem instanceof FDEnumValue) {
