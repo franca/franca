@@ -198,7 +198,7 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 	
 	def private IScope getPropertyDeclEnumScopes (FDPropertyDecl decl) {
 		val typeRef = decl.getType
-		if (typeRef.getComplex==null) {
+		if (typeRef.getComplex!=null) {
 			val type = typeRef.getComplex
 			if (type instanceof FDEnumType) {
 				return (type as FDEnumType).getEnumerators.scopeFor
