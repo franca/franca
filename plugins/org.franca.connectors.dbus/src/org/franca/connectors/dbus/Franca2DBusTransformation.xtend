@@ -267,7 +267,7 @@ class Franca2DBusTransformation {
 	def String transformMapType (FMapType src) {
 		if (src.keyType.derived != null) {
 			// not_supported: DBus supports only basic types as dict-key
-			'?' 
+			return '?' 
 		}
 		'a{' + src.keyType.transformSingleType2TypeString +
 				src.valueType.transformSingleType2TypeString + '}' 
