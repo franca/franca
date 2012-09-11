@@ -168,7 +168,7 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 		for(FAttribute tc : target.getAttributes()) {
 			FDAttribute c = (FDAttribute) mapper.getFDElement(tc);
 			if (c==null) {
-				if (mustBeDefined(specHelper, tc.getType())) {
+				if (mustBeDefined(specHelper, tc)) {
 					error("Attribute '" + tc.getName() + "'" + msg,
 							FDeployPackage.Literals.FD_INTERFACE__TARGET);
 				}
@@ -270,7 +270,7 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 		for(FArgument tc : args) {
 			FDArgument c = (FDArgument) mapper.getFDElement(tc);
 			if (c==null) {
-				if (mustBeDefined(specHelper, tc.getType())) {
+				if (mustBeDefined(specHelper, tc)) {
 					error(tag + " argument '" + tc.getName() + "'" + msg, parent, feature, -1);
 				}
 			} else {
@@ -286,7 +286,7 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 		for(FField tc : fields) {
 			FDField c = (FDField) mapper.getFDElement(tc);
 			if (c==null) {
-				if (mustBeDefined(specHelper, tc.getType())) {
+				if (mustBeDefined(specHelper, tc)) {
 					error(tag + " field '" + tc.getName() + "'" + msg, parent, feature, -1);
 				}
 			} else {
@@ -322,12 +322,12 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 			return true;
 
 		for(FArgument arg : target.getInArgs()) {
-			if (mustBeDefined(specHelper, arg.getType()))
+			if (mustBeDefined(specHelper, arg))
 				return true;
 		}
 		
 		for(FArgument arg : target.getOutArgs()) {
-			if (mustBeDefined(specHelper, arg.getType()))
+			if (mustBeDefined(specHelper, arg))
 				return true;
 		}
 		
@@ -345,7 +345,7 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 			return true;
 
 		for(FArgument arg : target.getOutArgs()) {
-			if (mustBeDefined(specHelper, arg.getType()))
+			if (mustBeDefined(specHelper, arg))
 				return true;
 		}
 		
@@ -371,7 +371,7 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 			return true;
 
 		for(FField f : target.getElements()) {
-			if (mustBeDefined(specHelper, f.getType()))
+			if (mustBeDefined(specHelper, f))
 				return true;
 		}
 		
@@ -390,7 +390,7 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 			return true;
 
 		for(FField f : target.getElements()) {
-			if (mustBeDefined(specHelper, f.getType()))
+			if (mustBeDefined(specHelper, f))
 				return true;
 		}
 		
@@ -409,11 +409,30 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 
 		return false;
 	}
-	
-	private boolean mustBeDefined (FDSpecificationExtender specHelper, FTypeRef target) {
+
+	private boolean mustBeDefined (FDSpecificationExtender specHelper, FArgument target) {
 		if (specHelper.isMandatory(FDPropertyHost.ARGUMENTS))
 			return true;
 
+		return mustBeDefined(specHelper, target.getType());
+	}
+
+	private boolean mustBeDefined (FDSpecificationExtender specHelper, FAttribute target) {
+		if (specHelper.isMandatory(FDPropertyHost.ATTRIBUTES))
+			return true;
+
+		return mustBeDefined(specHelper, target.getType());
+	}
+
+	private boolean mustBeDefined (FDSpecificationExtender specHelper, FField target) {
+		boolean isStruct = target.eContainer() instanceof FStructType;
+		if (specHelper.isMandatory(isStruct ? FDPropertyHost.STRUCT_FIELDS : FDPropertyHost.UNION_FIELDS))
+			return true;
+
+		return mustBeDefined(specHelper, target.getType());
+	}
+
+	private boolean mustBeDefined (FDSpecificationExtender specHelper, FTypeRef target) {
 		if (FrancaHelpers.isString(target)) {
 			if (specHelper.isMandatory(FDPropertyHost.STRINGS)) {
 				return true;
