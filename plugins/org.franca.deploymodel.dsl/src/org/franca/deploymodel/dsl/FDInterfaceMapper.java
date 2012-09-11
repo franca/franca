@@ -120,6 +120,9 @@ public class FDInterfaceMapper {
 	}
 	
 	private void initArguments (FDArgumentList args) {
+		if (args==null)
+			return;
+		
 		for(FDArgument arg : args.getArguments()) {
 			mapping.put(arg.getTarget(), arg);
 		}
