@@ -364,18 +364,7 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 //		if (specHelper.isMandatory(FDPropertyHost.STRUCTS))
 //			return true;
 		
-		if (target.getElements().isEmpty())
-			return false;
-		
-		if (specHelper.isMandatory(FDPropertyHost.STRUCT_FIELDS))
-			return true;
-
-		for(FField f : target.getElements()) {
-			if (mustBeDefined(specHelper, f))
-				return true;
-		}
-		
-		return false;
+		return mustBeDefined(specHelper, target.getElements(), FDPropertyHost.STRUCT_FIELDS);
 	}
 	
 	private boolean mustBeDefined (FDSpecificationExtender specHelper, FUnionType target) {
@@ -383,13 +372,17 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 //		if (specHelper.isMandatory(FDPropertyHost.UNIONS))
 //			return true;
 		
-		if (target.getElements().isEmpty())
+		return mustBeDefined(specHelper, target.getElements(), FDPropertyHost.UNION_FIELDS);
+	}
+
+	private boolean mustBeDefined (FDSpecificationExtender specHelper, List<FField> targets, FDPropertyHost host) {
+		if (targets.isEmpty())
 			return false;
 		
-		if (specHelper.isMandatory(FDPropertyHost.UNION_FIELDS))
+		if (specHelper.isMandatory(host))
 			return true;
 
-		for(FField f : target.getElements()) {
+		for(FField f : targets) {
 			if (mustBeDefined(specHelper, f))
 				return true;
 		}
