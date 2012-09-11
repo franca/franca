@@ -153,8 +153,9 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 
 		// check child elements recursively
 		FDSpecificationExtender specHelper = new FDSpecificationExtender(spec);
+		PropertyDefChecker checker = new PropertyDefChecker(specHelper);
 		FDMapper mapper = new FDMapper(elem);
-		checkTypes(elem.getPackage().getTypes(), specHelper, mapper, spec,
+		checkTypes(elem.getPackage().getTypes(), specHelper, checker, mapper, spec,
 				FDeployPackage.Literals.FD_TYPES__PACKAGE);
 	}
 	
@@ -167,12 +168,13 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 		
 		// check child elements recursively
 		FDSpecificationExtender specHelper = new FDSpecificationExtender(spec);
+		PropertyDefChecker checker = new PropertyDefChecker(specHelper);
 		FDMapper mapper = new FDMapper(elem);
 		FInterface target = elem.getTarget();
 		for(FAttribute tc : target.getAttributes()) {
 			FDAttribute c = (FDAttribute) mapper.getFDElement(tc);
 			if (c==null) {
-				if (mustBeDefined(specHelper, tc)) {
+				if (checker.mustBeDefined(tc)) {
 					error("Attribute '" + tc.getName() + "'" + msg,
 							FDeployPackage.Literals.FD_INTERFACE__TARGET);
 				}
@@ -184,15 +186,15 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 		for(FMethod tc : target.getMethods()) {
 			FDMethod c = (FDMethod) mapper.getFDElement(tc);
 			if (c==null) {
-				if (mustBeDefined(specHelper, tc)) {
+				if (checker.mustBeDefined(tc)) {
 					error("Method '" + tc.getName() + "'" + msg,
 							FDeployPackage.Literals.FD_INTERFACE__TARGET);
 				}
 			} else {
 				checkElementProperties(spec, c, FDeployPackage.Literals.FD_METHOD__TARGET);
-				checkArgumentList(specHelper, mapper, spec, tc.getInArgs(), c,
+				checkArgumentList(specHelper, checker, mapper, spec, tc.getInArgs(), c,
 						"Input", FDeployPackage.Literals.FD_METHOD__TARGET);
-				checkArgumentList(specHelper, mapper, spec, tc.getOutArgs(), c,
+				checkArgumentList(specHelper, checker, mapper, spec, tc.getOutArgs(), c,
 						"Output", FDeployPackage.Literals.FD_METHOD__TARGET);
 			}
 		}
@@ -200,23 +202,24 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 		for(FBroadcast tc : target.getBroadcasts()) {
 			FDBroadcast c = (FDBroadcast) mapper.getFDElement(tc);
 			if (c==null) {
-				if (mustBeDefined(specHelper, tc)) {
+				if (checker.mustBeDefined(tc)) {
 					error("Broadcast '" + tc.getName() + "'" + msg,
 							FDeployPackage.Literals.FD_INTERFACE__TARGET);
 				}
 			} else {
 				checkElementProperties(spec, c, FDeployPackage.Literals.FD_BROADCAST__TARGET);
-				checkArgumentList(specHelper, mapper, spec, tc.getOutArgs(), c,
+				checkArgumentList(specHelper, checker, mapper, spec, tc.getOutArgs(), c,
 						"Output", FDeployPackage.Literals.FD_BROADCAST__TARGET);
 			}
 		}
 		
-		checkTypes(target.getTypes(), specHelper, mapper, spec,
+		checkTypes(target.getTypes(), specHelper, checker, mapper, spec,
 				FDeployPackage.Literals.FD_INTERFACE__TARGET);
 	}
 	
 	
 	private void checkTypes (List<FType> types, FDSpecificationExtender specHelper,
+			PropertyDefChecker checker,
 			FDMapper mapper, FDSpecification spec,
 			EStructuralFeature parentFeature)
 	{
@@ -224,7 +227,7 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 			if (tc instanceof FArrayType) {
 				FDArray c = (FDArray) mapper.getFDElement(tc);
 				if (c==null) {
-					if (mustBeDefined(specHelper, (FArrayType)tc)) {
+					if (checker.mustBeDefined((FArrayType)tc)) {
 						error("Array '" + tc.getName() + "'" + msg, parentFeature);
 					}
 				} else {
@@ -233,29 +236,29 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 			} else if (tc instanceof FStructType) {
 				FDStruct c = (FDStruct) mapper.getFDElement(tc);
 				if (c==null) {
-					if (mustBeDefined(specHelper, (FStructType)tc)) {
+					if (checker.mustBeDefined((FStructType)tc)) {
 						error("Struct '" + tc.getName() + "'" + msg, parentFeature);
 					}
 				} else {
 					checkElementProperties(spec, c, FDeployPackage.Literals.FD_STRUCT__TARGET);
-					checkFieldsList(specHelper, mapper, spec, ((FStructType) tc).getElements(), c,
+					checkFieldsList(specHelper, checker, mapper, spec, ((FStructType) tc).getElements(), c,
 							FDeployPackage.Literals.FD_STRUCT__TARGET, "Struct");
 				}
 			} else if (tc instanceof FUnionType) {
 				FDUnion c = (FDUnion) mapper.getFDElement(tc);
 				if (c==null) {
-					if (mustBeDefined(specHelper, (FUnionType)tc)) {
+					if (checker.mustBeDefined((FUnionType)tc)) {
 						error("Union '" + tc.getName() + "'" + msg, parentFeature);
 					}
 				} else {
 					checkElementProperties(spec, c, FDeployPackage.Literals.FD_UNION__TARGET);
-					checkFieldsList(specHelper, mapper, spec, ((FUnionType) tc).getElements(), c,
+					checkFieldsList(specHelper, checker, mapper, spec, ((FUnionType) tc).getElements(), c,
 							FDeployPackage.Literals.FD_UNION__TARGET, "Union");
 				}
 			} else if (tc instanceof FEnumerationType) {
 				FDEnumeration c = (FDEnumeration) mapper.getFDElement(tc);
 				if (c==null) {
-					if (mustBeDefined(specHelper, (FEnumerationType)tc)) {
+					if (checker.mustBeDefined((FEnumerationType)tc)) {
 						error("Enumeration '" + tc.getName() + "'" + msg, parentFeature);
 					}
 				} else {
@@ -268,13 +271,14 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 	}
 
 	private void checkArgumentList (FDSpecificationExtender specHelper,
+			PropertyDefChecker checker,
 			FDMapper mapper, FDSpecification spec, List<FArgument> args,
 			FDElement parent, String tag, EStructuralFeature feature)
 	{
 		for(FArgument tc : args) {
 			FDArgument c = (FDArgument) mapper.getFDElement(tc);
 			if (c==null) {
-				if (mustBeDefined(specHelper, tc)) {
+				if (checker.mustBeDefined(tc)) {
 					error(tag + " argument '" + tc.getName() + "'" + msg, parent, feature, -1);
 				}
 			} else {
@@ -284,13 +288,14 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 	}
 	
 	private void checkFieldsList (FDSpecificationExtender specHelper,
+			PropertyDefChecker checker,
 			FDMapper mapper, FDSpecification spec, List<FField> fields,
 			FDElement parent, EStructuralFeature feature, String tag)
 	{
 		for(FField tc : fields) {
 			FDField c = (FDField) mapper.getFDElement(tc);
 			if (c==null) {
-				if (mustBeDefined(specHelper, tc)) {
+				if (checker.mustBeDefined(tc)) {
 					error(tag + " field '" + tc.getName() + "'" + msg, parent, feature, -1);
 				}
 			} else {
@@ -313,137 +318,6 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 				checkElementProperties(spec, c, FDeployPackage.Literals.FD_ENUM_VALUE__TARGET);
 			}
 		}
-	}
-	
-	private boolean mustBeDefined (FDSpecificationExtender specHelper, FMethod target) {
-		if (specHelper.isMandatory(FDPropertyHost.METHODS))
-			return true;
-		
-		if (target.getInArgs().isEmpty() && target.getOutArgs().isEmpty())
-			return false;
-		
-		if (specHelper.isMandatory(FDPropertyHost.ARGUMENTS))
-			return true;
-
-		for(FArgument arg : target.getInArgs()) {
-			if (mustBeDefined(specHelper, arg))
-				return true;
-		}
-		
-		for(FArgument arg : target.getOutArgs()) {
-			if (mustBeDefined(specHelper, arg))
-				return true;
-		}
-		
-		return false;
-	}
-	
-	private boolean mustBeDefined (FDSpecificationExtender specHelper, FBroadcast target) {
-		if (specHelper.isMandatory(FDPropertyHost.BROADCASTS))
-			return true;
-		
-		if (target.getOutArgs().isEmpty())
-			return false;
-		
-		if (specHelper.isMandatory(FDPropertyHost.ARGUMENTS))
-			return true;
-
-		for(FArgument arg : target.getOutArgs()) {
-			if (mustBeDefined(specHelper, arg))
-				return true;
-		}
-		
-		return false;
-	}
-	
-	private boolean mustBeDefined (FDSpecificationExtender specHelper, FArrayType target) {
-		if (specHelper.isMandatory(FDPropertyHost.ARRAYS))
-			return true;
-		
-		return false;
-	}
-	
-	private boolean mustBeDefined (FDSpecificationExtender specHelper, FStructType target) {
-		// activate this if STRUCTS gets a property host (currently not defined in FDeploy.xtext)
-//		if (specHelper.isMandatory(FDPropertyHost.STRUCTS))
-//			return true;
-		
-		return mustBeDefined(specHelper, target.getElements(), FDPropertyHost.STRUCT_FIELDS);
-	}
-	
-	private boolean mustBeDefined (FDSpecificationExtender specHelper, FUnionType target) {
-		// activate this if UNIONS gets a property host (currently not defined in FDeploy.xtext)
-//		if (specHelper.isMandatory(FDPropertyHost.UNIONS))
-//			return true;
-		
-		return mustBeDefined(specHelper, target.getElements(), FDPropertyHost.UNION_FIELDS);
-	}
-
-	private boolean mustBeDefined (FDSpecificationExtender specHelper, List<FField> targets, FDPropertyHost host) {
-		if (targets.isEmpty())
-			return false;
-		
-		if (specHelper.isMandatory(host))
-			return true;
-
-		for(FField f : targets) {
-			if (mustBeDefined(specHelper, f))
-				return true;
-		}
-		
-		return false;
-	}
-	
-	private boolean mustBeDefined (FDSpecificationExtender specHelper, FEnumerationType target) {
-		if (specHelper.isMandatory(FDPropertyHost.ENUMERATIONS))
-			return true;
-		
-		if (target.getEnumerators().isEmpty())
-			return false;
-		
-		if (specHelper.isMandatory(FDPropertyHost.ENUMERATORS))
-			return true;
-
-		return false;
-	}
-
-	private boolean mustBeDefined (FDSpecificationExtender specHelper, FArgument target) {
-		if (specHelper.isMandatory(FDPropertyHost.ARGUMENTS))
-			return true;
-
-		return mustBeDefined(specHelper, target.getType());
-	}
-
-	private boolean mustBeDefined (FDSpecificationExtender specHelper, FAttribute target) {
-		if (specHelper.isMandatory(FDPropertyHost.ATTRIBUTES))
-			return true;
-
-		return mustBeDefined(specHelper, target.getType());
-	}
-
-	private boolean mustBeDefined (FDSpecificationExtender specHelper, FField target) {
-		boolean isStruct = target.eContainer() instanceof FStructType;
-		if (specHelper.isMandatory(isStruct ? FDPropertyHost.STRUCT_FIELDS : FDPropertyHost.UNION_FIELDS))
-			return true;
-
-		return mustBeDefined(specHelper, target.getType());
-	}
-
-	private boolean mustBeDefined (FDSpecificationExtender specHelper, FTypeRef target) {
-		if (FrancaHelpers.isString(target)) {
-			if (specHelper.isMandatory(FDPropertyHost.STRINGS)) {
-				return true;
-			}
-		} else if (FrancaHelpers.isInteger(target)) {
-			if (specHelper.isMandatory(FDPropertyHost.INTEGERS) || specHelper.isMandatory(FDPropertyHost.NUMBERS)) {
-				return true;
-			}
-		} else if (FrancaHelpers.isFloatingPoint(target)) {
-			if (specHelper.isMandatory(FDPropertyHost.FLOATS) || specHelper.isMandatory(FDPropertyHost.NUMBERS)) {
-				return true;
-			}
-		}
-		return false;
 	}
 	
 	
