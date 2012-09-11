@@ -180,9 +180,9 @@ public class FDeployLabelProvider extends DefaultEObjectLabelProvider {
    }
 
    public String image(FDArgument element) {
-      if (element.eContainer() instanceof FDBroadcast
-            || (element.eContainer() instanceof FDMethod && ((FDMethod) element.eContainer()).getOutArguments()
-                  .contains(element))) {
+	  EObject parent = element.eContainer().eContainer(); 
+      if (parent instanceof FDBroadcast
+            || (parent instanceof FDMethod && ((FDMethod)parent).getOutArguments().getArguments().contains(element))) {
          return "overlay-out.gif";
       } else {
          return "overlay-in.gif";

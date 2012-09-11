@@ -81,13 +81,13 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 	
 	@Check
 	public void checkMethodArgs (FDMethod method) {
-		for(FDArgument arg : method.getInArguments()) {
+		for(FDArgument arg : method.getInArguments().getArguments()) {
 			if (! method.getTarget().getInArgs().contains(arg.getTarget())) {
 				error("Invalid input argument '" + arg.getTarget().getName() + "'",
 						arg, FDeployPackage.Literals.FD_ARGUMENT__TARGET, -1);
 			}
 		}
-		for(FDArgument arg : method.getOutArguments()) {
+		for(FDArgument arg : method.getOutArguments().getArguments()) {
 			if (! method.getTarget().getOutArgs().contains(arg.getTarget())) {
 				error("Invalid output argument '" + arg.getTarget().getName() + "'",
 						arg, FDeployPackage.Literals.FD_ARGUMENT__TARGET, -1);

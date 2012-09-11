@@ -12,6 +12,7 @@ import java.util.Map;
 
 import org.eclipse.emf.ecore.EObject;
 import org.franca.deploymodel.dsl.fDeploy.FDArgument;
+import org.franca.deploymodel.dsl.fDeploy.FDArgumentList;
 import org.franca.deploymodel.dsl.fDeploy.FDArray;
 import org.franca.deploymodel.dsl.fDeploy.FDAttribute;
 import org.franca.deploymodel.dsl.fDeploy.FDBroadcast;
@@ -118,8 +119,8 @@ public class FDInterfaceMapper {
 		}
 	}
 	
-	private void initArguments (List<FDArgument> args) {
-		for(FDArgument arg : args) {
+	private void initArguments (FDArgumentList args) {
+		for(FDArgument arg : args.getArguments()) {
 			mapping.put(arg.getTarget(), arg);
 		}
 	}

@@ -32,6 +32,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDTypes
 import org.franca.deploymodel.dsl.fDeploy.FDUnion
 
 import static extension org.eclipse.xtext.scoping.Scopes.*
+import org.franca.deploymodel.dsl.fDeploy.FDArgumentList
 
 class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 	
@@ -93,14 +94,19 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 
 	// *****************************************************************************
 
-	def scope_FDArgument_target (FDMethod ctxt, EReference ref) {
-		var List<FArgument> args = newArrayList
-		
-		// TODO: we should know if the FDArgument is 'in' or 'out' and select the
-		//       corresponding target scope...
-		args.addAll(ctxt.getTarget().getInArgs)
-		args.addAll(ctxt.getTarget().getOutArgs)
-		args.scopeFor
+	def scope_FDArgument_target (FDArgumentList ctxt, EReference ref) {
+		val owner = ctxt.eContainer
+		switch (owner) {
+			FDMethod: {
+				if (ctxt == owner.inArguments)
+					owner.target.inArgs.scopeFor
+				else
+					owner.target.outArgs.scopeFor
+			}
+			FDBroadcast: {
+				owner.target.outArgs.scopeFor
+			}
+		}		
 	}
 
 	def scope_FDArgument_target (FDBroadcast ctxt, EReference ref) {

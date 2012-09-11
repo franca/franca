@@ -128,16 +128,19 @@ FDAttribute:
 FDMethod:
 	'method' target=[fidl::FMethod|FQN] '{'
 		properties+=FDProperty*
-		('in' '{' inArguments+=FDArgument* '}')?
-		('out' '{' outArguments+=FDArgument* '}')?
+		('in' inArguments=FDArgumentList)?
+		('out' outArguments=FDArgumentList)?
 	'}';
 
 FDBroadcast:
 	'broadcast' target=[fidl::FBroadcast|FQN] '{'
 		properties+=FDProperty*
-		('out' '{' outArguments+=FDArgument* '}')?
+		('out' outArguments=FDArgumentList)?
 	'}';
 
+FDArgumentList:
+	{FDArgumentList}
+	'{' arguments+=FDArgument* '}';
 
 FDArgument:
 	target=[fidl::FArgument|FQN] '{'
