@@ -96,24 +96,26 @@ FDElement:
 
 FDProvider:
 	'define' spec=[FDSpecification|FQN] 'for' 'provider' name=FQN '{'
-		properties+=FDProperty*
+		(properties+=FDProperty ((',')? properties+=FDProperty)*)?
 		instances+=FDInterfaceInstance*
 	'}';
 
 FDInterfaceInstance:
 	'instance' target=[fidl::FInterface|FQN] '{'
-		properties+=FDProperty*
+		(properties+=FDProperty ((',')? properties+=FDProperty)*)?
 	'}';
 
 FDTypes:
 	'define' spec=[FDSpecification|FQN] 'for' 'types' package=[fidl::FModel|FQN] '{'
-		properties+=FDProperty*  // just for being compatible with FDElement, there will be no properties
+		// just for being compatible with FDElement, there will be no properties actually
+		(properties+=FDProperty ((',')? properties+=FDProperty)*)?
+		
 		types+=FDTypeDef*
 	'}';
 
 FDInterface:
 	'define' spec=[FDSpecification|FQN] 'for' 'interface' target=[fidl::FInterface|FQN] '{'
-		properties+=FDProperty*
+		(properties+=FDProperty ((',')? properties+=FDProperty)*)?
 		attributes+=FDAttribute*		
 		methods+=FDMethod*		
 		broadcasts+=FDBroadcast*
@@ -122,19 +124,19 @@ FDInterface:
 
 FDAttribute:
 	'attribute' target=[fidl::FAttribute|FQN] '{'
-		properties+=FDProperty*
+		(properties+=FDProperty ((',')? properties+=FDProperty)*)?
 	'}';
 
 FDMethod:
 	'method' target=[fidl::FMethod|FQN] '{'
-		properties+=FDProperty*
+		(properties+=FDProperty ((',')? properties+=FDProperty)*)?
 		('in' inArguments=FDArgumentList)?
 		('out' outArguments=FDArgumentList)?
 	'}';
 
 FDBroadcast:
 	'broadcast' target=[fidl::FBroadcast|FQN] '{'
-		properties+=FDProperty*
+		(properties+=FDProperty ((',')? properties+=FDProperty)*)?
 		('out' outArguments=FDArgumentList)?
 	'}';
 
@@ -144,7 +146,7 @@ FDArgumentList:
 
 FDArgument:
 	target=[fidl::FArgument|FQN] '{'
-		properties+=FDProperty*
+		(properties+=FDProperty ((',')? properties+=FDProperty)*)?
 	'}';
 
 
@@ -153,35 +155,35 @@ FDCompound: FDStruct | FDUnion;
 
 FDArray:
 	'array' target=[fidl::FArrayType|FQN] '{'
-		properties+=FDProperty*
+		(properties+=FDProperty ((',')? properties+=FDProperty)*)?
 	'}';
 
 FDStruct:
 	'struct' target=[fidl::FStructType|FQN] '{'
-		properties+=FDProperty*
+		(properties+=FDProperty ((',')? properties+=FDProperty)*)?
 		fields+=FDField*
 	'}';
 
 FDUnion:
 	'union' target=[fidl::FUnionType|FQN] '{'
-		properties+=FDProperty*
+		(properties+=FDProperty ((',')? properties+=FDProperty)*)?
 		fields+=FDField*
 	'}';
 
 FDField:
 	target=[fidl::FField|FQN] '{'
-		properties+=FDProperty*
+		(properties+=FDProperty ((',')? properties+=FDProperty)*)?
 	'}';
 
 FDEnumeration:
 	'enumeration' target=[fidl::FEnumerationType|FQN] '{'
-		properties+=FDProperty*
+		(properties+=FDProperty ((',')? properties+=FDProperty)*)?
 		enumerators+=FDEnumValue*
 	'}';
 
 FDEnumValue:
 	target=[fidl::FEnumerator|FQN] '{'
-		properties+=FDProperty*
+		(properties+=FDProperty ((',')? properties+=FDProperty)*)?
 	'}';
 
 
