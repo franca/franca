@@ -21,7 +21,7 @@ import org.franca.core.franca.FInterface;
 import org.franca.core.franca.FMethod;
 import org.franca.core.franca.FStructType;
 import org.franca.core.franca.FUnionType;
-import org.franca.deploymodel.dsl.FDInterfaceMapper;
+import org.franca.deploymodel.dsl.FDMapper;
 import org.franca.deploymodel.dsl.fDeploy.FDArgument;
 import org.franca.deploymodel.dsl.fDeploy.FDArray;
 import org.franca.deploymodel.dsl.fDeploy.FDAttribute;
@@ -54,14 +54,14 @@ public class FDeployedInterface {
 	private FDInterface fdapi;
 	
 	// the mapper used for getting FDElements from Franca IDL entities
-	private FDInterfaceMapper mapper;
+	private FDMapper mapper;
 	
 	// a helper class for getting the actual property values from FDElements
 	private GenericPropertyAccessor gpa;
 	
 	public FDeployedInterface (FDInterface fdapi) {
 		this.fdapi = fdapi;
-		this.mapper = new FDInterfaceMapper(fdapi);
+		this.mapper = new FDMapper(fdapi);
 		this.gpa = new GenericPropertyAccessor(fdapi.getSpec());
 	}
 	

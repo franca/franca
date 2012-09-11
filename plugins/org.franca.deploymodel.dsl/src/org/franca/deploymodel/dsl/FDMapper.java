@@ -30,35 +30,35 @@ import org.franca.deploymodel.dsl.fDeploy.FDUnion;
 import com.google.common.collect.Maps;
 
 /**
- * The FDInterfaceMapper provides a mapping from the elements of a Franca 
- * model (i.e., the elements in a *.fidl file) to the property definitions
+ * The FDMapper provides a mapping from the elements of a Franca model
+ * (i.e., the elements in a *.fidl file) to the property definitions
  * of a Franca deployment model.
  * 
  * For example, if there is a property definition in some *.fdepl-file for
- * a FMethod, the FDInterfaceMapper will map this FMethod to the corresponding
+ * an FMethod, the FDMapper will map this FMethod to the corresponding
  * FDMethod object.
  */
-public class FDInterfaceMapper {
+public class FDMapper {
 
 	Map<EObject, FDElement> mapping = Maps.newHashMap();
 	
 	/**
-	 * This constructor of FDInterfaceMapper will initialize the mapper
+	 * This constructor of FDMapper will initialize the mapper
 	 * from a given deployment definition for an interface.
 	 * 
 	 * @param fdi  the deployment definition for the FInterface. 
 	 */
-	public FDInterfaceMapper (FDInterface fdi) {
+	public FDMapper (FDInterface fdi) {
 		init(fdi);
 	}
 
 	/**
-	 * The constructor of FDInterfaceMapper will initialize the mapper
+	 * This constructor of FDMapper will initialize the mapper
 	 * from a given deployment definition for some global type definitions.
 	 * 
 	 * @param fdt  the deployment definition for a list of types. 
 	 */
-	public FDInterfaceMapper (FDTypes fdt) {
+	public FDMapper (FDTypes fdt) {
 		initTypes(fdt.getTypes());
 	}
 

@@ -22,7 +22,7 @@ import org.franca.core.franca.FStructType;
 import org.franca.core.franca.FType;
 import org.franca.core.franca.FTypeRef;
 import org.franca.core.franca.FUnionType;
-import org.franca.deploymodel.dsl.FDInterfaceMapper;
+import org.franca.deploymodel.dsl.FDMapper;
 import org.franca.deploymodel.dsl.FDModelHelper;
 import org.franca.deploymodel.dsl.FDSpecificationExtender;
 import org.franca.deploymodel.dsl.fDeploy.FDArgument;
@@ -153,7 +153,7 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 
 		// check child elements recursively
 		FDSpecificationExtender specHelper = new FDSpecificationExtender(spec);
-		FDInterfaceMapper mapper = new FDInterfaceMapper(elem);
+		FDMapper mapper = new FDMapper(elem);
 		checkTypes(elem.getPackage().getTypes(), specHelper, mapper, spec,
 				FDeployPackage.Literals.FD_TYPES__PACKAGE);
 	}
@@ -167,7 +167,7 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 		
 		// check child elements recursively
 		FDSpecificationExtender specHelper = new FDSpecificationExtender(spec);
-		FDInterfaceMapper mapper = new FDInterfaceMapper(elem);
+		FDMapper mapper = new FDMapper(elem);
 		FInterface target = elem.getTarget();
 		for(FAttribute tc : target.getAttributes()) {
 			FDAttribute c = (FDAttribute) mapper.getFDElement(tc);
@@ -217,7 +217,7 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 	
 	
 	private void checkTypes (List<FType> types, FDSpecificationExtender specHelper,
-			FDInterfaceMapper mapper, FDSpecification spec,
+			FDMapper mapper, FDSpecification spec,
 			EStructuralFeature parentFeature)
 	{
 		for(FType tc : types) {
@@ -268,7 +268,7 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 	}
 
 	private void checkArgumentList (FDSpecificationExtender specHelper,
-			FDInterfaceMapper mapper, FDSpecification spec, List<FArgument> args,
+			FDMapper mapper, FDSpecification spec, List<FArgument> args,
 			FDElement parent, String tag, EStructuralFeature feature)
 	{
 		for(FArgument tc : args) {
@@ -284,7 +284,7 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 	}
 	
 	private void checkFieldsList (FDSpecificationExtender specHelper,
-			FDInterfaceMapper mapper, FDSpecification spec, List<FField> fields,
+			FDMapper mapper, FDSpecification spec, List<FField> fields,
 			FDElement parent, EStructuralFeature feature, String tag)
 	{
 		for(FField tc : fields) {
@@ -300,7 +300,7 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 	}
 	
 	private void checkEnumeratorsList (FDSpecificationExtender specHelper,
-			FDInterfaceMapper mapper, FDSpecification spec, List<FEnumerator> enumerators,
+			FDMapper mapper, FDSpecification spec, List<FEnumerator> enumerators,
 			FDElement parent, EStructuralFeature feature)
 	{
 		for(FEnumerator tc : enumerators) {
