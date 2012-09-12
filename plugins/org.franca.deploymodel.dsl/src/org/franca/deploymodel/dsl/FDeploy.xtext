@@ -95,8 +95,15 @@ FDElement:
 	FDTypeDef | FDField | FDEnumeration | FDEnumValue;
 
 FDProvider:
-	'define' spec=[FDSpecification|FQN] 'for' 'provider' name=FQN '{'
+	'define' spec=[FDSpecification|FQN]
+	'for' 'provider' name=FQN
+	'{'
+		('use' use+=[FDRootElement|FQN])*
+
+		// the own properties of this interface provider
 		(properties+=FDProperty ((',')? properties+=FDProperty)*)?
+		
+		// instances of interfaces
 		instances+=FDInterfaceInstance*
 	'}';
 
@@ -106,16 +113,30 @@ FDInterfaceInstance:
 	'}';
 
 FDTypes:
-	'define' spec=[FDSpecification|FQN] 'for' 'types' package=[fidl::FModel|FQN] '{'
+	'define' spec=[FDSpecification|FQN]
+	'for' 'types' package=[fidl::FModel|FQN]
+	('as' name=FQN)?
+	'{'
+		('use' use+=[FDRootElement|FQN])*
+		
 		// just for being compatible with FDElement, there will be no properties actually
 		(properties+=FDProperty ((',')? properties+=FDProperty)*)?
-		
+
+		// properties for all type definitions in the package		
 		types+=FDTypeDef*
 	'}';
 
 FDInterface:
-	'define' spec=[FDSpecification|FQN] 'for' 'interface' target=[fidl::FInterface|FQN] '{'
+	'define' spec=[FDSpecification|FQN]
+	'for' 'interface' target=[fidl::FInterface|FQN]
+	('as' name=FQN)?
+	'{'
+		('use' use+=[FDRootElement|FQN])*
+
+		// the own properties of this interface
 		(properties+=FDProperty ((',')? properties+=FDProperty)*)?
+		
+		// properties for the interface's elements
 		attributes+=FDAttribute*		
 		methods+=FDMethod*		
 		broadcasts+=FDBroadcast*

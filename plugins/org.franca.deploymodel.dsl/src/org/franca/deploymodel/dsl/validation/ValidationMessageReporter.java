@@ -12,5 +12,7 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 
 public interface ValidationMessageReporter {
 	void reportError(String message, EObject object, EStructuralFeature feature);
+	void reportError(String message, EObject object, EStructuralFeature feature, int index);
+	
 	void reportWarning(String message, EObject object, EStructuralFeature feature);
 }

@@ -8,7 +8,6 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.xtext.validation.Check;
 import org.eclipse.xtext.validation.ValidationMessageAcceptor;
-import org.franca.core.framework.FrancaHelpers;
 import org.franca.core.franca.FArgument;
 import org.franca.core.franca.FArrayType;
 import org.franca.core.franca.FAttribute;
@@ -20,7 +19,6 @@ import org.franca.core.franca.FInterface;
 import org.franca.core.franca.FMethod;
 import org.franca.core.franca.FStructType;
 import org.franca.core.franca.FType;
-import org.franca.core.franca.FTypeRef;
 import org.franca.core.franca.FUnionType;
 import org.franca.deploymodel.dsl.FDMapper;
 import org.franca.deploymodel.dsl.FDModelHelper;
@@ -42,12 +40,14 @@ import org.franca.deploymodel.dsl.fDeploy.FDInteger;
 import org.franca.deploymodel.dsl.fDeploy.FDInterface;
 import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance;
 import org.franca.deploymodel.dsl.fDeploy.FDMethod;
+import org.franca.deploymodel.dsl.fDeploy.FDModel;
 import org.franca.deploymodel.dsl.fDeploy.FDPredefinedTypeId;
 import org.franca.deploymodel.dsl.fDeploy.FDProperty;
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl;
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyFlag;
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyHost;
 import org.franca.deploymodel.dsl.fDeploy.FDProvider;
+import org.franca.deploymodel.dsl.fDeploy.FDRootElement;
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification;
 import org.franca.deploymodel.dsl.fDeploy.FDString;
 import org.franca.deploymodel.dsl.fDeploy.FDStruct;
@@ -76,9 +76,24 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 	private final String msg = " must be specified because of mandatory properties";
 
 	
+	// delegate to FDeployValidator
+	FDeployValidator aux = new FDeployValidator(this);
+
+	
 	// *****************************************************************************
 	// basic checks
 	
+	@Check
+	public void checkRootElementNamesUnique(FDModel model) {
+		ValidationHelpers.checkDuplicates(this, model.getDeployments(),
+				FDeployPackage.Literals.FD_ROOT_ELEMENT__NAME, "definition name");
+	}
+
+	@Check
+	public void checkRootElement (FDRootElement elem) {
+		aux.checkRootElement(elem);
+	}
+
 	@Check
 	public void checkMethodArgs (FDMethod method) {
 		if (method.getInArguments()!=null) {
@@ -142,7 +157,7 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 	public void checkPropertiesComplete (FDProvider elem) {
 		// check own properties
 		FDSpecification spec = FDModelHelper.getRootElement(elem).getSpec();
-		checkElementProperties(spec, elem, FDeployPackage.Literals.FD_PROVIDER__NAME);
+		checkElementProperties(spec, elem, FDeployPackage.Literals.FD_ROOT_ELEMENT__NAME);
 	}
 	
 	@Check
@@ -155,7 +170,8 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 		FDSpecificationExtender specHelper = new FDSpecificationExtender(spec);
 		PropertyDefChecker checker = new PropertyDefChecker(specHelper);
 		FDMapper mapper = new FDMapper(elem);
-		checkTypes(elem.getPackage().getTypes(), specHelper, checker, mapper, spec,
+		List<FType> targetTypes = elem.getPackage().getTypes();
+		checkTypes(targetTypes, specHelper, checker, mapper, spec,
 				FDeployPackage.Literals.FD_TYPES__PACKAGE);
 	}
 	
@@ -460,13 +476,20 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 	// *****************************************************************************
 	// ValidationMessageReporter interface
 
-	public void reportError(String message, EObject object, EStructuralFeature feature)
+	public void reportError(String message, EObject object,
+								EStructuralFeature feature)
 	{
 		error(message, object, feature, ValidationMessageAcceptor.INSIGNIFICANT_INDEX);
 	}
 
-	public void reportWarning(String message, EObject object, EStructuralFeature feature)
+	public void reportError(String message, EObject object,
+								EStructuralFeature feature, int idx)
 	{
+		error(message, object, feature, idx);
+	}
+	
+	public void reportWarning(String message, EObject object,
+								EStructuralFeature feature) {
 		warning(message, object, feature, ValidationMessageAcceptor.INSIGNIFICANT_INDEX);
 	}
 }
