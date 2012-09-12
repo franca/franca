@@ -19,6 +19,9 @@ Require-Bundle: org.eclipse.core.runtime,
  org.apache.log4j,
  org.apache.commons.logging;visibility:=reexport,
  org.eclipse.emf.mwe2.launch,
- org.eclipse.emf.mwe2.lib
+ org.eclipse.emf.mwe2.lib,
+ org.eclipse.xtend.lib,
+ com.google.guava,
+ org.eclipse.xtext.xbase.lib
 Bundle-ActivationPolicy: lazy
 Import-Package: org.apache.commons.logging
