@@ -31,8 +31,8 @@ import org.franca.core.franca.FTypedElement;
 import org.franca.core.franca.FUnionType;
 import org.franca.core.franca.FrancaPackage;
 
-public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator implements ValidationMessageReporter,
-      NameProvider {
+public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
+	implements ValidationMessageReporter, NameProvider {
 
    FrancaIDLJavaValidator() {
       ValidationHelpers.setNameProvider(this);
