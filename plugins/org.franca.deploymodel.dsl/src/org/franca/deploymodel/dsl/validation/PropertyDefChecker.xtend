@@ -20,9 +20,9 @@ import static extension org.franca.core.framework.FrancaHelpers.*
 class PropertyDefChecker {
 	
 	FDSpecificationExtender specHelper
-	
-	new (FDSpecificationExtender aSpecHelper) {
-		specHelper = aSpecHelper
+		
+	new (FDSpecificationExtender specHelper) {
+		this.specHelper = specHelper
 	}
 	
 	// *****************************************************************************
@@ -75,18 +75,18 @@ class PropertyDefChecker {
 	}
 	
 
-	def mustBeDefined (FAttribute target) {
-		specHelper.isMandatory(ATTRIBUTES) || mustBeDefined(target.type)
+	def mustBeDefined (FAttribute it) {
+		specHelper.isMandatory(ATTRIBUTES) || type.mustBeDefined
 	}
 
-	def mustBeDefined (FArgument target) {
-		specHelper.isMandatory(ARGUMENTS) || mustBeDefined(target.type)
+	def mustBeDefined (FArgument it) {
+		specHelper.isMandatory(ARGUMENTS) || type.mustBeDefined
 	}
 
-	def mustBeDefined (FField target) {
-		val isStruct = target.eContainer instanceof FStructType
+	def mustBeDefined (FField it) {
+		val isStruct = eContainer instanceof FStructType
 		val host = if (isStruct) STRUCT_FIELDS else UNION_FIELDS
-		specHelper.isMandatory(host) || mustBeDefined(target.type)
+		specHelper.isMandatory(host) || type.mustBeDefined
 	}
 
 
@@ -102,13 +102,7 @@ class PropertyDefChecker {
 		} else if (isFloatingPoint) {
 			if (specHelper.isMandatory(FLOATS) || specHelper.isMandatory(NUMBERS))
 				return true
-		} else if (derived!=null) {
-//			val type = derived 
-//			if (type instanceof FStructType) {
-//				println("CHECKING mustBeDefined for " + type.name)
-//			}
 		}
 		false
 	}
-	
 }
