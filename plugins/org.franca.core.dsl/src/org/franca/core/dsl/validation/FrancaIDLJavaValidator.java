@@ -24,6 +24,7 @@ import org.franca.core.franca.FMapType;
 import org.franca.core.franca.FMethod;
 import org.franca.core.franca.FModel;
 import org.franca.core.franca.FStructType;
+import org.franca.core.franca.FTrigger;
 import org.franca.core.franca.FType;
 import org.franca.core.franca.FTypeDef;
 import org.franca.core.franca.FTypeRef;
@@ -81,6 +82,20 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
    }
 
    @Check
+   public void checkMethodFlags(FMethod method) {
+	   if (method.getFireAndForget()!=null) {
+		   if (! method.getOutArgs().isEmpty()) {
+			   error("Fire-and-forget methods cannot have out arguments", method,
+					   FrancaPackage.Literals.FMETHOD__FIRE_AND_FORGET, -1);
+		   }
+		   if (method.getErrorEnum()!=null || method.getErrors()!=null) {
+			   error("Fire-and-forget methods cannot have error return codes", method,
+					   FrancaPackage.Literals.FMETHOD__FIRE_AND_FORGET, -1);
+		   }
+	   }
+   }
+
+   @Check
    public void checkMethodArgsUnique(FMethod method) {
       ValidationHelpers.checkDuplicates(this, method.getInArgs(), FrancaPackage.Literals.FMODEL_ELEMENT__NAME,
             "argument name");
@@ -119,6 +134,11 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
    @Check
    public void checkContract(FContract contract) {
        ContractValidator.checkContract(this, contract);
+   }
+
+   @Check
+   public void checkTrigger(FTrigger trigger) {
+       ContractValidator.checkTrigger(this, trigger);
    }
 
 

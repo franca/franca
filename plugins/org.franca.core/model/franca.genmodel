@@ -57,6 +57,7 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FInterface/base"/>
     </genClasses>
     <genClasses ecoreClass="franca.ecore#//FMethod">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute franca.ecore#//FMethod/fireAndForget"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FMethod/inArgs"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FMethod/outArgs"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FMethod/errorEnum"/>

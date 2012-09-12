@@ -73,7 +73,7 @@ FAttribute:
 FMethod returns FMethod:
 	{FMethod}
 	(comment=FAnnotationBlock)?
-	'method' name=EString
+	'method' name=EString (fireAndForget='fireAndForget')?
 	'{'
 		('in' '{' (inArgs+=FArgument)* '}' )?
 		('out' '{' (outArgs+=FArgument)* '}' )?

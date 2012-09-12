@@ -12,6 +12,7 @@ import org.franca.core.franca.FEventOnIf;
 import org.franca.core.franca.FInterface;
 import org.franca.core.franca.FMethod;
 import org.franca.core.franca.FTransition;
+import org.franca.core.franca.FTrigger;
 import org.franca.core.franca.FrancaPackage;
 
 import com.google.common.collect.Lists;
@@ -19,6 +20,11 @@ import com.google.common.collect.Lists;
 public class ContractValidator {
 
 	public static void checkContract (ValidationMessageReporter reporter, FContract contract) {
+		checkUsedInterfaceElements(reporter,  contract);
+		// add more checks here
+	}
+	
+	private static void checkUsedInterfaceElements (ValidationMessageReporter reporter, FContract contract) {
 		// collect interface elements used by this contract
 		List<FAttribute> usedAttributes = Lists.newArrayList(); 
 		List<FMethod> usedMethods = Lists.newArrayList(); 
@@ -62,6 +68,15 @@ public class ContractValidator {
 						e, FrancaPackage.Literals.FMODEL_ELEMENT__NAME);
 			}
 		}
+	}
+
+	
+	public static void checkTrigger (ValidationMessageReporter reporter, FTrigger trigger) {
+	   FMethod method = trigger.getEvent().getRespond(); 
+	   if (method!=null && method.getFireAndForget()!=null) {
+		   reporter.reportError("Fire-and-forget method will not send response message",
+				   	trigger, FrancaPackage.Literals.FTRIGGER__EVENT);
+	   } 
 	}
 	
 }

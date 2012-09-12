@@ -583,6 +583,24 @@ interface Calculator {
 }
 ]
 
+section3:FIDL_Interface_Method_FireAndForget[Fire-and-forget methods]
+
+If neither e[out] arguments nor e[error] return codes are specified for
+a method, the server will by default send an (empty) reply to its client.
+This behaviour can be changed by specifying a e[fireAndForget] flag for
+the method, which indicates that the server will not respond at all.
+
+Example:
+code[Franca][
+interface Watchdog {
+	method stillAlive fireAndForget {
+		in { UInt16 health }
+	}
+}
+]
+
+This can be used to implement lightweight communication patterns.
+
 
 section2:FIDL_Interface_Broadcast[Broadcasts]
 
@@ -647,6 +665,11 @@ specification in the contract. This is different from behaviour specification by
 sequences (e.g., MSCs in MOST), which provides a set of allowed sequences, but
 in general doesn't require that all legal sequences have been specified.
 
+Note that a contract is a specification of the interaction of a pair
+of one client instance and one provider instance. If multiple clients
+are connected to one interface on provider side, one instance of the
+contract is (conceptually) established for each client. 
+
 In order to specify the dynamic behaviour of a Franca interface, 
 a e[PSM] (short for: e[Protocol State Machine]) is defined which specifies 
 the allowed states e[of the connection] and the allowed transitions between those
@@ -687,7 +710,9 @@ use e[events] to specify the transitions from one state to another.
 Valid events might be:
 ul[
 	item[e[call]: A method call initiated by the client.]
-	item[e[respond]: The server's response for a client's method call.]
+	item[e[respond]: The server's response for a client's method call.
+		Note that e[fireAndForget] methods do not trigger this kind of event
+		(see ref:FIDL_Interface_Method_FireAndForget[Fire-and-forget methods]).]
 	item[e[signal]: A broadcast sent by the server.]
 	item[e[set]: An attribute's value is being changed by a client.]
 	item[e[update]: An indication by the server that an attribute's value has been changed.]
