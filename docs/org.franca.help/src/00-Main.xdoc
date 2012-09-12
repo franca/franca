@@ -28,6 +28,8 @@ codelanguage-def[Franca]
 	version,major,minor,
 	attribute,method,broadcast,
 	in,out,error,
+	selective,
+
 	array,of,struct,union,typedef,is,map,to,enumeration,
 	extends,
 	

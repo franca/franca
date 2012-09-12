@@ -43,6 +43,7 @@
   <eClassifiers xsi:type="ecore:EClass" name="FBroadcast" eSuperTypes="#//FModelElement">
     <eStructuralFeatures xsi:type="ecore:EReference" name="outArgs" upperBound="-1"
         eType="#//FArgument" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="selective" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FAttribute" eSuperTypes="#//FTypedElement"/>
   <eClassifiers xsi:type="ecore:EClass" name="FArgument" eSuperTypes="#//FTypedElement"/>

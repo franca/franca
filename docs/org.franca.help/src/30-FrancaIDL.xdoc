@@ -586,8 +586,8 @@ interface Calculator {
 
 section2:FIDL_Interface_Broadcast[Broadcasts]
 
-A e[broadcast] in a Franca interface is called by the server and will received by
-all clients using the interface. A broadcast definition will contain a set of
+A e[broadcast] in a Franca interface is called by the server and will be received
+by the clients using the interface. A broadcast definition will contain a set of
 e[out]-arguments, each with own type and name.
 Example:
 
@@ -604,6 +604,37 @@ interface ExampleInterface {
 
 Arguments might have primitive types or user-defined types.
 
+section3:FIDL_Interface_Broadcast_Selective[Selective broadcasts]
+
+The default communication pattern for broadcasts is that each server-initiated
+broadcast will be send to e[all] connected clients. Optionally, the keyword
+e[selective] can be given to indicate that the server might send this broadcast
+to one or a subset of the connected clients, depending on application logic
+and/or deployment information. Example syntax:
+
+code[Franca][
+interface ExampleInterface {
+	broadcast stop selective {
+		out { Boolean immediately }
+	}
+}
+]
+
+The e[selective] keyword will have the following implications:
+ul[
+	item[The client must be aware that the server has explicitly
+		chosen to send the broadcast to it.]
+	item[There might be special e[register()] functions (or similar)
+		generated on client side in order to allow clients to decide
+		if they want to be receivers of the selective broadcast(s).
+		However, this is not mandatory and will usually be
+		configured by the deployment model or defined implicitly
+		for a given target platform.]
+	item[The server will have the opportunity to select among
+		its clients when sending the broadcast (e.g., by code
+		especially generated for this reason).]
+]
+ 
 
 section:FIDL_Contracts[Contracts]
 

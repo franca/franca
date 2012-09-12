@@ -64,6 +64,7 @@
     </genClasses>
     <genClasses ecoreClass="franca.ecore#//FBroadcast">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FBroadcast/outArgs"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute franca.ecore#//FBroadcast/selective"/>
     </genClasses>
     <genClasses ecoreClass="franca.ecore#//FAttribute"/>
     <genClasses ecoreClass="franca.ecore#//FArgument"/>

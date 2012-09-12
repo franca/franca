@@ -87,7 +87,7 @@ FMethod returns FMethod:
 FBroadcast returns FBroadcast:
 	{FBroadcast}
 	(comment=FAnnotationBlock)?
-	'broadcast' name=EString
+	'broadcast' name=EString (selective='selective')?
 	'{'
 		('out' '{' (outArgs+=FArgument)* '}' )?
     '}';
