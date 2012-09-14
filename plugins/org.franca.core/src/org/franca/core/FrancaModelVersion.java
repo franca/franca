@@ -15,7 +15,7 @@ package org.franca.core;
  */
 public class FrancaModelVersion {
 	private static final int major = 1;
-	private static final int minor = 0;
+	private static final int minor = 1;
 
 	public static int getMajor() {
 		return major;
