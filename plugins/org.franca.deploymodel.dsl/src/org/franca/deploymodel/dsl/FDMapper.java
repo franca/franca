@@ -7,8 +7,11 @@
 *******************************************************************************/
 package org.franca.deploymodel.dsl;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
 
 import org.eclipse.emf.ecore.EObject;
 import org.franca.deploymodel.dsl.fDeploy.FDArgument;
@@ -22,12 +25,15 @@ import org.franca.deploymodel.dsl.fDeploy.FDEnumeration;
 import org.franca.deploymodel.dsl.fDeploy.FDField;
 import org.franca.deploymodel.dsl.fDeploy.FDInterface;
 import org.franca.deploymodel.dsl.fDeploy.FDMethod;
+import org.franca.deploymodel.dsl.fDeploy.FDRootElement;
 import org.franca.deploymodel.dsl.fDeploy.FDStruct;
 import org.franca.deploymodel.dsl.fDeploy.FDTypeDef;
 import org.franca.deploymodel.dsl.fDeploy.FDTypes;
 import org.franca.deploymodel.dsl.fDeploy.FDUnion;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 /**
  * The FDMapper provides a mapping from the elements of a Franca model
@@ -94,8 +100,34 @@ public class FDMapper {
 		}
 		
 		initTypes(fdi.getTypes());
-	}
 		
+		// init global types referenced by 'use'
+		initReferenced(fdi.getUse());
+	}
+
+
+	private void initReferenced (Collection<FDRootElement> used) {
+		Queue<FDRootElement> work = Lists.newLinkedList();
+		Set<FDTypes> visited = Sets.newHashSet();
+
+		work.addAll(used);
+		while (! work.isEmpty()) {
+			FDRootElement e = work.poll();
+			if (e instanceof FDTypes) {
+				FDTypes fdTypes = (FDTypes)e;
+				if (! visited.contains(fdTypes)) {
+					visited.add(fdTypes);
+
+					// init global types in this root element
+					initTypes(fdTypes.getTypes());
+
+					// add its referenced root elements to queue
+					work.addAll(e.getUse());
+				}
+			}
+		}
+	}
+	
 	private void initTypes (List<FDTypeDef> fdTypes) {
 		for(FDTypeDef t : fdTypes) {
 			if (t instanceof FDArray) {
