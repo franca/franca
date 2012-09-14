@@ -201,6 +201,7 @@ class FDeployGenerator implements IGenerator {
 			}
 			public «lname» get«name.toFirstUpper» («fType» obj) {
 				«type.javaType» e = target.get«type.getter»(obj, "«etname»");
+				if (e==null) return null;
 				«IF it.type.array!=null»
 				List<«etname»> es = new ArrayList<«etname»>();
 				for(String ev : e) {
