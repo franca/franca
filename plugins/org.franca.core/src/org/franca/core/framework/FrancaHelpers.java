@@ -81,6 +81,7 @@ public class FrancaHelpers {
 	// *****************************************************************************
 	// helpers for model navigation
 	
+	/** @deprecated Use org.franca.core.FrancaModelExtensions instead. */
 	public static FInterface getEnclosingInterface (EObject obj) {
 		EObject x = obj;
 		do {
@@ -91,6 +92,7 @@ public class FrancaHelpers {
 		return null;
 	}
 	
+	/** @deprecated Use org.franca.core.FrancaModelExtensions instead. */
 	public static FStateGraph getStateGraph (EObject obj) {
 		EObject x = obj;
 		do {
@@ -101,6 +103,7 @@ public class FrancaHelpers {
 		return null;
 	}
 	
+	/** @deprecated Use org.franca.core.FrancaModelExtensions instead. */
 	public static FContract getContract (EObject obj) {
 		EObject x = obj;
 		do {
