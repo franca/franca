@@ -1,22 +1,23 @@
 package org.franca.deploymodel.dsl.validation
 
-import org.franca.deploymodel.dsl.fDeploy.FDRootElement
-import org.franca.deploymodel.dsl.fDeploy.FDInterface
+import java.util.Collection
 import java.util.List
-import org.franca.core.franca.FType
+import java.util.Queue
+import java.util.Set
 import org.eclipse.xtend.typesystem.emf.EcoreUtil2
+import org.franca.core.franca.FArrayType
+import org.franca.core.franca.FEnumerationType
+import org.franca.core.franca.FStructType
+import org.franca.core.franca.FType
+import org.franca.core.franca.FTypeRef
+import org.franca.core.franca.FUnionType
+import org.franca.deploymodel.dsl.fDeploy.FDInterface
+import org.franca.deploymodel.dsl.fDeploy.FDRootElement
+import org.franca.deploymodel.dsl.fDeploy.FDTypes
 import static org.franca.deploymodel.dsl.fDeploy.FDeployPackage$Literals.*
 
 import static extension org.franca.core.utils.CycleChecker.*
-import org.franca.deploymodel.dsl.fDeploy.FDTypes
-import java.util.Set
-import java.util.Queue
-import java.util.Collection
-import org.franca.core.franca.FTypeRef
-import org.franca.core.franca.FStructType
-import org.franca.core.franca.FArrayType
-import org.franca.core.franca.FUnionType
-import org.franca.core.franca.FEnumerationType
+import static extension org.franca.core.FrancaModelExtensions.*
 
 class FDeployValidator {
 	
@@ -80,25 +81,23 @@ class FDeployValidator {
 			typerefs.map[derived].filterNull
 			.filter[it.isDeploymentRelevantType()]
 			.toSet
-		referencedTypes.print("used")
 		
 		// compute all types which are used locally, but not defined locally
 		val nonLocal = referencedTypes.filter[!localTypes.contains(it)].toSet
-		nonLocal.print("non-local")
 				
 		// check if non-local types are covered by 'use' reference (recursively)
 		val fromOthers = rootElem.typeDefinitionsByTransitiveUse
-		fromOthers.print("per use")
 
 		// find non-local types which are not yet deployed in some 'use'd deploy model
 		val remaining = nonLocal.filter[!fromOthers.contains(it)].toSet
-		remaining.print("remaining")
 		
 		// identify those types which need deployment properties
 		for(missing : remaining) {
 			if (checker.mustBeDefined(missing)) {
+				val model = missing.getModel
 				reporter.reportError(
-					"Deployment for type '" + missing.name + "' is missing, add 'use' reference!",
+					"Deployment for type '" + missing.name + "' is missing, " +
+					"add 'use' reference for deployment of package '" + model.name + "'",
 					rootElem, FD_INTERFACE__TARGET)
 			}
 		}
