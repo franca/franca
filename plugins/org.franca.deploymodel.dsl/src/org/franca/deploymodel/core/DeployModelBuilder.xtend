@@ -18,6 +18,8 @@ import org.franca.deploymodel.dsl.fDeploy.FDBoolean
 import org.franca.deploymodel.dsl.fDeploy.FDEnumType
 import org.franca.deploymodel.dsl.fDeploy.FDEnum
 import org.franca.deploymodel.dsl.fDeploy.FDString
+import org.franca.deploymodel.dsl.fDeploy.FDValue
+import org.franca.deploymodel.dsl.fDeploy.FDEnumerator
 
 /**
  * Helper functions to build deploy models.
@@ -25,7 +27,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDString
  * This will be moved to org.franca.deploymodel in future.
  */
 class DeployModelBuilder {
-	
+
 	/**
 	 * Set an integer deployment property for a given FDElement.
 	 * If the property is declared with a default value and the value
@@ -38,20 +40,12 @@ class DeployModelBuilder {
 	 * @param value     the actual value to be set
 	 */
 	def static setProperty (FDElement elem, FDSpecification spec, String property, int value) {
-		var decl = getPropertyDecl(elem, spec, property)
-		
-		// check if value is equal to default value
-		var dflt = GenericPropertyAccessor::getDefault(decl)
-		if (dflt==null || (dflt.single as FDInteger) != value) {
-			var prop = createProperty(elem, decl)
-	
-			var fdInteger = FDeployFactory::eINSTANCE.createFDInteger
-			fdInteger.value = value
-			 
-			prop.value = FDeployFactory::eINSTANCE.createFDComplexValue 
-			prop.value.single = fdInteger
-		}
+		setSingleProperty(elem, spec, property,
+			[dflt | (dflt as FDInteger) != value],
+			[ | createFDValue(value) ]
+		)						
 	}
+
 
 	/**
 	 * Set a long integer deployment property for a given FDElement.
@@ -80,21 +74,13 @@ class DeployModelBuilder {
 	 * @param value     the actual value to be set
 	 */
 	def static setProperty (FDElement elem, FDSpecification spec, String property, boolean value) {
-		var decl = getPropertyDecl(elem, spec, property)
-		
-		// check if value is equal to default value
-		var dflt = GenericPropertyAccessor::getDefault(decl)
-		if (dflt==null || (dflt.single as FDBoolean) != value) {
-			var prop = createProperty(elem, decl)
-	
-			var fdBoolean = FDeployFactory::eINSTANCE.createFDBoolean
-			fdBoolean.value = Boolean::toString(value)
-			 
-			prop.value = FDeployFactory::eINSTANCE.createFDComplexValue 
-			prop.value.single = fdBoolean
-		}
+		setSingleProperty(elem, spec, property,
+			[dflt | (dflt as FDBoolean) != value],
+			[ | createFDValue(value) ]
+		)						
 	}
-	
+
+
 	/**
 	 * Set an enum or string deployment property for a given FDElement.
 	 * If the property is declared with a String type, the value will
@@ -117,42 +103,39 @@ class DeployModelBuilder {
 		// detect if type is an enum or string
 		if (decl.type.complex==null) {
 			// we assume this is a string property
-			// check if value is equal to default value
-			var dflt = GenericPropertyAccessor::getDefault(decl)
-			if (dflt==null || (dflt.single as FDString) != value) {
-				var prop = createProperty(elem, decl)
-		
-				var fdString = FDeployFactory::eINSTANCE.createFDString
-				fdString.value = value
-				 
-				prop.value = FDeployFactory::eINSTANCE.createFDComplexValue 
-				prop.value.single = fdString
-			}
+			setPropertyGeneric(decl, elem,
+				[dflt | (dflt as FDString) != value],
+				[ | createFDValue(value) ]
+			)						
 		} else {
 			// we assume this is an enumeration property
 			val enumtype = decl.type.complex as FDEnumType
 			val evalue = enumtype.enumerators.findFirst(e | e.name == value)
-			
 			if (evalue!=null) {
-				// check if value is equal to default value
-				var dflt = GenericPropertyAccessor::getDefault(decl)
-				if (dflt==null || ((dflt.single as FDEnum).value != evalue)) {
-					var prop = createProperty(elem, decl)
-			
-					var fdEnum = FDeployFactory::eINSTANCE.createFDEnum
-					fdEnum.value = evalue
-					 
-					prop.value = FDeployFactory::eINSTANCE.createFDComplexValue 
-					prop.value.single = fdEnum
-				}
+				setPropertyGeneric(decl, elem,
+					[dflt | (dflt as FDEnum).value != evalue],
+					[ | createFDValue(evalue) ]
+				)						
 			}
 			
 		}
 		
 	}
 	
+	
 	// -------------------------------------------------------------------------
 	// utilities
+
+	/** Generic helper function. */
+	def private static setSingleProperty (FDElement elem, FDSpecification spec, String property, 
+		(FDValue) => boolean isNonDefault,
+		() => FDValue getNewValue
+	) {
+		// get property decl
+		var decl = getPropertyDecl(elem, spec, property)
+		setPropertyGeneric(decl, elem, isNonDefault, getNewValue)
+	}
+
 
 	/** Find property declaration for element by property name. */	
 	def static getPropertyDecl (FDElement elem, FDSpecification spec, String property) {
@@ -166,13 +149,79 @@ class DeployModelBuilder {
 
 		return pdecl
 	}
+
+
+	def private static setPropertyGeneric (FDPropertyDecl decl, FDElement elem,
+		(FDValue) => boolean isNonDefault,
+		() => FDValue getNewValue
+	) {
+		//println("set property generic : " + decl.name)
+		// check if property type is array
+		if (decl.type.array!=null) {
+			// array: just add another value
+			// TODO: proper default handling (issue: comparison of arrays...)
+			var prop = getProperty(elem, decl)
+			if (prop.value.array==null) {
+				// create on the fly
+				prop.value.array = FDeployFactory::eINSTANCE.createFDValueArray
+			}
+			prop.value.array.values.add(getNewValue.apply())
+			//println("adding value to property " + decl.name + ", now " + prop.value.array.values.size + " entries!")
+		} else {
+			// single value: check if value is equal to default value
+			var dflt = GenericPropertyAccessor::getDefault(decl)
+			if (dflt==null || isNonDefault.apply(dflt.single)) {
+				var prop = getProperty(elem, decl)
+				prop.value.single = getNewValue.apply()
+			}
+		}
+	}
 	
+
 	/** Create property object for element. */
-	def static createProperty (FDElement element, FDPropertyDecl decl) {
-		var prop = FDeployFactory::eINSTANCE.createFDProperty
-		prop.decl = decl
-		element.properties.add(prop)
+	def static getProperty (FDElement element, FDPropertyDecl decl) {
+		var prop = element.properties.findFirst[p|p.decl==decl]
+		if (prop==null) {
+			// create on the fly
+			prop = FDeployFactory::eINSTANCE.createFDProperty
+			prop.decl = decl
+			element.properties.add(prop)
+		}
+		
+		if (prop.value==null) {
+			// create on the fly
+			prop.value = FDeployFactory::eINSTANCE.createFDComplexValue
+		}
+		
 		return prop
+	}
+
+
+	// -------------------------------------------------------------------------
+	// creation helpers
+	
+	def private static createFDValue (int value) {
+		val v = FDeployFactory::eINSTANCE.createFDInteger
+		v.value = value
+		v
+	}
+
+	def private static createFDValue (boolean value) {
+		val v = FDeployFactory::eINSTANCE.createFDBoolean
+		v.value = Boolean::toString(value)
+		v
+	}
+
+	def private static createFDValue (String value) {
+		val v = FDeployFactory::eINSTANCE.createFDString
+		v.value = value
+		v
+	}
+
+	def private static createFDValue (FDEnumerator value) {
+		val v = FDeployFactory::eINSTANCE.createFDEnum
+		v.value = value
+		v
 	}
 }
 
