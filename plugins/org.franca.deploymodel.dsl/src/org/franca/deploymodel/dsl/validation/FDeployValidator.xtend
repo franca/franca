@@ -149,11 +149,11 @@ class FDeployValidator {
 		}
 	}
 
-	def private print (Collection<FType> types, String tag) {
-		print(tag + ":")
-		for(t : types)
-			print(" " + t.name)
-		println(" (" + types.size + ")")
-	}
+//	def private print (Collection<FType> types, String tag) {
+//		print(tag + ":")
+//		for(t : types)
+//			print(" " + t.name)
+//		println(" (" + types.size + ")")
+//	}
 }
 
