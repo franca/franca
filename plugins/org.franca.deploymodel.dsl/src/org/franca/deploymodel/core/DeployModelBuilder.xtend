@@ -166,7 +166,6 @@ class DeployModelBuilder {
 				prop.value.array = FDeployFactory::eINSTANCE.createFDValueArray
 			}
 			prop.value.array.values.add(getNewValue.apply())
-			//println("adding value to property " + decl.name + ", now " + prop.value.array.values.size + " entries!")
 		} else {
 			// single value: check if value is equal to default value
 			var dflt = GenericPropertyAccessor::getDefault(decl)
