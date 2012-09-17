@@ -28,13 +28,13 @@ public class FDeployFormatter extends AbstractDeclarativeFormatter {
 		c.setLinewrap(0, 1, 2).before(f.getML_COMMENTRule());
 		c.setLinewrap(0, 1, 1).after(f.getML_COMMENTRule());
 		
+		// standard comma formatting
+		for(Keyword comma: f.findKeywords(",")) {
+			c.setNoLinewrap().before(comma);
+			c.setNoSpace().before(comma);
+//			c.setLinewrap().after(comma);
+		}
 
-		c.setLinewrap(1).around(f.getImportRule());
-		c.setLinewrap(2).before(f.getFDSpecificationRule());
-		c.setLinewrap(2).before(f.getFDTypesRule());
-		c.setLinewrap(2).before(f.getFDInterfaceRule());
-		c.setLinewrap(2).around(f.getFDMethodRule());
-		
 		// generic formatting of curly bracket sections
 		for(Pair<Keyword, Keyword> pair: f.findKeywordPairs("{", "}")) {
 			c.setIndentationIncrement().after(pair.getFirst());
@@ -48,5 +48,20 @@ public class FDeployFormatter extends AbstractDeclarativeFormatter {
 		// property lists
 		c.setLinewrap(1).around(f.getFDPropertyRule());
 
+		// top-level formatting
+		c.setLinewrap(1).around(f.getImportRule());
+		c.setLinewrap(2).before(f.getFDSpecificationRule());
+		c.setLinewrap(2).before(f.getFDTypesRule());
+		c.setLinewrap(2).before(f.getFDInterfaceRule());
+		c.setLinewrap(2).around(f.getFDAttributeRule());
+		c.setLinewrap(2).around(f.getFDMethodRule());
+		c.setLinewrap(2).around(f.getFDBroadcastRule());
+		c.setLinewrap(2).around(f.getFDTypeDefRule());
+		
+		// some details...
+		c.setNoLinewrap().after(f.getFDTypesAccess().getAsKeyword_5_0());
+		c.setNoLinewrap().after(f.getFDTypesAccess().getForKeyword_2());
+		c.setNoLinewrap().after(f.getFDInterfaceAccess().getAsKeyword_5_0());
+		c.setNoLinewrap().after(f.getFDInterfaceAccess().getForKeyword_2());
 	}
 }
