@@ -41,9 +41,9 @@
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.compare"/>
       <import plugin="org.eclipse.xtext.builder"/>
-      <import plugin="org.eclipse.xtext.xbase.lib" version="2.1.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.xtext.xtend2.lib" version="2.1.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.xtext.generator" version="2.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.xtext.xbase.lib" version="2.3.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.xtext.generator" version="2.3.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.xtend.lib" version="2.3.1" match="greaterOrEqual"/>
    </requires>
 
    <plugin

@@ -68,7 +68,7 @@ img[images/franca_architecture.png][An example setup of Franca transformations a
 
 Generally, IDLs in arbitrary formats can be part of the transformation framework.
 However, Franca provides special support for IDLs which are implemented using EMF.
-In this case, the link[http://www.xtend-lang.org][Xtend2] language can be used to
+In this case, the link[http://www.xtend-lang.org][Xtend] language can be used to
 implement transformations in an elegant way.
 
 Franca defines a e[pattern] for implementing such transformations: the e[connector].
@@ -90,14 +90,14 @@ section:FrancaConcepts_IDL_Generators[Franca Generator Framework]
 The Franca core model is also used as a starting point for generating code and
 other artifacts. As EMF provides a generated ref:FrancaModelAPI[Java API]
 out of Franca's core model, a plethora of tools can be used for building
-generators. We recommend to use the link[http://www.xtend-lang.org][Xtend2]
+generators. We recommend to use the link[http://www.xtend-lang.org][Xtend]
 language for this, as it is a simple and productive way of implementing
 generators based on a Java API.
 
 In Franca' source distribution you can find the
 ref:FrancaTooling_Generators[HTML Generator], which generates nice HTML pages
 out of Franca IDL interfaces. This generator can serve as an example of how
-to build generators for Franca models with Xtend2. 
+to build generators for Franca models with Xtend. 
 
 See chapter ref:BuildingGenerators[Building Generators] for more details 
 on this concept. 

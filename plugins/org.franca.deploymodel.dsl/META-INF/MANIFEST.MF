@@ -29,4 +29,4 @@ Export-Package: org.franca.deploymodel.core,
  org.franca.deploymodel.dsl.validation
 Import-Package: org.apache.log4j,
  org.eclipse.xtext.xbase.lib,
- org.eclipse.xtend2.lib
+ org.eclipse.xtend.lib

@@ -62,7 +62,7 @@ FModel fmodel = FrancaIDLHelpers.instance().loadModel(inputfile);
 FrancaGenerators.instance().genHTML(fmodel, "html-gen-dir");
 ] 
 
-The HTML generator is implemented using the link[http://www.xtend-lang.org][Xtend2]
+The HTML generator is implemented using the link[http://www.xtend-lang.org][Xtend]
 language. The Xtend-builder automatically creates the Java class mentioned
 above from this implementation. 
 
