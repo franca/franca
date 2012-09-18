@@ -166,6 +166,12 @@ table[
 		td[alignment / padding]
 	]
 	tr[
+		td[code[FDeploy][union_fields]]
+		td[Properties related to fields of union definitions]
+		td[fields of code[Franca][union]]
+		td[alignment / padding]
+	]
+	tr[
 		td[code[FDeploy][enumerations]]
 		td[Properties related to enumeration definitions]
 		td[code[Franca][enumeration]]
