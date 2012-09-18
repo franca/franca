@@ -41,7 +41,7 @@ class DeployModelBuilder {
 	 */
 	def static setProperty (FDElement elem, FDSpecification spec, String property, int value) {
 		setSingleProperty(elem, spec, property,
-			[dflt | (dflt as FDInteger) != value],
+			[dflt | (dflt as FDInteger).value != value],
 			[ | createFDValue(value) ]
 		)						
 	}
@@ -75,11 +75,14 @@ class DeployModelBuilder {
 	 */
 	def static setProperty (FDElement elem, FDSpecification spec, String property, boolean value) {
 		setSingleProperty(elem, spec, property,
-			[dflt | (dflt as FDBoolean) != value],
+			[dflt | eval(dflt as FDBoolean) != value],
 			[ | createFDValue(value) ]
 		)						
 	}
 
+	def private static eval (FDBoolean it) {
+		value=="true"
+	}
 
 	/**
 	 * Set an enum or string deployment property for a given FDElement.
@@ -104,7 +107,7 @@ class DeployModelBuilder {
 		if (decl.type.complex==null) {
 			// we assume this is a string property
 			setPropertyGeneric(decl, elem,
-				[dflt | (dflt as FDString) != value],
+				[dflt | (dflt as FDString).value != value],
 				[ | createFDValue(value) ]
 			)						
 		} else {
