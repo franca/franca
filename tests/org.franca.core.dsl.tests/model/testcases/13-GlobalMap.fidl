@@ -1,0 +1,6 @@
+// a map datatype
+package a.b.c
+
+map MyMap {
+	Int8 to String
+}

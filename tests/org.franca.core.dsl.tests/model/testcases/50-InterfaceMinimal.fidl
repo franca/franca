@@ -1,0 +1,5 @@
+// minimal interface definition
+package a.b.c
+
+interface MyInterface {
+}

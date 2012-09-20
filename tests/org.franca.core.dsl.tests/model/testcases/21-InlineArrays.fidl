@@ -1,0 +1,13 @@
+// inline arrays for type definitions
+package a.b.c
+
+struct MyStruct {
+	Int8[] anIntArray
+	String[] anStringArray
+}
+
+union MyUnion {
+	Int8[] anIntArray
+	String[] anStringArray
+}
+

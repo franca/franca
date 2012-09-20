@@ -1,0 +1,9 @@
+// a enumeration type
+package a.b.c
+
+enumeration MyEnumeration {
+	C1  // without constant value
+	C2 = "100"
+	C3 = "101"
+}
+

@@ -1,0 +1,14 @@
+// nested struct definitions
+package a.b.c
+
+struct MyStruct1 {
+	Int8 field1
+	String field2
+}
+
+struct MyStruct2 {
+	Int8 plainMember1
+	MyStruct1 structMember1
+	MyStruct1 structMember2
+}
+

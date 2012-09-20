@@ -1,0 +1,15 @@
+// test interface definition with one method
+package a.b.c
+
+interface MyInterface {
+	method callme {
+		in {
+			Int8 param1
+			Int8 param2
+		}
+		out {
+			Int32 retcode
+		}
+	}
+}
+

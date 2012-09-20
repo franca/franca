@@ -1,0 +1,12 @@
+// enumeration inheritance
+package a.b.c
+
+enumeration MyEnum1 {
+	C1 = "1"
+	C2 = "2"
+}
+
+enumeration MyEnum2 extends MyEnum1 {
+	C3 = "3"
+	C4 = "4"
+}

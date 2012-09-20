@@ -1,0 +1,7 @@
+// a simple struct
+package a.b.c
+
+struct MyStruct {
+	Int8 aMember
+}
+

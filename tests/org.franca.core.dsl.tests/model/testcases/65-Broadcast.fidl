@@ -1,0 +1,11 @@
+// test interface definition with one broadcast
+package a.b.c
+
+interface MyInterface {
+	broadcast sendStatus {
+		out {
+			Int32 status
+		}
+	}
+}
+

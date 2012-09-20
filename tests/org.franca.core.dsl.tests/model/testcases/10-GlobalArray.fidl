@@ -1,0 +1,5 @@
+// a simple array
+package a.b.c
+
+array MyArray of Int8
+

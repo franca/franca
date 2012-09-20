@@ -1,0 +1,7 @@
+// minimal interface definition
+package a.b.c
+
+<** @description : Test interface with some meta information. **>
+interface MyInterface {
+	version { major 1 minor 0 }
+}
