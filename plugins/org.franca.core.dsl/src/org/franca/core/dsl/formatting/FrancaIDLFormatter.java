@@ -86,7 +86,7 @@ public class FrancaIDLFormatter extends AbstractDeclarativeFormatter {
 		
 		
 		//version information
-		c.setLinewrap(1).after(f.getFVersionAccess().getMajorAssignment_2_1());
-		c.setLinewrap(1).after(f.getFVersionAccess().getMinorAssignment_3_1());
+		c.setLinewrap(1).after(f.getFVersionAccess().getMajorAssignment_3());
+		c.setLinewrap(1).after(f.getFVersionAccess().getMinorAssignment_5());
 	}
 }

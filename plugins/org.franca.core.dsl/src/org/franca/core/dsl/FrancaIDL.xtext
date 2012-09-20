@@ -53,8 +53,8 @@ FInterface returns FInterface:
 FVersion returns FVersion:
 	{FVersion}
 	'{'
-		('major' major=EInt)?
-		('minor' minor=EInt)?
+		'major' major=EInt
+		'minor' minor=EInt
     '}';
 
 
