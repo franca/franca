@@ -42,8 +42,9 @@
 						<phase>test</phase>
 						<configuration>
 							<testClassesDirectory>${project.build.outputDirectory}</testClassesDirectory>
-							<excludes>
-							</excludes>
+							<includes>
+							<include>**/*Test*.java</include>
+							</includes>
 						</configuration>
 						<goals>
 							<goal>test</goal>
