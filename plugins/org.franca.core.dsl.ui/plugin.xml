@@ -134,8 +134,25 @@
         </handler>
     </extension>   
 
-<!-- adding resource factories -->
+   <!-- popup menu for *.fidl files -->
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IFile"
+            nameFilter="*.fidl"
+            id="org.franca.ui.actions.contribution1">
+         <menu
+               label="Franca"
+               path="additions"
+               id="org.franca.ui.francaMenu">
+            <separator
+                  name="groupFrancaCommon">
+            </separator>
+         </menu>
+      </objectContribution>
+   </extension>
 
+   <!-- adding resource factories -->
 	<extension
 		point="org.eclipse.emf.ecore.extension_parser">
 		<parser
