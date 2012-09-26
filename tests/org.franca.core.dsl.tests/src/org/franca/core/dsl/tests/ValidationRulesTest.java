@@ -1,16 +1,13 @@
 package org.franca.core.dsl.tests;
 
-import org.eclipse.emf.codegen.ecore.genmodel.GenModelPackage;
 import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.plugin.EcorePlugin;
 import org.eclipse.xtext.junit4.InjectWith;
-import org.franca.core.dsl.FrancaIDLTestsInjectorProvider;
-import org.franca.core.franca.FrancaPackage;
 import org.eclipselabs.xtext.utils.unittesting.XtextRunner2;
 import org.eclipselabs.xtext.utils.unittesting.XtextTest;
+import org.franca.core.dsl.FrancaIDLTestsInjectorProvider;
+import org.franca.core.franca.FrancaPackage;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -26,6 +23,7 @@ public class ValidationRulesTest extends XtextTest {
     public void before() {
         suppressSerialization();
     }
+
 
     @Test
     public void test_10_DuplicateArrayName() {
