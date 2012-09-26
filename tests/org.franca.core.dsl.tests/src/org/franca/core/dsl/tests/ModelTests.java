@@ -4,8 +4,10 @@ import org.eclipse.emf.codegen.ecore.genmodel.GenModelPackage;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.xtext.junit4.InjectWith;
 import org.franca.core.dsl.FrancaIDLTestsInjectorProvider;
+import org.franca.core.franca.FrancaPackage;
 import org.eclipselabs.xtext.utils.unittesting.XtextRunner2;
 import org.eclipselabs.xtext.utils.unittesting.XtextTest;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -16,15 +18,14 @@ import org.junit.runner.RunWith;
 public class ModelTests extends XtextTest {
     @BeforeClass
     public static void init() {
-        EPackage.Registry.INSTANCE.put(GenModelPackage.eNS_URI, GenModelPackage.eINSTANCE);
+		EPackage.Registry.INSTANCE.put(FrancaPackage.eNS_URI, FrancaPackage.eINSTANCE);
     }
 
     @Before
     public void before() {
-        super.before();
         suppressSerialization();
     }
-
+    
     /**
      * Those models without create behavior rise a warning that is asserted by calling this method from tests.
      */
