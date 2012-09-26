@@ -1,5 +1,7 @@
 // a simple array
 package a.b.c
 
-array MyArray of Int8
+typeCollection MyTypes {
+	array MyArray of Int8
+}
 

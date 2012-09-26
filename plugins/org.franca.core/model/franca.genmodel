@@ -41,18 +41,20 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute franca.ecore#//FModel/name"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FModel/imports"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FModel/interfaces"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FModel/types"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FModel/typeCollections"/>
     </genClasses>
     <genClasses ecoreClass="franca.ecore#//Import">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute franca.ecore#//Import/importedNamespace"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute franca.ecore#//Import/importURI"/>
     </genClasses>
+    <genClasses ecoreClass="franca.ecore#//FTypeCollection">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FTypeCollection/version"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FTypeCollection/types"/>
+    </genClasses>
     <genClasses ecoreClass="franca.ecore#//FInterface">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FInterface/version"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FInterface/attributes"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FInterface/methods"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FInterface/broadcasts"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FInterface/types"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FInterface/contract"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FInterface/base"/>
     </genClasses>

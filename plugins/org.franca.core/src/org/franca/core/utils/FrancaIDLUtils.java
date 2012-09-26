@@ -17,6 +17,7 @@ import org.franca.core.franca.FMapType;
 import org.franca.core.franca.FModel;
 import org.franca.core.franca.FStructType;
 import org.franca.core.franca.FType;
+import org.franca.core.franca.FTypeCollection;
 import org.franca.core.franca.FTypeDef;
 import org.franca.core.franca.FTypeRef;
 import org.franca.core.franca.FUnionType;
@@ -45,86 +46,88 @@ public class FrancaIDLUtils {
 		/**
 		 * go to all types and add the corresponding dependencies in the digraph
 		 */
-		for (Iterator<FType> it = idlModel.getTypes().iterator(); it.hasNext();) {
-			FType ftype = it.next();
-
-			if (ftype instanceof FArrayType) {
-				FArrayType specificType = (FArrayType) ftype;
-				FType childType = specificType.getElementType().getDerived();
-
-				if (childType != null) {
-					typesDigraph.addEdge(childType, ftype);
+		for (Iterator<FTypeCollection> tc = idlModel.getTypeCollections().iterator(); tc.hasNext();) {
+			for (Iterator<FType> it = tc.next().getTypes().iterator(); it.hasNext();) {
+				FType ftype = it.next();
+	
+				if (ftype instanceof FArrayType) {
+					FArrayType specificType = (FArrayType) ftype;
+					FType childType = specificType.getElementType().getDerived();
+	
+					if (childType != null) {
+						typesDigraph.addEdge(childType, ftype);
+					}
 				}
-			}
-			if (ftype instanceof FEnumerationType) {
-				FEnumerationType specificType = (FEnumerationType) ftype;
-				FType childType = specificType.getBase();
-
-				if (childType != null) {
-					typesDigraph.addEdge(childType, ftype);
+				if (ftype instanceof FEnumerationType) {
+					FEnumerationType specificType = (FEnumerationType) ftype;
+					FType childType = specificType.getBase();
+	
+					if (childType != null) {
+						typesDigraph.addEdge(childType, ftype);
+					}
 				}
-			}
-			if (ftype instanceof FStructType) {
-				FStructType specificType = (FStructType) ftype;
-				FType childType = specificType.getBase();
-
-				if (childType != null) {
-					typesDigraph.addEdge(childType, ftype);
+				if (ftype instanceof FStructType) {
+					FStructType specificType = (FStructType) ftype;
+					FType childType = specificType.getBase();
+	
+					if (childType != null) {
+						typesDigraph.addEdge(childType, ftype);
+					}
+					for (Iterator<FField> filedsIt = specificType.getElements().iterator(); filedsIt.hasNext();) {
+						childType = filedsIt.next().getType().getDerived();
+	
+						if (childType != null) {
+							typesDigraph.addEdge(childType, ftype);
+						}
+					}
 				}
-				for (Iterator<FField> filedsIt = specificType.getElements().iterator(); filedsIt.hasNext();) {
-					childType = filedsIt.next().getType().getDerived();
-
+				if (ftype instanceof FUnionType) {
+					FUnionType specificType = (FUnionType) ftype;
+					FType childType = specificType.getBase();
+	
+					if (childType != null) {
+						typesDigraph.addEdge(childType, ftype);
+					}
+					for (Iterator<FField> filedsIt = specificType.getElements().iterator(); filedsIt.hasNext();) {
+						childType = filedsIt.next().getType().getDerived();
+	
+						if (childType != null) {
+							typesDigraph.addEdge(childType, ftype);
+						}
+					}
+				}
+				if (ftype instanceof FMapType) {
+					FMapType specificType = (FMapType) ftype;
+					FType childType = specificType.getKeyType().getDerived();
+	
+					if (childType != null) {
+						typesDigraph.addEdge(childType, ftype);
+					}
+					childType = specificType.getValueType().getDerived();
+					if (childType != null) {
+						typesDigraph.addEdge(childType, ftype);
+					}
+				}
+				if (ftype instanceof FTypeRef) {
+					FTypeRef specificType = (FTypeRef) ftype;
+					FType childType = specificType.getDerived();
+	
+					if (childType != null) {
+						typesDigraph.addEdge(childType, ftype);
+					}
+	
+				}
+				if (ftype instanceof FTypeDef) {
+					FTypeDef specificType = (FTypeDef) ftype;
+					FType childType = specificType.getActualType().getDerived();
+	
 					if (childType != null) {
 						typesDigraph.addEdge(childType, ftype);
 					}
 				}
 			}
-			if (ftype instanceof FUnionType) {
-				FUnionType specificType = (FUnionType) ftype;
-				FType childType = specificType.getBase();
-
-				if (childType != null) {
-					typesDigraph.addEdge(childType, ftype);
-				}
-				for (Iterator<FField> filedsIt = specificType.getElements().iterator(); filedsIt.hasNext();) {
-					childType = filedsIt.next().getType().getDerived();
-
-					if (childType != null) {
-						typesDigraph.addEdge(childType, ftype);
-					}
-				}
-			}
-			if (ftype instanceof FMapType) {
-				FMapType specificType = (FMapType) ftype;
-				FType childType = specificType.getKeyType().getDerived();
-
-				if (childType != null) {
-					typesDigraph.addEdge(childType, ftype);
-				}
-				childType = specificType.getValueType().getDerived();
-				if (childType != null) {
-					typesDigraph.addEdge(childType, ftype);
-				}
-			}
-			if (ftype instanceof FTypeRef) {
-				FTypeRef specificType = (FTypeRef) ftype;
-				FType childType = specificType.getDerived();
-
-				if (childType != null) {
-					typesDigraph.addEdge(childType, ftype);
-				}
-
-			}
-			if (ftype instanceof FTypeDef) {
-				FTypeDef specificType = (FTypeDef) ftype;
-				FType childType = specificType.getActualType().getDerived();
-
-				if (childType != null) {
-					typesDigraph.addEdge(childType, ftype);
-				}
-			}
-
 		}
+	
 		// after the digraph is prepared return the topological sorted list of nodes
 		try {
 			return typesDigraph.topoSort();

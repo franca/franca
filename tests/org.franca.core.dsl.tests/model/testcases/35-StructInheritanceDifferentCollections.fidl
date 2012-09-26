@@ -1,0 +1,15 @@
+// struct inheritance across type collections
+package a.b.c
+
+typeCollection MyBaseTypes {
+	struct MyStruct {
+		Int8 field1
+		String field2
+	}
+}
+	
+typeCollection MyTypes {
+	struct MyStruct extends MyBaseTypes.MyStruct {
+		Int8 field3
+	}
+}

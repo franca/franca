@@ -1,11 +1,13 @@
 // union inheritance
 package a.b.c
 
-union MyUnion1 {
-	Int8 field1
-	String field2
-}
-
-union MyUnion2 extends MyUnion1 {
-	Int8 field3
+typeCollection MyTypes {
+	union MyUnion1 {
+		Int8 field1
+		String field2
+	}
+	
+	union MyUnion2 extends MyUnion1 {
+		Int8 field3
+	}
 }

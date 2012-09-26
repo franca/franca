@@ -1,7 +1,9 @@
 // a simple union
 package a.b.c
 
-union MyUnion {
-	UInt16 aNumber
-	String aString
+typeCollection MyTypes {
+	union MyUnion {
+		UInt16 aNumber
+		String aString
+	}
 }

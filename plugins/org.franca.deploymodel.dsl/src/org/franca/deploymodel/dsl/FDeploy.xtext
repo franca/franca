@@ -114,7 +114,7 @@ FDInterfaceInstance:
 
 FDTypes:
 	'define' spec=[FDSpecification|FQN]
-	'for' 'types' package=[fidl::FModel|FQN]
+	'for' 'typeCollection' target=[fidl::FTypeCollection|FQN]
 	('as' name=FQN)?
 	'{'
 		('use' use+=[FDRootElement|FQN])*

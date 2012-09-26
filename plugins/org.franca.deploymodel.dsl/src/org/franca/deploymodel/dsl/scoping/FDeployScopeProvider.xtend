@@ -53,7 +53,7 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 	}
 
 	def private getScopes (FDTypes ctxt, Class<? extends EObject> clazz) {
-		ctxt.getPackage().getTypes().filter(clazz).scopeFor
+		ctxt.getTarget().getTypes().filter(clazz).scopeFor
 	}
 	
 	// *****************************************************************************

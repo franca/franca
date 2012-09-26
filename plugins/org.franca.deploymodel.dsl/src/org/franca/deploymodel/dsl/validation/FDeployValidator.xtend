@@ -58,7 +58,7 @@ class FDeployValidator {
 		PropertyDefChecker checker
 	) {
 		val Set<FTypeRef> typerefs = newHashSet
-		for(t : rootElem.^package.types) {
+		for(t : rootElem.target.types) {
 			typerefs.addAll(EcoreUtil2::allContents(t).filter(typeof(FTypeRef)).toSet)
 		} 
 		checkUsedTypesRoot(rootElem, typerefs, localTypes, checker)
@@ -144,7 +144,7 @@ class FDeployValidator {
 	def private Collection<FType> getLocalTypes (FDRootElement rootElem) {
 		switch (rootElem) {
 			FDInterface: rootElem.target.types
-			FDTypes: rootElem.^package.types
+			FDTypes: rootElem.target.types
 			default: newArrayList
 		}
 	}

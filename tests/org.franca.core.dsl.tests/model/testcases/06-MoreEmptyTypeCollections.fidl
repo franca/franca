@@ -1,0 +1,6 @@
+// several empty type collections
+package a.b.c
+
+typeCollection MyTypes1 { }
+typeCollection MyTypes2 { }
+typeCollection MyTypes3 { }

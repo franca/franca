@@ -26,6 +26,7 @@ import org.franca.core.franca.FModel;
 import org.franca.core.franca.FStructType;
 import org.franca.core.franca.FTrigger;
 import org.franca.core.franca.FType;
+import org.franca.core.franca.FTypeCollection;
 import org.franca.core.franca.FTypeDef;
 import org.franca.core.franca.FTypeRef;
 import org.franca.core.franca.FTypedElement;
@@ -58,8 +59,14 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
    }
 
    @Check
-   public void checkTypeNamesUnique(FModel model) {
-      ValidationHelpers.checkDuplicates(this, model.getTypes(), FrancaPackage.Literals.FMODEL_ELEMENT__NAME,
+   public void checkTypeCollectionNamesUnique(FModel model) {
+      ValidationHelpers.checkDuplicates(this, model.getTypeCollections(), FrancaPackage.Literals.FMODEL_ELEMENT__NAME,
+            "type collection name");
+   }
+
+   @Check
+   public void checkTypeNamesUnique(FTypeCollection collection) {
+      ValidationHelpers.checkDuplicates(this, collection.getTypes(), FrancaPackage.Literals.FMODEL_ELEMENT__NAME,
             "type name");
    }
 

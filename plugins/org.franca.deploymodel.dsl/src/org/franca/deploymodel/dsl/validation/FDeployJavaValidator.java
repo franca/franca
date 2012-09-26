@@ -176,9 +176,9 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 		FDSpecificationExtender specHelper = new FDSpecificationExtender(spec);
 		PropertyDefChecker checker = new PropertyDefChecker(specHelper);
 		FDMapper mapper = new FDMapper(elem);
-		List<FType> targetTypes = elem.getPackage().getTypes();
+		List<FType> targetTypes = elem.getTarget().getTypes();
 		checkLocalTypes(targetTypes, specHelper, checker, mapper, spec,
-				FDeployPackage.Literals.FD_TYPES__PACKAGE);
+				FDeployPackage.Literals.FD_TYPES__TARGET);
 
 		aux.checkUsedTypes(elem, targetTypes, checker);
 	}

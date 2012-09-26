@@ -1,6 +1,6 @@
 // a global typedef
 package a.b.c
 
-typedef MyTypedef is Int8
-
-
+typeCollection MyTypes {
+	typedef MyTypedef is Int8
+}

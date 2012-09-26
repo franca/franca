@@ -31,6 +31,21 @@ public class ModelTests extends XtextTest {
     }
 
     @Test
+    public void test_05_EmptyTypeCollection() {
+    	testFile("testcases/05-EmptyTypeCollection.fidl");
+    }
+
+    @Test
+    public void test_06_MoreEmptyTypeCollections() {
+    	testFile("testcases/06-MoreEmptyTypeCollections.fidl");
+    }
+
+    @Test
+    public void test_07_EmptyTypeCollectionWithMeta() {
+    	testFile("testcases/07-EmptyTypeCollectionWithMeta.fidl");
+    }
+
+    @Test
     public void test_10_GlobalArray() {
     	testFile("testcases/10-GlobalArray.fidl");
     }
@@ -88,6 +103,11 @@ public class ModelTests extends XtextTest {
     @Test
     public void test_32_EnumInheritance() {
     	testFile("testcases/32-EnumInheritance.fidl");
+    }
+
+    @Test
+    public void test_35_StructInheritanceDifferentCollections() {
+    	testFile("testcases/35-StructInheritanceDifferentCollections.fidl");
     }
     
     @Test

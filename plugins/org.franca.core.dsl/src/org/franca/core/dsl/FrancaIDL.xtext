@@ -22,25 +22,24 @@ FModel returns FModel:
 	{FModel}
 	'package' name=FQN
 	(imports+=Import)*
-	(
-		interfaces+=FInterface |
-		types+=FArrayType |
-		types+=FEnumerationType |
-		types+=FStructType |
-		types+=FUnionType |
-		types+=FMapType |
-		types+=FTypeDef
-	)*
-    ;
+	( typeCollections+=FTypeCollection | interfaces+=FInterface	)*;
 
 
 // **************************************************************
-// interface
+// type collection and interface
+
+FTypeCollection returns FTypeCollection:
+	(comment=FAnnotationBlock)?
+	'typeCollection' name=FQN
+	'{'
+		('version' version=FVersion)?
+		(types+=FType)*
+	'}';
 
 FInterface returns FInterface:
 	{FInterface}
 	(comment=FAnnotationBlock)?
-	'interface'	name=EString ('extends' base=[FInterface|FQN])?
+	'interface' name=FQN ('extends' base=[FInterface|FQN])?
 	'{'
 		('version' version=FVersion)?
 		(attributes+=FAttribute)*

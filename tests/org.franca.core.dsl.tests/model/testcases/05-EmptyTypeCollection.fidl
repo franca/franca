@@ -1,0 +1,4 @@
+// one empty type collection
+package a.b.c
+
+typeCollection MyTypes { }
