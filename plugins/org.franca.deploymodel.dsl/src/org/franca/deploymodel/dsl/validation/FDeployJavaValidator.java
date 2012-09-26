@@ -84,6 +84,12 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 	// basic checks
 	
 	@Check
+	public void checkSpecNamesUnique(FDModel model) {
+		ValidationHelpers.checkDuplicates(this, model.getSpecifications(),
+				FDeployPackage.Literals.FD_SPECIFICATION__NAME, "specification name");
+	}
+
+	@Check
 	public void checkRootElementNamesUnique(FDModel model) {
 		ValidationHelpers.checkDuplicates(this, model.getDeployments(),
 				FDeployPackage.Literals.FD_ROOT_ELEMENT__NAME, "definition name");
