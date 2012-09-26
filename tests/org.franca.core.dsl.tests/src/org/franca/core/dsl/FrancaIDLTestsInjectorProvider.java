@@ -5,7 +5,7 @@ import org.eclipse.xtext.junit4.GlobalRegistries;
 import com.google.inject.Injector;
 
 /**
- * Sets up also bindings for Graphiti Generator and Runtime.
+ * InjectorProvider for Franca IDL tests.
  * @author Klaus Birken
  */
 public class FrancaIDLTestsInjectorProvider extends FrancaIDLInjectorProvider {
