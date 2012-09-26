@@ -1,0 +1,8 @@
+// test interface definition with one attribute
+package a.b.c
+
+interface MyInterface {
+	attribute Int16 a1 readonly
+	attribute Int16 a2 noSubscriptions
+	attribute Int16 a3 readonly noSubscriptions
+}

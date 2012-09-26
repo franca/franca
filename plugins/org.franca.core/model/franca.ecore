@@ -48,7 +48,10 @@
         eType="#//FArgument" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="selective" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="FAttribute" eSuperTypes="#//FTypedElement"/>
+  <eClassifiers xsi:type="ecore:EClass" name="FAttribute" eSuperTypes="#//FTypedElement">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="readonly" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="noSubscriptions" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FArgument" eSuperTypes="#//FTypedElement"/>
   <eClassifiers xsi:type="ecore:EClass" name="FType" eSuperTypes="#//FModelElement"/>
   <eClassifiers xsi:type="ecore:EClass" name="FModelElement" abstract="true">

@@ -63,6 +63,8 @@ FVersion returns FVersion:
 FAttribute:
 	(comment=FAnnotationBlock)?
 	'attribute'	type=FTypeRef (array='[]')? name=EString
+		(readonly='readonly')?
+		(noSubscriptions='noSubscriptions')?
 	;
 
 

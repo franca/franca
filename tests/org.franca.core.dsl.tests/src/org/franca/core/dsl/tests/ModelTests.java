@@ -126,6 +126,11 @@ public class ModelTests extends XtextTest {
     }
     
     @Test
+    public void test_56_AttributeWithFlags() {
+    	testFile("testcases/56-AttributeWithFlags.fidl");
+    }
+    
+    @Test
     public void test_60_Method() {
     	testFile("testcases/60-Method.fidl");
     }
