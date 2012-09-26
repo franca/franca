@@ -1,0 +1,5 @@
+// two specifications with same name
+
+specification MySpec { }
+specification MySpec { }
+

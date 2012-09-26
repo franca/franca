@@ -1,0 +1,7 @@
+// empty deployment specification
+
+import "../fidl/01-EmptyInterface.fidl"
+
+specification MySpec { }
+
+define MySpec for interface a.b.c.EmptyInterface { }
