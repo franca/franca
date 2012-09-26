@@ -1,7 +1,7 @@
 // Franca IDL Demo 1
 package org.franca.examples.demo
 
-import org.franca.examples.demo.* from "basic_types.fidl"
+import org.franca.examples.demo.CommonTypes.* from "basic_types.fidl"
 
 <** @description : Interface providing common playback functionality
                    (applicable to currently active player).           **>
@@ -54,6 +54,7 @@ interface PlayerAPI {
 				on call setActivePlayer -> working
 			}
 			state working {
+				on respond setActivePlayer -> idle
 				on signal attachOutput -> idle
 			}
 		}
