@@ -87,7 +87,7 @@ public class DBusConnector implements IFrancaConnector {
 		
 		// register the appropriate resource factory to handle all file extensions for Dbus
 		resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xml", new DbusxmlResourceFactoryImpl());
-		resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(DbusxmlPackage.eNS_URI, DbusxmlPackage.eINSTANCE);
+		resourceSet.getPackageRegistry().put(DbusxmlPackage.eNS_URI, DbusxmlPackage.eINSTANCE);
 		
 		return resourceSet;
 	}
