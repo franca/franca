@@ -17,7 +17,11 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.franca.core.framework.IFrancaConnector;
 import org.franca.core.framework.IModelContainer;
+import org.franca.core.framework.IssueReporter;
 import org.franca.core.franca.FModel;
+
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 
 import model.emf.dbusxml.DbusxmlPackage;
 import model.emf.dbusxml.DocumentRoot;
@@ -27,14 +31,13 @@ import model.emf.dbusxml.util.DbusxmlResourceImpl;
 
 public class DBusConnector implements IFrancaConnector {
 
-	// transformation helpers
-	private DBus2FrancaTransformation trafoTo = new DBus2FrancaTransformation();
-	private Franca2DBusTransformation trafoFrom = new Franca2DBusTransformation();
+	private Injector injector;
 
 	private String fileExtension = "xml";
 
 	/** constructor */
 	public DBusConnector () {
+		injector = Guice.createInjector(new DBusConnectorModule());
 	}
 	
 	@Override
@@ -70,13 +73,20 @@ public class DBusConnector implements IFrancaConnector {
 			return null;
 		}
 		
+		DBus2FrancaTransformation trafo = injector.getInstance(DBus2FrancaTransformation.class);
 		DBusModelContainer dbus = (DBusModelContainer)model;
-		return trafoTo.transform(dbus.model());
+		FModel fmodel = trafo.transform(dbus.model());
+		System.out.println(IssueReporter.getReportString(trafo.getTransformationIssues()));
+
+		return fmodel;
 	}
 
 	@Override
 	public IModelContainer fromFranca (FModel fmodel) {
-		NodeType dbus = trafoFrom.transform(fmodel);
+		Franca2DBusTransformation trafo = injector.getInstance(Franca2DBusTransformation.class);
+		NodeType dbus = trafo.transform(fmodel);
+		System.out.println(IssueReporter.getReportString(trafo.getTransformationIssues()));
+
 		return new DBusModelContainer(dbus);
 	}
 	

@@ -1,5 +1,6 @@
 package org.franca.connectors.dbus
 
+import com.google.inject.Inject
 import model.emf.dbusxml.ArgType
 import model.emf.dbusxml.DirectionType
 import model.emf.dbusxml.DocType
@@ -20,16 +21,25 @@ import org.franca.core.franca.FBasicTypeId
 import org.franca.core.franca.FType
 import org.franca.core.franca.FTypeRef
 import org.franca.core.franca.FAnnotationType
+import org.franca.core.framework.TransformationLogger
 
 import java.util.List
 
+import static org.franca.core.framework.TransformationIssue.*
+
 class DBus2FrancaTransformation {
+
+	@Inject extension TransformationLogger
 
 	List<FType> newTypes
 	
 	def create FrancaFactory::eINSTANCE.createFModel transform (NodeType src) {
 		name = src.name
 		interfaces.addAll(src.interface.map [transformInterface])
+	}
+
+	def getTransformationIssues() {
+		return getIssues
 	}
 
 	def create FrancaFactory::eINSTANCE.createFInterface transformInterface (InterfaceType src) {

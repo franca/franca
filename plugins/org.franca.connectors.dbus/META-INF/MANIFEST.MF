@@ -6,11 +6,12 @@ Bundle-Version: 0.7.7.qualifier
 Bundle-Activator: org.franca.connectors.dbus.Activator
 Bundle-Vendor: Harman Infotainment Division
 Require-Bundle: org.eclipse.core.runtime,
- org.franca.core;bundle-version="0.7.5",
+ org.franca.core;bundle-version="0.7.6",
  model.emf.dbusxml;bundle-version="0.7.1";visibility:=reexport,
  org.eclipse.xtend.lib;bundle-version="2.3.1",
  com.google.guava,
- org.eclipse.xtext.xbase.lib
+ org.eclipse.xtext.xbase.lib,
+ com.google.inject;bundle-version="3.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: org.franca.connectors.dbus

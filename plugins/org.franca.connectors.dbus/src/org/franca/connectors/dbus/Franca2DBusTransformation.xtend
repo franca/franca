@@ -1,5 +1,7 @@
 package org.franca.connectors.dbus
 
+import com.google.inject.Inject
+
 import model.emf.dbusxml.DbusxmlFactory
 import model.emf.dbusxml.DirectionType
 
@@ -24,16 +26,26 @@ import org.franca.core.franca.FTypeRef
 import org.franca.core.franca.FTypedElement
 import org.franca.core.franca.FUnionType
 import org.franca.core.franca.FModelElement
+import org.franca.core.franca.FrancaPackage
+import org.franca.core.framework.TransformationLogger
 
 import java.util.List
 
+import static org.franca.core.framework.TransformationIssue.*
+
 class Franca2DBusTransformation {
+	
+	@Inject extension TransformationLogger
 	
 	String mInterfaceName
 	
 	def create DbusxmlFactory::eINSTANCE.createNodeType transform (FModel src) {
 		name = src.name
 		interface.addAll(src.interfaces.map [transformInterface])
+	}
+
+	def getTransformationIssues() {
+		return getIssues
 	}
 
 	def create DbusxmlFactory::eINSTANCE.createInterfaceType transformInterface (FInterface src) {
@@ -236,7 +248,12 @@ class Franca2DBusTransformation {
 			case FBasicTypeId::STRING:  's'
 			case FBasicTypeId::FLOAT:   'd'  // TODO: not_supported in DBus?
 			case FBasicTypeId::DOUBLE:  'd'
-			default:  '?'  // TODO: error handling!
+			default: {
+				addIssue(FEATURE_NOT_SUPPORTED, src,
+					FrancaPackage::FTYPE_REF__PREDEFINED,
+					"Basic Franca type " + src.predefined + " not supported by this transformation")
+				'?'
+			}
 		}
 	}
 
@@ -250,23 +267,44 @@ class Franca2DBusTransformation {
 			ts = ts + e.type.transformType2TypeString(e.array!=null)
 		}
 		ts = ts + ")"
-		// TODO: handle src.base
+
+		if (src.base!=null) {
+			// TODO: handle src.base
+			addIssue(FEATURE_NOT_HANDLED_YET, src,
+				FrancaPackage::FSTRUCT_TYPE__BASE,
+				"Inheritance for struct " + src.name + " not yet supported")
+		}
+
 		return ts
 	}
 	
 	def String transformEnumType (FEnumerationType src) {
-		// TODO: handle src.base
+		if (src.base!=null) {
+			// TODO: handle src.base
+			addIssue(FEATURE_NOT_HANDLED_YET, src,
+				FrancaPackage::FENUMERATION_TYPE__BASE,
+				"Inheritance for enumeration " + src.name + " not yet supported")
+		}
+
 		'i'
 	}
 
 	def String transformVariantType (FUnionType src) {
-		// TODO: handle src.base
+		if (src.base!=null) {
+			// TODO: handle src.base
+			addIssue(FEATURE_NOT_HANDLED_YET, src,
+				FrancaPackage::FUNION_TYPE__BASE,
+				"Inheritance for union " + src.name + " not yet supported")
+		}
+
 		'v'
 	}
 
 	def String transformMapType (FMapType src) {
 		if (src.keyType.derived != null) {
-			// not_supported: DBus supports only basic types as dict-key
+			addIssue(FEATURE_NOT_SUPPORTED, src,
+				FrancaPackage::FMAP_TYPE__KEY_TYPE,
+				"DBus supports only basic types as dict-key (for map " + src.name + ")")
 			return '?' 
 		}
 		'a{' + src.keyType.transformSingleType2TypeString +
