@@ -1,10 +1,10 @@
 package org.franca.connectors.dbus
 
 import com.google.inject.Inject
-
+import java.util.List
 import model.emf.dbusxml.DbusxmlFactory
 import model.emf.dbusxml.DirectionType
-
+import org.franca.core.framework.TransformationLogger
 import org.franca.core.franca.FAnnotation
 import org.franca.core.franca.FAnnotationType
 import org.franca.core.franca.FArgument
@@ -19,17 +19,14 @@ import org.franca.core.franca.FInterface
 import org.franca.core.franca.FMapType
 import org.franca.core.franca.FMethod
 import org.franca.core.franca.FModel
+import org.franca.core.franca.FModelElement
 import org.franca.core.franca.FStructType
 import org.franca.core.franca.FType
 import org.franca.core.franca.FTypeDef
 import org.franca.core.franca.FTypeRef
 import org.franca.core.franca.FTypedElement
 import org.franca.core.franca.FUnionType
-import org.franca.core.franca.FModelElement
 import org.franca.core.franca.FrancaPackage
-import org.franca.core.framework.TransformationLogger
-
-import java.util.List
 
 import static org.franca.core.framework.TransformationIssue.*
 
@@ -301,7 +298,7 @@ class Franca2DBusTransformation {
 	}
 
 	def String transformMapType (FMapType src) {
-		if (src.keyType.derived != null) {
+		if (! src.keyType.isProperDictKey) {
 			addIssue(FEATURE_NOT_SUPPORTED, src,
 				FrancaPackage::FMAP_TYPE__KEY_TYPE,
 				"DBus supports only basic types as dict-key (for map " + src.name + ")")
@@ -309,6 +306,12 @@ class Franca2DBusTransformation {
 		}
 		'a{' + src.keyType.transformSingleType2TypeString +
 				src.valueType.transformSingleType2TypeString + '}' 
+	}
+
+
+	def private isProperDictKey (FTypeRef src) {
+		// enumeration types will be mapped to 'i', thus can be used as dict key 
+		src.derived==null || (src.derived instanceof FEnumerationType)
 	}
 }
 
