@@ -14,7 +14,6 @@ import "http://core.franca.org"
 
 import "http://www.eclipse.org/emf/2002/Ecore" as ecore
 
-
 // **************************************************************
 // model root
 
@@ -306,7 +305,7 @@ FAnnotationBlock returns FAnnotationBlock:
 	'<**' (elements+=FAnnotation)+ '**>';
 
 FAnnotation returns FAnnotation:
-	type=FAnnotationType comment=CommentString;
+	type=FAnnotationType comment=COMMENT_STRING;
 
 enum FAnnotationType returns FAnnotationType:
 	undefined = 'undefined' |
@@ -333,7 +332,7 @@ EString returns ecore::EString:
 EInt returns ecore::EInt:
 	'-'? INT;
 
-terminal CommentString returns ecore::EString:
+terminal COMMENT_STRING returns ecore::EString:
 	':' ( ('\\' ('b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\')) | !('\\'|'*'|'@') )*
 ;
 
