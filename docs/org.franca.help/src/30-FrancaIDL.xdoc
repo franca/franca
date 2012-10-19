@@ -3,7 +3,7 @@ chapter:FrancaIDL[Franca IDL Reference]
 The core of Franca IDL is the support for ref:FIDL_Interface[interface definitions], consisting of
 attributes, methods and broadcasts. Those definitions will be based on a ref:FIDL_Types[type system],
 which provides a variety of primitive and user-defined types. 
-Additionally, the dynamic behaviour of interfaces can be specified using ref:FIDL_Contracts[contracts]
+Additionally, the dynamic behavior of interfaces can be specified using ref:FIDL_Contracts[contracts]
 consisting of protocol state machines.
 Finally, Franca IDL supports Java-doc like tagged comments, called ref:FIDL_Comments[structured comments]
 and language features like e[packages] and e[imports] which can be used for defining interfaces using
@@ -443,11 +443,51 @@ as inline, unnamed arrays (e.g., the attribute e[arrayAttribute] in the example 
 
 The interface provider holds the data for its attributes and is able to change their values.
 The clients of an interface might actively read its attributes' values.
-The clients also might register for changes of this attribute and will get change
-notifications afterwards. 
+The clients also might register for updates of this attribute and will get change
+notifications afterwards. The detailed behavior of an attribute can be specified
+by a combination of flags (see details below). 
 
 For target IPC platforms which do not support attributes, code might be generated to add
 this support. Typically, a getAttribute method and a registerForUpdate method would be provided.
+
+section3:FIDL_Interface_Attribute_Readonly[Readonly attributes]
+
+By default, clients can read and write the values of attributes. This access can
+be restricted by specifying the per-attribute flag e[readonly]. When the flag is given,
+the clients of the corresponding interface are not allowed to change the attribute's
+value. However, the server might offer some methods which will change the attribute.
+Example for the e[readonly]-flag:
+
+code[Franca][
+interface ExampleInterface {
+	attribute Float throttle
+	attribute Float speed readonly
+}
+]
+  
+In the example, attribute e[throttle] can be written, while attribute e[speed] can only
+by read by the clients.
+
+section3:FIDL_Interface_Attribute_NoSubscriptions[Client subscriptions]
+
+As mentioned above, clients of an interface might register for updates of
+an attribute's value. Sometimes it is necessary to specify attributes which do not
+support this subscription option. This can be accomplished by adding the
+flag e[noSubscriptions] to the attribute's definition.
+Example for the e[noSubscriptions]-flag:
+
+code[Franca][
+interface ExampleInterface {
+	attribute Double temperature readonly noSubscriptions
+	attribute Boolean overheated
+}
+]
+
+The attribute e[temperature] in the example will change often, so that it is better
+to disallow subscriptions and use some kind of polling instead. For the boolean
+attribute e[overheated], subscriptions are possible (which is really what clients
+expect). Note that the e[noSubscriptions] flag has been combined with the flag
+e[readonly] in order to disallow changes by the clients, too. 
 
 
 section2:FIDL_Interface_Method[Methods]
@@ -587,7 +627,7 @@ section3:FIDL_Interface_Method_FireAndForget[Fire-and-forget methods]
 
 If neither e[out] arguments nor e[error] return codes are specified for
 a method, the server will by default send an (empty) reply to its client.
-This behaviour can be changed by specifying a e[fireAndForget] flag for
+This behavior can be changed by specifying a e[fireAndForget] flag for
 the method, which indicates that the server will not respond at all.
 
 Example:
@@ -670,13 +710,13 @@ of one client instance and one provider instance. If multiple clients
 are connected to one interface on provider side, one instance of the
 contract is (conceptually) established for each client. 
 
-In order to specify the dynamic behaviour of a Franca interface, 
+In order to specify the dynamic behavior of a Franca interface, 
 a e[PSM] (short for: e[Protocol State Machine]) is defined which specifies 
 the allowed states e[of the connection] and the allowed transitions between those
 states. Example:
 
 code[Franca][
-// specification of dynamic behaviour on the interface 
+// specification of dynamic behavior on the interface 
 contract {
 	PSM {
 		initial idle
@@ -814,7 +854,7 @@ ul[
 ]
 
 The e[contract]-feature in Franca is still under development. However,
-by specifying the proper and allowed behaviour of interfaces in a consistent way
+by specifying the proper and allowed behavior of interfaces in a consistent way
 the value and expressiveness of interface definitions can be increased to a large extent.
 
 
