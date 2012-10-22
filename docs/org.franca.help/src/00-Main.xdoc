@@ -24,7 +24,8 @@ codelanguage-def[Java]
 
 codelanguage-def[Franca]
 [
-	package,import,model,from,interface,
+	package,import,model,from,
+	typeCollection,interface,
 	version,major,minor,
 	attribute,method,broadcast,
 	in,out,error,

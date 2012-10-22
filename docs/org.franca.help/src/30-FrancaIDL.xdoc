@@ -5,6 +5,8 @@ attributes, methods and broadcasts. Those definitions will be based on a ref:FID
 which provides a variety of primitive and user-defined types. 
 Additionally, the dynamic behavior of interfaces can be specified using ref:FIDL_Contracts[contracts]
 consisting of protocol state machines.
+Types can be defined either on a global scope using ref:FIDL_TypeCollection[type collections],
+or as part of an ref:FIDL_Interface[interface definition].
 Finally, Franca IDL supports Java-doc like tagged comments, called ref:FIDL_Comments[structured comments]
 and language features like e[packages] and e[imports] which can be used for defining interfaces using
 ref:FIDL_MultipleFiles[multiple Franca IDL files].
@@ -284,12 +286,44 @@ typedef ExampleAlias is UInt32
 
 
 
+section:FIDL_TypeCollection[TypeCollection definition]
+
+A e[type collection] is a (maybe empty) set of user-defined types.
+Previous to Franca-0.8.0, user-defined types could be located on the
+top-level of a Franca model. This has been banned with Franca-0.8.0 in order to 
+provide a consistent scheme of fully qualified names and versioning for
+user-defined types.
+
+Each type collection in Franca has some metadata: a mandatory fully qualified
+e[name] for the collection and an optional e[version number] (with major/minor scheme).
+The following example shows the basic type collection definition:
+
+code[Franca][
+typeCollection ExampleTypeCollection {
+	version { major 3 minor 1 }
+	
+	// put user-defined types here
+}
+]
+
+As type collections are just a plain collection of user-defined types,
+inheritance is not supported for them. All user-defined types inside a
+type collection have global visibility. I.e., they can be used for
+defining interfaces as well as user-defined types in another type collection.
+This is different from the visibility of types that are defined as part of an
+interface (see below).  
+
+
 section:FIDL_Interface[Interface definition]
 
 Each interface in Franca consists of some metadata (e.g., interface name and version number),
 the actual interface definition (consisting of attributes, methods and broadcasts), an optional
 ref:FIDL_Contracts[contract] specifying the dynamic behavior of the interface and, last but not least,
-user-defined ref:FIDL_Types[data types].  
+user-defined ref:FIDL_Types[data types]. An interface definition might use the user-defined
+types of another interface definition only if it inherits (directly or indirectly)
+from that interface definition. Thus, the visibility of user-defined types as part of an
+interface definition is restricted. This is different from the global visibility of types
+which are part of a type collection.    
 
 section2:FIDL_Interface_Basic[Basic interface definition]
 
@@ -897,8 +931,8 @@ section:FIDL_MultipleFiles[Fully qualified names, packages, and multiple files]
 
 section2:FIDL_MultipleFiles_FQN[Fully qualified names]
 
-All top-level elements of Franca (i.e., interfaces and user-defined data-types which
-have been defined outside of interfaces) are accessed by their e[fully qualified name].
+All top-level elements of Franca (i.e., type collections and interfaces)
+are accessed by their e[fully qualified name].
 A fully qualified name (or short: e[FQN]) is a sequence of identifiers (at least one)
 separated by dots. The following example shows an interface identified by a FQN: 
 code[Franca][
@@ -911,7 +945,7 @@ interface examples.franca.ExampleInterface {
 section2:FIDL_MultipleFiles_Package[Package declarations]
 
 Each Franca file starts with a e[package]-declaration (similar to Java). 
-This puts all user-defined types and interfaces defined in that file into
+This puts all type collections and interfaces defined in that file into
 the package. The absolute reference for this top-level element is computed
 by concatening the package's FQN and the element's FQN. Example:
 
