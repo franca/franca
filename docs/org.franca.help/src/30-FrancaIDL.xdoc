@@ -288,7 +288,7 @@ section:FIDL_Interface[Interface definition]
 
 Each interface in Franca consists of some metadata (e.g., interface name and version number),
 the actual interface definition (consisting of attributes, methods and broadcasts), an optional
-ref:FIDL_Contracts[contract] specifying the dynamic behaviour of the interface and, last but not least,
+ref:FIDL_Contracts[contract] specifying the dynamic behavior of the interface and, last but not least,
 user-defined ref:FIDL_Types[data types].  
 
 section2:FIDL_Interface_Basic[Basic interface definition]
@@ -334,7 +334,7 @@ ul[
 	item[rename a method or broadcast, or one of its arguments]
 	item[rename a user-defined data-type]
 	item[add a contract to an interface which previously didn't have any]
-	item[tighten the constrains for the dynamic behaviour of an interface (i.e., its contract)]
+	item[tighten the constrains for the dynamic behavior of an interface (i.e., its contract)]
 ]
 Interface designers should try hard to avoid incompatible changes, or at least provide
 periods during which a feature is marked as deprecated before it is removed completely. 
@@ -346,7 +346,7 @@ ul[
 	item[add an argument for a method or broadcast (*)]
 	item[add a parameter for a struct or union (*)]
 	item[remove a contract from an interface]
-	item[ease restrictions on the dynamic behaviour of an interface (i.e., its contract)]
+	item[ease restrictions on the dynamic behavior of an interface (i.e., its contract)]
 ] 
 
 (*) In some target IDLs, adding arguments for methods or broadcast or adding members to
@@ -530,7 +530,7 @@ interface LetterCount {
 }
 ]
 
-The runtime behaviour of a method call (e.g., blocking vs. non-blocking) is subject to
+The runtime behavior of a method call (e.g., blocking vs. non-blocking) is subject to
 implementation by the underlying target IPC stack. Thus, it will not be specified as part
 of the interface definition in the IDL. This information will be stored in an additional
 ref:FrancaConcepts_DeploymentModels[deployment model], instead. 
@@ -699,9 +699,9 @@ section:FIDL_Contracts[Contracts]
 section2:FIDL_Contracts_Basic[Basic concept of contracts]
 
 For each Franca interface, a e[contract] might be specified which defines the 
-dynamic behaviour of the interface. Generally, if a contract is part of the interface,
+dynamic behavior of the interface. Generally, if a contract is part of the interface,
 all interactions of clients and providers of this interface have to obey the 
-specification in the contract. This is different from behaviour specification by
+specification in the contract. This is different from behavior specification by
 sequences (e.g., MSCs in MOST), which provides a set of allowed sequences, but
 in general doesn't require that all legal sequences have been specified.
 
