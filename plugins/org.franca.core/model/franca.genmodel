@@ -155,11 +155,15 @@
           propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FTypeRef/derived"/>
     </genClasses>
     <genClasses ecoreClass="franca.ecore#//FAnnotation">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute franca.ecore#//FAnnotation/type"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute franca.ecore#//FAnnotation/comment"/>
+      <genFeatures createChild="false" propertyDescription="the tag of this comment (i.e., the type of this annotation)."
+          ecoreFeature="ecore:EAttribute franca.ecore#//FAnnotation/type"/>
+      <genFeatures createChild="false" propertyDescription="the actual comment as part of an FAnnotation"
+          ecoreFeature="ecore:EAttribute franca.ecore#//FAnnotation/comment"/>
     </genClasses>
     <genClasses ecoreClass="franca.ecore#//FAnnotationBlock">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FAnnotationBlock/elements"/>
+      <genFeatures property="None" children="true" createChild="true" propertyCategory=""
+          propertyDescription="the elements of this annotation block. Each element represents one tagged comment."
+          ecoreFeature="ecore:EReference franca.ecore#//FAnnotationBlock/elements"/>
     </genClasses>
     <genClasses ecoreClass="franca.ecore#//FContract">
       <genFeatures property="None" children="true" createChild="true" propertyDescription="the protocol state machine for this contract. It might use the state variables specified by the variables property."

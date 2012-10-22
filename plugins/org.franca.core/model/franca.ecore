@@ -96,6 +96,9 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="minor" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="FBasicTypeId">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This enum represents the basic types available in Franca IDL.&#xD;&#xA;See section ref:FIDL_PrimitiveTypes[Primitive types] in the&#xD;&#xA;Franca User Guide for a list of available primitive types and their semantics.&#xD;&#xA;"/>
+    </eAnnotations>
     <eLiterals name="undefined" literal="undefined"/>
     <eLiterals name="Int8" value="1" literal="Int8"/>
     <eLiterals name="UInt8" value="2" literal="UInt8"/>
@@ -151,6 +154,9 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="derived" eType="#//FType"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="FAnnotationType">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This enum represents the type of a structured comment (i.e., the tag starting with a '@').&#xD;&#xA;"/>
+    </eAnnotations>
     <eLiterals name="undefined" literal="undefined"/>
     <eLiterals name="description" value="1" literal="@description"/>
     <eLiterals name="author" value="2" literal="@author"/>
@@ -169,6 +175,9 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="comment" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FAnnotationBlock">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This class represents a structured comment.&#xD;&#xA;It is used by many of the elements of the Franca IDL model.&#xD;&#xA;A structured comment consists of a list of elements with one tagged comment each.&#xD;&#xA;"/>
+    </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="elements" upperBound="-1"
         eType="#//FAnnotation" containment="true"/>
   </eClassifiers>

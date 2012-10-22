@@ -85,7 +85,7 @@ ul[
 	item[EString e[name]: The name of this element.
 		 Inherited from base class FModelElement.
 	]
-	item[FAnnotationBlock e[comment] (optional): The structured comment for this element (if any).
+	item[ref:FrancaModelAPIReference_FAnnotationBlock[FAnnotationBlock] e[comment] (optional): The structured comment for this element (if any).
 		 Inherited from base class FModelElement.
 	]
 	item[ref:FrancaModelAPIReference_FVersion[FVersion] e[version] (optional): The version of this entity. The Apache major/minor scheme is applied.
@@ -105,7 +105,7 @@ ul[
 	item[EString e[name]: The name of this element.
 		 Inherited from base class FModelElement.
 	]
-	item[FAnnotationBlock e[comment] (optional): The structured comment for this element (if any).
+	item[ref:FrancaModelAPIReference_FAnnotationBlock[FAnnotationBlock] e[comment] (optional): The structured comment for this element (if any).
 		 Inherited from base class FModelElement.
 	]
 	item[ref:FrancaModelAPIReference_FVersion[FVersion] e[version] (optional): The version of this entity. The Apache major/minor scheme is applied.
@@ -135,7 +135,7 @@ ul[
 	item[EString e[name]: The name of this element.
 		 Inherited from base class FModelElement.
 	]
-	item[FAnnotationBlock e[comment] (optional): The structured comment for this element (if any).
+	item[ref:FrancaModelAPIReference_FAnnotationBlock[FAnnotationBlock] e[comment] (optional): The structured comment for this element (if any).
 		 Inherited from base class FModelElement.
 	]
 	item[List<ref:FrancaModelAPIReference_FArgument[FArgument]> e[outArgs]: The parameters of this broadcast.
@@ -154,7 +154,7 @@ ul[
 	item[EString e[name]: The name of this element.
 		 Inherited from base class FModelElement.
 	]
-	item[FAnnotationBlock e[comment] (optional): The structured comment for this element (if any).
+	item[ref:FrancaModelAPIReference_FAnnotationBlock[FAnnotationBlock] e[comment] (optional): The structured comment for this element (if any).
 		 Inherited from base class FModelElement.
 	]
 	item[ref:FrancaModelAPIReference_FTypeRef[FTypeRef] e[type]: The actual type of this typed element. The type might be predefined or user-defined.
@@ -175,7 +175,7 @@ ul[
 	item[EString e[name]: The name of this element.
 		 Inherited from base class FModelElement.
 	]
-	item[FAnnotationBlock e[comment] (optional): The structured comment for this element (if any).
+	item[ref:FrancaModelAPIReference_FAnnotationBlock[FAnnotationBlock] e[comment] (optional): The structured comment for this element (if any).
 		 Inherited from base class FModelElement.
 	]
 	item[EString e[fireAndForget] (optional): A flag which indicates that this method will be just a request from client to server without response. The property will be set to a concrete string if the flag is set (e.g., the string "fireAndForget"). Do not rely on the actual value of this string. If the property is null, the flag isn't set. It can be set only for methods without output arguments.
@@ -200,7 +200,7 @@ ul[
 	item[EString e[name]: The name of this element.
 		 Inherited from base class FModelElement.
 	]
-	item[FAnnotationBlock e[comment] (optional): The structured comment for this element (if any).
+	item[ref:FrancaModelAPIReference_FAnnotationBlock[FAnnotationBlock] e[comment] (optional): The structured comment for this element (if any).
 		 Inherited from base class FModelElement.
 	]
 	item[ref:FrancaModelAPIReference_FTypeRef[FTypeRef] e[type]: The actual type of this typed element. The type might be predefined or user-defined.
@@ -256,7 +256,7 @@ ul[
 	item[EString e[name]: The name of this element.
 		 Inherited from base class FModelElement.
 	]
-	item[FAnnotationBlock e[comment] (optional): The structured comment for this element (if any).
+	item[ref:FrancaModelAPIReference_FAnnotationBlock[FAnnotationBlock] e[comment] (optional): The structured comment for this element (if any).
 		 Inherited from base class FModelElement.
 	]
 ]
@@ -267,7 +267,7 @@ ul[
 	item[EString e[name]: The name of this element.
 		 Inherited from base class FModelElement.
 	]
-	item[FAnnotationBlock e[comment] (optional): The structured comment for this element (if any).
+	item[ref:FrancaModelAPIReference_FAnnotationBlock[FAnnotationBlock] e[comment] (optional): The structured comment for this element (if any).
 		 Inherited from base class FModelElement.
 	]
 	item[ref:FrancaModelAPIReference_FTypeRef[FTypeRef] e[keyType]: The key type which is mapped to the value type. Note: Some IDLs (e.g. D-Bus Introspection) do not allow complex types as keys. Franca doesn't have this restriction.
@@ -285,13 +285,22 @@ ul[
 	]
 ]
 
+section2:FrancaModelAPIReference_FBasicTypeId[Enum FBasicTypeId]
+
+This enum represents the basic types available in Franca IDL.
+See section ref:FIDL_PrimitiveTypes[Primitive types] in the
+Franca User Guide for a list of available primitive types and their semantics.
+
+This enum consists of the following literals:  
+e[UNDEFINED], e[INT8], e[UINT8], e[INT16], e[UINT16], e[INT32], e[UINT32], e[INT64], e[UINT64], e[BOOLEAN], e[STRING], e[FLOAT], e[DOUBLE], e[BYTE_BUFFER].
+
 section2:FrancaModelAPIReference_FEnumerationType[Class FEnumerationType]
 
 ul[
 	item[EString e[name]: The name of this element.
 		 Inherited from base class FModelElement.
 	]
-	item[FAnnotationBlock e[comment] (optional): The structured comment for this element (if any).
+	item[ref:FrancaModelAPIReference_FAnnotationBlock[FAnnotationBlock] e[comment] (optional): The structured comment for this element (if any).
 		 Inherited from base class FModelElement.
 	]
 	item[List<ref:FrancaModelAPIReference_FEnumerator[FEnumerator]> e[enumerators]: The list of enumerators of this enumeration.
@@ -306,7 +315,7 @@ ul[
 	item[EString e[name]: The name of this element.
 		 Inherited from base class FModelElement.
 	]
-	item[FAnnotationBlock e[comment] (optional): The structured comment for this element (if any).
+	item[ref:FrancaModelAPIReference_FAnnotationBlock[FAnnotationBlock] e[comment] (optional): The structured comment for this element (if any).
 		 Inherited from base class FModelElement.
 	]
 	item[EString e[value] (optional): The value of this enumerator. As the value definition for an enumerator is optional, value might be null.
@@ -319,7 +328,7 @@ ul[
 	item[EString e[name]: The name of this element.
 		 Inherited from base class FModelElement.
 	]
-	item[FAnnotationBlock e[comment] (optional): The structured comment for this element (if any).
+	item[ref:FrancaModelAPIReference_FAnnotationBlock[FAnnotationBlock] e[comment] (optional): The structured comment for this element (if any).
 		 Inherited from base class FModelElement.
 	]
 	item[ref:FrancaModelAPIReference_FTypeRef[FTypeRef] e[actualType]: The actual type for this type alias.
@@ -332,7 +341,7 @@ ul[
 	item[EString e[name]: The name of this element.
 		 Inherited from base class FModelElement.
 	]
-	item[FAnnotationBlock e[comment] (optional): The structured comment for this element (if any).
+	item[ref:FrancaModelAPIReference_FAnnotationBlock[FAnnotationBlock] e[comment] (optional): The structured comment for this element (if any).
 		 Inherited from base class FModelElement.
 	]
 	item[List<ref:FrancaModelAPIReference_FField[FField]> e[elements]: The elements (aka fields) of this compound type.
@@ -345,7 +354,7 @@ ul[
 	item[EString e[name]: The name of this element.
 		 Inherited from base class FModelElement.
 	]
-	item[FAnnotationBlock e[comment] (optional): The structured comment for this element (if any).
+	item[ref:FrancaModelAPIReference_FAnnotationBlock[FAnnotationBlock] e[comment] (optional): The structured comment for this element (if any).
 		 Inherited from base class FModelElement.
 	]
 	item[List<ref:FrancaModelAPIReference_FField[FField]> e[elements]: The elements (aka fields) of this compound type.
@@ -361,7 +370,7 @@ ul[
 	item[EString e[name]: The name of this element.
 		 Inherited from base class FModelElement.
 	]
-	item[FAnnotationBlock e[comment] (optional): The structured comment for this element (if any).
+	item[ref:FrancaModelAPIReference_FAnnotationBlock[FAnnotationBlock] e[comment] (optional): The structured comment for this element (if any).
 		 Inherited from base class FModelElement.
 	]
 	item[List<ref:FrancaModelAPIReference_FField[FField]> e[elements]: The elements (aka fields) of this compound type.
@@ -377,7 +386,7 @@ ul[
 	item[EString e[name]: The name of this element.
 		 Inherited from base class FModelElement.
 	]
-	item[FAnnotationBlock e[comment] (optional): The structured comment for this element (if any).
+	item[ref:FrancaModelAPIReference_FAnnotationBlock[FAnnotationBlock] e[comment] (optional): The structured comment for this element (if any).
 		 Inherited from base class FModelElement.
 	]
 	item[ref:FrancaModelAPIReference_FTypeRef[FTypeRef] e[type]: The actual type of this typed element. The type might be predefined or user-defined.
@@ -394,7 +403,7 @@ ul[
 	item[EString e[name]: The name of this element.
 		 Inherited from base class FModelElement.
 	]
-	item[FAnnotationBlock e[comment] (optional): The structured comment for this element (if any).
+	item[ref:FrancaModelAPIReference_FAnnotationBlock[FAnnotationBlock] e[comment] (optional): The structured comment for this element (if any).
 		 Inherited from base class FModelElement.
 	]
 	item[ref:FrancaModelAPIReference_FTypeRef[FTypeRef] e[elementType]: The type of this array's elements.
@@ -431,7 +440,7 @@ ul[
 	item[EString e[name]: The name of this element.
 		 Inherited from base class FModelElement.
 	]
-	item[FAnnotationBlock e[comment] (optional): The structured comment for this element (if any).
+	item[ref:FrancaModelAPIReference_FAnnotationBlock[FAnnotationBlock] e[comment] (optional): The structured comment for this element (if any).
 		 Inherited from base class FModelElement.
 	]
 	item[ref:FrancaModelAPIReference_FTypeRef[FTypeRef] e[type]: The actual type of this typed element. The type might be predefined or user-defined.
@@ -457,7 +466,7 @@ ul[
 	item[EString e[name]: The name of this element.
 		 Inherited from base class FModelElement.
 	]
-	item[FAnnotationBlock e[comment] (optional): The structured comment for this element (if any).
+	item[ref:FrancaModelAPIReference_FAnnotationBlock[FAnnotationBlock] e[comment] (optional): The structured comment for this element (if any).
 		 Inherited from base class FModelElement.
 	]
 	item[List<ref:FrancaModelAPIReference_FTransition[FTransition]> e[transitions]: The list of outgoing transitions for this state. These transitions lead to the successor states of this state.
@@ -470,7 +479,7 @@ ul[
 	item[EString e[name]: The name of this element.
 		 Inherited from base class FModelElement.
 	]
-	item[FAnnotationBlock e[comment] (optional): The structured comment for this element (if any).
+	item[ref:FrancaModelAPIReference_FAnnotationBlock[FAnnotationBlock] e[comment] (optional): The structured comment for this element (if any).
 		 Inherited from base class FModelElement.
 	]
 	item[ref:FrancaModelAPIReference_FTrigger[FTrigger] e[trigger]: The trigger which fires this transition.
@@ -488,8 +497,6 @@ section2:FrancaModelAPIReference_FExpression[Class FExpression (abstract)]
 This is the common base class for all expressions of
 the Franca contract action language.
 The ref:FrancaModelAPIReference_FExpression[FExpression] class will never be instantiated.
-ul[
-]
 
 section2:FrancaModelAPIReference_FBinaryOperation[Class FBinaryOperation]
 
@@ -508,8 +515,6 @@ This is the common base class for all kinds of
 constants in the Franca contract action language.
 Currently, only integer constants are supported.
 This will be extended in future.
-ul[
-]
 
 section2:FrancaModelAPIReference_FIntegerConstant[Class FIntegerConstant]
 
@@ -531,7 +536,7 @@ ul[
 	item[EString e[name]: The name of this element.
 		 Inherited from base class FModelElement.
 	]
-	item[FAnnotationBlock e[comment] (optional): The structured comment for this element (if any).
+	item[ref:FrancaModelAPIReference_FAnnotationBlock[FAnnotationBlock] e[comment] (optional): The structured comment for this element (if any).
 		 Inherited from base class FModelElement.
 	]
 	item[ref:FrancaModelAPIReference_FTypeRef[FTypeRef] e[type]: The actual type of this typed element. The type might be predefined or user-defined.
@@ -546,7 +551,7 @@ ul[
 	item[EString e[name]: The name of this element.
 		 Inherited from base class FModelElement.
 	]
-	item[FAnnotationBlock e[comment] (optional): The structured comment for this element (if any).
+	item[ref:FrancaModelAPIReference_FAnnotationBlock[FAnnotationBlock] e[comment] (optional): The structured comment for this element (if any).
 		 Inherited from base class FModelElement.
 	]
 	item[ref:FrancaModelAPIReference_FTypeRef[FTypeRef] e[type]: The actual type of this typed element. The type might be predefined or user-defined.
@@ -605,4 +610,37 @@ ul[
 	]
 ]
 
+section:FrancaModelAPIReference_Section_FAnnotationBlock[API for Franca structured comments]
 
+This section describes the API classes representing structured comments. 
+			Note that it is a special feature of Franca that comments are available at all
+			in the model. This is not the case for unstructured comments, which basically
+			will be removed by the parser when creating the abstract syntax tree.
+			See the section ref:FIDL_CommentsStructured[Structured comments] in the
+			Franca User Guide for detailed information about structured comments.
+
+section2:FrancaModelAPIReference_FAnnotationBlock[Class FAnnotationBlock]
+
+This class represents a structured comment.
+It is used by many of the elements of the Franca IDL model.
+A structured comment consists of a list of elements with one tagged comment each.
+ul[
+	item[List<ref:FrancaModelAPIReference_FAnnotation[FAnnotation]> e[elements]: The elements of this annotation block. Each element represents one tagged comment.
+	]
+]
+
+section2:FrancaModelAPIReference_FAnnotation[Class FAnnotation]
+
+ul[
+	item[FAnnotationType e[type] (optional): The tag of this comment (i.e., the type of this annotation).
+	]
+	item[EString e[comment] (optional): The actual comment as part of an FAnnotation.
+	]
+]
+
+section2:FrancaModelAPIReference_FAnnotationType[Enum FAnnotationType]
+
+This enum represents the type of a structured comment (i.e., the tag starting with a '@').
+
+This enum consists of the following literals:  
+e[UNDEFINED], e[DESCRIPTION], e[AUTHOR], e[EXPERIMENTAL], e[DEPRECATED], e[SEE], e[PARAM], e[HIGH_VOLUME], e[HIGH_FREQUENCY], e[SOURCE_URI], e[SOURCE_ALIAS], e[DETAILS].
