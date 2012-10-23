@@ -57,6 +57,20 @@ codelanguage-def[FDeploy]
 	false,true
 ]
 
+codelanguage-def[Xtend][
+  abstract,continue,def,override,for,new,switch,assert,default,goto,package,synchronized,
+  boolean,do,if,private,this,it,break,double,implements,protected,throw,
+  byte,else,import,public,throws,
+  case,enum,instanceof,return,
+  catch,extends,int,short,try,
+  char,final,static,void,
+  class,finally,long,
+  float,super,while,create,dispatch,extension,typeof,as,
+  val, var,
+  true, false, null,
+  IF, ELSE, ELSEIF, ENDIF, FOR, ENDFOR, BEFORE, AFTER, SEPARATOR
+]
+
 
 chapter-ref[Introduction]
 
