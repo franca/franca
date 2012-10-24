@@ -13,8 +13,8 @@ The Java interfaces for the API are located in package e[org.franca.core.franca]
 For accessing Franca deployment models programmatically, we recommend to use
 the helper classes provided by Franca and the classes automatically generated from
 deployment specifications. Thus, we do not include documentation for the EMF
-e[ecore]-model API of deployment models here.
-See section ref:DeploymentModels_GeneratorSupport[Generator support for deployment]
+e[ecore]-model API of deployment models here. See section
+ref:DeploymentModels_DeploymentAccessSupport[Support for accessing deployment properties]
 for more details about this topic.
   
 

@@ -73,14 +73,12 @@ ul[
 As this chapter puts its focus on the actual generation step, we only 
 describe the JUnit-based solution here. 
 
-todo[Explain how generators can be build in general using the Franca Model API
-and how Xtend can be used to do this effectively. Give examples.]
-
 
 section2:BuildingGenerators_Introduction_LoadingFrancaFile[Loading a Franca IDL file]
 
 Loading a Franca IDL model file (with extension e[fidl]) from the file system is
-a standard task. It is supported by the Franca Framework, here is a Java example:
+a standard task. It is supported by the Franca Framework, here is a Java example
+as part of a JUnit test:
 
 code[Java][
 import static org.junit.Assert.*;
@@ -93,22 +91,57 @@ public class MyTest {
 	public void loadModel() {
 		FModel fmodel = FrancaIDLHelpers.instance().loadModel("example.fidl");
 		assertNotNull(fmodel);
-		
+
 		// ... traverse model here
 	}
 }
-] 
+]
 
 The e[FrancaIDLHelpers] singleton class provides a convenient e[loadModel()] 
-function which loads the Franca IDL file. It might use a relative or absolute
+function which initializes the infrastructure needed for Franca and
+loads the Franca IDL file afterwards. It might use a relative or absolute
 path. If the model e[imports] other files, those will be loaded, too.
 All cross references will be resolved. 
+
 The function e[loadModel()] returns an object of type
 ref:FrancaModelAPIReference_FModel[FModel] (follow the link to the 
 corresponding section of the ref:FrancaModelAPI[Franca Model API] documentation).
-
+See the next section for how to traverse the model and generate some artifacts from it.
+ 
 
 section:BuildingGenerators_TraversingFrancaModels[Traversing Franca models]
+
+section2:BuildingGenerators_TraversingFrancaModels_Top[Starting with FModel]
+
+A Franca IDL model (represented by an object of type ref:FrancaModelAPIReference_FModel[FModel]) 
+might contain several type collections ref:FrancaModelAPIReference_FTypeCollection[FTypeCollection]
+and interfaces ref:FrancaModelAPIReference_FInterface[FInterface]. These can be accessed using
+the generated FModel API, the following Xtend code example shows how to access them.
+ 
+code[Xtend][
+class ExampleGenerator {
+	def generateFromModel (FModel fmodel) {
+		for(tc : fmodel.typeCollections)
+			tc.generateTypes
+
+		for(i : fmodel.interfaces)
+			i.generateInterface
+	}
+	
+	def private generateTypes (FTypeCollection types) {
+		// access properties of FTypeCollection, e.g. types.name
+	}
+
+	def private generateInterface (FInterface api) {
+		// access properties of FInterface, e.g. api.name or api.methods
+	}
+]
+
+In the example, there is only a stub implementation for the functions e[generateTypes()]
+and e[generateInterface()].  
+
+
+section2:BuildingGenerators_TraversingFrancaModels_FInterface[Accessing an FInterface]
 
 The following Xtend example code shows how to traverse all methods 
 (i.e., ref:FrancaModelAPIReference_FMethod[FMethod] members) of a Franca interface
@@ -116,28 +149,116 @@ ref:FrancaModelAPIReference_FInterface[FInterface].
 It generates a C++ class with member function declarations for all Franca methods.
 
 code[Xtend][
-class ExampleGenerator {
-	def generateInterface (FInterface api) '''
-		class «api.classname»
-		{
-		public:
-			// methods
-			«FOR m : api.methods»
-			«m.generateMethodDecl» 
-			«ENDFOR»
-		};
-	'''
-}
+def generateInterface (FInterface api) '''
+	class «api.classname»
+	{
+	public:
+		// methods
+		«FOR m : api.methods»
+		«m.generateMethodDecl» 
+		«ENDFOR»
+	};
+'''
 ]
 
-This example will be detailed further soon.
+This function uses a e[template expression] (surrounded by triple single quotes), which 
+is a very useful feature of Xtend when it comes to textual generators.
+Template expressions can span multiple lines and contain expressions which are evaluated
+and their string representation being inserted at that position.
+
+
+section2:BuildingGenerators_TraversingFrancaModels_Xtend[Benefits due to Xtend features]
+
+Template expressions are one useful feature of Xtend which supports the implementation
+of generators very nicely. Here are some more Xtend features which are very handy
+for generator developers:
+
+ul[
+	item[The implicit e[it]-variable allows to reduce syntactic sugar, especially in the
+	     case of lots of small methods as usually found in generator code.]
+	item[The e[switch-statement for classes] allows to implement type-safe dispatching
+	     without e[instanceof]-cascades and downcasts.]
+	item[e[Lambda expressions] are very useful for the traversal and filtering of 
+	     object graphs (as in the Franca model).]
+	item[e[Extension methods] allow to split the generator functionality into a set
+	     of loosely coupled classes. This is even more valuable if used in conjunction
+	     with e[dependency injection] based on e[com.google.inject.Inject].]
+	item[e[Dispatch methods] introduce a polymorphic behaviour, which is handy for dispatching
+	     e[generate()]-calls to various subclasses in a class hierarchy
+	     (e.g., look at ref:FrancaModelAPIReference_FType[FType] and its subclasses.]
+]
+
+There are some more nice features of Xtend which help in implementing generators. 
+See the link[http://xtend-lang.org][documentation on Xtend] for more details on this.
+It is available online and as printable pdf. 
+
+section2:BuildingGenerators_TraversingFrancaModels_NextSteps[Next steps]
+
+In the following, the Franca IDL model has to be traversed further, extracting information
+from the model and generating code from it.
+The typical way of implementing this is top-down, starting with
+ref:FrancaModelAPIReference_FModel[FModel],
+ref:FrancaModelAPIReference_FTypeCollection[FTypeCollection] and
+ref:FrancaModelAPIReference_FInterface[FInterface],
+and continuing with type definitions from type collections and interfaces (e.g., 
+ref:FrancaModelAPIReference_FType[FType] / ref:FrancaModelAPIReference_FTypeRef[FTypeRef],
+ref:FrancaModelAPIReference_FStructType[FStructType],
+ref:FrancaModelAPIReference_FArrayType[FArrayType] and many more).
+Finally output is generated for the elements of interfaces (e.g., 
+ref:FrancaModelAPIReference_FAttribute[FAttribute],
+ref:FrancaModelAPIReference_FMethod[FMethod], 
+ref:FrancaModelAPIReference_FBroadcast[FBroadcast] and
+ref:FrancaModelAPIReference_FArgument[FArgument]).
+
+There are some special features in the Franca model API which should taken care of:
+
+ul[
+	item[inheritance for ref:FrancaModelAPIReference_FInterface[FInterface],
+	     ref:FrancaModelAPIReference_FStructType[FStructType],
+	     ref:FrancaModelAPIReference_FUnionType[FUnionType] and
+	     ref:FrancaModelAPIReference_FEnumerationType[FEnumerationType]
+	     (see e[base]-property for these classes)]
+	item[implicit arrays, which is relevant for all subclasses of
+	     ref:FrancaModelAPIReference_FTypedElement[FTypedElement]
+	     (via its e[array]-property)]
+	item[error enumerators for methods, available in two variants
+	     (see ref:FrancaModelAPIReference_FMethod[FMethod])]
+]
+
+We will not go into more detail here, as there is a detailed chapter on the
+ref:FrancaModelAPI[Franca Model API] in this User Guide.
+
+
+section2:BuildingGenerators_TraversingFrancaModels_Contracts[Contract section of FInterface]
+
+Each Franca interface might contain a definition of a e[contract], specifying the
+dynamic behavior of the interface. The corresponding classes of the Franca model API
+are described in the User Guide section 
+ref:FrancaModelAPIReference_Section_FContract[API for Franca contracts].
+
+As the contract is specifying the behavior of the interface, it should not contain 
+any application logic. Thus, it should not be necessary to access this part of the model
+when generating target code. However, in order to use the specified contract as part
+of a e[runtime verification monitor] or for an offline trace analyser, it will be needed
+to traverse this part of the model and generate some artifacts from it.
+
+Section ref:FIDL_Contracts[Contracts] describes the notion of contracts and their 
+syntax and usage in more detail.
 
 
 section:BuildingGenerators_AccessingFrancaDeploymentModels[Accessing Franca deployment models]
 
-For initial information on how to access Franca deployment models
-please refer to section ref:DeploymentModels_GeneratorSupport[Generator support for deployment].
+For the Franca IDL model there is the ref:FrancaModelAPI[Franca Model API] which allows
+programmatic access to IDL models. This is also the recommend way for building generators
+from Franca IDL.
+For ref:DeploymentModels[Franca deployment models], there is also an API generated by the
+EMF infrastructure. However, we discourage using this API because deployment models are far more
+generic than IDL models and contain many implicit assumptions and logical constraints. 
+In order to work with deployment models programmatically, e[PropertyAccessor] classes
+should be used.
 
-More detailed explanations will be added here soon. 
-
+As this is not specific to building generators, but will be needed also for model-to-model
+transformations and other Franca IDL downstream processing tasks, please refer to common section 
+ref:DeploymentModels_DeploymentAccessSupport[Support for accessing deployment properties]
+to get the details of accessing Franca deployment models from your generator implementation.
 
