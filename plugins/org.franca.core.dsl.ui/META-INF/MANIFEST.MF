@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Franca IDL UI plugin
 Bundle-Vendor: Harman Infotainment Division
-Bundle-Version: 0.7.7.qualifier
+Bundle-Version: 0.8.0.qualifier
 Bundle-SymbolicName: org.franca.core.dsl.ui; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.franca.core.dsl;visibility:=reexport,
