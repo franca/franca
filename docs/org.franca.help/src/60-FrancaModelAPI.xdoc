@@ -476,12 +476,6 @@ ul[
 section2:FrancaModelAPIReference_FTransition[Class FTransition]
 
 ul[
-	item[EString e[name]: The name of this element.
-		 Inherited from base class FModelElement.
-	]
-	item[ref:FrancaModelAPIReference_FAnnotationBlock[FAnnotationBlock] e[comment] (optional): The structured comment for this element (if any).
-		 Inherited from base class FModelElement.
-	]
 	item[ref:FrancaModelAPIReference_FTrigger[FTrigger] e[trigger]: The trigger which fires this transition.
 	]
 	item[ref:FrancaModelAPIReference_FGuard[FGuard] e[guard] (optional): An optional guard for this transition.

@@ -205,7 +205,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="transitions" upperBound="-1"
         eType="#//FTransition" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="FTransition" eSuperTypes="#//FModelElement">
+  <eClassifiers xsi:type="ecore:EClass" name="FTransition">
     <eStructuralFeatures xsi:type="ecore:EReference" name="trigger" lowerBound="1"
         eType="#//FTrigger" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="guard" eType="#//FGuard"
