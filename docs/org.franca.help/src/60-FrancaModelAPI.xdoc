@@ -46,6 +46,14 @@ factory works. The second singleton class of the API is the e[FrancaPackage],
 which does the initialization of the model and provides meta-information
 like ids and others.
 
+Here is a Java code snippet which illustrates how a Franca model element
+can be created using the factory.
+
+code[Java][
+	FInterface api = FrancaFactory.eINSTANCE.createFInterface();
+	api.setName("MediaPlayer");
+	// and so on
+]
 
 
 
