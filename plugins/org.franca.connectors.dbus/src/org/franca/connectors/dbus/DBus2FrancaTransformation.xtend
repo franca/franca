@@ -1,31 +1,29 @@
 package org.franca.connectors.dbus
 
 import com.google.inject.Inject
+import java.util.List
 import model.emf.dbusxml.ArgType
 import model.emf.dbusxml.DirectionType
 import model.emf.dbusxml.DocType
 import model.emf.dbusxml.InterfaceType
-import model.emf.dbusxml.NodeType
 import model.emf.dbusxml.MethodType
-import model.emf.dbusxml.SignalType
+import model.emf.dbusxml.NodeType
 import model.emf.dbusxml.PropertyType
-import model.emf.dbusxml.typesystem.DBusTypeParser
-import model.emf.dbusxml.typesystem.DBusBasicType
+import model.emf.dbusxml.SignalType
 import model.emf.dbusxml.typesystem.DBusArrayType
-import model.emf.dbusxml.typesystem.DBusStructType
+import model.emf.dbusxml.typesystem.DBusBasicType
 import model.emf.dbusxml.typesystem.DBusDictType
+import model.emf.dbusxml.typesystem.DBusStructType
 import model.emf.dbusxml.typesystem.DBusType
-
-import org.franca.core.franca.FrancaFactory
+import model.emf.dbusxml.typesystem.DBusTypeList
+import model.emf.dbusxml.typesystem.DBusTypeParser
+import org.franca.core.framework.TransformationLogger
+import org.franca.core.franca.FAnnotationType
 import org.franca.core.franca.FBasicTypeId
+import org.franca.core.franca.FStructType
 import org.franca.core.franca.FType
 import org.franca.core.franca.FTypeRef
-import org.franca.core.franca.FAnnotationType
-import org.franca.core.framework.TransformationLogger
-
-import java.util.List
-
-import static org.franca.core.framework.TransformationIssue.*
+import org.franca.core.franca.FrancaFactory
 
 class DBus2FrancaTransformation {
 
@@ -69,10 +67,26 @@ class DBus2FrancaTransformation {
 	def create FrancaFactory::eINSTANCE.createFAttribute transformAttribute (PropertyType src) {
 		val nameNormal = src.name.normalizeId 
 		name = nameNormal
+//		val te = src.type.transformAttributeType(nameNormal) 
 		val te = src.type.transformTypeSig(nameNormal) 
 		type = te.type
 		array = if (te.isArray) "[]" else null
 	}
+	
+//	def private transformAttributeType (String typeSig, String namespace) {
+//		// as DBus doesn't have a detailed typesystem, we have to use an artificial typesystem here
+//		val srcTypeList = new DBusTypeParser().parseTypeList(typeSig)
+//		if (srcTypeList.size==1)
+//			// this is a single-type attribute, just convert it
+//			return srcTypeList.get(0).transformType(namespace)
+//		else {
+//			// this is a multi-type attribute, create synthetic struct type
+//			// NB: didn't find spec or examples for multi-type attributes, just support it here
+//			val it = FrancaFactory::eINSTANCE.createFStructType
+//			buildStructType(srcTypeList, namespace, "property")
+//			return new TypedElem(it.encapsulateTypeRef)
+//		}
+//	}
 
 	def create FrancaFactory::eINSTANCE.createFMethod transformMethod (MethodType src) {
 		val nameNormal = src.name.normalizeId 
@@ -198,10 +212,14 @@ class DBus2FrancaTransformation {
 	}
 
 	def create FrancaFactory::eINSTANCE.createFStructType transformStructType (DBusStructType src, String namespace) {
-		name = "t" + namespace + "Struct"
-		comment = createAnnotationBlock("struct generated for DBus argument " + namespace)
+		buildStructType(src.elementTypes, namespace, "argument")
+	}
+
+	def private buildStructType (FStructType it, DBusTypeList srcTypeList, String namespace, String tag) {
+		name = "t" + namespace.toFirstUpper + "Struct"
+		comment = createAnnotationBlock("struct generated for DBus " + tag + " " + namespace)
 		var i = 1
-		for(e : src.elementTypes) {
+		for(e : srcTypeList) {
 			elements.add(e.transformField(namespace, "elem" + i))
 			i = i + 1
 		}
