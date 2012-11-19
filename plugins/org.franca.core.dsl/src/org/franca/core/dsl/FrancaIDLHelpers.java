@@ -44,15 +44,52 @@ public class FrancaIDLHelpers implements ImportsProvider {
 	 * @return the root entity of the Franca IDL model
 	 */
 	public FModel loadModel(String filename) {
-		URI fileURI = ModelPersistenceHandler.normalizeURI(URI.createFileURI(filename));
+		try {
+			URI fileURI = ModelPersistenceHandler.normalizeURI(createURI(filename));
 		
-		if (fileURI.segmentCount() > 1) {
-			return loadModel(fileURI.lastSegment(), fileURI.trimSegments(1).toString() + "/");
-		} else {
-			return loadModel(filename, "");
+			if (fileURI.segmentCount() > 1) {
+				return loadModel(fileURI.lastSegment(), fileURI.trimSegments(1).toString() + "/");
+			} else {
+				return loadModel(filename, "");
+			}
+		} catch (Exception ex) {
+			System.err.println("Error: " + ex.getMessage());
+			return null;
 		}
 	}
 
+	/**
+	 * Workaround: createFileURI is platform-dependent and doesn't work
+	 * for absolute paths on Unix and MacOS. This function provides 
+	 * createURI from file paths for Unix, MacOS and Windows.
+	 */
+	private URI createURI (String filename) {
+		URI uri = URI.createURI(filename);
+
+		String os = System.getProperty("os.name");
+		boolean isWindows = os.startsWith("Windows");
+		boolean isUnix = !isWindows; // this might be too clumsy...
+		if (uri.scheme() != null) {
+			// If we are under Windows and s starts with x: it is an absolute path
+			if (isWindows && uri.scheme().length() == 1) {
+				return URI.createFileURI(filename);
+			}
+			// otherwise it is a proper URI
+			else {
+				return uri;
+			}
+		}
+		// Handle paths that start with / under Unix e.g. /local/foo.txt
+		else if (isUnix && filename.startsWith("/")) { 
+			return URI.createFileURI(filename);
+		}
+		// ... otherwise it is a platform resource uri
+		else {
+			return URI.createPlatformResourceURI(filename, true);
+		}
+	}
+	
+	
 	/**
 	 * Recursive helper function.
 	 * 
