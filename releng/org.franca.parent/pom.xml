@@ -29,6 +29,7 @@
             <module>../../plugins/org.franca.deploymodel.dsl.ui</module>
 			<module>../../plugins/org.franca.generators</module>
             <module>../../plugins/org.franca.connectors.dbus</module>
+            <module>../../plugins/org.franca.connectors.dbus.ui</module>
     		<!-- test modules -->
             <module>../../tests/org.franca.core.dsl.tests</module>
             <module>../../tests/org.franca.deploymodel.dsl.tests</module>

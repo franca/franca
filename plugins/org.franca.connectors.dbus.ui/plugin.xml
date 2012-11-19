@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IFile"
+            nameFilter="*.fidl"
+            id="org.franca.ui.actions.contribution1">
+         <action
+               class="org.franca.connectors.dbus.ui.actions.GenerateDBusXMLAction"
+               enablesFor="1"
+               id="org.franca.connectors.dbus.ui.actions.generateDBusXMLAction"
+               label="Generate D-Bus XML file"
+               menubarPath="org.franca.ui.francaMenu/groupFrancaCommon">
+         </action>
+      </objectContribution>
+   </extension>
+
+</plugin>
