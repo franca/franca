@@ -18,6 +18,7 @@ import static org.franca.deploymodel.dsl.fDeploy.FDeployPackage$Literals.*
 
 import static extension org.franca.core.utils.CycleChecker.*
 import static extension org.franca.core.FrancaModelExtensions.*
+import org.franca.deploymodel.dsl.fDeploy.FDSpecification
 
 class FDeployValidator {
 	
@@ -39,15 +40,55 @@ class FDeployValidator {
 				it, FD_ROOT_ELEMENT__USE, idx)
 		}
 		
-		// ensure that all use-relations are covered by same deployment spec
+		// ensure that all use-relations are covered by a compatible deployment spec
 		for(other : use) {
-			if (spec != other.spec) {
+			if (! spec.isCompatible(other.spec)) {
 				reporter.reportError("Use-relation '" + other.name + "' " +
-					"refers to deployment with different specification " +
+					"refers to deployment with incompatible specification " +
 					"'" + other.spec.name + "'",
 					it, FD_ROOT_ELEMENT__USE, use.indexOf(other))
 			}
 		}
+	}
+
+	// compatible means either same spec or a derived (i.e. more detailed) spec
+	def private isCompatible (FDSpecification spec1, FDSpecification spec2) {
+		// we cannot do this check if there are cycles in the extend-relation
+		if (spec2.cyclicBaseSpec != null) {
+			// return true to avoid an additional error message, the cyclic-check
+			// will issue an error.
+			return true
+		}
+			
+		var check = spec2
+		do {
+			if (spec1 == check)
+				return true
+			check = check.base
+		} while (check!=null)
+		
+		return false
+	}
+
+	/**
+	 * Check if extends-relation on FDSpecifications has cycles.
+	 * 
+	 * @returns FDSpecification which has an extends-cycle, null if the
+	 *          extends-relation is cycle-free.
+	 * */
+	def getCyclicBaseSpec (FDSpecification spec) {
+		var Set<FDSpecification> visited = newHashSet
+		var s = spec
+		var FDSpecification last = null
+		do {
+			visited.add(s)
+			last = s
+			s = s.base
+			if (s!=null && visited.contains(s)) {
+				return last
+			}
+		} while (s != null)
+		return null
 	}
 
 

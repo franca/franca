@@ -1,7 +1,6 @@
 package org.franca.deploymodel.dsl.validation;
 
 import java.util.List;
-import java.util.Set;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
@@ -60,7 +59,6 @@ import org.franca.deploymodel.dsl.fDeploy.FDValueArray;
 import org.franca.deploymodel.dsl.fDeploy.FDeployPackage;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 
  
 
@@ -140,19 +138,12 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 	  
 	@Check
 	public void checkBaseSpec (FDSpecification spec) {
-		Set<FDSpecification> visited = Sets.newHashSet();
-		FDSpecification s = spec;
-		FDSpecification last = null;
-		do {
-			visited.add(s);
-			last = s;
-			s = s.getBase();
-			if (s!=null && visited.contains(s)) {
-				error("Inheritance cycle for specification " + last.getName(), last,
+		FDSpecification cycleSpec = aux.getCyclicBaseSpec(spec);
+		if (cycleSpec!=null) {
+			error("Inheritance cycle for specification " + cycleSpec.getName(), cycleSpec,
 						FDeployPackage.Literals.FD_SPECIFICATION__BASE, -1);
 				return;
 			}
-		} while (s != null);
 	}
 
 	
