@@ -59,7 +59,7 @@ enum FDPropertyHost:
 	interfaces |
 	attributes | methods | broadcasts |
 	arguments |
-	struct_fields | union_fields | arrays |
+	struct_fields | union_fields | arrays | structs | unions |
 	enumerations | enumerators |
 	strings | numbers | integers | floats;
 
