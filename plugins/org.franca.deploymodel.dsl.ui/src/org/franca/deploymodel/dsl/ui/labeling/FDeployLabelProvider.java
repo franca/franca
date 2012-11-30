@@ -8,7 +8,7 @@ import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 import org.eclipse.xtext.ui.label.DefaultEObjectLabelProvider;
 import org.franca.core.franca.FType;
 import org.franca.deploymodel.core.GenericPropertyAccessor;
-import org.franca.deploymodel.dsl.FDModelHelper;
+import org.franca.deploymodel.core.PropertyMappings;
 import org.franca.deploymodel.dsl.fDeploy.FDArgument;
 import org.franca.deploymodel.dsl.fDeploy.FDArray;
 import org.franca.deploymodel.dsl.fDeploy.FDAttribute;
@@ -119,7 +119,7 @@ public class FDeployLabelProvider extends DefaultEObjectLabelProvider {
    public String text(FDPropertyDecl element) {
       String name = new String();
 
-      if (!FDModelHelper.isMandatory(element)) {
+      if (!PropertyMappings.isMandatory(element)) {
          name += DEFAULT_PROPERTY_MARKER;
       }
       name += element.getName();

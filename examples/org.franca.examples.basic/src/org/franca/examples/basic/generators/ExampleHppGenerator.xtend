@@ -4,13 +4,14 @@ import org.franca.core.franca.FInterface
 import org.franca.core.franca.FMethod
 import org.franca.core.franca.FTypeRef
 import org.franca.core.franca.FBasicTypeId
+import org.franca.core.franca.FModel
 
 /**
  * This is an example code generator for plain Franca interfaces without
  * attached deployment information.
  */
 class ExampleHppGenerator {
-
+	
 	/**
 	 * This function is called from outside and generates code from a 
 	 * Franca interface definition.
@@ -97,8 +98,8 @@ class ExampleHppGenerator {
 	// ***********************************************************************************
 	// helper functions
 
-	def getClassname (FInterface api) {
-		"C" + api.name + "Interface"
+	def getClassname (FInterface it) {
+		"C" + name + "Interface"
 	}
 
 }

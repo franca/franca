@@ -1,14 +1,19 @@
 package org.franca.examples.basic.tests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-import org.franca.core.dsl.FrancaIDLHelpers;
+import org.eclipse.xtext.junit4.InjectWith;
+import org.eclipse.xtext.junit4.XtextRunner;
+import org.franca.core.dsl.FrancaIDLInjectorProvider;
+import org.franca.core.dsl.FrancaPersistenceManager;
 import org.franca.core.franca.FInterface;
 import org.franca.core.franca.FModel;
 import org.franca.examples.basic.generators.ExampleHppGenerator;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import com.google.inject.Inject;
 
 /**
  * Testcase for the example C++ header generator from Franca IDL interfaces.
@@ -16,23 +21,20 @@ import org.junit.Test;
  * @author kbirken
  *
  */
+@RunWith(XtextRunner.class)
+@InjectWith(FrancaIDLInjectorProvider.class)
 public class HppGeneratorTest {
 
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	@After
-	public void tearDown() throws Exception {
-	}
-
+	@Inject
+	FrancaPersistenceManager loader;
+	
 	@Test
 	public void test() {
 		System.out.println("*** HppGeneratorTest");
 		
 		// load example Franca IDL interface
 		String inputfile = "examples/" + TestConfiguration.francaFile; 
-		FModel fmodel = FrancaIDLHelpers.instance().loadModel(inputfile);
+		FModel fmodel = loader.loadModel(inputfile);
 		assertNotNull(fmodel);
 		System.out.println("Franca IDL: package '" + fmodel.getName() + "'");
 		

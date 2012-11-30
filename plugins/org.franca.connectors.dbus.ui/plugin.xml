@@ -8,7 +8,7 @@
             nameFilter="*.fidl"
             id="org.franca.ui.actions.contribution1">
          <action
-               class="org.franca.connectors.dbus.ui.actions.GenerateDBusXMLAction"
+               class="org.franca.connectors.dbus.ui.DBusUIExecutableExtensionFactory:org.franca.connectors.dbus.ui.actions.GenerateDBusXMLAction"
                enablesFor="1"
                id="org.franca.connectors.dbus.ui.actions.generateDBusXMLAction"
                label="Generate D-Bus XML file"

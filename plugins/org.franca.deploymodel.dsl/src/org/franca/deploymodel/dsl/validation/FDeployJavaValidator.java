@@ -26,8 +26,9 @@ import org.franca.core.franca.FMethod;
 import org.franca.core.franca.FStructType;
 import org.franca.core.franca.FType;
 import org.franca.core.franca.FUnionType;
+import org.franca.deploymodel.core.FDModelUtils;
+import org.franca.deploymodel.core.PropertyMappings;
 import org.franca.deploymodel.dsl.FDMapper;
-import org.franca.deploymodel.dsl.FDModelHelper;
 import org.franca.deploymodel.dsl.FDSpecificationExtender;
 import org.franca.deploymodel.dsl.fDeploy.FDArgument;
 import org.franca.deploymodel.dsl.fDeploy.FDArray;
@@ -148,9 +149,9 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 		FDSpecification cycleSpec = aux.getCyclicBaseSpec(spec);
 		if (cycleSpec!=null) {
 			error("Inheritance cycle for specification " + cycleSpec.getName(), cycleSpec,
-						FDeployPackage.Literals.FD_SPECIFICATION__BASE, -1);
-				return;
-			}
+					FDeployPackage.Literals.FD_SPECIFICATION__BASE, -1);
+			return;
+		}
 	}
 
 	
@@ -160,14 +161,14 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 	@Check
 	public void checkPropertiesComplete (FDProvider elem) {
 		// check own properties
-		FDSpecification spec = FDModelHelper.getRootElement(elem).getSpec();
+		FDSpecification spec = FDModelUtils.getRootElement(elem).getSpec();
 		checkElementProperties(spec, elem, FDeployPackage.Literals.FD_ROOT_ELEMENT__NAME);
 	}
 	
 	@Check
 	public void checkPropertiesComplete (FDTypes elem) {
 		// we do not check own properties - there will be none
-		FDSpecification spec = FDModelHelper.getRootElement(elem).getSpec();
+		FDSpecification spec = FDModelUtils.getRootElement(elem).getSpec();
 		//checkElementProperties(spec, elem, FDeployPackage.Literals.FD_TYPES__PACKAGE);
 
 		// check child elements recursively
@@ -185,7 +186,7 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 	@Check
 	public void checkPropertiesComplete (FDInterface elem) {
 		// check own properties
-		FDSpecification spec = FDModelHelper.getRootElement(elem).getSpec();
+		FDSpecification spec = FDModelUtils.getRootElement(elem).getSpec();
 		checkElementProperties(spec, elem, FDeployPackage.Literals.FD_INTERFACE__TARGET);
 		
 		// check child elements recursively
@@ -350,17 +351,17 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 	@Check
 	public void checkPropertiesComplete (FDInterfaceInstance elem) {
 		// check own properties
-		FDSpecification spec = FDModelHelper.getRootElement(elem).getSpec();
+		FDSpecification spec = FDModelUtils.getRootElement(elem).getSpec();
 		checkElementProperties(spec, elem, FDeployPackage.Literals.FD_INTERFACE_INSTANCE__TARGET);
 	}
 	
 
 	private void checkElementProperties (FDSpecification spec, FDElement elem, EStructuralFeature feature)
 	{
-		List<FDPropertyDecl> decls = FDModelHelper.getAllPropertyDecls(spec, elem);
+		List<FDPropertyDecl> decls = PropertyMappings.getAllPropertyDecls(spec, elem);
 		List<String> missing = Lists.newArrayList();
 		for(FDPropertyDecl decl : decls) {
-			if (FDModelHelper.isMandatory(decl)) {
+			if (PropertyMappings.isMandatory(decl)) {
 				if (! contains(elem.getProperties(), decl)) {
 					missing.add(decl.getName());
 				}

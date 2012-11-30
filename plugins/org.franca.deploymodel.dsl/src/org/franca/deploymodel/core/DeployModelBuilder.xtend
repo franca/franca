@@ -7,19 +7,17 @@
 *******************************************************************************/
 package org.franca.deploymodel.core
 
-import org.franca.deploymodel.dsl.fDeploy.FDElement
-import org.franca.deploymodel.dsl.fDeploy.FDSpecification
-import org.franca.deploymodel.dsl.FDModelHelper
-import org.franca.deploymodel.dsl.fDeploy.FDeployFactory
-import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl
-import org.franca.deploymodel.core.GenericPropertyAccessor
-import org.franca.deploymodel.dsl.fDeploy.FDInteger
 import org.franca.deploymodel.dsl.fDeploy.FDBoolean
-import org.franca.deploymodel.dsl.fDeploy.FDEnumType
+import org.franca.deploymodel.dsl.fDeploy.FDElement
 import org.franca.deploymodel.dsl.fDeploy.FDEnum
+import org.franca.deploymodel.dsl.fDeploy.FDEnumType
+import org.franca.deploymodel.dsl.fDeploy.FDEnumerator
+import org.franca.deploymodel.dsl.fDeploy.FDInteger
+import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl
+import org.franca.deploymodel.dsl.fDeploy.FDSpecification
 import org.franca.deploymodel.dsl.fDeploy.FDString
 import org.franca.deploymodel.dsl.fDeploy.FDValue
-import org.franca.deploymodel.dsl.fDeploy.FDEnumerator
+import org.franca.deploymodel.dsl.fDeploy.FDeployFactory
 
 /**
  * Helper functions to build deploy models.
@@ -142,7 +140,7 @@ class DeployModelBuilder {
 
 	/** Find property declaration for element by property name. */	
 	def static getPropertyDecl (FDElement elem, FDSpecification spec, String property) {
-		var propertyDecls = FDModelHelper::getAllPropertyDecls(spec, elem)
+		var propertyDecls = PropertyMappings::getAllPropertyDecls(spec, elem)
 		
 		// find property declaration
 		val pdecl = propertyDecls.findFirst(d | d.name == property)

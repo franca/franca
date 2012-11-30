@@ -11,7 +11,7 @@ import java.util.List;
 
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.franca.core.framework.FrancaHelpers;
+import org.franca.core.FrancaModelExtensions;
 import org.franca.core.franca.FAttribute;
 import org.franca.core.franca.FBroadcast;
 import org.franca.core.franca.FContract;
@@ -56,7 +56,7 @@ public class ContractValidator {
 			}
 		}
 
-		FInterface api = FrancaHelpers.getEnclosingInterface(contract);
+		FInterface api = FrancaModelExtensions.getInterface(contract);
 		for(FAttribute e : api.getAttributes()) {
 			if (! usedAttributes.contains(e)) {
 				reporter.reportWarning("Attribute is not covered by contract, not needed?",

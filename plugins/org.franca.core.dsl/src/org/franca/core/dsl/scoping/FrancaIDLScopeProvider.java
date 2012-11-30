@@ -11,21 +11,13 @@ import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
-import org.eclipse.xtext.resource.EObjectDescription;
-import org.eclipse.xtext.resource.IEObjectDescription;
 import org.eclipse.xtext.scoping.IScope;
 import org.eclipse.xtext.scoping.Scopes;
 import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider;
-import org.eclipse.xtext.scoping.impl.SimpleScope;
-import org.franca.core.framework.FrancaHelpers;
+import org.franca.core.FrancaModelExtensions;
 import org.franca.core.franca.FContract;
-import org.franca.core.franca.FDeclaration;
 import org.franca.core.franca.FEventOnIf;
-import org.franca.core.franca.FMethod;
-import org.franca.core.franca.FState;
-import org.franca.core.franca.FStateGraph;
 import org.franca.core.franca.FTransition;
-import org.franca.core.franca.FTrigger;
 
 import com.google.common.collect.Lists;
 
@@ -48,7 +40,7 @@ public class FrancaIDLScopeProvider extends AbstractDeclarativeScopeProvider {
 		final List<EObject> scopes = Lists.newArrayList();
 
 		// add state variables of the enclosing contract to this scope
-		FContract contract = FrancaHelpers.getContract(tr);
+		FContract contract = FrancaModelExtensions.getContract(tr);
 //		System.out.println("Scope " + tr.getTrigger().getEvent().toString());
 		if (contract!=null) { 
 			scopes.addAll(contract.getVariables());

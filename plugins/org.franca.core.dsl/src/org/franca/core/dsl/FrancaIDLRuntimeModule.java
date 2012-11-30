@@ -4,7 +4,6 @@
 package org.franca.core.dsl;
 
 import org.eclipse.xtext.conversion.IValueConverterService;
-import org.franca.core.franca.FrancaPackage;
 
 import com.google.inject.Binder;
 
@@ -12,14 +11,6 @@ import com.google.inject.Binder;
  * Use this class to register components to be used at runtime / without the Equinox extension registry.
  */
 public class FrancaIDLRuntimeModule extends org.franca.core.dsl.AbstractFrancaIDLRuntimeModule {
-
-	public FrancaIDLRuntimeModule() {
-		// initialize FrancaPackage from Franca ecore model first
-	    @SuppressWarnings("unused")
-		FrancaPackage fpackage = FrancaPackage.eINSTANCE;
-		
-	}
-
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.etrice.core.AbstractRoomRuntimeModule#configureIScopeProviderDelegate(com.google.inject.Binder)

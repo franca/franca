@@ -20,13 +20,18 @@ import org.eclipse.ui.console.MessageConsoleStream;
 import org.franca.connectors.dbus.DBusConnector;
 import org.franca.connectors.dbus.DBusModelContainer;
 import org.franca.connectors.dbus.ui.util.SpecificConsole;
-import org.franca.core.dsl.FrancaIDLHelpers;
+import org.franca.core.dsl.FrancaPersistenceManager;
 import org.franca.core.franca.FModel;
+
+import com.google.inject.Inject;
 
 
 public class GenerateDBusXMLAction implements IObjectActionDelegate {
 
 	private IStructuredSelection selection = null;
+	
+	@Inject
+	FrancaPersistenceManager loader;
 
 	@Override
 	public void run(IAction action) {
@@ -46,7 +51,7 @@ public class GenerateDBusXMLAction implements IObjectActionDelegate {
 
     		// load Franca IDL file
             out.println("Loading Franca IDL file '" + fidlFile + "' ...");
-    		FModel fmodel = FrancaIDLHelpers.instance().loadModel(fidlFile);
+    		FModel fmodel = loader.loadModel(fidlFile);
     		if (fmodel==null) {
     			err.println("Couldn't load Franca IDL file '" + fidlFile + "'.");
     			return;

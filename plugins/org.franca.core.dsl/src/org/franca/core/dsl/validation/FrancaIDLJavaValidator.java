@@ -11,6 +11,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.xtext.validation.Check;
 import org.eclipse.xtext.validation.ValidationMessageAcceptor;
+import org.franca.core.FrancaModelExtensions;
 import org.franca.core.framework.FrancaHelpers;
 import org.franca.core.franca.FArgument;
 import org.franca.core.franca.FArrayType;
@@ -245,13 +246,13 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
       if (typeref.getDerived() != null) {
          // this is a derived type, check if referenced type can be accessed
          FType referencedType = typeref.getDerived();
-         FInterface refParent = FrancaHelpers.getEnclosingInterface(referencedType);
+         FInterface refParent = FrancaModelExtensions.getInterface(referencedType);
          if (refParent == null) {
             // referenced type is defined on model level, can be accessed anyway
          } else {
             // referenced type is defined as part of an FInterface,
             // check if reference is allowed by local access (same FInterface)
-            FInterface parent = FrancaHelpers.getEnclosingInterface(typeref);
+            FInterface parent = FrancaModelExtensions.getInterface(typeref);
             if (refParent != parent) {
                error("Type " + referencedType.getName() + " can only be referenced inside interface "
                      + refParent.getName(), typeref, FrancaPackage.Literals.FTYPE_REF__DERIVED, -1);

@@ -5,15 +5,19 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import org.eclipse.xtext.junit4.InjectWith;
+import org.eclipse.xtext.junit4.XtextRunner;
+import org.franca.deploymodel.dsl.FDeployInjectorProvider;
 import org.franca.deploymodel.core.FDModelExtender;
 import org.franca.deploymodel.core.FDeployedInterface;
-import org.franca.deploymodel.dsl.FDModelHelper;
+import org.franca.deploymodel.dsl.FDeployPersistenceManager;
 import org.franca.deploymodel.dsl.fDeploy.FDInterface;
 import org.franca.deploymodel.dsl.fDeploy.FDModel;
 import org.franca.examples.basic.generators.ExampleHppGeneratorWithDeployment;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import com.google.inject.Inject;
 
 
 /**
@@ -21,15 +25,12 @@ import org.junit.Test;
  * 
  * @author Florentin Picioroaga
  */
+@RunWith(XtextRunner.class)
+@InjectWith(FDeployInjectorProvider.class)
 public class PersistenceTest {
 
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	@After
-	public void tearDown() throws Exception {
-	}
+	@Inject
+	FDeployPersistenceManager loader;
 
 	@Test
 	public void testInterfaceGeneration() {
@@ -37,7 +38,7 @@ public class PersistenceTest {
 		
 		// load example Franca IDL interface
 		String inputfile = "examples/fdeploy/testPersistence3.fdepl"; 
-		FDModel fdmodel = FDModelHelper.instance().loadModel(inputfile);
+		FDModel fdmodel = loader.loadModel(inputfile);
 		assertNotNull(fdmodel);
 		
 		// get first interface referenced by FDeploy model

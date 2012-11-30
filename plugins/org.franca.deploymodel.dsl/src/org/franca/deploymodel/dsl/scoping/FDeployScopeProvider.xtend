@@ -7,18 +7,18 @@
  *******************************************************************************/
 package org.franca.deploymodel.dsl.scoping
 
-import java.util.List
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EReference
 import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
-import org.franca.core.franca.FArgument
 import org.franca.core.franca.FArrayType
 import org.franca.core.franca.FEnumerationType
 import org.franca.core.franca.FStructType
 import org.franca.core.franca.FUnionType
-import org.franca.deploymodel.dsl.FDModelHelper
+import org.franca.deploymodel.core.FDModelUtils
+import org.franca.deploymodel.core.PropertyMappings
 import org.franca.deploymodel.dsl.fDeploy.FDArgument
+import org.franca.deploymodel.dsl.fDeploy.FDArgumentList
 import org.franca.deploymodel.dsl.fDeploy.FDArray
 import org.franca.deploymodel.dsl.fDeploy.FDAttribute
 import org.franca.deploymodel.dsl.fDeploy.FDBroadcast
@@ -39,7 +39,6 @@ import org.franca.deploymodel.dsl.fDeploy.FDTypes
 import org.franca.deploymodel.dsl.fDeploy.FDUnion
 
 import static extension org.eclipse.xtext.scoping.Scopes.*
-import org.franca.deploymodel.dsl.fDeploy.FDArgumentList
 
 class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 	
@@ -188,8 +187,8 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 	}
 
 	def private IScope getPropertyDecls (FDElement elem) {
-		val root = FDModelHelper::getRootElement(elem)
-		FDModelHelper::getAllPropertyDecls(root.getSpec(), elem).scopeFor
+		val root = FDModelUtils::getRootElement(elem)
+		PropertyMappings::getAllPropertyDecls(root.getSpec(), elem).scopeFor
 	}
 
 

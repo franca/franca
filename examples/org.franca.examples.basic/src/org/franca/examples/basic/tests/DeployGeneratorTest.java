@@ -1,44 +1,46 @@
 package org.franca.examples.basic.tests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import org.eclipse.xtext.junit4.InjectWith;
+import org.eclipse.xtext.junit4.XtextRunner;
 import org.franca.deploymodel.core.FDModelExtender;
 import org.franca.deploymodel.core.FDeployedInterface;
 import org.franca.deploymodel.core.FDeployedProvider;
-import org.franca.deploymodel.dsl.FDModelHelper;
+import org.franca.deploymodel.dsl.FDeployInjectorProvider;
+import org.franca.deploymodel.dsl.FDeployPersistenceManager;
 import org.franca.deploymodel.dsl.fDeploy.FDInterface;
 import org.franca.deploymodel.dsl.fDeploy.FDModel;
 import org.franca.deploymodel.dsl.fDeploy.FDProvider;
 import org.franca.examples.basic.generators.ExampleHppGeneratorWithDeployment;
 import org.franca.examples.basic.generators.ExampleRuntimeConfigGenerator;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import com.google.inject.Inject;
 
 /**
  * Testcase for using code generators based on Franca deployment models.
  * 
  * @author kbirken
  */
+@RunWith(XtextRunner.class)
+@InjectWith(FDeployInjectorProvider.class)
 public class DeployGeneratorTest {
 
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	@After
-	public void tearDown() throws Exception {
-	}
+	@Inject
+	FDeployPersistenceManager loader;
 
 	@Test
 	public void testInterfaceGeneration() {
 		System.out.println("*** DeployGeneratorTest / Interface Generation");
-		
+
 		// load example Franca IDL interface
 		String inputfile = "examples/" + TestConfiguration.fdeployInterfaceFile; 
-		FDModel fdmodel = FDModelHelper.instance().loadModel(inputfile);
+		FDModel fdmodel = loader.loadModel(inputfile);
 		assertNotNull(fdmodel);
 		
 		// get first interface referenced by FDeploy model
@@ -65,7 +67,7 @@ public class DeployGeneratorTest {
 		
 		// load example Franca IDL interface
 		String inputfile = "examples/" + TestConfiguration.fdeployArchFile; 
-		FDModel fdmodel = FDModelHelper.instance().loadModel(inputfile);
+		FDModel fdmodel = loader.loadModel(inputfile);
 		assertNotNull(fdmodel);
 		
 		// get first provider definition referenced by FDeploy model

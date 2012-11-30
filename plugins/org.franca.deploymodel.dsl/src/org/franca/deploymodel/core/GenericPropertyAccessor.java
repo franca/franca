@@ -10,7 +10,6 @@ package org.franca.deploymodel.core;
 import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
-import org.franca.deploymodel.dsl.FDModelHelper;
 import org.franca.deploymodel.dsl.fDeploy.FDBoolean;
 import org.franca.deploymodel.dsl.fDeploy.FDComplexValue;
 import org.franca.deploymodel.dsl.fDeploy.FDElement;
@@ -23,6 +22,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDSpecification;
 import org.franca.deploymodel.dsl.fDeploy.FDString;
 import org.franca.deploymodel.dsl.fDeploy.FDValue;
 import org.franca.deploymodel.dsl.fDeploy.FDValueArray;
+import org.franca.deploymodel.core.PropertyMappings;
 
 import com.google.common.collect.Lists;
 
@@ -183,7 +183,7 @@ public class GenericPropertyAccessor {
 		}
 		
 		// didn't find, look for default value for this property
-		List<FDPropertyDecl> decls = FDModelHelper.getAllPropertyDecls(spec, elem);
+		List<FDPropertyDecl> decls = PropertyMappings.getAllPropertyDecls(spec, elem);
 		for(FDPropertyDecl decl : decls) {
 			if (decl.getName().equals(property)) {
 				FDComplexValue dflt = getDefault(decl);

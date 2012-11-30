@@ -3,6 +3,7 @@ package org.franca.deploymodel.dsl;
 import java.util.List;
 import java.util.Map;
 
+import org.franca.deploymodel.core.PropertyMappings;
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl;
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyHost;
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification;
@@ -57,9 +58,9 @@ public class FDSpecificationExtender {
 	
 	
 	private void createEntry (FDPropertyHost host) {
-		final List<FDPropertyDecl> decls = FDModelHelper.getAllPropertyDecls(spec, host);
+		final List<FDPropertyDecl> decls = PropertyMappings.getAllPropertyDecls(spec, host);
 		declarations.put(host, decls);
 		
-		hasMandatoryProps.put(host, FDModelHelper.hasMandatoryProperties(decls));
+		hasMandatoryProps.put(host, PropertyMappings.hasMandatoryProperties(decls));
 	}
 }

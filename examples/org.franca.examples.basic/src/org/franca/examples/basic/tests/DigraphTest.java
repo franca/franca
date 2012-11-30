@@ -1,14 +1,14 @@
 package org.franca.examples.basic.tests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Iterator;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.franca.core.utils.digraph.*;
+import org.franca.core.utils.digraph.Digraph;
 import org.franca.core.utils.digraph.Digraph.HasCyclesException;
 import org.franca.core.utils.digraph.Digraph.NotExistingEdge;
+import org.franca.core.utils.digraph.Edge;
+import org.junit.Test;
 
 /**
  * Testcase for the Franca=>HTML transformation toolchain.
@@ -17,14 +17,6 @@ import org.franca.core.utils.digraph.Digraph.NotExistingEdge;
  * 
  */
 public class DigraphTest {
-
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	@After
-	public void tearDown() throws Exception {
-	}
 
 	@Test
 	public void test() {
