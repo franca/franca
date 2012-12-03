@@ -413,7 +413,7 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 			if (typeRef.getArray()!=null)
 				error("Default must be an array!", FDeployPackage.Literals.FD_PROPERTY_FLAG__DEFAULT);
 			else
-				checkValueType(typeRef, value.getSingle(), FDeployPackage.Literals.FD_PROPERTY_FLAG__DEFAULT, -1);
+				checkValueType(typeRef, value.getSingle(), flag, FDeployPackage.Literals.FD_PROPERTY_FLAG__DEFAULT, -1);
 		} else if (value.getArray()!=null) {
 			if (typeRef.getArray()==null) {
 				error("Default must be a single type, not an array!", FDeployPackage.Literals.FD_PROPERTY_FLAG__DEFAULT);
@@ -430,7 +430,7 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 			if (typeRef.getArray()!=null)
 				error("Invalid type, expected array!", FDeployPackage.Literals.FD_PROPERTY__VALUE);
 			else
-				checkValueType(typeRef, value.getSingle(), FDeployPackage.Literals.FD_PROPERTY__VALUE, -1);
+				checkValueType(typeRef, value.getSingle(), prop, FDeployPackage.Literals.FD_PROPERTY__VALUE, -1);
 		} else if (value.getArray()!=null) {
 			if (typeRef.getArray()==null)
 				error("Invalid array type, expected single value!", FDeployPackage.Literals.FD_PROPERTY__VALUE);
@@ -439,26 +439,26 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 		}
 	}
 	
-	private void checkValueType (FDTypeRef typeRef, FDValue value, EReference literal, int index) {
+	private void checkValueType (FDTypeRef typeRef, FDValue value, EObject src, EReference literal, int index) {
 		if (typeRef.getComplex()==null) {
 			// this is a predefined type
 			switch (typeRef.getPredefined().getValue()) {
 			case FDPredefinedTypeId.INTEGER_VALUE:
 				if (! (value instanceof FDInteger)) {
 					error("Invalid type, expected Integer constant",
-							value.eContainer(), literal, index);
+							src, literal, index);
 				}
 				break;
 			case FDPredefinedTypeId.STRING_VALUE:
 				if (! (value instanceof FDString)) {
 					error("Invalid type, expected String constant",
-							value.eContainer(), literal, index);
+							src, literal, index);
 				}
 				break;
 			case FDPredefinedTypeId.BOOLEAN_VALUE:
 				if (! (value instanceof FDBoolean)) {
 					error("Invalid type, expected 'true' or 'false'",
-							value.eContainer(), literal, index);
+							src, literal, index);
 				}
 				break;
 			}
@@ -467,7 +467,7 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 			if (type instanceof FDEnumType) {
 				if (! (value instanceof FDEnum)) {
 					error("Invalid type, expected enumerator",
-							value.eContainer(), literal, index);
+							src, literal, index);
 				}
 			}
 		}
@@ -476,7 +476,7 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 	private void checkValueArrayType (FDTypeRef typeRef, FDValueArray array) {
 		int i = 0;
 		for(FDValue value : array.getValues()) {
-			checkValueType(typeRef, value, FDeployPackage.Literals.FD_VALUE_ARRAY__VALUES, i);
+			checkValueType(typeRef, value, array, FDeployPackage.Literals.FD_VALUE_ARRAY__VALUES, i);
 			i++;
 		}
 	}
