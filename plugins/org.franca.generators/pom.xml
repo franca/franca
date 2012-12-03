@@ -5,11 +5,11 @@
 	<parent>
 		<groupId>org.franca</groupId>
 		<artifactId>org.franca.parent</artifactId>
-		<version>0.8.1-SNAPSHOT</version>
+		<version>0.8.2-SNAPSHOT</version>
 		<relativePath>../../releng/org.franca.parent/pom.xml</relativePath>
 	</parent>
 	<artifactId>org.franca.generators</artifactId>
-	<version>0.8.1-SNAPSHOT</version>
+	<version>0.8.2-SNAPSHOT</version>
 	<packaging>eclipse-plugin</packaging>
 	<build>
 		<sourceDirectory>src</sourceDirectory>
