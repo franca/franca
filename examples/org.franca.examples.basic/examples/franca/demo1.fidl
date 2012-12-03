@@ -34,7 +34,7 @@ interface PlayerAPI {
 		}	
 	}
 	
-	
+
 	<** @description : Response for attaching an output device to a control context. **>
 	broadcast attachOutput {
 		out {
@@ -46,7 +46,7 @@ interface PlayerAPI {
 		}
 	}
 
-	// specification of dynamic behaviour on the interface 
+	// specification of dynamic behavior on the interface 
 	contract {
 		PSM {
 			initial idle
