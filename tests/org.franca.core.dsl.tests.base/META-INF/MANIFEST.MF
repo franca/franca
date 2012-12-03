@@ -4,7 +4,7 @@ Bundle-Name: %pluginName
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Bundle-Version: 0.8.2.qualifier
-Bundle-SymbolicName: org.franca.deploymodel.dsl.tests;singleton:=true
+Bundle-SymbolicName: org.franca.core.dsl.tests.base;singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.xtext,
@@ -15,13 +15,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.franca.core;bundle-version="0.8.0",
  org.franca.core.dsl;bundle-version="0.8.0",
  org.franca.core.dsl.ui;bundle-version="0.8.0",
- org.franca.deploymodel.dsl;bundle-version="0.8.0",
- org.franca.deploymodel.dsl.ui;bundle-version="0.8.0",
- org.eclipselabs.xtext.utils.unittesting;bundle-version="0.9.3",
  org.eclipse.emf.codegen.ecore;bundle-version="2.7.0",
- org.eclipse.core.resources;bundle-version="3.7.100",
- org.eclipse.xtext.xbase.lib;bundle-version="2.3.1",
- org.franca.deploymodel.dsl.tests.base;bundle-version="0.8.2"
+ org.eclipse.core.resources;bundle-version="3.7.100"
 Import-Package: org.apache.commons.logging,
  org.apache.log4j,
  org.junit;version="4.5.0",
@@ -33,3 +28,4 @@ Import-Package: org.apache.commons.logging,
  org.hamcrest;core=split,
  org.hamcrest.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: org.franca.core.dsl

@@ -1,12 +1,9 @@
 package org.franca.deploymodel.dsl.tests;
 
-import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.xtext.junit4.InjectWith;
 import org.eclipselabs.xtext.utils.unittesting.XtextRunner2;
 import org.eclipselabs.xtext.utils.unittesting.XtextTest;
-import org.franca.core.franca.FrancaPackage;
 import org.franca.deploymodel.dsl.FDeployTestsInjectorProvider;
-import org.franca.deploymodel.dsl.fDeploy.FDeployPackage;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -17,8 +14,8 @@ import org.junit.runner.RunWith;
 public class ModelTests extends XtextTest {
     @BeforeClass
     public static void init() {
-		EPackage.Registry.INSTANCE.put(FrancaPackage.eNS_URI, FrancaPackage.eINSTANCE);
-		EPackage.Registry.INSTANCE.put(FDeployPackage.eNS_URI, FDeployPackage.eINSTANCE);
+//		EPackage.Registry.INSTANCE.put(FrancaPackage.eNS_URI, FrancaPackage.eINSTANCE);
+//		EPackage.Registry.INSTANCE.put(FDeployPackage.eNS_URI, FDeployPackage.eINSTANCE);
     }
 
     @Before
