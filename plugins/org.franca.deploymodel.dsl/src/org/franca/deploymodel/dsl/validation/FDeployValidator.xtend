@@ -4,7 +4,7 @@ import java.util.Collection
 import java.util.List
 import java.util.Queue
 import java.util.Set
-import org.eclipse.xtend.typesystem.emf.EcoreUtil2
+import org.eclipse.xtext.EcoreUtil2
 import org.franca.core.franca.FArrayType
 import org.franca.core.franca.FEnumerationType
 import org.franca.core.franca.FStructType
@@ -100,7 +100,7 @@ class FDeployValidator {
 	) {
 		val Set<FTypeRef> typerefs = newHashSet
 		for(t : rootElem.target.types) {
-			typerefs.addAll(EcoreUtil2::allContents(t).filter(typeof(FTypeRef)).toSet)
+			typerefs.addAll(EcoreUtil2::eAllContents(t).filter(typeof(FTypeRef)).toSet)
 		} 
 		checkUsedTypesRoot(rootElem, typerefs, localTypes, checker)
 	}
@@ -109,7 +109,7 @@ class FDeployValidator {
 		List<FType> localTypes,
 		PropertyDefChecker checker
 	) {
-		val typerefs = EcoreUtil2::allContents(rootElem.target).filter(typeof(FTypeRef)).toSet
+		val typerefs = EcoreUtil2::eAllContents(rootElem.target).filter(typeof(FTypeRef)).toSet
 		checkUsedTypesRoot(rootElem, typerefs, localTypes, checker)
 	}
 
