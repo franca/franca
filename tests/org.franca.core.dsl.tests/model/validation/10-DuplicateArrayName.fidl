@@ -1,7 +1,0 @@
-// two arrays with same name
-package a.b.c
-
-typeCollection MyTypes {
-	array MyArray of Int8
-	array MyArray of String
-}
