@@ -217,7 +217,7 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 	public void checkTypeDefSelfRef(FTypeDef type) {
 		if (type.getActualType().getDerived() != null) {
 			if (type == type.getActualType().getDerived()) {
-				error("Cyclic inheritance for FTypeDef", type,
+				error("Cyclic reference for typedef '" + type.getName() + "'", type,
 						FrancaPackage.Literals.FTYPE_DEF__ACTUAL_TYPE, -1);
 			}
 		}
