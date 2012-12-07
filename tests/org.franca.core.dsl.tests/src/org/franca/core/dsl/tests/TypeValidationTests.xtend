@@ -1,22 +1,16 @@
 package org.franca.core.dsl.tests
 
-import com.google.inject.Inject
 import org.eclipse.xtext.junit4.InjectWith
-import org.eclipse.xtext.junit4.util.ParseHelper
 import org.eclipselabs.xtext.utils.unittesting.XtextRunner2
 import org.franca.core.dsl.FrancaIDLTestsInjectorProvider
-import org.franca.core.franca.FModel
-import org.junit.runner.RunWith
 import org.junit.Test
+import org.junit.runner.RunWith
+
 import static org.junit.Assert.*
-import org.franca.core.dsl.FrancaValidationTestHelper
 
 @RunWith(typeof(XtextRunner2))
 @InjectWith(typeof(FrancaIDLTestsInjectorProvider))
-class TypeValidationTests {
-
-	@Inject ParseHelper<FModel> parser
-	@Inject FrancaValidationTestHelper validationHelper
+class TypeValidationTests extends ValidationTestBase {
 
 	@Test
 	def validateArrayNameUnique() {
@@ -29,8 +23,8 @@ class TypeValidationTests {
 		'''
 		
 		assertEquals('''
-			3:Duplicate type name 'MyArray'
-			4:Duplicate type name 'MyArray'
+			3:Name conflict for type name 'MyArray'
+			4:Name conflict for type name 'MyArray'
 		'''.toString, text.getIssues)
 	}
 	
@@ -45,8 +39,8 @@ class TypeValidationTests {
 		'''
 		
 		assertEquals('''
-			3:Duplicate type name 'MyStruct'
-			4:Duplicate type name 'MyStruct'
+			3:Name conflict for type name 'MyStruct'
+			4:Name conflict for type name 'MyStruct'
 		'''.toString, text.getIssues)
 	}
 	
@@ -65,21 +59,94 @@ class TypeValidationTests {
 		'''
 		
 		val expected = '''
-			3:Duplicate type name 'MyType'
-			4:Duplicate type name 'MyType'
-			5:Duplicate type name 'MyType'
-			6:Duplicate type name 'MyType'
-			7:Duplicate type name 'MyType'
-			8:Duplicate type name 'MyType'
+			3:Name conflict for type name 'MyType'
+			4:Name conflict for type name 'MyType'
+			5:Name conflict for type name 'MyType'
+			6:Name conflict for type name 'MyType'
+			7:Name conflict for type name 'MyType'
+			8:Name conflict for type name 'MyType'
 		'''
 
 		assertEquals(expected.toString, text.getIssues)
 	}
 
+	@Test
+	def validateArrayNoSelfReference() {
+		val text = '''
+			package a.b.c
+			typeCollection MyTypes {
+				array MyArray of MyArray
+			}
+		'''
+		
+		assertEquals('''
+			3:Array references itself
+		'''.toString, text.getIssues)
+	}
+	
+//	@Test
+//	def validateArrayNoIndirectSelfReference() {
+//		val text = '''
+//			package a.b.c
+//			typeCollection MyTypes {
+//				array MyArray of OtherArray
+//				array OtherArray of MyArray
+//			}
+//		'''
+//		
+//		assertEquals('''
+//			3:Cyclic references at array 'MyArray'
+//		'''.toString, text.getIssues)
+//	}
 
-	def private getIssues (CharSequence text) {
-		val model = parser.parse(text)
-		return validationHelper.getValidationIssues(model)
+	@Test
+	def validateStructNoSelfReference() {
+		val text = '''
+			package a.b.c
+			typeCollection MyTypes {
+				struct MyStruct {
+					UInt8 a
+					MyStruct b
+					String c
+				}
+			}
+		'''
+		
+		assertEquals('''
+			5:Struct references itself
+		'''.toString, text.getIssues)
+	}
+
+	@Test
+	def validateUnionNoSelfReference() {
+		val text = '''
+			package a.b.c
+			typeCollection MyTypes {
+				union MyUnion {
+					UInt8 a
+					MyUnion b
+					String c
+				}
+			}
+		'''
+		
+		assertEquals('''
+			5:Union references itself
+		'''.toString, text.getIssues)
+	}
+
+	@Test
+	def validateTypedefNoSelfReference() {
+		val text = '''
+			package a.b.c
+			typeCollection MyTypes {
+				typedef MyTypedef is MyTypedef
+			}
+		'''
+		
+		assertEquals('''
+			3:Cyclic reference for typedef 'MyTypedef'
+		'''.toString, text.getIssues)
 	}
 }
 
