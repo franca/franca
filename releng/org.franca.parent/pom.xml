@@ -478,10 +478,8 @@
 		<url>https://code.google.com/a/eclipselabs.org/franca</url>
 		<connection>https://code.google.com/a/eclipselabs.org/franca</connection>
 	</scm>
-    <!--
 	<ciManagement>
 		<system>Cloudbees Jenkins</system>
-		<url>https://franca.ci.cloudbees.com/</url>
+		<url>https://nanosite.ci.cloudbees.com/job/Franca-main/</url>
 	</ciManagement>
-    -->
 </project>
