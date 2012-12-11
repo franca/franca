@@ -26,4 +26,18 @@ public class ModelDefinitionTests extends XtextTest {
     public void test_20_DefEmpty() {
     	testFile("testcases/20-DefEmpty.fdepl", "fidl/01-EmptyInterface.fidl");
     }
+
+    @Test
+    public void test_25_DefDataPropertiesSimple() {
+    	testFile("testcases/25-DefDataPropertiesSimple.fdepl",
+    			"testcases/10-SpecPropertySimpleTypes.fdepl",
+    			"fidl/05-CoverageInterface.fidl");
+    }
+
+    @Test
+    public void test_26_DefDataPropertiesArray() {
+    	testFile("testcases/26-DefDataPropertiesArray.fdepl",
+    			"testcases/11-SpecPropertyArrayTypes.fdepl",
+    			"fidl/05-CoverageInterface.fidl");
+    }
 }
