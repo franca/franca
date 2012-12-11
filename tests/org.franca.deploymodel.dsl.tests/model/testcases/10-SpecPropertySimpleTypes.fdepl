@@ -12,7 +12,7 @@ specification a.b.c.MySpec {
 		BooleanPropOptional  : Boolean  (optional);
 		IntegerPropOptional  : Integer  (optional);
 		StringPropOptional   : String   (optional);
-		EnumPropOptional     : { jazz, pop, rock, folk };
+		EnumPropOptional     : { jazz, pop, rock, folk }   (optional);
 
 		BooleanPropDefaultF  : Boolean  (default: false);
 		BooleanPropDefaultT  : Boolean  (default: true);
