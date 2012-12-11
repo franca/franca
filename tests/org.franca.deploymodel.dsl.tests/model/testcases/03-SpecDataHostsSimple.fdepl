@@ -1,0 +1,39 @@
+
+// deployment specification with simple host declarations
+
+specification a.b.c.MySpec {
+
+	// related to basic data types
+	for floats {
+		PropFloat : Integer;
+	}
+	for integers {
+		PropInteger : Integer;
+	}
+	for numbers {
+		PropNumber : Integer;
+	}
+	for strings {
+		PropString : Integer;
+	}
+	
+	// related to user-defined types
+	for enumerations {
+		PropEnumeration : Integer;
+	}
+	for enumerators {
+		PropEnumerator : Integer;
+	}
+	for structs {
+		PropStruct : Integer;
+	}
+	for unions {
+		PropUnion : Integer;
+	}
+	for struct_fields {
+		PropStructField : Integer;
+	}
+	for union_fields {
+		PropUnionField : Integer;
+	}
+}

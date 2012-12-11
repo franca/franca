@@ -14,7 +14,7 @@ import org.junit.runner.RunWith;
 
 @RunWith(XtextRunner2.class)
 @InjectWith(FDeployTestsInjectorProvider.class)
-public class ModelTests extends XtextTest {
+public class ModelDefinitionTests extends XtextTest {
 
     @Before
     public void before() {
@@ -23,13 +23,7 @@ public class ModelTests extends XtextTest {
 
 
     @Test
-    public void test_01_SpecEmpty() {
-    	testFile("testcases/01-SpecEmpty.fdepl");
-    }
-
-    @Test
     public void test_20_DefEmpty() {
     	testFile("testcases/20-DefEmpty.fdepl", "fidl/01-EmptyInterface.fidl");
     }
-
 }

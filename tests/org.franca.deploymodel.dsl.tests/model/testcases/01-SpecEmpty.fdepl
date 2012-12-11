@@ -1,4 +1,7 @@
 // empty deployment specification
 
-specification MySpec { }
+// without fully qualified name
+specification MySpec1 { }
 
+// with fully qualified name
+specification a.b.c.MySpec2 { }
