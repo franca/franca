@@ -9,13 +9,11 @@ package org.franca.core.dsl;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.xtext.Constants;
 import org.franca.core.franca.FModel;
 import org.franca.core.utils.ModelPersistenceHandler;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.google.inject.name.Named;
 
 /**
  * Manager for loading and saving Franca models from file system. 
@@ -27,9 +25,7 @@ import com.google.inject.name.Named;
  */
 public class FrancaPersistenceManager {
 
-	@Inject
-	@Named(Constants.FILE_EXTENSIONS)
-	private String fileExtension;
+	private final String fileExtension = "fidl";
 
 	@Inject
 	private Provider<ResourceSet> resourceSetProvider;

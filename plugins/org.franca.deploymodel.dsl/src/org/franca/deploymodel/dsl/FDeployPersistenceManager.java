@@ -9,7 +9,6 @@ package org.franca.deploymodel.dsl;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.xtext.Constants;
 import org.franca.core.dsl.FrancaIDLStandaloneSetup;
 import org.franca.core.dsl.FrancaImportsProvider;
 import org.franca.core.utils.ModelPersistenceHandler;
@@ -17,7 +16,6 @@ import org.franca.deploymodel.dsl.fDeploy.FDModel;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.google.inject.name.Named;
 
 /**
  * Manager for loading and saving Franca deployment models from file system. 
@@ -28,9 +26,8 @@ import com.google.inject.name.Named;
  *
  */
 public class FDeployPersistenceManager {
-	@Inject
-	@Named(Constants.FILE_EXTENSIONS)
-	private String fileExtension;
+
+	private final String fileExtension = "fdepl";
 
 	@Inject
 	private Provider<ResourceSet> resourceSetProvider;
