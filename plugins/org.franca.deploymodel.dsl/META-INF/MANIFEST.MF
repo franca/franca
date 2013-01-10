@@ -5,15 +5,20 @@ Bundle-Vendor: Harman Infotainment Division
 Bundle-Version: 0.8.2.qualifier
 Bundle-SymbolicName: org.franca.deploymodel.dsl; singleton:=true
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.eclipse.xtext.generator;resolution:=optional,
- org.eclipse.emf.mwe2.launch;resolution:=optional,
+Require-Bundle: org.eclipse.xtext.generator;bundle-version="[2.3.1,2.3.2)";resolution:=optional,
+ org.eclipse.emf.mwe2.launch;bundle-version="[2.3.0,2.3.2)";resolution:=optional,
  org.franca.core.dsl;bundle-version="0.7.0";visibility:=reexport,
- org.eclipse.xtext,
- org.eclipse.xtext.util,
  org.eclipse.emf.ecore,
  org.eclipse.emf.common,
  org.antlr.runtime,
- org.eclipse.xtext.xbase;bundle-version="2.3.1";visibility:=reexport
+ org.eclipse.xtext;bundle-version="[2.3.1,2.3.2)",
+ org.eclipse.xtext.util;bundle-version="[2.3.1,2.3.2)",
+ org.eclipse.xtext.generator;bundle-version="[2.3.1,2.3.2)",
+ org.eclipse.xtext.smap;bundle-version="[2.3.1,2.3.2)",
+ org.eclipse.xtext.ecore;bundle-version="[2.3.1,2.3.2)",
+ org.eclipse.xtext.xbase;bundle-version="[2.3.1,2.3.2)";visibility:=reexport,
+ org.eclipse.xtext.xbase.lib;bundle-version="[2.3.1, 2.3.2)",
+ org.eclipse.xtend.lib;bundle-version="[2.3.1, 2.3.2)"
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.franca.deploymodel.core,
  org.franca.deploymodel.dsl,
@@ -29,5 +34,5 @@ Export-Package: org.franca.deploymodel.core,
  org.franca.deploymodel.dsl.services,
  org.franca.deploymodel.dsl.validation
 Import-Package: org.apache.log4j,
- org.eclipse.xtext.xbase.lib,
- org.eclipse.xtend.lib
+ org.eclipse.xtend.lib;version="[0.0.0, 2.3.2)",
+ org.eclipse.xtext.xbase.lib;version="[0.0.0, 2.3.2)"
