@@ -16,7 +16,8 @@ import org.eclipse.xtext.validation.Issue;
 import com.google.common.collect.Lists;
 
 public class ValidationIssueConverter {
-
+	private static final String LINE_SEPARATOR = System.getProperty("line.separator");
+	
 	public static String getIssuesAsString (List<Issue> issues) {
 		Comparator<Issue> comparator = new Comparator<Issue>() {
 			@Override
@@ -32,7 +33,7 @@ public class ValidationIssueConverter {
 			sb.append(i.getLineNumber());
 			sb.append(':');
 			sb.append(i.getMessage());
-			sb.append("\n");
+			sb.append(LINE_SEPARATOR);
 		}
 		
 		return sb.toString();
