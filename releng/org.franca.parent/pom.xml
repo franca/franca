@@ -38,7 +38,9 @@
             <module>../../tests/org.franca.deploymodel.dsl.tests</module>
 			<!-- release modules -->
             <module>../../features/org.franca.feature</module>
+            <module>../../features/org.franca.feature.sdk</module>
             <module>../../features/org.franca.dbus.feature</module>
+            <module>../../features/org.franca.dbus.feature.sdk</module>
 			<module>../../releng/org.franca.updatesite</module>
 			<!-- 
 			   <module>../../docs/org.franca.help</module>

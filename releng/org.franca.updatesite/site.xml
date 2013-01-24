@@ -3,7 +3,13 @@
    <feature url="features/org.franca.feature_0.0.0.jar" id="org.franca.feature" version="0.0.0">
       <category name="franca"/>
    </feature>
+   <feature url="features/org.franca.feature.sdk_0.0.0.jar" id="org.franca.feature.sdk" version="0.0.0">
+      <category name="franca"/>
+   </feature>
    <feature url="features/org.franca.dbus.feature_0.0.0.jar" id="org.franca.dbus.feature" version="0.0.0">
+      <category name="franca"/>
+   </feature>
+   <feature url="features/org.franca.dbus.feature.sdk_0.0.0.jar" id="org.franca.dbus.feature.sdk" version="0.0.0">
       <category name="franca"/>
    </feature>
    <category-def name="franca" label="Franca"/>
