@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Franca D-Bus Connector
 Bundle-SymbolicName: org.franca.connectors.dbus
-Bundle-Version: 0.8.3.qualifier
+Bundle-Version: 0.8.4.qualifier
 Bundle-Activator: org.franca.connectors.dbus.Activator
 Bundle-Vendor: Harman Infotainment Division
 Require-Bundle: org.eclipse.core.runtime,
