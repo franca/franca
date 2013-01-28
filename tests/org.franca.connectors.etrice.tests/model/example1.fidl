@@ -1,0 +1,41 @@
+package org.franca.examples
+
+interface RobotArm {
+	
+	method move {
+		in {
+			Position pos
+		}
+		out {
+			Boolean ok
+		}
+	}
+
+	method grab {
+		in {
+			Double gripAngle
+		}
+		out {
+			Boolean ok
+		}
+	}
+
+	method release {
+		out {
+			Boolean ok
+		}
+	}
+	
+	broadcast operable {
+		out {
+			Position pos
+		}
+	}
+	
+	struct Position {
+		UInt16 x
+		UInt16 y
+		UInt16 z
+	}
+}
+
