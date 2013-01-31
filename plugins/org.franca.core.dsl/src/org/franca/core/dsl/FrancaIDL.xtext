@@ -294,8 +294,8 @@ FTypedElementRef returns FExpression:
 
 FConstant returns FExpression:
 	FIntegerConstant |
-	FBooleanConstant; // |
-	//FStringConstant;
+	FBooleanConstant |
+	FStringConstant;
 
 FIntegerConstant:
 	val=EInt;
