@@ -61,7 +61,7 @@ FVersion returns FVersion:
 
 FAttribute:
 	(comment=FAnnotationBlock)?
-	'attribute'	type=FTypeRef (array='[]')? name=EString
+	'attribute'	type=FTypeRef (array='[]')? name=ID
 		(readonly='readonly')?
 		(noSubscriptions='noSubscriptions')?
 	;
@@ -73,7 +73,7 @@ FAttribute:
 FMethod returns FMethod:
 	{FMethod}
 	(comment=FAnnotationBlock)?
-	'method' name=EString (fireAndForget='fireAndForget')?
+	'method' name=ID (fireAndForget='fireAndForget')?
 	'{'
 		('in' '{' (inArgs+=FArgument)* '}' )?
 		('out' '{' (outArgs+=FArgument)* '}' )?
@@ -87,14 +87,14 @@ FMethod returns FMethod:
 FBroadcast returns FBroadcast:
 	{FBroadcast}
 	(comment=FAnnotationBlock)?
-	'broadcast' name=EString (selective='selective')?
+	'broadcast' name=ID (selective='selective')?
 	'{'
 		('out' '{' (outArgs+=FArgument)* '}' )?
     '}';
 
 FArgument:
 	(comment=FAnnotationBlock)?
-	type=FTypeRef (array='[]')? name=EString;
+	type=FTypeRef (array='[]')? name=ID;
 
 
 // **************************************************************
@@ -131,18 +131,18 @@ FType returns FType:
 FArrayType returns FArrayType:
 	{FArrayType}
 	(comment=FAnnotationBlock)?
-	'array' name=EString 'of' elementType=FTypeRef;
+	'array' name=ID 'of' elementType=FTypeRef;
 
 FTypeDef returns FTypeDef:
 	{FTypeDef}
 	(comment=FAnnotationBlock)?
-	'typedef' name=EString 'is' actualType=FTypeRef
+	'typedef' name=ID 'is' actualType=FTypeRef
 	; 
 
 FStructType returns FStructType:
 	{FStructType}
 	(comment=FAnnotationBlock)?
-	'struct' name=EString ('extends' base=[FStructType|FQN])?
+	'struct' name=ID ('extends' base=[FStructType|FQN])?
 	'{'
 		(elements+=FField)*
     '}';
@@ -150,7 +150,7 @@ FStructType returns FStructType:
 FUnionType returns FUnionType:
 	{FUnionType}
 	(comment=FAnnotationBlock)?
-	'union' name=EString ('extends' base=[FUnionType|FQN])?
+	'union' name=ID ('extends' base=[FUnionType|FQN])?
 	'{'
 		(elements+=FField)*
     '}';
@@ -158,7 +158,7 @@ FUnionType returns FUnionType:
 FEnumerationType returns FEnumerationType:
 	{FEnumerationType}
 	(comment=FAnnotationBlock)?
-	'enumeration' name=EString
+	'enumeration' name=ID
 	('extends' base=[FEnumerationType|FQN])?
 	'{'
 		(enumerators+=FEnumerator)*
@@ -174,23 +174,23 @@ FEnumerationTypeBody returns FEnumerationType:
 FEnumerator returns FEnumerator:
 	{FEnumerator}
 	(comment=FAnnotationBlock)?
-	name=EString ('=' value=EString)?
+	name=ID ('=' value=EString)?
     ;
     
 FMapType returns FMapType:
 	{FMapType}
 	(comment=FAnnotationBlock)?
-	'map' name=EString '{'
+	'map' name=ID '{'
 		keyType=FTypeRef 'to' valueType=FTypeRef
 	'}';
 
 FField:
 	(comment=FAnnotationBlock)?
-	type=FTypeRef (array='[]')? name=EString;
+	type=FTypeRef (array='[]')? name=ID;
 
 
 FDeclaration:
-	type=FTypeRef (array='[]')? name=EString;
+	type=FTypeRef (array='[]')? name=ID;
 
 FTypedElement:
 	FField |
@@ -218,7 +218,7 @@ FStateGraph:
 FState:
 	{FState}
 	(comment=FAnnotationBlock)?
-	'state' name=EString '{'
+	'state' name=ID '{'
 		transitions+=FTransition*
 	'}';
 
@@ -234,11 +234,11 @@ FTrigger:
 	event=FEventOnIf;
 
 FEventOnIf:
-	('call'    call=[FMethod|EString]      ) |
-	('respond' respond=[FMethod|EString]   ) |
-	('signal'  signal=[FBroadcast|EString] ) |
-	('set'     set=[FAttribute|EString]    ) |
-	('update'  update=[FAttribute|EString] )
+	('call'    call=[FMethod|ID]      ) |
+	('respond' respond=[FMethod|ID]   ) |
+	('signal'  signal=[FBroadcast|ID] ) |
+	('set'     set=[FAttribute|ID]    ) |
+	('update'  update=[FAttribute|ID] )
 ;
 
 FGuard:
@@ -289,8 +289,8 @@ PrimaryExpression returns FExpression:
 
 FTypedElementRef returns FExpression:
 	{FTypedElementRef}
-	element=[FTypedElement|EString]
-	({FTypedElementRef.target=current} '.' field=[FField|EString])*;
+	element=[FTypedElement|ID]
+	({FTypedElementRef.target=current} '.' field=[FField|ID])*;
 
 FConstant returns FExpression:
 	FIntegerConstant |
