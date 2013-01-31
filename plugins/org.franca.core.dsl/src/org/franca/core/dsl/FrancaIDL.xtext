@@ -289,13 +289,22 @@ PrimaryExpression returns FExpression:
 
 FTypedElementRef returns FExpression:
 	{FTypedElementRef}
-	element=[FTypedElement|EString];
+	element=[FTypedElement|EString]
+	({FTypedElementRef.target=current} '.' field=[FField|EString])*;
 
 FConstant returns FExpression:
-	FIntegerConstant;
+	FIntegerConstant |
+	FBooleanConstant; // |
+	//FStringConstant;
 
 FIntegerConstant:
 	val=EInt;
+
+FBooleanConstant:
+	val=EBoolean;
+
+FStringConstant:
+	val=STRING;
 
 
 // **************************************************************
@@ -325,6 +334,9 @@ enum FAnnotationType returns FAnnotationType:
 
 // **************************************************************
 // basic types
+
+EBoolean returns ecore::EBoolean:
+	'false' | 'true';
 
 EString returns ecore::EString:
 	STRING | ID;

@@ -7,8 +7,6 @@
  *******************************************************************************/
 package org.franca.core.dsl.validation;
 
-import java.util.List;
-
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.xtext.validation.Check;
@@ -17,12 +15,13 @@ import org.franca.core.FrancaModelExtensions;
 import org.franca.core.framework.FrancaHelpers;
 import org.franca.core.franca.FArgument;
 import org.franca.core.franca.FArrayType;
-import org.franca.core.franca.FBasicTypeId;
+import org.franca.core.franca.FAssignment;
 import org.franca.core.franca.FBroadcast;
 import org.franca.core.franca.FCompoundType;
 import org.franca.core.franca.FContract;
 import org.franca.core.franca.FEnumerationType;
 import org.franca.core.franca.FField;
+import org.franca.core.franca.FGuard;
 import org.franca.core.franca.FInterface;
 import org.franca.core.franca.FMapType;
 import org.franca.core.franca.FMethod;
@@ -36,9 +35,6 @@ import org.franca.core.franca.FTypeRef;
 import org.franca.core.franca.FTypedElement;
 import org.franca.core.franca.FUnionType;
 import org.franca.core.franca.FrancaPackage;
-
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
 
 public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 		implements ValidationMessageReporter, NameProvider {
@@ -175,6 +171,16 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 	@Check
 	public void checkTrigger(FTrigger trigger) {
 		ContractValidator.checkTrigger(this, trigger);
+	}
+
+	@Check
+	public void checkAssignment(FAssignment assignment) {
+		ContractValidator.checkAssignment(this, assignment);
+	}
+
+	@Check
+	public void checkGuard(FGuard guard) {
+		ContractValidator.checkGuard(this, guard);
 	}
 
 	// *****************************************************************************

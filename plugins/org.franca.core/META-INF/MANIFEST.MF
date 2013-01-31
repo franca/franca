@@ -8,6 +8,7 @@ Bundle-Vendor: Harman Infotainment Division
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.franca.core,
+ org.franca.core.contracts,
  org.franca.core.framework,
  org.franca.core.franca,
  org.franca.core.franca.impl,
