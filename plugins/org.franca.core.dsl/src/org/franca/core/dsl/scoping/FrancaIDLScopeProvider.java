@@ -19,12 +19,9 @@ import org.franca.core.contracts.TypeSystem;
 import org.franca.core.franca.FCompoundType;
 import org.franca.core.franca.FContract;
 import org.franca.core.franca.FEventOnIf;
-import org.franca.core.franca.FField;
-import org.franca.core.franca.FStructType;
 import org.franca.core.franca.FTransition;
 import org.franca.core.franca.FType;
 import org.franca.core.franca.FTypeRef;
-import org.franca.core.franca.FTypedElement;
 import org.franca.core.franca.FTypedElementRef;
 
 import com.google.common.collect.Lists;

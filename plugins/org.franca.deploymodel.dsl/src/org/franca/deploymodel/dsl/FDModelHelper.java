@@ -7,8 +7,6 @@
  *******************************************************************************/
 package org.franca.deploymodel.dsl;
 
-import org.franca.core.dsl.FrancaIDLStandaloneSetup;
-
 import com.google.inject.Injector;
 
 /**

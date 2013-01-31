@@ -7,11 +7,10 @@
  *******************************************************************************/
 package org.franca.core.contracts
 
-import java.util.List
-import org.franca.core.franca.FExpression
 import java.util.Collection
-import org.eclipse.emf.ecore.EStructuralFeature
+import java.util.List
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.emf.ecore.EStructuralFeature
 
 class IssueCollector {
 	val List<TypeIssue> issues = newArrayList
