@@ -40,6 +40,8 @@ public class FrancaPersistenceManager {
 	 * @param filename  name of Franca file (suffix .fidl is optional)
 	 * 
 	 * @return the root entity of the Franca IDL model
+	 * 
+	 * @deprecated Use loadModel(URI uri, URI root) instead.
 	 */
 	public FModel loadModel(String filename) {
 		try {
@@ -59,9 +61,25 @@ public class FrancaPersistenceManager {
 	/**
 	 * Load Franca IDL model file (*.fidl) and all imported files recursively.
 	 * 
+	 * @param uri   URI for Franca file
+	 * @param root  the root of the model (needed for loading multiple file models)
+	 *              This has to be an absolute, hierarchical URI.
+	 * 
+	 * @return the root entity of the Franca model
+	 */
+	public FModel loadModel(URI uri, URI root) {
+		ModelPersistenceHandler persistenceHandler = createModelPersistenceHandler(resourceSetProvider.get());
+		return (FModel) persistenceHandler.loadModel(uri, root);
+	}
+
+	/**
+	 * Load Franca IDL model file (*.fidl) and all imported files recursively.
+	 * 
 	 * @param filename  name of Franca file (suffix .fidl is optional)
 	 * @param cwd       if not null work relatively to this path
 	 * @return
+	 * 
+	 * @deprecated Use loadModel(URI uri, URI root) instead.
 	 */
 	private FModel loadModel(String filename, String cwd) {
 		String fn = filename;

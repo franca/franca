@@ -15,9 +15,14 @@ import org.eclipse.xtext.scoping.IScope;
 import org.eclipse.xtext.scoping.Scopes;
 import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider;
 import org.franca.core.FrancaModelExtensions;
+import org.franca.core.contracts.TypeSystem;
+import org.franca.core.franca.FCompoundType;
 import org.franca.core.franca.FContract;
 import org.franca.core.franca.FEventOnIf;
 import org.franca.core.franca.FTransition;
+import org.franca.core.franca.FType;
+import org.franca.core.franca.FTypeRef;
+import org.franca.core.franca.FTypedElementRef;
 
 import com.google.common.collect.Lists;
 
@@ -60,6 +65,23 @@ public class FrancaIDLScopeProvider extends AbstractDeclarativeScopeProvider {
 		}
 
 		return Scopes.scopeFor(scopes);
+	}
+
+	public IScope scope_FTypedElementRef_field (FTypedElementRef var, EReference ref) {
+		if (var.getTarget() == null) {
+			return IScope.NULLSCOPE;
+		}
+		
+		TypeSystem ts = new TypeSystem();
+		FTypeRef typeRef = ts.getType(var.getTarget());
+		//FTypedElement te = var.getTarget().getElement();
+		//FType type = te.getType().getDerived();
+		FType type = typeRef.getDerived();
+		if (type!=null && type instanceof FCompoundType) {
+			FCompoundType compound = (FCompoundType)type;
+			return Scopes.scopeFor(compound.getElements());
+		}
+		return IScope.NULLSCOPE;
 	}
 
 }

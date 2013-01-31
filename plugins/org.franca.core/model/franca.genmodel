@@ -231,11 +231,19 @@
     <genClasses ecoreClass="franca.ecore#//FTypedElementRef">
       <genFeatures notify="false" createChild="false" propertyDescription="the typed element which is actually referenced by this object"
           propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FTypedElementRef/element"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FTypedElementRef/target"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FTypedElementRef/field"/>
     </genClasses>
     <genClasses ecoreClass="franca.ecore#//FConstant"/>
     <genClasses ecoreClass="franca.ecore#//FIntegerConstant">
       <genFeatures createChild="false" propertyDescription="the value of this integer constant (an actual integer)"
           ecoreFeature="ecore:EAttribute franca.ecore#//FIntegerConstant/val"/>
+    </genClasses>
+    <genClasses ecoreClass="franca.ecore#//FBooleanConstant">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute franca.ecore#//FBooleanConstant/val"/>
+    </genClasses>
+    <genClasses ecoreClass="franca.ecore#//FStringConstant">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute franca.ecore#//FStringConstant/val"/>
     </genClasses>
     <genClasses ecoreClass="franca.ecore#//FBinaryOperation">
       <genFeatures notify="false" createChild="false" propertyDescription="the left operand of the binary operation"

@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Bundle-Version: 0.8.4.qualifier
+Bundle-Version: 0.8.5.qualifier
 Bundle-SymbolicName: org.franca.core.dsl.tests;singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.core.runtime,

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Franca Deployment Model plugin
 Bundle-Vendor: Harman Infotainment Division
-Bundle-Version: 0.8.4.qualifier
+Bundle-Version: 0.8.5.qualifier
 Bundle-SymbolicName: org.franca.deploymodel.dsl; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.xtext.generator;bundle-version="[2.3.1,2.3.2)";resolution:=optional,

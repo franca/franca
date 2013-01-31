@@ -62,11 +62,28 @@ public class FDeployPersistenceManager {
 	/**
 	 * Load Franca Deployment model file (*.fdepl) and all imported files recursively.
 	 * 
+	 * @param uri   URI for Franca deployment file
+	 * @param root  the root of the model (needed for loading multiple file models)
+	 *              This has to be an absolute, hierarchical URI.
+	 * 
+	 * @see ModelPersistenceHandler.loadModel, work relatively to a path
+	 * @return the root entity of the FDeploy model
+	 */
+	public FDModel loadModel(URI uri, URI root) {
+		ModelPersistenceHandler persistenceHandler = createModelPersistenceHandler(resourceSetProvider.get());
+		return (FDModel) persistenceHandler.loadModel(uri, root);
+	}
+
+	/**
+	 * Load Franca Deployment model file (*.fdepl) and all imported files recursively.
+	 * 
 	 * @param filename  name of FDeploy file (suffix .fdepl is optional)
 	 * @param cwd       file path which is root for all relative paths
 	 * 
 	 * @see ModelPersistenceHandler.loadModel, work relatively to a path
 	 * @return the root entity of the FDeploy model
+	 * 
+	 * @deprecated Use loadModel(URI uri, URI root) instead.
 	 */
 	public FDModel loadModel(String filename, String cwd) {
 		String fn = filename;
