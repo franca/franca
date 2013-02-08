@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target includeMode="feature" name="Franca Target Platform - Eclipse 4.2" sequenceNumber="13">
+<?pde version="3.8"?><target name="Franca Target Platform - Eclipse 4.2" sequenceNumber="27">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="de.itemis.xtext.antlr.sdk.feature.group" version="2.0.0.v201108011202"/>
@@ -15,21 +15,46 @@
 <unit id="org.eclipselabs.xtext.utils.unittesting.feature.feature.group" version="0.9.3.201204261440"/>
 <repository location="http://xtext-utils.eclipselabs.org.codespot.com/git.distribution/releases/unittesting-0.9.x"/>
 </location>
-		<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-			<unit id="org.eclipse.egit.feature.group" version="2.1.0.201209190230-r"/>
-			<unit id="org.eclipse.sdk.feature.group" version="4.2.1.v20120814-120134-7T7oDODQ-3Heq-afCDlg7T4xJuvxaC2ohMfCfB5451Rz0"/>
-			<unit id="org.eclipse.pde.feature.group" version="3.8.1.v20120814-104528-7c7vFixFFt6Zr5aC6KM6LGWSd"/>
-			<unit id="org.eclipse.emf.sdk.feature.group" version="2.8.1.v20120917-0436"/>
-			<unit id="org.eclipse.emf.transaction.sdk.feature.group" version="1.6.0.v20120328-0001-777Z-9A_WsZmcPluNecyPkvrPKlH"/>
-			<unit id="org.eclipse.emf.eef.sdk-feature.feature.group" version="1.1.1.201206051542"/>
-			<unit id="org.eclipse.gef.sdk.feature.group" version="3.9.0.201208201742"/>
-			<unit id="org.eclipse.zest.sdk.feature.group" version="1.5.0.201208201742"/>
-			<unit id="org.eclipse.graphiti.sdk.plus.feature.feature.group" version="0.9.1.v20120919-0732"/>
-			<unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.3.0.v201206120758"/>
-			<unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="2.3.0.v201206110920"/>
-			<unit id="org.eclipse.swt" version="3.100.1.v4234e"/>
-			<repository location="http://download.eclipse.org/releases/juno"/>
-		</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.egit.feature.group" version="2.1.0.201209190230-r"/>
+<unit id="org.eclipse.sdk.feature.group" version="4.2.1.v20120814-120134-7T7oDODQ-3Heq-afCDlg7T4xJuvxaC2ohMfCfB5451Rz0"/>
+<unit id="org.eclipse.pde.feature.group" version="3.8.1.v20120814-104528-7c7vFixFFt6Zr5aC6KM6LGWSd"/>
+<unit id="org.eclipse.emf.sdk.feature.group" version="2.8.1.v20120917-0436"/>
+<unit id="org.eclipse.emf.transaction.sdk.feature.group" version="1.6.0.v20120328-0001-777Z-9A_WsZmcPluNecyPkvrPKlH"/>
+<unit id="org.eclipse.emf.eef.sdk-feature.feature.group" version="1.1.1.201206051542"/>
+<unit id="org.eclipse.gef.sdk.feature.group" version="3.9.0.201208201742"/>
+<unit id="org.eclipse.zest.sdk.feature.group" version="1.5.0.201208201742"/>
+<unit id="org.eclipse.graphiti.sdk.plus.feature.feature.group" version="0.9.1.v20120919-0732"/>
+<unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.3.0.v201206120758"/>
+<unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="2.3.0.v201206110920"/>
+<unit id="org.eclipse.swt" version="3.100.1.v4234e"/>
+<repository location="http://download.eclipse.org/releases/juno"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="com.mountainminds.eclemma.feature.feature.group" version="2.2.0.201210261515"/>
+<repository location="http://update.eclemma.org/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.mylyn_feature.feature.group" version="3.8.2.v20120916-1200"/>
+<unit id="org.eclipse.mylyn.context_feature.feature.group" version="3.8.2.v20120916-1200"/>
+<unit id="org.eclipse.mylyn.hudson.feature.group" version="1.0.2.v20120916-1200"/>
+<unit id="org.eclipse.mylyn.ide_feature.feature.group" version="3.8.2.v20120916-1200"/>
+<unit id="org.eclipse.mylyn.java_feature.feature.group" version="3.8.2.v20120916-1200"/>
+<unit id="org.eclipse.mylyn.pde_feature.feature.group" version="3.8.2.v20120916-1200"/>
+<unit id="org.eclipse.mylyn.team_feature.feature.group" version="3.8.2.v20120916-1200"/>
+<unit id="org.eclipse.mylyn.bugzilla_feature.feature.group" version="3.8.2.v20120916-1200"/>
+<unit id="org.eclipse.mylyn.trac_feature.feature.group" version="3.8.2.v20120916-1200"/>
+<unit id="org.eclipse.mylyn.git.feature.group" version="1.0.2.v20120916-1200"/>
+<unit id="org.eclipse.mylyn.commons.feature.group" version="3.8.2.v20120916-1200"/>
+<unit id="org.eclipse.mylyn.commons.identity.feature.group" version="1.0.2.v20120916-1200"/>
+<unit id="org.eclipse.mylyn.commons.notifications.feature.group" version="1.0.2.v20120916-1200"/>
+<unit id="org.eclipse.mylyn.commons.repositories.feature.group" version="1.0.2.v20120916-1200"/>
+<repository location="http://download.eclipse.org/mylyn/releases/latest"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.emf.compare.feature.group" version="2.1.0.201302050831"/>
+<repository location="http://download.eclipse.org/releases/kepler/"/>
+</location>
 </locations>
 <environment>
 <nl>en</nl>
