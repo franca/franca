@@ -21,6 +21,8 @@
 	</properties>
 
     <modules>
+    		<!-- target platform -->
+            <module>../../releng/org.franca.targetplatform</module>
     		<!-- actual code modules -->
             <module>../../plugins/org.franca.core</module>
             <module>../../plugins/org.franca.core.dsl</module>
@@ -68,7 +70,6 @@
 							<groupId>org.franca</groupId>
 							<artifactId>org.franca.targetplatform</artifactId>
 							<version>${project.version}</version>
-							<file>franca-${platform-version-name}.target</file>
 							<classifier>franca-${platform-version-name}</classifier>
 						</artifact>
 					</target>
