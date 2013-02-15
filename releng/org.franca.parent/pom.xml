@@ -68,6 +68,7 @@
 							<groupId>org.franca</groupId>
 							<artifactId>org.franca.targetplatform</artifactId>
 							<version>${project.version}</version>
+							<file>franca-${platform-version-name}.target</file>
 							<classifier>franca-${platform-version-name}</classifier>
 						</artifact>
 					</target>

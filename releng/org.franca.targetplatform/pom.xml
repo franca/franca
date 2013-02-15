@@ -7,6 +7,13 @@
 	<version>0.8.5-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
+	<parent>
+		<groupId>org.franca</groupId>
+		<artifactId>org.franca.parent</artifactId>
+		<version>0.8.5-SNAPSHOT</version>
+		<relativePath>../../releng/org.franca.parent/pom.xml</relativePath>
+	</parent>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -23,9 +30,9 @@
 						<configuration>
 							<artifacts>
 								<artifact>
-									<file>franca-juno.target</file>
+									<file>franca-${platform-version-name}.target</file>
 									<type>target</type>
-									<classifier>franca-juno</classifier>
+									<classifier>franca-${platform-version-name}</classifier>
 								</artifact>
 							</artifacts>
 						</configuration>
