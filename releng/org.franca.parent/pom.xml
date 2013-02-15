@@ -13,7 +13,7 @@
 
 	<properties>
 		<eclipse-site>http://download.eclipse.org/releases/${platform-version-name}</eclipse-site>
-		<platform-version-name>indigo</platform-version-name>
+		<platform-version-name>juno</platform-version-name>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<tycho-version>0.13.0</tycho-version>
 		<junit-version>4.8.1</junit-version>
@@ -61,11 +61,16 @@
 				<artifactId>target-platform-configuration</artifactId>
 				<version>${tycho-version}</version>
 				<configuration>
-					<dependency-resolution>
-						<optionalDependencies>ignore</optionalDependencies>
-					</dependency-resolution>
 					<resolver>p2</resolver>
 					<pomDependencies>consider</pomDependencies>
+					<target>
+						<artifact>
+							<groupId>org.franca</groupId>
+							<artifactId>org.franca.targetplatform</artifactId>
+							<version>${project.version}</version>
+							<classifier>franca-${platform-version-name}</classifier>
+						</artifact>
+					</target>
 					<environments>
 						<environment>
 							<os>win32</os>
@@ -294,31 +299,6 @@
 			<id>xtend</id>
 			<url>http://build.eclipse.org/common/xtend/maven/</url>
 		</repository>
-		<repository>
-			<id>indigo</id>
-			<layout>p2</layout>
-			<url>http://download.eclipse.org/releases/${platform-version-name}</url>
-		</repository>
-		<repository>
-			<id>itemis2</id>
-			<layout>p2</layout>
-			<url>http://download.itemis.com/updates/milestones/</url>
-		</repository>
-		<repository>
-			<id>itemis</id>
-			<layout>p2</layout>
-			<url>http://download.itemis.de/updates/</url>
-		</repository>
-		<repository>
-			<id>dbus-emf-model-repo</id>
-			<layout>p2</layout>
-			<url>http://dbus-emf-model.eclipselabs.org.codespot.com/git/update_site/releases/</url>
-		</repository>
-		<repository>
-			<id>xtext-utils-repo</id>
-			<layout>p2</layout>
-			<url>http://xtext-utils.eclipselabs.org.codespot.com/git.distribution/releases/unittesting-0.9.x/</url>
-		</repository>
 	</repositories>			
 
 	<!-- 
@@ -465,7 +445,7 @@
 	</licenses>
 
 	<description>Franca IDL is a textual language which allows to define software interfaces and APIs in a consistent, user-friendly way. Franca includes a framework for IDL transformation and building code generators from API specifications.</description>
-	<url>http://code.google.com/a/eclipselabs.org/TODO</url>
+	<url>http://code.google.com/a/eclipselabs.org/p/franca/</url>
 	<inceptionYear>2012</inceptionYear>
 	<issueManagement>
 		<system>GoogleCode Issue Tracker</system>
