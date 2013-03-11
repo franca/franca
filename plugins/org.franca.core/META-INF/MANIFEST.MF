@@ -12,6 +12,7 @@ Export-Package: org.franca.core,
  org.franca.core.framework,
  org.franca.core.franca,
  org.franca.core.franca.impl,
+ org.franca.core.franca.util,
  org.franca.core.utils,
  org.franca.core.utils.digraph
 Require-Bundle: org.eclipse.core.runtime,
