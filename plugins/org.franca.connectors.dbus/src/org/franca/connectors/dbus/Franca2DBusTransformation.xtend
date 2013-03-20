@@ -233,8 +233,8 @@ class Franca2DBusTransformation {
 
 	def String transformBasicType (FTypeRef src) {
 		switch (src.predefined) {
-			case FBasicTypeId::INT8:    'y'
-			case FBasicTypeId::UINT8:   'y'  // TODO: not_supported in DBus?
+			case FBasicTypeId::INT8:    'n'  // not_supported in DBus, use INT16 instead
+			case FBasicTypeId::UINT8:   'y'
 			case FBasicTypeId::INT16:   'n'
 			case FBasicTypeId::UINT16:  'q'
 			case FBasicTypeId::INT32:   'i'
