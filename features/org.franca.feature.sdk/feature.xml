@@ -60,6 +60,20 @@
          unpack="false"/>
 
    <plugin
+         id="org.franca.core.edit"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.franca.core.edit.source"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.franca.core.dsl"
          download-size="0"
          install-size="0"

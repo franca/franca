@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: %pluginName
+Bundle-Name: Franca EMF Edit code
 Bundle-SymbolicName: org.franca.core.edit;singleton:=true
 Bundle-Version: 0.8.5.qualifier
 Bundle-ClassPath: .

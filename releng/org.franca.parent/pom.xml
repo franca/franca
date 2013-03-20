@@ -25,6 +25,7 @@
             <module>../../releng/org.franca.targetplatform</module>
     		<!-- actual code modules -->
             <module>../../plugins/org.franca.core</module>
+            <module>../../plugins/org.franca.core.edit</module>
             <module>../../plugins/org.franca.core.dsl</module>
             <module>../../plugins/org.franca.core.dsl.ui</module>
             <module>../../plugins/org.franca.deploymodel.dsl</module>
