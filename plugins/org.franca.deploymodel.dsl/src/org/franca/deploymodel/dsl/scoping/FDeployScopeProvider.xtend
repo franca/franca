@@ -146,6 +146,10 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 		owner.getPropertyDecls
 	}
 
+	def scope_FDProperty_decl (FDTypes owner, EReference ref) {
+		owner.getPropertyDecls
+	}
+
 	def scope_FDProperty_decl (FDAttribute owner, EReference ref) {
 		owner.getPropertyDecls
 	}

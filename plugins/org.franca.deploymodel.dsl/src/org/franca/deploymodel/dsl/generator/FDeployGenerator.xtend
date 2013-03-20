@@ -145,6 +145,7 @@ class FDeployGenerator implements IGenerator {
 			switch (host) {
 				case FDPropertyHost::PROVIDERS:     ""  // ignore
 				case FDPropertyHost::INSTANCES:     ""  // ignore
+				case FDPropertyHost::TYPE_COLLECTIONS: genGetter("FTypeCollection")
 				case FDPropertyHost::INTERFACES:    genGetter("FInterface")
 				case FDPropertyHost::ATTRIBUTES:    genGetter("FAttribute")
 				case FDPropertyHost::METHODS:       genGetter("FMethod")

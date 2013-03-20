@@ -167,9 +167,9 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 	
 	@Check
 	public void checkPropertiesComplete (FDTypes elem) {
-		// we do not check own properties - there will be none
+		// check own properties
 		FDSpecification spec = FDModelUtils.getRootElement(elem).getSpec();
-		//checkElementProperties(spec, elem, FDeployPackage.Literals.FD_TYPES__PACKAGE);
+		checkElementProperties(spec, elem, FDeployPackage.Literals.FD_TYPES__TARGET);
 
 		// check child elements recursively
 		FDSpecificationExtender specHelper = new FDSpecificationExtender(spec);

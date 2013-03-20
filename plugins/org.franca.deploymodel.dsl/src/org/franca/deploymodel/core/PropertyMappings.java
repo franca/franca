@@ -30,6 +30,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDPropertyHost;
 import org.franca.deploymodel.dsl.fDeploy.FDProvider;
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification;
 import org.franca.deploymodel.dsl.fDeploy.FDStruct;
+import org.franca.deploymodel.dsl.fDeploy.FDTypes;
 import org.franca.deploymodel.dsl.fDeploy.FDUnion;
 
 import com.google.common.collect.Lists;
@@ -94,6 +95,8 @@ public class PropertyMappings {
 			return FDPropertyHost.INSTANCES;
 		} else if (elem instanceof FDInterface) {
 			return FDPropertyHost.INTERFACES;
+		} else if (elem instanceof FDTypes) {
+			return FDPropertyHost.TYPE_COLLECTIONS;
 		} else if (elem instanceof FDAttribute) {
 			return FDPropertyHost.ATTRIBUTES;
 		} else if (elem instanceof FDMethod) {
