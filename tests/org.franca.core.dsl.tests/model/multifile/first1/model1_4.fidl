@@ -1,0 +1,6 @@
+package multifile.first1
+
+// explicit import of one entity
+import multifile.first1.Model0 from "model0.fidl"
+
+interface Model1_4 extends Model0 { }

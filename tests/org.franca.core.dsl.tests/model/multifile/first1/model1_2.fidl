@@ -1,0 +1,6 @@
+package multifile.first1
+
+// import via package namespace and wildcard
+import multifile.first1.* from "model0.fidl"
+
+interface Model1_2 extends Model0 { }

@@ -1,0 +1,6 @@
+package multifile.first1
+
+// import whole model, not taking into account namespaces
+import model "model0.fidl"
+
+interface Model1_1 extends multifile.first1.Model0 { }
