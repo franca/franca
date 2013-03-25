@@ -2,6 +2,7 @@ package org.franca.connectors.dbus
 
 import com.google.inject.Inject
 import java.util.List
+import model.emf.dbusxml.AccessType
 import model.emf.dbusxml.DbusxmlFactory
 import model.emf.dbusxml.DirectionType
 import org.franca.core.framework.TransformationLogger
@@ -65,6 +66,10 @@ class Franca2DBusTransformation {
 	def create DbusxmlFactory::eINSTANCE.createPropertyType transformAttribute (FAttribute src) {
 		name = src.name
 		type = transformType2TypeString(src.type, src.array!=null)
+		if (src.readonly == "readonly")
+			access = AccessType::READ
+		else
+			access = AccessType::READWRITE
 	}
 
 	def create DbusxmlFactory::eINSTANCE.createMethodType transformMethod (FMethod src) {
