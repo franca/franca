@@ -7,6 +7,9 @@
  *******************************************************************************/
 package org.franca.core.dsl.validation;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.xtext.validation.Check;
@@ -126,6 +129,20 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 				FrancaPackage.Literals.FMODEL_ELEMENT__NAME, "argument name");
 		ValidationHelpers.checkDuplicates(this, method.getOutArgs(),
 				FrancaPackage.Literals.FMODEL_ELEMENT__NAME, "argument name");
+		
+		// check if in- and out-arguments are pairwise different
+		Map<String, FArgument> inArgs = new HashMap<String, FArgument>();
+		for(FArgument a : method.getInArgs()) {
+			inArgs.put(a.getName(), a);
+		}
+		for(FArgument a : method.getOutArgs()) {
+			String key = a.getName();
+			if (inArgs.containsKey(key)) {
+				String msg = "Duplicate argument name '" + key + "' used for in and out"; 
+				error(msg, inArgs.get(key), FrancaPackage.Literals.FMODEL_ELEMENT__NAME, -1);
+				error(msg, a, FrancaPackage.Literals.FMODEL_ELEMENT__NAME, -1);
+			}
+		}
 	}
 
 	@Check

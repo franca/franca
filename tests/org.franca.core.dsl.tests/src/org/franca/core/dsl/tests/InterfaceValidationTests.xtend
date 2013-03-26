@@ -13,6 +13,33 @@ import static org.junit.Assert.*
 class InterfaceValidationTests extends ValidationTestBase {
 
 	@Test
+	def validateMethodArgsInOutUnique() {
+		val text = '''
+			package a.b.c
+			interface Sample {
+				method MyMethod {
+					in {
+						UInt8 a
+						Int16 b
+						String c
+					}
+					out {
+						String a
+						Int16 b
+					}
+				}
+			}
+		'''
+		
+		assertEquals('''
+			5:Duplicate argument name 'a' used for in and out
+			6:Duplicate argument name 'b' used for in and out
+			10:Duplicate argument name 'a' used for in and out
+			11:Duplicate argument name 'b' used for in and out
+		'''.toString, text.getIssues)
+	}
+
+	@Test
 	def validateInheritedMethodNameUnique() {
 		val text = '''
 			package a.b.c
