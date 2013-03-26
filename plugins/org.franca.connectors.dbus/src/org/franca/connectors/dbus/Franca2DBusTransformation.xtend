@@ -106,7 +106,15 @@ class Franca2DBusTransformation {
 	
 	def create DbusxmlFactory::eINSTANCE.createDocType createDoc (FModelElement src) {
 		if(src.comment != null) {
-			line.add(src.name +" = "+src.description)
+			val lines = src.description.split("(\r)?\n")
+			var i = 0
+			for(s : lines) {
+				if (i==0)
+					line.add(src.name + " = " + s.trim)
+				else
+					line.add(s.trim)
+				i = i + 1
+			}
 		}
 	}
 
