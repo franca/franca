@@ -127,31 +127,27 @@ class Franca2DBusTransformation {
 	}
 
 	def dispatch lineComment(FArrayType src) {		
-		val s = newArrayList(src.name+" = array["+src.elementType.derived.name+"]")
-		s.addAll(src.elementType.derived.lineComment)
+		val s = newArrayList(src.name+" = array["+src.elementType.label+"]")
+		if (src.elementType.derived!=null)
+			s.addAll(src.elementType.derived.lineComment)
 		s		
 	}				
 				
 	def dispatch lineComment(FMapType src) {
-		
-		val s = newArrayList(src.name + " = dictionary(key="+src.keyType.derived.name+",value="+src.valueType.derived.name+")")
-	    s.addAll( lineCommentForDictionary(src.keyType.derived, src.valueType.derived))		
+		val s = newArrayList(src.name + " = dictionary(key="+src.keyType.label+",value="+src.valueType.label+")")
+		if (src.keyType.derived!=null && src.valueType.derived!=null)
+	    	s.addAll(lineCommentForDictionary(src.keyType.derived, src.valueType.derived))		
 		s		
 	}				
 				
     def dispatch lineCommentForDictionary(FType key, FType value) {
-    	
     	val s = newArrayList("key = "+key.lineComment.head);
 	    s.addAll("value = " +value.lineComment.head)		
     	s
-    	    	    	
     }
 				
-				
     def dispatch lineCommentForDictionary(FEnumerationType key, FUnionType value) {
-    	    	
 		val s = newArrayList("key = "+key.allEnumerators.map([name]).toString)    	    	
-    	    	
     	for(enumerator: key.allEnumerators) {
     		for(field: value.elements) {
     			if(field.details.contains(enumerator.name)) {
@@ -163,7 +159,6 @@ class Franca2DBusTransformation {
     }												
 				
 	def dispatch lineComment(FCompoundType src) {
-		
 		val fieldComment = [FTypedElement e| src.name+"."+e.name+ " ('"+e.type.transformBasicType+"') = "+e.description ]
 		
 		val typename =  switch(src) {
@@ -329,6 +324,13 @@ class Franca2DBusTransformation {
 	def private isProperDictKey (FTypeRef src) {
 		// enumeration types will be mapped to 'i', thus can be used as dict key 
 		src.derived==null || (src.derived instanceof FEnumerationType)
+	}
+	
+	def private getLabel (FTypeRef src) {
+		if (src.derived!=null)
+			src.derived.name
+		else
+			src.predefined.name
 	}
 }
 
