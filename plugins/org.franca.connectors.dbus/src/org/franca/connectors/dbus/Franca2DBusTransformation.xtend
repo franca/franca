@@ -96,25 +96,29 @@ class Franca2DBusTransformation {
 	def create DbusxmlFactory::eINSTANCE.createDocType createDoc (FArgument src) {
 				
 		if(src.type.derived != null && src.type.derived.comment != null) {
-			line.add(src.name+" (of type "+src.type.derived.name+") = "+src.description)			
+			line.addLines(src.name+" (of type "+src.type.derived.name+")", src.description)
 			line.addAll(src.type.derived.lineComment)			
 		}
 		else {
-			line.add(src.name+" = "+src.description)			
+			line.addLines(src.name, src.description)			
 		}
 	}
 	
 	def create DbusxmlFactory::eINSTANCE.createDocType createDoc (FModelElement src) {
 		if(src.comment != null) {
-			val lines = src.description.split("(\r)?\n")
-			var i = 0
-			for(s : lines) {
-				if (i==0)
-					line.add(src.name + " = " + s.trim)
-				else
-					line.add(s.trim)
-				i = i + 1
-			}
+			line.addLines(src.name, src.description)
+		}
+	}
+	
+	def private addLines (List<String> target, String prefix, String multiline) {
+		val lines = multiline.split("(\r)?\n")
+		var i = 0
+		for(s : lines) {
+			if (i==0 && prefix!="")
+				target.add(prefix + " = " + s.trim)
+			else
+				target.add(s.trim)
+			i = i + 1
 		}
 	}
 
