@@ -7,6 +7,8 @@
  *******************************************************************************/
 package org.franca.connectors.dbus.ui.actions;
 
+import java.util.Collection;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -17,11 +19,13 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.console.MessageConsoleStream;
+import org.eclipse.xtext.validation.Issue;
 import org.franca.connectors.dbus.DBusConnector;
 import org.franca.connectors.dbus.DBusModelContainer;
 import org.franca.connectors.dbus.ui.util.SpecificConsole;
 import org.franca.core.dsl.FrancaPersistenceManager;
 import org.franca.core.franca.FModel;
+import org.franca.core.utils.FrancaRecursiveValidator;
 
 import com.google.inject.Inject;
 
@@ -30,8 +34,8 @@ public class GenerateDBusXMLAction implements IObjectActionDelegate {
 
 	private IStructuredSelection selection = null;
 	
-	@Inject
-	FrancaPersistenceManager loader;
+	@Inject FrancaPersistenceManager loader;
+	@Inject FrancaRecursiveValidator validator;
 
 	@Override
 	public void run(IAction action) {
@@ -58,10 +62,36 @@ public class GenerateDBusXMLAction implements IObjectActionDelegate {
     		}
     		out.println("Franca IDL: package '" + fmodel.getName() + "'");
     		
+    		// validate resource
+    		Collection<Issue> issues = validator.validate(fmodel.eResource());
+    		int nErrors = 0;
+    		for(Issue issue : issues) {
+    			switch (issue.getSeverity()) {
+    			case INFO:
+    			case WARNING:
+    				out.println(issue.toString());
+    				break;
+    			case ERROR:
+    				err.println(issue.toString());
+    				nErrors++;
+    				break;
+    			}
+    		}
+    		if (nErrors>0) {
+    			err.println("Aborting due to validation errors!");
+    			return;
+    		}
+  
     		// transform DBus Introspection XML
     		out.println("Transforming to DBus Introspection XML file ...");
     		DBusConnector dbusConn = new DBusConnector();
-    		DBusModelContainer dbus = (DBusModelContainer) dbusConn.fromFranca(fmodel);
+    		DBusModelContainer dbus = null;
+    		try {
+    			dbus = (DBusModelContainer) dbusConn.fromFranca(fmodel);
+    		} catch (Exception e) {
+    			err.println("Internal transformation error, aborting.");
+				return;
+    		}
     		
     		// save DBus XML file
     		int ext = file.getName().lastIndexOf("." + file.getFileExtension());
