@@ -10,23 +10,27 @@ package org.franca.connectors.etrice.internal
 import org.franca.core.franca.FInterface
 import org.eclipse.etrice.core.room.ProtocolClass
 import org.eclipse.etrice.core.room.RoomFactory
-import static extension org.franca.connectors.etrice.internal.RoomModelBuilder.*
 import org.eclipse.etrice.core.room.SimpleState
 import org.eclipse.etrice.core.room.Message
 import org.eclipse.etrice.core.room.PrimitiveType
 import org.eclipse.etrice.core.room.DataClass
 import org.eclipse.etrice.core.room.DataType
 import com.google.inject.Inject
+import org.eclipse.etrice.core.room.ActorClass
 
-class TestClientGenerator {
+import static extension org.franca.connectors.etrice.internal.RoomModelBuilder.*
 
+class ConcreteExampleClientGenerator {
+
+	@Inject extension AbstractClientGenerator
 	@Inject extension ProtocolClassGenerator
 	
-	def createClientClass (FInterface src, ProtocolClass pc, ProtocolClass timerPC) {
+	def createExampleClientClass (ActorClass abstractClient, FInterface src, ProtocolClass pc, ProtocolClass timerPC) {
 		val it = RoomFactory::eINSTANCE.createActorClass
-		name = src.name + "Client"
+		name = src.name + "ExampleClient"
+		base = abstractClient
 
-		val p = pc.createPort("api", true)
+		val p = pc.createPort("messageAPI", true)
 		ifPorts.add(p)
 		val port = p.createExtPort
 		extPorts.add(port)
@@ -35,6 +39,13 @@ class TestClientGenerator {
 //		strSAPs.add(timerSAP)
 		
 		stateMachine = RoomFactory::eINSTANCE.createStateGraph
+		
+		val refinedClientSuperState = RoomFactory::eINSTANCE.createRefinedState
+		refinedClientSuperState.setTarget(findSuperStateToExtend(abstractClient))
+		stateMachine.states += refinedClientSuperState
+		
+		refinedClientSuperState.subgraph = RoomFactory::eINSTANCE.createStateGraph
+		val stateMachine = refinedClientSuperState.subgraph //hides it.stateMachine!
 
 		var SimpleState lastState = null
 		var Message readyMsg = null
@@ -44,7 +55,7 @@ class TestClientGenerator {
 			val msg = pc.incomingMessages.findFirst[name.equals(m.name)]
 			val type = msg.data?.refType?.type
 			s.entryCode = createDetailCode(
-				"api." + m.name + "(" +
+				"messageAPI." + m.name + "(" +
 				(if (type!=null) type.createDefaultStr else "") +
 				");"
 			)

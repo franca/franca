@@ -9,16 +9,18 @@ package org.franca.connectors.etrice.internal
 
 import org.eclipse.etrice.core.room.RoomFactory
 import org.franca.core.franca.FInterface
-
 import org.franca.core.franca.FAttribute
 import org.franca.core.franca.FMethod
 import org.franca.core.franca.FBroadcast
 import org.franca.core.franca.FArgument
+import com.google.inject.Inject
+import org.eclipse.etrice.core.room.ProtocolClass
+import org.eclipse.etrice.core.room.ActorClass
+import org.eclipse.etrice.core.room.RoomModel
+import org.eclipse.etrice.core.room.TransitionPoint
 
 import static extension org.franca.connectors.etrice.internal.CommentGenerator.*
 import static extension org.franca.connectors.etrice.internal.RoomModelBuilder.*
-import com.google.inject.Inject
-import org.eclipse.etrice.core.room.ProtocolClass
 
 class ProtocolClassGenerator {
 
@@ -33,10 +35,6 @@ class ProtocolClassGenerator {
 		if (src.comment!=null)
 			docu = src.comment.transformComment
 		
-		// map attributes
-		incomingMessages.addAll(src.attributes.map [transformAttributeSet])
-		outgoingMessages.addAll(src.attributes.map [transformAttributeUpdate])
-		
 		// map methods (request/reponse and broadcast)
 		val reqresp = src.methods.filter(m | !m.outArgs.empty)
 		incomingMessages.addAll(src.methods.map [transformMethod])		
@@ -46,35 +44,6 @@ class ProtocolClassGenerator {
 		// add protocol semantics for request/reply methods
 		// TODO
 //		semantics = reqresp.transformSemantics
-	}
-
-
-	// properties/attributes not_supported directly by eTrice - server class must implement extra functionality
-	def private create RoomFactory::eINSTANCE.createMessage transformAttributeSet (FAttribute src) {
-		name = "setAttribute" + src.name.toFirstUpper
-
-		var doc = "Set-method for attribute " + src.name
-		if (src.comment!=null)
-			doc = doc + ": " + src.comment.transformCommentFlat
-		docu = doc.transformComment
-
-		data = RoomFactory::eINSTANCE.createVarDecl
-		data.name = src.name;
-		data.refType = src.type.transformType.toRefableType
-	}
-
-	// properties/attributes not_supported directly by eTrice - client class must implement proxy functionality
-	def private create RoomFactory::eINSTANCE.createMessage transformAttributeUpdate (FAttribute src) {
-		name = "updateAttribute" + src.name.toFirstUpper
-		
-		var doc = "Update-method for attribute " + src.name
-		if (src.comment!=null)
-			doc = doc + ": " + src.comment.transformCommentFlat
-		docu = doc.transformComment
-		
-		data = RoomFactory::eINSTANCE.createVarDecl
-		data.name = src.name;
-		data.refType = src.type.transformType.toRefableType
 	}
 
 
@@ -175,6 +144,131 @@ class ProtocolClassGenerator {
 
 	def getOutgoingMessage (ProtocolClass pc, FMethod m) {
 		pc.outgoingMessages.findFirst[name.equals(m.methodReplyName)]
+	}
+	
+	////////////////
+	
+	// properties/attributes not_supported directly by eTrice - server class must implement extra functionality
+
+	// properties/attributes not_supported directly by eTrice - client class must implement proxy functionality
+
+	def private getterMessageName(FAttribute attr) {
+		"getAttribute" + attr.name.toFirstUpper
+	}
+
+	def private setterMessageName(FAttribute attr) {
+		"setAttribute" + attr.name.toFirstUpper
+	}
+	
+	def private generateGetterMessage(FAttribute attr) {
+		RoomFactory::eINSTANCE.createMessage => [
+			name = getterMessageName(attr)
+			var doc = "Get-method for attribute " + attr.name
+			if (attr.comment!=null)
+				doc = doc + ": " + attr.comment.transformCommentFlat
+			docu = doc.transformComment
+		]
+	}
+
+	def private generateGetterReplyMessage(FAttribute attr) {
+		RoomFactory::eINSTANCE.createMessage => [
+			name = getterReplyMessageName(attr)
+			data = generateAttributeMessageParameter(attr)
+			var doc = "Update-method for attribute " + attr.name
+			if (attr.comment!=null)
+				doc = doc + ": " + attr.comment.transformCommentFlat
+			docu = doc.transformComment
+		]
+	}
+	
+	def private String getterReplyMessageName(FAttribute attr) {
+		"reply" + getterMessageName(attr).toFirstUpper
+	}
+
+	
+	def private generateAttributeMessageParameter(FAttribute attr) {
+		RoomFactory::eINSTANCE.createVarDecl => [
+			name = "value"
+			refType = attr.type.transformType.toRefableType
+		]
+	}
+	
+	def private generateSetterMessage(FAttribute attr) {
+		RoomFactory::eINSTANCE.createMessage => [
+			name = setterMessageName(attr)
+			data = generateAttributeMessageParameter(attr)
+			var doc = "Set-method for attribute " + attr.name
+			if (attr.comment!=null)
+				doc = doc + ": " + attr.comment.transformCommentFlat
+			docu = doc.transformComment
+		]
+	}
+	
+	def public void generateAttributeAccess(ActorClass abstractServer, ActorClass abstractClient, FInterface modelInterface) {
+		if (modelInterface.attributes.empty) return;
+		
+		val TransitionPoint attributeAccessAnchor = RoomFactory::eINSTANCE.createTransitionPoint => [
+			name = "AttributeAccessAnchor"
+		]
+		abstractServer.stateMachine.trPoints += attributeAccessAnchor;
+
+		val TransitionPoint attributeUpdateAnchor = RoomFactory::eINSTANCE.createTransitionPoint => [
+			name ="AttributeUpdateAnchor"
+		]
+		abstractClient.stateMachine.trPoints += attributeUpdateAnchor;
+		
+		val ProtocolClass attributeAccessInterface = RoomFactory::eINSTANCE.createProtocolClass => [
+			name = createUniqueAttributeAccessorInterfaceName(modelInterface)
+		]
+		(abstractServer.eContainer as RoomModel).protocolClasses += attributeAccessInterface;
+		
+		val serverPort = createPort(attributeAccessInterface, createUniqueAttributePortName(modelInterface), false);
+		abstractServer.ifPorts += serverPort;
+		abstractServer.extPorts += createExtPort(serverPort)
+		val clientPort = createPort(attributeAccessInterface, createUniqueAttributePortName(modelInterface), true);
+		abstractClient.ifPorts += clientPort;
+		abstractClient.extPorts += createExtPort(clientPort)
+		
+		modelInterface.attributes.forEach[
+			val getterMessage = generateGetterMessage;
+			//request
+			attributeAccessInterface.incomingMessages += getterMessage;
+			abstractServer.stateMachine.transitions += createTransition(
+				attributeAccessAnchor.terminal,
+				attributeAccessAnchor.terminal,
+				"do" + getterMessageName.toFirstUpper,
+				createTrigger(serverPort, getterMessage)
+			);
+			//reply
+			val getterReplyMessage = generateGetterReplyMessage;
+			attributeAccessInterface.outgoingMessages += getterReplyMessage;
+			abstractClient.stateMachine.transitions += createTransition(
+				attributeUpdateAnchor.terminal,
+				attributeUpdateAnchor.terminal,
+				"receive" + getterReplyMessageName.toFirstUpper,
+				createTrigger(clientPort, getterReplyMessage)
+			);
+		]
+		modelInterface.attributes.forEach[
+			val setterMessage = generateSetterMessage;
+			attributeAccessInterface.incomingMessages += setterMessage;
+			abstractServer.stateMachine.transitions += createTransition(
+				attributeAccessAnchor.terminal,
+				attributeAccessAnchor.terminal,
+				"do" + setterMessageName(it).toFirstUpper,
+				createTrigger(serverPort, setterMessage)
+			);
+		]
+	}
+	
+	def private String createUniqueAttributeAccessorInterfaceName(FInterface modelInterface) {
+		//TODO: guarantee that name is unique
+		"I" + modelInterface.name.toFirstUpper + "AttributeAccessors"
+	}
+	
+	def private createUniqueAttributePortName(FInterface modelInterface) {
+		//TODO: guarantee that name is unique
+		"attributePort" + modelInterface.name.toFirstUpper
 	}
 	
 }

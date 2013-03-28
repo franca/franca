@@ -203,6 +203,10 @@ class TypeGenerator {
 			case LiteralType::CHAR: "java.lang.String"
 			default: "UNKNOWN"
 		}
+		//TODO What is the use case for the separation of targetName and castName?
+		//     Once the answer is found, here is the place to implement the different types:
+		castName = targetName
+		
 		defaultValueLiteral = switch (lit) {
 			case LiteralType::BOOL: "false"
 			case LiteralType::INT:  "0"

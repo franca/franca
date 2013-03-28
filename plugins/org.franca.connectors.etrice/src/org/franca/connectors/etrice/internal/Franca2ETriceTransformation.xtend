@@ -16,6 +16,7 @@ import org.eclipse.etrice.core.room.RoomModel
 import org.eclipse.etrice.core.room.SubSystemClass
 import org.franca.core.franca.FInterface
 import org.franca.core.franca.FModel
+import org.franca.connectors.etrice.extensions.RoomModelNavigator
 
 import static extension org.franca.connectors.etrice.internal.CommentGenerator.*
 import static extension org.franca.connectors.etrice.internal.RoomModelBuilder.*
@@ -28,10 +29,13 @@ import static extension org.franca.connectors.etrice.internal.RoomModelBuilder.*
  */
 class Franca2ETriceTransformation {
 
+	@Inject extension RoomModelNavigator
 	@Inject extension TypeGenerator
 	@Inject extension ProtocolClassGenerator
-	@Inject extension TestClientGenerator
-	@Inject extension TestServerGenerator
+	@Inject AbstractClientGenerator abstractClientGenerator
+	@Inject ConcreteExampleClientGenerator concreteExampleClientGenerator
+	@Inject AbstractServerGenerator abstractServerGenerator
+	@Inject ConcreteExampleServerGenerator concreteExampleServerGenerator
 	@Inject ModelLib modellib
 
 	def create RoomFactory::eINSTANCE.createRoomModel transform (FModel src, String uriModelLib, ResourceSet resourceSet) {
@@ -82,8 +86,7 @@ class Franca2ETriceTransformation {
 		subSystemClasses.add(subsystem)
 		subsystem
 	}
-
-
+	
 	/**
 	 * Create a test unit, consisting of a client and a server for the Franca interface.
 	 * the client will call one method from the Franca interface after another, waiting 
@@ -98,11 +101,19 @@ class Franca2ETriceTransformation {
 		sys.actorRefs.add(appRef)
 		actorClasses.add(app)
 		
+		// create abstract client and server
+		val abstractServer = abstractServerGenerator.createAbstractServerClass(src, pc, timerPC)
+		actorClasses += abstractServer
+		val abstractClient = abstractClientGenerator.createAbstractClientClass(src, pc, timerPC)
+		actorClasses += abstractClient
+		//generate interface, port and transitions for the management of attributes
+		generateAttributeAccess(abstractServer, abstractClient, src)
+		
 		// create server and client class
-		val server = src.createServerClass(pc, timerPC)
-		val client = src.createClientClass(pc, timerPC)
-		actorClasses.add(server)
-		actorClasses.add(client)
+		val concreteServer = concreteExampleServerGenerator.createExampleServerClass(abstractServer, src, pc, timerPC)
+		actorClasses += concreteServer
+		val concreteClient = concreteExampleClientGenerator.createExampleClientClass(abstractClient, src, pc, timerPC)
+		actorClasses += concreteClient
 		
 		// create layer connection in order to access the Timer service
 		val layerConn = RoomFactory::eINSTANCE.createLayerConnection
@@ -111,13 +122,13 @@ class Franca2ETriceTransformation {
 		sys.connections.add(layerConn)
 
 		// connect client and server via binding
-		val clientRef = client.getRef("client")
-		val serverRef = server.getRef("server")
-		app.actorRefs.add(clientRef)		
-		app.actorRefs.add(serverRef)		
+		val clientRef = concreteClient.getRef("client")
+		val serverRef = concreteServer.getRef("server")
+		app.actorRefs.add(clientRef)
+		app.actorRefs.add(serverRef)
 		val b = RoomFactory::eINSTANCE.createBinding
-		b.endpoint1 = clientRef.createEndPoint(client.ifPorts.get(0))
-		b.endpoint2 = serverRef.createEndPoint(server.ifPorts.get(0))
+		b.endpoint1 = clientRef.createEndPoint(concreteClient.ifPorts.get(0))
+		b.endpoint2 = serverRef.createEndPoint(concreteServer.allVisibleIfPorts.head)
 		app.bindings.add(b)
 	}
 

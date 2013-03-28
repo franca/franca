@@ -19,6 +19,8 @@ import org.eclipse.etrice.core.room.Message
 import org.eclipse.etrice.core.room.DataType
 import org.eclipse.etrice.core.room.State
 import org.eclipse.etrice.core.room.SPPRef
+import org.eclipse.etrice.core.room.TransitionPoint
+import org.eclipse.etrice.core.room.EntryPoint
 
 class RoomModelBuilder {
 	
@@ -85,11 +87,15 @@ class RoomModelBuilder {
 		it
 	}
 
-	def static createInitial (TransitionTerminal to) {
+	def static createInitial (TransitionTerminal it, String name) {
 		val tr = RoomFactory::eINSTANCE.createInitialTransition
-		tr.name = "init"
-		tr.to = to
-		tr
+		tr.name = (if (name == null) "init" else name)
+		tr.to = it
+		tr		
+	}
+	
+	def static createInitial (TransitionTerminal it) {
+		createInitial(it, null)
 	}
 	
 	def static getRef (ActorClass ac, String name) {
@@ -115,9 +121,21 @@ class RoomModelBuilder {
 		it
 	}
 
-	def static getTerminal (State state) {
+	def static dispatch getTerminal (State state) {
 		val it = RoomFactory::eINSTANCE.createStateTerminal
 		it.state = state
+		it
+	}	
+
+	def static dispatch getTerminal (EntryPoint entryPoint) {
+		val it = RoomFactory::eINSTANCE.createTrPointTerminal
+		it.trPoint = entryPoint
+		it
+	}	
+
+	def static dispatch getTerminal (TransitionPoint tp) {
+		val it = RoomFactory::eINSTANCE.createTrPointTerminal
+		it.trPoint = tp
 		it
 	}	
 	

@@ -1,0 +1,493 @@
+/*******************************************************************************
+ * Copyright (c) 2010 protos software gmbh (http://www.protos.de).
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * CONTRIBUTORS:
+ * 		Thomas Schuetz and Henrik Rentz-Reichert (initial contribution)
+ * 
+ *******************************************************************************/
+
+/**
+ * @author Henrik Rentz-Reichert and Thomas Schuetz
+ *
+ * Xtext Grammar for ROOM models 
+ * this grammar is the base for the ROOM tool eTrice
+ * 
+ */
+
+grammar org.eclipse.etrice.core.Room with org.eclipse.xtext.common.Terminals
+
+import "http://www.eclipse.org/emf/2002/Ecore" as ecore
+
+generate room "http://www.eclipse.org/etrice/Room"
+
+RoomModel :
+'RoomModel' name=FQN (docu=Documentation)? '{'
+	(imports+=Import)*
+	(
+		primitiveTypes+=PrimitiveType	|
+		externalTypes+=ExternalType	|
+		dataClasses+=DataClass	|
+		protocolClasses+=GeneralProtocolClass |
+		actorClasses+=ActorClass  |
+		subSystemClasses+=SubSystemClass |
+		systems+=LogicalSystem
+	)*
+	'}'
+;
+
+RoomClass: DataType | GeneralProtocolClass | StructureClass;
+StructureClass: ActorContainerClass | LogicalSystem;
+ActorContainerClass: ActorClass | SubSystemClass;
+
+// **************************************************************
+// data class
+
+VarDecl:
+	name=ID ':' refType=RefableType;
+
+RefableType: type=[DataType|FQN] (ref?='ref')?;
+
+enum LiteralType:
+	BOOL='ptBoolean' |
+	INT='ptInteger' |
+	REAL='ptReal' |
+	CHAR='ptCharacter' 
+;
+
+DataType: PrimitiveType | ComplexType;
+ComplexType: DataClass | ExternalType;
+
+PrimitiveType: 'PrimitiveType' name=ID ':' type=LiteralType '->' targetName=FQN ('(' castName=FQN ')')? 'default' defaultValueLiteral=STRING (docu=Documentation)?;
+
+ExternalType: 'ExternalType' name=ID '->' targetName=FQN (docu=Documentation)?;
+
+// TODOHRR: define detail level language?
+DataClass:
+	'DataClass' name=ID (docu=Documentation)? ('extends' base=[DataClass|FQN])? '{'
+		annotations+=Annotation*
+		('usercode1' userCode1=DetailCode)?
+		('usercode2' userCode2=DetailCode)?
+		('usercode3' userCode3=DetailCode)?
+		attributes+=Attribute+
+		operations+=StandardOperation*
+	'}';
+	
+	
+Attribute:
+	'Attribute' name=ID ('[' size=INT ']')? ':' refType=RefableType ('=' defaultValueLiteral=STRING)? (docu=Documentation)?;
+
+Operation: StandardOperation | PortOperation; 
+
+StandardOperation:
+	'Operation' (destructor?='~')? name=ID '(' (arguments+=VarDecl (',' arguments+=VarDecl)*)? ')' (':' ('void' | (returntype=RefableType)))?
+		(docu=Documentation)?
+		detailCode=DetailCode
+;
+
+PortOperation:
+    'Operation' name=ID '(' (arguments+=VarDecl (',' arguments+=VarDecl)*)? ')' ( (':' ('void' | (returntype=RefableType))) | ('sends' sendsMsg=[Message|ID]) )?
+            (docu=Documentation)?
+            detailCode=DetailCode
+; 
+
+// **************************************************************
+// protocol class
+
+enum CommunicationType:
+	EVENT_DRIVEN='eventdriven' |
+	DATA_DRIVEN='datadriven' |
+	SYNCHRONOUS='sync'
+;
+
+GeneralProtocolClass: ProtocolClass | CompoundProtocolClass;
+
+ProtocolClass:
+	(commType=CommunicationType)?
+	'ProtocolClass' name=ID (docu=Documentation)? ('extends' base=[ProtocolClass|FQN])? '{'
+		annotations+=Annotation*
+		('usercode1' userCode1=DetailCode)?
+		('usercode2' userCode2=DetailCode)?
+		('usercode3' userCode3=DetailCode)?
+		('incoming' '{' incomingMessages+=Message* '}')?
+		('outgoing' '{' outgoingMessages+=Message* '}')?
+		('regular' 'PortClass' regular=PortClass)?
+		('conjugate' 'PortClass' conjugate=PortClass)?
+		(semantics=ProtocolSemantics)?
+	'}';
+	
+CompoundProtocolClass:
+	'CompoundProtocolClass' name=ID (docu=Documentation)? '{'
+		annotations+=Annotation*
+		subProtocols+=SubProtocol+
+	'}'
+;
+
+SubProtocol: 'SubProtocol' name=ID ':' protocol=[GeneralProtocolClass|FQN];
+
+Message:
+	(priv?='private')? 'Message' name=ID '(' (data=VarDecl)? ')'
+	(docu=Documentation)?;
+
+PortClass:
+	'{'
+		('usercode' userCode=DetailCode)?
+		(attributes+=Attribute |
+		operations+=PortOperation |
+		msgHandlers+=MessageHandler)+
+	'}';
+
+MessageHandler: InMessageHandler|OutMessageHandler;
+
+InMessageHandler:
+	'handle' 'incoming' msg=[Message|ID]
+		detailCode=DetailCode
+	;
+
+OutMessageHandler:
+	'handle' 'outgoing' msg=[Message|ID]
+		detailCode=DetailCode
+	;
+
+ProtocolSemantics:
+	{ProtocolSemantics}
+	'semantics' '{'
+		rules+=SemanticsRule*
+	'}';
+
+SemanticsRule: InSemanticsRule | OutSemanticsRule;
+
+InSemanticsRule: 'in' ':' msg=[Message|ID]
+	('->'
+		(
+			followUps+=SemanticsRule
+			|
+			('(' followUps+=SemanticsRule (',' followUps+=SemanticsRule)+ ')')
+		)
+	)?
+;
+
+OutSemanticsRule: 'out' ':' msg=[Message|ID]
+	('->'
+		(
+			followUps+=SemanticsRule
+			|
+			('(' followUps+=SemanticsRule (',' followUps+=SemanticsRule)+ ')')
+		)
+	)?
+;
+
+// **************************************************************
+// actor class
+
+enum ActorCommunicationType:
+	EVENT_DRIVEN='eventdriven' |
+	DATA_DRIVEN='datadriven' |
+	ASYNCHRONOUS='async' |
+	SYNCHRONOUS='sync'
+;
+
+// some notes on ports
+//
+// in ROOM ports can be contained in the structure and/or the interface
+// p in s ==> internal end port
+// p in i ==> relay port
+// p in i and p in s ==> external end port
+// since double containment is not supported we decided to define external ports as reference to interface ports
+ActorClass:
+	(abstract?='abstract'? & commType=ActorCommunicationType?)
+	'ActorClass' name=ID (docu=Documentation)? ('extends' base=[ActorClass|FQN])? '{'
+		annotations+=Annotation*
+		('Interface' '{'
+			ifPorts+=Port*
+			ifSPPs+=SPPRef*
+		'}')?
+		('Structure' (structureDocu=Documentation)? '{'
+			('usercode1' userCode1=DetailCode)?
+			('usercode2' userCode2=DetailCode)?
+			('usercode3' userCode3=DetailCode)?
+			(intPorts+=Port |
+			extPorts+=ExternalPort)*
+			serviceImplementations+=ServiceImplementation*
+			strSAPs+=SAPRef*
+			attributes+=Attribute*
+			actorRefs+=ActorRef*
+			bindings+=Binding*
+			connections+=LayerConnection*
+		'}')?
+		('Behavior' (behaviorDocu=Documentation)? '{'
+			behaviorAnnotations+=Annotation*
+			operations+=StandardOperation*
+			(stateMachine=StateMachine)?
+		'}')?
+	'}';
+
+InterfaceItem: Port | SAPRef | SPPRef;
+
+Port:
+	(conjugated?='conjugated')? 'Port' name=ID (multiplicity=MULTIPLICITY)? ':' protocol=[GeneralProtocolClass|FQN] (docu=Documentation)?;
+ExternalPort:
+	'external' 'Port' ifport=[Port|ID] ;
+
+SAPRef:
+	'SAP' name=ID ':' protocol=[ProtocolClass|FQN] ;
+
+SPPRef:
+	'SPP' name=ID ':' protocol=[ProtocolClass|FQN] ;
+ServiceImplementation:
+	'ServiceImplementation' 'of' spp=[SPPRef|ID];
+
+LogicalSystem:
+	'LogicalSystem' name=ID (docu=Documentation)? '{'
+		annotations+=Annotation*
+		subSystems+=SubSystemRef*
+		bindings+=Binding*
+		connections+=LayerConnection*
+	'}';
+
+ActorContainerRef: SubSystemRef | ActorRef;
+
+SubSystemRef:
+	'SubSystemRef' name=ID ':' type=[SubSystemClass|FQN] (docu=Documentation)?;
+
+SubSystemClass:
+	'SubSystemClass' name=ID (docu=Documentation)? '{'
+		annotations+=Annotation*
+		('usercode1' userCode1=DetailCode)?
+		('usercode2' userCode2=DetailCode)?
+		('usercode3' userCode3=DetailCode)?
+		relayPorts+=Port*
+		ifSPPs+=SPPRef*
+		actorRefs+=ActorRef*
+		bindings+=Binding*
+		connections+=LayerConnection*
+		threads+=LogicalThread*
+	'}';
+
+LogicalThread:
+	'LogicalThread' name=ID 'prio' '=' prio=INT '{'
+		instances+=ActorInstancePath (',' instances+=ActorInstancePath)*
+	'}';
+	
+
+ActorInstancePath:
+	segments+=ID ('.' segments+=ID)*;
+	
+// TODOHRR: bindings for replicated ports
+// (1) declare several bindings
+// (2) use a notation with 1 to n bindings
+Binding:
+	'Binding' endpoint1=BindingEndPoint 'and' endpoint2=BindingEndPoint ;
+	
+BindingEndPoint:
+	(actorRef=[ActorContainerRef|ID]'.')?  port=[Port|ID] ('sub' sub=[SubProtocol|ID])?;
+
+LayerConnection:
+	'LayerConnection' from=SAPoint 'satisfied_by' to=SPPoint 
+;
+
+SAPoint: RefSAPoint | RelaySAPoint;
+
+RefSAPoint:
+	// satisfies a sub actor
+	'ref' ref=[ActorContainerRef|ID];
+RelaySAPoint:
+	// relays from own interface
+	'relay_sap' relay=[SPPRef|ID];
+
+SPPoint:
+	ref=[ActorContainerRef|ID] '.'  service=[SPPRef|ID]
+;
+
+ActorRef:
+	'ActorRef' name=ID ('[' size=INT ']')? ':' type=[ActorClass|FQN] (docu=Documentation)?;
+
+
+// **************************************************************
+// state machine
+
+StateGraphNode: State | ChoicePoint | TrPoint;
+StateGraphItem: StateGraphNode | Transition;
+
+State: SimpleState | RefinedState;
+
+StateGraph:
+	{StateGraph}
+	'{'
+		(
+			states+=State |
+			trPoints+=TrPoint |
+			chPoints+=ChoicePoint |
+			transitions+=Transition |
+			refinedTransitions+=RefinedTransition
+		)*
+	'}';
+
+StateMachine returns StateGraph:
+	{StateGraph}
+	'StateMachine' '{'
+		(
+			states+=State |
+			trPoints+=TrPoint |
+			chPoints+=ChoicePoint |
+			transitions+=Transition |
+			refinedTransitions+=RefinedTransition
+		)*
+	'}';
+
+SimpleState:
+	'State' name=ID (docu=Documentation)? ('{'
+		('entry' entryCode=DetailCode)?
+		('exit' exitCode=DetailCode)?
+		('do' doCode=DetailCode)?
+		('subgraph' subgraph=StateGraph)?
+	'}')?;
+
+RefinedState:
+	'RefinedState' target=[State|FQN] (docu=Documentation)? '{'
+		('entry' entryCode=DetailCode)?
+		('exit' exitCode=DetailCode)?
+		('do' doCode=DetailCode)?
+		('subgraph' subgraph=StateGraph)?
+	'}';
+
+// TODOHRR: provide a means to call super class code (cf. ROOM p. 310f)
+// super() keyword or flag like in Trice
+DetailCode:
+	'{'
+		commands+=STRING+
+	'}';
+
+TrPoint: TransitionPoint | EntryPoint | ExitPoint;
+
+TransitionPoint:
+	(handler?='handler')? 'TransitionPoint' name=ID;
+
+EntryPoint:
+	'EntryPoint' name=ID;
+
+ExitPoint:
+	'ExitPoint' name=ID;
+
+ChoicePoint:
+	'ChoicePoint' name=ID (docu=Documentation)?;
+
+Transition: InitialTransition | NonInitialTransition;
+NonInitialTransition: TransitionChainStartTransition | ContinuationTransition | CPBranchTransition;
+TransitionChainStartTransition: TriggeredTransition | GuardedTransition;
+
+InitialTransition:
+	'Transition' (name=ID)? ':' 'initial' '->' to=TransitionTerminal 
+	(docu=Documentation)?
+	'{'
+		('action' action=DetailCode)? 
+	'}';
+
+ContinuationTransition:
+	'Transition' (name=ID)? ':' from=TransitionTerminal '->' to=TransitionTerminal
+	(docu=Documentation)?
+	('{'
+		('action' action=DetailCode)? 
+	'}')?;
+
+TriggeredTransition:
+	'Transition' (name=ID)? ':' from=TransitionTerminal '->' to=TransitionTerminal
+	(docu=Documentation)?
+	'{'
+		'triggers' '{'
+			triggers+=Trigger ('or' triggers+=Trigger)*
+		'}'
+		('action' action=DetailCode)? 
+	'}';
+
+GuardedTransition:
+	'Transition' (name=ID)? ':' from=TransitionTerminal '->' to=TransitionTerminal
+	(docu=Documentation)?
+	'{'
+		'guard' guard=DetailCode
+		('action' action=DetailCode)? 
+	'}';
+
+CPBranchTransition:
+	'Transition' (name=ID)? ':' from=TransitionTerminal '->' to=TransitionTerminal
+	(docu=Documentation)?
+	'{'
+		'cond' condition=DetailCode
+		('action' action=DetailCode)? 
+	'}';
+
+// by validation RefinedTransition can only be contained in the top level state graph
+RefinedTransition:
+	'RefinedTransition' target=[Transition|FQN]
+	(docu=Documentation)?
+	'{'
+		'action' action=DetailCode
+	'}'
+;
+
+TransitionTerminal: StateTerminal | TrPointTerminal | SubStateTrPointTerminal | ChoicepointTerminal;
+
+StateTerminal:
+	state=[State|ID];
+TrPointTerminal:
+	'my' trPoint=[TrPoint|ID];
+SubStateTrPointTerminal:
+	trPoint=[TrPoint|ID] 'of' state=[State|ID];
+ChoicepointTerminal:
+	'cp' cp=[ChoicePoint|ID];
+
+Trigger:
+		'<' msgFromIfPairs+=MessageFromIf ('|' msgFromIfPairs+=MessageFromIf)*
+		(guard=Guard)? '>'
+;
+
+MessageFromIf:
+	message=[Message|ID] ':' from=[InterfaceItem|ID]
+;
+
+Guard:
+	'guard' guard=DetailCode;
+
+// **************************************************************
+// general
+
+Documentation: '['
+		text+=STRING+
+	']';
+
+Annotation: '@' name=ID ('(' attributes+=KeyValue (',' attributes+=KeyValue)* ')')?;
+KeyValue: key=ID '=' value=STRING;
+
+// HOWTO: use a combination of URI global scopes and namespace aware local scope provider
+// this is configured in the work flow by
+//			fragment = scoping.ImportURIScopingFragment {}
+// and by overriding configureIScopeProviderDelegate in the runtime module with 
+//			ImportedNamespaceAwareLocalScopeProvider
+// also configure in the RuntimeModule
+//	public Class<? extends ImportUriResolver> bindImportUriResolver() {
+//		return PlatformRelativeUriResolver.class;
+//	}
+// and in the UiRuntimeModule
+//	public Class<? extends org.eclipse.xtext.ui.editor.IURIEditorOpener> bindIURIEditorOpener() {
+//		return GlobalNonPlatformURIEditorOpener.class;
+//	}
+//	public Class<? extends IHyperlinkHelper> bindIHyperlinkHelper() {
+//		return ImportAwareHyperlinkHelper.class;
+//	}
+// the attribute 'importedNamespace' is picked up by the ImportedNamespaceAwareLocalScopeProvider
+// the attribute 'importURI' is picked up by the ImportUriGlobalScopeProvider
+Import :
+	'import' (importedNamespace=ImportedFQN 'from' | 'model') importURI=STRING;
+
+ImportedFQN:
+	FQN ('.*')?;
+
+FQN:
+	ID ('.' ID)*;
+
+// the following is a data type rule (accompanied by a value converter) and must not be a terminal rule
+// (because then the lexer already would find this in places where it is not expected, e.g. in an Attribute)
+MULTIPLICITY returns ecore::EInt : '[' ('*'|INT) ']';
