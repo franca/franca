@@ -170,9 +170,9 @@ class ProtocolClassGenerator {
 		]
 	}
 
-	def private generateGetterReplyMessage(FAttribute attr) {
+	def private generateUpdateMessage(FAttribute attr) {
 		RoomFactory::eINSTANCE.createMessage => [
-			name = getterReplyMessageName(attr)
+			name = updateMessageName(attr)
 			data = generateAttributeMessageParameter(attr)
 			var doc = "Update-method for attribute " + attr.name
 			if (attr.comment!=null)
@@ -181,10 +181,9 @@ class ProtocolClassGenerator {
 		]
 	}
 	
-	def private String getterReplyMessageName(FAttribute attr) {
-		"reply" + getterMessageName(attr).toFirstUpper
+	def private String updateMessageName(FAttribute attr) {
+		"update" + attr.name.toFirstUpper
 	}
-
 	
 	def private generateAttributeMessageParameter(FAttribute attr) {
 		RoomFactory::eINSTANCE.createVarDecl => [
@@ -230,36 +229,69 @@ class ProtocolClassGenerator {
 		abstractClient.extPorts += createExtPort(clientPort)
 		
 		modelInterface.attributes.forEach[
+			abstractServer.attributes += createRoomAttribute(it) => [
+				docu = "This attribute is used to store the current value of the corresponding attribute defined in the franca interface.".transformComment
+			]
+			//TODO: decide whether the attribute is necessary on client when it is not interested in a broadcasted attribute and maybe there is no getter for manual updates
+			abstractClient.attributes += createRoomAttribute(it) => [
+				docu = "This attribute is used to store the latest update of the corresponding attribute defined in the franca interface.".transformComment
+			]
+			
 			val getterMessage = generateGetterMessage;
 			//request
 			attributeAccessInterface.incomingMessages += getterMessage;
+			val getAction = serverPort.name + "." + updateMessageName + "(this." + name +");"
 			abstractServer.stateMachine.transitions += createTransition(
 				attributeAccessAnchor.terminal,
 				attributeAccessAnchor.terminal,
 				"do" + getterMessageName.toFirstUpper,
 				createTrigger(serverPort, getterMessage)
-			);
-			//reply
-			val getterReplyMessage = generateGetterReplyMessage;
-			attributeAccessInterface.outgoingMessages += getterReplyMessage;
+			) => [
+				action = RoomFactory::eINSTANCE.createDetailCode => [
+					it.commands += getAction
+				]
+			]
+			// update of the attribute on client (sent after getter-Message)
+			val updateMessage = generateUpdateMessage;
+			attributeAccessInterface.outgoingMessages += updateMessage;
+			val updateAction = "this." + name + " = " + "value" + ";"
 			abstractClient.stateMachine.transitions += createTransition(
 				attributeUpdateAnchor.terminal,
 				attributeUpdateAnchor.terminal,
-				"receive" + getterReplyMessageName.toFirstUpper,
-				createTrigger(clientPort, getterReplyMessage)
-			);
+				"do" + updateMessageName.toFirstUpper,
+				createTrigger(clientPort, updateMessage)
+			) => [
+				action = RoomFactory::eINSTANCE.createDetailCode => [
+					it.commands += updateAction
+				]
+			]
 		]
-		modelInterface.attributes.forEach[
+		modelInterface.attributes.filter[!readonly].forEach[
 			val setterMessage = generateSetterMessage;
 			attributeAccessInterface.incomingMessages += setterMessage;
+			val setAction = "this." + name + " = " + "value" + ";"
 			abstractServer.stateMachine.transitions += createTransition(
 				attributeAccessAnchor.terminal,
 				attributeAccessAnchor.terminal,
 				"do" + setterMessageName(it).toFirstUpper,
-				createTrigger(serverPort, setterMessage)
-			);
+				createTrigger(serverPort, setterMessage) 
+			) => [
+				action = RoomFactory::eINSTANCE.createDetailCode => [
+					it.commands += setAction
+				]
+			]
 		]
 	}
+	
+	//must not be def create
+	def createRoomAttribute(FAttribute attr) {
+		RoomFactory::eINSTANCE.createAttribute => [
+			name = attr.name
+			refType = attr.type.transformType.toRefableType
+			if (attr.type.isMultiType) size = 3;
+		]
+	}
+
 	
 	def private String createUniqueAttributeAccessorInterfaceName(FInterface modelInterface) {
 		//TODO: guarantee that name is unique

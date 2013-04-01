@@ -22,6 +22,8 @@ import org.eclipse.etrice.core.room.DataClass
 
 import static extension org.franca.connectors.etrice.internal.CommentGenerator.*
 import static extension org.franca.connectors.etrice.internal.RoomModelBuilder.*
+import org.franca.core.franca.FType
+import org.franca.core.franca.FMapType
 
 class TypeGenerator {
 	
@@ -46,8 +48,20 @@ class TypeGenerator {
 				FStructType:      type.transformStructType
 				FEnumerationType: type.transformEnumType
 				FTypeDef:         type.transformTypeDef
+				//TODO: FUnionType:       type.transformUnionType
+				//TODO: FMapType:         type.transformMapType
 			}
 		}
+	}
+	
+	def isMultiType(FTypeRef type) {
+		type.derived != null && type.derived.multiType
+	}
+	
+	def isMultiType(FType type) {
+		(type instanceof FArrayType) ||
+		(type instanceof FMapType) ||
+		(type instanceof FTypeDef && (type as FTypeDef).actualType.multiType)
 	}
 
 	
@@ -171,7 +185,6 @@ class TypeGenerator {
 		name = "dummy"
 		refType = FBasicTypeId::UINT8.createPrimitiveType.toRefableType
 	}
-
 
 	def private create RoomFactory::eINSTANCE.createPrimitiveType createPrimitiveType (FBasicTypeId src) {
 		name = src.literal
