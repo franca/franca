@@ -94,8 +94,14 @@ class DBus2FrancaTransformation {
 		if(src.doc != null) {
 			comment = src.doc.transformAnnotationBlock()
 		}
-		inArgs.addAll(src.arg.filter(a | a.direction==DirectionType::IN).map [transformArg(nameNormal)])
-		outArgs.addAll(src.arg.filter(a | a.direction==DirectionType::OUT).map [transformArg(nameNormal)])
+		val srcInArgs = src.arg.filter(a | a.direction==DirectionType::IN).toList
+		inArgs.addAll(srcInArgs.map[
+			transformArg(nameNormal, "_inArg" + srcInArgs.indexOf(it))
+		])
+		val srcOutArgs = src.arg.filter(a | a.direction==DirectionType::OUT).toList
+		outArgs.addAll(srcOutArgs.map[
+			transformArg(nameNormal, "_outArg" + srcOutArgs.indexOf(it))
+		])
 	}
 
 	def create FrancaFactory::eINSTANCE.createFBroadcast transformBroadcast (SignalType src) {
@@ -103,11 +109,14 @@ class DBus2FrancaTransformation {
 		if(src.doc != null) {
 			comment = src.doc.transformAnnotationBlock()
 		}					
-		outArgs.addAll(src.arg.map [transformArg(src.name)])
+		outArgs.addAll(src.arg.map [transformArg(src.name, "_arg" + src.arg.indexOf(it))])
 	}
 
-	def create FrancaFactory::eINSTANCE.createFArgument transformArg (ArgType src, String namespace) {
-		name = src.name.normalizeId
+	def create FrancaFactory::eINSTANCE.createFArgument transformArg (ArgType src, String namespace, String dfltName) {
+		if (src.name!=null)
+			name = src.name.normalizeId
+		else
+			name = dfltName
 		val te = src.type.transformTypeSig(namespace + "_" + name) 
 		type = te.type
 		array = if (te.isArray) "[]" else null
