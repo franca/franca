@@ -33,19 +33,19 @@ interface CoverageInterface {
 			ByteBuffer someBuffer
 		}
 		out {
-			Int8 someInt8
-			UInt8 someUInt8
-			Int16 someInt16
-			UInt16 someUInt16
-			Int32 someInt32
-			UInt32 someUInt32
-			Int64 someInt64
-			UInt64 someUInt64
-			Boolean someBoolean			
-			Float someFloat
-			Double someDouble
-			String someString
-			ByteBuffer someBuffer
+			Int8 outInt8
+			UInt8 outUInt8
+			Int16 outInt16
+			UInt16 outUInt16
+			Int32 outInt32
+			UInt32 outUInt32
+			Int64 outInt64
+			UInt64 outUInt64
+			Boolean outBoolean			
+			Float outFloat
+			Double outDouble
+			String outString
+			ByteBuffer outBuffer
 		}
 	}
 
