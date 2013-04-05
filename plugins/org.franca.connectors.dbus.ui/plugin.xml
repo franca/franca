@@ -17,4 +17,35 @@
       </objectContribution>
    </extension>
 
+<!--
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IFile"
+            nameFilter="*.xml"
+            id="org.franca.ui.actions.contribution.xml">
+         <menu
+               label="Franca"
+               path="additions"
+               id="org.franca.ui.francaMenu2">
+            <separator
+                  name="groupFrancaCommon">
+            </separator>
+         </menu>
+      </objectContribution>
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IFile"
+            nameFilter="*.xml"
+            id="org.franca.ui.actions.contribution2">
+         <action
+               class="org.franca.connectors.dbus.ui.DBusUIExecutableExtensionFactory:org.franca.connectors.dbus.ui.actions.CreateFrancaFromDBusXMLAction"
+               enablesFor="1"
+               id="org.franca.connectors.dbus.ui.actions.createFrancaFromDBusXMLAction"
+               label="Create Franca model from D-Bus XML file"
+               menubarPath="org.franca.ui.francaMenu2/groupFrancaCommon">
+         </action>
+      </objectContribution>
+   </extension>
+-->
+
 </plugin>

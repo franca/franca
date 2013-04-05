@@ -105,7 +105,16 @@ public class DBusConnector implements IFrancaConnector {
 
 	
 	private static NodeType loadDBusModel (ResourceSet resourceSet, String fileName) {
-		Resource resource = resourceSet.createResource(URI.createFileURI(fileName));
+		URI uri = URI.createFileURI(fileName);
+//		URI uri = null;
+//		// try creating file URI first
+//		try {
+//			uri = URI.createFileURI(fileName);
+//		} catch (IllegalArgumentException e) {
+//			// didn't work out, try generic URI
+//			uri = URI.createURI(fileName);
+//		}
+		Resource resource = resourceSet.createResource(uri);
 
 		HashMap<String,Object> options = new HashMap<String,Object>();
 		options.put(XMLResource.OPTION_EXTENDED_META_DATA, Boolean.TRUE);
