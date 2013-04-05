@@ -8,7 +8,7 @@ Bundle-SymbolicName: org.franca.deploymodel.dsl.tests;singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.xtext,
- org.eclipse.xtext.junit4;bundle-version="[2.3.1,2.3.2)",
+ org.eclipse.xtext.junit4;bundle-version="2.4.0",
  org.eclipse.xtext.ui.junit,
  org.junit4,
  org.eclipse.ui.workbench;resolution:=optional,
@@ -20,7 +20,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipselabs.xtext.utils.unittesting;bundle-version="0.9.3",
  org.eclipse.emf.codegen.ecore;bundle-version="2.7.0",
  org.eclipse.core.resources;bundle-version="3.7.100",
- org.eclipse.xtext.xbase.lib;bundle-version="2.3.1",
+ org.eclipse.xtext.xbase.lib;bundle-version="2.4.0",
  org.franca.deploymodel.dsl.tests.base;bundle-version="0.8.2"
 Import-Package: org.apache.commons.logging,
  org.apache.log4j,

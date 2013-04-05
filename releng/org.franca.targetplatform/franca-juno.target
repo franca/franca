@@ -4,11 +4,13 @@
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="de.itemis.xtext.antlr.sdk.feature.group" version="2.0.0.v201108011202"/>
 <unit id="de.itemis.xtext.antlr.feature.feature.group" version="2.0.0.v201108011202"/>
-<repository location="http://download.itemis.com/updates/releases/2.0.0/"/>
+<unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.4.0.v201303191501"/>
+<unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="2.4.0.v201303191413"/>
+<repository location="http://download.itemis.com/updates/releases/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.xtext.sdk.feature.group" version="2.3.1.v201208210947"/>
-<unit id="org.eclipse.xtend.sdk.feature.group" version="2.3.1.v201208210947"/>
+<unit id="org.eclipse.xtext.sdk.feature.group" version="2.4.0.v201303201134"/>
+<unit id="org.eclipse.xtend.sdk.feature.group" version="2.4.0.v201303201134"/>
 <repository location="http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
@@ -25,8 +27,10 @@
 <unit id="org.eclipse.gef.sdk.feature.group" version="3.9.0.201208201742"/>
 <unit id="org.eclipse.zest.sdk.feature.group" version="1.5.0.201208201742"/>
 <unit id="org.eclipse.graphiti.sdk.plus.feature.feature.group" version="0.9.1.v20120919-0732"/>
-<unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.3.0.v201206120758"/>
-<unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="2.3.0.v201206110920"/>
+<!-- the following features are temporarily delivered from download.itemis.com...
+<unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.4.0.v201303191501"/>
+<unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="2.4.0.v201303191413"/>
+-->
 <unit id="org.eclipse.swt" version="3.100.1.v4234e"/>
 <repository location="http://download.eclipse.org/releases/juno"/>
 </location>

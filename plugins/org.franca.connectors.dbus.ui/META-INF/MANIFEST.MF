@@ -13,6 +13,6 @@ Require-Bundle: org.eclipse.ui,
  org.franca.connectors.dbus;bundle-version="0.8.1",
  org.franca.core.dsl;bundle-version="0.8.1",
  org.franca.core.dsl.ui;bundle-version="0.8.1",
- org.eclipse.xtext.ui;bundle-version="2.3.1"
+ org.eclipse.xtext.ui;bundle-version="2.4.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy

@@ -7,9 +7,9 @@ Bundle-Activator: org.franca.generators.Activator
 Bundle-Vendor: Harman Infotainment Division
 Require-Bundle: org.eclipse.core.runtime,
  org.franca.core,
- org.eclipse.xtext.xbase.lib;bundle-version="2.3.1",
- org.eclipse.xtext.generator;bundle-version="2.3.1",
- org.eclipse.xtend.lib;bundle-version="2.3.1"
+ org.eclipse.xtext.xbase.lib;bundle-version="2.4.0",
+ org.eclipse.xtext.generator;bundle-version="2.4.0",
+ org.eclipse.xtend.lib;bundle-version="2.4.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: org.franca.generators

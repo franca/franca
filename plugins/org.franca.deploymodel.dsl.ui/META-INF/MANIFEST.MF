@@ -18,5 +18,6 @@ Import-Package: org.apache.log4j
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.franca.deploymodel.dsl.ui.contentassist,
  org.franca.deploymodel.dsl.ui.contentassist.antlr,
- org.franca.deploymodel.dsl.ui.internal
+ org.franca.deploymodel.dsl.ui.internal,
+ org.franca.deploymodel.dsl.ui.quickfix
 Bundle-Activator: org.franca.deploymodel.dsl.ui.internal.FDeployActivator

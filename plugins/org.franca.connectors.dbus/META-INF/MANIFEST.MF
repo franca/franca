@@ -8,7 +8,7 @@ Bundle-Vendor: Harman Infotainment Division
 Require-Bundle: org.eclipse.core.runtime,
  org.franca.core;bundle-version="0.8.0",
  model.emf.dbusxml;bundle-version="0.7.1";visibility:=reexport,
- org.eclipse.xtend.lib;bundle-version="2.3.1",
+ org.eclipse.xtend.lib;bundle-version="2.4.0",
  com.google.guava,
  org.eclipse.xtext.xbase.lib,
  com.google.inject;bundle-version="3.0.0"
