@@ -122,18 +122,18 @@ class Franca2DBusTransformation {
 		}
 	}
 
-	def dispatch lineComment(FType src) {
+	def dispatch List<String> lineComment(FType src) {
 		newArrayList("lineComment to be defined")
 	}
 
-	def dispatch lineComment(FArrayType src) {		
+	def dispatch List<String> lineComment(FArrayType src) {		
 		val s = newArrayList(src.name+" = array["+src.elementType.label+"]")
 		if (src.elementType.derived!=null)
 			s.addAll(src.elementType.derived.lineComment)
 		s		
 	}				
 				
-	def dispatch lineComment(FMapType src) {
+	def dispatch List<String> lineComment(FMapType src) {
 		val s = newArrayList(src.name + " = dictionary(key="+src.keyType.label+",value="+src.valueType.label+")")
 		if (src.keyType.derived!=null && src.valueType.derived!=null)
 	    	s.addAll(lineCommentForDictionary(src.keyType.derived, src.valueType.derived))		
@@ -141,7 +141,7 @@ class Franca2DBusTransformation {
 	}				
 				
     def dispatch lineCommentForDictionary(FType key, FType value) {
-    	val s = newArrayList("key = "+key.lineComment.head);
+    	val s = newArrayList("key = "+key.lineComment.head)
 	    s.addAll("value = " +value.lineComment.head)		
     	s
     }
@@ -158,7 +158,7 @@ class Franca2DBusTransformation {
     	s
     }												
 				
-	def dispatch lineComment(FCompoundType src) {
+	def dispatch List<String> lineComment(FCompoundType src) {
 		val fieldComment = [FTypedElement e| src.name+"."+e.name+ " ('"+e.type.transformBasicType+"') = "+e.description ]
 		
 		val typename =  switch(src) {
@@ -171,7 +171,7 @@ class Franca2DBusTransformation {
 		s
 	}								
 				
-	def dispatch lineComment(FEnumerationType src) {				
+	def dispatch List<String> lineComment(FEnumerationType src) {				
 		newArrayList("enum"+src.allEnumerators.map[name+" ("+value+")" ])
 	}			
 
