@@ -1,4 +1,4 @@
-package org.franca.connectors.dbus.ui.util;
+package org.franca.core.dsl.ui.util;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
