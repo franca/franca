@@ -151,6 +151,21 @@
          </menu>
       </objectContribution>
    </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IFile"
+            nameFilter="*.fidl"
+            id="org.franca.ui.actions.contribution1_1">
+         <action
+               class="org.franca.core.dsl.ui.FrancaIDLExecutableExtensionFactory:org.franca.core.dsl.ui.actions.GenerateContractDotAction"
+               enablesFor="1"
+               id="org.franca.connectors.dbus.ui.actions.generateContractDotAction"
+               label="Generate dot-file from contract"
+               menubarPath="org.franca.ui.francaMenu/groupFrancaCommon">
+         </action>
+      </objectContribution>
+   </extension>
 
    <!-- adding resource factories -->
 	<extension
