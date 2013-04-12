@@ -15,10 +15,12 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.XMLResource;
+import org.eclipse.emf.ecore.xmi.impl.URIHandlerImpl;
 import org.franca.core.framework.IFrancaConnector;
 import org.franca.core.framework.IModelContainer;
 import org.franca.core.framework.IssueReporter;
 import org.franca.core.franca.FModel;
+import org.franca.core.utils.FileHelper;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -103,9 +105,23 @@ public class DBusConnector implements IFrancaConnector {
 	}
 	
 
+	/**
+	 * We need to provide a different behavior for URI resolving during load
+	 * of D-Bus Introspection XML files. This is because the noNamespaceSchemaLocation
+	 * attribute "introspect.xsd" will be used as a key to find the corresponding
+	 * EMF package name. If we load an Introspection file with an absolute path, the 
+	 * resolving would destroy this key and the EMF package is no more found.  
+	 */
+	private static class DBusURIHandler extends URIHandlerImpl {
+		@Override
+		public URI resolve(URI uri) {
+			// don't resolve
+			return uri;
+		}
+	}
 	
 	private static NodeType loadDBusModel (ResourceSet resourceSet, String fileName) {
-		URI uri = URI.createFileURI(fileName);
+		URI uri = FileHelper.createURI(fileName);
 //		URI uri = null;
 //		// try creating file URI first
 //		try {
@@ -119,12 +135,16 @@ public class DBusConnector implements IFrancaConnector {
 		HashMap<String,Object> options = new HashMap<String,Object>();
 		options.put(XMLResource.OPTION_EXTENDED_META_DATA, Boolean.TRUE);
 		options.put(XMLResource.OPTION_SCHEMA_LOCATION, "introspect.xsd");
+		options.put(XMLResource.OPTION_URI_HANDLER, new DBusURIHandler());
 		try {
 			resource.load(options);
 		} catch (IOException e) {
 			e.printStackTrace();
 			//return null;
 		}
+
+		if (resource.getContents().isEmpty())
+			return null;
 
 		return ((DocumentRoot)resource.getContents().get(0)).getNode();
 	}
