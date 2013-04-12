@@ -32,7 +32,7 @@ class DBus2FrancaTransformation {
 	List<FType> newTypes
 	
 	def create FrancaFactory::eINSTANCE.createFModel transform (NodeType src) {
-		name = src.name
+		name = src.name.replace('/', '_')
 		interfaces.addAll(src.interface.map [transformInterface])
 	}
 
