@@ -10,6 +10,7 @@ package org.franca.core.dsl;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.franca.core.franca.FModel;
+import org.franca.core.utils.FileHelper;
 import org.franca.core.utils.ModelPersistenceHandler;
 
 import com.google.inject.Inject;
@@ -45,7 +46,8 @@ public class FrancaPersistenceManager {
 	 */
 	public FModel loadModel(String filename) {
 		try {
-			URI fileURI = ModelPersistenceHandler.normalizeURI(createURI(filename));
+			URI uri = FileHelper.createURI(filename);
+			URI fileURI = ModelPersistenceHandler.normalizeURI(uri);
 		
 			if (fileURI.segmentCount() > 1) {
 				return loadModel(fileURI.lastSegment(), fileURI.trimSegments(1).toString() + "/");
@@ -103,7 +105,7 @@ public class FrancaPersistenceManager {
 	 * @return true if save could be completed successfully
 	 */
 	public boolean saveModel(FModel model, String filename) {
-		URI uri = URI.createURI(filename);
+		URI uri = FileHelper.createURI(filename);
 		
 		if (uri.segmentCount() > 1) {
 			return saveModel(model, uri.lastSegment(), uri.trimSegments(1).toString() + "/");
@@ -139,37 +141,6 @@ public class FrancaPersistenceManager {
 		}
 
 		return createModelPersistenceHandler(resourceSet).saveModel(model, fn, cwd);
-	}
-
-	/**
-	 * Workaround: createFileURI is platform-dependent and doesn't work
-	 * for absolute paths on Unix and MacOS. This function provides 
-	 * createURI from file paths for Unix, MacOS and Windows.
-	 */
-	private URI createURI(String filename) {
-		URI uri = URI.createURI(filename);
-
-		String os = System.getProperty("os.name");
-		boolean isWindows = os.startsWith("Windows");
-		boolean isUnix = !isWindows; // this might be too clumsy...
-		if (uri.scheme() != null) {
-			// If we are under Windows and s starts with x: it is an absolute path
-			if (isWindows && uri.scheme().length() == 1) {
-				return URI.createFileURI(filename);
-			}
-			// otherwise it is a proper URI
-			else {
-				return uri;
-			}
-		}
-		// Handle paths that start with / under Unix e.g. /local/foo.txt
-		else if (isUnix && filename.startsWith("/")) { 
-			return URI.createFileURI(filename);
-		}
-		// otherwise it is a proper URI
-		else {
-			return uri;
-		}
 	}
 
 	// TODO: refactor MPH in order to avoid this function
