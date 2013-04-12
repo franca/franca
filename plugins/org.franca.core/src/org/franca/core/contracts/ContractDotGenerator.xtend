@@ -25,6 +25,7 @@ class ContractDotGenerator {
 
 
 	def private generate (FInterface api) '''
+		«IF api.contract?.stateGraph != null»
 		«FOR it : api.contract.stateGraph.states»
 			«name»
 		«ENDFOR»
@@ -33,6 +34,7 @@ class ContractDotGenerator {
 			«name» -> «out.to.name» [label="«out.genLabel»"]
 			«ENDFOR»
 		«ENDFOR»
+		«ENDIF»
 	'''
 	
 	def private String genLabel (FTransition it) {
