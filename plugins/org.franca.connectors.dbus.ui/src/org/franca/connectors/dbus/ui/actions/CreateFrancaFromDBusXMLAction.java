@@ -21,6 +21,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.console.MessageConsoleStream;
 import org.franca.connectors.dbus.DBusConnector;
 import org.franca.connectors.dbus.DBusModelContainer;
+import org.franca.connectors.dbus.util.XMLRootCheck;
 import org.franca.core.dsl.FrancaPersistenceManager;
 import org.franca.core.dsl.ui.util.SpecificConsole;
 import org.franca.core.franca.FModel;
@@ -47,6 +48,10 @@ public class CreateFrancaFromDBusXMLAction implements IObjectActionDelegate {
             }
 
             IFile file = (IFile)selection.getFirstElement();
+            if (! isDBusIntrospectionFile(file)) {
+    			err.println("The selected file is not D-Bus Introspection XML format!");
+    			return;
+            }
             String dbusFile = file.getLocationURI().toString();
             String outputDir = file.getParent().getLocation().toString();
 
@@ -106,5 +111,14 @@ public class CreateFrancaFromDBusXMLAction implements IObjectActionDelegate {
 		// TODO Auto-generated method stub
 	}
 
-
+	private boolean isDBusIntrospectionFile (IFile file) {
+		String root = "";
+		try {
+			root = XMLRootCheck.determineRootElement(file.getContents());
+		} catch (CoreException e) {
+			return false;
+		}
+		return root.equals("node");
+	}
 }
+
