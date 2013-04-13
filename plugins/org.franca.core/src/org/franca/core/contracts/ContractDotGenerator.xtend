@@ -10,6 +10,14 @@ package org.franca.core.contracts
 import org.franca.core.franca.FModel
 import org.franca.core.franca.FInterface
 import org.franca.core.franca.FTransition
+import org.franca.core.franca.FEventOnIf
+import org.franca.core.franca.FGuard
+import org.franca.core.franca.FExpression
+import org.franca.core.franca.FBinaryOperation
+import org.franca.core.franca.FTypedElementRef
+import org.franca.core.franca.FTypeRef
+import org.franca.core.franca.FIntegerConstant
+import org.franca.core.franca.FBooleanConstant
 
 class ContractDotGenerator {
 	
@@ -38,19 +46,57 @@ class ContractDotGenerator {
 	'''
 	
 	def private String genLabel (FTransition it) {
-		val ev = trigger.event
-		if (ev.call!=null) {
-			"call " + ev.call.name
-		} else if (ev.respond!=null) {
-			"respond " + ev.respond.name
-		} else if (ev.signal!=null) {
-			"signal " + ev.signal.name
-		} else if (ev.signal!=null) {
-			"set " + ev.set.name
-		} else if (ev.signal!=null) {
-			"update " + ev.update.name
+		trigger.event.genEventLabel + 
+		if (guard==null)
+			''
+		else
+			"\\n" + guard.genGuard
+	}
+	
+	def private String genEventLabel (FEventOnIf it) {
+		if (call!=null) {
+			"call " + call.name
+		} else if (respond!=null) {
+			"respond " + respond.name
+		} else if (signal!=null) {
+			"signal " + signal.name
+		} else if (signal!=null) {
+			"set " + set.name
+		} else if (signal!=null) {
+			"update " + update.name
 		} else {
 			"unknown_event"
 		}
 	}
+
+	def private String genGuard (FGuard it) {
+		'[' + condition.gen + ']'
+	}
+	
+
+	def dispatch private String gen (FBinaryOperation it) {
+		left.gen + op + right.gen
+	}
+
+	def dispatch private String gen (FTypedElementRef it) {
+		if (target==null) {
+			element.name
+		} else {
+			target.gen + "." + field.name
+		}
+	}
+	
+	def dispatch private String gen (FBooleanConstant it) {
+		^val.toString
+	}
+
+	def dispatch private String gen (FIntegerConstant it) {
+		^val.toString
+	}
+
+	def dispatch private String gen (FExpression it) {
+		toString
+	}
+
+
 }
