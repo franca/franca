@@ -44,8 +44,8 @@ class DBus2FrancaTransformation {
 		name = src.name
 		if (src.version != null)
 			version = src.version.transformVersion
-		if(src.doc != null) {
-			comment = src.doc.transformAnnotationBlock()
+		if(src.doc.hasLines) {
+			comment = src.doc.transformAnnotationBlock
 		}			
 		newTypes = types
 		attributes.addAll(src.property.map [transformAttribute])
@@ -91,8 +91,8 @@ class DBus2FrancaTransformation {
 	def create FrancaFactory::eINSTANCE.createFMethod transformMethod (MethodType src) {
 		val nameNormal = src.name.normalizeId 
 		name = nameNormal
-		if(src.doc != null) {
-			comment = src.doc.transformAnnotationBlock()
+		if(src.doc.hasLines) {
+			comment = src.doc.transformAnnotationBlock
 		}
 		val srcInArgs = src.arg.filter(a | a.direction==DirectionType::IN).toList
 		inArgs.addAll(srcInArgs.map[
@@ -106,8 +106,8 @@ class DBus2FrancaTransformation {
 
 	def create FrancaFactory::eINSTANCE.createFBroadcast transformBroadcast (SignalType src) {
 		name = src.name.normalizeId
-		if(src.doc != null) {
-			comment = src.doc.transformAnnotationBlock()
+		if(src.doc.hasLines) {
+			comment = src.doc.transformAnnotationBlock
 		}					
 		outArgs.addAll(src.arg.map [transformArg(src.name, "_arg" + src.arg.indexOf(it))])
 	}
@@ -120,21 +120,26 @@ class DBus2FrancaTransformation {
 		val te = src.type.transformTypeSig(namespace + "_" + name) 
 		type = te.type
 		array = if (te.isArray) "[]" else null
-		if(src.doc != null && src.primitiveType) {
-			comment = src.doc.transformAnnotationBlock()
+		if(src.doc.hasLines && src.primitiveType) {
+			comment = src.doc.transformAnnotationBlock
 		}					
 	}
 
 	// ANNOTATIONS 
-	def create FrancaFactory::eINSTANCE.createFAnnotationBlock transformAnnotationBlock(DocType doc) {				
-		elements.add(transformAnnotation(doc))				
+	def private hasLines (DocType doc) {
+		doc!=null && doc.line!=null && (!doc.line.empty)
+	}
+	
+	def private create FrancaFactory::eINSTANCE.createFAnnotationBlock transformAnnotationBlock(DocType doc) {
+		if (doc.line!=null && !doc.line.empty)				
+			elements.add(transformAnnotation(doc))				
 	}
 
 	def boolean isPrimitiveType(ArgType argument) {
 		argument.type.length == 1
 	}
 
-	def create FrancaFactory::eINSTANCE.createFAnnotation transformAnnotation(DocType doc) {
+	def private create FrancaFactory::eINSTANCE.createFAnnotation transformAnnotation(DocType doc) {
 		type = FAnnotationType::DESCRIPTION
 		comment = doc.line.get(0)
 	}
