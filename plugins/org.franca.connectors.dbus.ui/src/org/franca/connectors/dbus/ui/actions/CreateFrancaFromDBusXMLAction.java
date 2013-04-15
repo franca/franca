@@ -76,6 +76,10 @@ public class CreateFrancaFromDBusXMLAction implements IObjectActionDelegate {
     		try {
     			fmodel = conn.toFranca(dbus);
     		} catch (Exception e) {
+    			err.println("Exception during transformation: " + e.toString());
+    			for(StackTraceElement f : e.getStackTrace()) {
+    				err.println("\tat " + f.toString());
+    			}
     			err.println("Internal transformation error, aborting.");
 				return;
     		}

@@ -87,9 +87,12 @@ public class GenerateDBusXMLAction implements IObjectActionDelegate {
     		DBusConnector dbusConn = new DBusConnector();
     		DBusModelContainer dbus = null;
     		try {
-    			// remove try/catch in order to get detailed error messages in the console
     			dbus = (DBusModelContainer) dbusConn.fromFranca(fmodel);
     		} catch (Exception e) {
+    			err.println("Exception during transformation: " + e.toString());
+    			for(StackTraceElement f : e.getStackTrace()) {
+    				err.println("\tat " + f.toString());
+    			}
     			err.println("Internal transformation error, aborting.");
 				return;
     		}
