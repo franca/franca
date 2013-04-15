@@ -5,6 +5,7 @@ import java.util.List
 import model.emf.dbusxml.AccessType
 import model.emf.dbusxml.DbusxmlFactory
 import model.emf.dbusxml.DirectionType
+import model.emf.dbusxml.DocType
 import org.franca.core.framework.TransformationLogger
 import org.franca.core.franca.FAnnotation
 import org.franca.core.franca.FAnnotationType
@@ -104,9 +105,13 @@ class Franca2DBusTransformation {
 		}
 	}
 	
-	def create DbusxmlFactory::eINSTANCE.createDocType createDoc (FModelElement src) {
+	def private DocType createDoc (FModelElement src) {
 		if(src.comment != null) {
+			val it = DbusxmlFactory::eINSTANCE.createDocType
 			line.addLines(src.name, src.description)
+			it
+		} else {
+			null
 		}
 	}
 	
