@@ -9,12 +9,7 @@ import org.junit.runners.Suite;
 	Franca2HtmlTest.class,
 	
 	// generators
-	HppGeneratorTest.class,
-	DeployGeneratorTest.class,
-	
-	// tools and utilities
-	DigraphTest.class,
-	PersistenceTest.class
+	HppGeneratorTest.class
 })
 
 
