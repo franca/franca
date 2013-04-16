@@ -1,0 +1,94 @@
+
+// import the deployment specification
+import "../spec/SampleDeploySpec.fdepl"
+
+// import the actual Franca interfaces we want to deploy 
+import "classpath:/org/example/idl/MediaPlayer.fidl"
+
+
+/**
+ * This is an example for defining all required deployment information for
+ * the interface MediaPlayer (defined in MediaPlayer.fidl). The specification
+ * used for defining which deployment information is mandatory or optional
+ * is provided by SampleDeploySpec. 
+ * 
+ * A code generator which generates code specific for SampleDeploySpec should 
+ * use this file instead of the plain MediaPlayer.fidl. This code generator
+ * can navigate through the model as usual, but may also use a PropertyAccessor
+ * class in order to type-safely access the property values defined below.
+ */
+define org.example.spec.SampleDeploySpec
+	for interface org.example.idl.MediaPlayer
+{
+	attribute mode {
+		Groups = { g1, g2 }
+	}
+	
+	attribute remainingTrack {
+		Groups = { g3 }
+	}
+	
+	attribute remainingAll {
+		Groups = { g3 }
+	}
+	
+	attribute currentTrack {
+		Groups = { g2, g4 }
+	}
+	
+	attribute currentPlaylist {
+		Groups = { g2, g4 }
+	}
+	
+	attribute mode {
+		Groups = { g1, g2 }
+	}
+	
+	method getMetadata {
+		CallSemantics = synchronous
+		Priority = low
+		IsOptional = true
+	}
+
+	method clear {
+		IsOptional = false
+	}	
+
+	method appendTrack {
+		IsOptional = false
+	}
+	
+	method play {
+		Priority = high
+		IsOptional = false
+	}
+
+	method pause {
+		Priority = high
+		IsOptional = false
+	}
+		
+	method setRepeatMode {
+		IsOptional = false
+	}
+	
+	method nextTrack { 
+		IsOptional = false
+	}
+
+	method previousTrack {
+		Priority = medium
+		IsOptional = false
+	}
+
+	struct TrackInfo {
+		title     { Encoding = utf8 }
+		album     { Encoding = utf8 }
+		interpret { Encoding = utf16 }
+		composer  { Encoding = utf16 }
+		genre     { Encoding = utf8 }
+	}
+}
+
+
+

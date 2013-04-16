@@ -1,0 +1,32 @@
+
+// import the deployment specification
+import "../spec/SampleDeploySpec.fdepl"
+
+// import the actual Franca interfaces we want to deploy 
+import "classpath:/org/example/idl/MediaPlayer.fidl"
+
+
+/**
+ * The definition of the runtime instance "ExampleServer", which
+ * provides two instances of the MediaPlayer interface. Franca's deployment
+ * modeling is used here to specify the information needed for building
+ * the runtime network according to the SampleDeploySpec specification.
+ */
+define org.example.spec.SampleDeploySpec
+	for provider ExampleServer
+{
+	ProcessName = "server1.exe"
+	
+	instance org.example.idl.MediaPlayer {
+		IPAddress = "192.168.1.50"
+		Port = 8765
+		
+		AccessControl = subnet
+	}	
+
+	instance org.example.idl.MediaPlayer {
+		IPAddress = "192.168.1.50"
+		Port = 7654
+	}
+}
+

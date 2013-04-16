@@ -1,0 +1,23 @@
+
+/**
+ * This is a specification for the deployment of IP-based IPC stacks.
+ * This is just an example, an actual deployment specification will
+ * have to take into account platform-specific details, like proper
+ * names for the properties and other stuff.
+ */
+specification org.example.spec.IPBasedIPC
+{
+	for providers {
+		// interface providers will have some process name
+		ProcessName:     String;
+	}
+
+	for instances {
+		// provided interfaces must have an IP address and an optional IP port number	
+		IPAddress:       String;
+		Port:            Integer                     (optional);	
+		
+		// control which clients may access this instance
+		AccessControl:   { local, subnet, global }   (default: global);
+	}
+}

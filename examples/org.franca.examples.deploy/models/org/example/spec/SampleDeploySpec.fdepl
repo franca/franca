@@ -1,0 +1,28 @@
+
+// import the base specification
+import "IPBasedIPC.fdepl"
+
+
+/**
+ * This is an example specification for Franca's deployment model.
+ * It inherits from the IPBasedIPC example specification.
+ */
+specification org.example.spec.SampleDeploySpec
+	extends org.example.spec.IPBasedIPC
+{
+	for methods {
+		CallSemantics: {synchronous, asynchronous} (default: asynchronous);
+		Priority:      {low, medium, high}         (default: low);		
+		IsOptional:    Boolean;
+		Range:         Integer[]                   (default: {1, 2, 3});
+	}
+	
+	for attributes {
+		IsMasked:      Boolean                     (default: false);
+		Groups:        {g1, g2, g3, g4}[];
+	}
+	
+	for strings {
+		Encoding:      {utf8, utf16, unicode};
+	}
+}
