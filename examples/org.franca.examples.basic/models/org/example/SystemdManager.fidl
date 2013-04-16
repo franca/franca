@@ -8,6 +8,10 @@ package org.example
                     
     @source-alias : org.freedesktop.systemd1.Manager, version 0.1.1 **>
 interface SystemdManager {
+	version {
+		major 0
+		minor 1		
+	}
 
 	<** @description: This encodes encodes the version string of the running
 	    systemd instance. **>
