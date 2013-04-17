@@ -1,3 +1,4 @@
 *.xml_gen
 *.MF_gen
+bin/
 
