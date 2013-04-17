@@ -1,0 +1,37 @@
+package org.franca.examples.demo
+
+interface testAPI {
+	version { major 5 minor 0 }
+
+	method a {}
+
+	method b {}
+	
+	method c {}
+	
+	method d {}
+
+	contract {
+		PSM {
+			initial A
+			state A {
+				on call a -> B
+				on call b -> C
+				on call d -> A
+			}
+			state B {
+				on call a -> D
+			}
+			state C {
+				on call a -> E
+			}
+			state D {
+				on call c -> E
+			}
+			state E {
+				on call c -> D
+			}
+		}
+	}
+}
+
