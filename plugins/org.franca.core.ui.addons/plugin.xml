@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            allowMultiple="false"
+            category="org.franca.core.ui.addons.contractviewer.category"
+            class="org.franca.core.ui.addons.contractviewer.FrancaContractVisualizerView"
+            icon="icons/franca_logo.png"
+            id="org.franca.core.ui.addons.contractviewer"
+            name="Franca Contract View"
+            restorable="true">
+      </view>
+      <category
+            id="org.franca.core.ui.addons.contractviewer.category"
+            name="Franca">
+      </category>
+   </extension>
+
+</plugin>
