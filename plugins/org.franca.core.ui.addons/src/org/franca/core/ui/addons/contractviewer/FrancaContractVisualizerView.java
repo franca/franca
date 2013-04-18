@@ -82,9 +82,11 @@ public class FrancaContractVisualizerView extends ViewPart {
 		activeEditor.getDocument().readOnly(new IUnitOfWork.Void<XtextResource>() {
 			@Override
 			public void process(XtextResource resource) throws Exception {
-				for (EObject obj : resource.getContents()) {
-					if (obj instanceof FModel) {
-						activeModel = (FModel) obj;
+				if (resource != null) {
+					for (EObject obj : resource.getContents()) {
+						if (obj instanceof FModel) {
+							activeModel = (FModel) obj;
+						}
 					}
 				}
 			}
