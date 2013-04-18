@@ -21,7 +21,6 @@ import org.eclipse.gef4.zest.core.widgets.IStyleableFigure;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -147,22 +146,22 @@ public class GraphLabel extends CachedLabel implements IStyleableFigure {
 	 * @see org.eclipse.draw2d.Label#paintFigure(org.eclipse.draw2d.Graphics)
 	 */
 	public void paint(Graphics graphics) {
-		int blue = getBackgroundColor().getBlue();
-		blue = (int) (blue - (blue * 0.20));
-		blue = blue > 0 ? blue : 0;
-
-		int red = getBackgroundColor().getRed();
-		red = (int) (red - (red * 0.20));
-		red = red > 0 ? red : 0;
-
-		int green = getBackgroundColor().getGreen();
-		green = (int) (green - (green * 0.20));
-		green = green > 0 ? green : 0;
-
-		Color lightenColor = new Color(Display.getCurrent(), new RGB(red,
-				green, blue));
-		graphics.setForegroundColor(lightenColor);
-		graphics.setBackgroundColor(getBackgroundColor());
+		// int blue = getBackgroundColor().getBlue();
+		// blue = (int) (blue - (blue * 0.20));
+		// blue = blue > 0 ? blue : 0;
+		//
+		// int red = getBackgroundColor().getRed();
+		// red = (int) (red - (red * 0.20));
+		// red = red > 0 ? red : 0;
+		//
+		// int green = getBackgroundColor().getGreen();
+		// green = (int) (green - (green * 0.20));
+		// green = green > 0 ? green : 0;
+		//
+		// Color lightenColor = new Color(Display.getCurrent(), new RGB(red,
+		// green, blue));
+		graphics.setForegroundColor(borderColor);
+		graphics.setBackgroundColor(borderColor);
 
 		int safeBorderWidth = borderWidth > 0 ? borderWidth : 1;
 		graphics.pushState();
@@ -175,8 +174,8 @@ public class GraphLabel extends CachedLabel implements IStyleableFigure {
 		// rectangle with round corners).
 		Rectangle rect = getBounds().getCopy();
 		rect.height /= 2;
-		graphics.setForegroundColor(getBackgroundColor());
-		graphics.setBackgroundColor(getBackgroundColor());
+		graphics.setForegroundColor(borderColor);
+		graphics.setBackgroundColor(borderColor);
 		// graphics.fillRoundRectangle(rect, arcWidth * safeBorderWidth,
 		// arcWidth * 2 * safeBorderWidth);
 		// graphics.fillOval(rect);
@@ -184,8 +183,8 @@ public class GraphLabel extends CachedLabel implements IStyleableFigure {
 		// Bottom part inside the border.
 		rect.y = rect.y + rect.height;
 		rect.height += 1; // Not sure why it is needed, but it is needed ;-)
-		graphics.setForegroundColor(lightenColor);
-		graphics.setBackgroundColor(lightenColor);
+		graphics.setForegroundColor(borderColor);
+		graphics.setBackgroundColor(borderColor);
 		// graphics.fillRoundRectangle(rect, arcWidth * safeBorderWidth,
 		// arcWidth * 2 * safeBorderWidth);
 		// graphics.fillOval(rect);
@@ -197,8 +196,8 @@ public class GraphLabel extends CachedLabel implements IStyleableFigure {
 		rect.y += (arcWidth / 2);
 		rect.height -= arcWidth / 2;
 		rect.height -= safeBorderWidth;
-		graphics.setBackgroundColor(lightenColor);
-		graphics.setForegroundColor(getBackgroundColor());
+		graphics.setBackgroundColor(borderColor);
+		graphics.setForegroundColor(borderColor);
 		// graphics.fillGradient(rect, true);
 
 		// Paint the border
@@ -219,11 +218,11 @@ public class GraphLabel extends CachedLabel implements IStyleableFigure {
 
 		graphics.popState();
 
-		lightenColor.dispose();
+		// lightenColor.dispose();
 	}
 
 	protected Color getBackgroundTextColor() {
-		return getBackgroundColor();
+		return borderColor;
 	}
 
 	/**

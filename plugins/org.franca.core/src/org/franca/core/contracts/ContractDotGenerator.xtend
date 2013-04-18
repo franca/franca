@@ -49,7 +49,7 @@ class ContractDotGenerator {
 		if (guard==null)
 			''
 		else
-			"\\n" + guard.genGuard
+			"\n" + guard.genGuard
 	}
 	
 	def private String genEventLabel (FEventOnIf it) {

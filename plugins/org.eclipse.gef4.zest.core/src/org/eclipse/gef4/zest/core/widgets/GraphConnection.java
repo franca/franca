@@ -73,7 +73,6 @@ public class GraphConnection extends GraphItem {
 	private IFigure tooltip;
 
 	private boolean highlighted;
-	private boolean hasCustomTooltip;
 
 	private ConnectionRouter router = null;
 
@@ -86,8 +85,8 @@ public class GraphConnection extends GraphItem {
 		this.sourceNode = source;
 		this.destinationNode = destination;
 		this.visible = true;
-		this.color = ColorConstants.lightGray;
-		this.foreground = ColorConstants.lightGray;
+		this.color = ColorConstants.black;
+		this.foreground = ColorConstants.black;
 		this.highlightColor = graphModel.DARK_BLUE;
 		this.lineWidth = 1;
 		this.lineStyle = Graphics.LINE_SOLID;
@@ -343,7 +342,6 @@ public class GraphConnection extends GraphItem {
 	 * figure has been set.
 	 */
 	public void setTooltip(IFigure tooltip) {
-		hasCustomTooltip = true;
 		this.tooltip = tooltip;
 		updateFigure(connectionFigure);
 	}
@@ -353,9 +351,7 @@ public class GraphConnection extends GraphItem {
 	 * meaningless if a custom figure has been set.
 	 */
 	public IFigure getTooltip() {
-		IFigure tFigure = new Label(getText());
-		return tFigure;
-		// return this.tooltip;
+		return this.tooltip;
 	}
 
 	/**
@@ -638,15 +634,31 @@ public class GraphConnection extends GraphItem {
 			}
 		}
 
-		IFigure toolTip;
+		IFigure toolTip = null;
+		GraphConnection opposite = getOpposite();
 		if (this.getTooltip() == null && getText() != null
-				&& getText().length() > 0 && hasCustomTooltip == false) {
+				&& getText().length() > 0) {
 			toolTip = new Label();
-			((Label) toolTip).setText(getText());
+
+			String oppositeLabel = (opposite == null) ? "" : "\n(opposite: "
+					+ opposite.getText() + ")";
+
+			((Label) toolTip).setText(getText() + oppositeLabel);
 		} else {
 			toolTip = this.getTooltip();
 		}
 		connection.setToolTip(toolTip);
+	}
+
+	private GraphConnection getOpposite() {
+		for (Object obj : this.getGraphModel().getConnections()) {
+			GraphConnection gc = (GraphConnection) obj;
+			if (gc.getSource().equals(this.getDestination())
+					&& gc.getDestination().equals(this.getSource())) {
+				return gc;
+			}
+		}
+		return null;
 	}
 
 	private PolylineArcConnection doCreateFigure() {
@@ -775,5 +787,4 @@ public class GraphConnection extends GraphItem {
 	public void setRouter(ConnectionRouter router) {
 		this.router = router;
 	}
-
 }

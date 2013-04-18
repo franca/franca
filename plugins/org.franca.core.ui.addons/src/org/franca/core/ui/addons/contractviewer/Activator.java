@@ -15,6 +15,7 @@ public class Activator extends AbstractUIPlugin {
 
 	private IPartListener partListener;
 	private IResourceChangeListener resourceChangeListener;
+	private static Activator plugin;
 	
 	public Activator() {
 		partListener = new FrancaEditorPartListener();
@@ -24,6 +25,7 @@ public class Activator extends AbstractUIPlugin {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
+		plugin = this;
 
 		IWorkbenchPage activePage = getActivePage();
 		if (activePage != null) {
@@ -34,6 +36,7 @@ public class Activator extends AbstractUIPlugin {
 
 	@Override
 	public void stop(BundleContext context) throws Exception {
+		plugin = null;
 		super.stop(context);
 
 		IWorkbenchPage activePage = getActivePage();
@@ -51,5 +54,9 @@ public class Activator extends AbstractUIPlugin {
 			}
 		}
 		return null;
+	}
+	
+	public static Activator getDefault() {
+		return plugin;
 	}
 }

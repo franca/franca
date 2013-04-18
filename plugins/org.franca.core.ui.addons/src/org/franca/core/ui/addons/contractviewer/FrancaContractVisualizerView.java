@@ -9,6 +9,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.gef4.zest.dot.DotGraph;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -21,20 +22,29 @@ import org.franca.core.contracts.ContractDotGenerator;
 import org.franca.core.franca.FModel;
 import org.franca.core.franca.FState;
 import org.franca.core.franca.FTransition;
+import org.franca.core.ui.addons.contractviewer.util.DotGraphSelectionListener;
+
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 
 public class FrancaContractVisualizerView extends ViewPart {
 
 	private static String viewId = "org.franca.core.ui.addons.contractviewer";
 	private XtextEditor activeEditor;
 	private IFile activeFile;
-	private static WeakReference<FrancaContractVisualizerView> instance;
+	private static WeakReference<FrancaContractVisualizerView> instance = new WeakReference<FrancaContractVisualizerView>(null);
 	private FModel activeModel;
 	private Map<FState, Set<FTransition>> backwardIndex;
 	private DotGraph graph;
 	private ContractDotGenerator generator;
+	private SelectionListener selectionListener;
+	
+	@Inject
+	Injector injector;
+	
+	//ILocationInFileProvider locationFileProvider;
 	
 	public FrancaContractVisualizerView() {
-		instance = new WeakReference<FrancaContractVisualizerView>(null);
 		generator = new ContractDotGenerator();
 	}
 	
@@ -50,7 +60,10 @@ public class FrancaContractVisualizerView extends ViewPart {
 	
 	@Override
 	public void createPartControl(Composite parent) {
+		selectionListener = new DotGraphSelectionListener();
+		injector.injectMembers(selectionListener);
 		graph = new DotGraph(parent, SWT.NONE);
+		graph.addSelectionListener(selectionListener);
 	}
 
 	@Override
@@ -72,6 +85,10 @@ public class FrancaContractVisualizerView extends ViewPart {
 	
 	public XtextEditor getActiveEditor() {
 		return activeEditor;
+	}
+	
+	public FModel getActiveModel() {
+		return activeModel;
 	}
 	
 	public Map<FState, Set<FTransition>> getBackwardIndex() {

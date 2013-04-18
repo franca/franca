@@ -358,6 +358,7 @@ public class Graph extends FigureCanvas implements IContainer {
 	 */
 	public void dispose() {
 		release();
+		layoutAlgorithm = null;
 		super.dispose();
 	}
 

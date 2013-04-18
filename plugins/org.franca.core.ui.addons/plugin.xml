@@ -6,7 +6,7 @@
       <view
             allowMultiple="false"
             category="org.franca.core.ui.addons.contractviewer.category"
-            class="org.franca.core.ui.addons.contractviewer.FrancaContractVisualizerView"
+            class="org.franca.core.ui.addons.contractviewer.util.ContractViewerExecutableExtensionFactory:org.franca.core.ui.addons.contractviewer.FrancaContractVisualizerView"
             icon="icons/franca_logo.png"
             id="org.franca.core.ui.addons.contractviewer"
             name="Franca Contract View"
