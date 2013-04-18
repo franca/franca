@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<component id="org.eclipse.gef4.zest.core" version="2">
+    <resource path="src/org/eclipse/gef4/zest/core/widgets/GraphContainer.java" type="org.eclipse.gef4.zest.core.widgets.GraphContainer">
+        <filter id="627060751">
+            <message_arguments>
+                <message_argument value="ZestRootLayer"/>
+                <message_argument value="GraphContainer"/>
+                <message_argument value="zestLayer"/>
+            </message_arguments>
+        </filter>
+    </resource>
+</component>
