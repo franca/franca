@@ -24,25 +24,24 @@ class ContractDotGenerator {
 	def generate (FModel fmodel) '''
 		digraph FrancaContract {
 			
-			«FOR api : fmodel.interfaces»
-				«api.generate»
-				
-			«ENDFOR»
+			Â«FOR api : fmodel.interfacesÂ»
+				Â«api.generateÂ»
+			Â«ENDFORÂ»
 		}
 	'''
 
 
 	def private generate (FInterface api) '''
-		«IF api.contract?.stateGraph != null»
-		«FOR it : api.contract.stateGraph.states»
-			«name»
-		«ENDFOR»
-		«FOR it : api.contract.stateGraph.states»
-			«FOR out : transitions»
-			«name» -> «out.to.name» [label="«out.genLabel»"]
-			«ENDFOR»
-		«ENDFOR»
-		«ENDIF»
+		Â«IF api.contract?.stateGraph != nullÂ»
+		Â«FOR it : api.contract.stateGraph.statesÂ»
+			Â«nameÂ»
+		Â«ENDFORÂ»
+		Â«FOR it : api.contract.stateGraph.statesÂ»
+			Â«FOR out : transitionsÂ»
+			Â«nameÂ» -> Â«out.to.nameÂ» [label="Â«out.genLabelÂ»"]
+			Â«ENDFORÂ»
+		Â«ENDFORÂ»
+		Â«ENDIFÂ»
 	'''
 	
 	def private String genLabel (FTransition it) {
