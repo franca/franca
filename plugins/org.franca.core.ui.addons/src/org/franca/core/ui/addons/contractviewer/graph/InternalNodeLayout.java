@@ -43,7 +43,7 @@ class InternalNodeLayout implements NodeLayout {
 			}
 		}
 	};
-	private final static HashMap figureToNode = new HashMap();
+	private final static HashMap<Object, Object> figureToNode = new HashMap<Object, Object>();
 
 	private DisplayIndependentPoint location;
 	private DisplayIndependentDimension size;
@@ -182,8 +182,8 @@ class InternalNodeLayout implements NodeLayout {
 		if (isPruned()) {
 			return new NodeLayout[0];
 		}
-		ArrayList result = new ArrayList();
-		HashSet addedSubgraphs = new HashSet();
+		ArrayList<Object> result = new ArrayList<Object>();
+		HashSet<Object> addedSubgraphs = new HashSet<Object>();
 		NodeLayout[] successingNodes = getSuccessingNodes();
 		for (int i = 0; i < successingNodes.length; i++) {
 			if (!successingNodes[i].isPruned()) {
@@ -205,8 +205,8 @@ class InternalNodeLayout implements NodeLayout {
 		if (isPruned()) {
 			return new NodeLayout[0];
 		}
-		ArrayList result = new ArrayList();
-		HashSet addedSubgraphs = new HashSet();
+		ArrayList<Object> result = new ArrayList<Object>();
+		HashSet<Object> addedSubgraphs = new HashSet<Object>();
 		NodeLayout[] predecessingNodes = getPredecessingNodes();
 		for (int i = 0; i < predecessingNodes.length; i++) {
 			if (!predecessingNodes[i].isPruned()) {
@@ -225,15 +225,15 @@ class InternalNodeLayout implements NodeLayout {
 	}
 
 	public ConnectionLayout[] getIncomingConnections() {
-		ArrayList result = new ArrayList();
-		for (Iterator iterator = node.getTargetConnections().iterator(); iterator
+		ArrayList<Object> result = new ArrayList<Object>();
+		for (Iterator<Object> iterator = node.getTargetConnections().iterator(); iterator
 				.hasNext();) {
 			GraphConnection connection = (GraphConnection) iterator.next();
 			if (!ownerLayoutContext.isLayoutItemFiltered(connection)) {
 				result.add(connection.getLayout());
 			}
 		}
-		for (Iterator iterator = node.getSourceConnections().iterator(); iterator
+		for (Iterator<Object> iterator = node.getSourceConnections().iterator(); iterator
 				.hasNext();) {
 			GraphConnection connection = (GraphConnection) iterator.next();
 			if (!connection.isDirected()
@@ -246,15 +246,15 @@ class InternalNodeLayout implements NodeLayout {
 	}
 
 	public ConnectionLayout[] getOutgoingConnections() {
-		ArrayList result = new ArrayList();
-		for (Iterator iterator = node.getSourceConnections().iterator(); iterator
+		ArrayList<Object> result = new ArrayList<Object>();
+		for (Iterator<Object> iterator = node.getSourceConnections().iterator(); iterator
 				.hasNext();) {
 			GraphConnection connection = (GraphConnection) iterator.next();
 			if (!ownerLayoutContext.isLayoutItemFiltered(connection)) {
 				result.add(connection.getLayout());
 			}
 		}
-		for (Iterator iterator = node.getTargetConnections().iterator(); iterator
+		for (Iterator<Object> iterator = node.getTargetConnections().iterator(); iterator
 				.hasNext();) {
 			GraphConnection connection = (GraphConnection) iterator.next();
 			if (!connection.isDirected()

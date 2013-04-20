@@ -128,7 +128,7 @@ public class TriangleSubgraph extends FigureSubgraph {
 		}
 	}
 
-	private static HashMap contextToTree = new HashMap();
+	private static HashMap<Object,Object> contextToTree = new HashMap<Object,Object>();
 
 	private TriangleParameters parameters;
 

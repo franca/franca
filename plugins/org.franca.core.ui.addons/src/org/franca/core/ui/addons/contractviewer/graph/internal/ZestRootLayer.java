@@ -51,7 +51,7 @@ public class ZestRootLayer extends FreeformLayer {
 	 * decoration for the same figure) after the decorated figure in children
 	 * list.
 	 */
-	private HashSet decoratingFigures = new HashSet();
+	private HashSet<Object> decoratingFigures = new HashSet<Object>();
 
 	/**
 	 * If true, it indicates that a figure is added using a proper method and
@@ -95,11 +95,11 @@ public class ZestRootLayer extends FreeformLayer {
 	}
 
 	private void changeFigureLayer(IFigure figure, int newLayer) {
-		ArrayList decorations = getDecorations(figure);
+		ArrayList<Object> decorations = getDecorations(figure);
 		remove(figure);
 
 		addFigure(figure, newLayer);
-		for (Iterator iterator = decorations.iterator(); iterator.hasNext();) {
+		for (Iterator<Object> iterator = decorations.iterator(); iterator.hasNext();) {
 			addDecoration(figure, (IFigure) iterator.next());
 		}
 
@@ -107,8 +107,8 @@ public class ZestRootLayer extends FreeformLayer {
 		this.repaint();
 	}
 
-	private ArrayList getDecorations(IFigure figure) {
-		ArrayList result = new ArrayList();
+	private ArrayList<Object> getDecorations(IFigure figure) {
+		ArrayList<Object> result = new ArrayList<Object>();
 		int index = getChildren().indexOf(figure);
 		if (index == -1) {
 			return result;
@@ -185,9 +185,9 @@ public class ZestRootLayer extends FreeformLayer {
 			decoratingFigures.remove(child);
 			super.remove(child);
 		} else {
-			ArrayList decorations = getDecorations(child);
+			ArrayList<Object> decorations = getDecorations(child);
 			super.remove(child);
-			for (Iterator iterator = decorations.iterator(); iterator.hasNext();) {
+			for (Iterator<Object> iterator = decorations.iterator(); iterator.hasNext();) {
 				remove((IFigure) iterator.next());
 			}
 		}

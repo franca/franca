@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2005-2010, IBM Corporation and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
- * 
- * Contributors: IBM Corporation - initial API and implementation Chisel Group,
- * University of Victoria - Adapted for XY Scaled Graphics
- ******************************************************************************/
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package org.franca.core.ui.addons.contractviewer.graph.internal;
 
 import java.util.ArrayList;
@@ -20,27 +21,25 @@ import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.LineAttributes;
+import org.eclipse.swt.graphics.Path;
+import org.eclipse.swt.graphics.PathData;
+import org.eclipse.swt.graphics.Pattern;
 import org.eclipse.swt.graphics.TextLayout;
 import org.eclipse.swt.graphics.TextStyle;
 import org.eclipse.swt.widgets.Display;
 
 /**
- * This was adapted from the ScaledGraphics class to allow X and Y to scale
- * independently. It won't require this level of coupling if some of these
- * private methods were made protected. I will open a bug report on this.
- * 
- * @author irbull
+ * A Graphics object able to scale all operations based on the current scale
+ * factor.
  */
-public class XYScaledGraphics extends ScaledGraphics {
-
-	public static final double MAX_TEXT_SIZE = 0.45; // MAX size, when to stop
-
-	// zooming text
+public class ScaledGraphics extends Graphics {
 
 	private static class FontHeightCache {
 		Font font;
@@ -80,10 +79,8 @@ public class XYScaledGraphics extends ScaledGraphics {
 		private double appliedX;
 		private double appliedY;
 		private Font font;
-		private int lineWidth;
-		// private double zoom; // This has been replaced with xZoom and yZoom
-		private double xZoom;
-		private double yZoom;
+		private float lineWidth;
+		private double zoom;
 
 		/**
 		 * Constructs a new, uninitialized State object.
@@ -106,10 +103,31 @@ public class XYScaledGraphics extends ScaledGraphics {
 		 * @param lineWidth
 		 *            the line width
 		 */
-		protected State(double xZoom, double yZoom, double x, double y,
-				Font font, int lineWidth) {
-			this.xZoom = xZoom;
-			this.yZoom = yZoom;
+		protected State(double zoom, double x, double y, Font font,
+				int lineWidth) {
+			this(zoom, x, y, font, (float) lineWidth);
+		}
+
+		/**
+		 * Constructs a new State object and initializes the properties based on
+		 * the given values.
+		 * 
+		 * @param zoom
+		 *            the zoom factor
+		 * @param x
+		 *            the x offset
+		 * @param y
+		 *            the y offset
+		 * @param font
+		 *            the font
+		 * @param lineWidth
+		 *            the line width
+		 * 
+		 * @since 3.5
+		 */
+		protected State(double zoom, double x, double y, Font font,
+				float lineWidth) {
+			this.zoom = zoom;
 			this.appliedX = x;
 			this.appliedY = y;
 			this.font = font;
@@ -130,10 +148,30 @@ public class XYScaledGraphics extends ScaledGraphics {
 		 * @param lineWidth
 		 *            the line width
 		 */
-		protected void setValues(double xZoom, double yZoom, double x,
-				double y, Font font, int lineWidth) {
-			this.xZoom = xZoom;
-			this.yZoom = yZoom;
+		protected void setValues(double zoom, double x, double y, Font font,
+				int lineWidth) {
+			setValues(zoom, x, y, font, (float) lineWidth);
+		}
+
+		/**
+		 * Sets all the properties of the state object.
+		 * 
+		 * @param zoom
+		 *            the zoom factor
+		 * @param x
+		 *            the x offset
+		 * @param y
+		 *            the y offset
+		 * @param font
+		 *            the font
+		 * @param lineWidth
+		 *            the line width
+		 * 
+		 * @since 3.5
+		 */
+		protected void setValues(double zoom, double x, double y, Font font,
+				float lineWidth) {
+			this.zoom = zoom;
 			this.appliedX = x;
 			this.appliedY = y;
 			this.font = font;
@@ -160,13 +198,12 @@ public class XYScaledGraphics extends ScaledGraphics {
 	private Graphics graphics;
 	private FontHeightCache localCache = new FontHeightCache();
 	private Font localFont;
-	private int localLineWidth;
+	private float localLineWidth;
 	private List<Object> stack = new ArrayList<Object>();
 	private int stackPointer = 0;
 	private FontHeightCache targetCache = new FontHeightCache();
 
-	double xZoom = 1.0;
-	double yZoom = 1.0;
+	double zoom = 1.0;
 
 	/**
 	 * Constructs a new ScaledGraphics based on the given Graphics object.
@@ -174,11 +211,10 @@ public class XYScaledGraphics extends ScaledGraphics {
 	 * @param g
 	 *            the base graphics object
 	 */
-	public XYScaledGraphics(Graphics g) {
-		super(g);
+	public ScaledGraphics(Graphics g) {
 		graphics = g;
 		localFont = g.getFont();
-		localLineWidth = g.getLineWidth();
+		localLineWidth = g.getLineWidthFloat();
 	}
 
 	/** @see Graphics#clipRect(Rectangle) */
@@ -188,6 +224,51 @@ public class XYScaledGraphics extends ScaledGraphics {
 
 	public Font createFont(FontData data) {
 		return new Font(Display.getCurrent(), data);
+	}
+
+	/**
+	 * Scales given path by zoom factor
+	 * 
+	 * @param path
+	 *            Path to be scaled
+	 * @return Scaled path
+	 */
+	private Path createScaledPath(Path path) {
+		PathData p = path.getPathData();
+		for (int i = 0; i < p.points.length; i += 2) {
+			p.points[i] = (float) (p.points[i] * zoom + fractionalX);
+			p.points[i + 1] = (float) (p.points[i + 1] * zoom + fractionalY);
+		}
+		Path scaledPath = new Path(path.getDevice());
+		int index = 0;
+		for (int i = 0; i < p.types.length; i++) {
+			byte type = p.types[i];
+			switch (type) {
+			case SWT.PATH_MOVE_TO:
+				scaledPath.moveTo(p.points[index], p.points[index + 1]);
+				index += 2;
+				break;
+			case SWT.PATH_LINE_TO:
+				scaledPath.lineTo(p.points[index], p.points[index + 1]);
+				index += 2;
+				break;
+			case SWT.PATH_CUBIC_TO:
+				scaledPath.cubicTo(p.points[index], p.points[index + 1],
+						p.points[index + 2], p.points[index + 3],
+						p.points[index + 4], p.points[index + 5]);
+				index += 6;
+				break;
+			case SWT.PATH_QUAD_TO:
+				scaledPath.quadTo(p.points[index], p.points[index + 1],
+						p.points[index + 2], p.points[index + 3]);
+				index += 4;
+				break;
+			case SWT.PATH_CLOSE:
+				scaledPath.close();
+				break;
+			}
+		}
+		return scaledPath;
 	}
 
 	/** @see Graphics#dispose() */
@@ -209,9 +290,8 @@ public class XYScaledGraphics extends ScaledGraphics {
 	/** @see Graphics#drawArc(int, int, int, int, int, int) */
 	public void drawArc(int x, int y, int w, int h, int offset, int sweep) {
 		Rectangle z = zoomRect(x, y, w, h);
-		if (z.isEmpty() || sweep == 0) {
+		if (z.isEmpty() || sweep == 0)
 			return;
-		}
 		graphics.drawArc(z, offset, sweep);
 	}
 
@@ -223,12 +303,11 @@ public class XYScaledGraphics extends ScaledGraphics {
 	/** @see Graphics#drawImage(Image, int, int) */
 	public void drawImage(Image srcImage, int x, int y) {
 		org.eclipse.swt.graphics.Rectangle size = srcImage.getBounds();
-		double imageZoom = Math.min(xZoom, yZoom);
 		graphics.drawImage(srcImage, 0, 0, size.width, size.height,
-				(int) (Math.floor((x * xZoom + fractionalX))),
-				(int) (Math.floor((y * yZoom + fractionalY))),
-				(int) (Math.floor((size.width * imageZoom + fractionalX))),
-				(int) (Math.floor((size.height * imageZoom + fractionalY))));
+				(int) (Math.floor((x * zoom + fractionalX))),
+				(int) (Math.floor((y * zoom + fractionalY))),
+				(int) (Math.floor((size.width * zoom + fractionalX))),
+				(int) (Math.floor((size.height * zoom + fractionalY))));
 	}
 
 	/** @see Graphics#drawImage(Image, int, int, int, int, int, int, int, int) */
@@ -237,18 +316,17 @@ public class XYScaledGraphics extends ScaledGraphics {
 		// "t" == target rectangle, "s" = source
 
 		Rectangle t = zoomRect(tx, ty, tw, th);
-		if (!t.isEmpty()) {
+		if (!t.isEmpty())
 			graphics.drawImage(srcImage, sx, sy, sw, sh, t.x, t.y, t.width,
 					t.height);
-		}
 	}
 
 	/** @see Graphics#drawLine(int, int, int, int) */
 	public void drawLine(int x1, int y1, int x2, int y2) {
-		graphics.drawLine((int) (Math.floor((x1 * xZoom + fractionalX))),
-				(int) (Math.floor((y1 * yZoom + fractionalY))),
-				(int) (Math.floor((x2 * xZoom + fractionalX))),
-				(int) (Math.floor((y2 * yZoom + fractionalY))));
+		graphics.drawLine((int) (Math.floor((x1 * zoom + fractionalX))),
+				(int) (Math.floor((y1 * zoom + fractionalY))),
+				(int) (Math.floor((x2 * zoom + fractionalX))),
+				(int) (Math.floor((y2 * zoom + fractionalY))));
 	}
 
 	/** @see Graphics#drawOval(int, int, int, int) */
@@ -256,10 +334,20 @@ public class XYScaledGraphics extends ScaledGraphics {
 		graphics.drawOval(zoomRect(x, y, w, h));
 	}
 
+	/** @see Graphics#drawPath(Path) */
+	public void drawPath(Path path) {
+		Path scaledPath = createScaledPath(path);
+		try {
+			graphics.drawPath(scaledPath);
+		} finally {
+			scaledPath.dispose();
+		}
+	}
+
 	/** @see Graphics#drawPoint(int, int) */
 	public void drawPoint(int x, int y) {
-		graphics.drawPoint((int) Math.floor(x * xZoom + fractionalX),
-				(int) Math.floor(y * yZoom + fractionalY));
+		graphics.drawPoint((int) Math.floor(x * zoom + fractionalX),
+				(int) Math.floor(y * zoom + fractionalY));
 	}
 
 	/**
@@ -294,30 +382,27 @@ public class XYScaledGraphics extends ScaledGraphics {
 	/** @see Graphics#drawRoundRectangle(Rectangle, int, int) */
 	public void drawRoundRectangle(Rectangle r, int arcWidth, int arcHeight) {
 		graphics.drawRoundRectangle(zoomRect(r.x, r.y, r.width, r.height),
-				(int) (arcWidth * xZoom), (int) (arcHeight * yZoom));
+				(int) (arcWidth * zoom), (int) (arcHeight * zoom));
 	}
 
 	/** @see Graphics#drawString(String, int, int) */
 	public void drawString(String s, int x, int y) {
-		if (allowText) {
+		if (allowText)
 			graphics.drawString(s, zoomTextPoint(x, y));
-		}
 	}
 
 	/** @see Graphics#drawText(String, int, int) */
 	public void drawText(String s, int x, int y) {
-		if (allowText) {
+		if (allowText)
 			graphics.drawText(s, zoomTextPoint(x, y));
-		}
 	}
 
 	/**
 	 * @see Graphics#drawText(String, int, int, int)
 	 */
 	public void drawText(String s, int x, int y, int style) {
-		if (allowText) {
+		if (allowText)
 			graphics.drawText(s, zoomTextPoint(x, y), style);
-		}
 	}
 
 	/**
@@ -328,19 +413,24 @@ public class XYScaledGraphics extends ScaledGraphics {
 			int selectionStart, int selectionEnd, Color selectionForeground,
 			Color selectionBackground) {
 		TextLayout scaled = zoomTextLayout(layout);
-		graphics.drawTextLayout(scaled,
-				(int) Math.floor(x * xZoom + fractionalX),
-				(int) Math.floor(y * yZoom + fractionalY), selectionStart,
-				selectionEnd, selectionBackground, selectionForeground);
-		scaled.dispose();
+		if (scaled == null) {
+			return;
+		}
+		try {
+			graphics.drawTextLayout(scaled,
+					(int) Math.floor(x * zoom + fractionalX),
+					(int) Math.floor(y * zoom + fractionalY), selectionStart,
+					selectionEnd, selectionBackground, selectionForeground);
+		} finally {
+			scaled.dispose();
+		}
 	}
 
 	/** @see Graphics#fillArc(int, int, int, int, int, int) */
 	public void fillArc(int x, int y, int w, int h, int offset, int sweep) {
 		Rectangle z = zoomFillRect(x, y, w, h);
-		if (z.isEmpty() || sweep == 0) {
+		if (z.isEmpty() || sweep == 0)
 			return;
-		}
 		graphics.fillArc(z, offset, sweep);
 	}
 
@@ -352,6 +442,16 @@ public class XYScaledGraphics extends ScaledGraphics {
 	/** @see Graphics#fillOval(int, int, int, int) */
 	public void fillOval(int x, int y, int w, int h) {
 		graphics.fillOval(zoomFillRect(x, y, w, h));
+	}
+
+	/** @see Graphics#fillPath(Path) */
+	public void fillPath(Path path) {
+		Path scaledPath = createScaledPath(path);
+		try {
+			graphics.fillPath(scaledPath);
+		} finally {
+			scaledPath.dispose();
+		}
 	}
 
 	/**
@@ -374,28 +474,26 @@ public class XYScaledGraphics extends ScaledGraphics {
 	/** @see Graphics#fillRoundRectangle(Rectangle, int, int) */
 	public void fillRoundRectangle(Rectangle r, int arcWidth, int arcHeight) {
 		graphics.fillRoundRectangle(zoomFillRect(r.x, r.y, r.width, r.height),
-				(int) (arcWidth * xZoom), (int) (arcHeight * yZoom));
+				(int) (arcWidth * zoom), (int) (arcHeight * zoom));
 	}
 
 	/** @see Graphics#fillString(String, int, int) */
 	public void fillString(String s, int x, int y) {
-		if (allowText) {
+		if (allowText)
 			graphics.fillString(s, zoomTextPoint(x, y));
-		}
 	}
 
 	/** @see Graphics#fillText(String, int, int) */
 	public void fillText(String s, int x, int y) {
-		if (allowText) {
+		if (allowText)
 			graphics.fillText(s, zoomTextPoint(x, y));
-		}
 	}
 
 	/**
 	 * @see Graphics#getAbsoluteScale()
 	 */
 	public double getAbsoluteScale() {
-		return xZoom * graphics.getAbsoluteScale();
+		return zoom * graphics.getAbsoluteScale();
 	}
 
 	/**
@@ -432,19 +530,18 @@ public class XYScaledGraphics extends ScaledGraphics {
 
 	FontData getCachedFontData(Font f) {
 		FontData data = (FontData) fontDataCache.get(f);
-		if (data != null) {
-			return data;
+		if (data == null) {
+			data = getLocalFont().getFontData()[0];
+			fontDataCache.put(f, data);
 		}
-		data = getLocalFont().getFontData()[0];
-		fontDataCache.put(f, data);
 		return data;
 	}
 
 	/** @see Graphics#getClip(Rectangle) */
 	public Rectangle getClip(Rectangle rect) {
 		graphics.getClip(rect);
-		int x = (int) (rect.x / xZoom);
-		int y = (int) (rect.y / yZoom);
+		int x = (int) (rect.x / zoom);
+		int y = (int) (rect.y / zoom);
 		/*
 		 * If the clip rectangle is queried, perform an inverse zoom, and take
 		 * the ceiling of the resulting double. This is necessary because
@@ -452,11 +549,18 @@ public class XYScaledGraphics extends ScaledGraphics {
 		 * this, figures will think that they don't need to paint when actually
 		 * they do.
 		 */
-		rect.width = (int) Math.ceil(rect.right() / xZoom) - x;
-		rect.height = (int) Math.ceil(rect.bottom() / yZoom) - y;
+		rect.width = (int) Math.ceil(rect.right() / zoom) - x;
+		rect.height = (int) Math.ceil(rect.bottom() / zoom) - y;
 		rect.x = x;
 		rect.y = y;
 		return rect;
+	}
+
+	/**
+	 * @see Graphics#getAdvanced()
+	 */
+	public boolean getAdvanced() {
+		return graphics.getAdvanced();
 	}
 
 	/**
@@ -507,16 +611,33 @@ public class XYScaledGraphics extends ScaledGraphics {
 		return graphics.getLineStyle();
 	}
 
+	/** @see Graphics#getLineMiterLimit() */
+	public float getLineMiterLimit() {
+		return graphics.getLineMiterLimit();
+	}
+
 	/** @see Graphics#getLineWidth() */
 	public int getLineWidth() {
+		return (int) getLineWidthFloat();
+	}
+
+	/** @see Graphics#getLineWidthFloat() */
+	public float getLineWidthFloat() {
 		return getLocalLineWidth();
+	}
+
+	/** @see Graphics#getLineAttributes() */
+	public LineAttributes getLineAttributes() {
+		LineAttributes a = graphics.getLineAttributes();
+		a.width = getLocalLineWidth();
+		return a;
 	}
 
 	private Font getLocalFont() {
 		return localFont;
 	}
 
-	private int getLocalLineWidth() {
+	private float getLocalLineWidth() {
 		return localLineWidth;
 	}
 
@@ -544,11 +665,11 @@ public class XYScaledGraphics extends ScaledGraphics {
 		State s;
 		if (stack.size() > stackPointer) {
 			s = (State) stack.get(stackPointer);
-			s.setValues(xZoom, yZoom, fractionalX, fractionalY, getLocalFont(),
+			s.setValues(zoom, fractionalX, fractionalY, getLocalFont(),
 					localLineWidth);
 		} else {
-			stack.add(new State(xZoom, yZoom, fractionalX, fractionalY,
-					getLocalFont(), localLineWidth));
+			stack.add(new State(zoom, fractionalX, fractionalY, getLocalFont(),
+					localLineWidth));
 		}
 		stackPointer++;
 
@@ -558,7 +679,7 @@ public class XYScaledGraphics extends ScaledGraphics {
 	private void restoreLocalState(State state) {
 		this.fractionalX = state.appliedX;
 		this.fractionalY = state.appliedY;
-		setScale(state.xZoom, state.yZoom);
+		setScale(state.zoom);
 		setLocalFont(state.font);
 		setLocalLineWidth(state.lineWidth);
 	}
@@ -569,15 +690,19 @@ public class XYScaledGraphics extends ScaledGraphics {
 		restoreLocalState((State) stack.get(stackPointer - 1));
 	}
 
-	public void scale(double xAmount, double yAmount) {
-		setScale(xZoom * xAmount, yZoom * yAmount);
-
+	/** @see Graphics#rotate(float) */
+	public void rotate(float degrees) {
+		graphics.rotate(degrees);
 	}
 
 	/** @see Graphics#scale(double) */
 	public void scale(double amount) {
-		// setScale(zoom * amount);
-		throw new RuntimeException("Operation not supported, use scale(x, y)");
+		setScale(zoom * amount);
+	}
+
+	/** @see Graphics#setAdvanced(boolean) */
+	public void setAdvanced(boolean advanced) {
+		graphics.setAdvanced(advanced);
 	}
 
 	/**
@@ -599,9 +724,36 @@ public class XYScaledGraphics extends ScaledGraphics {
 		graphics.setBackgroundColor(rgb);
 	}
 
+	/** @see Graphics#setClip(Path) */
+	public void setClip(Path path) {
+		Path scaledPath = createScaledPath(path);
+		try {
+			graphics.setClip(scaledPath);
+		} finally {
+			scaledPath.dispose();
+		}
+	}
+
+	/** @see Graphics#setBackgroundPattern(Pattern) */
+	public void setBackgroundPattern(Pattern pattern) {
+		graphics.setBackgroundPattern(pattern);
+	}
+
 	/** @see Graphics#setClip(Rectangle) */
 	public void setClip(Rectangle r) {
 		graphics.setClip(zoomClipRect(r));
+	}
+
+	/**
+	 * @see org.eclipse.draw2d.Graphics#clipPath(org.eclipse.swt.graphics.Path)
+	 */
+	public void clipPath(Path path) {
+		Path scaledPath = createScaledPath(path);
+		try {
+			graphics.clipPath(scaledPath);
+		} finally {
+			scaledPath.dispose();
+		}
 	}
 
 	/**
@@ -621,9 +773,12 @@ public class XYScaledGraphics extends ScaledGraphics {
 		graphics.setForegroundColor(rgb);
 	}
 
-	/**
-	 * @see org.eclipse.draw2d.Graphics#setInterpolation(int)
-	 */
+	/** @see Graphics#setForegroundPattern(Pattern) */
+	public void setForegroundPattern(Pattern pattern) {
+		graphics.setForegroundPattern(pattern);
+	}
+
+	/** @see org.eclipse.draw2d.Graphics#setInterpolation(int) */
 	public void setInterpolation(int interpolation) {
 		graphics.setInterpolation(interpolation);
 	}
@@ -643,6 +798,20 @@ public class XYScaledGraphics extends ScaledGraphics {
 	}
 
 	/**
+	 * @see org.eclipse.draw2d.Graphics#setLineDash(float[])
+	 */
+	public void setLineDash(float[] dash) {
+		graphics.setLineDash(dash);
+	}
+
+	/**
+	 * @see org.eclipse.draw2d.Graphics#setLineDashOffset(float)
+	 */
+	public void setLineDashOffset(float value) {
+		graphics.setLineDashOffset(value);
+	}
+
+	/**
 	 * @see Graphics#setLineJoin(int)
 	 */
 	public void setLineJoin(int join) {
@@ -654,9 +823,25 @@ public class XYScaledGraphics extends ScaledGraphics {
 		graphics.setLineStyle(style);
 	}
 
+	/** @see Graphics#setLineMiterLimit(float) */
+	public void setLineMiterLimit(float value) {
+		graphics.setLineMiterLimit(value);
+	}
+
 	/** @see Graphics#setLineWidth(int) */
 	public void setLineWidth(int width) {
+		setLineWidthFloat(width);
+	}
+
+	/** @see Graphics#setLineWidthFloat(float) */
+	public void setLineWidthFloat(float width) {
 		setLocalLineWidth(width);
+	}
+
+	/** @see Graphics#setLineAttributes(LineAttributes) */
+	public void setLineAttributes(LineAttributes attributes) {
+		graphics.setLineAttributes(attributes);
+		setLocalLineWidth(attributes.width);
 	}
 
 	private void setLocalFont(Font f) {
@@ -664,29 +849,17 @@ public class XYScaledGraphics extends ScaledGraphics {
 		graphics.setFont(zoomFont(f));
 	}
 
-	private void setLocalLineWidth(int width) {
+	private void setLocalLineWidth(float width) {
 		localLineWidth = width;
-		graphics.setLineWidth(zoomLineWidth(width));
-	}
-
-	public void setScale(double xValue, double yValue) {
-		if (xValue == xZoom && yValue == yZoom) {
-			return;
-		}
-		this.xZoom = xValue;
-		this.yZoom = yValue;
-		graphics.setFont(zoomFont(getLocalFont()));
-		graphics.setLineWidth(zoomLineWidth(localLineWidth));
+		graphics.setLineWidthFloat(zoomLineWidth(width));
 	}
 
 	void setScale(double value) {
-		throw new RuntimeException("Operation not supported, use setScale(x,y)");
-
-		/*
-		 * if (zoom == value) return; this.zoom = value;
-		 * graphics.setFont(zoomFont(getLocalFont()));
-		 * graphics.setLineWidth(zoomLineWidth(localLineWidth));
-		 */
+		if (zoom != value) {
+			this.zoom = value;
+			graphics.setFont(zoomFont(getLocalFont()));
+			graphics.setLineWidthFloat(zoomLineWidth(localLineWidth));
+		}
 	}
 
 	/**
@@ -705,30 +878,39 @@ public class XYScaledGraphics extends ScaledGraphics {
 	public void translate(int dx, int dy) {
 		// fractionalX/Y is the fractional part left over from previous
 		// translates that gets lost in the integer approximation.
-		double dxFloat = dx * xZoom + fractionalX;
-		double dyFloat = dy * yZoom + fractionalY;
+		double dxFloat = dx * zoom + fractionalX;
+		double dyFloat = dy * zoom + fractionalY;
+		fractionalX = dxFloat - Math.floor(dxFloat);
+		fractionalY = dyFloat - Math.floor(dyFloat);
+		graphics.translate((int) Math.floor(dxFloat), (int) Math.floor(dyFloat));
+	}
+
+	/** @see Graphics#translate(float, float) */
+	public void translate(float dx, float dy) {
+		double dxFloat = dx * zoom + fractionalX;
+		double dyFloat = dy * zoom + fractionalY;
 		fractionalX = dxFloat - Math.floor(dxFloat);
 		fractionalY = dyFloat - Math.floor(dyFloat);
 		graphics.translate((int) Math.floor(dxFloat), (int) Math.floor(dyFloat));
 	}
 
 	private Rectangle zoomClipRect(Rectangle r) {
-		tempRECT.x = (int) (Math.floor(r.x * xZoom + fractionalX));
-		tempRECT.y = (int) (Math.floor(r.y * yZoom + fractionalY));
+		tempRECT.x = (int) (Math.floor(r.x * zoom + fractionalX));
+		tempRECT.y = (int) (Math.floor(r.y * zoom + fractionalY));
 		tempRECT.width = (int) (Math
-				.ceil(((r.x + r.width) * xZoom + fractionalX))) - tempRECT.x;
+				.ceil(((r.x + r.width) * zoom + fractionalX))) - tempRECT.x;
 		tempRECT.height = (int) (Math
-				.ceil(((r.y + r.height) * yZoom + fractionalY))) - tempRECT.y;
+				.ceil(((r.y + r.height) * zoom + fractionalY))) - tempRECT.y;
 		return tempRECT;
 	}
 
 	private Rectangle zoomFillRect(int x, int y, int w, int h) {
-		tempRECT.x = (int) (Math.floor((x * xZoom + fractionalX)));
-		tempRECT.y = (int) (Math.floor((y * yZoom + fractionalY)));
-		tempRECT.width = (int) (Math.floor(((x + w - 1) * xZoom + fractionalX)))
+		tempRECT.x = (int) (Math.floor((x * zoom + fractionalX)));
+		tempRECT.y = (int) (Math.floor((y * zoom + fractionalY)));
+		tempRECT.width = (int) (Math.floor(((x + w - 1) * zoom + fractionalX)))
 				- tempRECT.x + 1;
-		tempRECT.height = (int) (Math
-				.floor(((y + h - 1) * yZoom + fractionalY))) - tempRECT.y + 1;
+		tempRECT.height = (int) (Math.floor(((y + h - 1) * zoom + fractionalY)))
+				- tempRECT.y + 1;
 		return tempRECT;
 	}
 
@@ -744,16 +926,11 @@ public class XYScaledGraphics extends ScaledGraphics {
 	}
 
 	int zoomFontHeight(int height) {
-		double tmp = Math.min(yZoom, xZoom);
-		if (tmp < MAX_TEXT_SIZE) {
-			return (int) (tmp * height);
-		} else {
-			return (int) (height * tmp);
-		}
+		return (int) (zoom * height);
 	}
 
-	int zoomLineWidth(int w) {
-		return w;
+	float zoomLineWidth(float w) {
+		return (float) (w * zoom);
 	}
 
 	private int[] zoomPointList(int[] points) {
@@ -781,19 +958,19 @@ public class XYScaledGraphics extends ScaledGraphics {
 
 		// Scale the points
 		for (int i = 0; (i + 1) < points.length; i += 2) {
-			scaled[i] = (int) (Math.floor((points[i] * xZoom + fractionalX)));
+			scaled[i] = (int) (Math.floor((points[i] * zoom + fractionalX)));
 			scaled[i + 1] = (int) (Math
-					.floor((points[i + 1] * yZoom + fractionalY)));
+					.floor((points[i + 1] * zoom + fractionalY)));
 		}
 		return scaled;
 	}
 
 	private Rectangle zoomRect(int x, int y, int w, int h) {
-		tempRECT.x = (int) (Math.floor(x * xZoom + fractionalX));
-		tempRECT.y = (int) (Math.floor(y * yZoom + fractionalY));
-		tempRECT.width = (int) (Math.floor(((x + w) * xZoom + fractionalX)))
+		tempRECT.x = (int) (Math.floor(x * zoom + fractionalX));
+		tempRECT.y = (int) (Math.floor(y * zoom + fractionalY));
+		tempRECT.width = (int) (Math.floor(((x + w) * zoom + fractionalX)))
 				- tempRECT.x;
-		tempRECT.height = (int) (Math.floor(((y + h) * yZoom + fractionalY)))
+		tempRECT.height = (int) (Math.floor(((y + h) * zoom + fractionalY)))
 				- tempRECT.y;
 		return tempRECT;
 	}
@@ -804,13 +981,11 @@ public class XYScaledGraphics extends ScaledGraphics {
 
 		int zoomWidth = -1;
 
-		if (layout.getWidth() != -1) {
-			zoomWidth = ((int) (layout.getWidth() * xZoom));
-		}
+		if (layout.getWidth() != -1)
+			zoomWidth = ((int) (layout.getWidth() * zoom));
 
-		if (zoomWidth < -1 || zoomWidth == 0) {
+		if (zoomWidth < -1 || zoomWidth == 0)
 			return null;
-		}
 
 		zoomed.setFont(zoomFont(layout.getFont()));
 		zoomed.setAlignment(layout.getAlignment());
@@ -828,15 +1003,18 @@ public class XYScaledGraphics extends ScaledGraphics {
 			TextStyle style = null, lastStyle = layout.getStyle(0);
 			for (; offset <= length; offset++) {
 				if (offset != length
-						&& (style = layout.getStyle(offset)) == lastStyle) {
+						&& (style = layout.getStyle(offset)) == lastStyle)
 					continue;
-				}
 				int end = offset - 1;
 
 				if (lastStyle != null) {
 					TextStyle zoomedStyle = new TextStyle(
 							zoomFont(lastStyle.font), lastStyle.foreground,
 							lastStyle.background);
+					zoomedStyle.metrics = lastStyle.metrics;
+					zoomedStyle.rise = lastStyle.rise;
+					zoomedStyle.strikeout = lastStyle.strikeout;
+					zoomedStyle.underline = lastStyle.underline;
 					zoomed.setStyle(zoomedStyle, start, end);
 				}
 				lastStyle = style;
@@ -858,9 +1036,8 @@ public class XYScaledGraphics extends ScaledGraphics {
 			targetCache.font = graphics.getFont();
 			targetCache.height = metric.getHeight() - metric.getDescent();
 		}
-		return new Point(((int) (Math.floor((x * xZoom) + fractionalX))),
-				(int) (Math.floor((y + localCache.height - 1) * yZoom
+		return new Point(((int) (Math.floor((x * zoom) + fractionalX))),
+				(int) (Math.floor((y + localCache.height - 1) * zoom
 						- targetCache.height + 1 + fractionalY)));
 	}
-
 }

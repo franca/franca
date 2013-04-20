@@ -45,7 +45,7 @@ public class DefaultSubgraph implements SubgraphLayout {
 	 * a whole graph and throws every node intimageo it.
 	 */
 	public static class DefaultSubgraphFactory implements SubgraphFactory {
-		private HashMap contextToSubgraph = new HashMap();
+		private HashMap<Object, Object> contextToSubgraph = new HashMap<Object, Object>();
 
 		public SubgraphLayout createSubgraph(NodeLayout[] nodes,
 				LayoutContext context) {
@@ -184,7 +184,7 @@ public class DefaultSubgraph implements SubgraphLayout {
 	 */
 	public static class PrunedSuccessorsSubgraphFactory implements
 			SubgraphFactory {
-		private HashMap contextToSubgraph = new HashMap();
+		private HashMap<Object, Object> contextToSubgraph = new HashMap<Object, Object>();
 
 		public SubgraphLayout createSubgraph(NodeLayout[] nodes,
 				LayoutContext context) {
@@ -219,7 +219,7 @@ public class DefaultSubgraph implements SubgraphLayout {
 
 	protected final InternalLayoutContext context;
 
-	protected final Set nodes = new HashSet();
+	protected final Set<Object> nodes = new HashSet<Object>();
 
 	protected boolean disposed = false;
 
@@ -302,7 +302,7 @@ public class DefaultSubgraph implements SubgraphLayout {
 	}
 
 	public void removeDisposedNodes() {
-		for (Iterator iterator = nodes.iterator(); iterator.hasNext();) {
+		for (Iterator<Object> iterator = nodes.iterator(); iterator.hasNext();) {
 			InternalNodeLayout node = (InternalNodeLayout) iterator.next();
 			if (node.isDisposed()) {
 				iterator.remove();
@@ -313,7 +313,7 @@ public class DefaultSubgraph implements SubgraphLayout {
 	public NodeLayout[] getNodes() {
 		InternalNodeLayout[] result = new InternalNodeLayout[nodes.size()];
 		int i = 0;
-		for (Iterator iterator = nodes.iterator(); iterator.hasNext();) {
+		for (Iterator<Object> iterator = nodes.iterator(); iterator.hasNext();) {
 			result[i] = (InternalNodeLayout) iterator.next();
 			if (!context.isLayoutItemFiltered(result[i].getNode())) {
 				i++;
@@ -331,7 +331,7 @@ public class DefaultSubgraph implements SubgraphLayout {
 	public Item[] getItems() {
 		GraphNode[] result = new GraphNode[nodes.size()];
 		int i = 0;
-		for (Iterator iterator = nodes.iterator(); iterator.hasNext();) {
+		for (Iterator<Object> iterator = nodes.iterator(); iterator.hasNext();) {
 			InternalNodeLayout node = (InternalNodeLayout) iterator.next();
 			// getItems always returns an array of size 1 in case of
 			// InternalNodeLayout

@@ -30,7 +30,7 @@ public interface IContainer {
 	 */
 	public Widget getItem();
 
-	public abstract List getNodes();
+	public abstract List<Object> getNodes();
 
 	/**
 	 * Returns list of connections laying inside this container. Only
@@ -40,7 +40,7 @@ public interface IContainer {
 	 * @return
 	 * @since 2.0
 	 */
-	public abstract List getConnections();
+	public abstract List<Object> getConnections();
 
 	/**
 	 * @noreference This method is not intended to be referenced by clients.

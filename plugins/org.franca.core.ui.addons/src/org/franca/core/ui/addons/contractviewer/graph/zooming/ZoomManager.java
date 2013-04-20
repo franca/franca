@@ -55,7 +55,7 @@ public class ZoomManager {
 	/** Style bit meaning animate during {@link #zoomIn()} and {@link #zoomOut()} */
 	public static final int ANIMATE_ZOOM_IN_OUT = 1;
 
-	private List listeners = new ArrayList();
+	private List<Object> listeners = new ArrayList<Object>();
 
 	private double multiplier = 1.0;
 	private ScalableFigure pane;
@@ -83,7 +83,7 @@ public class ZoomManager {
 	 * visible on the screen.
 	 */
 	public static final String FIT_ALL = SharedMessages.FitAllAction_Label;
-	private List zoomLevelContributions = Collections.emptyList();
+	private List<Object> zoomLevelContributions = Collections.emptyList();
 
 	//DecimalFormat format = new DecimalFormat("####%"); //$NON-NLS-1$
 
@@ -98,7 +98,7 @@ public class ZoomManager {
 	public ZoomManager(ScalableFigure pane, Viewport viewport) {
 		this.pane = pane;
 		this.viewport = viewport;
-		zoomLevelContributions = new ArrayList();
+		zoomLevelContributions = new ArrayList<Object>();
 		zoomLevelContributions.add(FIT_ALL);
 	}
 
@@ -150,7 +150,7 @@ public class ZoomManager {
 	 * Notifies listeners that the zoom level has changed.
 	 */
 	protected void fireZoomChanged() {
-		Iterator iter = listeners.iterator();
+		Iterator<Object> iter = listeners.iterator();
 		while (iter.hasNext()) {
 			((ZoomListener)iter.next()).zoomChanged(zoom);
 		}
@@ -340,7 +340,7 @@ public class ZoomManager {
 	 * 
 	 * @return the list of contributed zoom levels
 	 */
-	public List getZoomLevelContributions() {
+	public List<Object> getZoomLevelContributions() {
 		return zoomLevelContributions;
 	}
 
@@ -522,7 +522,7 @@ public class ZoomManager {
 	 * @param contributions
 	 *            the list of contributed zoom levels
 	 */
-	public void setZoomLevelContributions(List contributions) {
+	public void setZoomLevelContributions(List<Object> contributions) {
 		zoomLevelContributions = contributions;
 	}
 

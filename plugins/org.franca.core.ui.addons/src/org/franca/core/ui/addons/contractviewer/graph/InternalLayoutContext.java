@@ -32,16 +32,16 @@ import org.eclipse.gef4.zest.layouts.interfaces.SubgraphLayout;
 class InternalLayoutContext implements LayoutContext {
 
 	final IContainer container;
-	private final List filters = new ArrayList();
-	private final List contextListeners = new ArrayList();
-	private final List graphStructureListeners = new ArrayList();
-	private final List layoutListeners = new ArrayList();
-	private final List pruningListeners = new ArrayList();
+	private final List<Object> filters = new ArrayList<Object>();
+	private final List<Object> contextListeners = new ArrayList<Object>();
+	private final List<Object> graphStructureListeners = new ArrayList<Object>();
+	private final List<Object> layoutListeners = new ArrayList<Object>();
+	private final List<Object> pruningListeners = new ArrayList<Object>();
 	private LayoutAlgorithm mainAlgorithm;
 	private LayoutAlgorithm layoutAlgorithm;
 	private ExpandCollapseManager expandCollapseManager;
 	private SubgraphFactory subgraphFactory = new DefaultSubgraph.DefaultSubgraphFactory();
-	private final HashSet subgraphs = new HashSet();
+	private final HashSet<Object> subgraphs = new HashSet<Object>();
 	private boolean eventsOn = true;
 	private boolean backgorundLayoutEnabled = false;
 	private boolean externalLayoutInvocation = true;
@@ -99,17 +99,17 @@ class InternalLayoutContext implements LayoutContext {
 		if (animationHint) {
 			Animation.markBegin();
 		}
-		for (Iterator iterator = container.getNodes().iterator(); iterator
+		for (Iterator<Object> iterator = container.getNodes().iterator(); iterator
 				.hasNext();) {
 			GraphNode node = (GraphNode) iterator.next();
 			node.applyLayoutChanges();
 		}
-		for (Iterator iterator = container.getConnections().iterator(); iterator
+		for (Iterator<Object> iterator = container.getConnections().iterator(); iterator
 				.hasNext();) {
 			GraphConnection connection = (GraphConnection) iterator.next();
 			connection.applyLayoutChanges();
 		}
-		for (Iterator iterator = subgraphs.iterator(); iterator.hasNext();) {
+		for (Iterator<Object> iterator = subgraphs.iterator(); iterator.hasNext();) {
 			DefaultSubgraph subgraph = (DefaultSubgraph) iterator.next();
 			subgraph.applyLayoutChanges();
 		}
@@ -136,8 +136,8 @@ class InternalLayoutContext implements LayoutContext {
 	}
 
 	public NodeLayout[] getNodes() {
-		ArrayList result = new ArrayList();
-		for (Iterator iterator = this.container.getNodes().iterator(); iterator
+		ArrayList<Object> result = new ArrayList<Object>();
+		for (Iterator<Object> iterator = this.container.getNodes().iterator(); iterator
 				.hasNext();) {
 			GraphNode node = (GraphNode) iterator.next();
 			if (!isLayoutItemFiltered(node)) {
@@ -148,9 +148,9 @@ class InternalLayoutContext implements LayoutContext {
 	}
 
 	public EntityLayout[] getEntities() {
-		HashSet addedSubgraphs = new HashSet();
-		ArrayList result = new ArrayList();
-		for (Iterator iterator = this.container.getNodes().iterator(); iterator
+		HashSet<Object> addedSubgraphs = new HashSet<Object>();
+		ArrayList<Object> result = new ArrayList<Object>();
+		for (Iterator<Object> iterator = this.container.getNodes().iterator(); iterator
 				.hasNext();) {
 			GraphNode node = (GraphNode) iterator.next();
 			if (!isLayoutItemFiltered(node)) {
@@ -173,7 +173,7 @@ class InternalLayoutContext implements LayoutContext {
 	public SubgraphLayout[] getSubgraphs() {
 		SubgraphLayout[] result = new SubgraphLayout[subgraphs.size()];
 		int subgraphCount = 0;
-		for (Iterator iterator = subgraphs.iterator(); iterator.hasNext();) {
+		for (Iterator<Object> iterator = subgraphs.iterator(); iterator.hasNext();) {
 			SubgraphLayout subgraph = (SubgraphLayout) iterator.next();
 			NodeLayout[] nodes = subgraph.getNodes();
 			for (int i = 0; i < nodes.length; i++) {
@@ -239,10 +239,10 @@ class InternalLayoutContext implements LayoutContext {
 	}
 
 	public ConnectionLayout[] getConnections() {
-		List connections = container.getConnections();
+		List<Object> connections = container.getConnections();
 		ConnectionLayout[] result = new ConnectionLayout[connections.size()];
 		int i = 0;
-		for (Iterator iterator = connections.iterator(); iterator.hasNext();) {
+		for (Iterator<Object> iterator = connections.iterator(); iterator.hasNext();) {
 			GraphConnection connection = (GraphConnection) iterator.next();
 			if (!isLayoutItemFiltered(connection)) {
 				result[i++] = connection.getLayout();
@@ -258,9 +258,9 @@ class InternalLayoutContext implements LayoutContext {
 
 	public ConnectionLayout[] getConnections(EntityLayout source,
 			EntityLayout target) {
-		ArrayList result = new ArrayList();
+		ArrayList<Object> result = new ArrayList<Object>();
 
-		ArrayList sourcesList = new ArrayList();
+		ArrayList<Object> sourcesList = new ArrayList<Object>();
 		if (source instanceof NodeLayout) {
 			sourcesList.add(source);
 		}
@@ -269,7 +269,7 @@ class InternalLayoutContext implements LayoutContext {
 					.getNodes()));
 		}
 
-		HashSet targets = new HashSet();
+		HashSet<Object> targets = new HashSet<Object>();
 		if (target instanceof NodeLayout) {
 			targets.add(target);
 		}
@@ -277,7 +277,7 @@ class InternalLayoutContext implements LayoutContext {
 			targets.addAll(Arrays.asList(((SubgraphLayout) target).getNodes()));
 		}
 
-		for (Iterator iterator = sourcesList.iterator(); iterator.hasNext();) {
+		for (Iterator<Object> iterator = sourcesList.iterator(); iterator.hasNext();) {
 			NodeLayout source2 = (NodeLayout) iterator.next();
 			ConnectionLayout[] outgoingConnections = source2
 					.getOutgoingConnections();
@@ -305,7 +305,7 @@ class InternalLayoutContext implements LayoutContext {
 	}
 
 	boolean isLayoutItemFiltered(GraphItem item) {
-		for (Iterator it = filters.iterator(); it.hasNext();) {
+		for (Iterator<Object> it = filters.iterator(); it.hasNext();) {
 			LayoutFilter filter = (LayoutFilter) it.next();
 			if (filter.isObjectFiltered(item)) {
 				return true;

@@ -30,7 +30,6 @@ import org.franca.core.ui.addons.contractviewer.graph.internal.CachedLabel;
  * 
  * @author Chris Callendar
  */
-@SuppressWarnings("restriction")
 public class GraphLabel extends CachedLabel implements IStyleableFigure {
 
 	private Color borderColor;

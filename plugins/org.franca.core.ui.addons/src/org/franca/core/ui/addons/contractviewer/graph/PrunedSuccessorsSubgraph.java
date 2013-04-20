@@ -127,9 +127,9 @@ class PrunedSuccessorsSubgraph extends DefaultSubgraph {
 	 * Maps from figures of nodes to labels showing number of nodes hidden
 	 * successors
 	 */
-	private HashMap nodeFigureToLabel = new HashMap();
+	private HashMap<Object, Object> nodeFigureToLabel = new HashMap<Object, Object>();
 
-	private HashMap labelToAncestorListener = new HashMap();
+	private HashMap<Object, Object> labelToAncestorListener = new HashMap<Object, Object>();
 
 	protected PrunedSuccessorsSubgraph(LayoutContext context2) {
 		super(context2);
@@ -138,12 +138,12 @@ class PrunedSuccessorsSubgraph extends DefaultSubgraph {
 
 	public void addNodes(NodeLayout[] nodes) {
 		super.addNodes(nodes);
-		HashSet nodesToUpdate = new HashSet();
+		HashSet<Object> nodesToUpdate = new HashSet<Object>();
 		for (int i = 0; i < nodes.length; i++) {
 			nodesToUpdate
 					.addAll(Arrays.asList(nodes[i].getPredecessingNodes()));
 		}
-		for (Iterator iterator = nodesToUpdate.iterator(); iterator.hasNext();) {
+		for (Iterator<Object> iterator = nodesToUpdate.iterator(); iterator.hasNext();) {
 			InternalNodeLayout nodeToUpdate = (InternalNodeLayout) iterator
 					.next();
 			updateNodeLabel(nodeToUpdate);
@@ -153,7 +153,7 @@ class PrunedSuccessorsSubgraph extends DefaultSubgraph {
 
 	public void removeNodes(NodeLayout[] nodes) {
 		super.removeNodes(nodes);
-		HashSet nodesToUpdate = new HashSet();
+		HashSet<Object> nodesToUpdate = new HashSet<Object>();
 		for (int i = 0; i < nodes.length; i++) {
 			nodesToUpdate
 					.addAll(Arrays.asList(nodes[i].getPredecessingNodes()));
@@ -163,7 +163,7 @@ class PrunedSuccessorsSubgraph extends DefaultSubgraph {
 				nodesToUpdate.add(nodes[i]);
 			}
 		}
-		for (Iterator iterator = nodesToUpdate.iterator(); iterator.hasNext();) {
+		for (Iterator<Object> iterator = nodesToUpdate.iterator(); iterator.hasNext();) {
 			InternalNodeLayout predecessor = (InternalNodeLayout) iterator
 					.next();
 			updateNodeLabel(predecessor);

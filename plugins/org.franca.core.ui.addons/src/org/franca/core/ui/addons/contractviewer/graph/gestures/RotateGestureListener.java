@@ -30,13 +30,13 @@ public class RotateGestureListener implements GestureListener {
 
 	Graph graph;
 	double rotate;
-	List /* <GraphNode> */nodes;
-	List /* <Point> */originalLocations;
+	List<Object> /* <GraphNode> */nodes;
+	List<Object> /* <Point> */originalLocations;
 	double xCenter, yCenter;
 
-	void storePosition(List nodes) {
-		originalLocations = new ArrayList();
-		Iterator it = nodes.iterator();
+	void storePosition(List<Object> nodes) {
+		originalLocations = new ArrayList<Object>();
+		Iterator<Object> it = nodes.iterator();
 		Transform t = new Transform();
 		t.setTranslation(-xCenter, -yCenter);
 		while (it.hasNext()) {
@@ -78,7 +78,7 @@ public class RotateGestureListener implements GestureListener {
 			}
 			xCenter = 0;// e.x;
 			yCenter = 0;// e.y;
-			Iterator it = nodes.iterator();
+			Iterator<Object> it = nodes.iterator();
 			while (it.hasNext()) {
 				GraphNode node = (GraphNode) it.next();
 				Point location = node.getLocation();

@@ -63,7 +63,6 @@ import org.franca.core.ui.addons.contractviewer.graph.internal.ContainerFigure;
 import org.franca.core.ui.addons.contractviewer.graph.internal.ZestRootLayer;
 import org.franca.core.ui.addons.contractviewer.graph.zooming.ZoomManager;
 
-@SuppressWarnings("restriction")
 public class Graph extends FigureCanvas implements IContainer {
 
 	public static final int ANIMATION_TIME = 500;
@@ -82,15 +81,15 @@ public class Graph extends FigureCanvas implements IContainer {
 	 * These are all the children of this graph. These lists contains all nodes
 	 * and connections that have added themselves to this graph.
 	 */
-	private List nodes;
-	protected List connections;
-	HashSet subgraphFigures;
-	private List selectedItems = null;
-	private ArrayList fisheyeListeners = new ArrayList();
-	private List selectionListeners = null;
+	private List<Object> nodes;
+	protected List<Object> connections;
+	HashSet<Object> subgraphFigures;
+	private List<Object> selectedItems = null;
+	private ArrayList<Object> fisheyeListeners = new ArrayList<Object>();
+	private List<Object> selectionListeners = null;
 
 	/** This maps all visible nodes to their model element. */
-	private HashMap figure2ItemMap = null;
+	private HashMap<Object, Object> figure2ItemMap = null;
 
 	private int connectionStyle;
 	private int nodeStyle;
@@ -173,15 +172,15 @@ public class Graph extends FigureCanvas implements IContainer {
 		this.getLightweightSystem().getRootFigure()
 				.addMouseMotionListener(dragSupport);
 
-		this.nodes = new ArrayList();
+		this.nodes = new ArrayList<Object>();
 		this.preferredSize = new Dimension(-1, -1);
 		this.connectionStyle = ZestStyles.NONE;
 		this.nodeStyle = ZestStyles.NONE;
-		this.connections = new ArrayList();
-		this.subgraphFigures = new HashSet();
-		this.selectedItems = new ArrayList();
-		this.selectionListeners = new ArrayList();
-		this.figure2ItemMap = new HashMap();
+		this.connections = new ArrayList<Object>();
+		this.subgraphFigures = new HashSet<Object>();
+		this.selectedItems = new ArrayList<Object>();
+		this.selectionListeners = new ArrayList<Object>();
+		this.figure2ItemMap = new HashMap<Object, Object>();
 
 		this.layoutAlgorithm = new SpringLayoutAlgorithm();
 
@@ -245,7 +244,7 @@ public class Graph extends FigureCanvas implements IContainer {
 	 * 
 	 * @return List of GraphNode objects
 	 */
-	public List getNodes() {
+	public List<Object> getNodes() {
 		return nodes;
 	}
 
@@ -305,7 +304,7 @@ public class Graph extends FigureCanvas implements IContainer {
 	 * 
 	 * @return list of GraphModelConnection objects
 	 */
-	public List getConnections() {
+	public List<Object> getConnections() {
 		return this.connections;
 	}
 
@@ -334,7 +333,7 @@ public class Graph extends FigureCanvas implements IContainer {
 	 * 
 	 * @return Currently selected graph node
 	 */
-	public List getSelection() {
+	public List<Object> getSelection() {
 		return selectedItems;
 	}
 
@@ -633,7 +632,7 @@ public class Graph extends FigureCanvas implements IContainer {
 		Point dragStartLocation = null;
 		IFigure draggedSubgraphFigure = null;
 		/** locations of dragged items relative to cursor position */
-		ArrayList relativeLocations = new ArrayList();
+		ArrayList<Object> relativeLocations = new ArrayList<Object>();
 		GraphItem fisheyedItem = null;
 		boolean isDragging = false;
 
@@ -653,7 +652,7 @@ public class Graph extends FigureCanvas implements IContainer {
 			if (!selectedItems.isEmpty() || draggedSubgraphFigure != null) {
 
 				if (relativeLocations.isEmpty()) {
-					for (Iterator iterator = selectedItems.iterator(); iterator
+					for (Iterator<Object> iterator = selectedItems.iterator(); iterator
 							.hasNext();) {
 						GraphItem item = (GraphItem) iterator.next();
 						if ((item.getItemType() == GraphItem.NODE)
@@ -668,8 +667,8 @@ public class Graph extends FigureCanvas implements IContainer {
 					}
 				}
 
-				Iterator locationsIterator = relativeLocations.iterator();
-				for (Iterator selectionIterator = selectedItems.iterator(); selectionIterator
+				Iterator<Object> locationsIterator = relativeLocations.iterator();
+				for (Iterator<Object> selectionIterator = selectedItems.iterator(); selectionIterator
 						.hasNext();) {
 					GraphItem item = (GraphItem) selectionIterator.next();
 					if ((item.getItemType() == GraphItem.NODE)
@@ -901,7 +900,7 @@ public class Graph extends FigureCanvas implements IContainer {
 	}
 
 	private void clearSelection() {
-		Iterator iterator = new ArrayList(selectedItems).iterator();
+		Iterator<Object> iterator = new ArrayList<Object>(selectedItems).iterator();
 		while (iterator.hasNext()) {
 			deselect((GraphItem) iterator.next());
 		}
@@ -915,7 +914,7 @@ public class Graph extends FigureCanvas implements IContainer {
 	}
 
 	private void notifySelectionListeners(SelectionEvent event) {
-		Iterator iterator = selectionListeners.iterator();
+		Iterator<Object> iterator = selectionListeners.iterator();
 		while (iterator.hasNext()) {
 			((SelectionListener) iterator.next()).widgetSelected(event);
 		}
@@ -957,13 +956,13 @@ public class Graph extends FigureCanvas implements IContainer {
 	 * @since 2.0
 	 */
 	public void clear() {
-		for (Iterator i = new ArrayList(connections).iterator(); i.hasNext();) {
+		for (Iterator<Object> i = new ArrayList<Object>(connections).iterator(); i.hasNext();) {
 			removeConnection((GraphConnection) i.next());
 		}
-		for (Iterator i = new HashSet(subgraphFigures).iterator(); i.hasNext();) {
+		for (Iterator<Object> i = new HashSet<Object>(subgraphFigures).iterator(); i.hasNext();) {
 			removeSubgraphFigure((IFigure) i.next());
 		}
-		for (Iterator i = new ArrayList(nodes).iterator(); i.hasNext();) {
+		for (Iterator<Object> i = new ArrayList<Object>(nodes).iterator(); i.hasNext();) {
 			removeNode((GraphNode) i.next());
 		}
 	}
@@ -1131,7 +1130,7 @@ public class Graph extends FigureCanvas implements IContainer {
 
 		fishEyeLayer.setConstraint(fishEyeFigure, bounds);
 
-		for (Iterator iterator = fisheyeListeners.iterator(); iterator
+		for (Iterator<Object> iterator = fisheyeListeners.iterator(); iterator
 				.hasNext();) {
 			FisheyeListener listener = (FisheyeListener) iterator.next();
 			listener.fisheyeRemoved(this, regularFigure, fishEyeFigure);
@@ -1158,7 +1157,7 @@ public class Graph extends FigureCanvas implements IContainer {
 			this.fishEyeLayer.remove(oldFigure);
 			this.fishEyeLayer.add(newFigure);
 
-			for (Iterator iterator = fisheyeListeners.iterator(); iterator
+			for (Iterator<Object> iterator = fisheyeListeners.iterator(); iterator
 					.hasNext();) {
 				FisheyeListener listener = (FisheyeListener) iterator.next();
 				listener.fisheyeReplaced(this, oldFigure, newFigure);
@@ -1207,7 +1206,7 @@ public class Graph extends FigureCanvas implements IContainer {
 		fishEyeLayer.add(endFigure);
 		fishEyeLayer.setConstraint(endFigure, newBounds);
 
-		for (Iterator iterator = fisheyeListeners.iterator(); iterator
+		for (Iterator<Object> iterator = fisheyeListeners.iterator(); iterator
 				.hasNext();) {
 			FisheyeListener listener = (FisheyeListener) iterator.next();
 			listener.fisheyeAdded(this, startFigure, endFigure);
@@ -1317,7 +1316,7 @@ public class Graph extends FigureCanvas implements IContainer {
 	 */
 	void applyConnectionRouter() {
 		// for (GraphConnection conn : getConnections()){
-		Iterator iterator = getConnections().iterator();
+		Iterator<Object> iterator = getConnections().iterator();
 		while (iterator.hasNext()) {
 			GraphConnection conn = (GraphConnection) iterator.next();
 			conn.getConnectionFigure().setConnectionRouter(

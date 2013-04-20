@@ -143,7 +143,7 @@ public abstract class FigureSubgraph extends DefaultSubgraph {
 
 	public void setLocation(double x, double y) {
 		super.setLocation(x, y);
-		for (Iterator iterator = nodes.iterator(); iterator.hasNext();) {
+		for (Iterator<Object> iterator = nodes.iterator(); iterator.hasNext();) {
 			NodeLayout node = (NodeLayout) iterator.next();
 			node.setLocation(x, y);
 		}

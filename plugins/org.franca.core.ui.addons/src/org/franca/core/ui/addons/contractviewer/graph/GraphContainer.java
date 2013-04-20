@@ -269,7 +269,7 @@ public class GraphContainer extends GraphNode implements IContainer {
 
 	private ExpandGraphLabel expandGraphLabel;
 
-	private List childNodes = null;
+	private List<Object> childNodes = null;
 	private int childAreaHeight = CONTAINER_HEIGHT;
 
 	private ZestRootLayer zestLayer;
@@ -293,7 +293,7 @@ public class GraphContainer extends GraphNode implements IContainer {
 		super(graph, style);
 		initModel(graph, "", null);
 		close(false);
-		childNodes = new ArrayList();
+		childNodes = new ArrayList<Object>();
 		registerToParent(graph);
 	}
 
@@ -327,6 +327,7 @@ public class GraphContainer extends GraphNode implements IContainer {
 	 * 
 	 * @param animate
 	 */
+	@SuppressWarnings("unchecked")
 	public void close(boolean animate) {
 		if (animate) {
 			Animation.markBegin();
@@ -340,8 +341,8 @@ public class GraphContainer extends GraphNode implements IContainer {
 		scrollPane.setSize(scrollPane.getSize().width, 0);
 		updateFigureForModel(this.zestLayer);
 		scrollPane.setVisible(false);
-		List children = this.zestLayer.getChildren();
-		for (Iterator iterator = children.iterator(); iterator.hasNext();) {
+		List<Object> children = this.zestLayer.getChildren();
+		for (Iterator<Object> iterator = children.iterator(); iterator.hasNext();) {
 			IFigure child = (IFigure) iterator.next();
 			GraphItem item = getGraph().getGraphItem(child);
 			item.setVisible(false);
@@ -356,9 +357,9 @@ public class GraphContainer extends GraphNode implements IContainer {
 		updateFigureForModel(nodeFigure);
 	}
 
-	private static void addNodeToOrderedList(List orderedNodeList,
+	private static void addNodeToOrderedList(List<Object> orderedNodeList,
 			GraphNode node) {
-		Iterator orderedNodeIterator = orderedNodeList.iterator();
+		Iterator<Object> orderedNodeIterator = orderedNodeList.iterator();
 		int counter = 0;
 		while (orderedNodeIterator.hasNext()) {
 			// Look through the list of nodes below and find the right spot for
@@ -382,10 +383,10 @@ public class GraphContainer extends GraphNode implements IContainer {
 	 * @param yValue
 	 * @return
 	 */
-	private static List getOrderedNodesBelowY(List nodes, int yValue,
+	private static List<Object> getOrderedNodesBelowY(List<Object> nodes, int yValue,
 			GraphNode yValueNode) {
-		Iterator iterator = nodes.iterator();
-		LinkedList orderedNode = new LinkedList();
+		Iterator<Object> iterator = nodes.iterator();
+		LinkedList<Object> orderedNode = new LinkedList<Object>();
 		while (iterator.hasNext()) {
 			GraphNode node = (GraphNode) iterator.next();
 			if (node == yValueNode) {
@@ -397,7 +398,7 @@ public class GraphContainer extends GraphNode implements IContainer {
 			}
 		}
 		// Convert this to an arrayList for faster access
-		List arrayList = new ArrayList();
+		List<Object> arrayList = new ArrayList<Object>();
 		iterator = orderedNode.iterator();
 		while (iterator.hasNext()) {
 			arrayList.add(iterator.next());
@@ -429,7 +430,7 @@ public class GraphContainer extends GraphNode implements IContainer {
 	 * @return
 	 */
 	static GraphNode getHighestNode(Graph g) {
-		Iterator iterator = g.getNodes().iterator();
+		Iterator<Object> iterator = g.getNodes().iterator();
 		GraphNode lowest /* highest on the screen */= null;
 
 		while (iterator.hasNext()) {
@@ -451,11 +452,11 @@ public class GraphContainer extends GraphNode implements IContainer {
 	private void moveNodesUp(Rectangle containerBounds, GraphNode graphContainer) {
 
 		// Get all nodes below this container, in order
-		List orderedNodesBelowY = getOrderedNodesBelowY(parent.getGraph()
+		List<Object> orderedNodesBelowY = getOrderedNodesBelowY(parent.getGraph()
 				.getNodes(), containerBounds.y, graphContainer);
 		int leftSide = containerBounds.x;
 		int rightSide = containerBounds.x + containerBounds.width;
-		List nodesToConsider = new LinkedList();
+		List<Object> nodesToConsider = new LinkedList<Object>();
 		for (int i = 0; i < orderedNodesBelowY.size(); i++) {
 			nodesToConsider.add(orderedNodesBelowY.get(i));
 		}
@@ -506,6 +507,7 @@ public class GraphContainer extends GraphNode implements IContainer {
 	 * Open the container. This opens the graph container to show the nodes
 	 * within and update the twistie
 	 */
+	@SuppressWarnings("unchecked")
 	public void open(boolean animate) {
 		if (animate) {
 			Animation.markBegin();
@@ -517,8 +519,8 @@ public class GraphContainer extends GraphNode implements IContainer {
 		scrollPane.setSize(computeChildArea());
 		scrollPane.setVisible(true);
 
-		List children = this.zestLayer.getChildren();
-		for (Iterator iterator = children.iterator(); iterator.hasNext();) {
+		List<Object> children = this.zestLayer.getChildren();
+		for (Iterator<Object> iterator = children.iterator(); iterator.hasNext();) {
 			IFigure child = (IFigure) iterator.next();
 			GraphItem item = getGraph().getGraphItem(child);
 			item.setVisible(true);
@@ -546,10 +548,10 @@ public class GraphContainer extends GraphNode implements IContainer {
 			GraphContainer graphContainer) {
 
 		// Find all nodes below here
-		List nodesBelowHere = getOrderedNodesBelowY(parent.getGraph()
+		List<Object> nodesBelowHere = getOrderedNodesBelowY(parent.getGraph()
 				.getNodes(), containerBounds.y, graphContainer);
-		Iterator nodesBelowHereIterator = nodesBelowHere.iterator();
-		List nodesToMove = new LinkedList();
+		Iterator<Object> nodesBelowHereIterator = nodesBelowHere.iterator();
+		List<Object> nodesToMove = new LinkedList<Object>();
 		int left = containerBounds.x;
 		int right = containerBounds.x + containerBounds.width;
 		while (nodesBelowHereIterator.hasNext()) {
@@ -561,7 +563,7 @@ public class GraphContainer extends GraphNode implements IContainer {
 						+ node.getBounds().width);
 			}
 		}
-		List intersectingNodes = intersectingNodes(containerBounds,
+		List<Object> intersectingNodes = intersectingNodes(containerBounds,
 				nodesToMove, graphContainer);
 		int delta = getMaxMovement(containerBounds, intersectingNodes);
 		if (delta > 0) {
@@ -578,10 +580,10 @@ public class GraphContainer extends GraphNode implements IContainer {
 	 * @param nodesToCheck
 	 * @return
 	 */
-	private List intersectingNodes(Rectangle bounds, List nodesToCheck,
+	private List<Object> intersectingNodes(Rectangle bounds, List<Object> nodesToCheck,
 			GraphNode node) {
-		List result = new LinkedList();
-		Iterator nodes = nodesToCheck.iterator();
+		List<Object> result = new LinkedList<Object>();
+		Iterator<Object> nodes = nodesToCheck.iterator();
 		while (nodes.hasNext()) {
 			GraphNode nodeToCheck = (GraphNode) nodes.next();
 			if (node == nodeToCheck) {
@@ -602,8 +604,8 @@ public class GraphContainer extends GraphNode implements IContainer {
 	 * @param nodesToMove
 	 * @return
 	 */
-	private int getMaxMovement(Rectangle bounds, List nodesToMove) {
-		Iterator iterator = nodesToMove.iterator();
+	private int getMaxMovement(Rectangle bounds, List<Object> nodesToMove) {
+		Iterator<Object> iterator = nodesToMove.iterator();
 		int maxMovement = 0;
 		while (iterator.hasNext()) {
 			GraphNode node = (GraphNode) iterator.next();
@@ -620,8 +622,8 @@ public class GraphContainer extends GraphNode implements IContainer {
 	 * @param nodesToShift
 	 * @param amount
 	 */
-	private void shiftNodesDown(List nodesToShift, int amount) {
-		Iterator iterator = nodesToShift.iterator();
+	private void shiftNodesDown(List<Object> nodesToShift, int amount) {
+		Iterator<Object> iterator = nodesToShift.iterator();
 		while (iterator.hasNext()) {
 			GraphNode node = (GraphNode) iterator.next();
 
@@ -938,21 +940,21 @@ public class GraphContainer extends GraphNode implements IContainer {
 		node.setVisible(isExpanded);
 	}
 
-	public List getNodes() {
+	public List<Object> getNodes() {
 		return this.childNodes;
 	}
 
 	/**
 	 * @since 2.0
 	 */
-	public List getConnections() {
+	public List<Object> getConnections() {
 		return filterConnections(getGraph().getConnections());
 
 	}
 
-	private List filterConnections(List connections) {
-		List result = new ArrayList();
-		for (Iterator iterator = connections.iterator(); iterator.hasNext();) {
+	private List<Object> filterConnections(List<Object> connections) {
+		List<Object> result = new ArrayList<Object>();
+		for (Iterator<Object> iterator = connections.iterator(); iterator.hasNext();) {
 			GraphConnection connection = (GraphConnection) iterator.next();
 			if (connection.getSource().getParent() == this
 					&& connection.getDestination().getParent() == this) {
