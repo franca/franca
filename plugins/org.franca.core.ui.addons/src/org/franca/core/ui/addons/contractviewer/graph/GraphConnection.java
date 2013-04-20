@@ -617,6 +617,7 @@ public class GraphConnection extends GraphItem {
 			PolylineArcConnection arcConnection = (PolylineArcConnection) connection;
 			arcConnection.setDepth(curveDepth);
 		}
+		
 		if (connectionFigure != null) {
 			applyConnectionRouter(connectionFigure);
 		}
@@ -654,7 +655,7 @@ public class GraphConnection extends GraphItem {
 		for (Object obj : this.getGraphModel().getConnections()) {
 			GraphConnection gc = (GraphConnection) obj;
 			if (gc.getSource().equals(this.getDestination())
-					&& gc.getDestination().equals(this.getSource())) {
+					&& gc.getDestination().equals(this.getSource()) && !gc.getSource().equals(gc.getDestination())) {
 				return gc;
 			}
 		}

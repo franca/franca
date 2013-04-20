@@ -967,7 +967,7 @@ public class Graph extends FigureCanvas implements IContainer {
 		}
 	}
 
-	void removeConnection(GraphConnection connection) {
+	public void removeConnection(GraphConnection connection) {
 		IFigure figure = connection.getConnectionFigure();
 		PolylineConnection sourceContainerConnectionFigure = connection
 				.getSourceContainerConnectionFigure();
@@ -986,7 +986,7 @@ public class Graph extends FigureCanvas implements IContainer {
 		getLayoutContext().fireConnectionRemovedEvent(connection.getLayout());
 	}
 
-	void removeNode(GraphNode node) {
+	public void removeNode(GraphNode node) {
 		IFigure figure = node.getNodeFigure();
 		if (figure.getParent() != null) {
 			figure.getParent().remove(figure);
@@ -997,7 +997,7 @@ public class Graph extends FigureCanvas implements IContainer {
 		node.getLayout().dispose();
 	}
 
-	void addConnection(GraphConnection connection, boolean addToEdgeLayer) {
+	public void addConnection(GraphConnection connection, boolean addToEdgeLayer) {
 		this.getConnections().add(connection);
 		if (addToEdgeLayer) {
 			zestRootLayer.addConnection(connection.getFigure());
@@ -1304,7 +1304,7 @@ public class Graph extends FigureCanvas implements IContainer {
 	 * @return the default connection router; may be null.
 	 * @since 2.0
 	 */
-	ConnectionRouter getDefaultConnectionRouter() {
+	public ConnectionRouter getDefaultConnectionRouter() {
 		return defaultConnectionRouter;
 	}
 

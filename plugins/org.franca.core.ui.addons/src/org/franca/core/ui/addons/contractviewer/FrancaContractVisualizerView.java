@@ -2,6 +2,7 @@ package org.franca.core.ui.addons.contractviewer;
 
 import java.lang.ref.WeakReference;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -18,10 +19,14 @@ import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.ui.editor.XtextEditor;
 import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 import org.franca.core.contracts.ContractDotGenerator;
+import org.franca.core.franca.FInterface;
 import org.franca.core.franca.FModel;
 import org.franca.core.franca.FState;
 import org.franca.core.franca.FTransition;
 import org.franca.core.ui.addons.contractviewer.graph.Graph;
+import org.franca.core.ui.addons.contractviewer.graph.GraphConnection;
+import org.franca.core.ui.addons.contractviewer.graph.GraphNode;
+import org.franca.core.ui.addons.contractviewer.graph.ZestStyles;
 import org.franca.core.ui.addons.contractviewer.util.GraphSelectionListener;
 
 import com.google.inject.Inject;
@@ -42,8 +47,6 @@ public class FrancaContractVisualizerView extends ViewPart {
 	@Inject
 	Injector injector;
 	
-	//ILocationInFileProvider locationFileProvider;
-	
 	public FrancaContractVisualizerView() {
 		generator = new ContractDotGenerator();
 	}
@@ -63,6 +66,7 @@ public class FrancaContractVisualizerView extends ViewPart {
 		selectionListener = new GraphSelectionListener();
 		injector.injectMembers(selectionListener);
 		graph = new Graph(parent, SWT.NONE);
+		graph.setConnectionStyle(ZestStyles.CONNECTIONS_DIRECTED);
 		graph.addSelectionListener(selectionListener);
 	}
 
@@ -96,29 +100,65 @@ public class FrancaContractVisualizerView extends ViewPart {
 	}
 	
 	public void updateModel() {
-		activeEditor.getDocument().readOnly(new IUnitOfWork.Void<XtextResource>() {
+		//syncExec is called here
+		Display.getDefault().syncExec(new Runnable() {
 			@Override
-			public void process(XtextResource resource) throws Exception {
-				if (resource != null) {
-					for (EObject obj : resource.getContents()) {
-						if (obj instanceof FModel) {
-							activeModel = (FModel) obj;
-						}
-					}
-				}
+			public void run() {
+				graph.clear();
 			}
 		});
 		
+		if (activeEditor != null) {
+			activeEditor.getDocument().readOnly(new IUnitOfWork.Void<XtextResource>() {
+				@Override
+				public void process(XtextResource resource) throws Exception {
+					if (resource != null) {
+						for (EObject obj : resource.getContents()) {
+							if (obj instanceof FModel) {
+								activeModel = (FModel) obj;
+							}
+						}
+					}
+				}
+			});
+		}
+		
 		if (activeModel != null) {
-			final CharSequence dot = generator.generate(activeModel);
 			Display.getDefault().asyncExec(new Runnable() {
 				@Override
 				public void run() {
-					//graph.clear();
-					//graph.add(dot.toString());
+					constructGraph();
 				}
 			});
-			
 		}
 	}
+	
+	public void clear() {
+		this.activeEditor = null;
+		this.activeFile = null;
+		this.activeModel = null;
+	}
+	
+	private void constructGraph() {
+		Map<FState, GraphNode> nodeMap = new HashMap<FState, GraphNode>();
+		for (FInterface _interface : activeModel.getInterfaces()) {
+			for (FState state : _interface.getContract().getStateGraph().getStates()) {
+				GraphNode node = new GraphNode(graph, SWT.NONE, state.getName());
+				node.setData(state.getName());
+				nodeMap.put(state, node);
+			}
+		}
+		
+		for (FState state : nodeMap.keySet()) {
+			for (FTransition transition : state.getTransitions()) {
+				GraphConnection connection = new GraphConnection(graph, SWT.NONE, nodeMap.get(state), nodeMap.get(transition.getTo()));
+				String label = generator.genLabel(transition);
+				connection.setText(label);
+				connection.setData(label);
+			}
+		}
+		
+		graph.applyLayout();
+	}
+	
 }

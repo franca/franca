@@ -22,17 +22,31 @@ public class FrancaEditorPartListener implements IPartListener {
 
 	@Override
 	public void partClosed(IWorkbenchPart part) {
-
+		handleContractUnregistration(part);
 	}
 
 	@Override
 	public void partDeactivated(IWorkbenchPart part) {
-
+		
 	}
 
 	@Override
 	public void partOpened(IWorkbenchPart part) {
+		
+	}
+	
+	private void handleContractUnregistration(IWorkbenchPart part) {
+		if (part instanceof XtextEditor) {
+			XtextEditor editor = (XtextEditor) part;
 
+			if (editor.getEditorSite().getId().equals(francaEditorId)) {
+				FrancaContractVisualizerView view = FrancaContractVisualizerView.getInstance();
+				if (view != null) {
+					view.clear();
+					view.updateModel();
+				}
+			}
+		}
 	}
 
 	private void handleContractRegistration(IWorkbenchPart part) {
@@ -42,7 +56,7 @@ public class FrancaEditorPartListener implements IPartListener {
 			if (editor.getEditorSite().getId().equals(francaEditorId)) {
 				Object adapted = editor.getEditorInput().getAdapter(IFile.class);
 				FrancaContractVisualizerView view = FrancaContractVisualizerView.getInstance();
-				if (adapted != null && view != null) {
+				if (!editor.equals(view.getActiveEditor()) && adapted != null && view != null) {
 					IFile file = (IFile) adapted;
 					view.setActiveEditor(editor);
 					view.setActiveFile(file);
