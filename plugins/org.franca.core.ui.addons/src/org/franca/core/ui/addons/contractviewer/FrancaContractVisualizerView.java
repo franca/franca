@@ -122,15 +122,13 @@ public class FrancaContractVisualizerView extends ViewPart {
 				}
 			});
 		}
-		
-		if (activeModel != null) {
-			Display.getDefault().asyncExec(new Runnable() {
-				@Override
-				public void run() {
-					constructGraph();
-				}
-			});
-		}
+	
+		Display.getDefault().asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				constructGraph();
+			}
+		});
 	}
 	
 	public void clear() {
@@ -140,25 +138,30 @@ public class FrancaContractVisualizerView extends ViewPart {
 	}
 	
 	private void constructGraph() {
-		Map<FState, GraphNode> nodeMap = new HashMap<FState, GraphNode>();
-		for (FInterface _interface : activeModel.getInterfaces()) {
-			for (FState state : _interface.getContract().getStateGraph().getStates()) {
-				GraphNode node = new GraphNode(graph, SWT.NONE, state.getName());
-				node.setData(state.getName());
-				nodeMap.put(state, node);
+		if (activeModel != null) {
+			Map<FState, GraphNode> nodeMap = new HashMap<FState, GraphNode>();
+			
+			for (FInterface _interface : activeModel.getInterfaces()) {
+				if (_interface != null && _interface.getContract() != null) {
+					for (FState state : _interface.getContract().getStateGraph().getStates()) {
+						GraphNode node = new GraphNode(graph, SWT.NONE, state.getName());
+						node.setData(state.getName());
+						nodeMap.put(state, node);
+					}
+				}
 			}
-		}
-		
-		for (FState state : nodeMap.keySet()) {
-			for (FTransition transition : state.getTransitions()) {
-				GraphConnection connection = new GraphConnection(graph, SWT.NONE, nodeMap.get(state), nodeMap.get(transition.getTo()));
-				String label = generator.genLabel(transition);
-				connection.setText(label);
-				connection.setData(label);
+			
+			for (FState state : nodeMap.keySet()) {
+				for (FTransition transition : state.getTransitions()) {
+					GraphConnection connection = new GraphConnection(graph, SWT.NONE, nodeMap.get(state), nodeMap.get(transition.getTo()));
+					String label = generator.genLabel(transition);
+					connection.setText(label);
+					connection.setData(label);
+				}
 			}
+			
+			graph.applyLayout();
 		}
-		
-		graph.applyLayout();
 	}
 	
 }

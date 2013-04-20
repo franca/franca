@@ -45,5 +45,21 @@
             commandId="org.franca.core.ui.addons.dotgenerator">
       </handler>
    </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <wizard
+            category="org.franca.core.ui.addons.wizard.category"
+            class="org.franca.core.ui.addons.contractviewer.util.ContractViewerExecutableExtensionFactory:org.franca.core.ui.addons.wizard.NewFrancaIDLFileWizard"
+            finalPerspective="org.eclipse.pde.ui.PDEPerspective"
+            icon="icons/franca_logo.png"
+            id="org.franca.core.ui.addons.newidlfilewizard"
+            name="Franca IDL File"
+            preferredPerspectives="org.eclipse.pde.ui.PDEPerspective,org.eclipse.jdt.ui.JavaPerspective">
+      </wizard>
+      <category
+            id="org.franca.core.ui.addons.wizard.category"
+            name="Franca">
+      </category>
+   </extension>
 
 </plugin>

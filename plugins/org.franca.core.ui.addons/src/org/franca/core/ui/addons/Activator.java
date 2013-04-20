@@ -1,4 +1,4 @@
-package org.franca.core.ui.addons.contractviewer;
+package org.franca.core.ui.addons;
 
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
@@ -13,6 +13,7 @@ import org.osgi.framework.BundleContext;
 
 public class Activator extends AbstractUIPlugin {
 
+	public static final String PLUGIN_ID = "org.franca.core.ui.addons";
 	private IPartListener partListener;
 	private IResourceChangeListener resourceChangeListener;
 	private static Activator plugin;

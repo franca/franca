@@ -22,7 +22,7 @@ public class FrancaEditorPartListener implements IPartListener {
 
 	@Override
 	public void partClosed(IWorkbenchPart part) {
-		handleContractUnregistration(part);
+		//handleContractUnregistration(part);
 	}
 
 	@Override
