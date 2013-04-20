@@ -7,7 +7,6 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.gef4.zest.dot.DotGraph;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Composite;
@@ -22,7 +21,8 @@ import org.franca.core.contracts.ContractDotGenerator;
 import org.franca.core.franca.FModel;
 import org.franca.core.franca.FState;
 import org.franca.core.franca.FTransition;
-import org.franca.core.ui.addons.contractviewer.util.DotGraphSelectionListener;
+import org.franca.core.ui.addons.contractviewer.graph.Graph;
+import org.franca.core.ui.addons.contractviewer.util.GraphSelectionListener;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -35,7 +35,7 @@ public class FrancaContractVisualizerView extends ViewPart {
 	private static WeakReference<FrancaContractVisualizerView> instance = new WeakReference<FrancaContractVisualizerView>(null);
 	private FModel activeModel;
 	private Map<FState, Set<FTransition>> backwardIndex;
-	private DotGraph graph;
+	private Graph graph;
 	private ContractDotGenerator generator;
 	private SelectionListener selectionListener;
 	
@@ -60,9 +60,9 @@ public class FrancaContractVisualizerView extends ViewPart {
 	
 	@Override
 	public void createPartControl(Composite parent) {
-		selectionListener = new DotGraphSelectionListener();
+		selectionListener = new GraphSelectionListener();
 		injector.injectMembers(selectionListener);
-		graph = new DotGraph(parent, SWT.NONE);
+		graph = new Graph(parent, SWT.NONE);
 		graph.addSelectionListener(selectionListener);
 	}
 
@@ -114,8 +114,8 @@ public class FrancaContractVisualizerView extends ViewPart {
 			Display.getDefault().asyncExec(new Runnable() {
 				@Override
 				public void run() {
-					graph.clear();
-					graph.add(dot.toString());
+					//graph.clear();
+					//graph.add(dot.toString());
 				}
 			});
 			

@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: org.franca.util.search.test
 Bundle-SymbolicName: org.franca.util.search.test
 Bundle-Version: 0.8.5.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.osgi.framework;version="1.7.0"
 Require-Bundle: org.franca.util.search;bundle-version="0.8.5",
  org.franca.core.dsl;bundle-version="0.8.5",
