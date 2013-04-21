@@ -1,0 +1,193 @@
+RoomModel org.franca.examples [ "Generated from Franca IDL model org.franca.examples by Franca2ETriceTransformation." ]
+{
+
+	import room.basic.types.* from
+	"/Users/steffenweik/eclipse/workspaces/franca/org.eclipse.etrice.modellib.java/models/Types.room"
+
+	import room.basic.service.timing.* from
+	"/Users/steffenweik/eclipse/workspaces/franca/org.eclipse.etrice.modellib.java/models/TimingService.room"
+
+	LogicalSystem System {
+		SubSystemRef subsystem: SubSystem
+	}
+
+	SubSystemClass SubSystem {
+		ActorRef timingService: ATimingService
+		ActorRef robotArmApplication: RobotArmApplication
+		LayerConnection ref robotArmApplication satisfied_by timingService.timer
+	}
+
+	ActorClass RobotArmApplication {
+		Structure {
+			ActorRef client: RobotArmClient
+			ActorRef server: RobotArmServer
+			Binding client.api and server.api
+		}
+		Behavior { }
+	}
+	
+	abstract ActorClass BaseRobotArmServer {
+		Behavior {
+			StateMachine {
+				State BaseState
+				
+				Transition doAttributeHandling: initial -> BaseState {
+//					triggers {
+//						<  >
+//					}
+				}
+			}
+		}
+	}
+
+	ActorClass RobotArmServer extends BaseRobotArmServer {
+		Interface {
+			Port api: RobotArm
+		}
+		Structure {
+			external Port api
+			SAP timer: PTimer
+		}
+		Behavior {
+			StateMachine {
+//				Transition init: initial -> idle { }
+				Transition init: BaseState -> idle { 
+					triggers {
+						<move: api>
+					}
+				}
+				Transition startMove: idle -> doMove {
+					triggers {
+						<move: api>
+					}
+				}
+				Transition doneMove: doMove -> idle {
+					triggers {
+						<timeout: timer>
+					}
+				}
+				Transition startGrab: idle -> doGrab {
+					triggers {
+						<grab: api>
+					}
+				}
+				Transition doneGrab: doGrab -> idle {
+					triggers {
+						<timeout: timer>
+					}
+				}
+				Transition startRelease: idle -> doRelease {
+					triggers {
+						<release: api>
+					}
+				}
+				Transition doneRelease: doRelease -> idle {
+					triggers {
+						<timeout: timer>
+					}
+				}
+				State idle
+				State doMove {
+					entry {
+						"timer.startTimeout(1000);"
+					}
+					exit {
+						"api.replyMove(true); // TODO: insert real value here"
+					}
+				}
+				State doGrab {
+					entry {
+						"timer.startTimeout(1000);"
+					}
+					exit {
+						"api.replyGrab(true); // TODO: insert real value here"
+					}
+				}
+				State doRelease {
+					entry {
+						"timer.startTimeout(1000);"
+					}
+					exit {
+						"api.replyRelease(true); // TODO: insert real value here"
+					}
+				}
+			}
+		}
+	}
+
+	ActorClass RobotArmClient {
+		Interface {
+			conjugated Port api: RobotArm
+		}
+		Structure {
+			external Port api
+		}
+		Behavior {
+			StateMachine {
+				Transition init: initial -> waitingForMove { }
+				Transition done1: waitingForMove -> waitingForGrab {
+					triggers {
+						<replyMove: api>
+					}
+				}
+				Transition done2: waitingForGrab -> waitingForRelease {
+					triggers {
+						<replyGrab: api>
+					}
+				}
+				Transition done: waitingForRelease -> ready {
+					triggers {
+						<replyRelease: api>
+					}
+				}
+				State waitingForMove {
+					entry {
+						"api.move(new StructPosition(0, 0, 0));"
+					}
+				}
+				State waitingForGrab {
+					entry {
+						"api.grab(0.0);"
+					}
+				}
+				State waitingForRelease {
+					entry {
+						"api.release();"
+					}
+				}
+				State ready
+			}
+		}
+	}
+
+	ProtocolClass RobotArm {
+		incoming {
+			Message setAttributeTestAttr(testAttr: UInt32) [ "Set-method for attribute testAttr" ]
+			Message move(pos: StructPosition)
+			Message grab(gripAngle: Double)
+			Message release()
+		}
+		outgoing {
+			Message updateAttributeTestAttr(testAttr: UInt32) [ "Update-method for attribute testAttr" ]
+			Message replyMove(ok: Boolean) [ "reply for move" ]
+			Message replyGrab(ok: Boolean) [ "reply for grab" ]
+			Message replyRelease(ok: Boolean) [ "reply for release" ]
+			Message operable(pos: StructPosition)
+		}
+		semantics {
+			//Franca contract bestimmt die Protokollsemantik:
+			in : move -> ( out : replyMove -> in : release , out : operable , in : setAttributeTestAttr  )
+		}
+	}
+
+	DataClass StructPosition {
+		Attribute x: UInt16
+		Attribute y: UInt16
+		Attribute z: UInt16
+	}
+
+	PrimitiveType Boolean: ptBoolean -> java.lang.Boolean default "false"
+	PrimitiveType Double: ptReal -> java.lang.Double default "0.0"
+	PrimitiveType UInt16: ptInteger -> java.lang.Integer default "0"
+	PrimitiveType UInt32: ptInteger -> java.lang.Integer default "0"
+}

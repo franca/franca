@@ -1,0 +1,58 @@
+package org.franca.examples
+
+interface RobotArm {
+	
+	attribute UInt32 testAttr
+	
+	method move {
+		in {
+			Position pos
+		}
+		out {
+			Boolean ok
+		}
+	}
+
+	method grab {
+		in {
+			Double gripAngle
+		}
+		out {
+			Boolean ok
+		}
+	}
+
+	method release {
+		out {
+			Boolean ok
+		}
+	}
+	
+	broadcast operable {
+		out {
+			Position pos
+		}
+	}
+	
+	contract {
+		PSM {
+			initial initialState
+			state initialState {
+				on set testAttr -> initialState {
+					//what can be stated here?
+				}
+				on call move [pos.x == 5] -> initialState {
+					//what can be stated here?
+				} 
+			}
+		}
+	}
+	
+	struct Position {
+		UInt16 x
+		UInt16 y
+		UInt16 z
+	}
+	
+}
+
