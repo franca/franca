@@ -40,7 +40,7 @@ import com.google.inject.Inject;
  */
 public class NewFrancaIDLFileWizard extends Wizard implements INewWizard {
 
-    private static final String NEW_EMF_INC_QUERY_QUERY_DEFINITION_FILE = "Create a new EMF-IncQuery Query Definition file.";
+    private static final String NEW_FRANCA_IDL_FILE = "Create a new Franca IDL file.";
     private NewFrancaIDLFileWizardContainerConfigurationPage page1;
     private NewFrancaIDLFileWizardConfigurationPage page2;
     private ISelection selection;
@@ -60,7 +60,7 @@ public class NewFrancaIDLFileWizard extends Wizard implements INewWizard {
     public void addPages() {
         page1 = new NewFrancaIDLFileWizardContainerConfigurationPage();
         page1.init((IStructuredSelection) selection);
-        page1.setDescription(NEW_EMF_INC_QUERY_QUERY_DEFINITION_FILE);
+        page1.setDescription(NEW_FRANCA_IDL_FILE);
         page2 = new NewFrancaIDLFileWizardConfigurationPage();
         addPage(page1);
         addPage(page2);
@@ -112,7 +112,7 @@ public class NewFrancaIDLFileWizard extends Wizard implements INewWizard {
 
     private void doFinish(String containerName, String fileName, String packageName, String modelName, String interfaceName, String typeCollectionName, IProgressMonitor monitor) {
         monitor.beginTask("Creating " + fileName, 1);
-        createEiqFile(containerName, fileName, packageName, modelName, interfaceName, typeCollectionName);
+        createFrancaModel(containerName, fileName, packageName, modelName, interfaceName, typeCollectionName);
         monitor.worked(1);
     }
 
@@ -122,7 +122,7 @@ public class NewFrancaIDLFileWizard extends Wizard implements INewWizard {
         this.workbench = workbench;
     }
 
-    private void createEiqFile(String containerName, String fileName, String packageName, String modelName, String interfaceName, String typeCollectionName) {
+    private void createFrancaModel(String containerName, String fileName, String packageName, String modelName, String interfaceName, String typeCollectionName) {
         IResource containerResource = root.findMember(new Path(containerName));
         ResourceSet resourceSet = resourceSetProvider.get(containerResource.getProject());
 
