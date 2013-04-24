@@ -17,12 +17,12 @@ public class FrancaEditorPartListener implements IPartListener {
 
 	@Override
 	public void partBroughtToTop(IWorkbenchPart part) {
-
+		
 	}
 
 	@Override
 	public void partClosed(IWorkbenchPart part) {
-		//handleContractUnregistration(part);
+		handleContractUnregistration(part);
 	}
 
 	@Override
@@ -41,7 +41,7 @@ public class FrancaEditorPartListener implements IPartListener {
 
 			if (editor.getEditorSite().getId().equals(francaEditorId)) {
 				FrancaContractVisualizerView view = FrancaContractVisualizerView.getInstance();
-				if (view != null) {
+				if (view != null && editor.equals(view.getActiveEditor())) {
 					view.clear();
 					view.updateModel();
 				}

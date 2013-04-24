@@ -26,7 +26,7 @@ public class GraphSelectionListener implements SelectionListener {
 	public void widgetSelected(SelectionEvent e) {
 		FrancaContractVisualizerView viewer = FrancaContractVisualizerView
 				.getInstance();
-		if (viewer != null) {
+		if (viewer != null && viewer.getActiveEditor() != null) {
 			Object source = e.getSource();
 			EObject affectedObject = null;
 

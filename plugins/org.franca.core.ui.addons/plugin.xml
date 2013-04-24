@@ -24,7 +24,7 @@
             name="dotgenerator">
       </command>
    </extension>
-   <extension
+   <!--<extension
          point="org.eclipse.ui.menus">
       <menuContribution
             allPopups="false"
@@ -37,7 +37,7 @@
                tooltip="Generate DOT">
          </command>
       </menuContribution>
-   </extension>
+   </extension>-->
    <extension
          point="org.eclipse.ui.handlers">
       <handler
@@ -70,6 +70,43 @@
             name="Franca Deployment Specification"
             preferredPerspectives="org.eclipse.pde.ui.PDEPerspective,org.eclipse.jdt.ui.JavaPerspective">
       </wizard>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.jdt.ui.JavaPerspective">
+         <newWizardShortcut
+               id="org.franca.core.ui.addons.newidlfilewizard">
+         </newWizardShortcut>
+         <newWizardShortcut
+               id="org.franca.core.ui.addons.newfdeplfilewizard">
+         </newWizardShortcut>
+         <view
+               closeable="true"
+               id="org.franca.core.ui.addons.contractviewer"
+               minimized="false"
+               relationship="stack"
+               relative="org.eclipse.ui.views.ContentOutline"
+               visible="true">
+         </view>
+      </perspectiveExtension>
+      <perspectiveExtension
+            targetID="org.eclipse.pde.ui.PDEPerspective">
+         <newWizardShortcut
+               id="org.franca.core.ui.addons.newidlfilewizard">
+         </newWizardShortcut>
+         <newWizardShortcut
+               id="org.franca.core.ui.addons.newfdeplfilewizard">
+         </newWizardShortcut>
+         <view
+               closeable="true"
+               id="org.franca.core.ui.addons.contractviewer"
+               minimized="false"
+               relationship="stack"
+               relative="org.eclipse.ui.views.ContentOutline"
+               visible="true">
+         </view>
+      </perspectiveExtension>
    </extension>
 
 </plugin>
