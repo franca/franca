@@ -45,21 +45,31 @@
             commandId="org.franca.core.ui.addons.dotgenerator">
       </handler>
    </extension>
+   
    <extension
          point="org.eclipse.ui.newWizards">
       <wizard
             category="org.franca.core.ui.addons.wizard.category"
-            class="org.franca.core.ui.addons.contractviewer.util.ContractViewerExecutableExtensionFactory:org.franca.core.ui.addons.wizard.NewFrancaIDLFileWizard"
+            class="org.franca.core.ui.addons.contractviewer.util.ContractViewerExecutableExtensionFactory:org.franca.core.ui.addons.wizard.FrancaIDLFileWizard"
             finalPerspective="org.eclipse.pde.ui.PDEPerspective"
             icon="icons/franca_logo.png"
             id="org.franca.core.ui.addons.newidlfilewizard"
-            name="Franca IDL File"
+            name="Franca Interface Definition"
             preferredPerspectives="org.eclipse.pde.ui.PDEPerspective,org.eclipse.jdt.ui.JavaPerspective">
       </wizard>
       <category
             id="org.franca.core.ui.addons.wizard.category"
             name="Franca">
       </category>
+      <wizard
+            category="org.franca.core.ui.addons.wizard.category"
+            class="org.franca.core.ui.addons.contractviewer.util.ContractViewerExecutableExtensionFactory:org.franca.core.ui.addons.wizard.FrancaFDEPLFileWizard"
+            finalPerspective="org.eclipse.pde.ui.PDEPerspective"
+            icon="icons/franca_logo.png"
+            id="org.franca.core.ui.addons.newfdeplfilewizard"
+            name="Franca Deployment Specification"
+            preferredPerspectives="org.eclipse.pde.ui.PDEPerspective,org.eclipse.jdt.ui.JavaPerspective">
+      </wizard>
    </extension>
 
 </plugin>

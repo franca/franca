@@ -14,18 +14,17 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 @SuppressWarnings("restriction")
-public class NewFrancaIDLFileWizardConfigurationPage extends WizardPage {
+public class FrancaIDLFileWizardConfigurationPage extends WizardPage {
 
-    private static final String TITLE = "Franca IDL file Wizard";
     private static final String ONE_MUST_BE_SET = "At least either the type collection name or the interface name must be set!";
     private static final String MODEL_NAME_MUST_BE_SET = "The package name of the Franca model must be set!";
     private Text interfaceNameText;
     private Text typeCollectionNameText;
     private Text modelNameText;
 
-    public NewFrancaIDLFileWizardConfigurationPage() {
-        super(TITLE);
-        setTitle(TITLE);
+    public FrancaIDLFileWizardConfigurationPage() {
+        super(FrancaFileWizard.FIDL_TITLE);
+        setTitle(FrancaFileWizard.FIDL_TITLE);
     }
     
     @Override

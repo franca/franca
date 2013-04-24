@@ -30,23 +30,24 @@ import org.eclipse.xtext.ui.preferences.StatusInfo;
 import org.franca.core.ui.addons.Activator;
 
 @SuppressWarnings("restriction")
-public class NewFrancaIDLFileWizardContainerConfigurationPage extends NewTypeWizardPage {
+public class FrancaFileWizardContainerConfigurationPage extends NewTypeWizardPage {
 
     private Text fileText;
-    private static final String TITLE = "Franca IDL file Wizard";
     private static final String THE_GIVEN_FILE_ALREADY_EXISTS = "The given file already exists!";
     private static final String DEFAULT_FILE_NAME = "";
     private static final String SOURCE_FOLDER_ERROR = "You must specify a valid source folder!";
     private static final String FILE_NAME_ERROR = "File name must be specified!";
     private static final String FILE_NAME_NOT_VALID = "File name must be valid!";
-    private static final String FILE_EXTENSION_ERROR = "File extension must be \"fidl\"!";
+    private String FILE_EXTENSION_ERROR;
     private static final String DEFAULT_PACKAGE_WARNING = "The use of default package is discouraged.";
     private static final String PACKAGE_NAME_WARNING = "Only lower case package names supported.";
-    private static final String FILE_EXTENSION = "fidl";
+    private String extension;
 
-    public NewFrancaIDLFileWizardContainerConfigurationPage() {
-        super(false, FILE_EXTENSION);
-        setTitle(TITLE);
+    public FrancaFileWizardContainerConfigurationPage(String extension) {
+        super(false, extension);
+        this.extension = extension;
+        this.FILE_EXTENSION_ERROR = "File extension must be \""+extension+"\"!";
+        setTitle(extension.matches("fidl") ? FrancaFileWizard.FIDL_TITLE : FrancaFileWizard.FDEPL_TITLE);
     }
 
     /**
@@ -148,7 +149,7 @@ public class NewFrancaIDLFileWizardContainerConfigurationPage extends NewTypeWiz
             } else {
                 int dotLoc = fileName.lastIndexOf('.');
                 String ext = fileName.substring(dotLoc + 1);
-                wrongExtension = !ext.equalsIgnoreCase(FILE_EXTENSION);
+                wrongExtension = !ext.equalsIgnoreCase(extension);
 
                 String name = fileName.substring(0, dotLoc);
                 IStatus nameValidatorStatus = JavaConventions.validateTypeVariableName(name, JavaCore.VERSION_1_6,
