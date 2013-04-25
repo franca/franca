@@ -1,4 +1,4 @@
-package org.franca.util.search.test;
+package org.franca.core.util.validator.test;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;

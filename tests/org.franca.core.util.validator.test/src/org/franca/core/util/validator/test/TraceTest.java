@@ -1,4 +1,4 @@
-package org.franca.util.search.test;
+package org.franca.core.util.validator.test;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -10,7 +10,7 @@ import org.franca.core.dsl.FrancaIDLStandaloneSetup;
 import org.franca.core.dsl.FrancaPersistenceManager;
 import org.franca.core.franca.FContract;
 import org.franca.core.franca.FModel;
-import org.franca.util.search.TraceValidator;
+import org.franca.core.util.validator.TraceValidator;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
