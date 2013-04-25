@@ -1,4 +1,4 @@
-package org.franca.util.search.regexp;
+package org.franca.core.util.search.regexp;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,8 +12,8 @@ import java.util.Set;
 import org.franca.core.franca.FContract;
 import org.franca.core.franca.FState;
 import org.franca.core.franca.FTransition;
-import org.franca.util.search.FrancaTraceElement;
-import org.franca.util.search.TraceElement;
+import org.franca.core.util.search.FrancaTraceElement;
+import org.franca.core.util.search.TraceElement;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;

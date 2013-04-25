@@ -1,4 +1,4 @@
-package org.franca.util.search;
+package org.franca.core.util.search;
 
 public class CharacterTraceElement implements TraceElement {
 

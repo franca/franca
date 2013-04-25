@@ -1,4 +1,4 @@
-package org.franca.util.search;
+package org.franca.core.util.validator;
 
 import java.util.Collection;
 import java.util.HashSet;

@@ -1,4 +1,4 @@
-package org.franca.util.search;
+package org.franca.core.util.search;
 
 import org.franca.core.franca.FState;
 import org.franca.core.franca.FTransition;

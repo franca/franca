@@ -1,4 +1,4 @@
-package org.franca.util.search.regexp;
+package org.franca.core.util.search.regexp;
 
 public class RegexpHelper {
 

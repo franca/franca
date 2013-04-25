@@ -1,6 +1,6 @@
-package org.franca.util.search.regexp;
+package org.franca.core.util.search.regexp;
 
-import org.franca.util.search.TraceElement;
+import org.franca.core.util.search.TraceElement;
 
 public class SingleElement extends RegexpElement {
 

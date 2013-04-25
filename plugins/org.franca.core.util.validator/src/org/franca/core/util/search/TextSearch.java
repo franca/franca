@@ -1,4 +1,4 @@
-package org.franca.util.search;
+package org.franca.core.util.search;
 
 import java.util.ArrayList;
 import java.util.HashMap;
