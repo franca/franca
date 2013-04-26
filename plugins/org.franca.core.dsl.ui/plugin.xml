@@ -156,6 +156,13 @@
                label="Generate dot-file from contract"
                menubarPath="org.franca.ui.francaMenu/groupFrancaCommon">
          </action>
+         <action
+               class="org.franca.core.dsl.ui.FrancaIDLExecutableExtensionFactory:org.franca.core.dsl.ui.actions.GenerateXMIAction"
+               enablesFor="1"
+               id="org.franca.core.dsl.ui.generatexmi"
+               label="Export in XMI format"
+               menubarPath="org.franca.ui.francaMenu/groupFrancaCommon">
+         </action>
       </objectContribution>
    </extension>
 

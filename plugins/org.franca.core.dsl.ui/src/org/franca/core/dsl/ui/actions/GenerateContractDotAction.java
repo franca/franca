@@ -37,6 +37,7 @@ public class GenerateContractDotAction implements IObjectActionDelegate {
 	@Inject FrancaPersistenceManager loader;
 	@Inject FrancaRecursiveValidator validator;
 
+	@SuppressWarnings({ "deprecation", "incomplete-switch" })
 	@Override
 	public void run(IAction action) {
     	SpecificConsole myConsole = new SpecificConsole("Franca");
