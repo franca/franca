@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: org.franca.core.util.validator.aspect
+Bundle-SymbolicName: org.franca.core.validation.aspect
+Bundle-Version: 1.0.0
+Require-Bundle: org.aspectj.runtime;bundle-version="1.6.1";visibility:=reexport,
+ org.eclipse.equinox.weaving.aspectj;bundle-version="1.0.200",
+ org.eclipse.equinox.weaving.caching;bundle-version="1.0.200",
+ org.aspectj.weaver;bundle-version="1.7.2"
+Export-Package: org.franca.core.validation.aspect;aspects=TraceAspect
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.eclipse.equinox.weaving.hooks,
+ org.osgi.framework;version="1.4.0"
+Eclipse-SupplementBundle: org.franca.core.util.validator.test

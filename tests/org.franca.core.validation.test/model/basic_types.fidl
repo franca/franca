@@ -1,0 +1,56 @@
+// Franca IDL Demo: Basic Types
+package org.franca.examples.demo
+
+typeCollection CommonTypes {
+
+	<** @description : status for return values **>	
+	enumeration tAudioInformation {
+		ok = "0"
+		done = "1"
+	}
+	
+	<** @description : Generic type for a unique identifier. **>
+	typedef tUniqueId is UInt64
+	
+	
+	<** @description : Enumeration type for result codes. **>
+	enumeration tResultCode {
+	
+		<** @description : The operation was completed without error.
+			Result type: Final result (sequence finished). **>
+		RESULT_OK
+	
+		<** @description : The request was accepted and is currently being processed.
+			Result type: Intermmediate result (sequence ongoing). **>
+		RESULT_PROCESSING
+	
+		<** @description : During the processing of a request an intermmediate state was reached (e. g. first bunch of session items is available) but processing is still ongoing.
+			Result type: Intermmediate result (sequence ongoing). **>
+		RESULT_UPDATE
+	
+		<** @description : The new session request contains the same data as the current (active) session. Therefore re-building the same session is not needed.
+			Result type: Final result (sequence finished). **>
+		RESULT_DATAUNCHANGED
+	
+		<** @description : Command not allowed in the current state.
+			Result type: Final result (sequence finished). **>
+		RESULT_WRONGSTATE
+	}
+	
+	
+	<** @description : Data for the attach/ detach response **>
+	struct tOutputInfo {
+		<** @description : The identifier of the control context. **>
+		tUniqueId ccId
+	
+		<** @description : The identifier of the output device. **>
+		tUniqueId outputId
+	
+		<** @description : The error value, 0 on success. **>
+		UInt32 ^error
+	}
+	
+	<** @description : Vector of tOutputInfo structures. **>
+	array tOutputInfoList of tOutputInfo
+}
+

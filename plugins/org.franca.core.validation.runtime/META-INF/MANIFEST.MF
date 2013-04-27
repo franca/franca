@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: org.franca.core.validation.runtime
+Bundle-SymbolicName: org.franca.core.validation.runtime;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.franca.core.dsl;bundle-version="0.8.7",
+ org.eclipse.xtext;bundle-version="2.4.0"
