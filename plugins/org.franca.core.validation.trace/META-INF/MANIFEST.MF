@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: org.franca.core.util.validator
 Bundle-SymbolicName: org.franca.core.validation.trace
-Bundle-Version: 0.8.5.qualifier
+Bundle-Version: 0.8.7.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.franca.core;bundle-version="0.8.5",
  com.google.guava;bundle-version="10.0.1",

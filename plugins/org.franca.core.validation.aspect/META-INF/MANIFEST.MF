@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: org.franca.core.util.validator.aspect
 Bundle-SymbolicName: org.franca.core.validation.aspect
-Bundle-Version: 1.0.0
+Bundle-Version: 0.8.7.qualifier
 Require-Bundle: org.aspectj.runtime;bundle-version="1.6.1";visibility:=reexport,
  org.eclipse.equinox.weaving.aspectj;bundle-version="1.0.200",
  org.eclipse.equinox.weaving.caching;bundle-version="1.0.200",
