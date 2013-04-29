@@ -17,13 +17,6 @@
             name="Franca">
       </category>
    </extension>
-   <extension
-         point="org.eclipse.ui.commands">
-      <command
-            id="org.franca.core.ui.addons.dotgenerator"
-            name="dotgenerator">
-      </command>
-   </extension>
    <!--<extension
          point="org.eclipse.ui.menus">
       <menuContribution
@@ -38,13 +31,6 @@
          </command>
       </menuContribution>
    </extension>-->
-   <extension
-         point="org.eclipse.ui.handlers">
-      <handler
-            class="org.franca.core.ui.addons.contractviewer.handlers.DotGeneratorHandler"
-            commandId="org.franca.core.ui.addons.dotgenerator">
-      </handler>
-   </extension>
    
    <extension
          point="org.eclipse.ui.newWizards">

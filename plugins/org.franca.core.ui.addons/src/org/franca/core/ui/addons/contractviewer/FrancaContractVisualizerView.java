@@ -39,6 +39,7 @@ public class FrancaContractVisualizerView extends ViewPart {
 	private IFile activeFile;
 	private static WeakReference<FrancaContractVisualizerView> instance = new WeakReference<FrancaContractVisualizerView>(null);
 	private FModel activeModel;
+	private FModel previousModel;
 	private Map<FState, Set<FTransition>> backwardIndex;
 	private Graph graph;
 	private ContractDotGenerator generator;
@@ -49,6 +50,7 @@ public class FrancaContractVisualizerView extends ViewPart {
 	
 	public FrancaContractVisualizerView() {
 		generator = new ContractDotGenerator();
+		previousModel = null;
 	}
 	
     public static FrancaContractVisualizerView getInstance() {
@@ -100,14 +102,6 @@ public class FrancaContractVisualizerView extends ViewPart {
 	}
 	
 	public void updateModel() {
-		//syncExec is called here
-		Display.getDefault().syncExec(new Runnable() {
-			@Override
-			public void run() {
-				graph.clear();
-			}
-		});
-		
 		if (activeEditor != null) {
 			activeEditor.getDocument().readOnly(new IUnitOfWork.Void<XtextResource>() {
 				@Override
@@ -116,6 +110,7 @@ public class FrancaContractVisualizerView extends ViewPart {
 						for (EObject obj : resource.getContents()) {
 							if (obj instanceof FModel) {
 								activeModel = (FModel) obj;
+								break;
 							}
 						}
 					}
@@ -126,7 +121,11 @@ public class FrancaContractVisualizerView extends ViewPart {
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
-				constructGraph();
+				if (previousModel == null || (!previousModel.equals(activeModel))) {
+					graph.clear();
+					constructGraph();
+					previousModel = activeModel;
+				}
 			}
 		});
 	}
@@ -135,6 +134,7 @@ public class FrancaContractVisualizerView extends ViewPart {
 		this.activeEditor = null;
 		this.activeFile = null;
 		this.activeModel = null;
+		this.previousModel = null;
 	}
 	
 	private void constructGraph() {
