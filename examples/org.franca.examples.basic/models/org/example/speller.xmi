@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="ASCII"?>
+<franca:FModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:franca="http://core.franca.org" name="org.franca.examples.demo">
+  <interfaces name="Speller">
+    <types xsi:type="franca:FEnumerationType" name="ECriterion">
+      <comment>
+        <elements type="@description" comment="set of location input state criteria"/>
+      </comment>
+      <enumerators name="COUNTRY"/>
+      <enumerators name="TOWN"/>
+      <enumerators name="STREET"/>
+      <enumerators name="HOUSENUMBER"/>
+      <enumerators name="ZIPCODE"/>
+    </types>
+    <types xsi:type="franca:FStructType" name="TLocationDescription"/>
+    <types xsi:type="franca:FStructType" name="TInputState">
+      <comment>
+        <elements type="@description" comment="location input state"/>
+      </comment>
+      <elements name="locationDescription">
+        <type derived="//@interfaces.0/@types.1"/>
+      </elements>
+      <elements name="availableSelectionCriteria">
+        <type derived="//@interfaces.0/@types.3"/>
+      </elements>
+      <elements name="isDestinationValid">
+        <type predefined="Boolean"/>
+      </elements>
+    </types>
+    <types xsi:type="franca:FArrayType" name="TCriterionList">
+      <comment>
+        <elements type="@description" comment="set of location input state criteria"/>
+      </comment>
+      <elementType derived="//@interfaces.0/@types.0"/>
+    </types>
+    <types xsi:type="franca:FStructType" name="TValueList"/>
+    <types xsi:type="franca:FStructType" name="TSpellerState">
+      <comment>
+        <elements type="@description" comment="speller input state structure"/>
+      </comment>
+      <elements name="criterion">
+        <type derived="//@interfaces.0/@types.0"/>
+      </elements>
+      <elements name="inputString">
+        <type predefined="String"/>
+      </elements>
+      <elements name="isFullMatch">
+        <type predefined="Boolean"/>
+      </elements>
+      <elements name="isUndoAvailable">
+        <type predefined="Boolean"/>
+      </elements>
+      <elements name="validCharacters">
+        <type predefined="String"/>
+      </elements>
+      <elements name="valueList">
+        <type derived="//@interfaces.0/@types.4"/>
+      </elements>
+      <elements name="valueListCount">
+        <type predefined="UInt32"/>
+      </elements>
+    </types>
+    <types xsi:type="franca:FEnumerationType" name="XErrorSetSpelling">
+      <comment>
+        <elements type="@param" comment="X_NO_FULLMATCH will be returned when the input is no full match"/>
+        <elements type="@param" comment="X_NO_INPUT will be returned when the property 'input' is empty"/>
+        <elements type="@param" comment="X_NO_HISTORY will be returned when there is no history available to remove a &#xD;&#xA;&#x9;        character. Hhappens when the operation setInput() is used to &#xD;&#xA;&#x9;        initialize the input to an arbitrary value.&quot;"/>
+      </comment>
+      <enumerators name="X_SPELLING_NOT_ACTIVE"/>
+      <enumerators name="X_NO_FULLMATCH"/>
+      <enumerators name="X_NO_INPUT"/>
+      <enumerators name="X_NO_HISTORY"/>
+    </types>
+    <types xsi:type="franca:FEnumerationType" name="EStateOfOperation">
+      <comment>
+        <elements type="@description" comment="reflects state of operation on location input controller"/>
+      </comment>
+      <enumerators name="NOT_OPERABLE"/>
+      <enumerators name="FULLY_OPERABLE"/>
+    </types>
+    <attributes name="ControllerOperationState">
+      <comment>
+        <elements type="@description" comment="State of operation of location input controller&#xD;&#xA;&#x9;&#x9;               current state of operation"/>
+      </comment>
+      <type derived="//@interfaces.0/@types.7"/>
+    </attributes>
+    <methods name="selectInput">
+      <comment>
+        <elements type="@description" comment="Selects the current speller input. The spelling process ends and the location input state is updated accordingly."/>
+        <elements type="@param" comment="inputState returns the location input state"/>
+      </comment>
+      <outArgs name="inputState">
+        <type derived="//@interfaces.0/@types.2"/>
+      </outArgs>
+    </methods>
+    <methods name="selectValueListEntry">
+      <comment>
+        <elements type="@description" comment="Selects an entry of the list of available entries. The spelling process ends and the current location input state is updated accordingly"/>
+        <elements type="@param" comment="starts at the given index"/>
+        <elements type="@param" comment="inputState returns the location input state"/>
+      </comment>
+      <inArgs name="index">
+        <type predefined="UInt32"/>
+      </inArgs>
+      <outArgs name="inputState">
+        <type derived="//@interfaces.0/@types.2"/>
+      </outArgs>
+    </methods>
+    <methods name="getValueListEntries">
+      <comment>
+        <elements type="@description" comment="Retrieves a section of the list of available entries. Does not modify the state of the speller"/>
+        <elements type="@param" comment="index starts at the given index"/>
+        <elements type="@param" comment="length number of requested elements"/>
+        <elements type="@param" comment="valueList returns the requested value list"/>
+      </comment>
+      <inArgs name="index">
+        <type predefined="UInt32"/>
+      </inArgs>
+      <inArgs name="length">
+        <type predefined="UInt32"/>
+      </inArgs>
+      <outArgs name="valueList">
+        <type derived="//@interfaces.0/@types.4"/>
+      </outArgs>
+    </methods>
+    <methods name="addCharacter">
+      <comment>
+        <elements type="@description" comment="Adds a character to the speller input"/>
+        <elements type="@param" comment="character the added character"/>
+        <elements type="@param" comment="spellerState returns the updated speller state"/>
+      </comment>
+      <inArgs name="character">
+        <type predefined="String"/>
+      </inArgs>
+      <outArgs name="spellerState">
+        <type derived="//@interfaces.0/@types.5"/>
+      </outArgs>
+    </methods>
+    <methods name="startSpelling">
+      <comment>
+        <elements type="@description" comment="Starts the spelling process for a selection criterion. &#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;   If the current location description already contains data for this criterion the data will be removed and &#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;   the user can change the previously entered data. Otherwise the entered data is appended to the end of the location description"/>
+        <elements type="@param" comment="criterion the given selection criterion"/>
+        <elements type="@param" comment="spellerState returns the updated speller state"/>
+      </comment>
+      <inArgs name="criterion">
+        <type derived="//@interfaces.0/@types.0"/>
+      </inArgs>
+      <outArgs name="spellerState">
+        <type derived="//@interfaces.0/@types.5"/>
+      </outArgs>
+    </methods>
+    <methods name="getCurrentState">
+      <comment>
+        <elements type="@description" comment="Returns the current location input state to the HMI"/>
+        <elements type="@param" comment="inputState returns the location input state"/>
+      </comment>
+      <outArgs name="inputState">
+        <type derived="//@interfaces.0/@types.2"/>
+      </outArgs>
+    </methods>
+    <methods name="undoCharacter">
+      <comment>
+        <elements type="@description" comment="Removes a previously entered character of the speller input."/>
+        <elements type="@param" comment="spellerState returns the updatedd speller state"/>
+      </comment>
+      <outArgs name="spellerState">
+        <type derived="//@interfaces.0/@types.5"/>
+      </outArgs>
+    </methods>
+    <methods name="cancel">
+      <comment>
+        <elements type="@description" comment="Cancels the current spelling process. The current location description remains unchanged."/>
+        <elements type="@param" comment="inputState returns the current location input state"/>
+      </comment>
+      <outArgs name="inputState">
+        <type derived="//@interfaces.0/@types.2"/>
+      </outArgs>
+    </methods>
+    <contract>
+      <stateGraph initial="//@interfaces.0/@contract/@stateGraph/@states.0">
+        <states name="Idle">
+          <transitions to="//@interfaces.0/@contract/@stateGraph/@states.1">
+            <trigger>
+              <event call="//@interfaces.0/@methods.4"/>
+            </trigger>
+          </transitions>
+        </states>
+        <states name="ReqStartSpelling">
+          <transitions to="//@interfaces.0/@contract/@stateGraph/@states.2">
+            <trigger>
+              <event respond="//@interfaces.0/@methods.4"/>
+            </trigger>
+            <action xsi:type="franca:FBlockExpression">
+              <expressions xsi:type="franca:FAssignment" lhs="//@interfaces.0/@contract/@variables.0">
+                <rhs xsi:type="franca:FTypedElementRef" element="//@interfaces.0/@methods.4/@outArgs.0"/>
+              </expressions>
+            </action>
+          </transitions>
+        </states>
+        <states name="Spelling">
+          <transitions to="//@interfaces.0/@contract/@stateGraph/@states.3">
+            <trigger>
+              <event call="//@interfaces.0/@methods.7"/>
+            </trigger>
+          </transitions>
+          <transitions to="//@interfaces.0/@contract/@stateGraph/@states.4">
+            <trigger>
+              <event call="//@interfaces.0/@methods.3"/>
+            </trigger>
+          </transitions>
+          <transitions to="//@interfaces.0/@contract/@stateGraph/@states.5">
+            <trigger>
+              <event call="//@interfaces.0/@methods.6"/>
+            </trigger>
+            <guard>
+              <condition xsi:type="franca:FBinaryOperation" op=">">
+                <left xsi:type="franca:FTypedElementRef" element="//@interfaces.0/@contract/@variables.1"/>
+                <right xsi:type="franca:FIntegerConstant"/>
+              </condition>
+            </guard>
+          </transitions>
+          <transitions to="//@interfaces.0/@contract/@stateGraph/@states.6">
+            <trigger>
+              <event call="//@interfaces.0/@methods.5"/>
+            </trigger>
+          </transitions>
+          <transitions to="//@interfaces.0/@contract/@stateGraph/@states.7">
+            <trigger>
+              <event call="//@interfaces.0/@methods.2"/>
+            </trigger>
+            <guard>
+              <condition xsi:type="franca:FBinaryOperation" op="&lt;">
+                <left xsi:type="franca:FBinaryOperation" op="+">
+                  <left xsi:type="franca:FTypedElementRef" element="//@interfaces.0/@methods.2/@inArgs.0"/>
+                  <right xsi:type="franca:FTypedElementRef" element="//@interfaces.0/@methods.2/@inArgs.1"/>
+                </left>
+                <right xsi:type="franca:FTypedElementRef" field="//@interfaces.0/@types.5/@elements.6">
+                  <target element="//@interfaces.0/@contract/@variables.0"/>
+                </right>
+              </condition>
+            </guard>
+          </transitions>
+          <transitions to="//@interfaces.0/@contract/@stateGraph/@states.8">
+            <trigger>
+              <event call="//@interfaces.0/@methods.0"/>
+            </trigger>
+            <guard>
+              <condition xsi:type="franca:FTypedElementRef" field="//@interfaces.0/@types.5/@elements.2">
+                <target element="//@interfaces.0/@contract/@variables.0"/>
+              </condition>
+            </guard>
+          </transitions>
+          <transitions to="//@interfaces.0/@contract/@stateGraph/@states.9">
+            <trigger>
+              <event call="//@interfaces.0/@methods.1"/>
+            </trigger>
+            <guard>
+              <condition xsi:type="franca:FBinaryOperation" op="&lt;">
+                <left xsi:type="franca:FTypedElementRef" element="//@interfaces.0/@methods.1/@inArgs.0"/>
+                <right xsi:type="franca:FTypedElementRef" field="//@interfaces.0/@types.5/@elements.6">
+                  <target element="//@interfaces.0/@contract/@variables.0"/>
+                </right>
+              </condition>
+            </guard>
+          </transitions>
+        </states>
+        <states name="ReqCancel">
+          <transitions to="//@interfaces.0/@contract/@stateGraph/@states.0">
+            <trigger>
+              <event respond="//@interfaces.0/@methods.7"/>
+            </trigger>
+            <action xsi:type="franca:FBlockExpression">
+              <expressions xsi:type="franca:FAssignment" lhs="//@interfaces.0/@contract/@variables.1">
+                <rhs xsi:type="franca:FIntegerConstant" val="1"/>
+              </expressions>
+            </action>
+          </transitions>
+        </states>
+        <states name="ReqAddCharacter">
+          <transitions to="//@interfaces.0/@contract/@stateGraph/@states.2">
+            <trigger>
+              <event respond="//@interfaces.0/@methods.3"/>
+            </trigger>
+            <action xsi:type="franca:FBlockExpression">
+              <expressions xsi:type="franca:FAssignment" lhs="//@interfaces.0/@contract/@variables.1">
+                <rhs xsi:type="franca:FBinaryOperation" op="+">
+                  <left xsi:type="franca:FTypedElementRef" element="//@interfaces.0/@contract/@variables.1"/>
+                  <right xsi:type="franca:FIntegerConstant" val="1"/>
+                </rhs>
+              </expressions>
+              <expressions xsi:type="franca:FAssignment" lhs="//@interfaces.0/@contract/@variables.0">
+                <rhs xsi:type="franca:FTypedElementRef" element="//@interfaces.0/@methods.3/@outArgs.0"/>
+              </expressions>
+            </action>
+          </transitions>
+        </states>
+        <states name="ReqUndoCharacter">
+          <transitions to="//@interfaces.0/@contract/@stateGraph/@states.2">
+            <trigger>
+              <event respond="//@interfaces.0/@methods.6"/>
+            </trigger>
+            <action xsi:type="franca:FBlockExpression">
+              <expressions xsi:type="franca:FAssignment" lhs="//@interfaces.0/@contract/@variables.1">
+                <rhs xsi:type="franca:FBinaryOperation" op="-">
+                  <left xsi:type="franca:FTypedElementRef" element="//@interfaces.0/@contract/@variables.1"/>
+                  <right xsi:type="franca:FIntegerConstant" val="1"/>
+                </rhs>
+              </expressions>
+              <expressions xsi:type="franca:FAssignment" lhs="//@interfaces.0/@contract/@variables.0">
+                <rhs xsi:type="franca:FTypedElementRef" element="//@interfaces.0/@methods.6/@outArgs.0"/>
+              </expressions>
+            </action>
+          </transitions>
+        </states>
+        <states name="ReqGetCurrentState">
+          <transitions to="//@interfaces.0/@contract/@stateGraph/@states.2">
+            <trigger>
+              <event respond="//@interfaces.0/@methods.5"/>
+            </trigger>
+          </transitions>
+        </states>
+        <states name="ReqGetValueListEntries">
+          <transitions to="//@interfaces.0/@contract/@stateGraph/@states.2">
+            <trigger>
+              <event respond="//@interfaces.0/@methods.2"/>
+            </trigger>
+          </transitions>
+        </states>
+        <states name="ReqSelectInput">
+          <transitions to="//@interfaces.0/@contract/@stateGraph/@states.10">
+            <trigger>
+              <event respond="//@interfaces.0/@methods.0"/>
+            </trigger>
+          </transitions>
+        </states>
+        <states name="ReqSelectValueListEntry">
+          <transitions to="//@interfaces.0/@contract/@stateGraph/@states.10">
+            <trigger>
+              <event respond="//@interfaces.0/@methods.1"/>
+            </trigger>
+          </transitions>
+        </states>
+        <states name="InputSelected">
+          <transitions to="//@interfaces.0/@contract/@stateGraph/@states.2">
+            <trigger>
+              <event respond="//@interfaces.0/@methods.4"/>
+            </trigger>
+            <action xsi:type="franca:FBlockExpression">
+              <expressions xsi:type="franca:FAssignment" lhs="//@interfaces.0/@contract/@variables.0">
+                <rhs xsi:type="franca:FTypedElementRef" element="//@interfaces.0/@methods.4/@outArgs.0"/>
+              </expressions>
+            </action>
+          </transitions>
+        </states>
+      </stateGraph>
+      <variables name="lastSpellerState">
+        <type derived="//@interfaces.0/@types.5"/>
+      </variables>
+      <variables name="charsAdded">
+        <type predefined="UInt32"/>
+      </variables>
+    </contract>
+  </interfaces>
+</franca:FModel>
