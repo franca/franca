@@ -15,8 +15,8 @@ import org.eclipse.xtext.nodemodel.INode;
 
 public class FrancaValueConverters extends Ecore2XtextTerminalConverters {
 	
-	@ValueConverter(rule = "CommentString")
-	public IValueConverter<String> CommentString() {
+	@ValueConverter(rule = "COMMENT_STRING")
+	public IValueConverter<String> COMMENT_STRING() {
 		return new AbstractNullSafeConverter<String>() {
 			@Override
 			protected String internalToValue(String string, INode node) {

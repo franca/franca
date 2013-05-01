@@ -149,6 +149,13 @@
                   name="groupFrancaCommon">
             </separator>
          </menu>
+         <action
+               class="org.franca.core.dsl.ui.FrancaIDLExecutableExtensionFactory:org.franca.core.dsl.ui.actions.GenerateContractDotAction"
+               enablesFor="1"
+               id="org.franca.connectors.dbus.ui.actions.generateContractDotAction"
+               label="Generate dot-file from contract"
+               menubarPath="org.franca.ui.francaMenu/groupFrancaCommon">
+         </action>
       </objectContribution>
    </extension>
 

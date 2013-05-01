@@ -1,14 +1,29 @@
+/*******************************************************************************
+ * Copyright (c) 2013 itemis AG (http://www.itemis.de).
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************/
 package org.franca.examples.basic.tests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-import org.franca.core.dsl.FrancaIDLHelpers;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.xtext.junit4.InjectWith;
+import org.eclipse.xtext.junit4.XtextRunner;
+import org.franca.core.dsl.FrancaIDLInjectorProvider;
+import org.franca.core.dsl.FrancaPersistenceManager;
 import org.franca.core.franca.FInterface;
 import org.franca.core.franca.FModel;
+import org.franca.core.utils.FileHelper;
 import org.franca.examples.basic.generators.ExampleHppGenerator;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import com.google.inject.Inject;
 
 /**
  * Testcase for the example C++ header generator from Franca IDL interfaces.
@@ -16,23 +31,21 @@ import org.junit.Test;
  * @author kbirken
  *
  */
+@RunWith(XtextRunner.class)
+@InjectWith(FrancaIDLInjectorProvider.class)
 public class HppGeneratorTest {
 
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	@After
-	public void tearDown() throws Exception {
-	}
-
+	@Inject
+	FrancaPersistenceManager loader;
+	
 	@Test
 	public void test() {
 		System.out.println("*** HppGeneratorTest");
 		
 		// load example Franca IDL interface
-		String inputfile = "examples/" + TestConfiguration.francaFile; 
-		FModel fmodel = FrancaIDLHelpers.instance().loadModel(inputfile);
+    	URI root = URI.createURI("classpath:/");
+    	URI loc = URI.createFileURI("org/example/MediaPlayer.fidl");
+		FModel fmodel = loader.loadModel(loc, root);
 		assertNotNull(fmodel);
 		System.out.println("Franca IDL: package '" + fmodel.getName() + "'");
 		
@@ -42,6 +55,15 @@ public class HppGeneratorTest {
 		ExampleHppGenerator generator = new ExampleHppGenerator();
 		String code = generator.generateInterface(api).toString();
 		System.out.println("Generated code:\n" + code);
+		
+		FileHelper.save("src-gen", getBasename(fmodel) + ".hpp", code);
+	}
+
+	// TODO: use FrancaGenerators.getBaseName lateron
+	private static String getBasename (EObject obj) {
+		String filename = obj.eResource().getURI().lastSegment();
+		String basename = filename.substring(0, filename.lastIndexOf('.'));
+		return basename;
 	}
 
 }

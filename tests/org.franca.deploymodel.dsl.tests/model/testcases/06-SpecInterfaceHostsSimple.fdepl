@@ -1,0 +1,15 @@
+
+// deployment specification with empty host declarations
+
+specification a.b.c.MySpec {
+
+	// related to IDL interface elements
+	for attributes { }
+	for methods { }
+	for broadcasts { }
+	for arguments { }
+
+	// extending Franca IDL
+	for providers { }
+	for instances { }
+}

@@ -243,7 +243,22 @@ public class FrancaHelpers {
 		return false;
 	}
 
-	
+	/** Get a human-readable name for a Franca type. */
+	public static String getTypeString (FTypeRef typeRef) {
+		if (typeRef.getDerived() == null) {
+			return typeRef.getPredefined().getName();
+		} else {
+			FType type = typeRef.getDerived();
+			if (type instanceof FTypeDef) {
+				FTypeDef typedef = (FTypeDef)type;
+				return getTypeString(typedef.getActualType());
+			} else {
+				return type.getName();
+			}
+		}
+	}
+
+
 	// *****************************************************************************
 	// singleton
 	

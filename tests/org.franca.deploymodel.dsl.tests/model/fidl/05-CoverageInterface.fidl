@@ -1,0 +1,118 @@
+package a.b.c
+
+interface CoverageInterface {
+	
+	attribute Int8 someInt8
+	attribute UInt8 someUInt8
+	attribute Int16 someInt16
+	attribute UInt16 someUInt16
+	attribute Int32 someInt32
+	attribute UInt32 someUInt32
+	attribute Int64 someInt64
+	attribute UInt64 someUInt64
+	attribute Boolean someBoolean			
+	attribute Float someFloat
+	attribute Double someDouble
+	attribute String someString
+	attribute ByteBuffer someBuffer
+	
+	method aMethod {
+		in {
+			Int8 someInt8
+			UInt8 someUInt8
+			Int16 someInt16
+			UInt16 someUInt16
+			Int32 someInt32
+			UInt32 someUInt32
+			Int64 someInt64
+			UInt64 someUInt64
+			Boolean someBoolean			
+			Float someFloat
+			Double someDouble
+			String someString
+			ByteBuffer someBuffer
+		}
+		out {
+			Int8 outInt8
+			UInt8 outUInt8
+			Int16 outInt16
+			UInt16 outUInt16
+			Int32 outInt32
+			UInt32 outUInt32
+			Int64 outInt64
+			UInt64 outUInt64
+			Boolean outBoolean			
+			Float outFloat
+			Double outDouble
+			String outString
+			ByteBuffer outBuffer
+		}
+	}
+
+	broadcast aBroadcast {
+		out {
+			Int8 someInt8
+			UInt8 someUInt8
+			Int16 someInt16
+			UInt16 someUInt16
+			Int32 someInt32
+			UInt32 someUInt32
+			Int64 someInt64
+			UInt64 someUInt64
+			Boolean someBoolean			
+			Float someFloat
+			Double someDouble
+			String someString
+			ByteBuffer someBuffer
+		}
+	}
+
+
+	enumeration aEnum {
+		A B C D E
+	}
+	
+	array aBoolArray of Boolean
+	array anIntArray of Int8
+	array aStringArray of String
+	array anEnumArray of aEnum
+
+	struct aStruct {
+		Int8 someInt8
+		UInt8 someUInt8
+		Int16 someInt16
+		UInt16 someUInt16
+		Int32 someInt32
+		UInt32 someUInt32
+		Int64 someInt64
+		UInt64 someUInt64
+		Boolean someBoolean			
+		Float someFloat
+		Double someDouble
+		String someString
+		ByteBuffer someBuffer
+	}
+
+	union aUnion {
+		Int8 someInt8
+		UInt8 someUInt8
+		Int16 someInt16
+		UInt16 someUInt16
+		Int32 someInt32
+		UInt32 someUInt32
+		Int64 someInt64
+		UInt64 someUInt64
+		Boolean someBoolean			
+		Float someFloat
+		Double someDouble
+		String someString
+		ByteBuffer someBuffer
+	}
+	
+	struct aNestedStruct {
+		aEnum someEnum
+		aBoolArray someArray
+		aStruct someStruct
+		aUnion someUnion
+	}
+}

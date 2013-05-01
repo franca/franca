@@ -2,7 +2,7 @@
 <feature
       id="org.franca.feature"
       label="%featureName"
-      version="0.7.7.qualifier"
+      version="0.8.7.qualifier"
       provider-name="%providerName">
 
    <description>
@@ -53,6 +53,13 @@
          unpack="false"/>
 
    <plugin
+         id="org.franca.core.edit"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.franca.core.dsl"
          download-size="0"
          install-size="0"
@@ -82,6 +89,20 @@
 
    <plugin
          id="org.franca.generators"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.franca.core.dsl.tests.base"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.franca.deploymodel.dsl.tests.base"
          download-size="0"
          install-size="0"
          version="0.0.0"

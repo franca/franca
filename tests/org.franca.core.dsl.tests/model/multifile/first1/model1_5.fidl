@@ -1,0 +1,6 @@
+package multifile.first1
+
+// explicit via classpath URI
+import multifile.first1.* from "classpath:/multifile/first1/model0.fidl"
+
+interface Model1_5 extends Model0 { }

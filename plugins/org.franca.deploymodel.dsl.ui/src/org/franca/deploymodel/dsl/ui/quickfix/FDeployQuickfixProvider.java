@@ -10,6 +10,8 @@ import org.eclipse.xtext.ui.editor.quickfix.DefaultQuickfixProvider;
 import org.eclipse.xtext.ui.editor.quickfix.Fix;
 import org.eclipse.xtext.ui.editor.quickfix.IssueResolutionAcceptor;
 import org.eclipse.xtext.validation.Issue;
+import org.franca.deploymodel.core.FDModelUtils;
+import org.franca.deploymodel.core.PropertyMappings;
 import org.franca.deploymodel.dsl.FDModelHelper;
 import org.franca.deploymodel.dsl.fDeploy.FDBoolean;
 import org.franca.deploymodel.dsl.fDeploy.FDComplexValue;
@@ -43,8 +45,8 @@ public class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 				if (obj instanceof FDElement) {
 					FDElement elem = (FDElement)obj;
 
-					FDRootElement root = FDModelHelper.getRootElement(elem);
-					List<FDPropertyDecl> decls = FDModelHelper.getAllPropertyDecls(root.getSpec(), elem);
+					FDRootElement root = FDModelUtils.getRootElement(elem);
+					List<FDPropertyDecl> decls = PropertyMappings.getAllPropertyDecls(root.getSpec(), elem);
 					for(String missingProp : missing) {
 						for(FDPropertyDecl decl : decls) {
 							if (decl.getName().equals(missingProp)) {

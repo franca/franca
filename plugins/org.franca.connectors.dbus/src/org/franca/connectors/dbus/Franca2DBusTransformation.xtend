@@ -1,8 +1,12 @@
 package org.franca.connectors.dbus
 
+import com.google.inject.Inject
+import java.util.List
+import model.emf.dbusxml.AccessType
 import model.emf.dbusxml.DbusxmlFactory
 import model.emf.dbusxml.DirectionType
-
+import model.emf.dbusxml.DocType
+import org.franca.core.framework.TransformationLogger
 import org.franca.core.franca.FAnnotation
 import org.franca.core.franca.FAnnotationType
 import org.franca.core.franca.FArgument
@@ -17,23 +21,30 @@ import org.franca.core.franca.FInterface
 import org.franca.core.franca.FMapType
 import org.franca.core.franca.FMethod
 import org.franca.core.franca.FModel
+import org.franca.core.franca.FModelElement
 import org.franca.core.franca.FStructType
 import org.franca.core.franca.FType
 import org.franca.core.franca.FTypeDef
 import org.franca.core.franca.FTypeRef
 import org.franca.core.franca.FTypedElement
 import org.franca.core.franca.FUnionType
-import org.franca.core.franca.FModelElement
+import org.franca.core.franca.FrancaPackage
 
-import java.util.List
+import static org.franca.core.framework.TransformationIssue.*
 
 class Franca2DBusTransformation {
+	
+	@Inject extension TransformationLogger
 	
 	String mInterfaceName
 	
 	def create DbusxmlFactory::eINSTANCE.createNodeType transform (FModel src) {
 		name = src.name
 		interface.addAll(src.interfaces.map [transformInterface])
+	}
+
+	def getTransformationIssues() {
+		return getIssues
 	}
 
 	def create DbusxmlFactory::eINSTANCE.createInterfaceType transformInterface (FInterface src) {
@@ -56,6 +67,10 @@ class Franca2DBusTransformation {
 	def create DbusxmlFactory::eINSTANCE.createPropertyType transformAttribute (FAttribute src) {
 		name = src.name
 		type = transformType2TypeString(src.type, src.array!=null)
+		if (src.readonly == "readonly")
+			access = AccessType::READ
+		else
+			access = AccessType::READWRITE
 	}
 
 	def create DbusxmlFactory::eINSTANCE.createMethodType transformMethod (FMethod src) {
@@ -82,50 +97,62 @@ class Franca2DBusTransformation {
 	def create DbusxmlFactory::eINSTANCE.createDocType createDoc (FArgument src) {
 				
 		if(src.type.derived != null && src.type.derived.comment != null) {
-			line.add(src.name+" (of type "+src.type.derived.name+") = "+src.description)			
+			line.addLines(src.name+" (of type "+src.type.derived.name+")", src.description)
 			line.addAll(src.type.derived.lineComment)			
 		}
 		else {
-			line.add(src.name+" = "+src.description)			
+			line.addLines(src.name, src.description)			
 		}
 	}
 	
-	def create DbusxmlFactory::eINSTANCE.createDocType createDoc (FModelElement src) {
+	def private DocType createDoc (FModelElement src) {
 		if(src.comment != null) {
-			line.add(src.name +" = "+src.description)
+			val it = DbusxmlFactory::eINSTANCE.createDocType
+			line.addLines(src.name, src.description)
+			it
+		} else {
+			null
+		}
+	}
+	
+	def private addLines (List<String> target, String prefix, String multiline) {
+		val lines = multiline.split("(\r)?\n")
+		var i = 0
+		for(s : lines) {
+			if (i==0 && prefix!="")
+				target.add(prefix + " = " + s.trim)
+			else
+				target.add(s.trim)
+			i = i + 1
 		}
 	}
 
-	def dispatch lineComment(FType src) {
+	def dispatch List<String> lineComment(FType src) {
 		newArrayList("lineComment to be defined")
 	}
 
-	def dispatch lineComment(FArrayType src) {		
-		val s = newArrayList(src.name+" = array["+src.elementType.derived.name+"]")
-		s.addAll(src.elementType.derived.lineComment)
+	def dispatch List<String> lineComment(FArrayType src) {		
+		val s = newArrayList(src.name+" = array["+src.elementType.label+"]")
+		if (src.elementType.derived!=null)
+			s.addAll(src.elementType.derived.lineComment)
 		s		
 	}				
 				
-	def dispatch lineComment(FMapType src) {
-		
-		val s = newArrayList(src.name + " = dictionary(key="+src.keyType.derived.name+",value="+src.valueType.derived.name+")")
-	    s.addAll( lineCommentForDictionary(src.keyType.derived, src.valueType.derived))		
+	def dispatch List<String> lineComment(FMapType src) {
+		val s = newArrayList(src.name + " = dictionary(key="+src.keyType.label+",value="+src.valueType.label+")")
+		if (src.keyType.derived!=null && src.valueType.derived!=null)
+	    	s.addAll(lineCommentForDictionary(src.keyType.derived, src.valueType.derived))		
 		s		
 	}				
 				
     def dispatch lineCommentForDictionary(FType key, FType value) {
-    	
-    	val s = newArrayList("key = "+key.lineComment.head);
+    	val s = newArrayList("key = "+key.lineComment.head)
 	    s.addAll("value = " +value.lineComment.head)		
     	s
-    	    	    	
     }
 				
-				
     def dispatch lineCommentForDictionary(FEnumerationType key, FUnionType value) {
-    	    	
 		val s = newArrayList("key = "+key.allEnumerators.map([name]).toString)    	    	
-    	    	
     	for(enumerator: key.allEnumerators) {
     		for(field: value.elements) {
     			if(field.details.contains(enumerator.name)) {
@@ -136,8 +163,7 @@ class Franca2DBusTransformation {
     	s
     }												
 				
-	def dispatch lineComment(FCompoundType src) {
-		
+	def dispatch List<String> lineComment(FCompoundType src) {
 		val fieldComment = [FTypedElement e| src.name+"."+e.name+ " ('"+e.type.transformBasicType+"') = "+e.description ]
 		
 		val typename =  switch(src) {
@@ -150,7 +176,7 @@ class Franca2DBusTransformation {
 		s
 	}								
 				
-	def dispatch lineComment(FEnumerationType src) {				
+	def dispatch List<String> lineComment(FEnumerationType src) {				
 		newArrayList("enum"+src.allEnumerators.map[name+" ("+value+")" ])
 	}			
 
@@ -224,8 +250,8 @@ class Franca2DBusTransformation {
 
 	def String transformBasicType (FTypeRef src) {
 		switch (src.predefined) {
-			case FBasicTypeId::INT8:    'y'
-			case FBasicTypeId::UINT8:   'y'  // TODO: not_supported in DBus?
+			case FBasicTypeId::INT8:    'n'  // not_supported in DBus, use INT16 instead
+			case FBasicTypeId::UINT8:   'y'
 			case FBasicTypeId::INT16:   'n'
 			case FBasicTypeId::UINT16:  'q'
 			case FBasicTypeId::INT32:   'i'
@@ -236,7 +262,12 @@ class Franca2DBusTransformation {
 			case FBasicTypeId::STRING:  's'
 			case FBasicTypeId::FLOAT:   'd'  // TODO: not_supported in DBus?
 			case FBasicTypeId::DOUBLE:  'd'
-			default:  '?'  // TODO: error handling!
+			default: {
+				addIssue(FEATURE_NOT_SUPPORTED, src,
+					FrancaPackage::FTYPE_REF__PREDEFINED,
+					"Basic Franca type " + src.predefined + " not supported by this transformation")
+				'?'
+			}
 		}
 	}
 
@@ -250,27 +281,61 @@ class Franca2DBusTransformation {
 			ts = ts + e.type.transformType2TypeString(e.array!=null)
 		}
 		ts = ts + ")"
-		// TODO: handle src.base
+
+		if (src.base!=null) {
+			// TODO: handle src.base
+			addIssue(FEATURE_NOT_HANDLED_YET, src,
+				FrancaPackage::FSTRUCT_TYPE__BASE,
+				"Inheritance for struct " + src.name + " not yet supported")
+		}
+
 		return ts
 	}
 	
 	def String transformEnumType (FEnumerationType src) {
-		// TODO: handle src.base
+		if (src.base!=null) {
+			// TODO: handle src.base
+			addIssue(FEATURE_NOT_HANDLED_YET, src,
+				FrancaPackage::FENUMERATION_TYPE__BASE,
+				"Inheritance for enumeration " + src.name + " not yet supported")
+		}
+
 		'i'
 	}
 
 	def String transformVariantType (FUnionType src) {
-		// TODO: handle src.base
+		if (src.base!=null) {
+			// TODO: handle src.base
+			addIssue(FEATURE_NOT_HANDLED_YET, src,
+				FrancaPackage::FUNION_TYPE__BASE,
+				"Inheritance for union " + src.name + " not yet supported")
+		}
+
 		'v'
 	}
 
 	def String transformMapType (FMapType src) {
-		if (src.keyType.derived != null) {
-			// not_supported: DBus supports only basic types as dict-key
+		if (! src.keyType.isProperDictKey) {
+			addIssue(FEATURE_NOT_SUPPORTED, src,
+				FrancaPackage::FMAP_TYPE__KEY_TYPE,
+				"DBus supports only basic types as dict-key (for map " + src.name + ")")
 			return '?' 
 		}
 		'a{' + src.keyType.transformSingleType2TypeString +
 				src.valueType.transformSingleType2TypeString + '}' 
+	}
+
+
+	def private isProperDictKey (FTypeRef src) {
+		// enumeration types will be mapped to 'i', thus can be used as dict key 
+		src.derived==null || (src.derived instanceof FEnumerationType)
+	}
+	
+	def private getLabel (FTypeRef src) {
+		if (src.derived!=null)
+			src.derived.name
+		else
+			src.predefined.name
 	}
 }
 

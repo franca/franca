@@ -2,15 +2,17 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Franca core plugin
 Bundle-SymbolicName: org.franca.core;singleton:=true
-Bundle-Version: 0.7.7.qualifier
+Bundle-Version: 0.8.7.qualifier
 Bundle-ClassPath: .
 Bundle-Vendor: Harman Infotainment Division
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.franca.core,
+ org.franca.core.contracts,
  org.franca.core.framework,
  org.franca.core.franca,
  org.franca.core.franca.impl,
+ org.franca.core.franca.util,
  org.franca.core.utils,
  org.franca.core.utils.digraph
 Require-Bundle: org.eclipse.core.runtime,

@@ -1,0 +1,6 @@
+package multifile.first1
+
+// import of a whole parent package
+import multifile.* from "model0.fidl"
+
+interface Model1_3 extends first1.Model0 { }

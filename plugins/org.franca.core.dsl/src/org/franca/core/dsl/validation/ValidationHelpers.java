@@ -33,7 +33,7 @@ public class ValidationHelpers {
    public static <T extends EObject> int checkDuplicates(ValidationMessageReporter reporter, Iterable<T> items,
          EStructuralFeature feature, String description) {
       int nErrors = 0;
-      String msg = "Duplicate " + description + ' ';
+      String msg = "Name conflict for " + description + ' ';
 
       // for each name store the element of its first occurrence
       Map<String, EObject> firstOccurrenceOfName = new HashMap<String, EObject>();

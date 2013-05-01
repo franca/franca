@@ -1,0 +1,133 @@
+package org.example
+
+<** @description  : Bluetooth Manager interface.
+
+                    As this is an example interface only, it doesn't contain any
+                    more documentation. It is just a very simple interface definition.
+                    
+    @source-alias : derived from org.blueman.Applet **>
+interface BluetoothManager {
+	version {
+		major 0
+		minor 1		
+	}
+
+	method RefreshServices {
+		in {
+			String path
+		}
+	}
+
+	method ServiceProxy {
+		in {
+			String ^interface
+			String object_path
+			String _method
+			String[] args
+		}
+	}
+
+	method SetPluginConfig {
+		in {
+			String plugin
+			Boolean value
+		}
+	}
+	
+	method CreateDevice {
+		in {
+			String adapter_path
+			String address
+			Boolean pair
+			UInt32 time
+		}
+	}
+
+	method QueryAvailablePlugins {
+		out {
+			String[] _outArg0
+		}
+	}
+
+	method DhcpClient {
+		in {
+			String ^interface
+		}
+	}
+
+	method TransferControl {
+		in {
+			String pattern
+			String action
+		}
+	}
+
+	method GetBluetoothStatus {
+		out {
+			Boolean _outArg0
+		}
+	}
+
+	method CancelDeviceCreation {
+		in {
+			String adapter_path
+			String address
+		}
+	}
+
+	method DisconnectDevice {
+		in {
+			String obj_path
+		}
+	}
+
+	method RfcommDisconnect {
+		in {
+			String device
+			String rfdevice
+		}
+	}
+
+	method SetBluetoothStatus {
+		in {
+			Boolean status
+		}
+	}
+
+	method QueryPlugins {
+		out {
+			String[] _outArg0
+		}
+	}
+
+	method TransferStatus {
+		in {
+			String pattern
+		}
+		out {
+			Int32 _outArg0
+		}
+	}
+
+	method SetTimeHint {
+		in {
+			UInt32 time
+		}
+	}
+
+	method RfcommConnect {
+		in {
+			String device
+			String uuid
+		}
+		out {
+			String _outArg0
+		}
+	}
+
+	broadcast BluetoothStatusChanged {
+		out {
+			Boolean arg0
+		}
+	}
+}

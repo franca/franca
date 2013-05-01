@@ -1,6 +1,6 @@
 document[Franca User Guide]
 
-authors[Release 0.2.2-SNAPSHOT]
+authors[Release 0.3.0-SNAPSHOT]
 
 
 codelanguage-def[Config]
@@ -24,11 +24,12 @@ codelanguage-def[Java]
 
 codelanguage-def[Franca]
 [
-	package,import,model,from,interface,
+	package,import,model,from,
+	typeCollection,interface,
 	version,major,minor,
 	attribute,method,broadcast,
 	in,out,error,
-	fireAndForget,selective,
+	readonly,noSubscriptions,fireAndForget,selective,
 
 	array,of,struct,union,typedef,is,map,to,enumeration,
 	extends,
@@ -46,13 +47,28 @@ codelanguage-def[FDeploy]
 	specification,extends,for,optional,default,
 	
 	providers,instances,interfaces,attributes,methods,broadcasts,arguments,
-	struct_fields,arrays,enumerations,enumerators,strings,numbers,integers,floats,
+	struct_fields,union_fields,
+	arrays,enumerations,enumerators,strings,numbers,integers,floats,
 	
 	define,provider,instance,interface, 
 	attribute,method,broadcast,in,out,
 	array,struct,enumeration,
 	
 	false,true
+]
+
+codelanguage-def[Xtend][
+  abstract,continue,def,override,for,new,switch,assert,default,goto,package,synchronized,
+  boolean,do,if,private,this,it,break,double,implements,protected,throw,
+  byte,else,import,public,throws,
+  case,enum,instanceof,return,
+  catch,extends,int,short,try,
+  char,final,static,void,
+  class,finally,long,
+  float,super,while,create,dispatch,extension,typeof,as,
+  val, var,
+  true, false, null,
+  IF, ELSE, ELSEIF, ENDIF, FOR, ENDFOR, BEFORE, AFTER, SEPARATOR
 ]
 
 

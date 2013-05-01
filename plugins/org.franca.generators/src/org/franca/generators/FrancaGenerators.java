@@ -7,25 +7,23 @@
 *******************************************************************************/
 package org.franca.generators;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-
+import org.eclipse.emf.ecore.EObject;
 import org.franca.core.franca.FInterface;
 import org.franca.core.franca.FModel;
+import org.franca.core.utils.FileHelper;
 import org.franca.generators.html.HTMLGenerator;
 import org.franca.generators.java.JavaAPIGenerator;
 
 public class FrancaGenerators {
 
-	private FrancaGenerators() {
-	}
+	private FrancaGenerators() { }
 
 	public boolean genHTML (FModel model, String outDir) {
 		HTMLGenerator genHTML = new HTMLGenerator();
 		String html = genHTML.generate(model).toString();
-		return save(outDir, model.getName() + ".html", html);
+		String basename = getBasename(model);
+		String outPath = outDir + "/" + createPath(model);
+		return FileHelper.save(outPath, basename + ".html", html);
 	}
 	
 	
@@ -62,38 +60,33 @@ public class FrancaGenerators {
 		return instance;
 	}
 
-	
+	/**
+	 * Get the basename of a resource, given one EObject of this resource.
+	 * 
+	 * @param obj an EObject, whose resource's basename will be computed.
+	 * 
+	 * @return the basename of the EObject's resource
+	 */
+	public static String getBasename (EObject obj) {
+		String filename = obj.eResource().getURI().lastSegment();
+		String basename = filename.substring(0, filename.lastIndexOf('.'));
+		return basename;
+	}
+
+	/**
+	 * Transform a model's package FQN into a relative directory path.
+	 */
+	public static String createPath (FModel fmodel) {
+		return fmodel.getName().replace(".", "/");
+	}
+
 	/**
 	 * Helper for saving a text to file
 	 *
-	 * @param targetDir   the target directory
-	 * @param filename    the target filename
-	 * @param textToSave  the content for the file
-	 * @return true if ok
+	 * @deprecated use FileHelper.save() instead
 	 */
 	public static boolean save (String targetDir, String filename, String textToSave) {
-		// ensure that directory is available
-		File dir = new File(targetDir);
-		if (! (dir.exists() || dir.mkdirs())) {
-			System.err.println("Error: couldn't create directory " + targetDir + "!");
-			return false;
-		}
-		
-		// delete file prior to saving
-		File file = new File(targetDir + "/" + filename);
-		file.delete();
-		
-		// save contents to file
-	    try {
-	        BufferedWriter out = new BufferedWriter(new FileWriter(file));
-	        out.write(textToSave);
-	        out.close();
-	        System.out.println("Created file " + file.getAbsolutePath());
-	    } catch (IOException e) {
-	    	return false;
-	    }
-	    
-	    return true;
+		return FileHelper.save(targetDir, filename, textToSave);
 	}
 	
 }

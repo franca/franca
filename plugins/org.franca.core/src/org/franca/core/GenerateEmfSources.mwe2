@@ -21,6 +21,7 @@ Workflow {
 
 	component = org.eclipse.emf.mwe2.ecore.EcoreGenerator {
 		genModel = "platform:/resource/org.franca.core/model/franca.genmodel"
+		generateEdit = true
 		srcPath = ""
 	}
 }

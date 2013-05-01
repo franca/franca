@@ -7,124 +7,20 @@
  *******************************************************************************/
 package org.franca.core.dsl;
 
-import java.util.Iterator;
-
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.xtext.Constants;
-import org.franca.core.franca.FModel;
-import org.franca.core.franca.Import;
-import org.franca.core.utils.ImportsProvider;
-import org.franca.core.utils.ModelPersistenceHandler;
-
-import com.google.inject.Inject;
 import com.google.inject.Injector;
-import com.google.inject.Provider;
-import com.google.inject.name.Named;
 
-public class FrancaIDLHelpers implements ImportsProvider {
-
-	@Inject
-	private Provider<ResourceSet> resourceSetProvider;
-
-	@Inject
-	@Named(Constants.FILE_EXTENSIONS)
-	private String fileExtension;
-
-	public String getFileExtension() {
-		return fileExtension;
-	}
-
-	/**
-	 * Load Franca IDL model file (*.fidl) and all imported files recursively.
-	 * 
-	 * @param filename
-	 *            name of Franca file (suffix .fidl is optional)
-	 * @return the root entity of the Franca IDL model
-	 */
-	public FModel loadModel(String filename) {
-		URI fileURI = ModelPersistenceHandler.normalizeURI(URI.createFileURI(filename));
-		
-		if (fileURI.segmentCount() > 1) {
-			return loadModel(fileURI.lastSegment(), fileURI.trimSegments(1).toString() + "/");
-		} else {
-			return loadModel(filename, "");
-		}
-	}
-
-	/**
-	 * Recursive helper function.
-	 * 
-	 * @param model
-	 * @param filename
-	 * @param persistenceHandler
-	 * @return
-	 */
-	public FModel loadModel(String filename, String cwd) {
-		ModelPersistenceHandler persistenceHandler = new ModelPersistenceHandler(resourceSetProvider.get());
-		String fn = filename;
-
-		if (fn == null)
-			return null;
-		if (!fn.endsWith("." + fileExtension)) {
-			fn += "." + fileExtension;
-		}
-
-		return (FModel) persistenceHandler.loadModel(fn, cwd);
-	}
-
-	/**
-	 * Save a Franca IDL model to file (*.fidl).
-	 * 
-	 * @param model
-	 *            the root of model to be saved
-	 * @param filename
-	 *            name of Franca file (suffix .fidl is optional)
-	 * @return true if save could be completed successfully
-	 */
-	public boolean saveModel(FModel model, String filename) {
-		URI uri = URI.createURI(filename);
-		
-		if (uri.segmentCount() > 1) {
-			return saveModel(model, uri.lastSegment(), uri.trimSegments(1).toString() + "/");
-		} else {
-			return saveModel(model, filename, "");
-		}
-	}
-
-	/**
-	 * Save a Franca IDL model to file (*.fidl).
-	 * 
-	 * @param model
-	 *            the root of model to be saved
-	 * @param filename
-	 *            name of Franca file (suffix .fidl is optional)
-	 * @param cwd
-	 *            if not null work relatively to this path
-	 * 
-	 * @return true if save could be completed successfully
-	 */
-	public boolean saveModel(FModel model, String filename, String cwd) {
-		ResourceSet resourceSet = null;
-		String fn = filename;
-		
-		if (fn == null)
-			return false;
-		if (!fn.endsWith("." + fileExtension)) {
-			fn += "." + fileExtension;
-		}
-		if (model.eResource() == null) {
-			// create a new ResourceSet for this new created model
-			resourceSet = resourceSetProvider.get();
-		} else {
-			// use the existing ResourceSet associated to the model
-			resourceSet = model.eResource().getResourceSet();
-		}
-		ModelPersistenceHandler persistenceHandler = new ModelPersistenceHandler(resourceSet);
-
-		return persistenceHandler.saveModel(model, fn, cwd);
-	}
+/**
+ * Manager for loading and saving Franca models from file system. 
+ * It supports models which are distributed over several files.
+ * 
+ * This class is not dependency-injection aware and shouldn't be used
+ * anymore. It could lead to spurious errors in a non-standalone environment
+ * (e.g., when used in the context of an IDE-action-handler class).
+ * 
+ * @author kbirken
+ * @deprecated use FrancaPersistenceManager with dependency injection
+ */
+public class FrancaIDLHelpers extends FrancaPersistenceManager {
 
 	// singleton
 	private static FrancaIDLHelpers instance = null;
@@ -133,30 +29,8 @@ public class FrancaIDLHelpers implements ImportsProvider {
 		if (instance == null) {
 			Injector injector = new FrancaIDLStandaloneSetup().createInjectorAndDoEMFRegistration();
 			instance = injector.getInstance(FrancaIDLHelpers.class);
-			ModelPersistenceHandler.registerFileExtensionHandler(instance.fileExtension, instance);
 		}
 		return instance;
 	}
 
-	public Iterator<String> importsIterator(EObject model) {
-		if (!(model instanceof FModel))
-			return null;
-		final FModel idlModel = (FModel) model;
-		
-		return new Iterator<String>(){
-			Iterator<Import> it = idlModel.getImports().iterator();
-
-			public boolean hasNext() {
-				return it.hasNext();
-			}
-
-			public String next() {
-				return it.next().getImportURI();
-			}
-
-			public void remove() {
-				//operation not allowed
-			}
-		};
-	}
 }

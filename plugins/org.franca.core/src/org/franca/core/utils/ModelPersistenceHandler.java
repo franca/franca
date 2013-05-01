@@ -57,10 +57,54 @@ public class ModelPersistenceHandler {
 	/**
 	 * 
 	 * Load the model found in the fileName. Its dependencies can be loaded subsequently.
+	 *
+	 * @param uri       the URI to be loaded
+	 * @param root      the root of the model (needed for loading multiple file models)
+	 *                  This has to be an absolute, hierarchical URI.
+	 * @return the root model
+	 */
+	public EObject loadModel(URI uri, URI root) {
+		// resolve the input uri, in case it is a relative path
+		URI absURI = uri.resolve(root);
+		if (! uri.equals(absURI)) {
+			// add this pair to URI converter so that others can get the URI by its relative path
+			resourceSet.getURIConverter().getURIMap().put(uri, absURI);
+		}
+		
+		// load root model
+		Resource resource = null;
+		try {
+			resource = resourceSet.getResource(absURI, true);
+			resource.load(Collections.EMPTY_MAP);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+		EObject model = resource.getContents().get(0);
+		
+		// load all its imports recursively
+		for (Iterator<String> it = fileHandlerRegistry.get(absURI.fileExtension()).importsIterator(model); it.hasNext();) {
+			String importURIStr = it.next();
+			URI importURI = URI.createURI(importURIStr);
+			URI resolvedURI = importURI.resolve(absURI);
+			
+			// add this pair to URI converter so that others can get the URI by its relative path
+			resourceSet.getURIConverter().getURIMap().put(importURI, resolvedURI);
+			
+			loadModel(resolvedURI, root);
+		}
+		return model;
+	}
+
+	/**
 	 * 
+	 * Load the model found in the fileName. Its dependencies can be loaded subsequently.
+	 *
 	 * @param filename
 	 *            the file to be loaded
 	 * @return the root model
+	 * 
+	 * @deprecated Use loadModel(URI uri, URI root) instead.
 	 */
 	public EObject loadModel(String filename, String cwd) {
 		URI fileURI = normalizeURI(URI.createURI(filename));

@@ -1,0 +1,74 @@
+package org.example
+
+<** @description  : OS PowerManagement interface.
+
+                    As this is an example interface only, it doesn't contain any
+                    more documentation. It is just a very simple interface definition.
+                    
+    @source-alias : derived from org.freedesktop.PowerManagement **>
+interface PowerManagement {
+	version {
+		major 0
+		minor 1		
+	}
+
+	method GetLowBattery {
+		out {
+			Boolean low_battery
+		}
+	}
+
+	method GetOnBattery {
+		out {
+			Boolean on_battery
+		}
+	}
+
+	method GetPowerSaveStatus {
+		out {
+			Boolean save_power
+		}
+	}
+
+	method CanHibernate {
+		out {
+			Boolean can_hibernate
+		}
+	}
+
+	method CanSuspend {
+		out {
+			Boolean can_suspend
+		}
+	}
+
+	method CanReboot {
+		out {
+			Boolean can_reboot
+		}
+	}
+
+	method CanShutdown {
+		out {
+			Boolean can_shutdown
+		}
+	}
+	
+	method Suspend { }
+	method Hibernate { }
+	method Reboot { }
+	method Shutdown { }
+	
+	broadcast LowBatteryChanged {
+		out {
+			Boolean new_value
+		}
+	}
+	
+	broadcast OnBatteryChanged {
+		out {
+			Boolean new_value
+		}
+	}
+}
+

@@ -1,7 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2012 itemis AG (http://www.itemis.de).
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************/
 package org.franca.deploymodel.dsl.validation;
 
 import java.util.List;
-import java.util.Set;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
@@ -20,8 +26,9 @@ import org.franca.core.franca.FMethod;
 import org.franca.core.franca.FStructType;
 import org.franca.core.franca.FType;
 import org.franca.core.franca.FUnionType;
+import org.franca.deploymodel.core.FDModelUtils;
+import org.franca.deploymodel.core.PropertyMappings;
 import org.franca.deploymodel.dsl.FDMapper;
-import org.franca.deploymodel.dsl.FDModelHelper;
 import org.franca.deploymodel.dsl.FDSpecificationExtender;
 import org.franca.deploymodel.dsl.fDeploy.FDArgument;
 import org.franca.deploymodel.dsl.fDeploy.FDArray;
@@ -60,7 +67,6 @@ import org.franca.deploymodel.dsl.fDeploy.FDValueArray;
 import org.franca.deploymodel.dsl.fDeploy.FDeployPackage;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 
  
 
@@ -140,19 +146,12 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 	  
 	@Check
 	public void checkBaseSpec (FDSpecification spec) {
-		Set<FDSpecification> visited = Sets.newHashSet();
-		FDSpecification s = spec;
-		FDSpecification last = null;
-		do {
-			visited.add(s);
-			last = s;
-			s = s.getBase();
-			if (s!=null && visited.contains(s)) {
-				error("Inheritance cycle for specification " + last.getName(), last,
-						FDeployPackage.Literals.FD_SPECIFICATION__BASE, -1);
-				return;
-			}
-		} while (s != null);
+		FDSpecification cycleSpec = aux.getCyclicBaseSpec(spec);
+		if (cycleSpec!=null) {
+			error("Inheritance cycle for specification " + cycleSpec.getName(), cycleSpec,
+					FDeployPackage.Literals.FD_SPECIFICATION__BASE, -1);
+			return;
+		}
 	}
 
 	
@@ -162,15 +161,15 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 	@Check
 	public void checkPropertiesComplete (FDProvider elem) {
 		// check own properties
-		FDSpecification spec = FDModelHelper.getRootElement(elem).getSpec();
+		FDSpecification spec = FDModelUtils.getRootElement(elem).getSpec();
 		checkElementProperties(spec, elem, FDeployPackage.Literals.FD_ROOT_ELEMENT__NAME);
 	}
 	
 	@Check
 	public void checkPropertiesComplete (FDTypes elem) {
-		// we do not check own properties - there will be none
-		FDSpecification spec = FDModelHelper.getRootElement(elem).getSpec();
-		//checkElementProperties(spec, elem, FDeployPackage.Literals.FD_TYPES__PACKAGE);
+		// check own properties
+		FDSpecification spec = FDModelUtils.getRootElement(elem).getSpec();
+		checkElementProperties(spec, elem, FDeployPackage.Literals.FD_TYPES__TARGET);
 
 		// check child elements recursively
 		FDSpecificationExtender specHelper = new FDSpecificationExtender(spec);
@@ -187,7 +186,7 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 	@Check
 	public void checkPropertiesComplete (FDInterface elem) {
 		// check own properties
-		FDSpecification spec = FDModelHelper.getRootElement(elem).getSpec();
+		FDSpecification spec = FDModelUtils.getRootElement(elem).getSpec();
 		checkElementProperties(spec, elem, FDeployPackage.Literals.FD_INTERFACE__TARGET);
 		
 		// check child elements recursively
@@ -352,17 +351,17 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 	@Check
 	public void checkPropertiesComplete (FDInterfaceInstance elem) {
 		// check own properties
-		FDSpecification spec = FDModelHelper.getRootElement(elem).getSpec();
+		FDSpecification spec = FDModelUtils.getRootElement(elem).getSpec();
 		checkElementProperties(spec, elem, FDeployPackage.Literals.FD_INTERFACE_INSTANCE__TARGET);
 	}
 	
 
 	private void checkElementProperties (FDSpecification spec, FDElement elem, EStructuralFeature feature)
 	{
-		List<FDPropertyDecl> decls = FDModelHelper.getAllPropertyDecls(spec, elem);
+		List<FDPropertyDecl> decls = PropertyMappings.getAllPropertyDecls(spec, elem);
 		List<String> missing = Lists.newArrayList();
 		for(FDPropertyDecl decl : decls) {
-			if (FDModelHelper.isMandatory(decl)) {
+			if (PropertyMappings.isMandatory(decl)) {
 				if (! contains(elem.getProperties(), decl)) {
 					missing.add(decl.getName());
 				}
@@ -414,7 +413,7 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 			if (typeRef.getArray()!=null)
 				error("Default must be an array!", FDeployPackage.Literals.FD_PROPERTY_FLAG__DEFAULT);
 			else
-				checkValueType(typeRef, value.getSingle(), FDeployPackage.Literals.FD_PROPERTY_FLAG__DEFAULT, -1);
+				checkValueType(typeRef, value.getSingle(), flag, FDeployPackage.Literals.FD_PROPERTY_FLAG__DEFAULT, -1);
 		} else if (value.getArray()!=null) {
 			if (typeRef.getArray()==null) {
 				error("Default must be a single type, not an array!", FDeployPackage.Literals.FD_PROPERTY_FLAG__DEFAULT);
@@ -431,7 +430,7 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 			if (typeRef.getArray()!=null)
 				error("Invalid type, expected array!", FDeployPackage.Literals.FD_PROPERTY__VALUE);
 			else
-				checkValueType(typeRef, value.getSingle(), FDeployPackage.Literals.FD_PROPERTY__VALUE, -1);
+				checkValueType(typeRef, value.getSingle(), prop, FDeployPackage.Literals.FD_PROPERTY__VALUE, -1);
 		} else if (value.getArray()!=null) {
 			if (typeRef.getArray()==null)
 				error("Invalid array type, expected single value!", FDeployPackage.Literals.FD_PROPERTY__VALUE);
@@ -440,26 +439,26 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 		}
 	}
 	
-	private void checkValueType (FDTypeRef typeRef, FDValue value, EReference literal, int index) {
+	private void checkValueType (FDTypeRef typeRef, FDValue value, EObject src, EReference literal, int index) {
 		if (typeRef.getComplex()==null) {
 			// this is a predefined type
 			switch (typeRef.getPredefined().getValue()) {
 			case FDPredefinedTypeId.INTEGER_VALUE:
 				if (! (value instanceof FDInteger)) {
 					error("Invalid type, expected Integer constant",
-							value.eContainer(), literal, index);
+							src, literal, index);
 				}
 				break;
 			case FDPredefinedTypeId.STRING_VALUE:
 				if (! (value instanceof FDString)) {
 					error("Invalid type, expected String constant",
-							value.eContainer(), literal, index);
+							src, literal, index);
 				}
 				break;
 			case FDPredefinedTypeId.BOOLEAN_VALUE:
 				if (! (value instanceof FDBoolean)) {
 					error("Invalid type, expected 'true' or 'false'",
-							value.eContainer(), literal, index);
+							src, literal, index);
 				}
 				break;
 			}
@@ -468,7 +467,7 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 			if (type instanceof FDEnumType) {
 				if (! (value instanceof FDEnum)) {
 					error("Invalid type, expected enumerator",
-							value.eContainer(), literal, index);
+							src, literal, index);
 				}
 			}
 		}
@@ -477,7 +476,7 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 	private void checkValueArrayType (FDTypeRef typeRef, FDValueArray array) {
 		int i = 0;
 		for(FDValue value : array.getValues()) {
-			checkValueType(typeRef, value, FDeployPackage.Literals.FD_VALUE_ARRAY__VALUES, i);
+			checkValueType(typeRef, value, array, FDeployPackage.Literals.FD_VALUE_ARRAY__VALUES, i);
 			i++;
 		}
 	}

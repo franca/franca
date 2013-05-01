@@ -1,0 +1,17 @@
+
+// deployment specification inheritqnce
+
+specification a.b.c.MyBaseSpec {
+	for methods {
+		PropBase1 : String;
+		PropBase2 : String;
+	}
+}
+
+specification a.b.c.MyDerivedSpec extends a.b.c.MyBaseSpec {
+	for attributes {
+		PropDerived1 : String;
+		PropDerived2 : String;
+	}
+}
+

@@ -3,8 +3,10 @@ chapter:FrancaIDL[Franca IDL Reference]
 The core of Franca IDL is the support for ref:FIDL_Interface[interface definitions], consisting of
 attributes, methods and broadcasts. Those definitions will be based on a ref:FIDL_Types[type system],
 which provides a variety of primitive and user-defined types. 
-Additionally, the dynamic behaviour of interfaces can be specified using ref:FIDL_Contracts[contracts]
+Additionally, the dynamic behavior of interfaces can be specified using ref:FIDL_Contracts[contracts]
 consisting of protocol state machines.
+Types can be defined either on a global scope using ref:FIDL_TypeCollection[type collections],
+or as part of an ref:FIDL_Interface[interface definition].
 Finally, Franca IDL supports Java-doc like tagged comments, called ref:FIDL_Comments[structured comments]
 and language features like e[packages] and e[imports] which can be used for defining interfaces using
 ref:FIDL_MultipleFiles[multiple Franca IDL files].
@@ -284,12 +286,44 @@ typedef ExampleAlias is UInt32
 
 
 
+section:FIDL_TypeCollection[TypeCollection definition]
+
+A e[type collection] is a (maybe empty) set of user-defined types.
+Previous to Franca-0.8.0, user-defined types could be located on the
+top-level of a Franca model. This has been banned with Franca-0.8.0 in order to 
+provide a consistent scheme of fully qualified names and versioning for
+user-defined types.
+
+Each type collection in Franca has some metadata: a mandatory fully qualified
+e[name] for the collection and an optional e[version number] (with major/minor scheme).
+The following example shows the basic type collection definition:
+
+code[Franca][
+typeCollection ExampleTypeCollection {
+	version { major 3 minor 1 }
+	
+	// put user-defined types here
+}
+]
+
+As type collections are just a plain collection of user-defined types,
+inheritance is not supported for them. All user-defined types inside a
+type collection have global visibility. I.e., they can be used for
+defining interfaces as well as user-defined types in another type collection.
+This is different from the visibility of types that are defined as part of an
+interface (see below).  
+
+
 section:FIDL_Interface[Interface definition]
 
 Each interface in Franca consists of some metadata (e.g., interface name and version number),
 the actual interface definition (consisting of attributes, methods and broadcasts), an optional
-ref:FIDL_Contracts[contract] specifying the dynamic behaviour of the interface and, last but not least,
-user-defined ref:FIDL_Types[data types].  
+ref:FIDL_Contracts[contract] specifying the dynamic behavior of the interface and, last but not least,
+user-defined ref:FIDL_Types[data types]. An interface definition might use the user-defined
+types of another interface definition only if it inherits (directly or indirectly)
+from that interface definition. Thus, the visibility of user-defined types as part of an
+interface definition is restricted. This is different from the global visibility of types
+which are part of a type collection.    
 
 section2:FIDL_Interface_Basic[Basic interface definition]
 
@@ -334,7 +368,7 @@ ul[
 	item[rename a method or broadcast, or one of its arguments]
 	item[rename a user-defined data-type]
 	item[add a contract to an interface which previously didn't have any]
-	item[tighten the constrains for the dynamic behaviour of an interface (i.e., its contract)]
+	item[tighten the constrains for the dynamic behavior of an interface (i.e., its contract)]
 ]
 Interface designers should try hard to avoid incompatible changes, or at least provide
 periods during which a feature is marked as deprecated before it is removed completely. 
@@ -346,7 +380,7 @@ ul[
 	item[add an argument for a method or broadcast (*)]
 	item[add a parameter for a struct or union (*)]
 	item[remove a contract from an interface]
-	item[ease restrictions on the dynamic behaviour of an interface (i.e., its contract)]
+	item[ease restrictions on the dynamic behavior of an interface (i.e., its contract)]
 ] 
 
 (*) In some target IDLs, adding arguments for methods or broadcast or adding members to
@@ -443,11 +477,51 @@ as inline, unnamed arrays (e.g., the attribute e[arrayAttribute] in the example 
 
 The interface provider holds the data for its attributes and is able to change their values.
 The clients of an interface might actively read its attributes' values.
-The clients also might register for changes of this attribute and will get change
-notifications afterwards. 
+The clients also might register for updates of this attribute and will get change
+notifications afterwards. The detailed behavior of an attribute can be specified
+by a combination of flags (see details below). 
 
 For target IPC platforms which do not support attributes, code might be generated to add
 this support. Typically, a getAttribute method and a registerForUpdate method would be provided.
+
+section3:FIDL_Interface_Attribute_Readonly[Readonly attributes]
+
+By default, clients can read and write the values of attributes. This access can
+be restricted by specifying the per-attribute flag e[readonly]. When the flag is given,
+the clients of the corresponding interface are not allowed to change the attribute's
+value. However, the server might offer some methods which will change the attribute.
+Example for the e[readonly]-flag:
+
+code[Franca][
+interface ExampleInterface {
+	attribute Float throttle
+	attribute Float speed readonly
+}
+]
+  
+In the example, attribute e[throttle] can be written, while attribute e[speed] can only
+by read by the clients.
+
+section3:FIDL_Interface_Attribute_NoSubscriptions[Client subscriptions]
+
+As mentioned above, clients of an interface might register for updates of
+an attribute's value. Sometimes it is necessary to specify attributes which do not
+support this subscription option. This can be accomplished by adding the
+flag e[noSubscriptions] to the attribute's definition.
+Example for the e[noSubscriptions]-flag:
+
+code[Franca][
+interface ExampleInterface {
+	attribute Double temperature readonly noSubscriptions
+	attribute Boolean overheated
+}
+]
+
+The attribute e[temperature] in the example will change often, so that it is better
+to disallow subscriptions and use some kind of polling instead. For the boolean
+attribute e[overheated], subscriptions are possible (which is really what clients
+expect). Note that the e[noSubscriptions] flag has been combined with the flag
+e[readonly] in order to disallow changes by the clients, too. 
 
 
 section2:FIDL_Interface_Method[Methods]
@@ -490,7 +564,7 @@ interface LetterCount {
 }
 ]
 
-The runtime behaviour of a method call (e.g., blocking vs. non-blocking) is subject to
+The runtime behavior of a method call (e.g., blocking vs. non-blocking) is subject to
 implementation by the underlying target IPC stack. Thus, it will not be specified as part
 of the interface definition in the IDL. This information will be stored in an additional
 ref:FrancaConcepts_DeploymentModels[deployment model], instead. 
@@ -587,7 +661,7 @@ section3:FIDL_Interface_Method_FireAndForget[Fire-and-forget methods]
 
 If neither e[out] arguments nor e[error] return codes are specified for
 a method, the server will by default send an (empty) reply to its client.
-This behaviour can be changed by specifying a e[fireAndForget] flag for
+This behavior can be changed by specifying a e[fireAndForget] flag for
 the method, which indicates that the server will not respond at all.
 
 Example:
@@ -659,9 +733,9 @@ section:FIDL_Contracts[Contracts]
 section2:FIDL_Contracts_Basic[Basic concept of contracts]
 
 For each Franca interface, a e[contract] might be specified which defines the 
-dynamic behaviour of the interface. Generally, if a contract is part of the interface,
+dynamic behavior of the interface. Generally, if a contract is part of the interface,
 all interactions of clients and providers of this interface have to obey the 
-specification in the contract. This is different from behaviour specification by
+specification in the contract. This is different from behavior specification by
 sequences (e.g., MSCs in MOST), which provides a set of allowed sequences, but
 in general doesn't require that all legal sequences have been specified.
 
@@ -670,13 +744,13 @@ of one client instance and one provider instance. If multiple clients
 are connected to one interface on provider side, one instance of the
 contract is (conceptually) established for each client. 
 
-In order to specify the dynamic behaviour of a Franca interface, 
+In order to specify the dynamic behavior of a Franca interface, 
 a e[PSM] (short for: e[Protocol State Machine]) is defined which specifies 
 the allowed states e[of the connection] and the allowed transitions between those
 states. Example:
 
 code[Franca][
-// specification of dynamic behaviour on the interface 
+// specification of dynamic behavior on the interface 
 contract {
 	PSM {
 		initial idle
@@ -814,7 +888,7 @@ ul[
 ]
 
 The e[contract]-feature in Franca is still under development. However,
-by specifying the proper and allowed behaviour of interfaces in a consistent way
+by specifying the proper and allowed behavior of interfaces in a consistent way
 the value and expressiveness of interface definitions can be increased to a large extent.
 
 
@@ -857,8 +931,8 @@ section:FIDL_MultipleFiles[Fully qualified names, packages, and multiple files]
 
 section2:FIDL_MultipleFiles_FQN[Fully qualified names]
 
-All top-level elements of Franca (i.e., interfaces and user-defined data-types which
-have been defined outside of interfaces) are accessed by their e[fully qualified name].
+All top-level elements of Franca (i.e., type collections and interfaces)
+are accessed by their e[fully qualified name].
 A fully qualified name (or short: e[FQN]) is a sequence of identifiers (at least one)
 separated by dots. The following example shows an interface identified by a FQN: 
 code[Franca][
@@ -871,7 +945,7 @@ interface examples.franca.ExampleInterface {
 section2:FIDL_MultipleFiles_Package[Package declarations]
 
 Each Franca file starts with a e[package]-declaration (similar to Java). 
-This puts all user-defined types and interfaces defined in that file into
+This puts all type collections and interfaces defined in that file into
 the package. The absolute reference for this top-level element is computed
 by concatening the package's FQN and the element's FQN. Example:
 

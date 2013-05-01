@@ -1,4 +1,4 @@
-// empty deployment specification
+// deployment definition for an empty deployment specification
 
 import "../fidl/01-EmptyInterface.fidl"
 

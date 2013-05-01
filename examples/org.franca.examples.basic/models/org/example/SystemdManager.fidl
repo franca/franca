@@ -1,0 +1,452 @@
+package org.example
+
+<** @description  : systemd Manager interface.
+
+                    As this is an example interface only, it doesn't contain full
+                    documentation. Some documentation has been added to illustrate
+                    how Franca interfaces could be documented.
+                    
+    @source-alias : org.freedesktop.systemd1.Manager, version 0.1.1 **>
+interface SystemdManager {
+	version {
+		major 0
+		minor 1		
+	}
+
+	<** @description: This encodes encodes the version string of the running
+	    systemd instance. **>
+	attribute String Version
+
+	<** @description: This encodes the distribution. **>
+	attribute String Distribution
+
+	<** @description: This encodes the features that have been enabled resp. disabled
+	    for this build. Enabled options are prefixed with +, disabled options with -. **>
+	attribute String Features
+
+	// some more attributes (without documentation yet)
+	attribute String Tainted
+	attribute String RunningAs
+	attribute UInt64 InitRDTimestamp
+	attribute UInt64 InitRDTimestampMonotonic
+	attribute UInt64 StartupTimestamp
+	attribute UInt64 StartupTimestampMonotonic
+	attribute UInt64 FinishTimestamp
+	attribute UInt64 FinishTimestampMonotonic
+	attribute String LogLevel
+	attribute String LogTarget
+	attribute UInt32 NNames
+	attribute UInt32 NJobs
+	attribute UInt32 NInstalledJobs
+	attribute UInt32 NFailedJobs
+	attribute Double Progress
+	attribute String[] Environment
+	attribute Boolean ConfirmSpawn
+	attribute Boolean ShowStatus
+	attribute String[] UnitPath
+	attribute String NotifySocket
+	attribute String ControlGroupHierarchy
+	attribute Boolean MountAuto
+	attribute Boolean SwapAuto
+	attribute String[] DefaultControllers
+	attribute String DefaultStandardOutput
+	attribute String DefaultStandardError
+	attribute Boolean SysVConsole
+	attribute String[] SysVInitPath
+	attribute String[] SysVRcndPath
+
+	<** @description: GetUnit() may be used to get the unit object path
+	    for a unit name. It takes the unit name and returns the object path.
+	    If a unit has not been loaded yet by this name this call will fail. **>
+	method GetUnit {
+		in {
+			String name
+		}
+		out {
+			ObjectPath unit
+		}
+	}
+
+	method GetUnitByPID {
+		in {
+			UInt32 pid
+		}
+		out {
+			ObjectPath unit
+		}
+	}
+
+	method LoadUnit {
+		in {
+			String name
+		}
+		out {
+			ObjectPath unit
+		}
+	}
+
+	method StartUnit {
+		in {
+			String name
+			String mode
+		}
+		out {
+			String job
+		}
+	}
+
+	method StartUnitReplace {
+		in {
+			String old_unit
+			String new_unit
+			String mode
+		}
+		out {
+			String job
+		}
+	}
+
+	method StopUnit {
+		in {
+			String name
+			String mode
+		}
+		out {
+			String job
+		}
+	}
+
+	method ReloadUnit {
+		in {
+			String name
+			String mode
+		}
+		out {
+			String job
+		}
+	}
+
+	method RestartUnit {
+		in {
+			String name
+			String mode
+		}
+		out {
+			String job
+		}
+	}
+
+	method TryRestartUnit {
+		in {
+			String name
+			String mode
+		}
+		out {
+			String job
+		}
+	}
+
+	method ReloadOrRestartUnit {
+		in {
+			String name
+			String mode
+		}
+		out {
+			String job
+		}
+	}
+
+	method ReloadOrTryRestartUnit {
+		in {
+			String name
+			String mode
+		}
+		out {
+			String job
+		}
+	}
+
+	method KillUnit {
+		in {
+			String name
+			String who
+			String mode
+			Int32 ^signal
+		}
+	}
+
+	method ResetFailedUnit {
+		in {
+			String name
+		}
+	}
+
+	method GetJob {
+		in {
+			UInt32 id
+		}
+		out {
+			String job
+		}
+	}
+
+	method ClearJobs { }
+
+	method ResetFailed { }
+
+	method ListUnits {
+		out {
+			UnitInfo[] units
+		}
+	}
+
+	method ListJobs {
+		out {
+			JobInfo[] jobs
+		}
+	}
+
+	method Subscribe { }
+
+	method Unsubscribe { }
+
+	method Dump { }
+
+	method CreateSnapshot {
+		in {
+			String name
+			Boolean cleanup
+		}
+		out {
+			String unit
+		}
+	}
+
+	method Reload { }
+
+	method Reexecute { }
+
+	method Exit { }
+
+	method Reboot { }
+
+	method PowerOff { }
+
+	method Halt { }
+
+	method KExec { }
+
+	method SetEnvironment {
+		in {
+			String[] names
+		}
+	}
+
+	method UnsetEnvironment {
+		in {
+			String[] names
+		}
+	}
+
+	method UnsetAndSetEnvironment {
+		in {
+			String[] unset
+			String[] ^set
+		}
+	}
+
+	method ListUnitFiles {
+		out {
+			UnitFileInfo[] changes
+		}
+	}
+
+	method GetUnitFileState {
+		in {
+			String file
+		}
+		out {
+			String ^state
+		}
+	}
+
+	method EnableUnitFiles {
+		in {
+			FileList files
+			Boolean runtime
+			Boolean force
+		}
+		out {
+			Boolean carries_install_info
+			ChangeInfo[] changes
+		}
+	}
+
+	method DisableUnitFiles {
+		in {
+			FileList files
+			Boolean runtime
+		}
+		out {
+			ChangeInfo[] changes
+		}
+	}
+
+	method ReenableUnitFiles {
+		in {
+			FileList files
+			Boolean runtime
+			Boolean force
+		}
+		out {
+			Boolean carries_install_info
+			ChangeInfo[] changes
+		}
+	}
+
+	method LinkUnitFiles {
+		in {
+			FileList files
+			Boolean runtime
+			Boolean force
+		}
+		out {
+			ChangeInfo[] changes
+		}
+	}
+
+	method PresetUnitFiles {
+		in {
+			FileList files
+			Boolean runtime
+			Boolean force
+		}
+		out {
+			Boolean carries_install_info
+			ChangeInfo[] changes
+		}
+	}
+
+	method MaskUnitFiles {
+		in {
+			FileList files
+			Boolean runtime
+			Boolean force
+		}
+		out {
+			ChangeInfo[] changes
+		}
+	}
+
+	method UnmaskUnitFiles {
+		in {
+			FileList files
+			Boolean runtime
+		}
+		out {
+			ChangeInfo[] changes
+		}
+	}
+	
+	<** @description: This signal is sent out each time a new unit is loaded.
+	    Note that this has little to do with whether a unit is available on disk or not,
+	    and simply reflects the units that are currently loaded into memory.
+	    The signals take two parameters: the primary unit name and the object path. **>
+	broadcast UnitNew {
+		out {
+			String id
+			String unit
+		}
+	}
+	
+	broadcast UnitRemoved {
+		out {
+			String id
+			String unit
+		}
+	}
+
+	broadcast JobNew {
+		out {
+			UInt32 id
+			String job
+		}
+	}
+
+	broadcast JobRemoved {
+		out {
+			UInt32 id
+			String job
+			String result
+		}
+	}
+
+	broadcast StartupFinished {
+		out {
+			UInt64 kernel
+			UInt64 initrd
+			UInt64 userspace
+			UInt64 total
+		}
+	}
+
+	broadcast UnitFilesChanged {
+	}
+
+	<**
+		@description : Unit info structure
+	**>
+	struct UnitInfo {
+		String name
+		String description
+		String loadState
+		String activeState
+		String subState
+		String follower
+		ObjectPath path
+		UInt32 jobId
+		String jobType
+		ObjectPath jobPath
+	}
+
+	<**
+		@description : Job info structure
+	**>
+	struct JobInfo {
+		UInt32 jobId
+		String primaryUnit
+		String type
+		String ^state
+		ObjectPath path
+		ObjectPath unitPath
+	}
+
+	<**
+		@description : struct generated for DBus argument ListUnitFiles_changes
+	**>
+	struct UnitFileInfo {
+		String unitName
+		String enablement
+	}
+
+	<**
+		@description : Change info struct 
+	**>
+	struct ChangeInfo {
+		<** @description: change type, one of 'symlink' or 'unlink' **>
+		String type
+		String filename
+		String destination
+	}
+	
+	<**
+		@description : The ObjectPath type (defined as an alias).
+	**>
+	typedef ObjectPath is String
+	
+	<**
+		@description : A list of file names (defined as a String array).
+	**>
+	array FileList of String
+
+}

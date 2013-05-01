@@ -56,10 +56,10 @@ FDPropertyFlag:
 
 enum FDPropertyHost:
 	providers | instances |
-	interfaces |
+	type_collections | interfaces |
 	attributes | methods | broadcasts |
 	arguments |
-	struct_fields | union_fields | arrays |
+	struct_fields | union_fields | arrays | structs | unions |
 	enumerations | enumerators |
 	strings | numbers | integers | floats;
 
@@ -119,7 +119,7 @@ FDTypes:
 	'{'
 		('use' use+=[FDRootElement|FQN])*
 		
-		// just for being compatible with FDElement, there will be no properties actually
+		// the own properties of this typeCollection
 		(properties+=FDProperty ((',')? properties+=FDProperty)*)?
 
 		// properties for all type definitions in the package		

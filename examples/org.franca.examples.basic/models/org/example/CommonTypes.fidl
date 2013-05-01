@@ -1,0 +1,23 @@
+package org.example
+
+/**
+ * Franca IDL Example: A type collection with some user-defined data types.
+ */
+typeCollection CommonTypes {
+
+	<** @description: Id of a track. In a real application, this will be
+	    something more complex than a simple integer (e.g., some URI). **>
+	typedef TrackId is UInt32
+	
+	<** @description: Year (e.g., 2013). **>
+	typedef Year is UInt16
+
+	<** @description: Duration in hours, minutes and seconds. **>
+	struct Duration {
+		UInt8 hours
+		UInt8 minutes
+		UInt8 seconds
+	}
+
+}
+

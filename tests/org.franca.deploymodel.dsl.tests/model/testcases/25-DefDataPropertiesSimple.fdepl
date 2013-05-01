@@ -1,0 +1,19 @@
+// deployment definition
+
+import "10-SpecPropertySimpleTypes.fdepl"
+import "../fidl/05-CoverageInterface.fidl"
+
+define a.b.c.MySpec for interface a.b.c.CoverageInterface {
+	method aMethod {
+		// mandatory properties
+		BooleanPropMandatory = true
+		IntegerPropMandatory = 123
+		StringPropMandatory = "something"
+		EnumPropMandatory = three
+		
+		// some of the optional properties
+		EnumPropOptional = rock
+		IntegerPropDefault = 456
+		StringPropDefault = "xyz"
+	}
+}

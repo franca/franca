@@ -1,9 +1,0 @@
-package org.franca.examples.demo
-
-import org.franca.examples.demo.* from "../basic_types.fidl"
-import org.franca.examples.demo.* from "../testPersistence1.fidl"
-
-interface TestInterface2 extends TestInterface1
-{
-    attribute UInt32 b
-} 

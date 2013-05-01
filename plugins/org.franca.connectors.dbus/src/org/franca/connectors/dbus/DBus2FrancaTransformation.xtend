@@ -1,43 +1,51 @@
 package org.franca.connectors.dbus
 
+import com.google.inject.Inject
+import java.util.List
 import model.emf.dbusxml.ArgType
 import model.emf.dbusxml.DirectionType
 import model.emf.dbusxml.DocType
 import model.emf.dbusxml.InterfaceType
-import model.emf.dbusxml.NodeType
 import model.emf.dbusxml.MethodType
-import model.emf.dbusxml.SignalType
+import model.emf.dbusxml.NodeType
 import model.emf.dbusxml.PropertyType
-import model.emf.dbusxml.typesystem.DBusTypeParser
-import model.emf.dbusxml.typesystem.DBusBasicType
+import model.emf.dbusxml.SignalType
 import model.emf.dbusxml.typesystem.DBusArrayType
-import model.emf.dbusxml.typesystem.DBusStructType
+import model.emf.dbusxml.typesystem.DBusBasicType
 import model.emf.dbusxml.typesystem.DBusDictType
+import model.emf.dbusxml.typesystem.DBusStructType
 import model.emf.dbusxml.typesystem.DBusType
-
-import org.franca.core.franca.FrancaFactory
+import model.emf.dbusxml.typesystem.DBusTypeList
+import model.emf.dbusxml.typesystem.DBusTypeParser
+import org.franca.core.framework.TransformationLogger
+import org.franca.core.franca.FAnnotationType
 import org.franca.core.franca.FBasicTypeId
+import org.franca.core.franca.FStructType
 import org.franca.core.franca.FType
 import org.franca.core.franca.FTypeRef
-import org.franca.core.franca.FAnnotationType
-
-import java.util.List
+import org.franca.core.franca.FrancaFactory
 
 class DBus2FrancaTransformation {
+
+	@Inject extension TransformationLogger
 
 	List<FType> newTypes
 	
 	def create FrancaFactory::eINSTANCE.createFModel transform (NodeType src) {
-		name = src.name
+		name = src.name.replace('/', '_')
 		interfaces.addAll(src.interface.map [transformInterface])
+	}
+
+	def getTransformationIssues() {
+		return getIssues
 	}
 
 	def create FrancaFactory::eINSTANCE.createFInterface transformInterface (InterfaceType src) {
 		name = src.name
 		if (src.version != null)
 			version = src.version.transformVersion
-		if(src.doc != null) {
-			comment = src.doc.transformAnnotationBlock()
+		if(src.doc.hasLines) {
+			comment = src.doc.transformAnnotationBlock
 		}			
 		newTypes = types
 		attributes.addAll(src.property.map [transformAttribute])
@@ -59,49 +67,79 @@ class DBus2FrancaTransformation {
 	def create FrancaFactory::eINSTANCE.createFAttribute transformAttribute (PropertyType src) {
 		val nameNormal = src.name.normalizeId 
 		name = nameNormal
+//		val te = src.type.transformAttributeType(nameNormal) 
 		val te = src.type.transformTypeSig(nameNormal) 
 		type = te.type
 		array = if (te.isArray) "[]" else null
 	}
+	
+//	def private transformAttributeType (String typeSig, String namespace) {
+//		// as DBus doesn't have a detailed typesystem, we have to use an artificial typesystem here
+//		val srcTypeList = new DBusTypeParser().parseTypeList(typeSig)
+//		if (srcTypeList.size==1)
+//			// this is a single-type attribute, just convert it
+//			return srcTypeList.get(0).transformType(namespace)
+//		else {
+//			// this is a multi-type attribute, create synthetic struct type
+//			// NB: didn't find spec or examples for multi-type attributes, just support it here
+//			val it = FrancaFactory::eINSTANCE.createFStructType
+//			buildStructType(srcTypeList, namespace, "property")
+//			return new TypedElem(it.encapsulateTypeRef)
+//		}
+//	}
 
 	def create FrancaFactory::eINSTANCE.createFMethod transformMethod (MethodType src) {
 		val nameNormal = src.name.normalizeId 
 		name = nameNormal
-		if(src.doc != null) {
-			comment = src.doc.transformAnnotationBlock()
+		if(src.doc.hasLines) {
+			comment = src.doc.transformAnnotationBlock
 		}
-		inArgs.addAll(src.arg.filter(a | a.direction==DirectionType::IN).map [transformArg(nameNormal)])
-		outArgs.addAll(src.arg.filter(a | a.direction==DirectionType::OUT).map [transformArg(nameNormal)])
+		val srcInArgs = src.arg.filter(a | a.direction==DirectionType::IN).toList
+		inArgs.addAll(srcInArgs.map[
+			transformArg(nameNormal, "_inArg" + srcInArgs.indexOf(it))
+		])
+		val srcOutArgs = src.arg.filter(a | a.direction==DirectionType::OUT).toList
+		outArgs.addAll(srcOutArgs.map[
+			transformArg(nameNormal, "_outArg" + srcOutArgs.indexOf(it))
+		])
 	}
 
 	def create FrancaFactory::eINSTANCE.createFBroadcast transformBroadcast (SignalType src) {
 		name = src.name.normalizeId
-		if(src.doc != null) {
-			comment = src.doc.transformAnnotationBlock()
+		if(src.doc.hasLines) {
+			comment = src.doc.transformAnnotationBlock
 		}					
-		outArgs.addAll(src.arg.map [transformArg(src.name)])
+		outArgs.addAll(src.arg.map [transformArg(src.name, "_arg" + src.arg.indexOf(it))])
 	}
 
-	def create FrancaFactory::eINSTANCE.createFArgument transformArg (ArgType src, String namespace) {
-		name = src.name.normalizeId
+	def create FrancaFactory::eINSTANCE.createFArgument transformArg (ArgType src, String namespace, String dfltName) {
+		if (src.name!=null)
+			name = src.name.normalizeId
+		else
+			name = dfltName
 		val te = src.type.transformTypeSig(namespace + "_" + name) 
 		type = te.type
 		array = if (te.isArray) "[]" else null
-		if(src.doc != null && src.primitiveType) {
-			comment = src.doc.transformAnnotationBlock()
+		if(src.doc.hasLines && src.primitiveType) {
+			comment = src.doc.transformAnnotationBlock
 		}					
 	}
 
 	// ANNOTATIONS 
-	def create FrancaFactory::eINSTANCE.createFAnnotationBlock transformAnnotationBlock(DocType doc) {				
-		elements.add(transformAnnotation(doc))				
+	def private hasLines (DocType doc) {
+		doc!=null && doc.line!=null && (!doc.line.empty)
+	}
+	
+	def private create FrancaFactory::eINSTANCE.createFAnnotationBlock transformAnnotationBlock(DocType doc) {
+		if (doc.line!=null && !doc.line.empty)				
+			elements.add(transformAnnotation(doc))				
 	}
 
 	def boolean isPrimitiveType(ArgType argument) {
 		argument.type.length == 1
 	}
 
-	def create FrancaFactory::eINSTANCE.createFAnnotation transformAnnotation(DocType doc) {
+	def private create FrancaFactory::eINSTANCE.createFAnnotation transformAnnotation(DocType doc) {
 		type = FAnnotationType::DESCRIPTION
 		comment = doc.line.get(0)
 	}
@@ -188,10 +226,14 @@ class DBus2FrancaTransformation {
 	}
 
 	def create FrancaFactory::eINSTANCE.createFStructType transformStructType (DBusStructType src, String namespace) {
-		name = "t" + namespace + "Struct"
-		comment = createAnnotationBlock("struct generated for DBus argument " + namespace)
+		buildStructType(src.elementTypes, namespace, "argument")
+	}
+
+	def private buildStructType (FStructType it, DBusTypeList srcTypeList, String namespace, String tag) {
+		name = "t" + namespace.toFirstUpper + "Struct"
+		comment = createAnnotationBlock("struct generated for DBus " + tag + " " + namespace)
 		var i = 1
-		for(e : src.elementTypes) {
+		for(e : srcTypeList) {
 			elements.add(e.transformField(namespace, "elem" + i))
 			i = i + 1
 		}

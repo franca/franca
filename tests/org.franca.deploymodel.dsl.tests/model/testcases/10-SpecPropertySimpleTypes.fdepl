@@ -1,0 +1,23 @@
+
+// deployment specification with property declarations of all possible types
+
+specification a.b.c.MySpec {
+
+	for methods {
+		BooleanPropMandatory : Boolean;
+		IntegerPropMandatory : Integer;
+		StringPropMandatory  : String;
+		EnumPropMandatory    : { one, two, three };
+		
+		BooleanPropOptional  : Boolean  (optional);
+		IntegerPropOptional  : Integer  (optional);
+		StringPropOptional   : String   (optional);
+		EnumPropOptional     : { jazz, pop, rock, folk }   (optional);
+
+		BooleanPropDefaultF  : Boolean  (default: false);
+		BooleanPropDefaultT  : Boolean  (default: true);
+		IntegerPropDefault   : Integer  (default: 123456);
+		StringPropDefault    : String   (default: "dummy");
+		EnumPropDefault      : { a, b, c, d, e }   (default: c);
+	}
+}

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ecore:EPackage xmi:version="2.0"
-    xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="franca"
-    nsURI="http://core.franca.org" nsPrefix="franca">
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="franca" nsURI="http://core.franca.org" nsPrefix="franca">
   <eClassifiers xsi:type="ecore:EClass" name="FModel">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The root class of a Franca model.&#xD;&#xA;It contains a list of interfaces and a set of type collections.&#xD;&#xA;Other Franca models might be referenced by the 'imports' attribute.&#xD;&#xA;The name of a Franca model is the package declaration. "/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="imports" upperBound="-1"
         eType="#//Import" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="interfaces" upperBound="-1"
@@ -13,16 +14,25 @@
         eType="#//FTypeCollection" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Import">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An import declaration.&#xD;&#xA;It defines a namespace from some Franca resource, which&#xD;&#xA;should be imported. All elements from other Franca models&#xD;&#xA;referenced by this model should be member of some&#xD;&#xA;imported Franca model.&#xD;&#xA;"/>
+    </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="importedNamespace" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="importURI" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FTypeCollection" eSuperTypes="#//FModelElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A collection of Franca type definitions.&#xD;&#xA;The type collection is named and should be versioned (optional).&#xD;&#xA;Types defined by a FTypeCollection can be referenced from&#xD;&#xA;other FTypeCollections and FInterfaces.&#xD;&#xA;"/>
+    </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="version" eType="#//FVersion"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="types" upperBound="-1"
         eType="#//FType" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FInterface" eSuperTypes="#//FTypeCollection">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This class represents a Franca interface definition.&#xD;&#xA;Interfaces are named and should be versioned (optional).&#xD;&#xA;Types defined as part of this interface can not be referenced&#xD;&#xA;by other FTypeCollections and FInterfaces. This type visibility&#xD;&#xA;differs from the types defined as part of FTypeCollections.&#xD;&#xA;"/>
+    </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="attributes" upperBound="-1"
         eType="#//FAttribute" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="methods" upperBound="-1"
@@ -34,6 +44,9 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="base" eType="#//FInterface"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FMethod" eSuperTypes="#//FModelElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The definition of a Franca method as part of an FInterface.&#xD;&#xA;Methods without out arguments might have be flagged as&#xD;&#xA;'fireAndForget'. See the Franca IDL chapter in the Franca&#xD;&#xA;User Guide for very detailed information on method semantics.&#xD;&#xA;"/>
+    </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="fireAndForget" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="inArgs" upperBound="-1"
         eType="#//FArgument" containment="true"/>
@@ -44,26 +57,46 @@
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FBroadcast" eSuperTypes="#//FModelElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The definition of a Franca broadcast as part of an FInterface.&#xD;&#xA;See the Franca IDL chapter in the Franca User Guide for very&#xD;&#xA;detailed information on broadcast semantics.&#xD;&#xA;"/>
+    </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="outArgs" upperBound="-1"
         eType="#//FArgument" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="selective" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FAttribute" eSuperTypes="#//FTypedElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The definition of a Franca attribute as part of an FInterface.&#xD;&#xA;See the Franca IDL chapter in the Franca User Guide for very&#xD;&#xA;detailed information on attribute semantics and the flags&#xD;&#xA;which can be set for attributes.&#xD;&#xA;"/>
+    </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="readonly" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="noSubscriptions" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="FArgument" eSuperTypes="#//FTypedElement"/>
-  <eClassifiers xsi:type="ecore:EClass" name="FType" eSuperTypes="#//FModelElement"/>
+  <eClassifiers xsi:type="ecore:EClass" name="FArgument" eSuperTypes="#//FTypedElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This class represents an argument (aka parameter) for&#xD;&#xA;a FMethod or FBroadcast. For methods, this might be&#xD;&#xA;an input or output argument. For FBroadcasts, there are only&#xD;&#xA;output arguments (i.e., from server to client).&#xD;&#xA;"/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FType" abstract="true" eSuperTypes="#//FModelElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This is the base class for all user-defined Franca types.&#xD;&#xA;It will never be instantiated directly."/>
+    </eAnnotations>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FModelElement" abstract="true">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="comment" eType="#//FAnnotationBlock"
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FVersion">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="major" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="minor" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The version of this interface or type collection.&#xD;&#xA;It is defined according to the Apache major/minor scheme for interfaces.&#xD;&#xA;I.e., a change in the major number indicates a non-compatible change.&#xD;&#xA;It is mandatory to define both major and minor numbers."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="major" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="minor" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="FBasicTypeId">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This enum represents the basic types available in Franca IDL.&#xD;&#xA;See section ref:FIDL_PrimitiveTypes[Primitive types] in the&#xD;&#xA;Franca User Guide for a list of available primitive types and their semantics.&#xD;&#xA;"/>
+    </eAnnotations>
     <eLiterals name="undefined" literal="undefined"/>
     <eLiterals name="Int8" value="1" literal="Int8"/>
     <eLiterals name="UInt8" value="2" literal="UInt8"/>
@@ -80,19 +113,19 @@
     <eLiterals name="ByteBuffer" value="13" literal="ByteBuffer"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FArrayType" eSuperTypes="#//FType">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="elementType" eType="#//FTypeRef"
-        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="elementType" lowerBound="1"
+        eType="#//FTypeRef" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FCompoundType" abstract="true" eSuperTypes="#//FType">
     <eStructuralFeatures xsi:type="ecore:EReference" name="elements" upperBound="-1"
         eType="#//FField" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FTypeDef" eSuperTypes="#//FType">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="actualType" eType="#//FTypeRef"
-        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="actualType" lowerBound="1"
+        eType="#//FTypeRef" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FTypedElement" abstract="true" eSuperTypes="#//FModelElement">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//FTypeRef"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="type" lowerBound="1" eType="#//FTypeRef"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="array" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
@@ -109,16 +142,19 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="base" eType="#//FEnumerationType"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FMapType" eSuperTypes="#//FType">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="keyType" eType="#//FTypeRef"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="valueType" eType="#//FTypeRef"
-        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="keyType" lowerBound="1"
+        eType="#//FTypeRef" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="valueType" lowerBound="1"
+        eType="#//FTypeRef" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FTypeRef">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="predefined" eType="#//FBasicTypeId"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="derived" eType="#//FType"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="FAnnotationType">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This enum represents the type of a structured comment (i.e., the tag starting with a '@').&#xD;&#xA;"/>
+    </eAnnotations>
     <eLiterals name="undefined" literal="undefined"/>
     <eLiterals name="description" value="1" literal="@description"/>
     <eLiterals name="author" value="2" literal="@author"/>
@@ -137,18 +173,29 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="comment" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FAnnotationBlock">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This class represents a structured comment.&#xD;&#xA;It is used by many of the elements of the Franca IDL model.&#xD;&#xA;A structured comment consists of a list of elements with one tagged comment each.&#xD;&#xA;"/>
+    </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="elements" upperBound="-1"
         eType="#//FAnnotation" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FContract">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="stateGraph" eType="#//FStateGraph"
-        containment="true"/>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The contract for a Franca interface.&#xD;&#xA;The contract specifies the dynamic behaviour of the interface.&#xD;&#xA;It consists of a PSM (short for: Protocol State Machine) and&#xD;&#xA;an optional set of state variables."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="stateGraph" lowerBound="1"
+        eType="#//FStateGraph" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="variables" upperBound="-1"
         eType="#//FDeclaration" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="FDeclaration" eSuperTypes="#//FTypedElement"/>
+  <eClassifiers xsi:type="ecore:EClass" name="FDeclaration" eSuperTypes="#//FTypedElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This class represents the definition of a state variable&#xD;&#xA;as part of a Franca interface contract. Note that the &#xD;&#xA;types available for the state variable definition are &#xD;&#xA;all types which are visible in this interface."/>
+    </eAnnotations>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FStateGraph">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="initial" eType="#//FState"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="initial" lowerBound="1"
+        eType="#//FState"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="states" upperBound="-1"
         eType="#//FState" containment="true"/>
   </eClassifiers>
@@ -156,20 +203,23 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="transitions" upperBound="-1"
         eType="#//FTransition" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="FTransition" eSuperTypes="#//FModelElement">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="trigger" eType="#//FTrigger"
-        containment="true"/>
+  <eClassifiers xsi:type="ecore:EClass" name="FTransition">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="trigger" lowerBound="1"
+        eType="#//FTrigger" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="guard" eType="#//FGuard"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="to" eType="#//FState"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="to" lowerBound="1" eType="#//FState"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="action" eType="#//FExpression"
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FTrigger">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="event" eType="#//FEventOnIf"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="event" lowerBound="1" eType="#//FEventOnIf"
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FEventOnIf">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This class represents a communication event,&#xD;&#xA;which basically corresponds to a message on the interface.&#xD;&#xA;Exactly one of its properties should be set, all other should be zero.&#xD;&#xA;"/>
+    </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="call" eType="#//FMethod"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="respond" eType="#//FMethod"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="signal" eType="#//FBroadcast"/>
@@ -177,8 +227,8 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="update" eType="#//FAttribute"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FGuard">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="condition" eType="#//FExpression"
-        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="condition" lowerBound="1"
+        eType="#//FExpression" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FUnionType" eSuperTypes="#//FCompoundType">
     <eStructuralFeatures xsi:type="ecore:EReference" name="base" eType="#//FUnionType"/>
@@ -189,23 +239,40 @@
         eType="#//FExpression" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FAssignment" eSuperTypes="#//FExpression">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="lhs" eType="#//FDeclaration"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="rhs" eType="#//FExpression"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="lhs" lowerBound="1" eType="#//FDeclaration"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="rhs" lowerBound="1" eType="#//FExpression"
         containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="FExpression"/>
+  <eClassifiers xsi:type="ecore:EClass" name="FExpression" abstract="true">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This is the common base class for all expressions of&#xD;&#xA;the Franca contract action language.&#xD;&#xA;The FExpression class will never be instantiated.&#xD;&#xA;"/>
+    </eAnnotations>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FTypedElementRef" eSuperTypes="#//FExpression">
     <eStructuralFeatures xsi:type="ecore:EReference" name="element" eType="#//FTypedElement"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="#//FTypedElementRef"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="field" eType="#//FField"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="FConstant" eSuperTypes="#//FExpression"/>
+  <eClassifiers xsi:type="ecore:EClass" name="FConstant" abstract="true" eSuperTypes="#//FExpression">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This is the common base class for all kinds of&#xD;&#xA;constants in the Franca contract action language.&#xD;&#xA;Currently, only integer constants are supported.&#xD;&#xA;This will be extended in future.&#xD;&#xA;"/>
+    </eAnnotations>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FIntegerConstant" eSuperTypes="#//FConstant">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="val" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="val" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FBooleanConstant" eSuperTypes="#//FConstant">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="val" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FStringConstant" eSuperTypes="#//FConstant">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="val" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FBinaryOperation" eSuperTypes="#//FExpression">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="left" eType="#//FExpression"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="left" lowerBound="1" eType="#//FExpression"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="op" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="right" eType="#//FExpression"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="op" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="right" lowerBound="1" eType="#//FExpression"
         containment="true"/>
   </eClassifiers>
 </ecore:EPackage>

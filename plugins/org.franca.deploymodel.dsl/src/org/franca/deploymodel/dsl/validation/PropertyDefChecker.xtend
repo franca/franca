@@ -49,14 +49,12 @@ class PropertyDefChecker {
 	}
 	
 	def mustBeDefined (FStructType it) {
-		// activate next line if STRUCTS gets a property host (currently not defined in FDeploy.xtext)
-//		if (specHelper.isMandatory(STRUCTS)) return true
+		if (specHelper.isMandatory(STRUCTS)) return true
 		elements.mustBeDefined(STRUCT_FIELDS)
 	}
 	
 	def mustBeDefined (FUnionType it) {
-		// activate next line if UNIONS gets a property host (currently not defined in FDeploy.xtext)
-//		if (specHelper.isMandatory(UNIONS)) return true
+		if (specHelper.isMandatory(UNIONS)) return true
 		elements.mustBeDefined(UNION_FIELDS)
 	}
 
