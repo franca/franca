@@ -28,6 +28,7 @@ import org.franca.core.ui.addons.contractviewer.graph.GraphConnection;
 import org.franca.core.ui.addons.contractviewer.graph.GraphNode;
 import org.franca.core.ui.addons.contractviewer.graph.ZestStyles;
 import org.franca.core.ui.addons.contractviewer.util.GraphSelectionListener;
+import org.franca.core.utils.FrancaRecursiveValidator;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -47,6 +48,9 @@ public class FrancaContractVisualizerView extends ViewPart {
 	
 	@Inject
 	Injector injector;
+	
+	@Inject
+	private FrancaRecursiveValidator validator;
 	
 	public FrancaContractVisualizerView() {
 		generator = new ContractDotGenerator();
@@ -123,8 +127,10 @@ public class FrancaContractVisualizerView extends ViewPart {
 			public void run() {
 				if (previousModel == null || (!previousModel.equals(activeModel))) {
 					graph.clear();
-					constructGraph();
-					previousModel = activeModel;
+					if (!validator.hasErrors(activeModel.eResource())) {
+						constructGraph();
+						previousModel = activeModel;	
+					}					
 				}
 			}
 		});
@@ -153,10 +159,13 @@ public class FrancaContractVisualizerView extends ViewPart {
 			
 			for (FState state : nodeMap.keySet()) {
 				for (FTransition transition : state.getTransitions()) {
-					GraphConnection connection = new GraphConnection(graph, SWT.NONE, nodeMap.get(state), nodeMap.get(transition.getTo()));
-					String label = generator.genLabel(transition);
-					connection.setText(label);
-					connection.setData(label);
+					GraphNode toState = nodeMap.get(transition.getTo());
+					if (toState != null) {
+						GraphConnection connection = new GraphConnection(graph, SWT.NONE, nodeMap.get(state), nodeMap.get(transition.getTo()));
+						String label = generator.genLabel(transition);
+						connection.setText(label);
+						connection.setData(label);
+					}
 				}
 			}
 			
