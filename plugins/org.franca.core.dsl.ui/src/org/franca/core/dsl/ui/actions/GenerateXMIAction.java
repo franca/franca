@@ -8,7 +8,6 @@
 package org.franca.core.dsl.ui.actions;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Collections;
 
 import org.eclipse.core.resources.IFile;
@@ -24,9 +23,8 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.xtext.diagnostics.Severity;
-import org.eclipse.xtext.validation.Issue;
 import org.franca.core.dsl.FrancaPersistenceManager;
+import org.franca.core.dsl.ui.util.SpecificConsole;
 import org.franca.core.franca.FModel;
 import org.franca.core.utils.FrancaRecursiveValidator;
 
@@ -57,17 +55,7 @@ public class GenerateXMIAction implements IObjectActionDelegate {
 
 			FModel model = loader.loadModel(fidlFile);
 			if (model != null) {
-				Collection<Issue> issues = validator
-						.validate(model.eResource());
-				boolean isValid = true;
-
-				for (Issue issue : issues) {
-					if (issue.getSeverity() == Severity.ERROR) {
-						isValid = false;
-					}
-				}
-
-				if (isValid) {
+				if (!validator.hasErrors(model.eResource())) {
 					ResourceSet resourceSet = new ResourceSetImpl();
 					resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(
 					    Resource.Factory.Registry.DEFAULT_EXTENSION, new XMIResourceFactoryImpl());
@@ -85,6 +73,10 @@ public class GenerateXMIAction implements IObjectActionDelegate {
 					} catch (CoreException e) {
 						e.printStackTrace();
 					}
+				}
+				else {
+					SpecificConsole console = new SpecificConsole("Franca");
+			        console.getErr().println("Aborting XMI generation due to validation errors!");
 				}
 			}
 		}

@@ -9,6 +9,7 @@ import org.eclipse.xtext.ui.editor.syntaxcoloring.ISemanticHighlightingCalculato
 import org.eclipse.xtext.validation.IResourceValidator;
 import org.franca.core.dsl.ui.highlighting.FrancaHighlightingConfiguration;
 import org.franca.core.dsl.ui.highlighting.FrancaSemanticHighlightingCalculator;
+import org.franca.core.dsl.validation.FrancaIDLJavaValidator;
 import org.franca.core.validation.runtime.FrancaValidator;
 
 /**
@@ -30,7 +31,7 @@ public class FrancaIDLUiModule extends
 		return FrancaSemanticHighlightingCalculator.class;
 	}
 
-	public Class<? extends IResourceValidator> bindIResourceValidator() {
-		return FrancaValidator.class;
-	}
+//	public Class<? extends IResourceValidator> bindIResourceValidator() {
+//		return FrancaIDLJavaValidator.class;
+//	}
 }
