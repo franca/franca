@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2012 itemis AG (http://www.itemis.de).
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************/
 package org.franca.core.ui.addons.contractviewer;
 
 import java.lang.ref.WeakReference;
@@ -33,6 +40,12 @@ import org.franca.core.utils.FrancaRecursiveValidator;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
+/**
+ * A {@link ViewPart} implementation used to display the Franca contracts in a directed graph form. 
+ * 
+ * @author Tamas Szabo
+ *
+ */
 public class FrancaContractVisualizerView extends ViewPart {
 
 	private static String viewId = "org.franca.core.ui.addons.contractviewer";
@@ -125,7 +138,7 @@ public class FrancaContractVisualizerView extends ViewPart {
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
-				if (previousModel == null || (!previousModel.equals(activeModel))) {
+				if (activeModel != null /*previousModel == null || (!previousModel.equals(activeModel))*/) {
 					graph.clear();
 					if (!validator.hasErrors(activeModel.eResource())) {
 						constructGraph();
