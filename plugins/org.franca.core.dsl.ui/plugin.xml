@@ -36,7 +36,7 @@
          </activeWhen>
       </handler>-->
       <handler
-            class="org.franca.core.dsl.ui.FrancaIDLExecutableExtensionFactory:org.franca.core.validation.runtime.handler.BatchValidationHandler"
+            class="org.franca.core.dsl.ui.FrancaIDLExecutableExtensionFactory:org.franca.core.dsl.validation.BatchValidationHandler"
             commandId="org.franca.core.dsl.FrancaIDL.validate">
          <activeWhen>
             <reference

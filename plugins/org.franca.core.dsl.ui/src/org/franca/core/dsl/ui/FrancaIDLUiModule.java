@@ -6,11 +6,8 @@ package org.franca.core.dsl.ui;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.xtext.ui.editor.syntaxcoloring.IHighlightingConfiguration;
 import org.eclipse.xtext.ui.editor.syntaxcoloring.ISemanticHighlightingCalculator;
-import org.eclipse.xtext.validation.IResourceValidator;
 import org.franca.core.dsl.ui.highlighting.FrancaHighlightingConfiguration;
 import org.franca.core.dsl.ui.highlighting.FrancaSemanticHighlightingCalculator;
-import org.franca.core.dsl.validation.FrancaIDLJavaValidator;
-import org.franca.core.validation.runtime.FrancaValidator;
 
 /**
  * Use this class to register components to be used within the IDE.
@@ -30,8 +27,4 @@ public class FrancaIDLUiModule extends
 	public Class<? extends ISemanticHighlightingCalculator> bindSemanticHighlightingCalculator() {
 		return FrancaSemanticHighlightingCalculator.class;
 	}
-
-//	public Class<? extends IResourceValidator> bindIResourceValidator() {
-//		return FrancaIDLJavaValidator.class;
-//	}
 }
