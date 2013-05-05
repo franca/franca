@@ -2,11 +2,10 @@ package org.franca.core.validation.runtime;
 
 import java.util.Collection;
 
-import org.eclipse.xtext.validation.Issue;
-import org.franca.core.franca.FModel;
+import org.eclipse.emf.ecore.resource.Resource;
 
 public interface IFrancaValidator {
 
-	public Collection<Issue> validateModel(FModel model);
+	public Collection<Issue> validateModel(Resource resource);
 	
 }
