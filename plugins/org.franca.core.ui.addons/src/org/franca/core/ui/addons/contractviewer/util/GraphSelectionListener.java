@@ -8,6 +8,9 @@
 package org.franca.core.ui.addons.contractviewer.util;
 
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.gef4.zest.core.widgets.Graph;
+import org.eclipse.gef4.zest.core.widgets.GraphConnection;
+import org.eclipse.gef4.zest.core.widgets.GraphNode;
 import org.eclipse.jface.text.TextSelection;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -18,9 +21,6 @@ import org.franca.core.franca.FModel;
 import org.franca.core.franca.FState;
 import org.franca.core.franca.FTransition;
 import org.franca.core.ui.addons.contractviewer.FrancaContractVisualizerView;
-import org.franca.core.ui.addons.contractviewer.graph.Graph;
-import org.franca.core.ui.addons.contractviewer.graph.GraphConnection;
-import org.franca.core.ui.addons.contractviewer.graph.GraphNode;
 
 import com.google.inject.Inject;
 

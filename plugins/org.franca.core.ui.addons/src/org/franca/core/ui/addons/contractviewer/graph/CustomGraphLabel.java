@@ -18,11 +18,12 @@ import org.eclipse.draw2d.ScaledGraphics;
 import org.eclipse.draw2d.StackLayout;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.gef4.zest.core.widgets.IStyleableFigure;
+import org.eclipse.gef4.zest.core.widgets.internal.CachedLabel;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
-import org.franca.core.ui.addons.contractviewer.graph.internal.CachedLabel;
 
 /**
  * Overrides the Draw2D Label Figure class to ensure that the text is never
@@ -30,7 +31,8 @@ import org.franca.core.ui.addons.contractviewer.graph.internal.CachedLabel;
  * 
  * @author Chris Callendar
  */
-public class GraphLabel extends CachedLabel implements IStyleableFigure {
+@SuppressWarnings("restriction")
+public class CustomGraphLabel extends CachedLabel implements IStyleableFigure {
 
 	private Color borderColor;
 	private int borderWidth;
@@ -45,7 +47,7 @@ public class GraphLabel extends CachedLabel implements IStyleableFigure {
 	 *            Determine if the text should be cached. This will make it
 	 *            faster, but the text is not as clear
 	 */
-	public GraphLabel(boolean cacheLabel) {
+	public CustomGraphLabel(boolean cacheLabel) {
 		this("", cacheLabel);
 	}
 
@@ -58,7 +60,7 @@ public class GraphLabel extends CachedLabel implements IStyleableFigure {
 	 *            Determine if the text should be cached. This will make it
 	 *            faster, but the
 	 */
-	public GraphLabel(String text, boolean cacheLabel) {
+	public CustomGraphLabel(String text, boolean cacheLabel) {
 		this(text, null, cacheLabel);
 	}
 
@@ -71,7 +73,7 @@ public class GraphLabel extends CachedLabel implements IStyleableFigure {
 	 *            Determine if the text should be cached. This will make it
 	 *            faster, but the
 	 */
-	public GraphLabel(Image i, boolean cacheLabel) {
+	public CustomGraphLabel(Image i, boolean cacheLabel) {
 		this("", i, cacheLabel);
 	}
 
@@ -86,7 +88,7 @@ public class GraphLabel extends CachedLabel implements IStyleableFigure {
 	 *            Determine if the text should be cached. This will make it
 	 *            faster, but the
 	 */
-	public GraphLabel(String text, Image i, boolean cacheLabel) {
+	public CustomGraphLabel(String text, Image i, boolean cacheLabel) {
 		super(cacheLabel);
 		initLabel();
 		setText(text);

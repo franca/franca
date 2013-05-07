@@ -14,6 +14,9 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.gef4.zest.core.widgets.Graph;
+import org.eclipse.gef4.zest.core.widgets.ZestStyles;
+import org.eclipse.gef4.zest.layouts.algorithms.SpringLayoutAlgorithm;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Composite;
@@ -27,8 +30,6 @@ import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 import org.franca.core.franca.FModel;
 import org.franca.core.franca.FState;
 import org.franca.core.franca.FTransition;
-import org.franca.core.ui.addons.contractviewer.graph.Graph;
-import org.franca.core.ui.addons.contractviewer.graph.ZestStyles;
 import org.franca.core.ui.addons.contractviewer.util.GraphSelectionListener;
 import org.franca.core.ui.addons.contractviewer.util.IntermediateFrancaGraphModel;
 import org.franca.core.utils.FrancaRecursiveValidator;
@@ -80,6 +81,7 @@ public class FrancaContractVisualizerView extends ViewPart {
 		selectionListener = new GraphSelectionListener();
 		injector.injectMembers(selectionListener);
 		graph = new Graph(parent, SWT.NONE);
+		graph.setLayoutAlgorithm(new SpringLayoutAlgorithm(), false);
 		graph.setConnectionStyle(ZestStyles.CONNECTIONS_DIRECTED);
 		graph.addSelectionListener(selectionListener);
 	}

@@ -38,4 +38,9 @@ public class IntermediateFrancaGraphConnection {
         hash = hash * 13 + this.label.hashCode();
         return hash;
     }
+	
+	@Override
+	public String toString() {
+		return source + "->" + target;
+	}
 }
