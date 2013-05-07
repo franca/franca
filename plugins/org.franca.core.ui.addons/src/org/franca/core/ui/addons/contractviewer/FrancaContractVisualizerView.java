@@ -9,7 +9,6 @@ package org.franca.core.ui.addons.contractviewer;
 
 import java.lang.ref.WeakReference;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -25,16 +24,13 @@ import org.eclipse.ui.part.ViewPart;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.ui.editor.XtextEditor;
 import org.eclipse.xtext.util.concurrent.IUnitOfWork;
-import org.franca.core.contracts.ContractDotGenerator;
-import org.franca.core.franca.FInterface;
 import org.franca.core.franca.FModel;
 import org.franca.core.franca.FState;
 import org.franca.core.franca.FTransition;
 import org.franca.core.ui.addons.contractviewer.graph.Graph;
-import org.franca.core.ui.addons.contractviewer.graph.GraphConnection;
-import org.franca.core.ui.addons.contractviewer.graph.GraphNode;
 import org.franca.core.ui.addons.contractviewer.graph.ZestStyles;
 import org.franca.core.ui.addons.contractviewer.util.GraphSelectionListener;
+import org.franca.core.ui.addons.contractviewer.util.IntermediateFrancaGraphModel;
 import org.franca.core.utils.FrancaRecursiveValidator;
 
 import com.google.inject.Inject;
@@ -53,10 +49,10 @@ public class FrancaContractVisualizerView extends ViewPart {
 	private IFile activeFile;
 	private static WeakReference<FrancaContractVisualizerView> instance = new WeakReference<FrancaContractVisualizerView>(null);
 	private FModel activeModel;
-	//private FModel previousModel;
+	private IntermediateFrancaGraphModel previousIntermediateModel;
+	private IntermediateFrancaGraphModel intermediateModel;
 	private Map<FState, Set<FTransition>> backwardIndex;
 	private Graph graph;
-	private ContractDotGenerator generator;
 	private SelectionListener selectionListener;
 	
 	@Inject
@@ -66,8 +62,7 @@ public class FrancaContractVisualizerView extends ViewPart {
 	private FrancaRecursiveValidator validator;
 	
 	public FrancaContractVisualizerView() {
-		generator = new ContractDotGenerator();
-		//previousModel = null;
+		previousIntermediateModel = null;
 	}
 	
     public static FrancaContractVisualizerView getInstance() {
@@ -127,6 +122,7 @@ public class FrancaContractVisualizerView extends ViewPart {
 						for (EObject obj : resource.getContents()) {
 							if (obj instanceof FModel) {
 								activeModel = (FModel) obj;
+								intermediateModel = IntermediateFrancaGraphModel.createFrom(activeModel);
 								break;
 							}
 						}
@@ -138,12 +134,12 @@ public class FrancaContractVisualizerView extends ViewPart {
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
-				graph.clear();
-				if (activeModel != null /*previousModel == null || (!previousModel.equals(activeModel))*/) {
-					if (!validator.hasErrors(activeModel.eResource())) {
-						constructGraph();
-						//previousModel = activeModel;	
-					}					
+				if (intermediateModel != null && (previousIntermediateModel == null || !previousIntermediateModel.equals(intermediateModel))) {
+					graph.clear();
+					intermediateModel.getGraphNodes(graph);
+					intermediateModel.getGraphConnections(graph);
+					graph.applyLayout();
+					previousIntermediateModel = intermediateModel;
 				}
 			}
 		});
@@ -153,37 +149,13 @@ public class FrancaContractVisualizerView extends ViewPart {
 		this.activeEditor = null;
 		this.activeFile = null;
 		this.activeModel = null;
-		//this.previousModel = null;
-	}
-	
-	private void constructGraph() {
-		if (activeModel != null) {
-			Map<FState, GraphNode> nodeMap = new HashMap<FState, GraphNode>();
-			
-			for (FInterface _interface : activeModel.getInterfaces()) {
-				if (_interface != null && _interface.getContract() != null) {
-					for (FState state : _interface.getContract().getStateGraph().getStates()) {
-						GraphNode node = new GraphNode(graph, SWT.NONE, state.getName());
-						node.setData(state.getName());
-						nodeMap.put(state, node);
-					}
-				}
+		this.intermediateModel = null;
+		this.previousIntermediateModel = null;
+		Display.getDefault().asyncExec(new Runnable() {
+			@Override
+			public void run() {
+					graph.clear();
 			}
-			
-			for (FState state : nodeMap.keySet()) {
-				for (FTransition transition : state.getTransitions()) {
-					GraphNode toState = nodeMap.get(transition.getTo());
-					if (toState != null) {
-						GraphConnection connection = new GraphConnection(graph, SWT.NONE, nodeMap.get(state), nodeMap.get(transition.getTo()));
-						String label = generator.genLabel(transition);
-						connection.setText(label);
-						connection.setData(label);
-					}
-				}
-			}
-			
-			graph.applyLayout();
-		}
+		});
 	}
-	
 }
