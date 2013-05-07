@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors: The Chisel Group, University of Victoria
- * 				 Tamas Szabo - customizations for Franca context
+ * 				 Tamas Szabo (itemis AG) - Franca related customization
  ******************************************************************************/
 package org.franca.core.ui.addons.contractviewer.graph;
 
