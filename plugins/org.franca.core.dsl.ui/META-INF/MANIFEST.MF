@@ -11,8 +11,7 @@ Require-Bundle: org.franca.core.dsl;visibility:=reexport,
  org.eclipse.compare,
  org.eclipse.xtext.builder,
  org.eclipse.ui.console;bundle-version="3.5.100",
- org.eclipse.core.expressions,
- org.franca.core.validation.runtime
+ org.eclipse.core.expressions
 Import-Package: org.apache.log4j,
  org.franca.core.franca
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

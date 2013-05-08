@@ -2,7 +2,6 @@
 <?eclipse version="3.0"?>
 
 <plugin>
-   <extension-point id="francaValidator" name="Franca Model Validator" schema="schema/francaValidator.exsd"/>
 
     <extension
             point="org.eclipse.ui.editors">
@@ -26,17 +25,8 @@
                 </reference>
             </activeWhen>
         </handler>
-        <!--<handler
+        <handler
             class="org.franca.core.dsl.ui.FrancaIDLExecutableExtensionFactory:org.eclipse.xtext.ui.editor.handler.ValidateActionHandler"
-            commandId="org.franca.core.dsl.FrancaIDL.validate">
-         <activeWhen>
-            <reference
-                    definitionId="org.franca.core.dsl.FrancaIDL.Editor.opened">
-            </reference>
-         </activeWhen>
-      </handler>-->
-      <handler
-            class="org.franca.core.dsl.ui.FrancaIDLExecutableExtensionFactory:org.franca.core.dsl.validation.BatchValidationHandler"
             commandId="org.franca.core.dsl.FrancaIDL.validate">
          <activeWhen>
             <reference
@@ -120,9 +110,9 @@
     <extension
          point="org.eclipse.ui.commands">
       <command
-            description="Trigger expensive validation"
+            description="Trigger validation"
             id="org.franca.core.dsl.FrancaIDL.validate"
-            name="Validate model (expensive constraints)">
+            name="Validate">
       </command>
       <command
             description="Open the quick outline."
@@ -136,7 +126,7 @@
              <command
                  commandId="org.franca.core.dsl.FrancaIDL.validate"
                  style="push"
-                 tooltip="Trigger expensive validation">
+                 tooltip="Trigger validation">
             <visibleWhen checkEnabled="false">
                 <reference
                     definitionId="org.franca.core.dsl.FrancaIDL.Editor.opened">
