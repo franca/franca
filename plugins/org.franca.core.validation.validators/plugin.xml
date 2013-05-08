@@ -2,17 +2,16 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         point="org.franca.core.validation.runtime.francaValidator">
+         point="org.franca.core.dsl.francaValidator">
       <validator
             class="org.franca.core.validation.validators.PackageNameValidator"
-            isLive="true"
+            mode="FAST"
             name="Package name validator">
       </validator>
       <validator
             class="org.franca.core.validation.validators.UniqueStateNameValidator"
-            isLive="false"
+            mode="EXPENSIVE"
             name="Unique state name validator">
       </validator>
    </extension>
-
 </plugin>
