@@ -5,29 +5,18 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package org.franca.core.dsl.validation;
+package org.franca.core.dsl.validation.internal;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.xtext.diagnostics.Severity;
-import org.eclipse.xtext.resource.DefaultLocationInFileProvider;
-import org.eclipse.xtext.resource.ILocationInFileProvider;
-import org.eclipse.xtext.util.CancelIndicator;
-import org.eclipse.xtext.util.ITextRegion;
-import org.eclipse.xtext.util.ITextRegionWithLineInformation;
 import org.eclipse.xtext.validation.Check;
-import org.eclipse.xtext.validation.CheckMode;
-import org.eclipse.xtext.validation.CheckType;
-import org.eclipse.xtext.validation.IResourceValidator;
 import org.eclipse.xtext.validation.ValidationMessageAcceptor;
 import org.franca.core.FrancaModelExtensions;
+import org.franca.core.dsl.validation.AbstractFrancaIDLJavaValidator;
+import org.franca.core.dsl.validation.IFrancaExternalValidator;
 import org.franca.core.framework.FrancaHelpers;
 import org.franca.core.franca.FArgument;
 import org.franca.core.franca.FArrayType;
@@ -51,22 +40,19 @@ import org.franca.core.franca.FTypeRef;
 import org.franca.core.franca.FTypedElement;
 import org.franca.core.franca.FUnionType;
 import org.franca.core.franca.FrancaPackage;
-import org.franca.core.validation.runtime.IFrancaValidator;
-import org.franca.core.validation.runtime.Issue;
 
 public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
-		implements ValidationMessageReporter, NameProvider, IResourceValidator {
-
-	private ILocationInFileProvider locationProvider;
+		implements ValidationMessageReporter, NameProvider {
 	
 	FrancaIDLJavaValidator() {
-		locationProvider = new DefaultLocationInFileProvider();
 		ValidationHelpers.setNameProvider(this);
 	}
 	
 	@Check
 	public void checkExtensionValidators(FModel model) {
-		this.executeExtensionValidators(model.eResource(), CheckMode.NORMAL_AND_FAST, null);
+		for (IFrancaExternalValidator validator : ValidatorRegistry.getValidatorMap().get(getCheckMode())) {
+			validator.validateModel(model, getMessageAcceptor());
+		}
 	}
 
 	@Check
@@ -418,53 +404,5 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 			EStructuralFeature feature) {
 		warning(message, object, feature,
 				ValidationMessageAcceptor.INSIGNIFICANT_INDEX);
-	}
-
-	public void executeExtensionValidators(Resource resource, CheckMode mode,
-			CancelIndicator indicator) {
-		for (IFrancaValidator validator : ValidatorRegistry.getLiveValidators()) {
-			Collection<Issue> issues = validator.validateModel(resource);
-			if (issues != null) {
-				for (Issue issue : issues) {
-					if (issue.getSeverity() == Severity.ERROR) {
-						error(issue.getMessage(), issue.getSource(), issue.getFeature());
-					}
-					else if (issue.getSeverity() == Severity.WARNING) {
-						warning(issue.getMessage(), issue.getSource(), issue.getFeature());
-					}
-				}
-			}
-		}
-	}
-
-	@Override
-	public List<org.eclipse.xtext.validation.Issue> validate(Resource resource,
-			CheckMode mode, CancelIndicator indicator) {
-		List<org.eclipse.xtext.validation.Issue> allIssues = new ArrayList<org.eclipse.xtext.validation.Issue>();
-		for (IFrancaValidator validator : ValidatorRegistry.getBatchValidators()) {
-			Collection<Issue> issues = validator.validateModel(resource);
-			if (issues != null) {
-				for (Issue issue : issues) {
-					allIssues.add(convertIssue(issue));
-				}
-			}
-		}
-		return allIssues;
-	}
-	
-	private org.eclipse.xtext.validation.Issue convertIssue(Issue issue) {
-		org.eclipse.xtext.validation.Issue.IssueImpl newIssue = new org.eclipse.xtext.validation.Issue.IssueImpl();
-		newIssue.setSeverity(issue.getSeverity());
-		newIssue.setMessage(issue.getMessage());
-		
-		ITextRegion textRegion = locationProvider.getFullTextRegion(issue.getSource(), issue.getFeature(), 0);
-		newIssue.setLength(textRegion.getLength());
-		newIssue.setOffset(textRegion.getOffset());
-		newIssue.setType(CheckType.EXPENSIVE);
-		if (textRegion instanceof ITextRegionWithLineInformation) {
-			newIssue.setLineNumber(((ITextRegionWithLineInformation) textRegion).getLineNumber());
-		}
-		
-		return newIssue;
 	}
 }

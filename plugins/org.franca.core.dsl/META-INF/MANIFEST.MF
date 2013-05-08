@@ -3,13 +3,12 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Franca IDL core plugin
 Bundle-Vendor: Harman Infotainment Division
 Bundle-Version: 0.8.7.qualifier
-Bundle-SymbolicName: org.franca.core.dsl; singleton:=true
+Bundle-SymbolicName: org.franca.core.dsl;singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.xtext.generator;resolution:=optional,
  org.eclipse.emf.mwe2.launch;resolution:=optional,
  org.franca.core;bundle-version="0.7.5";visibility:=reexport,
  org.eclipse.core.runtime;bundle-version="3.8.0",
- org.franca.core.validation.runtime;bundle-version="0.8.7",
  org.eclipse.xtext.ui;bundle-version="2.4.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.franca.core.dsl,

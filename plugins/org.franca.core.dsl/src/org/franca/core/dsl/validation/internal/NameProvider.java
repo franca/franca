@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package org.franca.core.dsl.validation;
+package org.franca.core.dsl.validation.internal;
 
 import org.eclipse.emf.ecore.EObject;
 
