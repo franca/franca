@@ -1,9 +1,11 @@
 package org.franca.core.ui.addons.contractviewer.util;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -25,7 +27,7 @@ import com.google.common.collect.Multimap;
 
 public class IntermediateFrancaGraphModel {
 
-	private Set<String> states;
+	private List<String> states;
 	private Map<String, GraphNode> nodeMap;
 	private Set<GraphConnection> connections;
 	private Multimap<String, IntermediateFrancaGraphConnection> connectionMap;
@@ -36,7 +38,7 @@ public class IntermediateFrancaGraphModel {
 	}
 	
 	private IntermediateFrancaGraphModel(FModel model) {
-		states = new HashSet<String>();
+		states = new ArrayList<String>();
 		connectionMap = ArrayListMultimap.create();
 		generator = new ContractDotGenerator();
 		buildFromModel(model);
