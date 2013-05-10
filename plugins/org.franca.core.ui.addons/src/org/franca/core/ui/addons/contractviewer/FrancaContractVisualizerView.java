@@ -28,6 +28,7 @@ import org.eclipse.xtext.ui.editor.XtextEditor;
 import org.eclipse.xtext.ui.editor.utils.EditorUtils;
 import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 import org.franca.core.franca.FModel;
+import org.franca.core.ui.addons.contractviewer.util.FrancaControlAdapter;
 import org.franca.core.ui.addons.contractviewer.util.FrancaEditorPartListener;
 import org.franca.core.ui.addons.contractviewer.util.GraphSelectionListener;
 import org.franca.core.ui.addons.contractviewer.util.IntermediateFrancaGraphModel;
@@ -56,6 +57,8 @@ public class FrancaContractVisualizerView extends ViewPart {
 	private SelectionListener selectionListener;
 	private IPartListener partListener;
 	private IResourceChangeListener resourceChangeListener;
+	private FrancaControlAdapter controlAdapter;
+	public Composite parent;
 	
 	@Inject
 	private Injector injector;
@@ -89,8 +92,11 @@ public class FrancaContractVisualizerView extends ViewPart {
 	
 	@Override
 	public void createPartControl(Composite parent) {
+		this.parent = parent;
 		partListener = new FrancaEditorPartListener();
 		resourceChangeListener = new ResourceChangeListener();
+		controlAdapter = new FrancaControlAdapter();
+		parent.addControlListener(controlAdapter);
 		
 		IWorkbenchPage activePage = getActivePage();
 		if (activePage != null) {
@@ -114,6 +120,10 @@ public class FrancaContractVisualizerView extends ViewPart {
 	@Override
 	public void setFocus() {
 		graph.setFocus();
+	}
+	
+	public void applyLayout() {
+		this.graph.applyLayout();
 	}
 	
 	public IFile getActiveFile() {
@@ -175,6 +185,7 @@ public class FrancaContractVisualizerView extends ViewPart {
 			activePage.removePartListener(partListener);
 		}
 		ResourcesPlugin.getWorkspace().removeResourceChangeListener(resourceChangeListener);
+		if (!parent.isDisposed()) parent.removeControlListener(controlAdapter);
 		
 		graph.removeSelectionListener(selectionListener);
 		clear();

@@ -25,6 +25,15 @@ import org.franca.core.ui.addons.contractviewer.graph.CustomGraphNode;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
+/**
+ * The intermediate graph model acts as a bridge between the franca model and the graph model used by Zest. 
+ * It can be used to create the {@link GraphNode}s and {@link GraphConnection}s for the Zesz based viewer. 
+ * Additionally the main purpose of the class is to provide a proper equals implementation between the 
+ * {@link IntermediateFrancaGraphModel} instances to be able to compute when should the viewer really be updated.
+ * 
+ * @author Tamas Szabo (itemis AG)
+ *
+ */
 public class IntermediateFrancaGraphModel {
 
 	private List<String> states;
