@@ -7,12 +7,10 @@
  *******************************************************************************/
 package org.franca.core.ui.addons.contractviewer;
 
-import java.lang.ref.WeakReference;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
-
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.gef4.zest.core.widgets.Graph;
 import org.eclipse.gef4.zest.core.widgets.ZestStyles;
@@ -21,17 +19,19 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.IPartListener;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.ui.editor.XtextEditor;
+import org.eclipse.xtext.ui.editor.utils.EditorUtils;
 import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 import org.franca.core.franca.FModel;
-import org.franca.core.franca.FState;
-import org.franca.core.franca.FTransition;
+import org.franca.core.ui.addons.contractviewer.util.FrancaEditorPartListener;
 import org.franca.core.ui.addons.contractviewer.util.GraphSelectionListener;
 import org.franca.core.ui.addons.contractviewer.util.IntermediateFrancaGraphModel;
+import org.franca.core.ui.addons.contractviewer.util.ResourceChangeListener;
 import org.franca.core.utils.FrancaRecursiveValidator;
 
 import com.google.inject.Inject;
@@ -48,16 +48,17 @@ public class FrancaContractVisualizerView extends ViewPart {
 	private static String viewId = "org.franca.core.ui.addons.contractviewer";
 	private XtextEditor activeEditor;
 	private IFile activeFile;
-	private static WeakReference<FrancaContractVisualizerView> instance = new WeakReference<FrancaContractVisualizerView>(null);
+	private static FrancaContractVisualizerView instance;
 	private FModel activeModel;
 	private IntermediateFrancaGraphModel previousIntermediateModel;
 	private IntermediateFrancaGraphModel intermediateModel;
-	private Map<FState, Set<FTransition>> backwardIndex;
 	private Graph graph;
 	private SelectionListener selectionListener;
+	private IPartListener partListener;
+	private IResourceChangeListener resourceChangeListener;
 	
 	@Inject
-	Injector injector;
+	private Injector injector;
 	
 	@Inject
 	private FrancaRecursiveValidator validator;
@@ -67,23 +68,47 @@ public class FrancaContractVisualizerView extends ViewPart {
 	}
 	
     public static FrancaContractVisualizerView getInstance() {
-    	if (instance.get() == null) {
-	        IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-	        if (activeWorkbenchWindow != null && activeWorkbenchWindow.getActivePage() != null) {
-	            instance = new WeakReference<FrancaContractVisualizerView>((FrancaContractVisualizerView) activeWorkbenchWindow.getActivePage().findView(viewId));
+    	if (instance == null) {
+	        IWorkbenchPage activePage = getActivePage();
+	        if (activePage != null) {
+	            instance = (FrancaContractVisualizerView) activePage.findView(viewId);
 	        }
     	}
-        return instance.get();
+        return instance;
     }
+    
+	private static IWorkbenchPage getActivePage() {
+		if (PlatformUI.getWorkbench().getActiveWorkbenchWindow() != null) {
+			IWorkbenchPage activePage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+			if (activePage != null) {
+				return activePage;
+			}
+		}
+		return null;
+	}
 	
 	@Override
 	public void createPartControl(Composite parent) {
+		partListener = new FrancaEditorPartListener();
+		resourceChangeListener = new ResourceChangeListener();
+		
+		IWorkbenchPage activePage = getActivePage();
+		if (activePage != null) {
+			activePage.addPartListener(partListener);
+		}
+		ResourcesPlugin.getWorkspace().addResourceChangeListener(resourceChangeListener, IResourceChangeEvent.POST_BUILD);
+		
 		selectionListener = new GraphSelectionListener();
 		injector.injectMembers(selectionListener);
 		graph = new Graph(parent, SWT.NONE);
 		graph.setLayoutAlgorithm(new SpringLayoutAlgorithm(), false);
 		graph.setConnectionStyle(ZestStyles.CONNECTIONS_DIRECTED);
 		graph.addSelectionListener(selectionListener);
+		activeEditor = EditorUtils.getActiveXtextEditor();
+		if (activeEditor != null) {
+			activeFile = (IFile) activeEditor.getEditorInput().getAdapter(IFile.class);
+		}
+		updateModel();
 	}
 
 	@Override
@@ -110,11 +135,7 @@ public class FrancaContractVisualizerView extends ViewPart {
 	public FModel getActiveModel() {
 		return activeModel;
 	}
-	
-	public Map<FState, Set<FTransition>> getBackwardIndex() {
-		return Collections.unmodifiableMap(backwardIndex);
-	}
-	
+
 	public void updateModel() {
 		if (activeEditor != null) {
 			activeEditor.getDocument().readOnly(new IUnitOfWork.Void<XtextResource>() {
@@ -147,6 +168,20 @@ public class FrancaContractVisualizerView extends ViewPart {
 		});
 	}
 	
+	@Override
+	public void dispose() {
+		IWorkbenchPage activePage = getActivePage();
+		if (activePage != null) {
+			activePage.removePartListener(partListener);
+		}
+		ResourcesPlugin.getWorkspace().removeResourceChangeListener(resourceChangeListener);
+		
+		graph.removeSelectionListener(selectionListener);
+		clear();
+		graph.dispose();
+		super.dispose();
+	}
+	
 	public void clear() {
 		this.activeEditor = null;
 		this.activeFile = null;
@@ -156,7 +191,9 @@ public class FrancaContractVisualizerView extends ViewPart {
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
-					graph.clear();
+				if (!graph.isDisposed()) {
+					graph.clear();					
+				}
 			}
 		});
 	}

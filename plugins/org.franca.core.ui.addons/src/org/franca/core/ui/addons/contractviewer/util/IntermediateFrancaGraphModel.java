@@ -47,12 +47,18 @@ public class IntermediateFrancaGraphModel {
 	private void buildFromModel(FModel model) {
 		for (FInterface _interface : model.getInterfaces()) {
 			if (_interface.getContract() != null) {
+				//first collect all states
 				for (FState state : _interface.getContract().getStateGraph().getStates()) {
 					states.add(state.getName());
+				}
+				for (FState state : _interface.getContract().getStateGraph().getStates()) {
 					for (FTransition transition : state.getTransitions()) {
-						IntermediateFrancaGraphConnection connection = 
-								new IntermediateFrancaGraphConnection(state.getName(), transition.getTo().getName(), generator.genLabel(transition));
-						connectionMap.put(state.getName(), connection);
+						//this check will remove all invalid connections from the intermediate model
+						if (states.contains(transition.getTo().getName())) {
+							IntermediateFrancaGraphConnection connection = 
+									new IntermediateFrancaGraphConnection(state.getName(), transition.getTo().getName(), generator.genLabel(transition));
+							connectionMap.put(state.getName(), connection);
+						}
 					}
 				}
 			}
