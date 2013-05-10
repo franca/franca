@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package org.franca.core.dsl.validation.internal;
+package org.franca.core.dsl.validation;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +16,12 @@ import org.eclipse.xtext.validation.Check;
 import org.eclipse.xtext.validation.ValidationMessageAcceptor;
 import org.franca.core.FrancaModelExtensions;
 import org.franca.core.dsl.validation.AbstractFrancaIDLJavaValidator;
-import org.franca.core.dsl.validation.IFrancaExternalValidator;
+import org.franca.core.dsl.validation.internal.ContractValidator;
+import org.franca.core.dsl.validation.internal.NameProvider;
+import org.franca.core.dsl.validation.internal.ValidationHelpers;
+import org.franca.core.dsl.validation.internal.ValidationMessageReporter;
+import org.franca.core.dsl.validation.internal.ValidatorRegistry;
+import org.franca.core.dsl.validation.internal.ValidationHelpers.NameList;
 import org.franca.core.framework.FrancaHelpers;
 import org.franca.core.franca.FArgument;
 import org.franca.core.franca.FArrayType;
