@@ -13,6 +13,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDInterface;
 import org.franca.deploymodel.dsl.fDeploy.FDModel;
 import org.franca.deploymodel.dsl.fDeploy.FDProvider;
 import org.franca.deploymodel.dsl.fDeploy.FDRootElement;
+import org.franca.deploymodel.dsl.fDeploy.FDTypes;
 
 import com.google.common.collect.Lists;
 
@@ -62,6 +63,23 @@ public class FDModelExtender {
 		for(FDRootElement elem : fdmodel.getDeployments()) {
 			if (elem instanceof FDInterface) {
 				results.add((FDInterface) elem);
+			}
+		}
+		
+		return results;
+	}
+
+
+	/**
+	 * Get a list of all Franca IDL type collections referenced by a Franca deployment model
+	 * @return the list of FDTypes
+	 */
+	public List<FDTypes> getFDTypesList() {
+		List<FDTypes> results = Lists.newArrayList();
+		
+		for(FDRootElement elem : fdmodel.getDeployments()) {
+			if (elem instanceof FDTypes) {
+				results.add((FDTypes) elem);
 			}
 		}
 		
