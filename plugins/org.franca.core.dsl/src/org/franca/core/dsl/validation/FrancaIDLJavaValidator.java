@@ -17,6 +17,7 @@ import org.eclipse.xtext.validation.ValidationMessageAcceptor;
 import org.franca.core.FrancaModelExtensions;
 import org.franca.core.dsl.validation.AbstractFrancaIDLJavaValidator;
 import org.franca.core.dsl.validation.internal.ContractValidator;
+import org.franca.core.dsl.validation.internal.CyclicDependenciesValidator;
 import org.franca.core.dsl.validation.internal.NameProvider;
 import org.franca.core.dsl.validation.internal.ValidationHelpers;
 import org.franca.core.dsl.validation.internal.ValidationMessageReporter;
@@ -46,8 +47,13 @@ import org.franca.core.franca.FTypedElement;
 import org.franca.core.franca.FUnionType;
 import org.franca.core.franca.FrancaPackage;
 
+import com.google.inject.Inject;
+
 public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 		implements ValidationMessageReporter, NameProvider {
+	
+	@Inject
+	protected CyclicDependenciesValidator cyclicDependenciesValidator; 
 	
 	FrancaIDLJavaValidator() {
 		ValidationHelpers.setNameProvider(this);
@@ -190,6 +196,12 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 					api.getContract(),
 					FrancaPackage.Literals.FINTERFACE__CONTRACT, -1);
 		}
+	}
+	
+	
+	@Check
+	public void checkCyclicDependencies(FTypeCollection tc) {
+		cyclicDependenciesValidator.check(this, tc);
 	}
 
 	// *****************************************************************************
