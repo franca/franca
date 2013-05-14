@@ -240,13 +240,20 @@ public class Digraph<T> {
 		}
 		tmp += "\n";
 		tmp = "Edges: ";
-		for (Iterator<Edge<T>> it = edgesIterator(); it.hasNext();)
-		{
-			Edge<T> edge = it.next();
-			tmp += "(" + edge.from.value + "->" + edge.to.value + "),";  
-		}
+		tmp = edgesToString();
 		tmp += "\n";
 		
 		return tmp;
+	}
+
+	/** Returns a String describing the Edges only. May be helpful while analyzing cycles.*/
+	public String edgesToString() {
+		String result = "";
+		for (Iterator<Edge<T>> it = edgesIterator(); it.hasNext();)
+		{
+			Edge<T> edge = it.next();
+			result+= "(" + edge.from.value + "->" + edge.to.value + ")";  
+		}
+		return result;
 	}
 }
