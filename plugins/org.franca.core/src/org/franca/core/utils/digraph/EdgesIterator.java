@@ -25,8 +25,10 @@ public class EdgesIterator<T> implements Iterator<Edge<T>> {
 	public EdgesIterator(Digraph<T> theDigraph) {
 		digraph = theDigraph;
 		nodesIt = digraph.nodes.iterator();
-		currentNode = nodesIt.next();
-		edgesIt = currentNode.outEdges.iterator();
+		if(nodesIt.hasNext()){
+			currentNode = nodesIt.next();
+			edgesIt = currentNode.outEdges.iterator();
+		}
 	}
 
 	public boolean hasNext() {
