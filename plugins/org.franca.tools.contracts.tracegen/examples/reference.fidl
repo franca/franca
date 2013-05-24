@@ -1,0 +1,81 @@
+package org.franca.tools.contracts.tracegen.examples.reference
+
+interface Reference {
+	
+	method init {}
+	method reset {}
+	method addConst {}
+	method subConst {}
+	method multConst {}
+	method divConst {}
+	method equalToConst {}
+	method notEqualToConst {}
+	method severalBooleansConst {}
+	
+	contract {
+		vars {
+			Boolean isTheWeatherFine;
+			UInt32 aNumber;
+		}
+		PSM {
+			initial Idle
+			
+			state Idle {
+				on call init -> testingAddConst {
+					isTheWeatherFine = false
+					aNumber = 0
+				}
+			}
+			state testingAddConst {
+				on call addConst [aNumber < 3] -> testingAddConst {
+					aNumber = aNumber + 1
+				}
+				on call addConst [aNumber >= 3] -> testingSubConst
+			}
+			state testingSubConst {
+				on call subConst [aNumber > 1] -> testingSubConst {
+					aNumber = aNumber - 1
+				}
+				on call subConst [aNumber == 1] -> testingMultConst
+			}
+			state testingMultConst {
+				on call multConst [aNumber < 8] -> testingMultConst {
+					aNumber = aNumber * 2
+				}
+				on call multConst [aNumber == 8] -> testingDivConst
+			}
+			state testingDivConst {
+				on call divConst [aNumber > 1] -> testingDivConst {
+					aNumber = aNumber / 2
+				}
+				on call divConst [aNumber == 1] -> testingEqualToConst
+			}
+			state testingEqualToConst {
+				on call equalToConst [isTheWeatherFine == false] -> testingEqualToConst {
+					isTheWeatherFine = isTheWeatherFine == false
+				}
+				on call equalToConst [isTheWeatherFine == true] -> testingNotEqualToConst {
+					isTheWeatherFine = isTheWeatherFine == false
+				}
+			}
+			state testingNotEqualToConst {
+				on call notEqualToConst [isTheWeatherFine == true] -> testingNotEqualToConst {
+					isTheWeatherFine = isTheWeatherFine == false
+				}
+				on call notEqualToConst [isTheWeatherFine == false] -> testingSeveralBooleansConst
+			}
+			state testingSeveralBooleansConst {
+				on call severalBooleansConst [false] -> testingSeveralBooleansConst
+				on call severalBooleansConst [true] -> testDone {
+					isTheWeatherFine = false || isTheWeatherFine && aNumber < 10
+				}
+				on call severalBooleansConst [true] -> testingSeveralBooleansConst
+			}
+			
+			state testDone {
+				on call reset -> Idle
+			}
+			
+		}
+	}
+}
