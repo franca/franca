@@ -52,10 +52,6 @@
 <repository location="http://download.eclipse.org/mylyn/releases/latest"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.emf.compare.feature.group" version="2.1.0.201302050831"/>
-<repository location="http://download.eclipse.org/releases/kepler/"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="model.emf.dbusxml.feature.feature.group" version="0.7.2.201211052141"/>
 <repository location="http://dbus-emf-model.eclipselabs.org.codespot.com/git/update_site/releases/"/>
 </location>
