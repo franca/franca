@@ -9,16 +9,17 @@ package org.franca.connectors.dbus.ui.actions;
 
 import model.emf.dbusxml.NodeType;
 
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ui.IObjectActionDelegate;
-import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.console.MessageConsoleStream;
+import org.eclipse.ui.handlers.HandlerUtil;
 import org.franca.connectors.dbus.DBusConnector;
 import org.franca.connectors.dbus.DBusModelContainer;
 import org.franca.connectors.dbus.util.XMLRootCheck;
@@ -28,29 +29,38 @@ import org.franca.core.franca.FModel;
 
 import com.google.inject.Inject;
 
-
-public class CreateFrancaFromDBusXMLAction implements IObjectActionDelegate {
-
-	private IStructuredSelection selection = null;
+public class CreateFrancaFromDBusXMLHandler extends AbstractHandler {
 	
 	@Inject FrancaPersistenceManager saver;
+    	
+	private boolean isDBusIntrospectionFile (IFile file) {
+		String root = "";
+		try {
+			root = XMLRootCheck.determineRootElement(file.getContents());
+		} catch (CoreException e) {
+			return false;
+		}
+		return root.equals("node");
+	}
 
 	@Override
-	public void run(IAction action) {
-    	SpecificConsole myConsole = new SpecificConsole("Franca");
-        final MessageConsoleStream out = myConsole.getOut();
-        final MessageConsoleStream err = myConsole.getErr();
+	public Object execute(ExecutionEvent event) throws ExecutionException {
+		ISelection selection = HandlerUtil.getCurrentSelection(event);
 		
-        if (selection!=null) {
-            if (selection.size()!=1) {
+        if (selection != null && selection instanceof IStructuredSelection) {
+    		SpecificConsole myConsole = new SpecificConsole("Franca");
+            final MessageConsoleStream out = myConsole.getOut();
+            final MessageConsoleStream err = myConsole.getErr();
+            
+            if (selection.isEmpty()) {
             	err.println("Please select exactly one file with extension 'xml'!");
-                return;
+                return null;
             }
 
-            IFile file = (IFile)selection.getFirstElement();
+            IFile file = (IFile) ((IStructuredSelection) selection).getFirstElement();
             if (! isDBusIntrospectionFile(file)) {
     			err.println("The selected file is not D-Bus Introspection XML format!");
-    			return;
+    			return null;
             }
             String dbusFile = file.getLocationURI().toString();
             String outputDir = file.getParent().getLocation().toString();
@@ -61,12 +71,12 @@ public class CreateFrancaFromDBusXMLAction implements IObjectActionDelegate {
     		DBusModelContainer dbus = (DBusModelContainer)conn.loadModel(dbusFile);
     		if (dbus==null) {
     			err.println("Couldn't load D-Bus Introspection XML file '" + dbusFile + "'.");
-    			return;
+    			return null;
     		}
     		NodeType node = dbus.model();
     		if (node==null) {
     			err.println("Error during load of D-Bus Introspection XML file '" + dbusFile + "'.");
-    			return;
+    			return null;
     		}
     		out.println("D-Bus Introspection XML: loaded node '" + node.getName() + "'");
     		
@@ -81,7 +91,7 @@ public class CreateFrancaFromDBusXMLAction implements IObjectActionDelegate {
     				err.println("\tat " + f.toString());
     			}
     			err.println("Internal transformation error, aborting.");
-				return;
+				return null;
     		}
     		
     		// save Franca fidl file
@@ -103,26 +113,7 @@ public class CreateFrancaFromDBusXMLAction implements IObjectActionDelegate {
 				e.printStackTrace();
 			}
         }
-	}
-
-	@Override
-	public void selectionChanged(IAction action, ISelection selection) {
-        this.selection = (IStructuredSelection)selection;
-	}
-
-	@Override
-	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-		// TODO Auto-generated method stub
-	}
-
-	private boolean isDBusIntrospectionFile (IFile file) {
-		String root = "";
-		try {
-			root = XMLRootCheck.determineRootElement(file.getContents());
-		} catch (CoreException e) {
-			return false;
-		}
-		return root.equals("node");
+		return null;
 	}
 }
 
