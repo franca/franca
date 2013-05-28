@@ -119,6 +119,16 @@
             id="org.eclipse.xtext.ui.editor.outline.QuickOutline"
             name="Quick Outline">
       </command>
+      <command
+            defaultHandler="org.franca.core.dsl.ui.FrancaIDLExecutableExtensionFactory:org.franca.core.dsl.ui.handlers.GenerateContractDotHandler"
+            id="org.franca.core.dsl.ui.generatedot"
+            name="Generate dot-file">
+      </command>
+      <command
+            defaultHandler="org.franca.core.dsl.ui.FrancaIDLExecutableExtensionFactory:org.franca.core.dsl.ui.handlers.GenerateXMIHandler"
+            id="org.franca.core.dsl.ui.generatexmi"
+            name="Export in XMI">
+      </command>
     </extension>
     <extension point="org.eclipse.ui.menus">
         <menuContribution
@@ -160,39 +170,42 @@
               </visibleWhen>
            </command>
         </menuContribution>
+        <menuContribution
+              allPopups="false"
+              locationURI="popup:org.eclipse.ui.popup.any">
+           <menu
+                 id="org.franca.core.dsl.ui.francamenu"
+                 label="Franca">
+              <command
+                    commandId="org.franca.core.dsl.ui.generatexmi"
+                    label="Export in XMI format"
+                    style="push">
+                 <visibleWhen
+                       checkEnabled="false">
+                    <reference
+                          definitionId="org.franca.core.dsl.ui.fidl">
+                    </reference>
+                 </visibleWhen>
+              </command>
+              <command
+                    commandId="org.franca.core.dsl.ui.generatedot"
+                    label="Generate dot-file from contract"
+                    style="push">
+                 <visibleWhen
+                       checkEnabled="false">
+                    <reference
+                          definitionId="org.franca.core.dsl.ui.fidl">
+                    </reference>
+                 </visibleWhen>
+              </command>
+              <separator
+                    name="additions">
+              </separator>
+           </menu>
+        </menuContribution>
     </extension>
 
    <!-- popup menu for *.fidl files -->
-   <extension
-         point="org.eclipse.ui.popupMenus">
-      <objectContribution
-            objectClass="org.eclipse.core.resources.IFile"
-            nameFilter="*.fidl"
-            id="org.franca.ui.actions.contribution1">
-         <menu
-               label="Franca"
-               path="additions"
-               id="org.franca.ui.francaMenu">
-            <separator
-                  name="groupFrancaCommon">
-            </separator>
-         </menu>
-         <action
-               class="org.franca.core.dsl.ui.FrancaIDLExecutableExtensionFactory:org.franca.core.dsl.ui.actions.GenerateContractDotAction"
-               enablesFor="1"
-               id="org.franca.connectors.dbus.ui.actions.generateContractDotAction"
-               label="Generate dot-file from contract"
-               menubarPath="org.franca.ui.francaMenu/groupFrancaCommon">
-         </action>
-         <action
-               class="org.franca.core.dsl.ui.FrancaIDLExecutableExtensionFactory:org.franca.core.dsl.ui.actions.GenerateXMIAction"
-               enablesFor="1"
-               id="org.franca.core.dsl.ui.generatexmi"
-               label="Export in XMI format"
-               menubarPath="org.franca.ui.francaMenu/groupFrancaCommon">
-         </action>
-      </objectContribution>
-   </extension>
 
    <!-- adding resource factories -->
 	<extension
@@ -238,5 +251,23 @@
             class="org.franca.core.dsl.ui.FrancaIDLExecutableExtensionFactory:org.eclipse.xtext.ui.editor.quickfix.MarkerResolutionGenerator">
       </markerResolutionGenerator>
    </extension>
-
+	<extension
+         point="org.eclipse.core.expressions.definitions">
+      <definition
+            id="org.franca.core.dsl.ui.fidl">
+         <with
+               variable="selection">
+            <iterate
+                  ifEmpty="false">
+               <adapt
+                     type="org.eclipse.core.resources.IFile">
+                  <test
+                        property="org.eclipse.core.resources.name"
+                        value="*.fidl">
+                  </test>
+               </adapt>
+            </iterate>
+         </with>
+      </definition>
+      </extension>
 </plugin>
