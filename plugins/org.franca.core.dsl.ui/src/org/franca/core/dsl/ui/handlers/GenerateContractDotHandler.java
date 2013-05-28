@@ -5,20 +5,21 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package org.franca.core.dsl.ui.actions;
+package org.franca.core.dsl.ui.handlers;
 
 import java.util.Collection;
 
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ui.IObjectActionDelegate;
-import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.console.MessageConsoleStream;
+import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.xtext.validation.Issue;
 import org.franca.core.contracts.ContractDotGenerator;
 import org.franca.core.dsl.FrancaPersistenceManager;
@@ -29,28 +30,27 @@ import org.franca.core.utils.FrancaRecursiveValidator;
 
 import com.google.inject.Inject;
 
-
-public class GenerateContractDotAction implements IObjectActionDelegate {
-
-	private IStructuredSelection selection = null;
+public class GenerateContractDotHandler extends AbstractHandler {
 	
 	@Inject FrancaPersistenceManager loader;
 	@Inject FrancaRecursiveValidator validator;
 
-	@SuppressWarnings({ "deprecation", "incomplete-switch" })
+	@SuppressWarnings({ "incomplete-switch", "deprecation" })
 	@Override
-	public void run(IAction action) {
-    	SpecificConsole myConsole = new SpecificConsole("Franca");
-        final MessageConsoleStream out = myConsole.getOut();
-        final MessageConsoleStream err = myConsole.getErr();
-		
-        if (selection!=null) {
-            if (selection.size()!=1) {
+	public Object execute(ExecutionEvent event) throws ExecutionException {		
+        ISelection selection = HandlerUtil.getCurrentSelection(event);
+        
+        if (selection != null && selection instanceof IStructuredSelection ) {
+        	SpecificConsole myConsole = new SpecificConsole("Franca");
+            final MessageConsoleStream out = myConsole.getOut();
+            final MessageConsoleStream err = myConsole.getErr();
+            
+            if (selection.isEmpty()) {
             	err.println("Please select exactly one file with extension 'fidl'!");
-                return;
+                return null;
             }
 
-            IFile file = (IFile)selection.getFirstElement();
+            IFile file = (IFile) ((IStructuredSelection) selection).getFirstElement();
             String fidlFile = file.getLocationURI().toString();
             String outputDir = file.getParent().getLocation().toString();
 
@@ -59,7 +59,7 @@ public class GenerateContractDotAction implements IObjectActionDelegate {
     		FModel fmodel = loader.loadModel(fidlFile);
     		if (fmodel==null) {
     			err.println("Couldn't load Franca IDL file '" + fidlFile + "'.");
-    			return;
+    			return null;
     		}
     		out.println("Franca IDL: package '" + fmodel.getName() + "'");
     		
@@ -80,7 +80,7 @@ public class GenerateContractDotAction implements IObjectActionDelegate {
     		}
     		if (nErrors>0) {
     			err.println("Aborting due to validation errors!");
-    			return;
+    			return null;
     		}
   
     		// create dot-file and save it
@@ -99,17 +99,6 @@ public class GenerateContractDotAction implements IObjectActionDelegate {
 				e.printStackTrace();
 			}
         }
+		return null;
 	}
-
-	@Override
-	public void selectionChanged(IAction action, ISelection selection) {
-        this.selection = (IStructuredSelection)selection;
-	}
-
-	@Override
-	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-		// TODO Auto-generated method stub
-	}
-
-
 }

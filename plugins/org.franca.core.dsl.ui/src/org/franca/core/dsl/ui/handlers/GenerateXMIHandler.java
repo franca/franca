@@ -5,11 +5,14 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package org.franca.core.dsl.ui.actions;
+package org.franca.core.dsl.ui.handlers;
 
 import java.io.IOException;
 import java.util.Collections;
 
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -18,11 +21,9 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ui.IObjectActionDelegate;
-import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.handlers.HandlerUtil;
 import org.franca.core.dsl.FrancaPersistenceManager;
 import org.franca.core.dsl.ui.util.SpecificConsole;
 import org.franca.core.franca.FModel;
@@ -31,14 +32,12 @@ import org.franca.core.utils.FrancaRecursiveValidator;
 import com.google.inject.Inject;
 
 /**
- * Action delegate to generate XMI representation of Franca fidl files. 
+ * Handler to generate XMI representation of Franca fidl files. 
  * 
  * @author Tamas Szabo
  *
  */
-public class GenerateXMIAction implements IObjectActionDelegate {
-
-	private IStructuredSelection selection;
+public class GenerateXMIHandler extends AbstractHandler {
 
 	@Inject
 	private FrancaPersistenceManager loader;
@@ -46,13 +45,15 @@ public class GenerateXMIAction implements IObjectActionDelegate {
 	@Inject
 	private FrancaRecursiveValidator validator;
 
-	@SuppressWarnings("deprecation")
 	@Override
-	public void run(IAction action) {
-		if (selection != null && selection.size() == 1) {
-			IFile file = (IFile) selection.getFirstElement();
+	public Object execute(ExecutionEvent event) throws ExecutionException {
+		ISelection selection = HandlerUtil.getCurrentSelection(event);
+		
+		if (selection != null && selection instanceof IStructuredSelection && !selection.isEmpty()) {
+			IFile file = (IFile) ((IStructuredSelection) selection).getFirstElement();
 			String fidlFile = file.getLocationURI().toString();
 
+			@SuppressWarnings("deprecation")
 			FModel model = loader.loadModel(fidlFile);
 			if (model != null) {
 				if (!validator.hasErrors(model.eResource())) {
@@ -80,16 +81,7 @@ public class GenerateXMIAction implements IObjectActionDelegate {
 				}
 			}
 		}
-	}
-
-	@Override
-	public void selectionChanged(IAction action, ISelection selection) {
-		this.selection = (IStructuredSelection) selection;
-	}
-
-	@Override
-	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-
+		return null;
 	}
 
 }
