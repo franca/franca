@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            id="org.franca.connectors.c_header.ui.gen_c_header"
+            name="C header generation handler">
+      </command>
+      <command
+            id="org.franca.connectors.c_header.ui.gen_franca"
+            name="Franca generation handler">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="org.franca.connectors.c_header.ui.CHeaderUIExecutableExtensionFactory:org.franca.connectors.c_header.ui.handlers.GenerateCHeaderFromFrancaHandler"
+            commandId="org.franca.connectors.c_header.ui.gen_c_header">
+      </handler>
+      <handler
+            class="org.franca.connectors.c_header.ui.CHeaderUIExecutableExtensionFactory:org.franca.connectors.c_header.ui.handlers.GenerateFrancaFromCHeaderHandler"
+            commandId="org.franca.connectors.c_header.ui.gen_franca">
+      </handler>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.franca.core.dsl.ui.francamenu?after=additions">
+            <command
+                  commandId="org.franca.connectors.c_header.ui.gen_franca"
+                  label="Create Franca model from c header"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="false">
+                  <reference
+                        definitionId="org.franca.connectors.c_header.ui.c_header">
+                  </reference>
+               </visibleWhen>
+            </command>
+            <command
+                  commandId="org.franca.connectors.c_header.ui.gen_c_header"
+                  label="Generate c header file"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="false">
+                  <reference
+                        definitionId="org.franca.core.dsl.ui.fidl">
+                  </reference>
+               </visibleWhen>
+            </command>
+      </menuContribution>
+   </extension>
+	<extension
+         point="org.eclipse.core.expressions.definitions">
+      <definition
+            id="org.franca.connectors.c_header.ui.c_header">
+         <with
+               variable="selection">
+            <iterate
+                  ifEmpty="false">
+               <adapt
+                     type="org.eclipse.core.resources.IFile">
+                  <test
+                        property="org.eclipse.core.resources.name"
+                        value="*.h">
+                  </test>
+               </adapt>
+            </iterate>
+         </with>
+      </definition>
+      </extension>
+</plugin>

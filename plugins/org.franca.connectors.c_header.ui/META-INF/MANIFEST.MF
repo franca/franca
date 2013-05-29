@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: org.franca.connectors.c_header.ui
+Bundle-SymbolicName: org.franca.connectors.c_header.ui;singleton:=true
+Bundle-Version: 0.8.7.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.franca.core.dsl.ui,
+ org.eclipse.xtext.ui,
+ org.eclipse.core.commands,
+ org.eclipse.ui.console,
+ org.franca.connectors.c_header;bundle-version="1.0.0"
+Bundle-Activator: org.franca.connectors.c_header.ui.Activator
+Bundle-ActivationPolicy: lazy
