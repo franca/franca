@@ -6,7 +6,7 @@ import org.junit.runner.RunWith
 import org.eclipse.xtext.junit4.InjectWith
 import org.junit.Test
 import static junit.framework.Assert.*
-import java.util.Collections
+import java.util.Collectionsimport org.junit.Ignore
 
 @RunWith(typeof(XtextRunner2))
 @InjectWith(typeof(FrancaIDLTestsInjectorProvider))
@@ -22,7 +22,7 @@ class CyclicDependenciesValidationTests extends ValidationTestBase {
 				struct T extends S { }
 			}	
 		'''
-		assertCyclicDependency('''Cyclic dependency detected: (T->S)(S->T)''', model.issues);
+		assertDependencies('''Cyclic dependency detected: (MyTypes.T->MyTypes.S)(MyTypes.S->MyTypes.T)''', model.issues);
 	}
 	
 	@Test
@@ -36,7 +36,7 @@ class CyclicDependenciesValidationTests extends ValidationTestBase {
 				array TheArray of TheStruct 
 			}	
 		'''
-		assertCyclicDependency('''Cyclic dependency detected: (TheStruct->TheArray)(TheArray->TheStruct)''', model.issues);
+		assertDependencies('''Cyclic dependency detected: (MyTypes.TheStruct->MyTypes.TheArray)(MyTypes.TheArray->MyTypes.TheStruct)''', model.issues);
 	}
 	
 	@Test
@@ -50,7 +50,7 @@ class CyclicDependenciesValidationTests extends ValidationTestBase {
 				enumeration e4 extends e1{D}
 			}	
 		'''
-		assertCyclicDependency('''(e1->e2)(e2->e3)(e3->e4)(e4->e1)''', model.issues);
+		assertDependencies('''(MyTypes.e1->MyTypes.e2)(MyTypes.e2->MyTypes.e3)(MyTypes.e3->MyTypes.e4)(MyTypes.e4->MyTypes.e1)''', model.issues);
 	}
 	
 	@Test
@@ -67,17 +67,58 @@ class CyclicDependenciesValidationTests extends ValidationTestBase {
 				union i2  extends i1 {}
 			}
 		'''
-		assertCyclicDependency('''(S->u2)(u2->u1)(u1->S) und dazu (i1->i2)(i2->i1)''', model.issues);
+		assertDependencies("(MyTypes.S->MyTypes.u2)(MyTypes.u2->MyTypes.u1)(MyTypes.u1->MyTypes.S) und dazu (MyTypes.i1->MyTypes.i2)(MyTypes.i2->MyTypes.i1)", model.issues);
+	}
+	
+	@Test
+	def void validateFMapTypeCycles() {
+		val model = '''
+			package a.b.c
+			typeCollection MyTypes {
+				struct S1 { M1 m }
+				map M1 {Int16 to S1}
+				
+				union U2 {M2 m}
+				map M2 {U2 to Int16}
+				
+				map M3 {Int16 to M4}
+				map M4 {Int16 to M3}
+			}
+		'''
+		assertDependencies("(MyTypes.M1->MyTypes.S1)(MyTypes.S1->MyTypes.M1) und (MyTypes.M2->MyTypes.U2)(MyTypes.U2->MyTypes.M2) 
+							und (MyTypes.M3->MyTypes.M4)(MyTypes.M4->MyTypes.M3)", model.issues)
+	}
+	@Test
+	def void validateFTypeDefCycles() {
+		val model = '''
+			package a.b.c
+			typeCollection MyTypes {
+				struct S1 { TD1 m }
+				typedef TD1 is S1 
+				
+			}
+		'''
+		assertDependencies("(MyTypes.S1->MyTypes.TD1)(MyTypes.TD1->MyTypes.S1)", model.issues)
+	}
+	@Test
+	@Ignore("Validation won't kick in due to issue http://code.google.com/a/eclipselabs.org/p/franca/issues/detail?id=45")
+	def void validateFInterfaceCycles() {
+		val model = '''
+			package a.b.c
+			interface T1 extends T2{}
+			interface T2 extends T1{} 
+		'''
+		assertDependencies("(MyTypes.S1->MyTypes.TD1)(MyTypes.TD1->MyTypes.S1)", model.issues)
 	}
 	
 	
 	
 	
-	def assertCyclicDependency(String expected, String actual){
-		assertEquals("Not the same cycle: " + expected + " vs " + actual,expected.sortCyclicDependencies, actual.sortCyclicDependencies)		
+	def assertDependencies(String expected, String actual){
+		assertEquals("Not the same dependencies:" + expected + " vs " + actual,expected.sortDependencies, actual.sortDependencies)		
 	}
 	
-	def sortCyclicDependencies(String msg){
+	def sortDependencies(String msg){
 		var tmpMsg = msg;
 		val result = <String>newArrayList()
 		var f = tmpMsg.indexOf('(');
@@ -88,6 +129,7 @@ class CyclicDependenciesValidationTests extends ValidationTestBase {
 			f = tmpMsg.indexOf('(');
 			t = if(f==-1) -1 else tmpMsg.indexOf(')', f);
 		}
+		result.remove("y|ies") // Cause error message contains 'dependenc(y|ies)'
 		Collections::sort(result);
 		result
 	}

@@ -200,8 +200,8 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 	
 	
 	@Check
-	public void checkCyclicDependencies(FTypeCollection tc) {
-		cyclicDependenciesValidator.check(this, tc);
+	public void checkCyclicDependencies(FModel m) {
+		cyclicDependenciesValidator.check(this, m);
 	}
 
 	// *****************************************************************************
