@@ -223,17 +223,6 @@ public class Digraph<T> {
 	public String toString()
 	{
 		String tmp = "Digraph:";
-		/*
-		for (Iterator<Node<T>> nodesIt = nodes.iterator(); nodesIt.hasNext();)
-		{
-			Node<T> node = nodesIt.next();
-			
-			for (Iterator<Node<T>> edgesIt = node.inEdges.iterator(); edgesIt.hasNext();)
-				tmp += "(" + edgesIt.next().value + "->" + node.value + "),";
-			for (Iterator<Node<T>> edgesIt = node.outEdges.iterator(); edgesIt.hasNext();)
-				tmp += "(" + node.value + "->" + edgesIt.next().value + "),";
-
-		}*/
 		for (Iterator<T> it = nodesIterator(); it.hasNext();)
 		{
 			tmp += it.next() + ",";
