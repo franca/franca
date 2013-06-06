@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="Franca Target Platform - Eclipse 4.2" sequenceNumber="31">
+<?pde version="3.8"?><target name="Franca Target Platform - Eclipse 4.2" sequenceNumber="35">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="de.itemis.xtext.antlr.sdk.feature.group" version="2.0.0.v201108011202"/>
@@ -9,8 +9,8 @@
 <repository location="http://download.itemis.com/updates/releases/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.xtext.sdk.feature.group" version="2.4.0.v201303201134"/>
-<unit id="org.eclipse.xtend.sdk.feature.group" version="2.4.0.v201303201134"/>
+<unit id="org.eclipse.xtext.sdk.feature.group" version="2.4.1.v201304180855"/>
+<unit id="org.eclipse.xtend.sdk.feature.group" version="2.4.1.v201304180855"/>
 <repository location="http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
