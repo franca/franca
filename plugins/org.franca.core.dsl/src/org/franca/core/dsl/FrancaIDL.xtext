@@ -317,7 +317,6 @@ FAnnotation returns FAnnotation:
 	type=FAnnotationType comment=COMMENT_STRING;
 
 enum FAnnotationType returns FAnnotationType:
-	undefined = 'undefined' |
 	description = '@description' |
 	author = '@author' |
 	experimental = '@experimental' |

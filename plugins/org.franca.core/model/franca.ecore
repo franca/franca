@@ -155,7 +155,6 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="This enum represents the type of a structured comment (i.e., the tag starting with a '@').&#xD;&#xA;"/>
     </eAnnotations>
-    <eLiterals name="undefined" literal="undefined"/>
     <eLiterals name="description" value="1" literal="@description"/>
     <eLiterals name="author" value="2" literal="@author"/>
     <eLiterals name="experimental" value="3" literal="@experimental"/>

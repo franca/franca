@@ -23,7 +23,6 @@
       <genEnumLiterals ecoreEnumLiteral="franca.ecore#//FBasicTypeId/ByteBuffer"/>
     </genEnums>
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="franca.ecore#//FAnnotationType">
-      <genEnumLiterals ecoreEnumLiteral="franca.ecore#//FAnnotationType/undefined"/>
       <genEnumLiterals ecoreEnumLiteral="franca.ecore#//FAnnotationType/description"/>
       <genEnumLiterals ecoreEnumLiteral="franca.ecore#//FAnnotationType/author"/>
       <genEnumLiterals ecoreEnumLiteral="franca.ecore#//FAnnotationType/experimental"/>
