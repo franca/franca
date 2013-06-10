@@ -46,6 +46,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDField;
 import org.franca.deploymodel.dsl.fDeploy.FDInteger;
 import org.franca.deploymodel.dsl.fDeploy.FDInterface;
 import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance;
+import org.franca.deploymodel.dsl.fDeploy.FDInterfaceRef;
 import org.franca.deploymodel.dsl.fDeploy.FDMethod;
 import org.franca.deploymodel.dsl.fDeploy.FDModel;
 import org.franca.deploymodel.dsl.fDeploy.FDPredefinedTypeId;
@@ -458,6 +459,12 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 			case FDPredefinedTypeId.BOOLEAN_VALUE:
 				if (! (value instanceof FDBoolean)) {
 					error("Invalid type, expected 'true' or 'false'",
+							src, literal, index);
+				}
+				break;
+			case FDPredefinedTypeId.INTERFACE_VALUE:
+				if (! (value instanceof FDInterfaceRef)) {
+					error("Invalid type, expected reference to Franca interface",
 							src, literal, index);
 				}
 				break;
