@@ -40,4 +40,13 @@ public class ModelDefinitionTests extends XtextTest {
     			"testcases/11-SpecPropertyArrayTypes.fdepl",
     			"fidl/05-CoverageInterface.fidl");
     }
+
+    @Test
+    public void test_30_DefDataPropertiesInterfaceRef() {
+    	testFile("testcases/30-DefDataPropertiesInterfaceRef.fdepl",
+    			"testcases/12-SpecPropertyInterfaceRef.fdepl",
+    			"fidl/05-CoverageInterface.fidl");
+    }
+
 }
+

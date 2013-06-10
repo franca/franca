@@ -58,6 +58,12 @@ public class ModelSpecificationTests extends XtextTest {
     }
 
     @Test
+    public void test_12_SpecPropertyInterfaceRef() {
+    	testFile("testcases/12-SpecPropertyInterfaceRef.fdepl",
+    			"fidl/01-EmptyInterface.fidl");
+    }
+
+    @Test
     public void test_15_SpecInheritance() {
     	testFile("testcases/15-SpecInheritance.fdepl");
     }

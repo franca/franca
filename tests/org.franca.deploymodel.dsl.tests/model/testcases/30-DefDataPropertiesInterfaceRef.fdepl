@@ -1,0 +1,17 @@
+// deployment definition
+
+import "12-SpecPropertyInterfaceRef.fdepl"
+import "../fidl/01-EmptyInterface.fidl"
+import "../fidl/05-CoverageInterface.fidl"
+
+define a.b.c.MySpec for interface a.b.c.CoverageInterface {
+	method aMethod {
+		// mandatory properties
+		InterfaceRefMandatory = &a.b.c.EmptyInterface
+		InterfaceRefMandatoryA = { &a.b.c.EmptyInterface }
+		
+		// some of the optional properties
+		InterfaceRefOptionalA = { &a.b.c.EmptyInterface }
+		InterfaceRefDefault = &a.b.c.EmptyInterface
+	}
+}
