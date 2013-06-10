@@ -25,6 +25,15 @@ import org.franca.core.ui.addons.contractviewer.graph.CustomGraphNode;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
+/**
+ * The intermediate graph model acts as a bridge between the franca model and the graph model used by Zest. 
+ * It can be used to create the {@link GraphNode}s and {@link GraphConnection}s for the Zesz based viewer. 
+ * Additionally the main purpose of the class is to provide a proper equals implementation between the 
+ * {@link IntermediateFrancaGraphModel} instances to be able to compute when should the viewer really be updated.
+ * 
+ * @author Tamas Szabo (itemis AG)
+ *
+ */
 public class IntermediateFrancaGraphModel {
 
 	private List<String> states;
@@ -46,13 +55,19 @@ public class IntermediateFrancaGraphModel {
 	
 	private void buildFromModel(FModel model) {
 		for (FInterface _interface : model.getInterfaces()) {
-			if (_interface.getContract() != null) {
+			if (_interface.getContract() != null && _interface.getContract().getStateGraph() != null) {
+				//first collect all states
 				for (FState state : _interface.getContract().getStateGraph().getStates()) {
 					states.add(state.getName());
+				}
+				for (FState state : _interface.getContract().getStateGraph().getStates()) {
 					for (FTransition transition : state.getTransitions()) {
-						IntermediateFrancaGraphConnection connection = 
-								new IntermediateFrancaGraphConnection(state.getName(), transition.getTo().getName(), generator.genLabel(transition));
-						connectionMap.put(state.getName(), connection);
+						//this check will remove all invalid connections from the intermediate model
+						if (transition.getTo() != null && states.contains(transition.getTo().getName())) {
+							IntermediateFrancaGraphConnection connection = 
+									new IntermediateFrancaGraphConnection(state.getName(), transition.getTo().getName(), generator.genLabel(transition));
+							connectionMap.put(state.getName(), connection);
+						}
 					}
 				}
 			}

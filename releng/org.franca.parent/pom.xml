@@ -28,6 +28,7 @@
             <module>../../plugins/org.franca.core.edit</module>
             <module>../../plugins/org.franca.core.dsl</module>
             <module>../../plugins/org.franca.core.dsl.ui</module>
+            <module>../../plugins/org.franca.core.ui.addons</module>
             <module>../../plugins/org.franca.deploymodel.dsl</module>
             <module>../../plugins/org.franca.deploymodel.dsl.ui</module>
 			<module>../../plugins/org.franca.generators</module>
@@ -44,6 +45,8 @@
             <module>../../features/org.franca.feature.sdk</module>
             <module>../../features/org.franca.dbus.feature</module>
             <module>../../features/org.franca.dbus.feature.sdk</module>
+            <module>../../features/org.franca.ui.feature</module>
+            <module>../../features/org.franca.ui.feature.sdk</module>
 			<module>../../releng/org.franca.updatesite</module>
 			<!-- 
 			   <module>../../docs/org.franca.help</module>
