@@ -134,6 +134,7 @@
   <eClassifiers xsi:type="ecore:EClass" name="FVariable" eSuperTypes="#//FTypedElement"/>
   <eClassifiers xsi:type="ecore:EClass" name="FStructType" eSuperTypes="#//FCompoundType">
     <eStructuralFeatures xsi:type="ecore:EReference" name="base" eType="#//FStructType"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="polymorphic" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FEnumerator" eSuperTypes="#//FModelElement">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>

@@ -147,7 +147,11 @@ FTypeDef returns FTypeDef:
 FStructType returns FStructType:
 	{FStructType}
 	(comment=FAnnotationBlock)?
-	'struct' name=ID ('extends' base=[FStructType|FQN])?
+	'struct' name=ID
+		(
+			('extends' base=[FStructType|FQN]) |
+			(polymorphic?='polymorphic')
+		)?
 	'{'
 		(elements+=FField)*
     '}';

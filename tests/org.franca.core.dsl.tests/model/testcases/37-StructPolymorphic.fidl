@@ -1,0 +1,22 @@
+// polymorphic structs
+package testcases
+
+typeCollection MyTypes {
+	<** @description: A struct flagged as 'polymorphic' will get a special
+	    handling by the runtime implementation of a specific platform.
+	    See the User Guide for more details on polymorphism and Franca.
+	    Keywords 'polymorphic' and 'extends ...' are mutual exclusive. 
+	**>
+	struct MyStruct1 polymorphic {
+		Int8 field1
+		String field2
+	}
+	
+	struct MyStruct2 extends MyStruct1 {
+		Int8 field3
+	}
+
+	struct MyStruct3 extends MyStruct1 {
+		String field4
+	}
+}

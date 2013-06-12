@@ -104,6 +104,11 @@ public class ModelTests extends XtextTest {
     }
     
     @Test
+    public void test_37_StructPolymorphic() {
+    	testFile("testcases/37-StructPolymorphic.fidl");
+    }
+    
+    @Test
     public void test_50_InterfaceMinimal() {
     	testFile("testcases/50-InterfaceMinimal.fidl");
     }
