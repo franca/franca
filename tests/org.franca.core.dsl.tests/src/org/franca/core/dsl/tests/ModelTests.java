@@ -133,4 +133,9 @@ public class ModelTests extends XtextTest {
     	testFile("testcases/65-Broadcast.fidl");
     }
     
+    @Test
+    public void test_80_InterfaceManagingOthers() {
+    	testFile("testcases/80-InterfaceManagingOthers.fidl");
+    }
+    
 }

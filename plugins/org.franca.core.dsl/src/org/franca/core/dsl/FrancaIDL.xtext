@@ -38,7 +38,12 @@ FTypeCollection returns FTypeCollection:
 FInterface returns FInterface:
 	{FInterface}
 	(comment=FAnnotationBlock)?
-	'interface' name=FQN ('extends' base=[FInterface|FQN])?
+	'interface' name=FQN
+		('extends' base=[FInterface|FQN])?
+		('manages'
+			managedInterfaces+=[FInterface|FQN]
+			(',' managedInterfaces+=[FInterface|FQN])*
+		)?
 	'{'
 		('version' version=FVersion)?
 		(attributes+=FAttribute)*

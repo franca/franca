@@ -42,6 +42,8 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="contract" eType="#//FContract"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="base" eType="#//FInterface"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="managedInterfaces" upperBound="-1"
+        eType="#//FInterface"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FMethod" eSuperTypes="#//FModelElement">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">

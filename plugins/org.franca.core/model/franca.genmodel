@@ -68,6 +68,8 @@
           ecoreFeature="ecore:EReference franca.ecore#//FInterface/contract"/>
       <genFeatures notify="false" createChild="false" propertyDescription="the base interface. Franca allows single inheritance."
           propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FInterface/base"/>
+      <genFeatures notify="false" createChild="false" propertyDescription="the list of interfaces managed by this interface. The interface will provide methods for discovery and handling of the runtime instances of the managed interfaces. The actual implementation depends on the specific target runtime platform."
+          propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FInterface/managedInterfaces"/>
     </genClasses>
     <genClasses ecoreClass="franca.ecore#//FMethod">
       <genFeatures createChild="false" propertyDescription="a flag which indicates that this method will be just a request from client to server without response. The property will be set to a concrete string if the flag is set (e.g., the string &quot;fireAndForget&quot;). Do not rely on the actual value of this string. If the property is null, the flag isn't set. It can be set only for methods without output arguments."
