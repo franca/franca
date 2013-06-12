@@ -281,20 +281,7 @@ class Franca2DBusTransformation {
 			// the integer at the beginning is a tag which indicates the actual type.
 			return "(iv)"
 		} else {
-			var ts = "("
-			for(e : src.elements) {
-				ts = ts + e.type.transformType2TypeString(e.array!=null)
-			}
-			ts = ts + ")"
-	
-			if (src.base!=null) {
-				// TODO: handle src.base
-				addIssue(FEATURE_NOT_HANDLED_YET, src,
-					FrancaPackage::FSTRUCT_TYPE__BASE,
-					"Inheritance for struct " + src.name + " not yet supported")
-			}
-	
-			return ts
+			return "(" + src.getStructTypeString + ")"
 		}
 	}
 
@@ -303,6 +290,22 @@ class Franca2DBusTransformation {
 			src.base.isPolymorphicTree
 		else
 			src.isPolymorphic
+	}
+	
+	private def String getStructTypeString (FStructType src) {
+		var ts = ""
+		
+		// get type string of base struct (recursive call)
+		if (src.base!=null) {
+			ts = ts + src.base.getStructTypeString
+		}
+		
+		// compile own type string
+		for(e : src.elements) {
+			ts = ts + e.type.transformType2TypeString(e.array!=null)
+		}
+		
+		ts
 	}
 	
 	def String transformEnumType (FEnumerationType src) {
