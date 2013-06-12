@@ -67,7 +67,7 @@ class Franca2DBusTransformation {
 	def create DbusxmlFactory::eINSTANCE.createPropertyType transformAttribute (FAttribute src) {
 		name = src.name
 		type = transformType2TypeString(src.type, src.array!=null)
-		if (src.readonly == "readonly")
+		if (src.isReadonly)
 			access = AccessType::READ
 		else
 			access = AccessType::READWRITE
