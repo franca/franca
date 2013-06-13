@@ -21,6 +21,7 @@
 			<!-- Copy all Xtext related sources to seperate folder that is registered 
 				as resource folder -->
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
 				<executions>
 					<execution>
@@ -45,6 +46,7 @@
 				</executions>
 			</plugin>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-clean-plugin</artifactId>
 				<configuration>
 					<filesets>
