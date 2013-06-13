@@ -5,12 +5,12 @@
 	<parent>
 		<groupId>org.franca</groupId>
 		<artifactId>org.franca.parent</artifactId>
-		<version>0.8.7-SNAPSHOT</version>
+		<version>0.8.8-SNAPSHOT</version>
 		<relativePath>../../releng/org.franca.parent/pom.xml</relativePath>
 	</parent>
 
 	<artifactId>org.franca.core.ui.addons</artifactId>
-	<version>0.8.7-SNAPSHOT</version>
+	<version>0.8.8-SNAPSHOT</version>
 	<description>This Eclipse plugin contains UI additions for Franca.</description>
 	<packaging>eclipse-plugin</packaging>
 	<build>
