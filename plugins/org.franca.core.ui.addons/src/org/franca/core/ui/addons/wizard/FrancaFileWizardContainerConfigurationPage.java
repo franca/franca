@@ -157,13 +157,6 @@ public class FrancaFileWizardContainerConfigurationPage extends NewTypeWizardPag
                 int dotLoc = fileName.lastIndexOf('.');
                 String ext = fileName.substring(dotLoc + 1);
                 wrongExtension = !ext.equalsIgnoreCase(extension);
-
-                String name = fileName.substring(0, dotLoc);
-                IStatus nameValidatorStatus = JavaConventions.validateTypeVariableName(name, JavaCore.VERSION_1_6,
-                        JavaCore.VERSION_1_6);
-                if (nameValidatorStatus.getSeverity() == IStatus.ERROR) {
-                    si.setError(String.format("Filename %s is not a valid Java type name.", name));
-                }
             }
 
             if (wrongExtension) {
