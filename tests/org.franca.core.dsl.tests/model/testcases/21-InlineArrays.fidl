@@ -1,5 +1,5 @@
 // inline arrays for type definitions
-package a.b.c
+package testcases
 
 typeCollection MyTypes {
 	struct MyStruct {

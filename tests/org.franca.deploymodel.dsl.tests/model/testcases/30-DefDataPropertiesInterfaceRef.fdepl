@@ -4,14 +4,14 @@ import "12-SpecPropertyInterfaceRef.fdepl"
 import "../fidl/01-EmptyInterface.fidl"
 import "../fidl/05-CoverageInterface.fidl"
 
-define a.b.c.MySpec for interface a.b.c.CoverageInterface {
+define a.b.c.MySpec for interface fidl.CoverageInterface {
 	method aMethod {
 		// mandatory properties
-		InterfaceRefMandatory = &a.b.c.EmptyInterface
-		InterfaceRefMandatoryA = { &a.b.c.EmptyInterface }
+		InterfaceRefMandatory = &fidl.EmptyInterface
+		InterfaceRefMandatoryA = { &fidl.EmptyInterface }
 		
 		// some of the optional properties
-		InterfaceRefOptionalA = { &a.b.c.EmptyInterface }
-		InterfaceRefDefault = &a.b.c.EmptyInterface
+		InterfaceRefOptionalA = { &fidl.EmptyInterface }
+		InterfaceRefDefault = &fidl.EmptyInterface
 	}
 }

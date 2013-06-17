@@ -8,10 +8,10 @@ specification a.b.c.MySpec {
 	for methods {
 		InterfaceRefMandatory  : Interface     ;
 		InterfaceRefOptional   : Interface     (optional);
-		InterfaceRefDefault    : Interface     (default: &a.b.c.EmptyInterface);
+		InterfaceRefDefault    : Interface     (default: &fidl.EmptyInterface);
 
 		InterfaceRefMandatoryA : Interface[]   ;
 		InterfaceRefOptionalA  : Interface[]   (optional);
-		InterfaceRefDefaultA   : Interface[]   (default: { &a.b.c.EmptyInterface });
+		InterfaceRefDefaultA   : Interface[]   (default: { &fidl.EmptyInterface });
 	}
 }

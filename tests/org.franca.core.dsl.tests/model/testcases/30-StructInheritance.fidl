@@ -1,5 +1,5 @@
 // struct inheritance
-package a.b.c
+package testcases
 
 typeCollection MyTypes {
 	struct MyStruct1 {

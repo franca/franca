@@ -1,5 +1,5 @@
 // enumeration inheritance
-package a.b.c
+package testcases
 
 typeCollection MyTypes {
 	enumeration MyEnum1 {

@@ -1,5 +1,5 @@
 // a global typedef
-package a.b.c
+package testcases
 
 typeCollection MyTypes {
 	typedef MyTypedef is Int8

@@ -1,5 +1,5 @@
 // test interface definition with one attribute
-package a.b.c
+package testcases
 
 interface MyInterface {
 	attribute Int16 someAttribute

@@ -1,4 +1,4 @@
-package org.franca.examples.demo
+package org.example
 
 interface Speller {
 
