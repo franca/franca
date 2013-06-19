@@ -54,7 +54,7 @@ class TypeGenerator {
 		}
 	}
 	
-	def isMultiType(FTypeRef type) {
+	def boolean isMultiType(FTypeRef type) {
 		type.derived != null && type.derived.multiType
 	}
 	

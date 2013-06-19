@@ -1,7 +1,6 @@
 *.xml_gen
 *.MF_gen
-<<<<<<< HEAD
 bin/
+plugins/org.franca.tools.contracts.tracegen/bin
+plugins/org.franca.tools.contracts.tracegen/traces
 
-=======
->>>>>>> cd7bc316ed7e6badd1d0ef551ec21aba2ac98471

@@ -1,0 +1,59 @@
+// Franca IDL Demo 1
+package org.franca.examples.demo
+
+//import org.franca.examples.demo.* from "basic_types.fidl"
+
+<** @description : example interface for contract analysis **>
+interface ComplexAPI {
+	version { major 1 minor 0 }
+
+	method prepareX {
+		in {
+			UInt32 pos
+		}
+	}
+
+	method prepareY {
+		in {
+			UInt32 pos
+		}
+	}
+
+	method go {	}
+
+	method abort {	}
+
+	broadcast invalidParameters { }
+	broadcast positionReached { }
+	
+
+	// specification of dynamic behaviour on the interface 
+	contract {
+		PSM {
+			initial idle
+			state idle {
+				on call prepareX -> waitingForY
+				on call prepareY -> waitingForX
+			}
+			state waitingForX {
+				on call prepareX -> ready
+				on call abort -> idle
+			}
+			state waitingForY {
+				on call prepareY -> ready
+				on call abort -> idle
+			}
+			state ready {
+				on signal invalidParameters -> ^error
+				on call go -> running
+				on call abort -> idle
+			}
+			state running {
+				on signal positionReached -> idle
+			}
+			state ^error { }
+		}
+	}
+	
+}
+
