@@ -31,15 +31,6 @@ public class CustomGraphNode extends GraphNode {
 			label.setText("");
 		}
 		updateFigureForModel(label);
-		label.addFigureListener(new CustomFigureListener(this, label));
 		return label;
-	}
-	
-	public IContainer getParentCustom() {
-		return this.parent;
-	}
-	
-	public IFigure getNodeFigureCustom() {
-		return this.nodeFigure;
 	}
 }
