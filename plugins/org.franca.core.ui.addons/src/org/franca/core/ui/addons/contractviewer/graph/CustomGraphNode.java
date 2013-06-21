@@ -16,7 +16,7 @@ import org.eclipse.gef4.zest.core.widgets.IContainer;
 import org.eclipse.gef4.zest.core.widgets.ZestStyles;
 
 public class CustomGraphNode extends GraphNode {
-
+	
 	public CustomGraphNode(IContainer graphModel, int style, String text) {
 		super(graphModel, style, text);
 	}
@@ -25,8 +25,7 @@ public class CustomGraphNode extends GraphNode {
 	protected IFigure createFigureForModel() {
 		GraphNode node = this;
 		boolean cacheLabel = (this).cacheLabel();
-		final CustomGraphLabel label = new CustomGraphLabel(node.getText(),
-				node.getImage(), cacheLabel);
+		final CustomGraphLabel label = new CustomGraphLabel(node.getText(),	node.getImage(), cacheLabel);
 		label.setFont(this.getFont());
 		if (checkStyle(ZestStyles.NODES_HIDE_TEXT)) {
 			label.setText("");

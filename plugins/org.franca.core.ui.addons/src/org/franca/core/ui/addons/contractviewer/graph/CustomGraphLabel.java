@@ -37,57 +37,20 @@ public class CustomGraphLabel extends CachedLabel implements IStyleableFigure {
 	private Color borderColor;
 	private int borderWidth;
 	private int arcWidth;
-
 	private boolean painting = false;
 
-	/**
-	 * Creates a GraphLabel
-	 * 
-	 * @param cacheLabel
-	 *            Determine if the text should be cached. This will make it
-	 *            faster, but the text is not as clear
-	 */
 	public CustomGraphLabel(boolean cacheLabel) {
 		this("", cacheLabel);
 	}
 
-	/**
-	 * Creates a graph label with text
-	 * 
-	 * @param text
-	 *            The text
-	 * @param cacheLabel
-	 *            Determine if the text should be cached. This will make it
-	 *            faster, but the
-	 */
 	public CustomGraphLabel(String text, boolean cacheLabel) {
 		this(text, null, cacheLabel);
 	}
 
-	/**
-	 * Creates the graph label with an image
-	 * 
-	 * @param i
-	 *            The Image
-	 * @param cacheLabel
-	 *            Determine if the text should be cached. This will make it
-	 *            faster, but the
-	 */
 	public CustomGraphLabel(Image i, boolean cacheLabel) {
 		this("", i, cacheLabel);
 	}
 
-	/**
-	 * Creates a graph label with an image and text
-	 * 
-	 * @param text
-	 *            The text
-	 * @param i
-	 *            The Image
-	 * @param cacheLabel
-	 *            Determine if the text should be cached. This will make it
-	 *            faster, but the
-	 */
 	public CustomGraphLabel(String text, Image i, boolean cacheLabel) {
 		super(cacheLabel);
 		initLabel();
@@ -96,10 +59,6 @@ public class CustomGraphLabel extends CachedLabel implements IStyleableFigure {
 		adjustBoundsToFit();
 	}
 
-	/**
-	 * Initialises the border colour, border width, and sets the layout manager.
-	 * Also sets the font to be the default system font.
-	 */
 	protected void initLabel() {
 		super.setFont(Display.getDefault().getSystemFont());
 		this.borderColor = ColorConstants.black;
@@ -109,19 +68,12 @@ public class CustomGraphLabel extends CachedLabel implements IStyleableFigure {
 		this.setBorder(new MarginBorder(1));
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.draw2d.Figure#setFont(org.eclipse.swt.graphics.Font)
-	 */
+	@Override
 	public void setFont(Font f) {
 		super.setFont(f);
 		adjustBoundsToFit();
 	}
 
-	/**
-	 * Adjust the bounds to make the text fit without truncation.
-	 */
 	protected void adjustBoundsToFit() {
 		String text = getText();
 		int safeBorderWidth = borderWidth > 0 ? borderWidth : 1;
@@ -143,26 +95,8 @@ public class CustomGraphLabel extends CachedLabel implements IStyleableFigure {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.draw2d.Label#paintFigure(org.eclipse.draw2d.Graphics)
-	 */
+	@Override
 	public void paint(Graphics graphics) {
-		// int blue = getBackgroundColor().getBlue();
-		// blue = (int) (blue - (blue * 0.20));
-		// blue = blue > 0 ? blue : 0;
-		//
-		// int red = getBackgroundColor().getRed();
-		// red = (int) (red - (red * 0.20));
-		// red = red > 0 ? red : 0;
-		//
-		// int green = getBackgroundColor().getGreen();
-		// green = (int) (green - (green * 0.20));
-		// green = green > 0 ? green : 0;
-		//
-		// Color lightenColor = new Color(Display.getCurrent(), new RGB(red,
-		// green, blue));
 		graphics.setForegroundColor(borderColor);
 		graphics.setBackgroundColor(borderColor);
 
@@ -179,18 +113,12 @@ public class CustomGraphLabel extends CachedLabel implements IStyleableFigure {
 		rect.height /= 2;
 		graphics.setForegroundColor(borderColor);
 		graphics.setBackgroundColor(borderColor);
-		// graphics.fillRoundRectangle(rect, arcWidth * safeBorderWidth,
-		// arcWidth * 2 * safeBorderWidth);
-		// graphics.fillOval(rect);
 
 		// Bottom part inside the border.
 		rect.y = rect.y + rect.height;
-		rect.height += 1; // Not sure why it is needed, but it is needed ;-)
+		rect.height += 1;
 		graphics.setForegroundColor(borderColor);
 		graphics.setBackgroundColor(borderColor);
-		// graphics.fillRoundRectangle(rect, arcWidth * safeBorderWidth,
-		// arcWidth * 2 * safeBorderWidth);
-		// graphics.fillOval(rect);
 
 		// Now fill the middle part of top and bottom part with a gradient.
 		rect = bounds.getCopy();
@@ -201,8 +129,7 @@ public class CustomGraphLabel extends CachedLabel implements IStyleableFigure {
 		rect.height -= safeBorderWidth;
 		graphics.setBackgroundColor(borderColor);
 		graphics.setForegroundColor(borderColor);
-		// graphics.fillGradient(rect, true);
-
+		
 		// Paint the border
 		if (borderWidth > 0) {
 			rect = getBounds().getCopy();
@@ -210,80 +137,61 @@ public class CustomGraphLabel extends CachedLabel implements IStyleableFigure {
 			rect.y += safeBorderWidth / 2;
 			rect.width -= safeBorderWidth;
 			rect.height -= safeBorderWidth;
-			graphics.setForegroundColor(borderColor);
-			graphics.setBackgroundColor(borderColor);
-			graphics.setLineWidth((int) (safeBorderWidth * scale));
-			// graphics.drawRoundRectangle(rect, arcWidth, arcWidth);
-			graphics.drawOval(rect);
+			
+			if (this.getText() == null || this.getText().length() == 0) {
+				graphics.setForegroundColor(ColorConstants.black);
+				graphics.setBackgroundColor(ColorConstants.black);
+				graphics.fillOval(rect);
+			}
+			else {
+				graphics.setForegroundColor(borderColor);
+				graphics.setBackgroundColor(borderColor);
+				graphics.setLineWidth((int) (safeBorderWidth * scale));
+				graphics.drawOval(rect);
+			}
 		}
 
 		super.paint(graphics);
-
 		graphics.popState();
-
-		// lightenColor.dispose();
 	}
 
+	@Override
 	protected Color getBackgroundTextColor() {
 		return borderColor;
 	}
 
-	/**
-	 * This method is overridden to ensure that it doesn't get called while the
-	 * super.paintFigure() is being called. Otherwise NullPointerExceptions can
-	 * occur because the icon or text locations are cleared *after* they were
-	 * calculated.
-	 * 
-	 * @see org.eclipse.draw2d.Label#invalidate()
-	 */
+	@Override
 	public void invalidate() {
 		if (!painting) {
 			super.invalidate();
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.draw2d.Label#setText(java.lang.String)
-	 */
+	@Override
 	public void setText(String s) {
 		super.setText(s);
 		adjustBoundsToFit();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.draw2d.Label#setIcon(org.eclipse.swt.graphics.Image)
-	 */
+	@Override
 	public void setIcon(Image image) {
 		super.setIcon(image);
 		adjustBoundsToFit();
 	}
-
-	public Color getBorderColor() {
-		return borderColor;
+	
+	@Override
+	public void setBackgroundColor(Color bg) {
+		super.setBackgroundColor(bg);
 	}
 
+	@Override
 	public void setBorderColor(Color c) {
 		this.borderColor = c;
 	}
 
-	public int getBorderWidth() {
-		return borderWidth;
-	}
-
+	@Override
 	public void setBorderWidth(int width) {
 		this.borderWidth = width;
-	}
-
-	public int getArcWidth() {
-		return arcWidth;
-	}
-
-	public void setArcWidth(int arcWidth) {
-		this.arcWidth = arcWidth;
 	}
 }
 
