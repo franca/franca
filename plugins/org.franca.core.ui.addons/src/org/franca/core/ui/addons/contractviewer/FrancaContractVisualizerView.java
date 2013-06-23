@@ -41,7 +41,7 @@ import com.google.inject.Injector;
 /**
  * A {@link ViewPart} implementation used to display the Franca contracts in a directed graph form. 
  * 
- * @author Tamas Szabo
+ * @author Tamas Szabo (itemis AG)
  *
  */
 public class FrancaContractVisualizerView extends ViewPart {
@@ -148,6 +148,11 @@ public class FrancaContractVisualizerView extends ViewPart {
 		return activeModel;
 	}
 
+	/**
+	 * Updates the contract viewer's internal model. 
+	 * 
+	 * @param forceUpdate if true, the update will be performed even if there are no structural changes between the previous and the current states of the graph model. 
+	 */
 	public void updateModel(final boolean forceUpdate) {
 		if (activeEditor != null) {
 			activeEditor.getDocument().readOnly(new IUnitOfWork.Void<XtextResource>() {
@@ -180,6 +185,9 @@ public class FrancaContractVisualizerView extends ViewPart {
 		});
 	}
 	
+	/**
+	 * Inverts the current connection label presentation mode (switch connection text visibility on/off).
+	 */
 	public void invertLabelPresentation() {
 		this.displayLabel = !this.displayLabel;
 		updateModel(true);
@@ -200,6 +208,9 @@ public class FrancaContractVisualizerView extends ViewPart {
 		super.dispose();
 	}
 	
+	/**
+	 * Clears all the data structures related to the contract view (e.g. resets the viewer).
+	 */
 	public void clear() {
 		this.activeEditor = null;
 		this.activeFile = null;
