@@ -27,7 +27,7 @@ import com.google.inject.Inject;
 public class GraphSelectionListener implements SelectionListener {
 
 	@Inject
-	ILocationInFileProvider locationFileProvider;
+	private ILocationInFileProvider locationFileProvider;
 
 	@Override
 	public void widgetSelected(SelectionEvent e) {
