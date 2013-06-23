@@ -55,7 +55,7 @@ public class FrancaEditorPartListener implements IPartListener {
 				FrancaContractVisualizerView view = FrancaContractVisualizerView.getInstance();
 				if (view != null && editor.equals(view.getActiveEditor())) {
 					view.clear();
-					view.updateModel();
+					view.updateModel(false);
 				}
 			}
 		}
@@ -72,7 +72,7 @@ public class FrancaEditorPartListener implements IPartListener {
 					IFile file = (IFile) adapted;
 					view.setActiveEditor(editor);
 					view.setActiveFile(file);
-					view.updateModel();
+					view.updateModel(false);
 				}
 			}
 		}

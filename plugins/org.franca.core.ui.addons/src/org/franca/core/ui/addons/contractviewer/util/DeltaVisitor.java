@@ -22,7 +22,7 @@ class DeltaVisitor implements IResourceDeltaVisitor {
             FrancaContractVisualizerView view = FrancaContractVisualizerView.getInstance();
             if (view != null) {
             	if (file.equals(view.getActiveFile())) {
-            		view.updateModel();
+            		view.updateModel(false);
             	}
             }
             return false;

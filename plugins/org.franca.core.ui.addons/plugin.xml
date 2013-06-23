@@ -17,20 +17,20 @@
             name="Franca">
       </category>
    </extension>
-   <!--<extension
+   <extension
          point="org.eclipse.ui.menus">
       <menuContribution
             allPopups="false"
             locationURI="toolbar:org.franca.core.ui.addons.contractviewer">
          <command
-               commandId="org.franca.core.ui.addons.dotgenerator"
-               icon="icons/dot.png"
-               label="Generate DOT"
+               commandId="org.franca.core.ui.addons.changeTooltipDisplay"
+               icon="icons/editor.gif"
+               label="Connection tooltip on/off"
                style="push"
-               tooltip="Generate DOT">
+               tooltip="">
          </command>
       </menuContribution>
-   </extension>-->
+   </extension>
    
    <extension
          point="org.eclipse.ui.newWizards">
@@ -93,6 +93,14 @@
                visible="true">
          </view>
       </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.franca.core.ui.addons.contractviewer.handlers.ChangeConnectionTooltipHandler"
+            id="org.franca.core.ui.addons.changeTooltipDisplay"
+            name="Change graph connection tooltip display">
+      </command>
    </extension>
 
 </plugin>

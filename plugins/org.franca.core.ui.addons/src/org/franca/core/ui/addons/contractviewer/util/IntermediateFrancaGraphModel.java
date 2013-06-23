@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2012 itemis AG (http://www.itemis.de).
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************/
 package org.franca.core.ui.addons.contractviewer.util;
 
 import java.util.ArrayList;
@@ -44,10 +51,7 @@ public class IntermediateFrancaGraphModel {
 	private ContractDotGenerator generator;
 	private FState initialState;
 	private CustomGraphNode initialNode;
-	
-	public static IntermediateFrancaGraphModel createFrom(FModel model) {
-		return new IntermediateFrancaGraphModel(model);
-	}
+	private boolean displayLabel;
 	
 	private CustomGraphNode createInitNode(Graph graph) {
 		CustomGraphNode node = new CustomGraphNode(graph, SWT.NONE, null);
@@ -57,10 +61,11 @@ public class IntermediateFrancaGraphModel {
 		return node;
 	}
 
-	private IntermediateFrancaGraphModel(FModel model) {
-		states = new ArrayList<String>();
-		connectionMap = ArrayListMultimap.create();
-		generator = new ContractDotGenerator();
+	public IntermediateFrancaGraphModel(FModel model, boolean displayLabel) {
+		this.displayLabel = displayLabel;
+		this.states = new ArrayList<String>();
+		this.connectionMap = ArrayListMultimap.create();
+		this.generator = new ContractDotGenerator();
 		buildFromModel(model);
 	}
 	
@@ -107,6 +112,8 @@ public class IntermediateFrancaGraphModel {
 		getGraphNodes(graph);
 		if (connections == null) {
 			connections = new HashSet<GraphConnection>();
+			Set<IntermediateFrancaGraphConnection> oppositeExclude = new HashSet<IntermediateFrancaGraphConnection>();
+			
 			for (String name : states) {
 				for (IntermediateFrancaGraphConnection conn : connectionMap.get(name)) {
 					GraphConnection graphConnection = new GraphConnection(graph, SWT.NONE, nodeMap.get(conn.source), nodeMap.get(conn.target));
@@ -114,9 +121,18 @@ public class IntermediateFrancaGraphModel {
 					graphConnection.setText("");
 					graphConnection.setLineColor(Display.getDefault().getSystemColor(SWT.COLOR_BLACK));
 					
-					String opposite = getOppositeLabel(conn.source, conn.target);
-					String labelText = conn.label + ((opposite == null) ? "" : "\n(opposite: " + opposite + ")");
-					graphConnection.setTooltip(new Label(labelText));
+					IntermediateFrancaGraphConnection oppositeConnection = getOppositeLabel(conn.source, conn.target);
+					String labelText = conn.label + ((oppositeConnection == null) ? "" : "\n(opposite: " + oppositeConnection.label + ")");
+					if (displayLabel) {
+						if (!oppositeExclude.contains(oppositeConnection)) {
+							graphConnection.setText(labelText);
+						}
+						graphConnection.setTooltip(null);
+						oppositeExclude.add(conn);
+					}
+					else {
+						graphConnection.setTooltip(new Label(labelText));
+					}
 					connections.add(graphConnection);
 				}
 			}
@@ -133,10 +149,10 @@ public class IntermediateFrancaGraphModel {
 		return Collections.unmodifiableCollection(connections);
 	}
 	
-	private String getOppositeLabel(String source, String target) {
+	private IntermediateFrancaGraphConnection getOppositeLabel(String source, String target) {
 		for (IntermediateFrancaGraphConnection conn : connectionMap.get(target)) {
 			if (conn.target.equals(source)) {
-				return conn.label;
+				return conn;
 			}
 		}
 		return null;
