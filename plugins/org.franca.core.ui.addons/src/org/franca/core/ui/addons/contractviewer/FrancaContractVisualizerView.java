@@ -59,6 +59,7 @@ public class FrancaContractVisualizerView extends ViewPart {
 	private IResourceChangeListener resourceChangeListener;
 	private FrancaControlAdapter controlAdapter;
 	public Composite parent;
+	private boolean displayLabel;
 	
 	@Inject
 	private Injector injector;
@@ -67,7 +68,8 @@ public class FrancaContractVisualizerView extends ViewPart {
 	private FrancaRecursiveValidator validator;
 	
 	public FrancaContractVisualizerView() {
-		previousIntermediateModel = null;
+		this.previousIntermediateModel = null;
+		this.displayLabel = false;
 	}
 	
     public static FrancaContractVisualizerView getInstance() {
@@ -114,7 +116,7 @@ public class FrancaContractVisualizerView extends ViewPart {
 		if (activeEditor != null) {
 			activeFile = (IFile) activeEditor.getEditorInput().getAdapter(IFile.class);
 		}
-		updateModel();
+		updateModel(false);
 	}
 
 	@Override
@@ -146,7 +148,7 @@ public class FrancaContractVisualizerView extends ViewPart {
 		return activeModel;
 	}
 
-	public void updateModel() {
+	public void updateModel(final boolean forceUpdate) {
 		if (activeEditor != null) {
 			activeEditor.getDocument().readOnly(new IUnitOfWork.Void<XtextResource>() {
 				@Override
@@ -155,7 +157,7 @@ public class FrancaContractVisualizerView extends ViewPart {
 						for (EObject obj : resource.getContents()) {
 							if (obj instanceof FModel) {
 								activeModel = (FModel) obj;
-								intermediateModel = IntermediateFrancaGraphModel.createFrom(activeModel);
+								intermediateModel = new IntermediateFrancaGraphModel(activeModel, displayLabel);
 								break;
 							}
 						}
@@ -167,7 +169,7 @@ public class FrancaContractVisualizerView extends ViewPart {
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
-				if (intermediateModel != null && (previousIntermediateModel == null || !previousIntermediateModel.equals(intermediateModel))) {
+				if (forceUpdate || (intermediateModel != null && (previousIntermediateModel == null || !previousIntermediateModel.equals(intermediateModel)))) {
 					graph.clear();
 					intermediateModel.getGraphNodes(graph);
 					intermediateModel.getGraphConnections(graph);
@@ -176,6 +178,11 @@ public class FrancaContractVisualizerView extends ViewPart {
 				}
 			}
 		});
+	}
+	
+	public void invertLabelPresentation() {
+		this.displayLabel = !this.displayLabel;
+		updateModel(true);
 	}
 	
 	@Override

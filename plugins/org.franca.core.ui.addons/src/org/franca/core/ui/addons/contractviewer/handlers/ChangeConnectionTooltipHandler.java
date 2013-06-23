@@ -5,20 +5,21 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package org.franca.core.ui.addons.contractviewer.util;
+package org.franca.core.ui.addons.contractviewer.handlers;
 
-import org.eclipse.swt.events.ControlAdapter;
-import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
 import org.franca.core.ui.addons.contractviewer.FrancaContractVisualizerView;
 
-public class FrancaControlAdapter extends ControlAdapter {
+public class ChangeConnectionTooltipHandler extends AbstractHandler {
 
 	@Override
-	public void controlResized(ControlEvent e) {
+	public Object execute(ExecutionEvent event) throws ExecutionException {
 		FrancaContractVisualizerView view = FrancaContractVisualizerView.getInstance();
-		if (view != null) {
-			view.applyLayout();
-		}
-		super.controlResized(e);
-	}	
+        if (view != null) {
+        	view.invertLabelPresentation();
+        }
+		return null;
+	}
 }
