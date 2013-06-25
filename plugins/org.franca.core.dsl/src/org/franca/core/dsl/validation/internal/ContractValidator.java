@@ -17,6 +17,9 @@ import org.franca.core.FrancaModelExtensions;
 import org.franca.core.contracts.IssueCollector;
 import org.franca.core.contracts.TypeIssue;
 import org.franca.core.contracts.TypeSystem;
+import org.franca.core.dsl.validation.internal.util.FrancaContractDirectedGraphDataSource;
+import org.franca.core.dsl.validation.internal.util.FrancaContractUndirectedGraphDataSource;
+import org.franca.core.dsl.validation.internal.util.GraphUtil;
 import org.franca.core.framework.FrancaHelpers;
 import org.franca.core.franca.FAssignment;
 import org.franca.core.franca.FAttribute;
@@ -27,6 +30,7 @@ import org.franca.core.franca.FExpression;
 import org.franca.core.franca.FGuard;
 import org.franca.core.franca.FInterface;
 import org.franca.core.franca.FMethod;
+import org.franca.core.franca.FState;
 import org.franca.core.franca.FTransition;
 import org.franca.core.franca.FTrigger;
 import org.franca.core.franca.FTypeRef;
@@ -36,9 +40,16 @@ import com.google.common.collect.Lists;
 
 public class ContractValidator {
 
-	public static void checkContract (ValidationMessageReporter reporter, FContract contract) {
+	public static void checkContract(ValidationMessageReporter reporter, FContract contract) {
 		checkUsedInterfaceElements(reporter,  contract);
 		// add more checks here
+		if (!GraphUtil.isConnected(new FrancaContractUndirectedGraphDataSource(contract))) {
+			reporter.reportError("The contract must define a connected graph!", contract, FrancaPackage.Literals.FCONTRACT__STATE_GRAPH);
+		}
+		
+		for (FState state : GraphUtil.getSinks(new FrancaContractDirectedGraphDataSource(contract))) {
+			reporter.reportWarning("The state '"+state.getName()+"' is a sink.", state, FrancaPackage.Literals.FMODEL_ELEMENT__NAME);
+		}
 	}
 	
 	private static void checkUsedInterfaceElements (ValidationMessageReporter reporter, FContract contract) {
