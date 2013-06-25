@@ -122,7 +122,18 @@ public class IntermediateFrancaGraphModel {
 					graphConnection.setLineColor(Display.getDefault().getSystemColor(SWT.COLOR_BLACK));
 					
 					IntermediateFrancaGraphConnection oppositeConnection = getOppositeLabel(conn.source, conn.target);
-					String labelText = conn.label + ((oppositeConnection == null) ? "" : "\n(opposite: " + oppositeConnection.label + ")");
+					
+					//self-loops have more curve depth than connection pairs
+					if (conn.source.equals(conn.target)) {
+						graphConnection.setCurveDepth(30);
+					}
+					else if (oppositeConnection != null) {
+						graphConnection.setCurveDepth(20);
+					}
+					
+					//Only create the label which contains the opposite information for one connection of the pair
+					//Tooltip will be disabled when the label is displayed
+					String labelText = conn.label + ((oppositeConnection == null || conn.source.equals(conn.target)) ? "" : "\n(opposite: " + oppositeConnection.label + ")");
 					if (displayLabel) {
 						if (!oppositeExclude.contains(oppositeConnection)) {
 							graphConnection.setText(labelText);
