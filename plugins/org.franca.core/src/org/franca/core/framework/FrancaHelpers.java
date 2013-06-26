@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -31,6 +32,7 @@ import org.franca.core.franca.FTypeRef;
 import org.franca.core.franca.FrancaPackage;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 
 public class FrancaHelpers {
@@ -114,51 +116,87 @@ public class FrancaHelpers {
 		return null;
 	}
 	
-	/** Get all attributes of an interface including the inherited ones */
-	public static List<FAttribute> getAllAttributes (FInterface api) {
-		List<FAttribute> elements = Lists.newArrayList();
-		if (api.getBase()!=null) {
-			elements.addAll(getAllAttributes(api.getBase()));
+	private abstract static class ElementProvider<V> {
+		public abstract List<V> getElements(FInterface api);
+	}
+	
+	public static <V> List<V> getElements(FInterface api, ElementProvider<V> elementProvider) {
+		List<V> elements = Lists.newArrayList();
+		Set<FInterface> visited = Sets.newHashSet();
+		FInterface actual = api;
+		
+		while (actual != null) {
+			elements.addAll(elementProvider.getElements(actual));
+			visited.add(actual);
+			if (visited.contains(actual.getBase())) {
+				actual = null;
+			}
+			else {
+				actual = actual.getBase();
+			}
 		}
-		elements.addAll(api.getAttributes());
+
 		return elements;
+	}
+	
+	/** Get all attributes of an interface including the inherited ones */
+	public static List<FAttribute> getAllAttributes(FInterface api) {
+		return getElements(api, new ElementProvider<FAttribute>() {
+			@Override
+			public List<FAttribute> getElements(FInterface api) {
+				return api.getAttributes();
+			}
+		});
 	}
 	
 	/** Get all methods of an interface including the inherited ones */
 	public static List<FMethod> getAllMethods (FInterface api) {
-		List<FMethod> elements = Lists.newArrayList();
-		if (api.getBase()!=null) {
-			elements.addAll(getAllMethods(api.getBase()));
-		}
-		elements.addAll(api.getMethods());
-		return elements;
+		return getElements(api, new ElementProvider<FMethod>() {
+			@Override
+			public List<FMethod> getElements(FInterface api) {
+				return api.getMethods();
+			}
+		});
 	}
 	
 	/** Get all broadcasts of an interface including the inherited ones */
 	public static List<FBroadcast> getAllBroadcasts (FInterface api) {
-		List<FBroadcast> elements = Lists.newArrayList();
-		if (api.getBase()!=null) {
-			elements.addAll(getAllBroadcasts(api.getBase()));
-		}
-		elements.addAll(api.getBroadcasts());
-		return elements;
+		return getElements(api, new ElementProvider<FBroadcast>() {
+			@Override
+			public List<FBroadcast> getElements(FInterface api) {
+				return api.getBroadcasts();
+			}
+		});
 	}
 	
 	/** Get all broadcasts of an interface including the inherited ones */
 	public static List<FType> getAllTypes (FInterface api) {
-		List<FType> elements = Lists.newArrayList();
-		if (api.getBase()!=null) {
-			elements.addAll(getAllTypes(api.getBase()));
-		}
-		elements.addAll(api.getTypes());
-		return elements;
+		return getElements(api, new ElementProvider<FType>() {
+			@Override
+			public List<FType> getElements(FInterface api) {
+				return api.getTypes();
+			}
+		});
 	}
 	
 	/** Returns true if any of the base interfaces has a contract definition */
 	public static boolean hasBaseContract (FInterface api) {
-		if (api.getBase()!=null) {
-			return api.getBase().getContract()!=null || hasBaseContract(api.getBase());
+		Set<FInterface> visited = Sets.newHashSet();
+		FInterface actual = api;
+		
+		while (actual != null) {
+			if (actual.getBase() != null && actual.getBase().getContract() != null) {
+				return true;
+			}
+			visited.add(actual);
+			if (visited.contains(actual.getBase())) {
+				actual = null;
+			}
+			else {
+				actual = actual.getBase();
+			}
 		}
+
 		return false;
 	}
 	
