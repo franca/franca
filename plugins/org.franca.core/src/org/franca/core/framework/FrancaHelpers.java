@@ -180,24 +180,17 @@ public class FrancaHelpers {
 	}
 	
 	/** Returns true if any of the base interfaces has a contract definition */
-	public static boolean hasBaseContract (FInterface api) {
-		Set<FInterface> visited = Sets.newHashSet();
-		FInterface actual = api;
-		
-		while (actual != null) {
-			if (actual.getBase() != null && actual.getBase().getContract() != null) {
-				return true;
+	public static List<FContract> getAllContracts(FInterface api) {
+		return getElements(api, new ElementProvider<FContract>() {
+			@Override
+			public List<FContract> getElements(FInterface api) {
+				List<FContract> contracts = Lists.newArrayList();
+				if (api.getContract() != null) {
+					contracts.add(api.getContract());
+				}
+				return contracts;
 			}
-			visited.add(actual);
-			if (visited.contains(actual.getBase())) {
-				actual = null;
-			}
-			else {
-				actual = actual.getBase();
-			}
-		}
-
-		return false;
+		});
 	}
 	
 

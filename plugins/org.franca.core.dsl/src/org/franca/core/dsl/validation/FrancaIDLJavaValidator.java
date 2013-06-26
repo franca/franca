@@ -8,7 +8,9 @@
 package org.franca.core.dsl.validation;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -43,6 +45,9 @@ import org.franca.core.franca.FTypeRef;
 import org.franca.core.franca.FTypedElement;
 import org.franca.core.franca.FUnionType;
 import org.franca.core.franca.FrancaPackage;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 		implements ValidationMessageReporter, NameProvider {
@@ -183,10 +188,52 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 		ValidationHelpers.checkDuplicates(this, FrancaHelpers.getAllTypes(api),
 				FrancaPackage.Literals.FMODEL_ELEMENT__NAME, "inherited type");
 
-		if (api.getContract() != null && FrancaHelpers.hasBaseContract(api)) {
+		List<FContract> baseContracts = FrancaHelpers.getAllContracts(api);
+
+		//handle cycles safely 
+		if (api.getContract() != null && ((baseContracts.size() == 1) ? !baseContracts.contains(api.getContract()) : true)) {
 			error("Interface cannot overwrite base contract",
-					api.getContract(),
+					api,
 					FrancaPackage.Literals.FINTERFACE__CONTRACT, -1);
+		}
+	}
+	
+	@Check
+	public void checkCyclicInheritance(FModel model) {
+		Set<FInterface> visited = Sets.newHashSet();
+		List<FInterface> partOfCycle = Lists.newArrayList();
+		boolean foundCycle = false;
+		
+		int i = 0;
+		while (i < model.getInterfaces().size()) {
+			FInterface actual = model.getInterfaces().get(i++);
+			
+			if (!visited.contains(actual)) {
+				
+				foundCycle = false;
+				partOfCycle.clear();
+				
+				while (actual != null) {
+					visited.add(actual);
+					partOfCycle.add(actual);
+					
+					if (partOfCycle.contains(actual.getBase())) {
+						actual = null;
+						foundCycle = true;
+					}
+					else {
+						actual = actual.getBase();
+					}
+				}
+				
+				if (foundCycle) {
+					//the cycle starts with the last element's base
+					int start = partOfCycle.indexOf(partOfCycle.get(partOfCycle.size()-1).getBase());
+					for (int j = start;j<partOfCycle.size();j++) {
+						this.reportError("The interface is part of a cyclic inheritance!", partOfCycle.get(j), FrancaPackage.Literals.FMODEL_ELEMENT__NAME);				
+					}
+				}
+			}
 		}
 	}
 
