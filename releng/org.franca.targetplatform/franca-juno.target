@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="Franca Target Platform - Eclipse 4.2" sequenceNumber="38">
+<?pde version="3.8"?><target name="Franca Target Platform - Eclipse 4.2" sequenceNumber="40">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="de.itemis.xtext.antlr.sdk.feature.group" version="2.0.0.v201108011202"/>
@@ -9,6 +9,10 @@
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.xtext.sdk.feature.group" version="2.4.1.v201304180855"/>
 <unit id="org.eclipse.xtend.sdk.feature.group" version="2.4.1.v201304180855"/>
+<unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.4.0.v201306110940"/>
+<unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="2.4.0.v201306110341"/>
+<unit id="org.eclipse.emf.common" version="2.9.0.v20130528-0742"/>
+<unit id="org.eclipse.emf.sdk.feature.group" version="2.9.0.v20130610-0406"/>
 <repository location="http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
@@ -19,7 +23,6 @@
 <unit id="org.eclipse.egit.feature.group" version="2.2.0.201212191850-r"/>
 <unit id="org.eclipse.sdk.feature.group" version="4.2.2.v20130116-114742-7T7oDVDQ23Iosz-vkFwNncmx7z-9Rts4b0m1FotkYacO5"/>
 <unit id="org.eclipse.pde.feature.group" version="3.8.2.v20130116-091538-7c7wFj0FFt6Zr9bd4AM1JEQMS"/>
-<unit id="org.eclipse.emf.sdk.feature.group" version="2.8.3.v20130125-0826"/>
 <unit id="org.eclipse.emf.transaction.sdk.feature.group" version="1.6.0.v20120328-0001-777Z-9A_WsZmcPluNecyPkvrPKlH"/>
 <unit id="org.eclipse.emf.eef.sdk-feature.feature.group" version="1.1.1.201206051542"/>
 <unit id="org.eclipse.gef.sdk.feature.group" version="3.9.0.201212170307"/>
