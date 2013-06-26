@@ -175,10 +175,12 @@ public class FrancaContractVisualizerView extends ViewPart {
 			@Override
 			public void run() {
 				if (forceUpdate || (intermediateModel != null && (previousIntermediateModel == null || !previousIntermediateModel.equals(intermediateModel)))) {
+					graph.setVisible(false);
 					graph.clear();
 					intermediateModel.getGraphNodes(graph);
 					intermediateModel.getGraphConnections(graph);
-					graph.applyLayout();
+					graph.applyLayoutNow();
+					graph.setVisible(true);
 					previousIntermediateModel = intermediateModel;
 				}
 			}

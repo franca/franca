@@ -193,5 +193,10 @@ public class CustomGraphLabel extends CachedLabel implements IStyleableFigure {
 	public void setBorderWidth(int width) {
 		this.borderWidth = width;
 	}
+	
+	@Override
+	public String toString() {
+		return this.getText();
+	}
 }
 
