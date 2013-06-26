@@ -4,8 +4,8 @@
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="de.itemis.xtext.antlr.sdk.feature.group" version="2.0.0.v201108011202"/>
 <unit id="de.itemis.xtext.antlr.feature.feature.group" version="2.0.0.v201108011202"/>
-<unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.4.0.v201303191501"/>
-<unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="2.4.0.v201303191413"/>
+<unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.4.0.v201306110940"/>
+<unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="2.4.0.v201306110341"/>
 <repository location="http://download.itemis.com/updates/releases/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
