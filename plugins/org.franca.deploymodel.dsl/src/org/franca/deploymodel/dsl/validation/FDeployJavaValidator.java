@@ -78,7 +78,7 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 	public static final String METHOD_ARGUMENT_QUICKFIX_MESSAGE = "Method argument is missing for method ";
 	
 	public static final String COMPOUND_FIELD_QUICKFIX = "COMPOUND_FIELD_QUICKFIX";
-	public static final String COMPOUND_FIELD_QUICKFIX_MESSAGE = "Field is missing for compund ";
+	public static final String COMPOUND_FIELD_QUICKFIX_MESSAGE = "Field is missing for compound ";
 	
 	public static final String ENUMERATOR_ENUM_QUICKFIX = "ENUMERATOR_ENUM_QUICKFIX";
 	public static final String ENUMERATOR_ENUM_QUICKFIX_MESSAGE = "Enumerator element is missing for enum ";
