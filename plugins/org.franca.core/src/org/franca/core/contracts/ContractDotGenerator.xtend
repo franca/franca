@@ -59,9 +59,9 @@ class ContractDotGenerator {
 			"respond " + respond.name
 		} else if (signal!=null) {
 			"signal " + signal.name
-		} else if (signal!=null) {
+		} else if (set!=null) {
 			"set " + set.name
-		} else if (signal!=null) {
+		} else if (update!=null) {
 			"update " + update.name
 		} else {
 			"unknown_event"
