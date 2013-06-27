@@ -52,6 +52,24 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 	}
 	
 	@Check
+	public void checkAnonymousTypeCollections(FModel model) {
+		int count = 0;
+		for (FTypeCollection coll : model.getTypeCollections()) {
+			if (coll.getName() == null || coll.getName().isEmpty()) {
+				count++;
+			}
+		}
+		
+		if (count > 1) {
+			this.reportError(
+					"There can be only one anonymous type collection!", 
+					model, 
+					FrancaPackage.Literals.FMODEL__NAME
+				);
+		}
+	}
+	
+	@Check
 	public void checkExtensionValidators(FModel model) {
 		for (IFrancaExternalValidator validator : ValidatorRegistry.getValidatorMap().get(getCheckMode())) {
 			validator.validateModel(model, getMessageAcceptor());
