@@ -299,12 +299,12 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 				if (c==null) {
 					if (checker.mustBeDefined((FArrayType)tc)) {
 						error(DEPLOYMENT_ELEMENT_QUICKFIX_MESSAGE+ "'" + tc.getName() + "'",
-								FDeployPackage.Literals.FD_INTERFACE__TARGET, 
+								parentFeature, 
 								DEPLOYMENT_ELEMENT_QUICKFIX, 
 								tc.getName(),
 								FrancaQuickFixConstants.ARRAY.toString());
 						error(DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE+"'" + tc.getName() + "'",
-								FDeployPackage.Literals.FD_INTERFACE__TARGET,
+								parentFeature,
 								DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, 
 								tc.getName(),
 								FrancaQuickFixConstants.ARRAY.toString());
@@ -318,12 +318,12 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 				if (c==null) {
 					if (checker.mustBeDefined((FStructType)tc)) {
 						error(DEPLOYMENT_ELEMENT_QUICKFIX_MESSAGE+ "'" + tc.getName() + "'",
-								FDeployPackage.Literals.FD_INTERFACE__TARGET, 
+								parentFeature, 
 								DEPLOYMENT_ELEMENT_QUICKFIX, 
 								tc.getName(),
 								FrancaQuickFixConstants.STRUCT.toString());
 						error(DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE+"'" + tc.getName() + "'",
-								FDeployPackage.Literals.FD_INTERFACE__TARGET,
+								parentFeature,
 								DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, 
 								tc.getName(),
 								FrancaQuickFixConstants.STRUCT.toString());
@@ -344,12 +344,12 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 				if (c==null) {
 					if (checker.mustBeDefined((FUnionType)tc)) {
 						error(DEPLOYMENT_ELEMENT_QUICKFIX_MESSAGE+ "'" + tc.getName() + "'",
-								FDeployPackage.Literals.FD_INTERFACE__TARGET, 
+								parentFeature, 
 								DEPLOYMENT_ELEMENT_QUICKFIX, 
 								tc.getName(),
 								FrancaQuickFixConstants.UNION.toString());
 						error(DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE+"'" + tc.getName() + "'",
-								FDeployPackage.Literals.FD_INTERFACE__TARGET,
+								parentFeature,
 								DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, 
 								tc.getName(),
 								FrancaQuickFixConstants.UNION.toString());
@@ -370,12 +370,12 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 				if (c==null) {
 					if (checker.mustBeDefined((FEnumerationType)tc)) {
 						error(DEPLOYMENT_ELEMENT_QUICKFIX_MESSAGE+ "'" + tc.getName() + "'",
-								FDeployPackage.Literals.FD_INTERFACE__TARGET, 
+								parentFeature, 
 								DEPLOYMENT_ELEMENT_QUICKFIX, 
 								tc.getName(),
 								FrancaQuickFixConstants.ENUMERATION.toString());
 						error(DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE+"'" + tc.getName() + "'",
-								FDeployPackage.Literals.FD_INTERFACE__TARGET,
+								parentFeature,
 								DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, 
 								tc.getName(),
 								FrancaQuickFixConstants.ENUMERATION.toString());
