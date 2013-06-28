@@ -7,11 +7,13 @@
  *******************************************************************************/
 package org.franca.deploymodel.dsl.scoping
 
+import com.google.inject.Inject
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EReference
+import org.eclipse.xtext.resource.IResourceDescriptions
 import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
-import org.eclipse.xtext.scoping.impl.FilteringScope
+import org.eclipse.xtext.scoping.impl.ImportUriGlobalScopeProvider
 import org.franca.core.franca.FArrayType
 import org.franca.core.franca.FEnumerationType
 import org.franca.core.franca.FStructType
@@ -43,12 +45,12 @@ import static extension org.eclipse.xtext.scoping.Scopes.*
 
 class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 
-	def scope_FDTypes_target(FDTypes ctxt, EReference ref) {
-		val delegateScope = this.delegate.getScope(ctxt, ref)
-		if (delegateScope != null) {
-			return new FilteringScope(delegateScope, new TypeCollectionPredicate);
-		}
-		return IScope::NULLSCOPE
+	@Inject
+	private ImportUriGlobalScopeProvider importUriGlobalScopeProvider
+	
+	def scope_FDTypes_target(FDTypes ctxt, EReference ref) {	
+		var IResourceDescriptions desc = importUriGlobalScopeProvider.getResourceDescriptions(ctxt.eResource);
+		return new TypeCollectionScope(IScope::NULLSCOPE, false, desc, ctxt.eResource);
 	}
 
 	def scope_FDArray_target(FDTypes ctxt, EReference ref) {
