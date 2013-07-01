@@ -22,6 +22,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDAttribute;
 import org.franca.deploymodel.dsl.fDeploy.FDBoolean;
 import org.franca.deploymodel.dsl.fDeploy.FDBroadcast;
 import org.franca.deploymodel.dsl.fDeploy.FDComplexValue;
+import org.franca.deploymodel.dsl.fDeploy.FDElement;
 import org.franca.deploymodel.dsl.fDeploy.FDEnum;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumType;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumValue;
@@ -29,6 +30,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDEnumeration;
 import org.franca.deploymodel.dsl.fDeploy.FDField;
 import org.franca.deploymodel.dsl.fDeploy.FDInteger;
 import org.franca.deploymodel.dsl.fDeploy.FDInterface;
+import org.franca.deploymodel.dsl.fDeploy.FDInterfaceRef;
 import org.franca.deploymodel.dsl.fDeploy.FDMethod;
 import org.franca.deploymodel.dsl.fDeploy.FDPredefinedTypeId;
 import org.franca.deploymodel.dsl.fDeploy.FDProperty;
@@ -104,25 +106,30 @@ public class FDeployQuickfixProviderUtil {
 		return null;
 	}
 
-	public static FDComplexValue generateDefaultValue(FDTypeRef typeRef) {
+	public static FDComplexValue generateDefaultValue(FDElement element, FDTypeRef typeRef) {
 		FDValue simple = null;
 		if (typeRef.getComplex() == null) {
 			switch (typeRef.getPredefined().getValue()) {
-			case FDPredefinedTypeId.BOOLEAN_VALUE:
-				FDBoolean boolVal = FDeployFactory.eINSTANCE.createFDBoolean();
-				boolVal.setValue("false");
-				simple = boolVal;
-				break;
-			case FDPredefinedTypeId.INTEGER_VALUE:
-				FDInteger intVal = FDeployFactory.eINSTANCE.createFDInteger();
-				intVal.setValue(0);
-				simple = intVal;
-				break;
-			case FDPredefinedTypeId.STRING_VALUE:
-				FDString strVal = FDeployFactory.eINSTANCE.createFDString();
-				strVal.setValue("");
-				simple = strVal;
-				break;
+				case FDPredefinedTypeId.BOOLEAN_VALUE:
+					FDBoolean boolVal = FDeployFactory.eINSTANCE.createFDBoolean();
+					boolVal.setValue("false");
+					simple = boolVal;
+					break;
+				case FDPredefinedTypeId.INTEGER_VALUE:
+					FDInteger intVal = FDeployFactory.eINSTANCE.createFDInteger();
+					intVal.setValue(0);
+					simple = intVal;
+					break;
+				case FDPredefinedTypeId.STRING_VALUE:
+					FDString strVal = FDeployFactory.eINSTANCE.createFDString();
+					strVal.setValue("");
+					simple = strVal;
+					break;
+				case FDPredefinedTypeId.INTERFACE_VALUE:
+					FDInterfaceRef ifaceVal = FDeployFactory.eINSTANCE.createFDInterfaceRef();
+					ifaceVal.setValue(((FDInterface) element).getTarget());
+					simple = ifaceVal;
+					break;
 			}
 		} else {
 			if (typeRef.getComplex() instanceof FDEnumType) {
