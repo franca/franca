@@ -58,5 +58,19 @@ public class ModelDefinitionTests extends XtextTest {
     			"fidl/20-InterfaceUsingTC.fidl");
     }
 
+    @Test
+    public void test_50_DefAnonTypeCollection() {
+    	testFile("testcases/50-DefAnonTypeCollection.fdepl",
+    			"testcases/40-SpecSimple.fdepl",
+    			"fidl/15-AnonTypeCollection.fidl");
+    }
+
+    @Test
+    public void test_52_DefInterfaceWithUseAnon() {
+    	testFile("testcases/52-DefInterfaceWithUseAnon.fdepl",
+    			"testcases/40-SpecSimple.fdepl",
+    			"fidl/25-InterfaceUsingAnonTC.fidl");
+    }
+
 }
 

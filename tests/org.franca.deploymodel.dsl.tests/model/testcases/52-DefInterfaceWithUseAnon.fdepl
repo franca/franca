@@ -1,0 +1,22 @@
+// deployment definition for interface
+
+import "40-SpecSimple.fdepl"
+import "../fidl/25-InterfaceUsingAnonTC.fidl"
+import "50-DefAnonTypeCollection.fdepl"
+
+define SpecSimple for interface fidl.InterfaceUsingAnonTC {
+
+	// this use-statement is based on the following chain of imports:
+	// 1. 50-DefAnonTypeCollection.fdepl
+	// 2. ../fidl/15-AnonTypeCollection.fidl
+	use DeployedRootTypes
+	
+	method doSomething {
+		out {
+			ret1 {
+				StringPropMandatory = ""
+			}
+		}
+	}
+
+}

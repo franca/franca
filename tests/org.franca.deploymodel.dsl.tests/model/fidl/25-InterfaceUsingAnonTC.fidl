@@ -1,0 +1,16 @@
+package fidl
+
+import fidl.* from "15-AnonTypeCollection.fidl"
+
+
+interface InterfaceUsingAnonTC {
+	
+	method doSomething {
+		in {
+			MyStruct arg1 
+		}
+		out {
+			String ret1
+		}
+	}
+}
