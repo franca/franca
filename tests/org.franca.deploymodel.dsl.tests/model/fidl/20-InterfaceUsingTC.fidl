@@ -1,0 +1,16 @@
+package fidl
+
+import fidl.MyTypeCollection.* from "10-TypeCollection.fidl"
+
+
+interface InterfaceUsingTC {
+	
+	method doSomething {
+		in {
+			MyStruct arg1 
+		}
+		out {
+			String ret1
+		}
+	}
+}

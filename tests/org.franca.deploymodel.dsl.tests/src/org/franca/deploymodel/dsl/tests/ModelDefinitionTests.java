@@ -1,14 +1,10 @@
 package org.franca.deploymodel.dsl.tests;
 
-import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.xtext.junit4.InjectWith;
 import org.eclipselabs.xtext.utils.unittesting.XtextRunner2;
 import org.eclipselabs.xtext.utils.unittesting.XtextTest;
-import org.franca.core.franca.FrancaPackage;
 import org.franca.deploymodel.dsl.FDeployTestsInjectorProvider;
-import org.franca.deploymodel.dsl.fDeploy.FDeployPackage;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -46,6 +42,20 @@ public class ModelDefinitionTests extends XtextTest {
     	testFile("testcases/30-DefDataPropertiesInterfaceRef.fdepl",
     			"testcases/12-SpecPropertyInterfaceRef.fdepl",
     			"fidl/05-CoverageInterface.fidl");
+    }
+
+    @Test
+    public void test_42_DefTypeCollection() {
+    	testFile("testcases/42-DefTypeCollection.fdepl",
+    			"testcases/40-SpecSimple.fdepl",
+    			"fidl/10-TypeCollection.fidl");
+    }
+
+    @Test
+    public void test_45_DefInterfaceWithUse() {
+    	testFile("testcases/45-DefInterfaceWithUse.fdepl",
+    			"testcases/40-SpecSimple.fdepl",
+    			"fidl/20-InterfaceUsingTC.fidl");
     }
 
 }

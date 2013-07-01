@@ -1,0 +1,13 @@
+
+// simple deployment specification as a basis for use-statement test
+
+specification SpecSimple {
+	for strings {
+		StringPropMandatory : String;
+	}
+	
+	for struct_fields {
+		FieldPropMandatory : Integer;
+	}
+}
+
