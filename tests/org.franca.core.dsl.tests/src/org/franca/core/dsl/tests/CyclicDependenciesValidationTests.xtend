@@ -111,8 +111,77 @@ class CyclicDependenciesValidationTests extends ValidationTestBase {
 		assertDependencies("(MyTypes.S1->MyTypes.TD1)(MyTypes.TD1->MyTypes.S1)", model.issues)
 	}
 	
+	@Test
+	def validateArrayNoSelfReference() {
+		val model = '''
+			package a.b.c
+			typeCollection MyTypes {
+				array MyArray of MyArray
+			}
+		'''
+		assertDependencies("(MyTypes.MyArray->MyTypes.MyArray)", model.issues)
+	}
 	
 	
+	@Test
+	def validateArrayNoIndirectSelfReference() {
+		val model = '''
+			package a.b.c
+			typeCollection MyTypes {
+				array MyArray of OtherArray
+				array OtherArray of MyArray
+			}
+		'''
+		assertDependencies("(MyTypes.MyArray->MyTypes.OtherArray)(MyTypes.OtherArray->MyTypes.MyArray)", model.issues)
+	}
+	
+	
+	@Test
+	def validateStructNoSelfReference() {
+		val model = '''
+			package a.b.c
+			typeCollection MyTypes {
+				struct MyStruct {
+					UInt8 a
+					MyStruct b
+					String c
+				}
+			}
+		'''
+		assertDependencies("(MyTypes.MyStruct->MyTypes.MyStruct)", model.issues)
+	}
+
+	@Test
+	def validateUnionNoSelfReference() {
+		val text = '''
+			package a.b.c
+			typeCollection MyTypes {
+				union MyUnion {
+					UInt8 a
+					MyUnion b
+					String c
+				}
+			}
+		'''
+		
+		assertEquals('''
+			5:Union references itself
+		'''.toString, text.getIssues)
+	}
+
+	@Test
+	def validateTypedefNoSelfReference() {
+		val text = '''
+			package a.b.c
+			typeCollection MyTypes {
+				typedef MyTypedef is MyTypedef
+			}
+		'''
+		
+		assertEquals('''
+			3:Cyclic reference for typedef 'MyTypedef'
+		'''.toString, text.getIssues)
+	}
 	
 	def assertDependencies(String expected, String actual){
 		assertEquals("Not the same dependencies:" + expected + " vs " + actual,expected.sortDependencies, actual.sortDependencies)		
