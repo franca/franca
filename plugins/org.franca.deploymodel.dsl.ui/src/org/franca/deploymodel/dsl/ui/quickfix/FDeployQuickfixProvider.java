@@ -254,10 +254,10 @@ public class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 	private void applyFixForElementInternal(final FDElement element, final boolean isRecursive) {
 		List<FDPropertyDecl> decls = PropertyMappings.getAllPropertyDecls(FDModelUtils.getRootElement(element).getSpec(), element);
 		for (FDPropertyDecl decl : decls) {
-			if (!FDeployQuickfixProviderUtil.hasPropertyDeclaration(element.getProperties(), decl)) {
+			if (!FDeployQuickfixProviderUtil.hasPropertyDeclaration(element.getProperties(), decl) && PropertyMappings.isMandatory(decl)) {
 				FDProperty prop = FDeployFactory.eINSTANCE.createFDProperty();
 				prop.setDecl(decl);
-				prop.setValue(FDeployQuickfixProviderUtil.generateDefaultValue(decl.getType()));
+				prop.setValue(FDeployQuickfixProviderUtil.generateDefaultValue(element, decl.getType()));
 				element.getProperties().add(prop);
 			}
 		}

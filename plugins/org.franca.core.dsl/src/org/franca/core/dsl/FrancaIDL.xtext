@@ -28,8 +28,9 @@ FModel returns FModel:
 // type collection and interface
 
 FTypeCollection returns FTypeCollection:
+	{FTypeCollection}
 	(comment=FAnnotationBlock)?
-	'typeCollection' name=FQN
+	'typeCollection' (name=FQN)?
 	'{'
 		('version' version=FVersion)?
 		(types+=FType)*
