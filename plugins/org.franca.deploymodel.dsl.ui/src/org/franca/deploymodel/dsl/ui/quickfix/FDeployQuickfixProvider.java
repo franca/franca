@@ -11,8 +11,18 @@ import org.eclipse.xtext.ui.editor.quickfix.IssueResolutionAcceptor;
 import org.eclipse.xtext.util.Arrays;
 import org.eclipse.xtext.validation.Issue;
 import org.franca.core.franca.FArgument;
+import org.franca.core.franca.FArrayType;
+import org.franca.core.franca.FAttribute;
+import org.franca.core.franca.FBroadcast;
+import org.franca.core.franca.FEnumerationType;
 import org.franca.core.franca.FEnumerator;
 import org.franca.core.franca.FField;
+import org.franca.core.franca.FInterface;
+import org.franca.core.franca.FMethod;
+import org.franca.core.franca.FModelElement;
+import org.franca.core.franca.FStructType;
+import org.franca.core.franca.FType;
+import org.franca.core.franca.FUnionType;
 import org.franca.deploymodel.core.FDModelUtils;
 import org.franca.deploymodel.core.PropertyMappings;
 import org.franca.deploymodel.dsl.fDeploy.FDArgument;
@@ -30,6 +40,12 @@ import org.franca.deploymodel.dsl.fDeploy.FDeployFactory;
 import org.franca.deploymodel.dsl.validation.FDeployJavaValidator;
 import org.franca.deploymodel.dsl.validation.FrancaQuickFixConstants;
 
+/**
+ * A collection of quick fixes for Franca Deployment Definitions.
+ * 
+ * @author Tamas Szabo (itemis AG)
+ *
+ */
 public class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 
 	@Fix(FDeployJavaValidator.UPPERCASE_PROPERTYNAME_QUICKFIX)
@@ -59,14 +75,14 @@ public class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 	@Fix(FDeployJavaValidator.DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX)
 	public void applyRecursiveFix(final Issue issue, final IssueResolutionAcceptor acceptor) {
 		final String elementName = issue.getData()[0];
-		final String description = "Fix all issues within '" + elementName	+ "'";
+		final String description = "Fix all issues for element '" + elementName	+ "'";
 
 		acceptor.accept(issue, description, description, "",
 				new ISemanticModification() {
 					@Override
 					public void apply(EObject obj, IModificationContext context) {
 						if (obj instanceof FDInterface) {
-							applyFixForInterfaceInternal((FDInterface) obj, FrancaQuickFixConstants.valueOf(issue.getData()[1]), elementName, true);
+							applyAllFixForInterfaceInternal((FDInterface) obj);
 						}
 						else if (obj instanceof FDElement) {
 							applyFixForElementInternal((FDElement) obj, true);
@@ -161,7 +177,7 @@ public class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 	private void applyFixForMethodInternal(final FDMethod method, final boolean isRecursive, String... args) {
 		if (method.getTarget().getInArgs().size() > 0) {
 			for (FArgument arg : method.getTarget().getInArgs()) {
-				if (args.length == 0 || Arrays.contains(args, arg.getName())) {
+				if (args.length == 0 || Arrays.contains(args, arg.getName())){
 					if (method.getInArguments() == null) {
 						method.setInArguments(FDeployFactory.eINSTANCE.createFDArgumentList());
 					}
@@ -251,6 +267,14 @@ public class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 		}
 	}
 	
+	/**
+	 * Applies quick fix for an {@link FDElement}: adds the mandatory properties and 
+	 * in case of a recursive fix {@link FDMethod}s, {@link FDUnion}s, {@link FDStruct}s and {@link FDEnumeration}s 
+	 * will be also fixed with nested elements/arguments.
+	 * 
+	 * @param element the element
+	 * @param isRecursive true if the fix should be applied recursively, false otherwise
+	 */
 	private void applyFixForElementInternal(final FDElement element, final boolean isRecursive) {
 		List<FDPropertyDecl> decls = PropertyMappings.getAllPropertyDecls(FDModelUtils.getRootElement(element).getSpec(), element);
 		for (FDPropertyDecl decl : decls) {
@@ -278,6 +302,18 @@ public class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 		}
 	}
 
+	/**
+	 * Provides quickfix for the given {@link FDInterface} element. The elementName indicates the name of the corresponding {@link FModelElement} to add (this is the target of the 
+	 * {@link FDElement} that will be created).  
+	 * The type will be used to identify the {@link FDElement}'s type to add.
+	 * <br/><br/>
+	 * If the value of the isRecursive flag is set to true, the quick fix will be applied recursively, that is, all issues with the created element will be fixed too. 
+	 * 
+	 * @param deploymentInterface the deployment interface to fix
+	 * @param type the type of the {@link FDElement}
+	 * @param elementName the name of the corresponding {@link FModelElement}
+	 * @param isRecursive true if the fix should be applied recursively, false otherwise
+	 */
 	private void applyFixForInterfaceInternal(final FDInterface deploymentInterface, final FrancaQuickFixConstants type, String elementName, final boolean isRecursive) {
 		FDElement deploymentElement = null;
 
@@ -306,5 +342,42 @@ public class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 			applyFixForElementInternal(deploymentElement, isRecursive);
 		}
 
+	}
+	
+	/**
+	 * Applies all the quick fixes available for an {@link FDInterface}. 
+	 * This quick fix is the most generic one. 
+	 * 
+	 * @param deploymentInterface the deployment interface
+	 */
+	private void applyAllFixForInterfaceInternal(final FDInterface deploymentInterface) {
+		//add mandatory properties for the interface itself
+		applyFixForElementInternal(deploymentInterface, true);
+		
+		//add all required elements for the deployment interface
+		FInterface target = deploymentInterface.getTarget();
+		for(FAttribute tc : target.getAttributes()) {
+			applyFixForInterfaceInternal(deploymentInterface, FrancaQuickFixConstants.ATTRIBUTE, tc.getName(), true);
+		}
+
+		for(FMethod tc : target.getMethods()) {
+			applyFixForInterfaceInternal(deploymentInterface, FrancaQuickFixConstants.METHOD, tc.getName(), true);
+		}
+
+		for(FBroadcast tc : target.getBroadcasts()) {
+			applyFixForInterfaceInternal(deploymentInterface, FrancaQuickFixConstants.BROADCAST, tc.getName(), true);
+		}
+		
+		for(FType tc : target.getTypes()) {
+			if (tc instanceof FArrayType) {
+				applyFixForInterfaceInternal(deploymentInterface, FrancaQuickFixConstants.ARRAY, tc.getName(), true);
+			} else if (tc instanceof FStructType) {
+				applyFixForInterfaceInternal(deploymentInterface, FrancaQuickFixConstants.STRUCT, tc.getName(), true);
+			} else if (tc instanceof FUnionType) {
+				applyFixForInterfaceInternal(deploymentInterface, FrancaQuickFixConstants.UNION, tc.getName(), true);
+			} else if (tc instanceof FEnumerationType) {
+				applyFixForInterfaceInternal(deploymentInterface, FrancaQuickFixConstants.ENUMERATION, tc.getName(), true);
+			}
+		}
 	}
 }
