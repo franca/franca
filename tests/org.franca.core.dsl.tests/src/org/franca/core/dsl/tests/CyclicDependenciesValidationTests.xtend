@@ -153,7 +153,7 @@ class CyclicDependenciesValidationTests extends ValidationTestBase {
 
 	@Test
 	def validateUnionNoSelfReference() {
-		val text = '''
+		val model = '''
 			package a.b.c
 			typeCollection MyTypes {
 				union MyUnion {
@@ -164,23 +164,18 @@ class CyclicDependenciesValidationTests extends ValidationTestBase {
 			}
 		'''
 		
-		assertEquals('''
-			5:Union references itself
-		'''.toString, text.getIssues)
+		assertDependencies('''(MyTypes.MyUnion->MyTypes.MyUnion)''', model.getIssues)
 	}
 
 	@Test
 	def validateTypedefNoSelfReference() {
-		val text = '''
+		val model = '''
 			package a.b.c
 			typeCollection MyTypes {
 				typedef MyTypedef is MyTypedef
 			}
 		'''
-		
-		assertEquals('''
-			3:Cyclic reference for typedef 'MyTypedef'
-		'''.toString, text.getIssues)
+		assertDependencies('''(MyTypes.MyTypedef->MyTypes.MyTypedef)''', model.getIssues)
 	}
 	
 	def assertDependencies(String expected, String actual){
