@@ -1,16 +1,12 @@
 package org.franca.core.dsl.validation.internal
 
-import com.google.common.collect.ArrayListMultimap
-import com.google.common.collect.Multimap
 import com.google.inject.Inject
 import java.util.ArrayList
-import java.util.Collection
-import java.util.Iterator
 import java.util.List
 import java.util.Set
 import org.eclipse.emf.ecore.EObject
-import org.eclipse.xtend2.lib.StringConcatenation
 import org.eclipse.xtext.naming.IQualifiedNameProvider
+import org.franca.core.dsl.validation.util.DiGraphAnalyzationUtil
 import org.franca.core.franca.FArrayType
 import org.franca.core.franca.FEnumerationType
 import org.franca.core.franca.FInterface
@@ -20,10 +16,7 @@ import org.franca.core.franca.FStructType
 import org.franca.core.franca.FTypeCollection
 import org.franca.core.franca.FTypeDef
 import org.franca.core.franca.FUnionType
-import org.franca.core.franca.FrancaPackage
 import org.franca.core.utils.digraph.Digraph
-import org.franca.core.utils.digraph.Edge
-import org.franca.core.dsl.validation.util.DiGraphAnalyzationUtil
 
 class CyclicDependenciesValidator {
 	@Inject IQualifiedNameProvider qnProvider;
@@ -31,9 +24,6 @@ class CyclicDependenciesValidator {
 
 	/** Traverses the graph of dependencies beginning with <code>m</code> and reports an error if the graph is not a tree. */
 	def check(ValidationMessageReporter reporter, FModel m) {
-
-		val uri = m.eResource.getURI();
-
 		val Digraph<EObject> d = new Digraph<EObject>()
 
 		// Track analyzed elements in order to avoid infinite loops     
@@ -42,24 +32,39 @@ class CyclicDependenciesValidator {
 		try {
 			d.topoSort
 		} catch (Digraph$HasCyclesException xe) {
-			val analyzedModels = analyzedElements.filter(typeof(FModel))
-			var StringConcatenation msgBuilder = new StringConcatenation()
+			val eResourceOfModel = m.eResource;
+			val fqNameOfModel = qnProvider.getFullyQualifiedName(m).toString
 			val edgesMap = d.edgesIterator.toMultiMap
 			val cycles = edgesMap.separateCycles
 			for (cycle : cycles) {
-				for (from : cycle) {
-					for (to : edgesMap.get(from)) {
-						msgBuilder.append(
-							'''(«qnProvider.getFullyQualifiedName(from)»->«qnProvider.getFullyQualifiedName(to)»)'''
-						)
+				val msgPerNode = newLinkedList()
+				// First loop collects messages per node
+				for (node : cycle) {
+					var msgForNode = qnProvider.getFullyQualifiedName(node).toString
+					if (node.eResource == eResourceOfModel) {
+						msgForNode = msgForNode.replaceAll(fqNameOfModel + "\\.?", "")
 					}
+					msgPerNode += msgForNode;
+				}
+				for (node : cycle) {
+					// Second loop tinkers messages ...
+					if (node.eResource == m.eResource) {
+						val StringBuilder msg = new StringBuilder("Cyclic dependency detected: <this>")
+						msgPerNode.tail.forEach[msg.append("->").append(it)]
+						msg.append("-><this>")
+						var eAttribute = node.eClass.EAllAttributes.findFirst[it.name == "name"]
+						if(eAttribute==null){
+							eAttribute==node.eClass.EAllAttributes.head
+						}
+						if(eAttribute!=null){
+							reporter.reportError("Cyclic dependency detected: " + msg, node, eAttribute);
+						} 
+					}
+					// ... and shifts msdPerNode in order to make the errormessage appear specific per node 
+					msgPerNode.add(msgPerNode.head)
+					msgPerNode.remove
 				}
 			}
-			var msg = msgBuilder.toString
-			if (analyzedModels.size == 1) {
-				msg = msg.replaceAll(qnProvider.getFullyQualifiedName(analyzedModels.head).toString + "\\.?", "")
-			}
-			reporter.reportError("Cyclic dependenc(y|ies) detected: " + msg, m, FrancaPackage::eINSTANCE.FModel_Name);
 		}
 	}
 
