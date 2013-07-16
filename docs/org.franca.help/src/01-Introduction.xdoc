@@ -60,7 +60,7 @@ IDL model instances (i.e. files which formally describe interfaces) and
 converting them to or from Franca IDL files. Franca (the e[lingua franca])
 is the pivot point for these transformations.
 
-img[images-gen/franca_trafos_conceptual_hts_logical.png][Franca transformation framework.][ ][ ]
+img[images-gen/franca_trafos_conceptual_hts_logical.png][Franca transformation framework.][][][.5]
 
 Advanced features like model validation can also be included in the connector plugins.
 Franca provides its own extensive model validation, which can be used as an
@@ -74,7 +74,7 @@ convert interfaces in several IDLs to Franca and generate source code and
 configuration files from this. Thus, Franca really helps to solve the 
 integration problem mentioned above in an elegant way.
 
-img[images-gen/franca_generators_conceptual_hts_logical.png][Franca transformation and generation framework.][ ][ ]
+img[images-gen/franca_generators_conceptual_hts_logical.png][Franca transformation and generation framework.][][][.7]
 
 For detail information about the architecture concepts of Franca,
 please refer to the ref:FrancaConcepts[Franca Concepts] chapter.

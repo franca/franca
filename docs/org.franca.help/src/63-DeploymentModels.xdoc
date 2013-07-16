@@ -20,7 +20,7 @@ ul[
 ]
 
 img[images/franca_idl_and_deploy_overview.png][Architecture and interface artifacts
-and how Franca supports their definition.][ ][ ]
+and how Franca supports their definition.][][][.5]
 
 This information is typically supported by Franca's configurable deployment models.
 However, Franca deployment models will not completely replace architecture definition
@@ -83,7 +83,7 @@ describes which additional information has to be provided for an interface on th
 platform - the definition lists this information for one concrete interface.
   
 img[images/franca_deployment_interfaces.png][Franca deployment: specifications,
-definitions and actual interfaces.][ ][ ]
+definitions and actual interfaces.][][][.8]
 
 It is important to remember here that each Franca IDL interface can be deployed on 
 many different target platforms. Thus, there might be many deployment definitions
