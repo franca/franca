@@ -15,11 +15,10 @@ img[images/franca_editor_screenshot_1.png][Screenshot of Franca IDL editor with
 The editor provides syntax highlighting,
 code completion, content assist, folding, online validation, a helpful outline view,
 jump-to-definition and find-references with shortcuts, and many more features.
+See ref:KeyboardShortcuts for a table of most important keyboard short-cuts for Franca.
 
-
-The most important keyboard short-cuts in this editor are:
-
-table[
+table:KeyboardShortcuts[
+	caption[Most important Eclipse keyboard short-cuts for Franca.]
 	tf[tcol[1] tcol[1] tcol[2]]
 	tr[
 		td[e[Shortcut]]
