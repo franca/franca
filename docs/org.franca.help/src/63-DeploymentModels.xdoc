@@ -5,7 +5,7 @@ specifications with additional information. This is a way to ensure that Franca 
 interfaces contain the core information needed to describe the semantics of APIs.
 All additional information is stored in some deployment model.
 
-The following diagram shows how Franca supports the various artifacts which have
+ref:DeploymentSupport shows how Franca supports the various artifacts which have
 to be described when defining software architectures. The base elements are 
 e[interface definitions]. Those are completely supported by the Franca IDL. 
 All other architecture artifacts are based on these interface definitions,
@@ -19,8 +19,8 @@ ul[
 		serialization, encoding or quality of service.]
 ]
 
-img[images/franca_idl_and_deploy_overview.png][Architecture and interface artifacts
-and how Franca supports their definition.][][][.5]
+img:DeploymentSupport[images/franca_idl_and_deploy_overview.png]
+	[Architecture and interface artifacts and how Franca supports their definition.][][][.5]
 
 This information is typically supported by Franca's configurable deployment models.
 However, Franca deployment models will not completely replace architecture definition
@@ -75,15 +75,15 @@ ul[
 	]
 ]
 
-The following diagram shows how e[deployment specifications], e[deployment definitions] and
+ref:DeploymentOverview shows how e[deployment specifications], e[deployment definitions] and
 the actual Franca IDL interfaces are related. A specification is created for a given target
 platform (or code generator for this platform). Based on this specification, one deployment
 e[definition] has to be provided for each actual Franca IDL interface. The specification
 describes which additional information has to be provided for an interface on this target
 platform - the definition lists this information for one concrete interface.
   
-img[images/franca_deployment_interfaces.png][Franca deployment: specifications,
-definitions and actual interfaces.][][][.8]
+img:DeploymentOverview[images/franca_deployment_interfaces.png]
+	[Franca deployment: specifications, definitions and actual interfaces.][][][.7]
 
 It is important to remember here that each Franca IDL interface can be deployed on 
 many different target platforms. Thus, there might be many deployment definitions

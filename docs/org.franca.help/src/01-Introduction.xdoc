@@ -59,8 +59,11 @@ as e[Franca connectors], which are Eclipse plugins for loading/saving of
 IDL model instances (i.e. files which formally describe interfaces) and
 converting them to or from Franca IDL files. Franca (the e[lingua franca])
 is the pivot point for these transformations.
+ref:TransformationFramework shows how connectors (depicted by arrows)
+form a star-shaped network between Franca IDL and other IDLs. 
 
-img[images-gen/franca_trafos_conceptual_hts_logical.png][Franca transformation framework.][][][.5]
+img:TransformationFramework[images-gen/franca_trafos_conceptual_hts_logical.png]
+	[Franca transformation framework.][][][.5]
 
 Advanced features like model validation can also be included in the connector plugins.
 Franca provides its own extensive model validation, which can be used as an
@@ -68,16 +71,18 @@ intermediate validation step while transforming models from one IDL to another.
 
 
 Additionally, the Franca framework is well-suited for developing 
-code generators. Using connectors (i.e., IDL model transformations) and
+code generators. This is shown in ref:GenerationFramework.
+Using connectors (i.e., IDL model transformations) and
 generators together leads to powerful tool sets which can be used to 
 convert interfaces in several IDLs to Franca and generate source code and
 configuration files from this. Thus, Franca really helps to solve the 
 integration problem mentioned above in an elegant way.
 
-img[images-gen/franca_generators_conceptual_hts_logical.png][Franca transformation and generation framework.][][][.7]
+img:GenerationFramework[images-gen/franca_generators_conceptual_hts_logical.png]
+	[Franca transformation and generation framework.][][][.7]
 
 For detail information about the architecture concepts of Franca,
-please refer to the ref:FrancaConcepts[Franca Concepts] chapter.
+please refer to chapter ref:FrancaConcepts[Franca Concepts].
 
 
 section:Intro_FrancaIDL[Franca IDL]
@@ -125,9 +130,10 @@ section:Intro_FrancaTools[Franca Tooling]
 The core tool for Franca users is the nice textual editor which can be used
 to review and edit Franca IDL files. The editor is provided as Eclipse plugin
 and can be installed in any Eclipse environment which provides modeling support.
-The following screenshot shows Franca in action:
+ref:FrancaEditorScreenshot shows a screenshot of Franca's IDL editor in action.
 
-img[images/franca_editor_screenshot_1.png][Screenshot of Franca IDL editor.][ ][ ]
+img:FrancaEditorScreenshot[images/franca_editor_screenshot_1.png]
+	[Screenshot of Franca IDL editor.][ ][ ]
 
 The editor provides syntax highlighting,
 code completion, folding, online validation, a helpful outline view,
