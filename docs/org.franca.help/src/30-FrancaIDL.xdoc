@@ -45,7 +45,7 @@ table[
 	]
 	tr[
 		td[code[Franca][UInt32]]
-		td[signed 32-bit integer (range 0..4294967295)]
+		td[unsigned 32-bit integer (range 0..4294967295)]
 	]
 	tr[
 		td[code[Franca][Int32]]
@@ -53,7 +53,7 @@ table[
 	]
 	tr[
 		td[code[Franca][UInt64]]
-		td[signed 64-bit integer]
+		td[unsigned 64-bit integer]
 	]
 	tr[
 		td[code[Franca][Int64]]
