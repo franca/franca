@@ -123,6 +123,7 @@ Franca interfaces. Note that the properties for some hosts will
 be applied to several locations of a Franca IDL interface.
 
 table[
+	tf[tcol[1] tcol[3] tcol[2] tcol[2]]
 	tr[
 		td[e[Name of host]]
 		td[e[Description]]
@@ -248,6 +249,7 @@ These concepts are supported by Franca deployment models by the e[host] definiti
 e[providers] and e[instances].
 
 table[
+	tf[tcol[1] tcol[3] tcol[2] tcol[2]]
 	tr[
 		td[e[Name of host]]
 		td[e[Description]]

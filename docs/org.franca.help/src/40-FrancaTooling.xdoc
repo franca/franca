@@ -20,6 +20,7 @@ jump-to-definition and find-references with shortcuts, and many more features.
 The most important keyboard short-cuts in this editor are:
 
 table[
+	tf[tcol[1] tcol[1] tcol[2]]
 	tr[
 		td[e[Shortcut]]
 		td[e[Function]]
@@ -46,7 +47,7 @@ table[
 You may download a nice cheat sheet with more keyboard shortcuts
 link[http://5ise.quanxinquanyi.de/2012/01/13/xtext-end-user-domain-experts-cheat-sheet/][here].
 
-todo[More detail about the Franca IDL Editor will be provided soon.]
+todo[More detail about the Franca IDL Editor will be provided here later.]
 
 
 section:FrancaTooling_Generators[Franca IDL HTML Generator]

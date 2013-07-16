@@ -23,6 +23,7 @@ section2:FIDL_PrimitiveTypes[Primitive types]
 The primitive types supported by Franca are listed in the following table.
 
 table[
+	tf[tcol[1] tcol[7]]
 	tr[
 		td[e[Type name]]
 		td[e[Description]]
@@ -408,9 +409,10 @@ The following table lists all interface members and how their semantics is handl
 with respect to interface inheritance.
 
 table[
+	tf[tcol[1] tcol[4]]
 	tr[
-		td[e[interface element]]
-		td[e[inheritance semantics]]
+		td[e[Interface element]]
+		td[e[Inheritance semantics]]
 	]
 	tr[
 		td[attributes]
