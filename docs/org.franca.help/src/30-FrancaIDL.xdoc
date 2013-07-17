@@ -29,10 +29,14 @@ by a configurable type engine.
 
 table:PrimitiveTypes[
 	caption[Primitive types of Franca IDL.]
-	tf[tcol[1] tcol[7]]
+	tf[
+		professional
+		tcol[1] tcol[7]
+	]
 	tr[
 		td[e[Type name]]
 		td[e[Description]]
+		---
 	]
 	tr[
 		td[code[Franca][UInt8]]
@@ -416,10 +420,14 @@ with respect to interface inheritance.
 
 table:InheritanceSemantics[
 	caption[Franca interface members and their semantics with respect to interface inheritance.]
-	tf[tcol[1] tcol[4]]
+	tf[
+		professional
+		tcol[1] tcol[4]
+	]
 	tr[
 		td[e[Interface element]]
 		td[e[Inheritance semantics]]
+		---
 	]
 	tr[
 		td[attributes]

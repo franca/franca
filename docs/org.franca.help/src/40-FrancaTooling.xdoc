@@ -19,11 +19,15 @@ See ref:KeyboardShortcuts for a table of most important keyboard short-cuts for 
 
 table:KeyboardShortcuts[
 	caption[Most important Eclipse keyboard short-cuts for Franca.]
-	tf[tcol[1] tcol[1] tcol[2]]
+	tf[
+		professional
+		tcol[1] tcol[1] tcol[2]
+	]
 	tr[
 		td[e[Shortcut]]
 		td[e[Function]]
 		td[e[Description]]
+		---
 	]
 	tr[
 		td[Ctrl-/]

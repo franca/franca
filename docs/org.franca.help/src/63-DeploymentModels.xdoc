@@ -118,18 +118,23 @@ The e[host] attribute of a property defines at what locations in a definition
 this property applies; this is a similar concept as e[pointcuts] in aspect-oriented
 programming (but there are also some differences to that concept).
 
-There is a variety of hosts; ref:DeploymentInterfaceHosts lists those related to
+There is a variety of hosts; ref:DeploymentInterfaceHostsPart1 and
+ref:DeploymentInterfaceHostsPart2 list those related to
 Franca interfaces. Note that the properties for some hosts will
 be applied to several locations of a Franca IDL interface.
 
-table:DeploymentInterfaceHosts[
-	caption[Franca deployment: Property hosts related to interfaces.]
-	tf[tcol[1] tcol[3] tcol[2] tcol[2]]
+table:DeploymentInterfaceHostsPart1[
+	caption[Franca deployment: Property hosts related to interface elements.]
+	tf[
+		professional
+		tcol[1] tcol[3] tcol[2] tcol[2]
+	]
 	tr[
-		td[e[Name of host]]
+		td[e[Host]]
 		td[e[Description]]
 		td[e[Impacted Franca IDL elements]]
 		td[e[Example]]
+		---
 	]
 	tr[
 		td[code[FDeploy][interfaces]]
@@ -160,6 +165,21 @@ table:DeploymentInterfaceHosts[
 		td[Properties related to the arguments of methods and broadcasts]
 		td[input and output arguments of code[Franca][method], output arguments of code[Franca][broadcast]]
 		td[flag: is optional?]
+	]
+]
+
+table:DeploymentInterfaceHostsPart2[
+	caption[Franca deployment: Property hosts related to interface data types.]
+	tf[
+		professional
+		tcol[1] tcol[3] tcol[2] tcol[2]
+	]
+	tr[
+		td[e[Host]]
+		td[e[Description]]
+		td[e[Impacted Franca IDL elements]]
+		td[e[Example]]
+		---
 	]
 	tr[
 		td[code[FDeploy][struct_fields]]
@@ -252,12 +272,16 @@ related to providers and interface instances.
 
 table:DeploymentProviderHosts[
 	caption[Franca deployment: Property hosts related to providers and interface instances.]
-	tf[tcol[1] tcol[3] tcol[2] tcol[2]]
+	tf[
+		professional
+		tcol[1] tcol[3] tcol[2] tcol[2]
+	]
 	tr[
-		td[e[Name of host]]
+		td[e[Host]]
 		td[e[Description]]
 		td[e[Impacted Franca IDL elements]]
 		td[e[Example]]
+		---
 	]
 	tr[
 		td[code[FDeploy][providers]]
