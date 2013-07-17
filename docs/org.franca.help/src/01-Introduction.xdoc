@@ -9,9 +9,29 @@ Franca IDL files is available.
 
 section:Intro_FrancaLicense[Copyright / License]
 
-Copyright (c) 2012 Harman International
-(link[http://www.harman.com][http://www.harman.com]).
-All rights reserved.
+table[
+	tf[
+		professional
+		tcol[2] tcol[1]
+	]
+	tr[
+		td[Copyright (c) 2013 itemis AG
+		
+			(link[http://www.itemis.de][http://www.itemis.de]).
+			
+			All rights reserved.]
+		td[Updates and new features.]
+		---
+	]
+	tr[
+		td[Copyright (c) 2012 Harman International
+		
+			(link[http://www.harman.com][http://www.harman.com]).
+			
+			All rights reserved.]
+		td[Initial version.]
+	]
+]
 
 ul[
 	item[This document and the accompanying software/materials
