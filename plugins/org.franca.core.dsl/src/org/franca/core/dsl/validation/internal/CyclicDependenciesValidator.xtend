@@ -68,29 +68,29 @@ class CyclicDependenciesValidator {
 		}
 	}
 
-	def protected dispatch dependencies(FModel m) {
+	def dispatch dependencies(FModel m) {
 		val List<EObject> result = new ArrayList<EObject>()
 		result.addAll(m.interfaces)
 		result.addAll(m.typeCollections)
 		result
 	}
 
-	def protected dispatch dependencies(FInterface i) {
+	def dispatch dependencies(FInterface i) {
 		val result = new ArrayList<EObject>();
 		result.add(i.base)
 		result.addAll(i.types)
 		result
 	}
 
-	def protected dispatch dependencies(FTypeCollection c) {
+	def dispatch dependencies(FTypeCollection c) {
 		c.types
 	}
 
-	def protected dispatch dependencies(FArrayType a) {
+	def dispatch dependencies(FArrayType a) {
 		newArrayList(a.elementType.derived)
 	}
 
-	def protected dispatch dependencies(FStructType s) {
+	def dispatch dependencies(FStructType s) {
 
 		// s.elements.fold(<EObject>newArrayList(s.base),[result,element| result+= element.type.derived; result])
 		val result = newArrayList(s.base)
@@ -98,21 +98,21 @@ class CyclicDependenciesValidator {
 		result
 	}
 
-	def protected dispatch dependencies(FEnumerationType e) {
+	def dispatch dependencies(FEnumerationType e) {
 		newArrayList(e.base)
 	}
 
-	def protected dispatch dependencies(FTypeDef td) {
+	def dispatch dependencies(FTypeDef td) {
 		newArrayList(td.actualType.derived)
 	}
 
-	def protected dispatch dependencies(FUnionType u) {
+	def dispatch dependencies(FUnionType u) {
 		val result = newArrayList(u.base)
 		result.addAll(u.elements.map[type.derived])
 		result
 	}
 
-	def protected dispatch dependencies(FMapType m) {
+	def dispatch dependencies(FMapType m) {
 		newArrayList(m.keyType, m.valueType).map[derived]
 	}
 

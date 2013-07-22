@@ -6,12 +6,13 @@ import org.junit.runner.RunWith
 import org.eclipse.xtext.junit4.InjectWith
 import org.junit.Test
 import static junit.framework.Assert.*
-import java.util.Collectionsimport org.junit.Ignore
+import java.util.Collectionsimport org.junit.Ignoreimport java.util.ArrayList
+import java.util.Arrays
 
 @RunWith(typeof(XtextRunner2))
 @InjectWith(typeof(FrancaIDLTestsInjectorProvider))
 class CyclicDependenciesValidationTests extends ValidationTestBase {
-	@Test
+	@Test 
 	def void validateFStructTypeCycles() {
 		val model = '''
 			package a.b.c
@@ -22,7 +23,7 @@ class CyclicDependenciesValidationTests extends ValidationTestBase {
 				struct T extends S { }
 			}	
 		'''
-		assertDependencies('''Cyclic dependency detected: (MyTypes.T->MyTypes.S)(MyTypes.S->MyTypes.T)''', model.issues);
+		assertDependencyCycles(model, "MyTypes.T" , "MyTypes.S")
 	}
 	
 	@Test
@@ -36,9 +37,9 @@ class CyclicDependenciesValidationTests extends ValidationTestBase {
 				array TheArray of TheStruct 
 			}	
 		'''
-		assertDependencies('''Cyclic dependency detected: (MyTypes.TheStruct->MyTypes.TheArray)(MyTypes.TheArray->MyTypes.TheStruct)''', model.issues);
+		assertDependencyCycles(model, "MyTypes.TheStruct" , "MyTypes.TheArray")
 	}
-	
+	 
 	@Test
 	def void validateFEnumerationTypeCycles() {
 		val model = '''
@@ -50,9 +51,12 @@ class CyclicDependenciesValidationTests extends ValidationTestBase {
 				enumeration e4 extends e1{D}
 			}	
 		'''
-		assertDependencies('''(MyTypes.e1->MyTypes.e2)(MyTypes.e2->MyTypes.e3)(MyTypes.e3->MyTypes.e4)(MyTypes.e4->MyTypes.e1)''', model.issues);
+		assertDependencyCycles(model, "MyTypes.e2->MyTypes.e3->MyTypes.e4",
+			"MyTypes.e3->MyTypes.e4->MyTypes.e1",
+			"MyTypes.e4->MyTypes.e1->MyTypes.e2",
+			"MyTypes.e1->MyTypes.e2->MyTypes.e3"
+		)
 	}
-	
 	@Test
 	def void validateFUnionTypeCycles() {
 		val model = '''
@@ -67,7 +71,12 @@ class CyclicDependenciesValidationTests extends ValidationTestBase {
 				union i2  extends i1 {}
 			}
 		'''
-		assertDependencies("(MyTypes.S->MyTypes.u2)(MyTypes.u2->MyTypes.u1)(MyTypes.u1->MyTypes.S) und dazu (MyTypes.i1->MyTypes.i2)(MyTypes.i2->MyTypes.i1)", model.issues);
+		assertDependencyCycles(model, "MyTypes.u2->MyTypes.u1",
+			"MyTypes.S->MyTypes.u2",
+			"MyTypes.u1->MyTypes.S",
+			"MyTypes.i2",
+			"MyTypes.i1"
+		) 
 	}
 	
 	@Test
@@ -85,8 +94,13 @@ class CyclicDependenciesValidationTests extends ValidationTestBase {
 				map M4 {Int16 to M3}
 			}
 		'''
-		assertDependencies("(MyTypes.M1->MyTypes.S1)(MyTypes.S1->MyTypes.M1) und (MyTypes.M2->MyTypes.U2)(MyTypes.U2->MyTypes.M2) 
-							und (MyTypes.M3->MyTypes.M4)(MyTypes.M4->MyTypes.M3)", model.issues)
+		assertDependencyCycles(model, "MyTypes.M1",
+				"MyTypes.S1",
+				"MyTypes.M2",
+				"MyTypes.U2",
+				"MyTypes.M4",
+				"MyTypes.M3"
+		) 
 	}
 	@Test
 	def void validateFTypeDefCycles() {
@@ -98,7 +112,7 @@ class CyclicDependenciesValidationTests extends ValidationTestBase {
 				
 			}
 		'''
-		assertDependencies("(MyTypes.S1->MyTypes.TD1)(MyTypes.TD1->MyTypes.S1)", model.issues)
+		assertDependencyCycles(model, "MyTypes.TD1","MyTypes.S1")
 	}
 	@Test
 	@Ignore("Validation won't kick in due to issue http://code.google.com/a/eclipselabs.org/p/franca/issues/detail?id=45")
@@ -108,23 +122,23 @@ class CyclicDependenciesValidationTests extends ValidationTestBase {
 			interface T1 extends T2{}
 			interface T2 extends T1{} 
 		'''
-		assertDependencies("(MyTypes.S1->MyTypes.TD1)(MyTypes.TD1->MyTypes.S1)", model.issues)
+		assertDependencyCycles(model, "MyTypes.T1","MyTypes.T2")
 	}
 	
 	@Test
-	def validateArrayNoSelfReference() {
+	def void validateArrayNoSelfReference() {
 		val model = '''
 			package a.b.c
 			typeCollection MyTypes {
 				array MyArray of MyArray
 			}
 		'''
-		assertDependencies("(MyTypes.MyArray->MyTypes.MyArray)", model.issues)
+		assertDependencyCycles(model, "<this>-><this>")
 	}
 	
 	
 	@Test
-	def validateArrayNoIndirectSelfReference() {
+	def void validateArrayNoIndirectSelfReference() {
 		val model = '''
 			package a.b.c
 			typeCollection MyTypes {
@@ -132,12 +146,12 @@ class CyclicDependenciesValidationTests extends ValidationTestBase {
 				array OtherArray of MyArray
 			}
 		'''
-		assertDependencies("(MyTypes.MyArray->MyTypes.OtherArray)(MyTypes.OtherArray->MyTypes.MyArray)", model.issues)
+		assertDependencyCycles(model, "MyTypes.MyArray","MyTypes.OtherArray")
 	}
 	
 	
 	@Test
-	def validateStructNoSelfReference() {
+	def void validateStructNoSelfReference() {
 		val model = '''
 			package a.b.c
 			typeCollection MyTypes {
@@ -148,11 +162,11 @@ class CyclicDependenciesValidationTests extends ValidationTestBase {
 				}
 			}
 		'''
-		assertDependencies("(MyTypes.MyStruct->MyTypes.MyStruct)", model.issues)
+		assertDependencyCycles(model, "<this>-><this>")
 	}
 
 	@Test
-	def validateUnionNoSelfReference() {
+	def void validateUnionNoSelfReference() {
 		val model = '''
 			package a.b.c
 			typeCollection MyTypes {
@@ -163,23 +177,34 @@ class CyclicDependenciesValidationTests extends ValidationTestBase {
 				}
 			}
 		'''
-		
-		assertDependencies('''(MyTypes.MyUnion->MyTypes.MyUnion)''', model.getIssues)
+		assertDependencyCycles(model, "<this>-><this>")
 	}
 
 	@Test
-	def validateTypedefNoSelfReference() {
+	def void validateTypedefNoSelfReference() {
 		val model = '''
 			package a.b.c
 			typeCollection MyTypes {
 				typedef MyTypedef is MyTypedef
 			}
 		'''
-		assertDependencies('''(MyTypes.MyTypedef->MyTypes.MyTypedef)''', model.getIssues)
+		assertDependencyCycles(model, "<this>-><this>")
 	}
-	
-	def assertDependencies(String expected, String actual){
-		assertEquals("Not the same dependencies:" + expected + " vs " + actual,expected.sortDependencies, actual.sortDependencies)		
+	def assertDependencyCycles(String model, String... cycles){
+		val issues = model.issues
+		val splitIssues = new ArrayList(Arrays::asList(issues.split("\n")))
+        for (cycle:cycles){
+        	var c = cycle
+			if(! cycle.startsWith("<this>->")) c= "<this>->" + c
+			if(! cycle.endsWith("-><this>")) c= c+"-><this>"
+			val d = c
+			val hit = splitIssues.findFirst[contains(d)]
+			if(hit==null){
+				fail("Wert '"+c+"' nicht in issue enthalten: " + issues)
+			}
+			splitIssues.remove(hit)
+        }			
+		assertTrue("unerwartete Validierungsfehler: " + splitIssues, splitIssues.nullOrEmpty)		
 	}
 	
 	def sortDependencies(String msg){
