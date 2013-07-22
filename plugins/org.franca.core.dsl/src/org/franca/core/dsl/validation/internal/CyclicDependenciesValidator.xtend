@@ -57,7 +57,7 @@ class CyclicDependenciesValidator {
 							eAttribute==node.eClass.EAllAttributes.head
 						}
 						if(eAttribute!=null){
-							reporter.reportError("Cyclic dependency detected: " + msg, node, eAttribute);
+							reporter.reportError(msg.toString, node, eAttribute);
 						} 
 					}
 					// ... and shifts msdPerNode in order to make the errormessage appear specific per node 
