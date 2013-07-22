@@ -1,13 +1,15 @@
 package org.franca.core.dsl.tests
 
+import java.util.ArrayList
+import java.util.Arrays
+import org.eclipse.xtext.junit4.InjectWith
 import org.eclipselabs.xtext.utils.unittesting.XtextRunner2
 import org.franca.core.dsl.FrancaIDLTestsInjectorProvider
-import org.junit.runner.RunWith
-import org.eclipse.xtext.junit4.InjectWith
+import org.junit.Ignore
 import org.junit.Test
+import org.junit.runner.RunWith
+
 import static junit.framework.Assert.*
-import java.util.Collectionsimport org.junit.Ignoreimport java.util.ArrayList
-import java.util.Arrays
 
 @RunWith(typeof(XtextRunner2))
 @InjectWith(typeof(FrancaIDLTestsInjectorProvider))
@@ -205,22 +207,6 @@ class CyclicDependenciesValidationTests extends ValidationTestBase {
 			splitIssues.remove(hit)
         }			
 		assertTrue("unerwartete Validierungsfehler: " + splitIssues, splitIssues.nullOrEmpty)		
-	}
-	
-	def sortDependencies(String msg){
-		var tmpMsg = msg;
-		val result = <String>newArrayList()
-		var f = tmpMsg.indexOf('(');
-		var t = if(f==-1) -1 else tmpMsg.indexOf(')', f);
-		while(t!=-1 ) {
-			result += tmpMsg.substring(f+1,t)
-			tmpMsg=tmpMsg.substring(t);
-			f = tmpMsg.indexOf('(');
-			t = if(f==-1) -1 else tmpMsg.indexOf(')', f);
-		}
-		result.remove("y|ies") // Cause error message contains 'dependenc(y|ies)'
-		Collections::sort(result);
-		result
 	}
 	
 }
