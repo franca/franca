@@ -21,7 +21,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.franca.core.dsl.tests.base;bundle-version="0.8.2",
  org.eclipse.xtend.lib,
  com.google.guava,
- org.eclipse.xtext.xbase.lib
+ org.eclipse.xtext.xbase.lib,
+ org.eclipse.xtext.ui
 Import-Package: org.apache.commons.logging,
  org.apache.log4j,
  org.junit;version="4.5.0",
