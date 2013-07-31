@@ -28,12 +28,10 @@ Workflow {
 
 	component = DirectoryCleaner {
 		directory = "${runtimeProject}/src-gen"		
-		exclude = "dummy.txt"
 	}
 
 	component = DirectoryCleaner {
 		directory = "${runtimeProject}.ui/src-gen"
-		exclude = "dummy.txt"		
 	}
 
 	component = Generator {
