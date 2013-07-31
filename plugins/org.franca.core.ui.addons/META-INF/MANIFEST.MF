@@ -18,3 +18,4 @@ Require-Bundle: org.eclipse.ui,
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Activator: org.franca.core.ui.addons.Activator
+Bundle-Vendor: itemis AG

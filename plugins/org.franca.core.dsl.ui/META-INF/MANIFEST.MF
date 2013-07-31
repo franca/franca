@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Franca IDL UI plugin
-Bundle-Vendor: Harman Infotainment Division
+Bundle-Vendor: itemis AG
 Bundle-Version: 0.8.8.qualifier
 Bundle-SymbolicName: org.franca.core.dsl.ui; singleton:=true
 Bundle-ActivationPolicy: lazy
