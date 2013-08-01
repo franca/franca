@@ -318,12 +318,15 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 	 * 
 	 * @return true if an error is present, false otherwise
 	 */
-	private boolean checkLocalTypes (List<FType> types, FDSpecificationExtender specHelper,
+	private boolean checkLocalTypes (List<FType> types, 
+			FDSpecificationExtender specHelper,
 			PropertyDefChecker checker,
-			FDMapper mapper, FDSpecification spec,
+			FDMapper mapper, 
+			FDSpecification spec,
 			EStructuralFeature parentFeature)
 	{
 		boolean hasError = false;
+		
 		for(FType tc : types) {
 			if (tc instanceof FArrayType) {
 				FDArray c = (FDArray) mapper.getFDElement(tc);
