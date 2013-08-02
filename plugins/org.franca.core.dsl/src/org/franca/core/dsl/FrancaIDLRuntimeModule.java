@@ -4,6 +4,8 @@
 package org.franca.core.dsl;
 
 import org.eclipse.xtext.conversion.IValueConverterService;
+import org.eclipse.xtext.resource.IDefaultResourceDescriptionStrategy;
+import org.franca.core.dsl.resource.FrancaCoreResourceDescriptionStrategy;
 
 import com.google.inject.Binder;
 
@@ -20,13 +22,18 @@ public class FrancaIDLRuntimeModule extends org.franca.core.dsl.AbstractFrancaID
 		binder.bind(org.eclipse.xtext.scoping.IScopeProvider.class).annotatedWith(
 				com.google.inject.name.Names.named(org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider.NAMED_DELEGATE)).to(
 						org.eclipse.xtext.scoping.impl.ImportedNamespaceAwareLocalScopeProvider.class);
+		
 	}
 
 
 	@Override
 	public Class<? extends IValueConverterService> bindIValueConverterService() {
 		return FrancaValueConverters.class;
-	}	
-
+	}
+	
+	public Class<? extends IDefaultResourceDescriptionStrategy> bindIDefaultResourceDescriptionStrategy() {
+		return FrancaCoreResourceDescriptionStrategy.class;
+	}
+	
 }
 
