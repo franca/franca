@@ -10,7 +10,7 @@
 	</parent>
 
 	<artifactId>org.franca.core.dsl.tests</artifactId>
-	<packaging>eclipse-plugin</packaging>
+	<packaging>eclipse-test-plugin</packaging>
 	<dependencies>
 		<!-- It is important to have JUnit >= 4.7 as dependency to select the right JUnit Provider see http://maven.apache.org/plugins/maven-surefire-plugin/examples/junit.html -->
 		<dependency>
@@ -52,7 +52,13 @@
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-surefire-plugin</artifactId>
 				<configuration>
-					<skip>true</skip>
+					<skip>false</skip>
+					<testSuite>org.franca.core.dsl.tests</testSuite>
+					<testClass>org.franca.core.dsl.tests.ui.CyclicDependenyValidationUITests</testClass>
+					<!-- MacOS specific option to run an SWT application from the command line.
+							See http://www.eclipse.org/swt/faq.php#carbonapp
+					-->
+					<argLine>-XstartOnFirstThread</argLine>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -70,6 +76,9 @@
 							<includes>
 							<include>**/*Test*.java</include>
 							</includes>
+							<excludes>
+							<exclude>**/CyclicDependenyValidationUITests.java</exclude>
+							</excludes>
 						</configuration>
 						<goals>
 							<goal>test</goal>
