@@ -1,20 +1,32 @@
+/*******************************************************************************
+ * Copyright (c) 2013 itemis AG (http://www.itemis.de).
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************/
 package org.franca.tools.contracts.tracegen
 
 import java.util.Collection
-import java.util.HashSet
+import java.util.HashMap
+import java.util.List
+import org.eclipse.xtext.xbase.lib.Pair
 import org.franca.core.franca.FState
 import org.franca.core.franca.FTransition
 import org.franca.tools.contracts.tracegen.strategies.DefaultStrategyCollection
 import org.franca.tools.contracts.tracegen.strategies.StrategyCollection
 import org.franca.tools.contracts.tracegen.strategies.collect.CollectTransitionsStrategy
-import org.franca.tools.contracts.tracegen.traces.BehaviourAwareTrace
+import org.franca.tools.contracts.tracegen.strategies.events.EventData
+import org.franca.tools.contracts.tracegen.strategies.events.TriggerSimualtionStrategy
 import org.franca.tools.contracts.tracegen.strategies.selectors.TransitionSelector
+import org.franca.tools.contracts.tracegen.traces.BehaviourAwareTrace
 
 class TraceGenerator {
 	
-	HashSet<FTransition> transitionsATraceStartedWith = newHashSet
+	HashMap<FTransition, List<EventData>> traceStartingData = newHashMap
 	CollectTransitionsStrategy collector
 	TransitionSelector selector
+	TriggerSimualtionStrategy triggersim
 	
 	new() {
 		this(null)
@@ -26,47 +38,66 @@ class TraceGenerator {
 		
 		collector = localStrategies.collectTransitionsStrategy
 		selector = localStrategies.pathSelector
+		triggersim = localStrategies.triggerSimulator
 	}
 	
 	def public simulate(FState startingState) {
 		val startingTrace = new BehaviourAwareTrace(startingState);
 		val Collection<BehaviourAwareTrace> traces = newHashSet
 
-		val Collection<FTransition> possibleTransitions = collector.execute(startingTrace)
-		val FTransition nextTransition = selector.execute(startingTrace, possibleTransitions)
-		startTrace(startingTrace, nextTransition, traces)
+		val Collection<Pair<FTransition, Iterable<EventData>>> possibleTransitions = collector.execute(startingTrace)
+		val nextStep = selector.execute(startingTrace, possibleTransitions)
+		startTrace(startingTrace, nextStep, traces)
 		
 		return traces
 	}
 	
-	def private startTrace(BehaviourAwareTrace trace, FTransition nextTransition, Collection<BehaviourAwareTrace> traces) {
+	def private startTrace(BehaviourAwareTrace trace, Pair<FTransition, EventData> nextStep, Collection<BehaviourAwareTrace> traces) {
 		traces += trace
-		trace.use(nextTransition)
-		this.transitionsATraceStartedWith += nextTransition
+		trace.use(nextStep.key, nextStep.value)
+		var startingData = this.traceStartingData.get(nextStep.key)
+		if (startingData == null) {
+			startingData = newArrayList(nextStep.value)
+			this.traceStartingData.put(nextStep.key, startingData)
+		} else {
+			startingData += nextStep.value
+		}
 		
 		simulate(trace, traces)
 	}
 	
 	def private simulate(BehaviourAwareTrace trace, Collection<BehaviourAwareTrace> traces) {
-		var Collection<FTransition> possibleTransitions = collector.execute(trace)
-		var FTransition nextTransition = selector.execute(trace, possibleTransitions)
-		while (nextTransition != null) {
-			trace.use(nextTransition)
-			possiblyStartNewTraces(trace, nextTransition, possibleTransitions, traces)
-			possibleTransitions = collector.execute(trace)
-			nextTransition = selector.execute(trace, possibleTransitions)
+		var possibleSteps = collector.execute(trace)
+		var nextStep = selector.execute(trace, possibleSteps)
+		while (nextStep != null) {
+			if (trace.currentState.name.equals("ReqCancel") && !nextStep.key.to.name.equals("Idle")) {
+				println("bullshit")
+			}
+			possiblyStartNewTraces(trace, nextStep.value, possibleSteps, traces)
+			trace.use(nextStep.key, nextStep.value)
+			possibleSteps = collector.execute(trace)
+			nextStep = selector.execute(trace, possibleSteps)
 		}
 	}
 	
-	def void possiblyStartNewTraces(BehaviourAwareTrace currentTrace, FTransition lastTransition, Collection<FTransition> possibleTransitions, Collection<BehaviourAwareTrace> traces) {
+	def void possiblyStartNewTraces(
+		BehaviourAwareTrace currentTrace,
+		EventData latestUsedEventData,
+		Collection<Pair<FTransition, Iterable<EventData>>> possibleSteps,
+		Collection<BehaviourAwareTrace> traces
+	) {
 		if (traces.size >= 1000) {return;}
 		
-		for (next : possibleTransitions) {
-			if (! next.equals(lastTransition) && !this.transitionsATraceStartedWith.contains(next)) {
-				// TODO:
-				// right now each transition starts one trace. improve this! 
-				startTrace(new BehaviourAwareTrace(currentTrace), next, traces)
-			}
+		val unused = possibleSteps.map[
+			val tr = it.key;
+			tr -> it.value.filter[
+				val startingData = this.traceStartingData.get(tr);
+				(! (it === latestUsedEventData)) && (startingData == null || ! startingData.contains(it))
+			]
+		].filter[! it.value.empty]
+		val newStart = selector.execute(currentTrace, unused)
+		if (newStart != null) {
+			startTrace(new BehaviourAwareTrace(currentTrace), newStart, traces)
 		}
 	}
 	

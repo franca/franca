@@ -5,14 +5,12 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package org.franca.tools.contracts.tracegen.strategies.selectors
+package org.franca.tools.contracts.tracegen.values.simple
 
-import org.franca.core.franca.FTransition
-import org.franca.tools.contracts.tracegen.traces.Trace
-import org.franca.tools.contracts.tracegen.strategies.events.EventData
+import org.franca.core.franca.FBasicTypeId
 
-interface TransitionSelector {
+interface SimpleValueGenerator {
 	
-	def Pair<FTransition, EventData> execute(Trace currentTrace, Iterable<Pair<FTransition, Iterable<EventData>>> possibilities)
+	def public Object createInitializedSimpleValue(FBasicTypeId id)
 	
 }

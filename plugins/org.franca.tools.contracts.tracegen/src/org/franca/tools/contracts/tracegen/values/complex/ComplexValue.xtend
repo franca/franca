@@ -5,14 +5,12 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package org.franca.tools.contracts.tracegen.strategies.selectors
+package org.franca.tools.contracts.tracegen.values.complex
 
-import org.franca.core.franca.FTransition
-import org.franca.tools.contracts.tracegen.traces.Trace
-import org.franca.tools.contracts.tracegen.strategies.events.EventData
-
-interface TransitionSelector {
+abstract class ComplexValue {
 	
-	def Pair<FTransition, EventData> execute(Trace currentTrace, Iterable<Pair<FTransition, Iterable<EventData>>> possibilities)
+	public static final NULL nil = NULL::getInstance();
+	
+	def public abstract ComplexValue copy() 
 	
 }

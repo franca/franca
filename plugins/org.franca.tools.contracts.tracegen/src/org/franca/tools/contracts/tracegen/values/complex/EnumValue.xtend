@@ -5,14 +5,24 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package org.franca.tools.contracts.tracegen.strategies.selectors
+package org.franca.tools.contracts.tracegen.values.complex
 
-import org.franca.core.franca.FTransition
-import org.franca.tools.contracts.tracegen.traces.Trace
-import org.franca.tools.contracts.tracegen.strategies.events.EventData
+import org.franca.core.franca.FEnumerator
 
-interface TransitionSelector {
+class EnumValue extends ComplexValue {
 	
-	def Pair<FTransition, EventData> execute(Trace currentTrace, Iterable<Pair<FTransition, Iterable<EventData>>> possibilities)
+	FEnumerator actualEnumerator
+	
+	def public void setValue(FEnumerator value) {
+		this.actualEnumerator = value
+	}
+	
+	def public FEnumerator getValue() {
+		return this.actualEnumerator
+	}
+	
+	override copy() {
+		return ((new EnumValue) => [it.actualEnumerator = this.actualEnumerator])
+	}
 	
 }

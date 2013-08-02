@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2013 itemis AG (http://www.itemis.de).
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************/
 package org.franca.tools.contracts.tracegen.traces
 
 import java.util.HashMap
@@ -7,53 +14,64 @@ import org.apache.commons.lang3.StringUtils
 import org.franca.core.franca.FEventOnIf
 import org.franca.core.franca.FState
 import org.franca.core.franca.FTransition
-import com.google.common.collect.Maps
+import org.franca.tools.contracts.tracegen.strategies.events.EventData
+import com.google.common.collect.Lists
 
 class TraceUsageStatistics {
 	
 	FState state
 	Integer visits
-	HashMap<FTransition, Integer> usesOfTransition
+	HashMap<FTransition, List<EventData>> usesOfTransition
 	
 	new (TraceUsageStatistics original) {
 		state = original.state
 		visits = original.visits
-		usesOfTransition = Maps::newHashMap(original.usesOfTransition)
+		usesOfTransition = newHashMap
+		for (entry : original.usesOfTransition.entrySet) {
+			//TODO: clearify, whether it is sufficient not to copy the event data object but only copy the links
+			usesOfTransition.put(entry.key, Lists::newArrayList(entry.value))
+		}
 	}
 	
-	new (FTransition transition) {
+	new (FTransition transition, EventData triggeringEventData) {
 		this.state = transition.eContainer as FState
 		this.visits = 1
-		usesOfTransition = new HashMap<FTransition, Integer>(this.state.transitions.size, 1.0f)
-		usesOfTransition.put(transition, 1)
+		usesOfTransition = new HashMap<FTransition, List<EventData>>(this.state.transitions.size, 1.0f)
+		usesOfTransition.put(transition, newArrayList(triggeringEventData))
 	}
 	
 	/**
 	 * Precondition: the container of transition (starting state) must be the same as the one, the statistics object
 	 * had been created with.
 	 */
-	def use(FTransition transition) {
+	def void use(FTransition transition, EventData triggeringEventData) {
 		visits = visits + 1
-		var uses = usesOfTransition.get(transition)
-		if (uses == null) {
-			uses = 0;
+		var events = usesOfTransition.get(transition)
+		if (events == null) {
+			events = newArrayList(triggeringEventData);
+			usesOfTransition.put(transition, events)
+		} else {
+			events += triggeringEventData
 		}
-		usesOfTransition.put(transition, uses + 1)
 	}
 	
-	def getUses (FTransition transition) {
+	def getNumberOfUses (FTransition transition) {
 		val result = usesOfTransition.get(transition)
 		if (result == null) {
 			return 0;
 		}
-		return result;
+		return result.size;
+	}
+	
+	def getTriggeringEventDataList(FTransition transition) {
+		usesOfTransition.get(transition) ?: emptyList
 	}
 	
 }
 
 class Trace {
 	
-	List<FTransition> orderedTransitions = newLinkedList
+	List<Pair<FTransition, EventData>> orderedTransitions = newLinkedList
 	HashSet<FState> states = newHashSet
 	HashSet<FTransition> usedTransitions = newHashSet
 	
@@ -84,17 +102,61 @@ class Trace {
 	/**
 	 * precondition: transition.from == oderedTransitions.last.to || (states.size == 1 && transition.from == states.head)
 	 */
-	def use(FTransition transition) {
-		orderedTransitions += transition
+	def use(FTransition transition, EventData triggeringEventData) {
+		//debug:
+		if (orderedTransitions.last != null && orderedTransitions.last.key.to != currentState) {
+			println("bullshit")
+		}
+		
+		{
+			//debug:
+			var int ii = 0
+			var boolean error = false
+			while (!error && ii < this.orderedTransitions.size - 1) {
+				error = this.orderedTransitions.get(ii).key.to.name.equals("ReqCancel") &&
+					! this.orderedTransitions.get(ii + 1).key.to.name.equals("Idle");
+				ii = ii + 1;
+			}
+			if (error) {
+				println("bullshit")
+			}
+		}
+		
+		if (orderedTransitions.last!=null && !triggeringEventData.actualArguments.empty && triggeringEventData.equals(orderedTransitions.last.value)) {
+			println("seams to be bullshit")
+			if (orderedTransitions.last.value === triggeringEventData) {
+				println("big bullshit")
+			}
+		}
+		
+		if (orderedTransitions.last != null && orderedTransitions.last.key.to != transition.eContainer) {
+			println("bullshit")
+		}
+		
+		orderedTransitions += transition -> triggeringEventData
 		usedTransitions += transition
 		this.currentState = transition.to
 		
 		val start = transition.eContainer as FState
 		val statistics = this.statistics.get(start)
 		if (statistics == null) {
-			this.statistics.put(start, new TraceUsageStatistics(transition))
+			this.statistics.put(start, new TraceUsageStatistics(transition, triggeringEventData))
 		} else {
-			statistics.use(transition)
+			statistics.use(transition, triggeringEventData)
+		}
+		
+		{
+			//debug:
+			var int ii = 0
+			var boolean error = false
+			while (!error && ii < this.orderedTransitions.size - 1) {
+				error = this.orderedTransitions.get(ii).key.to.name.equals("ReqCancel") &&
+					! this.orderedTransitions.get(ii + 1).key.to.name.equals("Idle");
+				ii = ii + 1;
+			}
+			if (error) {
+				println("bullshit")
+			}
 		}
 	}
 	
@@ -104,7 +166,11 @@ class Trace {
 	}
 	
 	def List<FEventOnIf> toEventList() {
-		orderedTransitions.map[trigger.event]
+		orderedTransitions.map[value.event]
+	}
+	
+	def List<EventData> toActualEventDataList() {
+		orderedTransitions.map[value]		
 	}
 	
 	override toString() {
@@ -112,34 +178,13 @@ class Trace {
 		'''
 			 CLIENT                                SERVER  | STATE TRACE
 			«FOR tr : orderedTransitions»
-				«val ev = tr.trigger.event»
+				«val evData = tr.value»
+				«val ev = evData.event»
 				«val direction = if (ev.getUpdate()!=null || ev.getRespond()!=null || ev.getSignal()!=null) "<--" else "-->"»
-				«val trg = StringUtils::rightPad(StringUtils::abbreviate(getTriggerString(ev), max), max)»
-				«direction» «trg» «direction» | «tr.to.name»
+				«val actuals = tr.value.actualArguments.map[value].join(", ")»
+				«val trg = StringUtils::rightPad(StringUtils::abbreviate(getTriggerString(ev) + '''(«actuals»)''', max), max)»
+				«direction» «trg» «direction» | «tr.key.to.name»
 			«ENDFOR»
-		'''
-	}
-	
-	def simpleToString() {
-		'''
-		BEGIN TRACE
-		«FOR it : orderedTransitions»
-			transition from «(it.eContainer as FState).name» --> «to.name»
-		«ENDFOR»
-		END TRACE
-		'''
-	}
-	
-	def richToString() {
-		'''
-		BEGIN TRACE
-		«FOR it : orderedTransitions»
-			from «(it.eContainer as FState).name» take unnamed transition with
-				guard <missing toString for> «guard»
-				trigger <missing toString for> «trigger»
-				to «to.name»
-		«ENDFOR»
-		END TRACE
 		'''
 	}
 	
