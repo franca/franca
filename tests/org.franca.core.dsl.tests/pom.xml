@@ -20,6 +20,20 @@
 		</dependency>
 	</dependencies>
 
+	<profiles>
+		<profile>
+			<id>macosx-jvm-flags</id>
+			<activation>
+				<os>
+					<family>mac</family>
+				</os>
+			</activation>
+			<properties>
+				<os-jvm-flags>-XstartOnFirstThread</os-jvm-flags>
+			</properties>
+		</profile>
+	</profiles>
+
 	<build>
 		<sourceDirectory>src</sourceDirectory>
 		<plugins>
@@ -58,7 +72,7 @@
 					<!-- MacOS specific option to run an SWT application from the command line.
 							See http://www.eclipse.org/swt/faq.php#carbonapp
 					-->
-					<!-- <argLine>-XstartOnFirstThread</argLine>  -->
+					<argLine>${os-jvm-flags}</argLine>
 				</configuration>
 			</plugin>
 			<plugin>
