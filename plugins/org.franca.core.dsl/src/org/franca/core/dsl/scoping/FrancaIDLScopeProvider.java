@@ -76,10 +76,13 @@ public class FrancaIDLScopeProvider extends AbstractDeclarativeScopeProvider {
 		FTypeRef typeRef = ts.getType(var.getTarget());
 		//FTypedElement te = var.getTarget().getElement();
 		//FType type = te.getType().getDerived();
-		FType type = typeRef.getDerived();
-		if (type!=null && type instanceof FCompoundType) {
-			FCompoundType compound = (FCompoundType)type;
-			return Scopes.scopeFor(compound.getElements());
+		//While editing the model there might be no typeRef 
+		if (typeRef != null) {
+			FType type = typeRef.getDerived();
+			if (type!=null && type instanceof FCompoundType) {
+				FCompoundType compound = (FCompoundType)type;
+				return Scopes.scopeFor(compound.getElements());
+			}
 		}
 		return IScope.NULLSCOPE;
 	}

@@ -358,8 +358,12 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 		} else if (e instanceof FTypeRef) {
 			name = getName((FTypeRef)e);
 		} else {
-			name = e.eGet(FrancaPackage.Literals.FMODEL_ELEMENT__NAME)
-					.toString();
+			Object modelElementName = e.eGet(FrancaPackage.Literals.FMODEL_ELEMENT__NAME);
+			//while editing the model the modelElementName might not be set
+			if (modelElementName != null) {
+				name = e.eGet(FrancaPackage.Literals.FMODEL_ELEMENT__NAME)
+						.toString();
+			}
 		}
 		return name;
 	}
