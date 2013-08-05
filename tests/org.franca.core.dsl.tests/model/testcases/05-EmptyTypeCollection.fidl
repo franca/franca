@@ -1,4 +1,4 @@
 // one empty type collection
-package a.b.c
+package testcases
 
 typeCollection MyTypes { }

@@ -3,7 +3,7 @@
 import "11-SpecPropertyArrayTypes.fdepl"
 import "../fidl/05-CoverageInterface.fidl"
 
-define a.b.c.MySpec for interface a.b.c.CoverageInterface {
+define a.b.c.MySpec for interface fidl.CoverageInterface {
 	method aMethod {
 		// mandatory properties
 		BooleanPropMandatory = { true }

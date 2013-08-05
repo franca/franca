@@ -1,5 +1,5 @@
 // minimal interface definition
-package a.b.c
+package testcases
 
 <** @description : Test interface with some meta information. **>
 interface MyInterface {

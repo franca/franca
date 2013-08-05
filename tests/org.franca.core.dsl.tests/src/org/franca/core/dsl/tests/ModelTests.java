@@ -104,6 +104,11 @@ public class ModelTests extends XtextTest {
     }
     
     @Test
+    public void test_37_StructPolymorphic() {
+    	testFile("testcases/37-StructPolymorphic.fidl");
+    }
+    
+    @Test
     public void test_50_InterfaceMinimal() {
     	testFile("testcases/50-InterfaceMinimal.fidl");
     }
@@ -131,6 +136,11 @@ public class ModelTests extends XtextTest {
     @Test
     public void test_65_Broadcast() {
     	testFile("testcases/65-Broadcast.fidl");
+    }
+    
+    @Test
+    public void test_80_InterfaceManagingOthers() {
+    	testFile("testcases/80-InterfaceManagingOthers.fidl");
     }
     
 }

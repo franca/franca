@@ -67,7 +67,7 @@ class Franca2DBusTransformation {
 	def create DbusxmlFactory::eINSTANCE.createPropertyType transformAttribute (FAttribute src) {
 		name = src.name
 		type = transformType2TypeString(src.type, src.array!=null)
-		if (src.readonly == "readonly")
+		if (src.isReadonly)
 			access = AccessType::READ
 		else
 			access = AccessType::READWRITE
@@ -276,20 +276,36 @@ class Franca2DBusTransformation {
 	}
 
 	def String transformStructType (FStructType src) {
-		var ts = "("
+		if (src.isPolymorphicTree) {
+			// polymorphic structs will be transported across DBus as variants.
+			// the integer at the beginning is a tag which indicates the actual type.
+			return "(iv)"
+		} else {
+			return "(" + src.getStructTypeString + ")"
+		}
+	}
+
+	private def boolean isPolymorphicTree (FStructType src) {
+		if (src.base!=null)
+			src.base.isPolymorphicTree
+		else
+			src.isPolymorphic
+	}
+	
+	private def String getStructTypeString (FStructType src) {
+		var ts = ""
+		
+		// get type string of base struct (recursive call)
+		if (src.base!=null) {
+			ts = ts + src.base.getStructTypeString
+		}
+		
+		// compile own type string
 		for(e : src.elements) {
 			ts = ts + e.type.transformType2TypeString(e.array!=null)
 		}
-		ts = ts + ")"
-
-		if (src.base!=null) {
-			// TODO: handle src.base
-			addIssue(FEATURE_NOT_HANDLED_YET, src,
-				FrancaPackage::FSTRUCT_TYPE__BASE,
-				"Inheritance for struct " + src.name + " not yet supported")
-		}
-
-		return ts
+		
+		ts
 	}
 	
 	def String transformEnumType (FEnumerationType src) {

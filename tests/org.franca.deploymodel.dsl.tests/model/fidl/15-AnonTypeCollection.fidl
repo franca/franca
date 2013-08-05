@@ -1,0 +1,8 @@
+package fidl
+
+// anonymous type collection (i.e., it has no name :-) )
+typeCollection {
+	struct MyStruct {
+		String aString
+	}
+}

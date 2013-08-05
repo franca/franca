@@ -3,10 +3,37 @@
 */
 package org.franca.deploymodel.dsl.ui.contentassist;
 
-import org.franca.deploymodel.dsl.ui.contentassist.AbstractFDeployProposalProvider;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.xtext.Assignment;
+import org.eclipse.xtext.resource.IEObjectDescription;
+import org.eclipse.xtext.scoping.IScope;
+import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext;
+import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor;
+import org.franca.core.franca.FTypeCollection;
+import org.franca.deploymodel.dsl.fDeploy.FDeployPackage;
 /**
  * see http://www.eclipse.org/Xtext/documentation/latest/xtext.html#contentAssist on how to customize content assistant
  */
 public class FDeployProposalProvider extends AbstractFDeployProposalProvider {
 
+	@Override
+	public void completeFDTypes_Target(EObject model, Assignment assignment,
+			ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		IScope scope = this.getScopeProvider().getScope(model, FDeployPackage.Literals.FD_TYPES__TARGET);
+		
+		for (IEObjectDescription description : scope.getAllElements()) {
+			//only FTypeCollection instances will be in the scope
+			FTypeCollection collection = (FTypeCollection) description.getEObjectOrProxy();	
+			String qualifiedName = description.getQualifiedName().toString();
+			String uri = collection.eResource().getURI().toString();
+
+			if (collection.getName() == null || collection.getName().isEmpty()) {
+				acceptor.accept(this.createCompletionProposal(qualifiedName, qualifiedName + " (anonymous) - "+uri, null, context));
+			}
+			else {
+				acceptor.accept(this.createCompletionProposal(qualifiedName, qualifiedName + " - " + uri, null, context));
+			}
+		}
+	}
+	
 }

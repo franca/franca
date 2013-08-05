@@ -5,7 +5,7 @@ specifications with additional information. This is a way to ensure that Franca 
 interfaces contain the core information needed to describe the semantics of APIs.
 All additional information is stored in some deployment model.
 
-The following diagram shows how Franca supports the various artifacts which have
+ref:DeploymentSupport shows how Franca supports the various artifacts which have
 to be described when defining software architectures. The base elements are 
 e[interface definitions]. Those are completely supported by the Franca IDL. 
 All other architecture artifacts are based on these interface definitions,
@@ -19,8 +19,8 @@ ul[
 		serialization, encoding or quality of service.]
 ]
 
-img[images/franca_idl_and_deploy_overview.png][Architecture and interface artifacts
-and how Franca supports their definition.][ ][ ]
+img:DeploymentSupport[images/franca_idl_and_deploy_overview.png]
+	[Architecture and interface artifacts and how Franca supports their definition.][][][.5]
 
 This information is typically supported by Franca's configurable deployment models.
 However, Franca deployment models will not completely replace architecture definition
@@ -75,15 +75,15 @@ ul[
 	]
 ]
 
-The following diagram shows how e[deployment specifications], e[deployment definitions] and
+ref:DeploymentOverview shows how e[deployment specifications], e[deployment definitions] and
 the actual Franca IDL interfaces are related. A specification is created for a given target
 platform (or code generator for this platform). Based on this specification, one deployment
 e[definition] has to be provided for each actual Franca IDL interface. The specification
 describes which additional information has to be provided for an interface on this target
 platform - the definition lists this information for one concrete interface.
   
-img[images/franca_deployment_interfaces.png][Franca deployment: specifications,
-definitions and actual interfaces.][ ][ ]
+img:DeploymentOverview[images/franca_deployment_interfaces.png]
+	[Franca deployment: specifications, definitions and actual interfaces.][][][.7]
 
 It is important to remember here that each Franca IDL interface can be deployed on 
 many different target platforms. Thus, there might be many deployment definitions
@@ -118,16 +118,23 @@ The e[host] attribute of a property defines at what locations in a definition
 this property applies; this is a similar concept as e[pointcuts] in aspect-oriented
 programming (but there are also some differences to that concept).
 
-There is a variety of hosts; the following table lists those related to
+There is a variety of hosts; ref:DeploymentInterfaceHostsPart1 and
+ref:DeploymentInterfaceHostsPart2 list those related to
 Franca interfaces. Note that the properties for some hosts will
 be applied to several locations of a Franca IDL interface.
 
-table[
+table:DeploymentInterfaceHostsPart1[
+	caption[Franca deployment: Property hosts related to interface elements.]
+	tf[
+		professional
+		tcol[1] tcol[3] tcol[2] tcol[2]
+	]
 	tr[
-		td[e[Name of host]]
+		td[e[Host]]
 		td[e[Description]]
 		td[e[Impacted Franca IDL elements]]
 		td[e[Example]]
+		---
 	]
 	tr[
 		td[code[FDeploy][interfaces]]
@@ -145,7 +152,7 @@ table[
 		td[code[FDeploy][methods]]
 		td[Properties related to methods of a Franca IDL interface]
 		td[code[Franca][method]]
-		td[calling style (blocking/non-blocking)]
+		td[calling style (blocking / non-blocking)]
 	]
 	tr[
 		td[code[FDeploy][broadcasts]]
@@ -158,6 +165,21 @@ table[
 		td[Properties related to the arguments of methods and broadcasts]
 		td[input and output arguments of code[Franca][method], output arguments of code[Franca][broadcast]]
 		td[flag: is optional?]
+	]
+]
+
+table:DeploymentInterfaceHostsPart2[
+	caption[Franca deployment: Property hosts related to interface data types.]
+	tf[
+		professional
+		tcol[1] tcol[3] tcol[2] tcol[2]
+	]
+	tr[
+		td[e[Host]]
+		td[e[Description]]
+		td[e[Impacted Franca IDL elements]]
+		td[e[Example]]
+		---
 	]
 	tr[
 		td[code[FDeploy][struct_fields]]
@@ -245,14 +267,21 @@ the same interface. Deployment models often have to support this, e.g., in order
 define network addresses on the interface instance level. 
 
 These concepts are supported by Franca deployment models by the e[host] definitions
-e[providers] and e[instances].
+e[providers] and e[instances]. ref:DeploymentProviderHosts lists the property hosts
+related to providers and interface instances.
 
-table[
+table:DeploymentProviderHosts[
+	caption[Franca deployment: Property hosts related to providers and interface instances.]
+	tf[
+		professional
+		tcol[1] tcol[3] tcol[2] tcol[2]
+	]
 	tr[
-		td[e[Name of host]]
+		td[e[Host]]
 		td[e[Description]]
 		td[e[Impacted Franca IDL elements]]
 		td[e[Example]]
+		---
 	]
 	tr[
 		td[code[FDeploy][providers]]

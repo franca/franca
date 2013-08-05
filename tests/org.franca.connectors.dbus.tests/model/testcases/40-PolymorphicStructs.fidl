@@ -1,0 +1,49 @@
+// handling of polymorphic and non-polymorphic structs
+package testcases
+
+interface MyInterface {
+	method doNonPolymorphic {
+		in {
+			<** @description: signature of arg1 should be 'nn'. **>
+			MyStruct1 arg1
+			<** @description: signature of arg2 should be 'nnnn'. **>
+			MyStruct2 arg2
+		}
+	}
+	
+	method doPolymorphic {
+		in {
+			<** @description: signature of arg3 should be 'iv'. **>
+			MyStruct3 arg3
+			<** @description: signature of arg4 should be 'iv'. **>
+			MyStruct4 arg4
+		}
+	}
+
+	
+	// non-polymorphic hierarchy
+	
+	struct MyStruct1 {
+		Int16 e
+		Int16 f
+	}
+
+	struct MyStruct2 extends MyStruct1 {
+		Int16 g
+		Int16 h
+	}
+
+
+	// polymorphic hierarchy
+
+	struct MyStruct3 polymorphic {
+		Int16 e
+		Int16 f
+	}
+	
+	struct MyStruct4 extends MyStruct3 {
+		Int16 g
+		Int16 h
+	}
+}
+

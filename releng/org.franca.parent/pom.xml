@@ -8,14 +8,14 @@
 
 	<groupId>org.franca</groupId>
 	<artifactId>org.franca.parent</artifactId>
-	<version>0.8.7-SNAPSHOT</version>
+	<version>0.8.8-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<properties>
 		<eclipse-site>http://download.eclipse.org/releases/${platform-version-name}</eclipse-site>
 		<platform-version-name>juno</platform-version-name>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<tycho-version>0.13.0</tycho-version>
+		<tycho-version>0.17.0</tycho-version>
 		<junit-version>4.8.1</junit-version>
 		<slf4j-version>1.6.1</slf4j-version>
 	</properties>
@@ -28,6 +28,7 @@
             <module>../../plugins/org.franca.core.edit</module>
             <module>../../plugins/org.franca.core.dsl</module>
             <module>../../plugins/org.franca.core.dsl.ui</module>
+            <module>../../plugins/org.franca.core.ui.addons</module>
             <module>../../plugins/org.franca.deploymodel.dsl</module>
             <module>../../plugins/org.franca.deploymodel.dsl.ui</module>
 			<module>../../plugins/org.franca.generators</module>
@@ -39,11 +40,14 @@
     		<!-- test modules -->
             <module>../../tests/org.franca.core.dsl.tests</module>
             <module>../../tests/org.franca.deploymodel.dsl.tests</module>
+            <module>../../tests/org.franca.connectors.dbus.tests</module>
 			<!-- release modules -->
             <module>../../features/org.franca.feature</module>
             <module>../../features/org.franca.feature.sdk</module>
             <module>../../features/org.franca.dbus.feature</module>
             <module>../../features/org.franca.dbus.feature.sdk</module>
+            <module>../../features/org.franca.ui.feature</module>
+            <module>../../features/org.franca.ui.feature.sdk</module>
 			<module>../../releng/org.franca.updatesite</module>
 			<!-- 
 			   <module>../../docs/org.franca.help</module>
@@ -142,7 +146,7 @@
 	      			<configuration>
 	        			<archiveSite>true</archiveSite>
 	      			</configuration>
-	    		</plugin>
+				</plugin>
 	      		
 				<!-- enable source bundle generation -->
 				<plugin>
@@ -189,6 +193,7 @@
 					<artifactId>maven-assembly-plugin</artifactId>
 					<version>2.2-beta-4</version>
 				</plugin>
+				<!--
 				<plugin>
 					<artifactId>maven-release-plugin</artifactId>
 					<configuration>
@@ -200,6 +205,7 @@
 						<arguments>-Prelease</arguments>
 					</configuration>
 				</plugin>
+				-->
 				<!-- OTHER PLUGINS -->
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
@@ -348,6 +354,7 @@
 						</configuration>
 					</plugin>
 					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-scm-plugin</artifactId>
 						<configuration>
 							<basedir>${basedir}</basedir>

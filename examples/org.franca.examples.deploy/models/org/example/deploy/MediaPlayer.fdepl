@@ -4,6 +4,8 @@ import "../spec/SampleDeploySpec.fdepl"
 
 // import the actual Franca interfaces we want to deploy 
 import "classpath:/org/example/idl/MediaPlayer.fidl"
+import "classpath:/org/example/idl/Controller.fidl"
+import "classpath:/org/example/idl/CommonTypes.fidl"
 
 
 /**
@@ -20,6 +22,8 @@ import "classpath:/org/example/idl/MediaPlayer.fidl"
 define org.example.spec.SampleDeploySpec
 	for interface org.example.idl.MediaPlayer
 {
+	Master = &org.example.idl.Controller
+
 	attribute mode {
 		Groups = { g1, g2 }
 	}

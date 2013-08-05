@@ -2,6 +2,9 @@
 // import the base specification
 import "IPBasedIPC.fdepl"
 
+// import Franca interfaces we need to reference (as a default) 
+import "classpath:/org/example/idl/Controller.fidl"
+
 
 /**
  * This is an example specification for Franca's deployment model.
@@ -24,5 +27,9 @@ specification org.example.spec.SampleDeploySpec
 	
 	for strings {
 		Encoding:      {utf8, utf16, unicode};
+	}
+	
+	for interfaces {
+		Master:        Interface (default: &org.example.idl.Controller);
 	}
 }

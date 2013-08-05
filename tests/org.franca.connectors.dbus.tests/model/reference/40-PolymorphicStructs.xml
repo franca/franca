@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="introspect.xsl"?>
+<node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="introspect.xsd" name="testcases">
+  <interface name="MyInterface">
+    <method name="doNonPolymorphic">
+      <arg direction="in" name="arg1" type="(nn)">
+        <doc>
+          <line>arg1 = signature of arg1 should be 'nn'.</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="arg2" type="(nnnn)">
+        <doc>
+          <line>arg2 = signature of arg2 should be 'nnnn'.</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="doPolymorphic">
+      <arg direction="in" name="arg3" type="(iv)">
+        <doc>
+          <line>arg3 = signature of arg3 should be 'iv'.</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="arg4" type="(iv)">
+        <doc>
+          <line>arg4 = signature of arg4 should be 'iv'.</line>
+        </doc>
+      </arg>
+    </method>
+  </interface>
+</node>
