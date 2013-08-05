@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Test case generator
+Bundle-SymbolicName: org.franca.tools.contracts.testcasegen
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.franca.tools.contracts.testcasegen.Activator
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.xtend.lib,
+ com.google.guava,
+ org.eclipse.xtext.xbase.lib,
+ org.franca.core.dsl
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+
