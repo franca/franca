@@ -63,17 +63,20 @@ public class ContractValidator {
 			if (obj instanceof FTransition) {
 				FTransition tt = (FTransition)obj;
 				FEventOnIf ev = tt.getTrigger().getEvent();
-				if (ev.getSet()!=null) {
-					usedAttributes.add(ev.getSet());
-				} else if (ev.getUpdate()!=null) {
-					usedAttributes.add(ev.getUpdate());
-				} else if (ev.getCall()!=null) {
-					usedMethods.add(ev.getCall());
-				} else if (ev.getRespond()!=null) {
-					usedMethods.add(ev.getRespond());
-				} else if (ev.getSignal()!=null) {
-					usedBroadcasts.add(ev.getSignal());
-				}  
+				//during editing the model, there might not be an event right now
+				if (ev != null) {
+					if (ev.getSet()!=null) {
+						usedAttributes.add(ev.getSet());
+					} else if (ev.getUpdate()!=null) {
+						usedAttributes.add(ev.getUpdate());
+					} else if (ev.getCall()!=null) {
+						usedMethods.add(ev.getCall());
+					} else if (ev.getRespond()!=null) {
+						usedMethods.add(ev.getRespond());
+					} else if (ev.getSignal()!=null) {
+						usedBroadcasts.add(ev.getSignal());
+					}
+				}
 			}
 		}
 
@@ -100,11 +103,15 @@ public class ContractValidator {
 
 	
 	public static void checkTrigger (ValidationMessageReporter reporter, FTrigger trigger) {
-	   FMethod method = trigger.getEvent().getRespond(); 
-	   if (method!=null && method.getFireAndForget()!=null) {
-		   reporter.reportError("Fire-and-forget method will not send response message",
-				   	trigger, FrancaPackage.Literals.FTRIGGER__EVENT);
-	   } 
+	   FEventOnIf event = trigger.getEvent();
+	   //while editing there might be no event right now
+	   if (event != null) {
+		   FMethod method = event.getRespond(); 
+		   if (method!=null && method.getFireAndForget()!=null) {
+			   reporter.reportError("Fire-and-forget method will not send response message",
+					   	trigger, FrancaPackage.Literals.FTRIGGER__EVENT);
+		   }
+	   }
 	}
 	
 	
