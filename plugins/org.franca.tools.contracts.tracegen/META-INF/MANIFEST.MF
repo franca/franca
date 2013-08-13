@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Trace Generator
+Bundle-SymbolicName: org.franca.tools.contracts.tracegen
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.franca.tools.contracts.tracegen.Activator
+Require-Bundle: com.google.guava,
+ com.google.inject,
+ org.junit;bundle-version="4.5.0",
+ org.eclipse.xtext.junit4,
+ org.eclipse.core.runtime,
+ org.eclipse.xtend.lib,
+ org.eclipse.xtext.xbase.lib,
+ org.franca.core.dsl,
+ org.franca.core.dsl.tests.base,
+ org.eclipse.xtext
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ClassPath: lib/commons-lang3-3.1.jar,
+ .
+

@@ -2,10 +2,10 @@ RoomModel org.franca.examples [ "Generated from Franca IDL model org.franca.exam
 {
 
 	import room.basic.types.* from
-	"/Users/steffenweik/eclipse/workspaces/franca/org.eclipse.etrice.modellib.java/models/Types.room"
+	"classpath:/Types.room"
 
 	import room.basic.service.timing.* from
-	"/Users/steffenweik/eclipse/workspaces/franca/org.eclipse.etrice.modellib.java/models/TimingService.room"
+	"classpath:/TimingService.room"
 
 	LogicalSystem System {
 		SubSystemRef subsystem: SubSystem
