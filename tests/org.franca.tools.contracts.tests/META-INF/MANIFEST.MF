@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: org.franca.tools.contracts.tests
+Bundle-SymbolicName: org.franca.tools.contracts.tests
+Bundle-Version: 0.8.8.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.franca.tools.contracts.tracegen;bundle-version="1.0.0",
+ org.franca.tools.contracts.validator;bundle-version="0.8.8",
+ org.franca.core;bundle-version="0.8.8",
+ org.eclipse.xtext.junit4;bundle-version="2.4.2",
+ org.junit4;bundle-version="4.8.1",
+ org.franca.core.dsl.tests.base;bundle-version="0.8.8",
+ com.google.inject;bundle-version="3.0.0",
+ com.google.guava;bundle-version="10.0.1"
+Bundle-Vendor: itemis AG

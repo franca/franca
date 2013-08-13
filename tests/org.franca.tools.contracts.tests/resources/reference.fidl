@@ -1,0 +1,204 @@
+package org.franca.tools.contracts.tracegen.examples.reference
+
+typeCollection MyTypes {
+	
+	enumeration BasicErrors {
+		BasicError
+		ErrorWithValueID = ErrorValueID
+		ErrorWithStringValue = "This is the id of a basic error"
+		ErrorWithValueIDSubst = ErrorWithValueID
+	}
+	
+	enumeration ErrorsExtension extends BasicErrors {
+		AdditionalsError
+	}
+
+	struct SimpleStruct {
+		UInt32 simpleStructsUInt32Value
+	}
+	
+	struct ComplexStruct extends SimpleStruct {
+		Int32 complexStructsInt32Value
+	}
+	
+	struct VeryComplexStruct extends ComplexStruct {
+		ComplexStruct complextData 
+	}
+	
+	//TODO why are structs with self references not allowed? (larger circles are not checked) 
+}
+
+interface Reference {
+	
+//	attribute Int32 int32Attrib
+//	attribute UInt8 uint8Attrib
+//	attribute Boolean boolAttrib
+//	attribute Float floatAttrib
+	
+	method init {}
+	method reset {}
+	method addConst {}
+	method addParam {
+		in {UInt32 summand}
+	}
+//	method addParamSimpleResult {
+//		in {UInt32 summand}
+//		out {UInt64 result}
+//	}
+//	method addParamComplex {
+//		in {Int32 int32Summand Int64 int64Summand Double doubleSummand Float floatSummand}
+//		out {Int32 int32Result Int64 int64Result Double doubleResult Float floatResult}
+//	}
+	method forceEnumError {
+		error MyTypes.ErrorsExtension
+	}
+	method forceSimpleError {
+		error {
+			additionError
+			otherError = otherErrorValue
+			stringValuedError = "This is an Error with a string as its value"
+		}
+	}
+	method subConst {}
+	method multConst {}
+	method divConst {}
+	method equalToConst {}
+	method notEqualToConst {}
+	method severalBooleansConst {}
+	method complexBooleans {
+		in {Boolean a Boolean b}
+		out {Boolean r}
+	}
+//	method handleStringParams {
+//		in {String str1 String str2 String str3}
+//		out {String outStr1 String outStr2 String outStr3}
+//	}
+	method handleStructs {
+		in { MyTypes.SimpleStruct simple MyTypes.ComplexStruct complex}
+		out { MyTypes.VeryComplexStruct veryComplex }
+	}
+	
+	contract {
+		vars {
+			Boolean isTheWeatherFine;
+			UInt32 aNumber;
+//			Float aFloat; not usable as there are no float constants available right now
+//			Double aDouble; not usable as there are no double constants available right now
+			String aString;
+			MyTypes.VeryComplexStruct aComplexStruct;
+		}
+		PSM {
+			initial Idle
+			
+			state Idle {
+				on call init -> testingStructs {//testingAddConst {
+					isTheWeatherFine = false
+					aNumber = 0
+					//aFloat = f1.0
+					//aDouble = d1.0
+					aString = ""
+				}
+			}
+			
+			state testingAddConst {
+				on call addConst [aNumber < 3] -> testingAddConst {
+					aNumber = aNumber + 1
+				}
+				on call addConst [aNumber >= 3] -> testingSubConst
+			}
+			state testingSubConst {
+				on call subConst [aNumber > 1] -> testingSubConst {
+					aNumber = aNumber - 1
+				}
+				on call subConst [aNumber == 1] -> testingMultConst
+			}
+			state testingMultConst {
+				on call multConst [aNumber < 8] -> testingMultConst {
+					aNumber = aNumber * 2
+				}
+				on call multConst [aNumber == 8] -> testingDivConst
+			}
+			state testingDivConst {
+				on call divConst [aNumber > 1] -> testingDivConst {
+					aNumber = aNumber / 2
+				}
+				on call divConst [aNumber == 1] -> testingEqualToConst
+			}
+			state testingEqualToConst {
+				on call equalToConst [isTheWeatherFine == false] -> testingEqualToConst {
+					isTheWeatherFine = isTheWeatherFine == false
+				}
+				on call equalToConst [isTheWeatherFine == true] -> testingNotEqualToConst {
+					isTheWeatherFine = isTheWeatherFine == false
+				}
+			}
+			state testingNotEqualToConst {
+				on call notEqualToConst [isTheWeatherFine == true] -> testingNotEqualToConst {
+					isTheWeatherFine = isTheWeatherFine == false
+				}
+				on call notEqualToConst [isTheWeatherFine == false] -> testingSeveralBooleansConst
+			}
+			state testingSeveralBooleansConst {
+				on call severalBooleansConst [false] -> testingSeveralBooleansConst
+				on call severalBooleansConst [true] -> testingSeveralParameterizedCalls {
+					isTheWeatherFine = false || isTheWeatherFine && aNumber < 10
+				}
+				on call severalBooleansConst [true] -> testDone //this should never been called
+			}
+			
+			/////////////////
+			
+			state testingSeveralParameterizedCalls {
+				on call addParam [ aNumber >= 5 || aNumber <= -5] -> testingComplexBooleans
+				on call addParam [ summand < 5 ] -> testingSeveralParameterizedCalls {
+					aNumber = aNumber + summand
+				}
+				//there might be calls here that will be ignored!!!
+				on call addParam [true] -> testingComplexBooleans
+			}
+			state testingComplexBooleans {
+				on call complexBooleans [ a ] -> testingComplexBooleans {
+					isTheWeatherFine = b
+				}
+				on call complexBooleans [ b ] -> testingComplexBooleans {
+					isTheWeatherFine = b
+				}
+				on respond complexBooleans [ r ] -> testingStructs
+			}
+//			state testingStringParams {
+//				on call handleStringParams -> testingStringParams {
+//					aString = aString + str1 + str2 + str3 //bug
+//				}
+//			}
+			
+			state testingStructs {
+				on call handleStructs [ simple.simpleStructsUInt32Value < 2 && aComplexStruct.complextData.complexStructsInt32Value <= 2] -> testingStructs {
+//					aComplexStruct.complextData.complexStructsInt32Value = aComplexStruct.complextData.complexStructsInt32Value + 3
+				}
+				
+				on call handleStructs [ complex.complexStructsInt32Value < 2 ] -> testingStructs
+				//BUG: franca cant reference on the inherited fields of structs
+//				on respond handleStructs [ veryComplex.complextData.simpleStructsUInt32Value < 2 ] -> testingStructs
+				on respond handleStructs [ veryComplex.complextData.complexStructsInt32Value < 2 ] -> testingStructs
+				
+				on call handleStructs -> testingErrors
+				on respond handleStructs -> testingErrors
+			}
+			state testingErrors {
+				on respond forceSimpleError -> testingErrors
+				on respond forceEnumError -> testDone
+			}
+			
+			////////////////
+			
+//			state testingSetAttributes {
+//				on set boolAttrib -> testDone
+//			}
+			
+			state testDone {
+				on call reset -> Idle
+			}
+			
+		}
+	}
+}
