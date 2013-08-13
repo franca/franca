@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: org.franca.tools.contracts.validator
+Bundle-SymbolicName: org.franca.tools.contracts.validator
+Bundle-Version: 0.8.8.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: itemis AG
+Require-Bundle: org.franca.core;bundle-version="0.8.8",
+ org.eclipse.core.resources;bundle-version="3.8.1",
+ org.eclipse.core.runtime;bundle-version="3.8.0",
+ com.google.guava;bundle-version="10.0.1"
+Export-Package: org.franca.tools.contracts.validator
