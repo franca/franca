@@ -18,4 +18,7 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: lib/commons-lang3-3.1.jar,
  .
+Export-Package: org.franca.tools.contracts.tracegen,
+ org.franca.tools.contracts.tracegen.strategies,
+ org.franca.tools.contracts.tracegen.traces
 
