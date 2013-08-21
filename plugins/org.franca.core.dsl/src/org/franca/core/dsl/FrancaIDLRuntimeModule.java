@@ -6,6 +6,7 @@ package org.franca.core.dsl;
 import org.eclipse.xtext.conversion.IValueConverterService;
 import org.eclipse.xtext.resource.IDefaultResourceDescriptionStrategy;
 import org.franca.core.dsl.resource.FrancaCoreResourceDescriptionStrategy;
+import org.franca.core.dsl.valueconverter.FrancaValueConverters;
 
 import com.google.inject.Binder;
 
