@@ -22,7 +22,7 @@
 
 		<sourceDirectory>src</sourceDirectory>
 		<plugins>
-			<!-- Copy all Xtext related sources to seperate folder that is registered 
+			<!-- Copy all Xtext related sources to separate folder that is registered 
 				as resource folder -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
