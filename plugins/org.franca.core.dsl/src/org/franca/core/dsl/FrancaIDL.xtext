@@ -57,8 +57,8 @@ FInterface returns FInterface:
 FVersion returns FVersion:
 	{FVersion}
 	'{'
-		'major' major=EInt
-		'minor' minor=EInt
+		'major' major=INT
+		'minor' minor=INT
     '}';
 
 
@@ -256,7 +256,7 @@ FGuard:
 
 	
 FExpression returns FExpression:
-	FAssignment;
+	FAssignment | LogicalOrExpression;
 
 FAssignment returns FExpression:
 	{FAssignment}
@@ -293,9 +293,16 @@ MultiplicativeExpression returns FExpression:
   ({FBinaryOperation.left=current} op=('*'|'/') right=PrimaryExpression)*;
 
 PrimaryExpression returns FExpression:
+  FUnaryOperation | SimplePrimaryExpression;
+  
+SimplePrimaryExpression returns FExpression:
   FTypedElementRef |
   FConstant |
-  '(' FExpression ')';
+  '(' LogicalOrExpression ')';
+  
+FUnaryOperation returns FExpression:
+	{FUnaryOperation}
+	op = '!' operand = SimplePrimaryExpression;
 
 FTypedElementRef returns FExpression:
 	{FTypedElementRef}
@@ -308,7 +315,7 @@ FConstant returns FExpression:
 	FStringConstant;
 
 FIntegerConstant:
-	val=EInt;
+	val= E_INT;
 
 FBooleanConstant:
 	val=EBoolean;
@@ -350,8 +357,11 @@ EBoolean returns ecore::EBoolean:
 EString returns ecore::EString:
 	STRING | ID;
 
-EInt returns ecore::EInt:
-	'-'? INT;
+E_INT returns ecore::EInt:
+	NEGATIVE_INT | INT
+;
+terminal NEGATIVE_INT returns ecore::EInt:
+	'-'INT;
 
 terminal COMMENT_STRING returns ecore::EString:
 	':' ( ('\\' ('b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\')) | !('\\'|'*'|'@') )*
