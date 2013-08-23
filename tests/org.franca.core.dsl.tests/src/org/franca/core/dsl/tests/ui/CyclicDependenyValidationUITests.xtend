@@ -6,7 +6,6 @@ import org.junit.Test
 import static org.junit.Assert.*
 import org.junit.Ignore
 
-@Ignore("These UI tests are ok locally, but fail on CI server. Will be fixed later.")
 class CyclicDependenyValidationUITests extends AbstractMarkerTest{
 	/** Check that on manipulation of one file all files that are in cyclic relation with modified file are validated. */
 	@Test
