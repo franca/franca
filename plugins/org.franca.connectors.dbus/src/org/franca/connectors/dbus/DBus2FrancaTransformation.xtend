@@ -70,7 +70,7 @@ class DBus2FrancaTransformation {
 //		val te = src.type.transformAttributeType(nameNormal) 
 		val te = src.type.transformTypeSig(nameNormal) 
 		type = te.type
-		array = if (te.isArray) "[]" else null
+		array = te.isArray
 	}
 	
 //	def private transformAttributeType (String typeSig, String namespace) {
@@ -119,7 +119,7 @@ class DBus2FrancaTransformation {
 			name = dfltName
 		val te = src.type.transformTypeSig(namespace + "_" + name) 
 		type = te.type
-		array = if (te.isArray) "[]" else null
+		array = te.isArray
 		if(src.doc.hasLines && src.primitiveType) {
 			comment = src.doc.transformAnnotationBlock
 		}					
@@ -253,7 +253,7 @@ class DBus2FrancaTransformation {
 		name = elementName
 		val te = src.transformType(namespace)
 		type = te.type
-		array = if (te.isArray) "[]" else null
+		array = te.isArray
 	}
 
 

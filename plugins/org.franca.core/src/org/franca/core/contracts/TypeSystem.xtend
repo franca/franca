@@ -91,7 +91,7 @@ class TypeSystem {
 	def private dispatch FTypeRef evalType (FTypedElementRef expr, EObject loc, EStructuralFeature feat) {
 		if (expr?.target==null) {
 			val te = expr?.element
-			if (te?.array!=null) {
+			if (!(te == null) && te.array) {
 				addIssue("array types not supported yet", loc, feat)
 				return UNDEFINED_TYPE
 			}

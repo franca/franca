@@ -66,7 +66,7 @@ class Franca2DBusTransformation {
 			
 	def create DbusxmlFactory::eINSTANCE.createPropertyType transformAttribute (FAttribute src) {
 		name = src.name
-		type = transformType2TypeString(src.type, src.array!=null)
+		type = transformType2TypeString(src.type, src.array)
 		if (src.isReadonly)
 			access = AccessType::READ
 		else
@@ -90,7 +90,7 @@ class Franca2DBusTransformation {
 	def create DbusxmlFactory::eINSTANCE.createArgType transformArgument (FArgument src, DirectionType dir) {
 		direction = dir
 		name = src.name
-		type = transformType2TypeString(src.type, src.array!=null)
+		type = transformType2TypeString(src.type, src.array)
 		doc = src.createDoc
 	}
 
@@ -302,7 +302,7 @@ class Franca2DBusTransformation {
 		
 		// compile own type string
 		for(e : src.elements) {
-			ts = ts + e.type.transformType2TypeString(e.array!=null)
+			ts = ts + e.type.transformType2TypeString(e.array)
 		}
 		
 		ts
