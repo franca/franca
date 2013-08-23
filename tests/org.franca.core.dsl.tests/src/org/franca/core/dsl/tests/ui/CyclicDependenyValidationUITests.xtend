@@ -4,6 +4,7 @@ import org.eclipse.xtext.junit4.ui.util.IResourcesSetupUtil
 import org.junit.Test
 
 import static org.junit.Assert.*
+import org.junit.Ignore
 
 class CyclicDependenyValidationUITests extends AbstractMarkerTest{
 	/** Check that on manipulation of one file all files that are in cyclic relation with modified file are validated. */
@@ -73,6 +74,7 @@ class CyclicDependenyValidationUITests extends AbstractMarkerTest{
 		assertMarkerExists(c3,4,"<this>->org.example.C1.e1->org.example.C2.e2-><this>");											
 							
 	}
+
 	/** Creates a Cycle c1->c2->c1 and a ref c3->c1. Checks that c3 isn't marked as part of cycle */
 	@Test
 	def void testNoErrorsForRefToCycle() {
@@ -105,8 +107,7 @@ class CyclicDependenyValidationUITests extends AbstractMarkerTest{
 							}''');
 		assertEquals(0,c3.markers.size)
 	}
-	
-	
+		
 	@Test
 	def void testErrorLocations() {
 		val c1 = IResourcesSetupUtil::createFile(
