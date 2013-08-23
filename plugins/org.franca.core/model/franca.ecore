@@ -316,4 +316,9 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="right" lowerBound="1" eType="#//FExpression"
         containment="true"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FUnaryOperation" eSuperTypes="#//FExpression">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="op" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="operand" lowerBound="1"
+        eType="#//FExpression" containment="true"/>
+  </eClassifiers>
 </ecore:EPackage>
