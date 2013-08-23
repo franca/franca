@@ -13,12 +13,14 @@ public class FrancaCoreResourceDescriptionStrategy extends DefaultResourceDescri
 	protected FrancaCoreEObjectDescriptions eObjectDescriptionFactory;
 	
 	public boolean createEObjectDescriptions(EObject eObject, IAcceptor<IEObjectDescription> acceptor) {
+		if (getQualifiedNameProvider() == null){
+			return false;
+		}
 		IEObjectDescription desc = eObjectDescriptionFactory.create(eObject);
 		if(desc!=null){
 			acceptor.accept(desc);
-			return true;
 		}
-		return false;
+		return true;
 	}
 	
 }

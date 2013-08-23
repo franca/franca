@@ -23,7 +23,6 @@ import org.franca.core.dsl.validation.internal.ValidationMessageReporter;
 import org.franca.core.dsl.validation.internal.ValidatorRegistry;
 import org.franca.core.framework.FrancaHelpers;
 import org.franca.core.franca.FArgument;
-import org.franca.core.franca.FArrayType;
 import org.franca.core.franca.FAssignment;
 import org.franca.core.franca.FBroadcast;
 import org.franca.core.franca.FCompoundType;
@@ -32,16 +31,12 @@ import org.franca.core.franca.FEnumerationType;
 import org.franca.core.franca.FField;
 import org.franca.core.franca.FGuard;
 import org.franca.core.franca.FInterface;
-import org.franca.core.franca.FMapType;
 import org.franca.core.franca.FMethod;
 import org.franca.core.franca.FModel;
-import org.franca.core.franca.FStructType;
 import org.franca.core.franca.FTrigger;
 import org.franca.core.franca.FType;
 import org.franca.core.franca.FTypeCollection;
-import org.franca.core.franca.FTypeDef;
 import org.franca.core.franca.FTypeRef;
-import org.franca.core.franca.FTypedElement;
 import org.franca.core.franca.FUnionType;
 import org.franca.core.franca.FrancaPackage;
 
@@ -68,7 +63,7 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 		
 		if (count > 1) {
 			this.reportError(
-					"There can be only one anonymous type collection!", 
+					"There can be only one anonymous type collection in a *.fidl file!", 
 					model, 
 					FrancaPackage.Literals.FMODEL__NAME
 				);

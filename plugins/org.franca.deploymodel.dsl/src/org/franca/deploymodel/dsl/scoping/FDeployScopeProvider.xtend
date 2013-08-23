@@ -52,8 +52,8 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 	private ImportUriGlobalScopeProvider importUriGlobalScopeProvider
 	
 	def scope_FDTypes_target(FDTypes ctxt, EReference ref) {	
-		return new TypeCollectionScope(IScope::NULLSCOPE, false, importUriGlobalScopeProvider, ctxt.eResource, qualifiedNameProvider);
-	}
+		return new FTypeCollectionScope(IScope::NULLSCOPE, false, importUriGlobalScopeProvider, ctxt.eResource, qualifiedNameProvider);
+	} 
 
 	def scope_FDArray_target(FDTypes ctxt, EReference ref) {
 		ctxt.getScopes(typeof(FArrayType))
