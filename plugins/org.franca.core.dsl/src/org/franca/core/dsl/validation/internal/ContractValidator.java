@@ -107,7 +107,7 @@ public class ContractValidator {
 	   //while editing there might be no event right now
 	   if (event != null) {
 		   FMethod method = event.getRespond(); 
-		   if (method!=null && method.getFireAndForget()!=null) {
+		   if (method!=null && method.isFireAndForget()) {
 			   reporter.reportError("Fire-and-forget method will not send response message",
 					   	trigger, FrancaPackage.Literals.FTRIGGER__EVENT);
 		   }

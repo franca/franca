@@ -67,7 +67,7 @@ FVersion returns FVersion:
 
 FAttribute:
 	(comment=FAnnotationBlock)?
-	'attribute'	type=FTypeRef (array='[]')? name=ID
+	'attribute'	type=FTypeRef (array?='[]')? name=ID
 		(readonly?='readonly')?
 		(noSubscriptions?='noSubscriptions')?
 	;
@@ -79,7 +79,7 @@ FAttribute:
 FMethod returns FMethod:
 	{FMethod}
 	(comment=FAnnotationBlock)?
-	'method' name=ID (fireAndForget='fireAndForget')?
+	'method' name=ID (fireAndForget?='fireAndForget')?
 	'{'
 		('in' '{' (inArgs+=FArgument)* '}' )?
 		('out' '{' (outArgs+=FArgument)* '}' )?
@@ -93,14 +93,14 @@ FMethod returns FMethod:
 FBroadcast returns FBroadcast:
 	{FBroadcast}
 	(comment=FAnnotationBlock)?
-	'broadcast' name=ID (selective='selective')?
+	'broadcast' name=ID (selective?='selective')?
 	'{'
 		('out' '{' (outArgs+=FArgument)* '}' )?
     '}';
 
 FArgument:
 	(comment=FAnnotationBlock)?
-	type=FTypeRef (array='[]')? name=ID;
+	type=FTypeRef (array?='[]')? name=ID;
 
 
 // **************************************************************
@@ -196,11 +196,11 @@ FMapType returns FMapType:
 
 FField:
 	(comment=FAnnotationBlock)?
-	type=FTypeRef (array='[]')? name=ID;
+	type=FTypeRef (array?='[]')? name=ID;
 
 
 FDeclaration:
-	type=FTypeRef (array='[]')? name=ID;
+	type=FTypeRef (array?='[]')? name=ID;
 
 FTypedElement:
 	FField |

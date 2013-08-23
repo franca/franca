@@ -221,7 +221,7 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 
 	@Check
 	public void checkMethodFlags(FMethod method) {
-		if (method.getFireAndForget() != null) {
+		if (method.isFireAndForget()) {
 			if (!method.getOutArgs().isEmpty()) {
 				error("Fire-and-forget methods cannot have out arguments",
 						method,
@@ -393,8 +393,8 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 		StringBuilder typeName = new StringBuilder();
 
 		typeName.append(getName(arg.getType()));
-		if (arg.getArray() != null) {
-			typeName.append(arg.getArray());
+		if (arg.isArray()) {
+			typeName.append("[]");
 		}
 		return typeName.toString();
 	}
