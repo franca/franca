@@ -260,5 +260,9 @@
       <genFeatures notify="false" createChild="false" propertyDescription="the right operand of the binary operation"
           propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FBinaryOperation/right"/>
     </genClasses>
+    <genClasses ecoreClass="franca.ecore#//FUnaryOperation">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute franca.ecore#//FUnaryOperation/op"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FUnaryOperation/operand"/>
+    </genClasses>
   </genPackages>
 </genmodel:GenModel>
