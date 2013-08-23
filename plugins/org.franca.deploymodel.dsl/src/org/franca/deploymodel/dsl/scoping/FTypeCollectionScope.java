@@ -21,7 +21,7 @@ import org.franca.core.franca.FTypeCollection;
 import org.franca.deploymodel.dsl.fDeploy.FDModel;
 import org.franca.deploymodel.dsl.fDeploy.Import;
 
-public class TypeCollectionScope extends AbstractScope {
+public class FTypeCollectionScope extends AbstractScope {
 
 	private ImportUriGlobalScopeProvider importUriGlobalScopeProvider;
 	private Resource resource;
@@ -29,7 +29,7 @@ public class TypeCollectionScope extends AbstractScope {
 	private FDModel deploymentModel;
 	private Set<URI> imports;
 
-	protected TypeCollectionScope(IScope parent, boolean ignoreCase,
+	protected FTypeCollectionScope(IScope parent, boolean ignoreCase,
 			ImportUriGlobalScopeProvider importUriGlobalScopeProvider,
 			Resource resource, QualifiedNameProvider qualifiedNameProvider) {
 		super(parent, ignoreCase);

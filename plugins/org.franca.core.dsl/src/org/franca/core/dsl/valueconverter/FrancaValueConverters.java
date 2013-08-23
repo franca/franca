@@ -5,7 +5,7 @@
 * which accompanies this distribution, and is available at
 * http://www.eclipse.org/legal/epl-v10.html
 *******************************************************************************/
-package org.franca.core.dsl;
+package org.franca.core.dsl.valueconverter;
 
 import org.eclipse.xtext.common.services.Ecore2XtextTerminalConverters;
 import org.eclipse.xtext.conversion.IValueConverter;
@@ -49,9 +49,4 @@ public class FrancaValueConverters extends Ecore2XtextTerminalConverters {
 			}
 		};
 	}
-	
-//	@ValueConverter(rule = "ImportedFQN")
-//	public IValueConverter<String> getQualifiedNameWithWildCard() {
-//		return getQualifiedNameValueConverter();
-//	}
 }

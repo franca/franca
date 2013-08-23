@@ -42,6 +42,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDEnum;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumType;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumValue;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumeration;
+import org.franca.deploymodel.dsl.fDeploy.FDEnumerator;
 import org.franca.deploymodel.dsl.fDeploy.FDField;
 import org.franca.deploymodel.dsl.fDeploy.FDInteger;
 import org.franca.deploymodel.dsl.fDeploy.FDInterface;
@@ -87,7 +88,7 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 	public static final String MANDATORY_PROPERTY_QUICKFIX_MESSAGE  = "Mandatory properties are missing for element ";
 	
 	public static final String DEPLOYMENT_ELEMENT_QUICKFIX  = "DEPLOYMENT_ELEMENT_QUICKFIX";
-	public static final String DEPLOYMENT_ELEMENT_QUICKFIX_MESSAGE  = "Specification element is missing for interface ";
+	public static final String DEPLOYMENT_ELEMENT_QUICKFIX_MESSAGE  = "Missing specification element ";
 	
 	public static final String DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX = "DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX";
 	public static final String DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE = "There are multiple issues with element ";
@@ -192,9 +193,12 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 	
 	@Check
 	public void checkPropertiesComplete(FDInterface elem) {
+		int lowerLevelErrors = 0;
 		// check own properties
 		FDSpecification spec = FDModelUtils.getRootElement(elem).getSpec();
-		checkSpecificationElementProperties(spec, elem, FDeployPackage.Literals.FD_INTERFACE__TARGET, spec.getName());
+		if (checkSpecificationElementProperties(spec, elem, FDeployPackage.Literals.FD_INTERFACE__TARGET, spec.getName())) {
+			lowerLevelErrors++;
+		}
 		
 		//Note: pay attention to the lazy and eager boolean operators!
 		
@@ -218,10 +222,11 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 							DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, 
 							tc.getName(),
 							FrancaQuickFixConstants.ATTRIBUTE.toString());
+					lowerLevelErrors++;
 				}
 			} 
-			else {
-				checkSpecificationElementProperties(spec, c, FDeployPackage.Literals.FD_ATTRIBUTE__TARGET, tc.getName());
+			else if (checkSpecificationElementProperties(spec, c, FDeployPackage.Literals.FD_ATTRIBUTE__TARGET, tc.getName())) {
+				lowerLevelErrors++;
 			}
 		}
 
@@ -239,10 +244,13 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 							DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, 
 							tc.getName(),
 							FrancaQuickFixConstants.METHOD.toString());
+					lowerLevelErrors++;
 				}
 			} 
 			else {  
-				checkSpecificationElementProperties(spec, c, FDeployPackage.Literals.FD_METHOD__TARGET, tc.getName());
+				if (checkSpecificationElementProperties(spec, c, FDeployPackage.Literals.FD_METHOD__TARGET, tc.getName())) {
+					lowerLevelErrors++;
+				}
 				if (checkArgumentList(specHelper, checker, mapper, spec, tc.getInArgs(), c,	"Input", FDeployPackage.Literals.FD_METHOD__TARGET) |
 				checkArgumentList(specHelper, checker, mapper, spec, tc.getOutArgs(), c, "Output", FDeployPackage.Literals.FD_METHOD__TARGET)) {
 					error(DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE+"'" + tc.getName() + "'",
@@ -250,6 +258,7 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 							DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, 
 							tc.getName(),
 							FrancaQuickFixConstants.METHOD.toString());
+					lowerLevelErrors++;
 				}
 			}
 		}
@@ -268,31 +277,56 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 							DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, 
 							tc.getName(),
 							FrancaQuickFixConstants.BROADCAST.toString());
+					lowerLevelErrors++;
 				}
 			} 
 			else {
-				checkSpecificationElementProperties(spec, c, FDeployPackage.Literals.FD_BROADCAST__TARGET, tc.getName());
+				if (checkSpecificationElementProperties(spec, c, FDeployPackage.Literals.FD_BROADCAST__TARGET, tc.getName())) {
+					lowerLevelErrors++;
+				}
 				if (checkArgumentList(specHelper, checker, mapper, spec, tc.getOutArgs(), c, "Output", FDeployPackage.Literals.FD_BROADCAST__TARGET)) {
 					error(DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE+"'" + tc.getName() + "'",
 							c, FDeployPackage.Literals.FD_BROADCAST__TARGET,
 							DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, 
 							tc.getName(),
 							FrancaQuickFixConstants.BROADCAST.toString());
+					lowerLevelErrors++;
 				}
 			}
 		}
 		
-		checkLocalTypes(target.getTypes(), specHelper, checker, mapper, spec,
-				FDeployPackage.Literals.FD_INTERFACE__TARGET);
+		if (checkLocalTypes(target.getTypes(), specHelper, checker, mapper, spec, FDeployPackage.Literals.FD_INTERFACE__TARGET)) {
+			lowerLevelErrors++;
+		}
+	
+		if (deployValidator.checkUsedTypes(elem, target.getTypes(), checker)) {
+			lowerLevelErrors++;
+		}
 		
-		deployValidator.checkUsedTypes(elem, target.getTypes(), checker);
+		if (lowerLevelErrors > 1) {
+			//Recursive quickfix can be added for the top level FDInterface element
+			error(DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE+"'" + spec.getName() + "'",
+					elem, FDeployPackage.Literals.FD_INTERFACE__TARGET,
+					DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, 
+					spec.getName(),
+					FrancaQuickFixConstants.INTERFACE.toString());
+		}
 	}
 	
-	private void checkLocalTypes (List<FType> types, FDSpecificationExtender specHelper,
+	/**
+	 * Checks the local types of an {@link FDSpecification} instance. 
+	 * 
+	 * @return true if an error is present, false otherwise
+	 */
+	private boolean checkLocalTypes (List<FType> types, 
+			FDSpecificationExtender specHelper,
 			PropertyDefChecker checker,
-			FDMapper mapper, FDSpecification spec,
+			FDMapper mapper, 
+			FDSpecification spec,
 			EStructuralFeature parentFeature)
 	{
+		boolean hasError = false;
+		
 		for(FType tc : types) {
 			if (tc instanceof FArrayType) {
 				FDArray c = (FDArray) mapper.getFDElement(tc);
@@ -308,10 +342,11 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 								DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, 
 								tc.getName(),
 								FrancaQuickFixConstants.ARRAY.toString());
+						hasError |= true;
 					}
 				}
 				else {
-					checkSpecificationElementProperties(spec, c, FDeployPackage.Literals.FD_ARRAY__TARGET, tc.getName());
+					hasError |= checkSpecificationElementProperties(spec, c, FDeployPackage.Literals.FD_ARRAY__TARGET, tc.getName());
 				}
 			} else if (tc instanceof FStructType) {
 				FDStruct c = (FDStruct) mapper.getFDElement(tc);
@@ -327,16 +362,18 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 								DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, 
 								tc.getName(),
 								FrancaQuickFixConstants.STRUCT.toString());
+						hasError |= true;
 					}
 				} 
 				else {  
-					checkSpecificationElementProperties(spec, c, FDeployPackage.Literals.FD_STRUCT__TARGET, tc.getName());
+					hasError |= checkSpecificationElementProperties(spec, c, FDeployPackage.Literals.FD_STRUCT__TARGET, tc.getName());
 					if (checkFieldsList(specHelper, checker, mapper, spec, ((FStructType) tc).getElements(), c, FDeployPackage.Literals.FD_STRUCT__TARGET, "Struct")) {
 						error(DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE+"'" + tc.getName() + "'",
 								c, FDeployPackage.Literals.FD_STRUCT__TARGET,
 								DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, 
 								tc.getName(),
 								FrancaQuickFixConstants.STRUCT.toString());
+						hasError |= true;
 					}
 				}
 			} else if (tc instanceof FUnionType) {
@@ -353,16 +390,18 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 								DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, 
 								tc.getName(),
 								FrancaQuickFixConstants.UNION.toString());
+						hasError |= true;
 					}
 				} 
 				else { 
-					checkSpecificationElementProperties(spec, c, FDeployPackage.Literals.FD_UNION__TARGET, tc.getName());
+					hasError |= checkSpecificationElementProperties(spec, c, FDeployPackage.Literals.FD_UNION__TARGET, tc.getName());
 					if (checkFieldsList(specHelper, checker, mapper, spec, ((FUnionType) tc).getElements(), c, FDeployPackage.Literals.FD_UNION__TARGET, "Union")) {
 						error(DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE+"'" + tc.getName() + "'",
 								c, FDeployPackage.Literals.FD_UNION__TARGET,
 								DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, 
 								tc.getName(),
 								FrancaQuickFixConstants.UNION.toString());
+						hasError |= true;
 					}
 				}
 			} else if (tc instanceof FEnumerationType) {
@@ -379,22 +418,31 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 								DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, 
 								tc.getName(),
 								FrancaQuickFixConstants.ENUMERATION.toString());
+						hasError |= true;
 					}
 				} 
 				else {
-					checkSpecificationElementProperties(spec, c, FDeployPackage.Literals.FD_ENUMERATION__TARGET, tc.getName());
+					hasError |= checkSpecificationElementProperties(spec, c, FDeployPackage.Literals.FD_ENUMERATION__TARGET, tc.getName());
 					if (checkEnumeratorsList(specHelper, mapper, spec, ((FEnumerationType) tc).getEnumerators(), c,	FDeployPackage.Literals.FD_ENUMERATION__TARGET)) {
 						error(DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE+"'" + tc.getName() + "'",
 								c, FDeployPackage.Literals.FD_ENUMERATION__TARGET,
 								DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, 
 								tc.getName(),
 								FrancaQuickFixConstants.ENUMERATION.toString());
+						hasError |= true;
 					}
 				}
 			}
 		}
+		
+		return hasError;
 	}
 
+	/**
+	 * Checks the argument list of {@link FDMethod}s.
+	 * 
+	 * @return true if an error is present, false otherwise
+	 */
 	private boolean checkArgumentList(FDSpecificationExtender specHelper,
 			PropertyDefChecker checker,
 			FDMapper mapper, FDSpecification spec, List<FArgument> args,
@@ -407,17 +455,22 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 				if (checker.mustBeDefined(tc)) {
 					error("Mandatory argument '" + tc.getName() + "' is missing for method '" + ((FDMethod) parent).getTarget().getName() + "'",
 						parent, feature, -1, METHOD_ARGUMENT_QUICKFIX, ((FDMethod) parent).getTarget().getName(), tc.getName());
-					hasError = true;
+					hasError |= true;
 				}
 			} 
 			else {
-				hasError = checkSpecificationElementProperties(spec, c, FDeployPackage.Literals.FD_ARGUMENT__TARGET, tc.getName());
+				hasError |= checkSpecificationElementProperties(spec, c, FDeployPackage.Literals.FD_ARGUMENT__TARGET, tc.getName());
 			}
 		}
 		
 		return hasError;
 	}
 	
+	/**
+	 * Checks the field list of {@link FDUnion}s and {@link FDStruct}s.
+	 * 
+	 * @return true if an error is present, false otherwise
+	 */
 	private boolean checkFieldsList (FDSpecificationExtender specHelper,
 			PropertyDefChecker checker,
 			FDMapper mapper, FDSpecification spec, List<FField> fields,
@@ -437,16 +490,21 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 					}
 					error("Mandatory field '" + tc.getName() + "' is missing for compound '" + name + "'", 
 							parent, feature, -1, COMPOUND_FIELD_QUICKFIX, name, tc.getName());
-					hasError = true;
+					hasError |= true;
 				}
 			} 
 			else {
-				hasError = checkSpecificationElementProperties(spec, c, FDeployPackage.Literals.FD_FIELD__TARGET, tc.getName());
+				hasError |= checkSpecificationElementProperties(spec, c, FDeployPackage.Literals.FD_FIELD__TARGET, tc.getName());
 			}
 		}
 		return hasError;
 	}
 	
+	/**
+	 * Checks the enumerator list of {@link FDEnumerator}s.
+	 * 
+	 * @return true if an error is present, false otherwise
+	 */
 	private boolean checkEnumeratorsList (FDSpecificationExtender specHelper,
 			FDMapper mapper, FDSpecification spec, List<FEnumerator> enumerators,
 			FDElement parent, EStructuralFeature feature)
@@ -458,11 +516,11 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 				if (specHelper.isMandatory(FDPropertyHost.ENUMERATORS)) {
 					error("Mandatory enumerator '" + tc.getName() + "' is missing for enumeration '" + ((FDEnumeration) parent).getTarget().getName() + "'", 
 							parent, feature, -1, ENUMERATOR_ENUM_QUICKFIX, ((FDEnumeration) parent).getTarget().getName(), tc.getName());
-					hasError = true;
+					hasError |= true;
 				}
 			} 
 			else {
-				hasError = checkSpecificationElementProperties(spec, c, FDeployPackage.Literals.FD_ENUM_VALUE__TARGET, tc.getName());
+				hasError |= checkSpecificationElementProperties(spec, c, FDeployPackage.Literals.FD_ENUM_VALUE__TARGET, tc.getName());
 			}
 		}
 		return hasError;
@@ -478,13 +536,22 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 		checkSpecificationElementProperties(spec, elem, FDeployPackage.Literals.FD_INTERFACE_INSTANCE__TARGET, spec.getName());
 	}
 	
+	/**
+	 * Checks whether all of the mandatory properties of the given {@link FDSpecification} instance are present. 
+	 * 
+	 * @param spec the deployment specification element
+	 * @param elem the given element
+	 * @param feature the corresponding feature instance
+	 * @param elementName the name of the element for the quickfix message
+	 * @return true if there was an error (missing property), false otherwise
+	 */
 	private boolean checkSpecificationElementProperties(FDSpecification spec, FDElement elem, EStructuralFeature feature, String elementName)
 	{
 		List<FDPropertyDecl> decls = PropertyMappings.getAllPropertyDecls(spec, elem);
 		List<String> missing = Lists.newArrayList();
 		for(FDPropertyDecl decl : decls) {
 			if (PropertyMappings.isMandatory(decl)) {
-				if (! contains(elem.getProperties(), decl)) {
+				if (!contains(elem.getProperties(), decl)) {
 					missing.add(decl.getName());
 				}
 			}

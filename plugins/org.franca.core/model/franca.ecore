@@ -119,6 +119,9 @@
         eType="#//FTypeRef" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FCompoundType" abstract="true" eSuperTypes="#//FType">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This class represents all kinds of compound types in Franca, i.e., struct and union types.&#xA;A compound type has a list of fields; each field is itself specified by its type.&#xA;Thus, nested compounds can be created.&#xA;The ordering of fields in the compound is relevant. E.g., serialization code&#xA;generated from a Franca interface must take into account the order of the fields.&#xA;"/>
+    </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="elements" upperBound="-1"
         eType="#//FField" containment="true"/>
   </eClassifiers>
@@ -133,6 +136,9 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FVariable" eSuperTypes="#//FTypedElement"/>
   <eClassifiers xsi:type="ecore:EClass" name="FStructType" eSuperTypes="#//FCompoundType">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This class represents a struct type in Franca. See its base class&#xA;ref:FrancaModelAPIReference_FCompoundType[FCompoundType]&#xA;for a detailed description."/>
+    </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="base" eType="#//FStructType"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="polymorphic" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
   </eClassifiers>
@@ -140,17 +146,26 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FEnumerationType" eSuperTypes="#//FType">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This class represents an enumeration type. The enumeration will contain&#xA;a list of e[enumerators]. It can be derived from a base enumeration."/>
+    </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="enumerators" upperBound="-1"
         eType="#//FEnumerator" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="base" eType="#//FEnumerationType"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FMapType" eSuperTypes="#//FType">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The Franca map type (sometimes &quot;map&quot; is also called &quot;dictionary&quot;).&#xA;This is a collection type which maps objects of a e[key] type to objects&#xA;of a e[value] type in constant time."/>
+    </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="keyType" lowerBound="1"
         eType="#//FTypeRef" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="valueType" lowerBound="1"
         eType="#//FTypeRef" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FTypeRef">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This class is a reference to some Franca type.&#xA;It may be either a ref:FIDL_PrimitiveTypes[primitive&#xA;type] (property e[predefined] or a derived type (e.g., struct, array, map).&#xA;"/>
+    </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="predefined" eType="#//FBasicTypeId"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="derived" eType="#//FType"/>
   </eClassifiers>
@@ -192,20 +207,29 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FDeclaration" eSuperTypes="#//FTypedElement">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="This class represents the definition of a state variable&#xD;&#xA;as part of a Franca interface contract. Note that the &#xD;&#xA;types available for the state variable definition are &#xD;&#xA;all types which are visible in this interface."/>
+      <details key="documentation" value="This class represents the definition of a state variable&#xD;&#xA;as part of a Franca interface contract. Note that the &#xD;&#xA;types available for the state variable definition are &#xD;&#xA;all types which are accessible from this interface."/>
     </eAnnotations>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FStateGraph">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A state graph specifying the interface's dynamic behavior. The state graph is flat&#xA;(i.e., non-hierarchical) and consists of a set of states, which are linked by transitions.&#xA;One of the states in the set is specified as e[initial]. I.e., this is the initial state of the interface."/>
+    </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="initial" lowerBound="1"
         eType="#//FState"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="states" upperBound="-1"
         eType="#//FState" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FState" eSuperTypes="#//FModelElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This class represents a single state as member of a &#xA;ref:FrancaModelAPIReference_FStateGraph[FStateGraph].&#xA;The state contains a list of its outgoing transitions. &#xA;The target state of each transition is contained in that transition."/>
+    </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="transitions" upperBound="-1"
         eType="#//FTransition" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FTransition">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This class represents a single transition as part of a &#xA;ref:FrancaModelAPIReference_FStateGraph[FStateGraph].&#xA;The transition references its target state by property e[to]. &#xA;It doesn't reference its source state; instead, the source state contains&#xA;the list of its outgoing transitions.&#xA;The transition defines a e[trigger], which specifies some event which&#xA;can occur during runtime. It also defines a e[guard] condition.&#xA;If the trigger event occurs, the guard condition will be checked (if any).&#xA;Depending on this check the transition will be executed.&#xA;Finally, a transition has some e[action], which will be executed&#xA;each time when the transition fires."/>
+    </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="trigger" lowerBound="1"
         eType="#//FTrigger" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="guard" eType="#//FGuard"
@@ -233,6 +257,9 @@
         eType="#//FExpression" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FUnionType" eSuperTypes="#//FCompoundType">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This class represents a union type in Franca. See its base class&#xA;ref:FrancaModelAPIReference_FCompoundType[FCompoundType]&#xA;for a detailed description."/>
+    </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="base" eType="#//FUnionType"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FField" eSuperTypes="#//FTypedElement"/>
@@ -251,6 +278,9 @@
     </eAnnotations>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FTypedElementRef" eSuperTypes="#//FExpression">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This class is a reference to some ref:FrancaModelAPIReference_FTypedElement[FTypedElement].&#xA;If the referenced element is no compound type (i.e., struct or union), only the e[element] property&#xA;will be used. The e[target] and e[field] properties will be null. If a field of a compound type is referenced,&#xA;the e[field] property will point to the ref:FrancaModelAPIReference_FField[FField] object. &#xA;If the compound type is nested, the e[target] property will reference the next outer level&#xA;(which is itself a compound referenced by a ref:FrancaModelAPIReference_FTypedElementRef[FTypedElementRef]. &#xA;This might be chained in order to specify a reference to a deeply nested compound element.&#xA;"/>
+    </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="element" eType="#//FTypedElement"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="#//FTypedElementRef"
         containment="true"/>
@@ -258,16 +288,25 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FConstant" abstract="true" eSuperTypes="#//FExpression">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="This is the common base class for all kinds of&#xD;&#xA;constants in the Franca contract action language.&#xD;&#xA;Currently, only integer constants are supported.&#xD;&#xA;This will be extended in future.&#xD;&#xA;"/>
+      <details key="documentation" value="This is the common base class for all kinds of&#xD;&#xA;constants in the Franca contract action language.&#xD;&#xA;The most important types are integers, booleans and strings."/>
     </eAnnotations>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FIntegerConstant" eSuperTypes="#//FConstant">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This class represents integer constants in the Franca contract action language."/>
+    </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="val" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FBooleanConstant" eSuperTypes="#//FConstant">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This class represents boolean constants in the Franca contract action language."/>
+    </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="val" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FStringConstant" eSuperTypes="#//FConstant">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This class represents strings constants in the Franca contract action language."/>
+    </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="val" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FBinaryOperation" eSuperTypes="#//FExpression">

@@ -10,7 +10,6 @@ import org.franca.core.franca.FBroadcast;
 import org.franca.core.franca.FEnumerationType;
 import org.franca.core.franca.FEnumerator;
 import org.franca.core.franca.FField;
-import org.franca.core.franca.FInterface;
 import org.franca.core.franca.FMethod;
 import org.franca.core.franca.FStructType;
 import org.franca.core.franca.FType;
@@ -39,6 +38,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDString;
 import org.franca.deploymodel.dsl.fDeploy.FDStruct;
 import org.franca.deploymodel.dsl.fDeploy.FDTypeDef;
 import org.franca.deploymodel.dsl.fDeploy.FDTypeRef;
+import org.franca.deploymodel.dsl.fDeploy.FDTypes;
 import org.franca.deploymodel.dsl.fDeploy.FDUnion;
 import org.franca.deploymodel.dsl.fDeploy.FDValue;
 import org.franca.deploymodel.dsl.fDeploy.FDValueArray;
@@ -46,22 +46,9 @@ import org.franca.deploymodel.dsl.fDeploy.FDeployFactory;
 
 public class FDeployQuickfixProviderUtil {
 
-	/**
-	 * Returns an {@link FType} instance from the given {@link FInterface} which
-	 * has the given name and type. The returned {@link FType} instance is cast
-	 * to the given type.
-	 * 
-	 * @param type
-	 *            the type to look for
-	 * @param name
-	 *            the name to look for
-	 * @param iface
-	 *            the interface instance
-	 * @return the cast type instance
-	 */
 	public static <T> T getTypeForElement(Class<T> type, String name,
-			FInterface iface) {
-		for (FType t : iface.getTypes()) {
+			List<FType> types) {
+		for (FType t : types) {
 			if (type.isAssignableFrom(t.getClass()) && t.getName() == name) {
 				return type.cast(t);
 			}
@@ -235,6 +222,27 @@ public class FDeployQuickfixProviderUtil {
 		return null;
 
 	}
+	
+	public static FDArray getOrCreateArray(FDTypes types,
+			String elementName) {
+		for (FDTypeDef a : types.getTypes()) {
+			if (a instanceof FDArray
+					&& ((FDArray) a).getTarget().getName() == elementName) {
+				return (FDArray) a;
+			}
+		}
+
+		FArrayType arrayTarget = getTypeForElement(FArrayType.class,
+				elementName, types.getTarget().getTypes());
+		if (arrayTarget != null) {
+			FDArray array = FDeployFactory.eINSTANCE.createFDArray();
+			array.setTarget(arrayTarget);
+			types.getTypes().add(array);
+			return array;
+		}
+
+		return null;
+	}
 
 	public static FDArray getOrCreateArray(FDInterface deploymentInterface,
 			String elementName) {
@@ -247,7 +255,7 @@ public class FDeployQuickfixProviderUtil {
 		}
 
 		FArrayType arrayTarget = getTypeForElement(FArrayType.class,
-				elementName, deploymentInterface.getTarget());
+				elementName, deploymentInterface.getTarget().getTypes());
 		if (arrayTarget != null) {
 			FDArray array = FDeployFactory.eINSTANCE.createFDArray();
 			array.setTarget(arrayTarget);
@@ -257,10 +265,30 @@ public class FDeployQuickfixProviderUtil {
 
 		return null;
 	}
+	
+	public static FDStruct getOrCreateStruct(FDTypes types,
+			String elementName) {
+		for (FDTypeDef s : types.getTypes()) {
+			if (s instanceof FDStruct
+					&& ((FDStruct) s).getTarget().getName() == elementName) {
+				return (FDStruct) s;
+			}
+		}
+
+		FStructType structTarget = getTypeForElement(FStructType.class,
+				elementName, types.getTarget().getTypes());
+		if (structTarget != null) {
+			FDStruct struct = FDeployFactory.eINSTANCE.createFDStruct();
+			struct.setTarget(structTarget);
+			types.getTypes().add(struct);
+			return struct;
+		}
+
+		return null;
+	}
 
 	public static FDStruct getOrCreateStruct(FDInterface deploymentInterface,
 			String elementName) {
-
 		for (FDTypeDef s : deploymentInterface.getTypes()) {
 			if (s instanceof FDStruct
 					&& ((FDStruct) s).getTarget().getName() == elementName) {
@@ -269,12 +297,35 @@ public class FDeployQuickfixProviderUtil {
 		}
 
 		FStructType structTarget = getTypeForElement(FStructType.class,
-				elementName, deploymentInterface.getTarget());
+				elementName, deploymentInterface.getTarget().getTypes());
 		if (structTarget != null) {
 			FDStruct struct = FDeployFactory.eINSTANCE.createFDStruct();
 			struct.setTarget(structTarget);
 			deploymentInterface.getTypes().add(struct);
 			return struct;
+		}
+
+		return null;
+	}
+	
+	public static FDEnumeration getOrCreateEnumeration(
+			FDTypes types, String elementName) {
+		for (FDTypeDef e : types.getTypes()) {
+			if (e instanceof FDEnumeration
+					&& ((FDEnumeration) e).getTarget().getName() == elementName) {
+				return (FDEnumeration) e;
+			}
+		}
+
+		FEnumerationType enumerationTarget = getTypeForElement(
+				FEnumerationType.class, elementName,
+				types.getTarget().getTypes());
+		if (enumerationTarget != null) {
+			FDEnumeration enumeration = FDeployFactory.eINSTANCE
+					.createFDEnumeration();
+			enumeration.setTarget(enumerationTarget);
+			types.getTypes().add(enumeration);
+			return enumeration;
 		}
 
 		return null;
@@ -291,7 +342,7 @@ public class FDeployQuickfixProviderUtil {
 
 		FEnumerationType enumerationTarget = getTypeForElement(
 				FEnumerationType.class, elementName,
-				deploymentInterface.getTarget());
+				deploymentInterface.getTarget().getTypes());
 		if (enumerationTarget != null) {
 			FDEnumeration enumeration = FDeployFactory.eINSTANCE
 					.createFDEnumeration();
@@ -300,6 +351,28 @@ public class FDeployQuickfixProviderUtil {
 			return enumeration;
 		}
 
+		return null;
+	}
+	
+	public static FDUnion getOrCreateUnion(FDTypes types,
+			String elementName) {
+
+		for (FDTypeDef u : types.getTypes()) {
+			if (u instanceof FDUnion
+					&& ((FDUnion) u).getTarget().getName() == elementName) {
+				return (FDUnion) u;
+			}
+		}
+
+		FUnionType unionTarget = getTypeForElement(FUnionType.class,
+				elementName, types.getTarget().getTypes());
+		if (unionTarget != null) {
+			FDUnion union = FDeployFactory.eINSTANCE.createFDUnion();
+			union.setTarget(unionTarget);
+			types.getTypes().add(union);
+			return union;
+		}
+		
 		return null;
 	}
 
@@ -314,7 +387,7 @@ public class FDeployQuickfixProviderUtil {
 		}
 
 		FUnionType unionTarget = getTypeForElement(FUnionType.class,
-				elementName, deploymentInterface.getTarget());
+				elementName, deploymentInterface.getTarget().getTypes());
 		if (unionTarget != null) {
 			FDUnion union = FDeployFactory.eINSTANCE.createFDUnion();
 			union.setTarget(unionTarget);

@@ -57,7 +57,6 @@ code[Java][
 
 
 
-
 section:FrancaModelAPIReference_Section_FModel[API for Franca models, interfaces and type collections]
 
 This section describes the FModel class, which is the root class for each Franca model.
@@ -90,7 +89,7 @@ The type collection is named and should be versioned (optional).
 Types defined by a ref:FrancaModelAPIReference_FTypeCollection[FTypeCollection] can be referenced from
 other ref:FrancaModelAPIReference_FTypeCollection[FTypeCollection]s and ref:FrancaModelAPIReference_FInterface[FInterface]s.
 ul[
-	item[EString e[name]: The name of this element.
+	item[EString e[name] (optional): The name of this element.
 		 Inherited from base class FModelElement.
 	]
 	item[ref:FrancaModelAPIReference_FAnnotationBlock[FAnnotationBlock] e[comment] (optional): The structured comment for this element (if any).
@@ -131,6 +130,8 @@ ul[
 	item[ref:FrancaModelAPIReference_FContract[FContract] e[contract] (optional): The contract of this interface. A contract specifies the semantics of the interface, e.g., the order of the events across this interface.
 	]
 	item[ref:FrancaModelAPIReference_FInterface[FInterface] e[base] (optional): The base interface. Franca allows single inheritance.
+	]
+	item[List<ref:FrancaModelAPIReference_FInterface[FInterface]> e[managedInterfaces]: The list of interfaces managed by this interface. The interface will provide methods for discovery and handling of the runtime instances of the managed interfaces. The actual implementation depends on the specific target runtime platform.
 	]
 ]
 
@@ -217,9 +218,9 @@ ul[
 	item[EString e[array] (optional): If the typed element is an implicit array definition, this property will be set to a string (e.g., the string '\[\]'). If the typed element is a single value (not an array), this property will be null. Do not rely on the actual value of the string.
 		 Inherited from base class ref:FrancaModelAPIReference_FTypedElement[FTypedElement].
 	]
-	item[EString e[readonly] (optional): If the attribute is readonly, this property is set to a string (e.g., the string "readonly"). Otherwise, it is set to null.  Do not rely on the value of the string.
+	item[EBoolean e[readonly] (optional): Indicates if this attribute is read-only. If false, clients are granted write access to the attribute.
 	]
-	item[EString e[noSubscriptions] (optional): If the attribute doesn't support subscriptions, this property is set to a string value (e.g., "noSubscriptions"). Otherwise, it is set to null. Do not rely on the value of the string.
+	item[EBoolean e[noSubscriptions] (optional): Indicates if clients can subscribe to update events for this attribute. If false, subscribing is possible. The reverse logic of this flag is to ensure a proper default in the IDL: if the keyword "noSubscriptions" is not given, subscription is possible.
 	]
 ]
 
@@ -271,6 +272,9 @@ ul[
 
 section2:FrancaModelAPIReference_FMapType[Class FMapType]
 
+The Franca map type (sometimes "map" is also called "dictionary").
+This is a collection type which maps objects of a e[key] type to objects
+of a e[value] type in constant time.
 ul[
 	item[EString e[name]: The name of this element.
 		 Inherited from base class FModelElement.
@@ -286,6 +290,9 @@ ul[
 
 section2:FrancaModelAPIReference_FTypeRef[Class FTypeRef]
 
+This class is a reference to some Franca type.
+It may be either a ref:FIDL_PrimitiveTypes[primitive
+type] (property e[predefined] or a derived type (e.g., struct, array, map).
 ul[
 	item[FBasicTypeId e[predefined] (optional): If the referenced type is a predefined type, this property gives the actual predefined type. If the reference type is a user-defined type, this property will be null.
 	]
@@ -304,6 +311,8 @@ e[UNDEFINED], e[INT8], e[UINT8], e[INT16], e[UINT16], e[INT32], e[UINT32], e[INT
 
 section2:FrancaModelAPIReference_FEnumerationType[Class FEnumerationType]
 
+This class represents an enumeration type. The enumeration will contain
+a list of e[enumerators]. It can be derived from a base enumeration.
 ul[
 	item[EString e[name]: The name of this element.
 		 Inherited from base class FModelElement.
@@ -345,6 +354,11 @@ ul[
 
 section2:FrancaModelAPIReference_FCompoundType[Class FCompoundType (abstract)]
 
+This class represents all kinds of compound types in Franca, i.e., struct and union types.
+A compound type has a list of fields; each field is itself specified by its type.
+Thus, nested compounds can be created.
+The ordering of fields in the compound is relevant. E.g., serialization code
+generated from a Franca interface must take into account the order of the fields.
 ul[
 	item[EString e[name]: The name of this element.
 		 Inherited from base class FModelElement.
@@ -358,6 +372,9 @@ ul[
 
 section2:FrancaModelAPIReference_FUnionType[Class FUnionType]
 
+This class represents a union type in Franca. See its base class
+ref:FrancaModelAPIReference_FCompoundType[FCompoundType]
+for a detailed description.
 ul[
 	item[EString e[name]: The name of this element.
 		 Inherited from base class FModelElement.
@@ -374,6 +391,9 @@ ul[
 
 section2:FrancaModelAPIReference_FStructType[Class FStructType]
 
+This class represents a struct type in Franca. See its base class
+ref:FrancaModelAPIReference_FCompoundType[FCompoundType]
+for a detailed description.
 ul[
 	item[EString e[name]: The name of this element.
 		 Inherited from base class FModelElement.
@@ -384,7 +404,9 @@ ul[
 	item[List<ref:FrancaModelAPIReference_FField[FField]> e[elements]: The elements (aka fields) of this compound type.
 		 Inherited from base class ref:FrancaModelAPIReference_FCompoundType[FCompoundType].
 	]
-	item[ref:FrancaModelAPIReference_FStructType[FStructType] e[base] (optional): The base struct from which this struct inherits. Franca supports single inheritance for structs.
+	item[ref:FrancaModelAPIReference_FStructType[FStructType] e[base] (optional): The base struct from which this struct inherits. Franca supports single inheritance for structs. Structs which inherit from a base struct cannot be polymorphic.
+	]
+	item[EBoolean e[polymorphic] (optional): Indicates if struct is the root of a polymorphic type hierarchy. Structs may be either extended from a base struct or polymorphic (or none of both).
 	]
 ]
 
@@ -443,7 +465,7 @@ section2:FrancaModelAPIReference_FDeclaration[Class FDeclaration]
 This class represents the definition of a state variable
 as part of a Franca interface contract. Note that the 
 types available for the state variable definition are 
-all types which are visible in this interface.
+all types which are accessible from this interface.
 ul[
 	item[EString e[name]: The name of this element.
 		 Inherited from base class FModelElement.
@@ -461,6 +483,9 @@ ul[
 
 section2:FrancaModelAPIReference_FStateGraph[Class FStateGraph]
 
+A state graph specifying the interface's dynamic behavior. The state graph is flat
+(i.e., non-hierarchical) and consists of a set of states, which are linked by transitions.
+One of the states in the set is specified as e[initial]. I.e., this is the initial state of the interface.
 ul[
 	item[ref:FrancaModelAPIReference_FState[FState] e[initial]: This property references the initial state for the protocol state machine.
 	]
@@ -470,6 +495,10 @@ ul[
 
 section2:FrancaModelAPIReference_FState[Class FState]
 
+This class represents a single state as member of a 
+ref:FrancaModelAPIReference_FStateGraph[FStateGraph].
+The state contains a list of its outgoing transitions. 
+The target state of each transition is contained in that transition.
 ul[
 	item[EString e[name]: The name of this element.
 		 Inherited from base class FModelElement.
@@ -483,6 +512,17 @@ ul[
 
 section2:FrancaModelAPIReference_FTransition[Class FTransition]
 
+This class represents a single transition as part of a 
+ref:FrancaModelAPIReference_FStateGraph[FStateGraph].
+The transition references its target state by property e[to]. 
+It doesn't reference its source state; instead, the source state contains
+the list of its outgoing transitions.
+The transition defines a e[trigger], which specifies some event which
+can occur during runtime. It also defines a e[guard] condition.
+If the trigger event occurs, the guard condition will be checked (if any).
+Depending on this check the transition will be executed.
+Finally, a transition has some e[action], which will be executed
+each time when the transition fires.
 ul[
 	item[ref:FrancaModelAPIReference_FTrigger[FTrigger] e[trigger]: The trigger which fires this transition.
 	]
@@ -515,11 +555,27 @@ section2:FrancaModelAPIReference_FConstant[Class FConstant (abstract)]
 
 This is the common base class for all kinds of
 constants in the Franca contract action language.
-Currently, only integer constants are supported.
-This will be extended in future.
+The most important types are integers, booleans and strings.
+
+section2:FrancaModelAPIReference_FStringConstant[Class FStringConstant]
+
+This class represents strings constants in the Franca contract action language.
+ul[
+	item[EString e[val]: The value of this string constant (an actual string).
+	]
+]
+
+section2:FrancaModelAPIReference_FBooleanConstant[Class FBooleanConstant]
+
+This class represents boolean constants in the Franca contract action language.
+ul[
+	item[EBoolean e[val]: The value of this boolean constant (an actual boolean).
+	]
+]
 
 section2:FrancaModelAPIReference_FIntegerConstant[Class FIntegerConstant]
 
+This class represents integer constants in the Franca contract action language.
 ul[
 	item[EInt e[val]: The value of this integer constant (an actual integer).
 	]
@@ -527,8 +583,19 @@ ul[
 
 section2:FrancaModelAPIReference_FTypedElementRef[Class FTypedElementRef]
 
+This class is a reference to some ref:FrancaModelAPIReference_FTypedElement[FTypedElement].
+If the referenced element is no compound type (i.e., struct or union), only the e[element] property
+will be used. The e[target] and e[field] properties will be null. If a field of a compound type is referenced,
+the e[field] property will point to the ref:FrancaModelAPIReference_FField[FField] object. 
+If the compound type is nested, the e[target] property will reference the next outer level
+(which is itself a compound referenced by a ref:FrancaModelAPIReference_FTypedElementRef[FTypedElementRef]. 
+This might be chained in order to specify a reference to a deeply nested compound element.
 ul[
-	item[ref:FrancaModelAPIReference_FTypedElement[FTypedElement] e[element]: The typed element which is actually referenced by this object.
+	item[ref:FrancaModelAPIReference_FTypedElement[FTypedElement] e[element] (optional): The typed element which is actually referenced by this object.
+	]
+	item[ref:FrancaModelAPIReference_FTypedElementRef[FTypedElementRef] e[target] (optional): For nested compound types, this property references the next outer level. Otherwise, it is null.
+	]
+	item[ref:FrancaModelAPIReference_FField[FField] e[field] (optional): Specifies the field of a compound type.
 	]
 ]
 
@@ -645,4 +712,5 @@ section2:FrancaModelAPIReference_FAnnotationType[Enum FAnnotationType]
 This enum represents the type of a structured comment (i.e., the tag starting with a '@').
 
 This enum consists of the following literals:  
-e[UNDEFINED], e[DESCRIPTION], e[AUTHOR], e[EXPERIMENTAL], e[DEPRECATED], e[SEE], e[PARAM], e[HIGH_VOLUME], e[HIGH_FREQUENCY], e[SOURCE_URI], e[SOURCE_ALIAS], e[DETAILS].
+e[DESCRIPTION], e[AUTHOR], e[EXPERIMENTAL], e[DEPRECATED], e[SEE], e[PARAM], e[HIGH_VOLUME], e[HIGH_FREQUENCY], e[SOURCE_URI], e[SOURCE_ALIAS], e[DETAILS].
+

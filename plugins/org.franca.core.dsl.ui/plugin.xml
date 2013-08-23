@@ -251,7 +251,8 @@
             class="org.franca.core.dsl.ui.FrancaIDLExecutableExtensionFactory:org.eclipse.xtext.ui.editor.quickfix.MarkerResolutionGenerator">
       </markerResolutionGenerator>
    </extension>
-	<extension
+
+   <extension
          point="org.eclipse.core.expressions.definitions">
       <definition
             id="org.franca.core.dsl.ui.fidl">
@@ -269,5 +270,12 @@
             </iterate>
          </with>
       </definition>
-      </extension>
+   </extension>
+
+   <extension
+         point="org.eclipse.xtext.builder.participant">
+      <participant
+            class="org.franca.core.dsl.ui.FrancaIDLExecutableExtensionFactory:org.franca.core.dsl.ui.builder.CyclicReferencesBuilderParticipant">
+      </participant>
+   </extension>
 </plugin>

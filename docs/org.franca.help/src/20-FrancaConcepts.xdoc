@@ -60,11 +60,12 @@ or proprietary formats) can be transformed to/from Franca.
 In that context, Franca plays the role of a pivot model. Different IDLs can be 
 transformed into each other by chaining transformations like: e[IDL1 to Franca to IDL2].
 
-The following diagram shows an example setup of Franca transformations and generators.
+ref:FrancaExampleNetwork shows an example setup of Franca transformations and generators.
 The green arrows indicate transformation and reverse transformation between the
 Franca core model and another IDL's model. 
 
-img[images/franca_architecture.png][An example setup of Franca transformations and generators.][ ][ ]
+img:FrancaExampleNetwork[images/franca_architecture.png]
+	[An example setup of Franca transformations and generators.][][]
 
 Generally, IDLs in arbitrary formats can be part of the transformation framework.
 However, Franca provides special support for IDLs which are implemented using EMF.

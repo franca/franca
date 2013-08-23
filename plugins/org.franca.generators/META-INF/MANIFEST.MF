@@ -4,7 +4,7 @@ Bundle-Name: Franca example generators plugin
 Bundle-SymbolicName: org.franca.generators
 Bundle-Version: 0.8.8.qualifier
 Bundle-Activator: org.franca.generators.Activator
-Bundle-Vendor: Harman Infotainment Division
+Bundle-Vendor: itemis AG
 Require-Bundle: org.eclipse.core.runtime,
  org.franca.core,
  org.eclipse.xtext.xbase.lib;bundle-version="2.4.0",

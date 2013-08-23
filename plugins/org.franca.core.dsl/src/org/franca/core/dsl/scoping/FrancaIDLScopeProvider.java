@@ -11,20 +11,24 @@ import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.mwe2.language.scoping.QualifiedNameProvider;
 import org.eclipse.xtext.scoping.IScope;
 import org.eclipse.xtext.scoping.Scopes;
 import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider;
+import org.eclipse.xtext.scoping.impl.ImportUriGlobalScopeProvider;
 import org.franca.core.FrancaModelExtensions;
 import org.franca.core.contracts.TypeSystem;
 import org.franca.core.franca.FCompoundType;
 import org.franca.core.franca.FContract;
 import org.franca.core.franca.FEventOnIf;
+import org.franca.core.franca.FInterface;
 import org.franca.core.franca.FTransition;
 import org.franca.core.franca.FType;
 import org.franca.core.franca.FTypeRef;
 import org.franca.core.franca.FTypedElementRef;
 
 import com.google.common.collect.Lists;
+import com.google.inject.Inject;
 
 /**
  * This class contains custom scoping description.
@@ -35,12 +39,26 @@ import com.google.common.collect.Lists;
  */
 public class FrancaIDLScopeProvider extends AbstractDeclarativeScopeProvider {
 
+	@Inject
+	private QualifiedNameProvider qualifiedNameProvider;
+	
+	@Inject
+	private ImportUriGlobalScopeProvider importUriGlobalScopeProvider;
 	
 	public IScope scope_FAssignment_lhs (FContract contract, EReference ref) {
 		return Scopes.scopeFor(contract.getVariables());
 	}
-
 	
+	public IScope scope_FTypeRef_derived(FInterface _interface, EReference ref) {
+		return new FTypeScope(
+				this.delegateGetScope(_interface, ref),
+				true, 
+				importUriGlobalScopeProvider, 
+				_interface.eResource(), 
+				qualifiedNameProvider
+		);
+	}
+
 	public IScope scope_FTypedElementRef_element (FTransition tr, EReference ref) {
 		final List<EObject> scopes = Lists.newArrayList();
 
