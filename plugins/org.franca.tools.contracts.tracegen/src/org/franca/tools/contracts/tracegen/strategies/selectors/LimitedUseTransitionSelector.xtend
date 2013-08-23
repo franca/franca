@@ -11,12 +11,7 @@ import org.eclipse.xtext.xbase.lib.Pair
 import org.franca.core.franca.FTransition
 import org.franca.tools.contracts.tracegen.strategies.events.EventData
 import org.franca.tools.contracts.tracegen.traces.Trace
-import com.google.common.collect.Iterators
-import com.google.common.collect.Iterables
-import java.util.Iterator
 import java.util.Collections
-import com.google.common.collect.Collections2
-import java.util.ArrayList
 
 class LimitedUseTransitionSelector implements TransitionSelector {
 	
