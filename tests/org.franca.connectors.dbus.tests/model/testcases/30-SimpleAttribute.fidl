@@ -1,0 +1,7 @@
+// test interface definition with one attribute
+package testcases
+
+interface MyInterface {
+	attribute Int32 someAttribute
+}
+

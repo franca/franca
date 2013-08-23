@@ -1,14 +1,10 @@
 package org.franca.deploymodel.dsl.tests;
 
-import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.xtext.junit4.InjectWith;
 import org.eclipselabs.xtext.utils.unittesting.XtextRunner2;
 import org.eclipselabs.xtext.utils.unittesting.XtextTest;
-import org.franca.core.franca.FrancaPackage;
 import org.franca.deploymodel.dsl.FDeployTestsInjectorProvider;
-import org.franca.deploymodel.dsl.fDeploy.FDeployPackage;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -58,8 +54,19 @@ public class ModelSpecificationTests extends XtextTest {
     }
 
     @Test
+    public void test_12_SpecPropertyInterfaceRef() {
+    	testFile("testcases/12-SpecPropertyInterfaceRef.fdepl",
+    			"fidl/01-EmptyInterface.fidl");
+    }
+
+    @Test
     public void test_15_SpecInheritance() {
     	testFile("testcases/15-SpecInheritance.fdepl");
+    }
+
+    @Test
+    public void test_40_SpecSimple() {
+    	testFile("testcases/40-SpecSimple.fdepl");
     }
 
 }

@@ -12,11 +12,16 @@ import org.franca.core.franca.FModel
 import org.franca.core.franca.FInterface
 import org.franca.core.franca.FStateGraph
 import org.franca.core.franca.FContract
+import org.franca.core.franca.FTypeCollection
 
 class FrancaModelExtensions {
 	
 	def static getModel (EObject obj) {
 		getParentObject(obj, typeof(FModel))
+	}
+	
+	def static getTypeCollection (EObject obj) {
+		getParentObject(obj, typeof(FTypeCollection))
 	}
 	
 	def static getInterface (EObject obj) {

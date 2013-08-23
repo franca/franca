@@ -12,12 +12,12 @@ import org.franca.core.dsl.ui.highlighting.FrancaSemanticHighlightingCalculator;
 /**
  * Use this class to register components to be used within the IDE.
  */
-public class FrancaIDLUiModule extends org.franca.core.dsl.ui.AbstractFrancaIDLUiModule {
+public class FrancaIDLUiModule extends
+		org.franca.core.dsl.ui.AbstractFrancaIDLUiModule {
 	public FrancaIDLUiModule(AbstractUIPlugin plugin) {
 		super(plugin);
 	}
-	
-	
+
 	// inject own highlighting configuration
 	public Class<? extends IHighlightingConfiguration> bindSemanticConfig() {
 		return FrancaHighlightingConfiguration.class;
@@ -27,5 +27,4 @@ public class FrancaIDLUiModule extends org.franca.core.dsl.ui.AbstractFrancaIDLU
 	public Class<? extends ISemanticHighlightingCalculator> bindSemanticHighlightingCalculator() {
 		return FrancaSemanticHighlightingCalculator.class;
 	}
-
 }

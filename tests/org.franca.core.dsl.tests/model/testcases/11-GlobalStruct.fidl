@@ -1,5 +1,5 @@
 // a simple struct
-package a.b.c
+package testcases
 
 typeCollection MyTypes {
 	struct MyStruct {

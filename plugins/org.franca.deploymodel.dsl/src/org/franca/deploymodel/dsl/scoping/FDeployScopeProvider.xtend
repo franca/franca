@@ -7,10 +7,13 @@
  *******************************************************************************/
 package org.franca.deploymodel.dsl.scoping
 
+import com.google.inject.Inject
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EReference
+import org.eclipse.emf.mwe2.language.scoping.QualifiedNameProvider
 import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
+import org.eclipse.xtext.scoping.impl.ImportUriGlobalScopeProvider
 import org.franca.core.franca.FArrayType
 import org.franca.core.franca.FEnumerationType
 import org.franca.core.franca.FStructType
@@ -41,66 +44,72 @@ import org.franca.deploymodel.dsl.fDeploy.FDUnion
 import static extension org.eclipse.xtext.scoping.Scopes.*
 
 class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
+
+	@Inject
+	private QualifiedNameProvider qualifiedNameProvider
+
+	@Inject
+	private ImportUriGlobalScopeProvider importUriGlobalScopeProvider
 	
-	def scope_FDArray_target (FDTypes ctxt, EReference ref) {
+	def scope_FDTypes_target(FDTypes ctxt, EReference ref) {	
+		return new FTypeCollectionScope(IScope::NULLSCOPE, false, importUriGlobalScopeProvider, ctxt.eResource, qualifiedNameProvider);
+	} 
+
+	def scope_FDArray_target(FDTypes ctxt, EReference ref) {
 		ctxt.getScopes(typeof(FArrayType))
 	}
 
-	def scope_FDStruct_target (FDTypes ctxt, EReference ref) {
+	def scope_FDStruct_target(FDTypes ctxt, EReference ref) {
 		ctxt.getScopes(typeof(FStructType))
 	}
 
-	def scope_FDUnion_target (FDTypes ctxt, EReference ref) {
+	def scope_FDUnion_target(FDTypes ctxt, EReference ref) {
 		ctxt.getScopes(typeof(FUnionType))
 	}
 
-	def scope_FDEnumeration_target (FDTypes ctxt, EReference ref) {
+	def scope_FDEnumeration_target(FDTypes ctxt, EReference ref) {
 		ctxt.getScopes(typeof(FEnumerationType))
 	}
 
-	def private getScopes (FDTypes ctxt, Class<? extends EObject> clazz) {
+	def private getScopes(FDTypes ctxt, Class<? extends EObject> clazz) {
 		ctxt.getTarget().getTypes().filter(clazz).scopeFor
 	}
-	
+
 	// *****************************************************************************
-	
-	def scope_FDAttribute_target (FDInterface ctxt, EReference ref) {
+	def scope_FDAttribute_target(FDInterface ctxt, EReference ref) {
 		ctxt.getTarget().getAttributes().scopeFor
 	}
-	
-	def scope_FDMethod_target (FDInterface ctxt, EReference ref) {
+
+	def scope_FDMethod_target(FDInterface ctxt, EReference ref) {
 		ctxt.getTarget().getMethods().scopeFor
 	}
 
-	def scope_FDBroadcast_target (FDInterface ctxt, EReference ref) {
+	def scope_FDBroadcast_target(FDInterface ctxt, EReference ref) {
 		ctxt.getTarget().getBroadcasts().scopeFor
 	}
 
-
-	def scope_FDArray_target (FDInterface ctxt, EReference ref) {
+	def scope_FDArray_target(FDInterface ctxt, EReference ref) {
 		ctxt.getScopes(typeof(FArrayType))
 	}
-	
-	def scope_FDStruct_target (FDInterface ctxt, EReference ref) {
+
+	def scope_FDStruct_target(FDInterface ctxt, EReference ref) {
 		ctxt.getScopes(typeof(FStructType))
 	}
 
-	def scope_FDUnion_target (FDInterface ctxt, EReference ref) {
+	def scope_FDUnion_target(FDInterface ctxt, EReference ref) {
 		ctxt.getScopes(typeof(FUnionType))
 	}
-	
-	def scope_FDEnumeration_target (FDInterface ctxt, EReference ref) {
+
+	def scope_FDEnumeration_target(FDInterface ctxt, EReference ref) {
 		ctxt.getScopes(typeof(FEnumerationType))
 	}
 
-	def private getScopes (FDInterface ctxt, Class<? extends EObject> clazz) { 	
+	def private getScopes(FDInterface ctxt, Class<? extends EObject> clazz) {
 		ctxt.getTarget().getTypes().filter(clazz).scopeFor
 	}
 
-
 	// *****************************************************************************
-
-	def scope_FDArgument_target (FDArgumentList ctxt, EReference ref) {
+	def scope_FDArgument_target(FDArgumentList ctxt, EReference ref) {
 		val owner = ctxt.eContainer
 		switch (owner) {
 			FDMethod: {
@@ -112,115 +121,111 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 			FDBroadcast: {
 				owner.target.outArgs.scopeFor
 			}
-		}		
+		}
 	}
 
-	def scope_FDArgument_target (FDBroadcast ctxt, EReference ref) {
+	def scope_FDArgument_target(FDBroadcast ctxt, EReference ref) {
 		ctxt.getTarget().getOutArgs.scopeFor
 	}
 
-	def scope_FDField_target (FDStruct ctxt, EReference ref) {
+	def scope_FDField_target(FDStruct ctxt, EReference ref) {
 		ctxt.getTarget().getElements.scopeFor
 	}
 
-	def scope_FDField_target (FDUnion ctxt, EReference ref) {
+	def scope_FDField_target(FDUnion ctxt, EReference ref) {
 		ctxt.getTarget().getElements.scopeFor
 	}
 
-	def scope_FDEnumValue_target (FDEnumeration ctxt, EReference ref) {
+	def scope_FDEnumValue_target(FDEnumeration ctxt, EReference ref) {
 		ctxt.getTarget().getEnumerators.scopeFor
 	}
 
-
 	// *****************************************************************************
-
-	def scope_FDProperty_decl (FDProvider owner, EReference ref) {
+	def scope_FDProperty_decl(FDProvider owner, EReference ref) {
 		owner.getPropertyDecls
 	}
 
-	def scope_FDProperty_decl (FDInterfaceInstance owner, EReference ref) {
+	def scope_FDProperty_decl(FDInterfaceInstance owner, EReference ref) {
 		owner.getPropertyDecls
 	}
 
-	def scope_FDProperty_decl (FDInterface owner, EReference ref) {
+	def scope_FDProperty_decl(FDInterface owner, EReference ref) {
 		owner.getPropertyDecls
 	}
 
-	def scope_FDProperty_decl (FDTypes owner, EReference ref) {
+	def scope_FDProperty_decl(FDTypes owner, EReference ref) {
 		owner.getPropertyDecls
 	}
 
-	def scope_FDProperty_decl (FDAttribute owner, EReference ref) {
+	def scope_FDProperty_decl(FDAttribute owner, EReference ref) {
 		owner.getPropertyDecls
 	}
 
-	def scope_FDProperty_decl (FDMethod owner, EReference ref) {
-		owner.getPropertyDecls
-	}
-	
-	def scope_FDProperty_decl (FDBroadcast owner, EReference ref) {
+	def scope_FDProperty_decl(FDMethod owner, EReference ref) {
 		owner.getPropertyDecls
 	}
 
-	def scope_FDProperty_decl (FDArgument owner, EReference ref) {
+	def scope_FDProperty_decl(FDBroadcast owner, EReference ref) {
 		owner.getPropertyDecls
 	}
 
-	def scope_FDProperty_decl (FDArray owner, EReference ref) {
+	def scope_FDProperty_decl(FDArgument owner, EReference ref) {
 		owner.getPropertyDecls
 	}
 
-	def scope_FDProperty_decl (FDStruct owner, EReference ref) {
+	def scope_FDProperty_decl(FDArray owner, EReference ref) {
 		owner.getPropertyDecls
 	}
 
-	def scope_FDProperty_decl (FDUnion owner, EReference ref) {
+	def scope_FDProperty_decl(FDStruct owner, EReference ref) {
 		owner.getPropertyDecls
 	}
 
-	def scope_FDProperty_decl (FDField owner, EReference ref) {
+	def scope_FDProperty_decl(FDUnion owner, EReference ref) {
 		owner.getPropertyDecls
 	}
 
-	def scope_FDProperty_decl (FDEnumeration owner, EReference ref) {
+	def scope_FDProperty_decl(FDField owner, EReference ref) {
 		owner.getPropertyDecls
 	}
 
-	def scope_FDProperty_decl (FDEnumValue owner, EReference ref) {
+	def scope_FDProperty_decl(FDEnumeration owner, EReference ref) {
 		owner.getPropertyDecls
 	}
 
-	def private IScope getPropertyDecls (FDElement elem) {
+	def scope_FDProperty_decl(FDEnumValue owner, EReference ref) {
+		owner.getPropertyDecls
+	}
+
+	def private IScope getPropertyDecls(FDElement elem) {
 		val root = FDModelUtils::getRootElement(elem)
 		PropertyMappings::getAllPropertyDecls(root.getSpec(), elem).scopeFor
 	}
 
-
 	// *****************************************************************************
 	// simple type system
-	
-	def scope_FDEnum_value (FDPropertyFlag elem, EReference ref) {
-		if (elem.getDefault==null) {
+	def scope_FDEnum_value(FDPropertyFlag elem, EReference ref) {
+		if (elem.getDefault == null) {
 			IScope::NULLSCOPE
 		} else {
 			val decl = elem.eContainer as FDPropertyDecl
 			decl.getPropertyDeclEnumScopes
 		}
 	}
-	
-	def scope_FDEnum_value (FDProperty elem, EReference ref) {
+
+	def scope_FDEnum_value(FDProperty elem, EReference ref) {
 		elem.getDecl.getPropertyDeclEnumScopes
 	}
-	
-	def private IScope getPropertyDeclEnumScopes (FDPropertyDecl decl) {
+
+	def private IScope getPropertyDeclEnumScopes(FDPropertyDecl decl) {
 		val typeRef = decl.getType
-		if (typeRef.getComplex!=null) {
+		if (typeRef.getComplex != null) {
 			val type = typeRef.getComplex
 			if (type instanceof FDEnumType) {
 				return (type as FDEnumType).getEnumerators.scopeFor
 			}
 		}
-		
+
 		IScope::NULLSCOPE
 	}
 

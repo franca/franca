@@ -1,0 +1,29 @@
+// several testcases of interfaces managing others
+package testcases
+
+<** @description : Test interface. **>
+interface MyInterface1 {
+}
+
+<** @description : Another test interface. **>
+interface MyInterface2 {
+}
+
+<** @description : A third test interface. **>
+interface MyInterface3 {
+}
+
+<** @description : An interface managing another one. **>
+interface RootInterface1 manages MyInterface1 {
+}
+
+<** @description : Another interface which manages several other interfaces. **>
+interface RootInterface2 manages MyInterface1, MyInterface2, MyInterface3 {
+}
+
+<** @description: A managing interface which also extends from another.
+    Note that this interface inherits also the manages-relation from its
+    base interface, i.e., RootInterface3 also manages MyInterface1.
+**>
+interface RootInterface3 extends RootInterface1 manages MyInterface2 {
+}

@@ -1,5 +1,5 @@
 // a simple array
-package a.b.c
+package testcases
 
 typeCollection MyTypes {
 	array MyArray of Int8

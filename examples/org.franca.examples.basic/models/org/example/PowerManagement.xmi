@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="ASCII"?>
+<franca:FModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:franca="http://core.franca.org" name="org.example">
+  <interfaces name="PowerManagement">
+    <comment>
+      <elements type="@description" comment="OS PowerManagement interface.&#xA;&#xA;                    As this is an example interface only, it doesn't contain any&#xA;                    more documentation. It is just a very simple interface definition."/>
+      <elements type="@source-alias" comment="derived from org.freedesktop.PowerManagement"/>
+    </comment>
+    <version minor="1"/>
+    <methods name="GetLowBattery">
+      <outArgs name="low_battery">
+        <type predefined="Boolean"/>
+      </outArgs>
+    </methods>
+    <methods name="GetOnBattery">
+      <outArgs name="on_battery">
+        <type predefined="Boolean"/>
+      </outArgs>
+    </methods>
+    <methods name="GetPowerSaveStatus">
+      <outArgs name="save_power">
+        <type predefined="Boolean"/>
+      </outArgs>
+    </methods>
+    <methods name="CanHibernate">
+      <outArgs name="can_hibernate">
+        <type predefined="Boolean"/>
+      </outArgs>
+    </methods>
+    <methods name="CanSuspend">
+      <outArgs name="can_suspend">
+        <type predefined="Boolean"/>
+      </outArgs>
+    </methods>
+    <methods name="CanReboot">
+      <outArgs name="can_reboot">
+        <type predefined="Boolean"/>
+      </outArgs>
+    </methods>
+    <methods name="CanShutdown">
+      <outArgs name="can_shutdown">
+        <type predefined="Boolean"/>
+      </outArgs>
+    </methods>
+    <methods name="Suspend"/>
+    <methods name="Hibernate"/>
+    <methods name="Reboot"/>
+    <methods name="Shutdown"/>
+    <broadcasts name="LowBatteryChanged">
+      <outArgs name="new_value">
+        <type predefined="Boolean"/>
+      </outArgs>
+    </broadcasts>
+    <broadcasts name="OnBatteryChanged">
+      <outArgs name="new_value">
+        <type predefined="Boolean"/>
+      </outArgs>
+    </broadcasts>
+  </interfaces>
+</franca:FModel>

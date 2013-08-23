@@ -1,5 +1,5 @@
 // a simple union
-package a.b.c
+package testcases
 
 typeCollection MyTypes {
 	union MyUnion {

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="introspect.xsl"?>
+<node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="introspect.xsd" name="testcases">
+  <interface name="MyInterface">
+    <property access="readwrite" name="aSimpleAttribute" type="i"/>
+    <property access="readwrite" name="aComplexAttribute" type="(iii)"/>
+  </interface>
+</node>

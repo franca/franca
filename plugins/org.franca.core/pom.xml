@@ -5,12 +5,12 @@
 	<parent>
 		<groupId>org.franca</groupId>
 		<artifactId>org.franca.parent</artifactId>
-		<version>0.8.7-SNAPSHOT</version>
+		<version>0.8.8-SNAPSHOT</version>
 		<relativePath>../../releng/org.franca.parent/pom.xml</relativePath>
 	</parent>
 
 	<artifactId>org.franca.core</artifactId>
-	<version>0.8.7-SNAPSHOT</version>
+	<version>0.8.8-SNAPSHOT</version>
 	<description>This Eclipse plugin contains the Franca ecore model and some central base classes and tools for the Franca framework.</description>
 	<packaging>eclipse-plugin</packaging>
 	<build>
@@ -22,9 +22,10 @@
 
 		<sourceDirectory>src</sourceDirectory>
 		<plugins>
-			<!-- Copy all Xtext related sources to seperate folder that is registered 
+			<!-- Copy all Xtext related sources to separate folder that is registered 
 				as resource folder -->
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
 				<executions>
 					<execution>
@@ -85,6 +86,7 @@
 				</executions>
 			</plugin>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-clean-plugin</artifactId>
 				<configuration>
 					<filesets>

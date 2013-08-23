@@ -20,12 +20,23 @@ User-defined types can refer to primitive types or other, previously defined typ
 
 section2:FIDL_PrimitiveTypes[Primitive types]
 
-The primitive types supported by Franca are listed in the following table.
+The primitive types supported by Franca are listed in ref:PrimitiveTypes.
+There is a number of very specific signed and unsigned integer types with varying ranges.
+This allows to be very specific about the size of these types on any target platform.
+In a future version of Franca IDL it will be possible to specify integer types by
+their specific range (min/max). The actual representation will then be computed 
+by a configurable type engine.
 
-table[
+table:PrimitiveTypes[
+	caption[Primitive types of Franca IDL.]
+	tf[
+		professional
+		tcol[1] tcol[7]
+	]
 	tr[
 		td[e[Type name]]
 		td[e[Description]]
+		---
 	]
 	tr[
 		td[code[Franca][UInt8]]
@@ -45,7 +56,7 @@ table[
 	]
 	tr[
 		td[code[Franca][UInt32]]
-		td[signed 32-bit integer (range 0..4294967295)]
+		td[unsigned 32-bit integer (range 0..4294967295)]
 	]
 	tr[
 		td[code[Franca][Int32]]
@@ -53,7 +64,7 @@ table[
 	]
 	tr[
 		td[code[Franca][UInt64]]
-		td[signed 64-bit integer]
+		td[unsigned 64-bit integer]
 	]
 	tr[
 		td[code[Franca][Int64]]
@@ -404,13 +415,19 @@ interface DerivedInterface extends BaseInterface {
 }
 ]
 
-The following table lists all interface members and how their semantics is handled
+ref:InheritanceSemantics lists all interface members and how their semantics is handled
 with respect to interface inheritance.
 
-table[
+table:InheritanceSemantics[
+	caption[Franca interface members and their semantics with respect to interface inheritance.]
+	tf[
+		professional
+		tcol[1] tcol[4]
+	]
 	tr[
-		td[e[interface element]]
-		td[e[inheritance semantics]]
+		td[e[Interface element]]
+		td[e[Inheritance semantics]]
+		---
 	]
 	tr[
 		td[attributes]

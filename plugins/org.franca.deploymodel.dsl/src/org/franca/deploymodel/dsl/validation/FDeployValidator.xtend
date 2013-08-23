@@ -110,7 +110,7 @@ class FDeployValidator {
 		PropertyDefChecker checker
 	) {
 		val typerefs = EcoreUtil2::eAllContents(rootElem.target).filter(typeof(FTypeRef)).toSet
-		checkUsedTypesRoot(rootElem, typerefs, localTypes, checker)
+		return checkUsedTypesRoot(rootElem, typerefs, localTypes, checker)
 	}
 
 	def private checkUsedTypesRoot (FDRootElement rootElem,
@@ -118,6 +118,7 @@ class FDeployValidator {
 		List<FType> localTypes,
 		PropertyDefChecker checker
 	) {
+		var boolean hasError = false
 		val referencedTypes =
 			typerefs.map[derived].filterNull
 			.filter[it.isDeploymentRelevantType()]
@@ -140,8 +141,11 @@ class FDeployValidator {
 					"Deployment for type '" + missing.name + "' is missing, " +
 					"add 'use' reference for deployment of package '" + model.name + "'",
 					rootElem, FD_INTERFACE__TARGET)
+				hasError = true
 			}
 		}
+		
+		return hasError
 	}
 	
 	// TODO replace by dispatch-function in checker

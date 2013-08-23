@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2012 Harman International (http://www.harman.com).
+* Copyright (c) 2013 itemis AG (http://www.itemis.de).
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -28,8 +28,9 @@ FModel returns FModel:
 // type collection and interface
 
 FTypeCollection returns FTypeCollection:
+	{FTypeCollection}
 	(comment=FAnnotationBlock)?
-	'typeCollection' name=FQN
+	'typeCollection' (name=FQN)?
 	'{'
 		('version' version=FVersion)?
 		(types+=FType)*
@@ -38,7 +39,12 @@ FTypeCollection returns FTypeCollection:
 FInterface returns FInterface:
 	{FInterface}
 	(comment=FAnnotationBlock)?
-	'interface' name=FQN ('extends' base=[FInterface|FQN])?
+	'interface' name=FQN
+		('extends' base=[FInterface|FQN])?
+		('manages'
+			managedInterfaces+=[FInterface|FQN]
+			(',' managedInterfaces+=[FInterface|FQN])*
+		)?
 	'{'
 		('version' version=FVersion)?
 		(attributes+=FAttribute)*
@@ -142,7 +148,11 @@ FTypeDef returns FTypeDef:
 FStructType returns FStructType:
 	{FStructType}
 	(comment=FAnnotationBlock)?
-	'struct' name=ID ('extends' base=[FStructType|FQN])?
+	'struct' name=ID
+		(
+			('extends' base=[FStructType|FQN]) |
+			(polymorphic?='polymorphic')
+		)?
 	'{'
 		(elements+=FField)*
     '}';
@@ -317,7 +327,6 @@ FAnnotation returns FAnnotation:
 	type=FAnnotationType comment=COMMENT_STRING;
 
 enum FAnnotationType returns FAnnotationType:
-	undefined = 'undefined' |
 	description = '@description' |
 	author = '@author' |
 	experimental = '@experimental' |

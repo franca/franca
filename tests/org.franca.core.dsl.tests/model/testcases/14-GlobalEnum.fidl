@@ -1,5 +1,5 @@
 // a enumeration type
-package a.b.c
+package testcases
 
 typeCollection MyTypes {
 	enumeration MyEnumeration {

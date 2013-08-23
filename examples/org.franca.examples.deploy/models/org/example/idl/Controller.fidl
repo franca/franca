@@ -1,0 +1,9 @@
+package org.example.idl
+
+<** @description : Controller interface.
+
+    This is a synthetic example interface. It is used to test interface references
+    as basic type of deployment properties.
+**> 
+interface Controller {
+}

@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: org.franca.core.ui.addons
+Bundle-SymbolicName: org.franca.core.ui.addons;singleton:=true
+Bundle-Version: 0.8.8.qualifier
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.xtext.ui,
+ org.franca.core.dsl,
+ org.franca.core.dsl.ui,
+ org.eclipse.draw2d,
+ org.eclipse.gef4.zest.layouts,
+ org.eclipse.jdt.ui,
+ org.eclipse.jdt.core,
+ org.eclipse.ui.ide,
+ org.franca.deploymodel.dsl,
+ org.eclipse.gef4.zest.core
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Activator: org.franca.core.ui.addons.Activator
+Bundle-Vendor: itemis AG

@@ -26,7 +26,6 @@ class ContractDotGenerator {
 			
 			«FOR api : fmodel.interfaces»
 				«api.generate»
-				
 			«ENDFOR»
 		}
 	'''
@@ -45,12 +44,12 @@ class ContractDotGenerator {
 		«ENDIF»
 	'''
 	
-	def private String genLabel (FTransition it) {
+	def public String genLabel (FTransition it) {
 		trigger.event.genEventLabel + 
 		if (guard==null)
 			''
 		else
-			"\\n" + guard.genGuard
+			"\n" + guard.genGuard
 	}
 	
 	def private String genEventLabel (FEventOnIf it) {
@@ -60,9 +59,9 @@ class ContractDotGenerator {
 			"respond " + respond.name
 		} else if (signal!=null) {
 			"signal " + signal.name
-		} else if (signal!=null) {
+		} else if (set!=null) {
 			"set " + set.name
-		} else if (signal!=null) {
+		} else if (update!=null) {
 			"update " + update.name
 		} else {
 			"unknown_event"

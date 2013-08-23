@@ -38,12 +38,7 @@ public class DigraphTest {
 			digraph.topoSort();
 			assertTrue(true);
 		} catch (HasCyclesException e) {
-			String cycles = new String();
-			for (Iterator<Edge<String>> it = digraph.edgesIterator(); it.hasNext();) {
-				Edge<String> edge = it.next();
-				cycles += "(" + edge.from.value + "->" + edge.to.value + ")";
-			}
-			System.out.println("Cycles were detected in: " + cycles);
+			System.out.println("Cycles were detected in: " + digraph.edgesToString());
 		}
 		try {
 			digraph.removeEdge("A", "B");
@@ -51,11 +46,7 @@ public class DigraphTest {
 			e1.printStackTrace();
 		}
 		digraphAsString ="Digraph:";
-		for (Iterator<Edge<String>> it = digraph.edgesIterator(); it.hasNext();) {
-			Edge<String> edge = it.next();
-			digraphAsString += "(" + edge.from.value + "->" + edge.to.value + ")";
-		}
-		System.out.println(digraphAsString);
+		System.out.println("Digraph:" + digraph.edgesToString());
 
 		try {
 			System.out.print("Topological sort result:");

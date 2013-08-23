@@ -237,9 +237,13 @@ class FDeployGenerator implements IGenerator {
 		val single =
 			if (typeRef.complex==null) {
 				switch (typeRef.predefined) {
-					case FDPredefinedTypeId::BOOLEAN: "Boolean"
-					case FDPredefinedTypeId::INTEGER: "Integer"
-					case FDPredefinedTypeId::STRING:  "String"
+					case FDPredefinedTypeId::BOOLEAN:    "Boolean"
+					case FDPredefinedTypeId::INTEGER:    "Integer"
+					case FDPredefinedTypeId::STRING:     "String"
+					case FDPredefinedTypeId::INTERFACE:  {
+						neededFrancaTypes.add("FInterface")
+						"FInterface"
+					}
 				}
 			} else {
 				val ct = typeRef.complex
@@ -250,7 +254,7 @@ class FDeployGenerator implements IGenerator {
 		if (typeRef.array==null)
 			single
 		else {
-			needList = true;			
+			needList = true
 			single.genListType
 		}
 	}
@@ -259,9 +263,10 @@ class FDeployGenerator implements IGenerator {
 		val single =
 			if (typeRef.complex==null) {
 				switch (typeRef.predefined) {
-					case FDPredefinedTypeId::BOOLEAN: "Boolean"
-					case FDPredefinedTypeId::INTEGER: "Integer"
-					case FDPredefinedTypeId::STRING:  "String"
+					case FDPredefinedTypeId::BOOLEAN:   "Boolean"
+					case FDPredefinedTypeId::INTEGER:   "Integer"
+					case FDPredefinedTypeId::STRING:    "String"
+					case FDPredefinedTypeId::INTERFACE: "Interface"
 				}
 			} else {
 				switch (typeRef.complex) {

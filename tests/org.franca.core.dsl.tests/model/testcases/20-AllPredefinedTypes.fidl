@@ -1,5 +1,5 @@
 // a struct containing all predefined types as members
-package a.b.c
+package testcases
 
 typeCollection MyTypes {
 	struct MyStruct {

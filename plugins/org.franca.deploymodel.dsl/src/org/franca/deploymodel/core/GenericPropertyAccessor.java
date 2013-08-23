@@ -10,11 +10,13 @@ package org.franca.deploymodel.core;
 import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
+import org.franca.core.franca.FInterface;
 import org.franca.deploymodel.dsl.fDeploy.FDBoolean;
 import org.franca.deploymodel.dsl.fDeploy.FDComplexValue;
 import org.franca.deploymodel.dsl.fDeploy.FDElement;
 import org.franca.deploymodel.dsl.fDeploy.FDEnum;
 import org.franca.deploymodel.dsl.fDeploy.FDInteger;
+import org.franca.deploymodel.dsl.fDeploy.FDInterfaceRef;
 import org.franca.deploymodel.dsl.fDeploy.FDProperty;
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl;
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyFlag;
@@ -22,7 +24,6 @@ import org.franca.deploymodel.dsl.fDeploy.FDSpecification;
 import org.franca.deploymodel.dsl.fDeploy.FDString;
 import org.franca.deploymodel.dsl.fDeploy.FDValue;
 import org.franca.deploymodel.dsl.fDeploy.FDValueArray;
-import org.franca.deploymodel.core.PropertyMappings;
 
 import com.google.common.collect.Lists;
 
@@ -30,7 +31,7 @@ import com.google.common.collect.Lists;
  * This class allows the type-safe access to property values for a given
  * Franca deployment specification. It also handles to return the correct
  * default values, if those have been defined in the specification and not
- * overriden by actual concrete property definitions.
+ * overridden by actual concrete property definitions.
  */
 public class GenericPropertyAccessor {
 
@@ -111,6 +112,31 @@ public class GenericPropertyAccessor {
 		for(FDValue v : valarray.getValues()) {
 			if (v instanceof FDString) {
 				vals.add(((FDString) v).getValue());
+			} else {
+				return null;
+			}
+		}
+		return vals;
+	}
+
+	
+	public FInterface getInterface (FDElement elem, String property) {
+		FDValue val = getSingleValue(elem, property);
+		if (val!=null && val instanceof FDInterfaceRef) {
+			return ((FDInterfaceRef) val).getValue();
+		}
+		return null;
+	}
+	
+	public List<FInterface> getInterfaceArray (FDElement elem, String property) {
+		FDValueArray valarray = getValueArray(elem, property);
+		if (valarray==null)
+			return null;
+		
+		List<FInterface> vals = Lists.newArrayList();
+		for(FDValue v : valarray.getValues()) {
+			if (v instanceof FDInterfaceRef) {
+				vals.add(((FDInterfaceRef) v).getValue());
 			} else {
 				return null;
 			}

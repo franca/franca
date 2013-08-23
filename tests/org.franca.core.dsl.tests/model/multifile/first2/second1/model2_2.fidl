@@ -1,4 +1,4 @@
-package multifile.first1
+package multifile.first2.second1
 
 // import via package namespace and wildcard
 import multifile.first1.* from "../../first1/model1_2.fidl"

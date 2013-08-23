@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Franca core plugin
 Bundle-SymbolicName: org.franca.core;singleton:=true
-Bundle-Version: 0.8.7.qualifier
+Bundle-Version: 0.8.8.qualifier
 Bundle-ClassPath: .
-Bundle-Vendor: Harman Infotainment Division
+Bundle-Vendor: itemis AG
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.franca.core,

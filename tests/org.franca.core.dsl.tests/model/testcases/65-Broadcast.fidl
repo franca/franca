@@ -1,5 +1,5 @@
 // test interface definition with one broadcast
-package a.b.c
+package testcases
 
 interface MyInterface {
 	broadcast sendStatus {

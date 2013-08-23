@@ -1,5 +1,5 @@
 // test interface definition with one method
-package a.b.c
+package testcases
 
 interface MyInterface {
 	method callme {

@@ -97,6 +97,14 @@ public class FDeployedInterface {
 		return gpa.getStringArray(getFDElement(obj), property);
 	}
 
+	public FInterface getInterface (EObject obj, String property) {
+		return gpa.getInterface(getFDElement(obj), property);
+	}
+	
+	public List<FInterface> getInterfaceArray (EObject obj, String property) {
+		return gpa.getInterfaceArray(getFDElement(obj), property);
+	}
+
 
 	public String getEnum (EObject obj, String property) {
 		return gpa.getEnum(getFDElement(obj), property);

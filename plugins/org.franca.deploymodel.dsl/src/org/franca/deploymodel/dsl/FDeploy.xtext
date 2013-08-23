@@ -71,7 +71,7 @@ FDTypeRef:
 	(predefined=FDPredefinedTypeId | complex=FDType) (array='[]')?;
 
 enum FDPredefinedTypeId:
-	Integer | String | Boolean;
+	Integer | String | Boolean | Interface;
 
 FDType:
 	FDEnumType;
@@ -221,12 +221,13 @@ FDValueArray:
 	'{' values+=FDValue (',' values+=FDValue)* '}';
 	
 FDValue:
-	FDInteger | FDString | FDEnum | FDBoolean;
+	FDInteger | FDString | FDEnum | FDBoolean | FDInterfaceRef;
 	
-FDInteger:	value=INT;
-FDString:	value=STRING;
-FDEnum:     value=[FDEnumerator|ID];
-FDBoolean:  value=('false'|'true');
+FDInteger:	    value=INT;
+FDString:	    value=STRING;
+FDEnum:         value=[FDEnumerator|ID];
+FDBoolean:      value=('false'|'true');
+FDInterfaceRef: '&' value=[fidl::FInterface|FQN];
 
 
 // **************************************************************
