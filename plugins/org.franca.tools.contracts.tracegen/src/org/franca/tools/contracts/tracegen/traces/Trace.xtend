@@ -177,14 +177,14 @@ class Trace {
 		val max = 38
 		'''
 			 CLIENT                                SERVER  | STATE TRACE
-			Â«FOR tr : orderedTransitionsÂ»
-				Â«val evData = tr.valueÂ»
-				Â«val ev = evData.eventÂ»
-				Â«val direction = if (ev.getUpdate()!=null || ev.getRespond()!=null || ev.getSignal()!=null) "<--" else "-->"Â»
-				Â«val actuals = tr.value.actualArguments.map[value].join(", ")Â»
-				Â«val trg = StringUtils::rightPad(StringUtils::abbreviate(getTriggerString(ev) + '''(Â«actualsÂ»)''', max), max)Â»
-				Â«directionÂ» Â«trgÂ» Â«directionÂ» | Â«tr.key.to.nameÂ»
-			Â«ENDFORÂ»
+			«FOR tr : orderedTransitions»
+				«val evData = tr.value»
+				«val ev = evData.event»
+				«val direction = if (ev.getUpdate()!=null || ev.getRespond()!=null || ev.getSignal()!=null) "<--" else "-->"»
+				«val actuals = tr.value.actualArguments.map[value].join(", ")»
+				«val trg = StringUtils::rightPad(StringUtils::abbreviate(getTriggerString(ev) + '''(«actuals»)''', max), max)»
+				«direction» «trg» «direction» | «tr.key.to.name»
+			«ENDFOR»
 		'''
 	}
 	
