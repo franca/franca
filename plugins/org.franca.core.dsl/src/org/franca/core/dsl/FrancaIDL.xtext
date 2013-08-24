@@ -236,7 +236,7 @@ FTransition:
 	'on' trigger=FTrigger
 		(guard=FGuard)?
 		'->' to=[FState|ID]
-		(action=FBlockExpression)?
+		(action=FBlock)?
 	;
 
 
@@ -255,17 +255,13 @@ FGuard:
 	'[' condition=LogicalOrExpression ']';
 
 	
-FExpression returns FExpression:
-	FAssignment | LogicalOrExpression;
-
-FAssignment returns FExpression:
-	{FAssignment}
+FAssignment returns FAssignment:
 	lhs=[FDeclaration|ID] '=' rhs=LogicalOrExpression;
 
-FBlockExpression returns FExpression: 
-	{FBlockExpression}
+FBlock returns FBlock:
+	{FBlock}
 	'{'
-		(expressions+=FExpression)*
+		(statements+=FAssignment)*
 	'}';
 
 LogicalOrExpression returns FExpression:
