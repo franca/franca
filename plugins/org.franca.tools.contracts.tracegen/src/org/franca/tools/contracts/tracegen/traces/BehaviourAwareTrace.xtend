@@ -12,7 +12,7 @@ import org.eclipse.xtext.EcoreUtil2
 import org.franca.core.franca.FArgument
 import org.franca.core.franca.FAssignment
 import org.franca.core.franca.FBinaryOperation
-import org.franca.core.franca.FBlockExpression
+import org.franca.core.franca.FBlock
 import org.franca.core.franca.FBooleanConstant
 import org.franca.core.franca.FDeclaration
 import org.franca.core.franca.FExpression
@@ -146,8 +146,8 @@ class BehaviourAwareTrace extends Trace {
 		throw new UnsupportedOperationException
 	}
 	
-	def dispatch Object evaluate(FBlockExpression expr, EventData triggeringEvent) {
-		val iter = expr.expressions.iterator
+	def dispatch Object evaluate(FBlock block, EventData triggeringEvent) {
+		val iter = block.statements.iterator
 		while (iter.hasNext) {
 			val result = iter.next.evaluate(triggeringEvent)
 			if (! iter.hasNext) {

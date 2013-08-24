@@ -235,7 +235,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="guard" eType="#//FGuard"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="to" lowerBound="1" eType="#//FState"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="action" eType="#//FExpression"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="action" eType="#//FBlock"
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FTrigger">
@@ -263,11 +263,11 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="base" eType="#//FUnionType"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FField" eSuperTypes="#//FTypedElement"/>
-  <eClassifiers xsi:type="ecore:EClass" name="FBlockExpression" eSuperTypes="#//FExpression">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="expressions" upperBound="-1"
-        eType="#//FExpression" containment="true"/>
+  <eClassifiers xsi:type="ecore:EClass" name="FBlock" eSuperTypes="#//FStatement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="statements" upperBound="-1"
+        eType="#//FStatement" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="FAssignment" eSuperTypes="#//FExpression">
+  <eClassifiers xsi:type="ecore:EClass" name="FAssignment" eSuperTypes="#//FStatement">
     <eStructuralFeatures xsi:type="ecore:EReference" name="lhs" lowerBound="1" eType="#//FDeclaration"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="rhs" lowerBound="1" eType="#//FExpression"
         containment="true"/>
@@ -277,6 +277,7 @@
       <details key="documentation" value="This is the common base class for all expressions of&#xD;&#xA;the Franca contract action language.&#xD;&#xA;The FExpression class will never be instantiated.&#xD;&#xA;"/>
     </eAnnotations>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FStatement" abstract="true"/>
   <eClassifiers xsi:type="ecore:EClass" name="FTypedElementRef" eSuperTypes="#//FExpression">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="This class is a reference to some ref:FrancaModelAPIReference_FTypedElement[FTypedElement].&#xA;If the referenced element is no compound type (i.e., struct or union), only the e[element] property&#xA;will be used. The e[target] and e[field] properties will be null. If a field of a compound type is referenced,&#xA;the e[field] property will point to the ref:FrancaModelAPIReference_FField[FField] object. &#xA;If the compound type is nested, the e[target] property will reference the next outer level&#xA;(which is itself a compound referenced by a ref:FrancaModelAPIReference_FTypedElementRef[FTypedElementRef]. &#xA;This might be chained in order to specify a reference to a deeply nested compound element.&#xA;"/>
@@ -309,15 +310,16 @@
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="val" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="FBinaryOperation" eSuperTypes="#//FExpression">
+  <eClassifiers xsi:type="ecore:EClass" name="FOperation" abstract="true" eSuperTypes="#//FExpression">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="op" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FBinaryOperation" eSuperTypes="#//FOperation">
     <eStructuralFeatures xsi:type="ecore:EReference" name="left" lowerBound="1" eType="#//FExpression"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="op" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="right" lowerBound="1" eType="#//FExpression"
         containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="FUnaryOperation" eSuperTypes="#//FExpression">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="op" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  <eClassifiers xsi:type="ecore:EClass" name="FUnaryOperation" eSuperTypes="#//FOperation">
     <eStructuralFeatures xsi:type="ecore:EReference" name="operand" lowerBound="1"
         eType="#//FExpression" containment="true"/>
   </eClassifiers>

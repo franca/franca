@@ -220,9 +220,8 @@
           propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FUnionType/base"/>
     </genClasses>
     <genClasses ecoreClass="franca.ecore#//FField"/>
-    <genClasses ecoreClass="franca.ecore#//FBlockExpression">
-      <genFeatures property="None" children="true" createChild="true" propertyDescription="the sequence of expressions represented by this block. This is a composite pattern used to specify a tree of expressions."
-          ecoreFeature="ecore:EReference franca.ecore#//FBlockExpression/expressions"/>
+    <genClasses ecoreClass="franca.ecore#//FBlock">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FBlock/statements"/>
     </genClasses>
     <genClasses ecoreClass="franca.ecore#//FAssignment">
       <genFeatures notify="false" createChild="false" propertyDescription="the left-hand side of this assignment. It references the state variable which should be set by specifying its declaration."
@@ -231,6 +230,7 @@
           ecoreFeature="ecore:EReference franca.ecore#//FAssignment/rhs"/>
     </genClasses>
     <genClasses ecoreClass="franca.ecore#//FExpression"/>
+    <genClasses image="false" ecoreClass="franca.ecore#//FStatement"/>
     <genClasses ecoreClass="franca.ecore#//FTypedElementRef">
       <genFeatures notify="false" createChild="false" propertyDescription="the typed element which is actually referenced by this object"
           propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FTypedElementRef/element"/>
@@ -252,16 +252,16 @@
       <genFeatures createChild="false" propertyDescription="the value of this string constant (an actual string)"
           ecoreFeature="ecore:EAttribute franca.ecore#//FStringConstant/val"/>
     </genClasses>
+    <genClasses image="false" ecoreClass="franca.ecore#//FOperation">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute franca.ecore#//FOperation/op"/>
+    </genClasses>
     <genClasses ecoreClass="franca.ecore#//FBinaryOperation">
       <genFeatures notify="false" createChild="false" propertyDescription="the left operand of the binary operation"
           propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FBinaryOperation/left"/>
-      <genFeatures createChild="false" propertyDescription="the operator of this binary operation (e.g., '||', '+', '*', '&lt;', and many more). Consider the FrancaIDL.xtext grammar definition for an overview of all binary operators supported by Franca contract action language."
-          ecoreFeature="ecore:EAttribute franca.ecore#//FBinaryOperation/op"/>
       <genFeatures notify="false" createChild="false" propertyDescription="the right operand of the binary operation"
           propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FBinaryOperation/right"/>
     </genClasses>
     <genClasses ecoreClass="franca.ecore#//FUnaryOperation">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute franca.ecore#//FUnaryOperation/op"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FUnaryOperation/operand"/>
     </genClasses>
   </genPackages>
