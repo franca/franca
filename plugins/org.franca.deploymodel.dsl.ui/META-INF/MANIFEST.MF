@@ -14,7 +14,8 @@ Require-Bundle: org.franca.deploymodel.dsl;visibility:=reexport,
  org.eclipse.ui.editors,
  org.eclipse.ui,
  org.antlr.runtime
-Import-Package: org.apache.log4j
+Import-Package: org.apache.commons.lang,
+ org.apache.log4j
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.franca.deploymodel.dsl.ui.contentassist,
  org.franca.deploymodel.dsl.ui.contentassist.antlr,

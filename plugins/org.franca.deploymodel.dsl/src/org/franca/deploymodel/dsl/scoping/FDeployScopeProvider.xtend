@@ -42,6 +42,9 @@ import org.franca.deploymodel.dsl.fDeploy.FDTypes
 import org.franca.deploymodel.dsl.fDeploy.FDUnion
 
 import static extension org.eclipse.xtext.scoping.Scopes.*
+import com.google.common.base.Predicate
+import java.lang.reflect.Method
+import org.eclipse.emf.ecore.EClass
 
 class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 
@@ -50,6 +53,25 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 
 	@Inject
 	private ImportUriGlobalScopeProvider importUriGlobalScopeProvider
+	
+	@Inject DeploySpecProvider deploySpecProvider;
+	
+	override Predicate<Method> getPredicate(EObject context, EClass type) {
+		//println("getPredicate(class): scope_" + type.getName());
+		super.getPredicate(context,type);
+	}
+
+	override Predicate<Method> getPredicate(EObject context, EReference reference) {
+		//println("getPredicate(ref): scope_" + reference.getEContainingClass().getName() + "_" + reference.getName());
+		super.getPredicate(context,reference);
+	}
+	
+	
+	def scope_FDRootElement_spec(FDProvider ctxt, EReference ref){
+		println("scope_FDRootElement_spec" + ctxt)
+		println(deploySpecProvider.URIs)
+		delegateGetScope(ctxt,ref)
+	}
 	
 	def scope_FDTypes_target(FDTypes ctxt, EReference ref) {	
 		return new FTypeCollectionScope(IScope::NULLSCOPE, false, importUriGlobalScopeProvider, ctxt.eResource, qualifiedNameProvider);
