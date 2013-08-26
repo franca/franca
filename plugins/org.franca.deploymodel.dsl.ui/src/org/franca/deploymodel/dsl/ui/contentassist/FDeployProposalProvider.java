@@ -11,13 +11,17 @@ import java.util.List;
 import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.xtext.Assignment;
+import org.eclipse.xtext.GrammarUtil;
+import org.eclipse.xtext.RuleCall;
 import org.eclipse.xtext.resource.IContainer;
 import org.eclipse.xtext.resource.IEObjectDescription;
 import org.eclipse.xtext.resource.IResourceDescription;
 import org.eclipse.xtext.scoping.IScope;
 import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext;
 import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor;
+import org.eclipse.xtext.util.Strings;
 import org.franca.core.franca.FTypeCollection;
 import org.franca.deploymodel.dsl.fDeploy.FDeployPackage;
 import org.franca.deploymodel.dsl.scoping.DeploySpecProvider;
@@ -31,6 +35,17 @@ public class FDeployProposalProvider extends AbstractFDeployProposalProvider {
 	@Inject DeploySpecProvider deploySpecProvider;
 	@Inject ContainerUtil containerUtil;
 
+	/** Avoid generic proposal "importURI".*/
+	@Override
+	public void complete_STRING(EObject model, RuleCall ruleCall, ContentAssistContext context,
+			ICompletionProposalAcceptor acceptor) {
+		Assignment ass = GrammarUtil.containingAssignment(ruleCall);
+		if (ass == null || ! "importURI".equals(ass.getFeature())) {
+			super.complete_STRING(model, ruleCall, context, acceptor);
+		}
+	}
+	
+	
 	@Override
 	public void completeFDTypes_Target(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		IScope scope = this.getScopeProvider().getScope(model, FDeployPackage.Literals.FD_TYPES__TARGET);
@@ -40,7 +55,6 @@ public class FDeployProposalProvider extends AbstractFDeployProposalProvider {
 			FTypeCollection collection = (FTypeCollection) description.getEObjectOrProxy();
 			String qualifiedName = description.getQualifiedName().toString();
 			String uri = collection.eResource().getURI().toString();
-
 			if (collection.getName() == null || collection.getName().isEmpty()) {
 				acceptor.accept(this.createCompletionProposal(qualifiedName, qualifiedName + " (anonymous) - " + uri, null, context));
 			} else {
