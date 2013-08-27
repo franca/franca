@@ -2,18 +2,18 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.franca.connectors.dbus.tests
-Bundle-Version: 0.8.8.qualifier
+Bundle-Version: 0.8.9.qualifier
 Bundle-Activator: org.franca.connectors.dbus.tests.Activator
 Bundle-Vendor: %providerName
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.emf.codegen.ecore;bundle-version="2.7.0",
- org.franca.connectors.dbus;bundle-version="0.8.8",
+ org.franca.connectors.dbus;bundle-version="0.8.9",
  org.junit,
- org.franca.core;bundle-version="0.8.8",
- org.franca.core.dsl;bundle-version="0.8.8",
- org.franca.connectors.dbus;bundle-version="0.8.8",
- org.franca.core.dsl.tests.base;bundle-version="0.8.8",
+ org.franca.core;bundle-version="0.8.9",
+ org.franca.core.dsl;bundle-version="0.8.9",
+ org.franca.connectors.dbus;bundle-version="0.8.9",
+ org.franca.core.dsl.tests.base;bundle-version="0.8.9",
  org.eclipse.xtext;bundle-version="2.4.1",
  org.eclipse.xtext.junit4,
  org.apache.log4j;bundle-version="1.2.15",
