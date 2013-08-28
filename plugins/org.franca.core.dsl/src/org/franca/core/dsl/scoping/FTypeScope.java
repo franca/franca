@@ -35,13 +35,12 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
 /**
- * Scope for the various types from an imported type collection. 
- * This scope is able to handle anonymous type collections too 
- * and takes care about the restrictions made on the imported 
- * package prefix. 
+ * Scope for the various types from an imported type collection. This scope is
+ * able to handle anonymous type collections too and takes care about the
+ * restrictions made on the imported package prefix.
  * 
  * @author Tamas Szabo (itemis AG)
- *
+ * 
  */
 public class FTypeScope extends AbstractScope {
 
@@ -51,7 +50,7 @@ public class FTypeScope extends AbstractScope {
 	private FModel model;
 	private Set<URI> imports;
 	private Multimap<Resource, String> packagePrefixMap;
-	
+
 	protected FTypeScope(IScope parent, boolean ignoreCase,
 			ImportUriGlobalScopeProvider importUriGlobalScopeProvider,
 			Resource resource, QualifiedNameProvider qualifiedNameProvider) {
@@ -64,7 +63,7 @@ public class FTypeScope extends AbstractScope {
 		this.packagePrefixMap = ArrayListMultimap.create();
 		this.processImports();
 	}
-	
+
 	/**
 	 * Needs to be overridden for the custom restrictions
 	 */
@@ -85,17 +84,18 @@ public class FTypeScope extends AbstractScope {
 				EObject obj = objDescription.getEObjectOrProxy();
 				if (obj instanceof FModel) {
 					FModel model = (FModel) resolve(obj, resource);
-					for (FTypeCollection collection : model.getTypeCollections()) {
-						Collection<String> prefixes = packagePrefixMap.get(collection.eResource());
+					for (FTypeCollection collection : model
+							.getTypeCollections()) {
+						Collection<String> prefixes = packagePrefixMap
+								.get(collection.eResource());
 						if (prefixes != null) {
 							for (String prefix : prefixes) {
 								for (FType type : collection.getTypes()) {
-									QualifiedName fqn = qualifiedNameProvider.getFullyQualifiedName(type);
-									String scopeName = getScopeName(prefix, fqn.toString());
+									QualifiedName scopeName = getScopeName(prefix, qualifiedNameProvider.getFullyQualifiedName(type));
 									if (scopeName != null) {
-										result.add(new EObjectDescription(QualifiedName.create(scopeName), type, null));
+										result.add(new EObjectDescription(scopeName, type, null));
 									}
-								}							
+								}
 							}
 						}
 					}
@@ -104,48 +104,56 @@ public class FTypeScope extends AbstractScope {
 		}
 		return result;
 	}
-	
+
 	/**
-	 * Returns the name required for scoping if the fully qualified name matches the given prefix. 
-	 * <br/>
-	 * (1) If the prefix is an exact import name (without star) then the fully qualified name should match exactly 
-	 * and the simple name will be returned. 
-	 * <br/>
-	 * (2) If the prefix is a general import prefix then the method checks whether the fqn 
-	 * matches that given prefix, and in that case returns the part of the fully qualified name 
-	 * without the prefix.
-	 * <br/> 
-	 * (3) In every other case the method returns null to indicate that the 
-	 * fully qualified name does not match the given prefix in any way. 
-	 * In this case the object itself will not be included in the scope.
+	 * Returns the qualified name required for scoping if the fully qualified name matches
+	 * the given prefix. <br/>
+	 * (1) If the prefix is an exact import name (without star) then the fully
+	 * qualified name should match exactly and the simple name will be returned. <br/>
+	 * (2) If the prefix is a general import prefix then the method checks
+	 * whether the fqn matches that given prefix, and in that case returns the
+	 * part of the fully qualified name without the prefix. <br/>
+	 * (3) In every other case the method returns null to indicate that the
+	 * fully qualified name does not match the given prefix in any way. In this
+	 * case the object itself will not be included in the scope.
 	 * 
-	 * @param prefix the package import prefix
-	 * @param fqn the fully qualified name of the object
+	 * @param prefix
+	 *            the package import prefix
+	 * @param fqn
+	 *            the fully qualified name of the object
 	 * @return the scoping name or null
 	 */
-	private String getScopeName(String prefix, String fqn) {
-		if (prefix.endsWith("*")) {
-			prefix = prefix.substring(0, prefix.length()-1);
-			return (fqn.startsWith(prefix)) ? fqn.substring(prefix.length()) : null;
-		}
-		else {
-			//exact match is required for prefix without star
-			if (prefix.equals(fqn)) {
-				String[] tokens = fqn.split("\\.");
-				return tokens[tokens.length-1];
-			}
-			else {
-				return null;
+	private QualifiedName getScopeName(String prefix, QualifiedName fqn) {
+		if (prefix == null) {
+			return fqn;
+		} else {
+			String f = fqn.toString();
+			if (prefix.endsWith("*")) {
+
+				prefix = prefix.substring(0, prefix.length() - 1);
+				return (f.startsWith(prefix)) ? QualifiedName.create(f.substring(prefix.length())) : null;
+			} else {
+				// exact match is required for prefix without star
+				if (prefix.equals(fqn)) {
+					String[] tokens = f.split("\\.");
+					return QualifiedName.create(tokens[tokens.length - 1]);
+				} else {
+					return null;
+				}
 			}
 		}
 	}
 
 	/**
-	 * Resolves an {@link EObject} if it is a proxy, otherwise returns the original object. 
+	 * Resolves an {@link EObject} if it is a proxy, otherwise returns the
+	 * original object.
 	 * 
-	 * @param proxy the {@link EObject} or proxy
-	 * @param context the context to use for resolving
-	 * @return the resolved (if resolving was possible) proxy or the original object
+	 * @param proxy
+	 *            the {@link EObject} or proxy
+	 * @param context
+	 *            the context to use for resolving
+	 * @return the resolved (if resolving was possible) proxy or the original
+	 *         object
 	 */
 	private EObject resolve(EObject proxy, Resource context) {
 		if (proxy.eIsProxy()) {
@@ -160,8 +168,9 @@ public class FTypeScope extends AbstractScope {
 	private void processImports() {
 		for (Import i : model.getImports()) {
 			imports.add(URI.createURI(i.getImportURI()));
-			
-			Resource res = EcoreUtil2.getResource(resource, i.getImportURI().toString());
+
+			Resource res = EcoreUtil2.getResource(resource, i.getImportURI()
+					.toString());
 			if (res != null) {
 				packagePrefixMap.put(res, i.getImportedNamespace());
 			}
