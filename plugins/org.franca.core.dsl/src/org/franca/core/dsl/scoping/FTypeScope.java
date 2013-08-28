@@ -38,7 +38,7 @@ import com.google.common.collect.Multimap;
  * Scope for the various types from an imported type collection. 
  * This scope is able to handle anonymous type collections too 
  * and takes care about the restrictions made on the imported 
- * package prefix too. 
+ * package prefix. 
  * 
  * @author Tamas Szabo (itemis AG)
  *
@@ -66,7 +66,7 @@ public class FTypeScope extends AbstractScope {
 	}
 	
 	/**
-	 * Needs to be override for the custom restrictions
+	 * Needs to be overridden for the custom restrictions
 	 */
 	@Override
 	public Iterable<IEObjectDescription> getAllElements() {
@@ -108,13 +108,14 @@ public class FTypeScope extends AbstractScope {
 	/**
 	 * Returns the name required for scoping if the fully qualified name matches the given prefix. 
 	 * <br/>
-	 * (1) If the prefix is an exact import name (without star) then the fqn should match exactly and the simple name will be returned. 
+	 * (1) If the prefix is an exact import name (without star) then the fully qualified name should match exactly 
+	 * and the simple name will be returned. 
 	 * <br/>
 	 * (2) If the prefix is a general import prefix then the method checks whether the fqn 
 	 * matches that given prefix, and in that case returns the part of the fully qualified name 
 	 * without the prefix.
 	 * <br/> 
-	 * (3)In every other case the method returns null to indicate that the 
+	 * (3) In every other case the method returns null to indicate that the 
 	 * fully qualified name does not match the given prefix in any way. 
 	 * In this case the object itself will not be included in the scope.
 	 * 
@@ -129,7 +130,7 @@ public class FTypeScope extends AbstractScope {
 		}
 		else {
 			//exact match is required for prefix without star
-			if (prefix.matches(fqn)) {
+			if (prefix.equals(fqn)) {
 				String[] tokens = fqn.split("\\.");
 				return tokens[tokens.length-1];
 			}
@@ -139,6 +140,13 @@ public class FTypeScope extends AbstractScope {
 		}
 	}
 
+	/**
+	 * Resolves an {@link EObject} if it is a proxy, otherwise returns the original object. 
+	 * 
+	 * @param proxy the {@link EObject} or proxy
+	 * @param context the context to use for resolving
+	 * @return the resolved (if resolving was possible) proxy or the original object
+	 */
 	private EObject resolve(EObject proxy, Resource context) {
 		if (proxy.eIsProxy()) {
 			return EcoreUtil.resolve(proxy, context);
