@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Franca C Header Connector UI
+Bundle-SymbolicName: org.franca.connectors.c_header.ui;singleton:=true
+Bundle-Version: 0.8.8.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.franca.core.dsl.ui,
+ org.eclipse.xtext.ui,
+ org.eclipse.core.commands,
+ org.eclipse.ui.console,
+ org.franca.connectors.c_header,
+ org.eclipse.cdt.core;bundle-version="5.4.1"
+Bundle-Activator: org.franca.connectors.c_header.ui.Activator
+Bundle-ActivationPolicy: lazy
+Bundle-Vendor: itemis AG
