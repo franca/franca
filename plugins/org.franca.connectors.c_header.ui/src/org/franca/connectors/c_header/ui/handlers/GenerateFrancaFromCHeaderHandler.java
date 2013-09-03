@@ -80,9 +80,7 @@ public class GenerateFrancaFromCHeaderHandler extends AbstractHandler {
 				IProject project = file.getProject();
 				try {
 					project.refreshLocal(IResource.DEPTH_INFINITE, null);
-					;
 				} catch (CoreException e) {
-
 					e.printStackTrace();
 				}
 			}

@@ -1,28 +1,24 @@
 package org.franca.connectors.c_header;
 
-import org.eclipse.cdt.core.model.ITranslationUnit;
-import org.eclipse.core.resources.IFile;
+import org.eclipse.cdt.internal.core.model.TranslationUnit;
 import org.franca.core.framework.IModelContainer;
 
+@SuppressWarnings("restriction")
 public class CHeaderModelContainer implements IModelContainer {
 
-	private ITranslationUnit translationUnit = null;
-	private IFile file;
+	private TranslationUnit translationUnit;
+	private StringBuffer contents;
 	
-	public CHeaderModelContainer(ITranslationUnit translationUnit, IFile file) {
-		this.file = file;
+	public CHeaderModelContainer(TranslationUnit translationUnit, StringBuffer contents) {
 		this.translationUnit = translationUnit;
+		this.contents = contents;
 	}
-	
-	public ITranslationUnit getTranslationUnit() {
+
+	public TranslationUnit getTranslationUnit() {
 		return translationUnit;
 	}
-	
-	public String getFileName() {
-		return file.getName();
-	}
-	
-	public IFile getFile() {
-		return file;
+
+	public StringBuffer getContents() {
+		return contents;
 	}
 }
