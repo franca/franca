@@ -266,6 +266,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="signal" eType="#//FBroadcast"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="set" eType="#//FAttribute"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="update" eType="#//FAttribute"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="error" eType="#//FMethod"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FGuard">
     <eStructuralFeatures xsi:type="ecore:EReference" name="condition" lowerBound="1"

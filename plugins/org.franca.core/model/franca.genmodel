@@ -225,6 +225,7 @@
           propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FEventOnIf/set"/>
       <genFeatures notify="false" createChild="false" propertyDescription="if this property is not null, this event represents the update action of a Franca attribute"
           propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FEventOnIf/update"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FEventOnIf/error"/>
     </genClasses>
     <genClasses ecoreClass="franca.ecore#//FGuard">
       <genFeatures property="None" children="true" createChild="true" propertyDescription="the boolean condition of this transition guard"
