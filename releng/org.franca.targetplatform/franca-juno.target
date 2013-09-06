@@ -1,39 +1,39 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="Franca Target Platform - Eclipse 4.2" sequenceNumber="47">
+<?pde version="3.8"?><target name="Franca Target Platform - Eclipse 4.2" sequenceNumber="40">
 <locations>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.etrice.feature.feature.group" version="0.2.0.S201210110712"/>
-<repository location="http://download.eclipse.org/etrice/updates/releases/0.2.0"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.xtext.sdk.feature.group" version="2.4.1.v201304180855"/>
-<unit id="org.eclipse.xtend.sdk.feature.group" version="2.4.1.v201304180855"/>
-<unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.4.0.v201306110940"/>
-<unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="2.4.0.v201306110341"/>
-<unit id="org.eclipse.emf.common" version="2.9.0.v20130528-0742"/>
-<unit id="org.eclipse.emf.sdk.feature.group" version="2.9.0.v20130610-0406"/>
-<repository location="http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="com.mountainminds.eclemma.feature.feature.group" version="2.2.1.201306092145"/>
-<repository location="http://update.eclemma.org/"/>
-</location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="de.itemis.xtext.antlr.sdk.feature.group" version="2.0.0.v201108011202"/>
 <unit id="de.itemis.xtext.antlr.feature.feature.group" version="2.0.0.v201108011202"/>
 <repository location="http://download.itemis.com/updates/releases/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.emf.compare.feature.group" version="2.1.0.201306101322"/>
-<repository location="http://download.eclipse.org/releases/kepler/"/>
+<unit id="org.eclipse.xtext.sdk.feature.group" version="2.4.1.v201304180855"/>
+<unit id="org.eclipse.xtend.sdk.feature.group" version="2.4.1.v201304180855"/>
+<unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.4.0.v201306110940"/>
+<unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="2.4.0.v201306110341"/>
+<unit id="org.eclipse.emf.common" version="2.9.1.v20130827-0309"/>
+<unit id="org.eclipse.emf.sdk.feature.group" version="2.9.1.v20130902-0605"/>
+<repository location="http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipselabs.xtext.utils.unittesting.feature.feature.group" version="0.9.3.201204261440"/>
 <repository location="http://xtext-utils.eclipselabs.org.codespot.com/git.distribution/releases/unittesting-0.9.x"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="model.emf.dbusxml.feature.feature.group" version="0.7.4.201306051138"/>
-<repository location="http://dbus-emf-model.eclipselabs.org.codespot.com/git/update_site/releases/"/>
+<unit id="org.eclipse.egit.feature.group" version="2.2.0.201212191850-r"/>
+<unit id="org.eclipse.sdk.feature.group" version="4.2.2.v20130116-114742-7T7oDVDQ23Iosz-vkFwNncmx7z-9Rts4b0m1FotkYacO5"/>
+<unit id="org.eclipse.pde.feature.group" version="3.8.2.v20130116-091538-7c7wFj0FFt6Zr9bd4AM1JEQMS"/>
+<unit id="org.eclipse.emf.transaction.sdk.feature.group" version="1.6.0.v20120328-0001-777Z-9A_WsZmcPluNecyPkvrPKlH"/>
+<unit id="org.eclipse.emf.eef.sdk-feature.feature.group" version="1.1.1.201206051542"/>
+<unit id="org.eclipse.gef.sdk.feature.group" version="3.9.0.201212170307"/>
+<unit id="org.eclipse.zest.sdk.feature.group" version="1.5.0.201212170307"/>
+<unit id="org.eclipse.graphiti.sdk.plus.feature.feature.group" version="0.9.2.v20130211-0913"/>
+<unit id="org.eclipse.swt" version="3.100.1.v4236b"/>
+<repository location="http://download.eclipse.org/releases/juno"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="com.mountainminds.eclemma.feature.feature.group" version="2.2.1.201306092145"/>
+<repository location="http://update.eclemma.org/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.mylyn_feature.feature.group" version="3.9.0.v20130612-0100"/>
@@ -53,16 +53,16 @@
 <repository location="http://download.eclipse.org/mylyn/releases/latest"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.egit.feature.group" version="2.2.0.201212191850-r"/>
-<unit id="org.eclipse.sdk.feature.group" version="4.2.2.v20130116-114742-7T7oDVDQ23Iosz-vkFwNncmx7z-9Rts4b0m1FotkYacO5"/>
-<unit id="org.eclipse.pde.feature.group" version="3.8.2.v20130116-091538-7c7wFj0FFt6Zr9bd4AM1JEQMS"/>
-<unit id="org.eclipse.emf.transaction.sdk.feature.group" version="1.6.0.v20120328-0001-777Z-9A_WsZmcPluNecyPkvrPKlH"/>
-<unit id="org.eclipse.emf.eef.sdk-feature.feature.group" version="1.1.1.201206051542"/>
-<unit id="org.eclipse.gef.sdk.feature.group" version="3.9.0.201212170307"/>
-<unit id="org.eclipse.zest.sdk.feature.group" version="1.5.0.201212170307"/>
-<unit id="org.eclipse.graphiti.sdk.plus.feature.feature.group" version="0.9.2.v20130211-0913"/>
-<unit id="org.eclipse.swt" version="3.100.1.v4236b"/>
-<repository location="http://download.eclipse.org/releases/juno"/>
+<unit id="org.eclipse.emf.compare.feature.group" version="2.1.0.201306101322"/>
+<repository location="http://download.eclipse.org/releases/kepler/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="model.emf.dbusxml.feature.feature.group" version="0.7.4.201306051138"/>
+<repository location="http://dbus-emf-model.eclipselabs.org.codespot.com/git/update_site/releases/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.etrice.feature.feature.group" version="0.2.0.S201210110712"/>
+<repository location="http://download.eclipse.org/etrice/updates/releases/0.2.0"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.gef4.zest.sdk.feature.group" version="0.0.0"/>
