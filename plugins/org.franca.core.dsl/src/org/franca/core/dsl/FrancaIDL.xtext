@@ -14,6 +14,7 @@ import "http://core.franca.org"
 
 import "http://www.eclipse.org/emf/2002/Ecore" as ecore
 
+
 // **************************************************************
 // model root
 
@@ -107,8 +108,7 @@ FArgument:
 // type system
 
 FTypeRef returns FTypeRef:
-	predefined=FBasicTypeId | derived=[FType|FQN]
-	;
+	predefined=FBasicTypeId | derived=[FType|FQN];
 
 enum FBasicTypeId returns FBasicTypeId:
 	undefined = 'undefined' |
@@ -239,7 +239,6 @@ FTransition:
 		(action=FBlock)?
 	;
 
-
 FTrigger:
 	event=FEventOnIf;
 
@@ -248,7 +247,8 @@ FEventOnIf:
 	('respond' respond=[FMethod|ID]   ) |
 	('signal'  signal=[FBroadcast|ID] ) |
 	('set'     set=[FAttribute|ID]    ) |
-	('update'  update=[FAttribute|ID] )
+	('update'  update=[FAttribute|ID] ) |
+	('error'   error=[FMethod|ID])
 ;
 
 FGuard:

@@ -193,4 +193,14 @@ public class UnknownEventOnIf implements FEventOnIf {
 		event.setUpdate(value);
 	}
 
+	@Override
+	public FMethod getError() {
+		return event.getError();
+	}
+
+	@Override
+	public void setError(FMethod value) {
+		event.setError(value);
+	}
+
 }
