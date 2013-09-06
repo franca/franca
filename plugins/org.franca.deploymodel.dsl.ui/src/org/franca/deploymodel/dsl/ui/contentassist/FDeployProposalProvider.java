@@ -5,8 +5,10 @@ package org.franca.deploymodel.dsl.ui.contentassist;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.emf.common.util.URI;
@@ -25,31 +27,35 @@ import org.eclipse.xtext.util.Strings;
 import org.franca.core.franca.FTypeCollection;
 import org.franca.deploymodel.dsl.fDeploy.FDeployPackage;
 import org.franca.deploymodel.dsl.scoping.DeploySpecProvider;
+import org.franca.deploymodel.dsl.scoping.DeploySpecProvider.DeploySpecEntry;
 
 import com.google.inject.Inject;
 
-/**
- * see http://www.eclipse.org/Xtext/documentation/latest/xtext.html#contentAssist on how to customize content assistant
- */
+/** see http://www.eclipse.org/Xtext/documentation/latest/xtext.html#contentAssist on how to customize content assistant */
 public class FDeployProposalProvider extends AbstractFDeployProposalProvider {
-	@Inject DeploySpecProvider deploySpecProvider;
-	@Inject ContainerUtil containerUtil;
+	@Inject
+	DeploySpecProvider deploySpecProvider;
+	@Inject
+	ContainerUtil containerUtil;
 
-	/** Avoid generic proposal "importURI".*/
+	protected final static String[] extensionsForImportURIScope = new String[] { "fidl", "fdepl" };
+
+	static {
+		Arrays.sort(extensionsForImportURIScope);
+	}
+
+	/** Avoid generic proposal "importURI". */
 	@Override
-	public void complete_STRING(EObject model, RuleCall ruleCall, ContentAssistContext context,
-			ICompletionProposalAcceptor acceptor) {
+	public void complete_STRING(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		Assignment ass = GrammarUtil.containingAssignment(ruleCall);
-		if (ass == null || ! "importURI".equals(ass.getFeature())) {
+		if (ass == null || !"importURI".equals(ass.getFeature())) {
 			super.complete_STRING(model, ruleCall, context, acceptor);
 		}
 	}
-	
-	
+
 	@Override
 	public void completeFDTypes_Target(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		IScope scope = this.getScopeProvider().getScope(model, FDeployPackage.Literals.FD_TYPES__TARGET);
-
 		for (IEObjectDescription description : scope.getAllElements()) {
 			// only FTypeCollection instances will be in the scope
 			FTypeCollection collection = (FTypeCollection) description.getEObjectOrProxy();
@@ -63,68 +69,72 @@ public class FDeployProposalProvider extends AbstractFDeployProposalProvider {
 		}
 	}
 
-	protected final static String[] extensionsForImportURIScope = new String[] { "fidl", "fdepl" };
-
-	static {
-		Arrays.sort(extensionsForImportURIScope);
-	}
-
-	/** 
-	 * Proposes both all fidl and fdepl files in the current workspace (to be precise: the files residing in visible containers) as well as the 
-	 * fdepl-files contributed by means of <code> &lt;extension point="org.franca.deploymodel.dsl.deploySpecProvider"> </code> 
+	/**
+	 * Proposes both all fidl and fdepl files in the current workspace (to be precise: the files residing in visible containers) as well as the fdepl-files
+	 * contributed by means of <code> &lt;extension point="org.franca.deploymodel.dsl.deploySpecProvider"> </code>
 	 */
 	@Override
 	public void completeImport_ImportURI(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		List<IContainer> visibleContainers = containerUtil.getVisibleContainers(model.eResource());
+		System.out.println(containerUtil.getResourceDescriptions(model.eResource()).getAllResourceDescriptions());
 		URI fromURI = model.eResource().getURI();
 		List<URI> proposedURIs = new ArrayList<URI>();
 		for (IContainer iContainer : visibleContainers) {
+			System.out.println("FDeployProposalProvider.completeImport_ImportURI(): iContainer " + iContainer);
 			Iterable<IResourceDescription> resourceDescriptions = iContainer.getResourceDescriptions();
+			System.out.println("FDeployProposalProvider.completeImport_ImportURI(): resourceDescriptions " + resourceDescriptions);
 			for (Iterator<IResourceDescription> iterator = resourceDescriptions.iterator(); iterator.hasNext();) {
 				IResourceDescription desc = (IResourceDescription) iterator.next();
 				URI uri = desc.getURI();
-				if (Arrays.binarySearch(extensionsForImportURIScope, uri.fileExtension()) > -1) {
+				System.out.println("  FDeployProposalProvider.completeImport_ImportURI(): desc " + desc + "/" + uri);
+				if (!uri.equals(fromURI) && Arrays.binarySearch(extensionsForImportURIScope, uri.fileExtension()) > -1) {
 					proposedURIs.add(desc.getURI());
 				}
 			}
 		}
-		proposedURIs.addAll(deploySpecProvider.getURIs());
 		for (URI uri : proposedURIs) {
 			String result = relativeURIString(fromURI, uri);
 			String displayString = uri.lastSegment() + " - " + result;
-			acceptor.accept(createCompletionProposal("\"" + result + "\"", displayString,null, context));
+			acceptor.accept(createCompletionProposal("\"" + result + "\"", displayString, null, context));
 		}
 		super.completeImport_ImportURI(model, assignment, context, acceptor);
 	}
-	
-	/** 
-	 * Computes the relative-URI from <code>from </code> to <code>to</code>.
-	 * If the schemes or the first two segments (i.e. quasi-autority, e.g. the 'resource' of 'platform:/resource', and the project/plugin name)
-	 * the aren't equal, this method returns <code>to.toString()</code>. 
+
+	@Override
+	public void completeImport_ImportedSpec(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		Collection<DeploySpecEntry> entries = deploySpecProvider.getEntries();
+		for (Iterator<DeploySpecEntry> iterator = entries.iterator(); iterator.hasNext();) {
+			DeploySpecEntry dse = iterator.next();
+			acceptor.accept(createCompletionProposal(dse.alias, dse.alias + " - " + dse.resourceId, null, context));
+		}
+	}
+
+	/**
+	 * Computes the relative-URI from <code>from </code> to <code>to</code>. If the schemes or the first two segments (i.e. quasi-autority, e.g. the 'resource'
+	 * of 'platform:/resource', and the project/plugin name) the aren't equal, this method returns <code>to.toString()</code>.
 	 */
 	protected static String relativeURIString(URI from, URI to) {
-		if (!ObjectUtils.equals(from.scheme(), to.scheme())) {
-			return to.toString();
-		}
-		int index = 0;
-		while (from.segmentCount() > index && to.segmentCount() > index && from.segment(index).equals(to.segment(index))) {
-			index++;
-		}
-		if (index < 3) {
-			return to.toString();
-		}
-		int relLength = to.segments().length - index;
-		if(relLength > 0){
-			int goUp = from.segmentCount() - index - 1;
-			String[] relativeSegments = new String[relLength + goUp];
-			for(int i=0;i<goUp;i++){
-				relativeSegments[i] = "..";
+		String retVal = to.toString();
+		if (ObjectUtils.equals(from.scheme(), to.scheme())) {
+			int noOfEqualSegments = 0;
+			while (from.segmentCount() > noOfEqualSegments && to.segmentCount() > noOfEqualSegments && from.segment(noOfEqualSegments).equals(to.segment(noOfEqualSegments))) {
+				noOfEqualSegments++;
 			}
-			System.arraycopy(to.segments(), index, relativeSegments, goUp, relLength);
-			return URI.createHierarchicalURI(relativeSegments, null, null).toString();
+			final boolean urisBelongToSameProject = noOfEqualSegments >= 2; 
+			if (urisBelongToSameProject) {
+				int noOfIndividualSegments = to.segments().length - noOfEqualSegments;
+				if (noOfIndividualSegments > 0) {
+					int goUp = from.segmentCount() - noOfEqualSegments - 1;
+					String[] relativeSegments = new String[noOfIndividualSegments + goUp];
+					for (int i = 0; i < goUp; i++) {
+						relativeSegments[i] = "..";
+					}
+					System.arraycopy(to.segments(), noOfEqualSegments, relativeSegments, goUp, noOfIndividualSegments);
+					retVal = URI.createHierarchicalURI(relativeSegments, null, null).toString();
+				}
+			}
 		}
-		return to.toString();
-		
+		return retVal;
 	}
 
 }

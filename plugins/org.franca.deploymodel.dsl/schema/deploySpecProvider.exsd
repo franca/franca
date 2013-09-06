@@ -52,11 +52,25 @@
          <attribute name="resource" type="string" use="required">
             <annotation>
                <documentation>
-                  
+                  The resource (i.e. the fdepl file)  containing the FDSpecification.
                </documentation>
                <appInfo>
                   <meta.attribute kind="resource"/>
                </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="alias" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The alias representing the FDSpecification. One import the FDSpecification by means of this alias.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="FDSpecification" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The fully qualified name of the FDSpecification in the dployment specification (i.e. the fdepl file).
+               </documentation>
             </annotation>
          </attribute>
       </complexType>
