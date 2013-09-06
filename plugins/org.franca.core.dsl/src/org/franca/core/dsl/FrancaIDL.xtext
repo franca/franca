@@ -266,27 +266,27 @@ FBlock returns FBlock:
 
 LogicalOrExpression returns FExpression:
   LogicalAndExpression
-  ({FBinaryOperation.left=current} op='||' right=LogicalAndExpression)*;
+  ({FBinaryOperation.left=current} op=OperatorOr right=LogicalAndExpression)*;
 
 LogicalAndExpression returns FExpression:
   EqualityExpression
-  ({FBinaryOperation.left=current} op='&&' right=EqualityExpression)*;
+  ({FBinaryOperation.left=current} op=OperatorAnd right=EqualityExpression)*;
 
 EqualityExpression returns FExpression:
   RelationalExpression
-  ({FBinaryOperation.left=current} op=('=='|'!=') right=RelationalExpression)*;
+  ({FBinaryOperation.left=current} op=OperatorEquality right=RelationalExpression)*;
 
 RelationalExpression returns FExpression:
   AdditiveExpression
-  ({FBinaryOperation.left=current} op=('<'|'>'|'<='|'>=') right=AdditiveExpression)*;
+  ({FBinaryOperation.left=current} op=OperatorRelational right=AdditiveExpression)*;
 
 AdditiveExpression returns FExpression:
   MultiplicativeExpression
-  ({FBinaryOperation.left=current} op=('+'|'-') right=MultiplicativeExpression)*;
+  ({FBinaryOperation.left=current} op=OperatorAdditive right=MultiplicativeExpression)*;
 
 MultiplicativeExpression returns FExpression:
   PrimaryExpression
-  ({FBinaryOperation.left=current} op=('*'|'/') right=PrimaryExpression)*;
+  ({FBinaryOperation.left=current} op=OperatorMultiplicative right=PrimaryExpression)*;
 
 PrimaryExpression returns FExpression:
   FUnaryOperation | SimplePrimaryExpression;
@@ -298,7 +298,7 @@ SimplePrimaryExpression returns FExpression:
   
 FUnaryOperation returns FExpression:
 	{FUnaryOperation}
-	op = '!' operand = SimplePrimaryExpression;
+	op = OperatorUnary operand = SimplePrimaryExpression;
 
 FTypedElementRef returns FExpression:
 	{FTypedElementRef}
@@ -319,6 +319,27 @@ FBooleanConstant:
 FStringConstant:
 	val=STRING;
 
+enum OperatorOr returns FOperator:
+	Or="||"
+;
+enum OperatorAnd returns FOperator:
+	And="&&"
+;
+enum OperatorEquality returns FOperator:
+	Equal="==" | Unequal="!="
+;
+enum OperatorRelational returns FOperator:
+	Smaller="<" | SmallerOrEqual="<=" | GreaterOrEqual=">=" | Greater=">"
+;
+enum OperatorAdditive returns FOperator:
+	addition="+" | subtraction="-"
+;
+enum OperatorMultiplicative returns FOperator:
+	multiplication="*" | division="/"
+;
+enum OperatorUnary returns FOperator:
+	negation="!"
+;
 
 // **************************************************************
 // annotations

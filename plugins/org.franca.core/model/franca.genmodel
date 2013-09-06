@@ -35,6 +35,21 @@
       <genEnumLiterals ecoreEnumLiteral="franca.ecore#//FAnnotationType/source_alias"/>
       <genEnumLiterals ecoreEnumLiteral="franca.ecore#//FAnnotationType/details"/>
     </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="franca.ecore#//FOperator">
+      <genEnumLiterals ecoreEnumLiteral="franca.ecore#//FOperator/Or"/>
+      <genEnumLiterals ecoreEnumLiteral="franca.ecore#//FOperator/Equal"/>
+      <genEnumLiterals ecoreEnumLiteral="franca.ecore#//FOperator/Unequal"/>
+      <genEnumLiterals ecoreEnumLiteral="franca.ecore#//FOperator/And"/>
+      <genEnumLiterals ecoreEnumLiteral="franca.ecore#//FOperator/Smaller"/>
+      <genEnumLiterals ecoreEnumLiteral="franca.ecore#//FOperator/SmallerOrEqual"/>
+      <genEnumLiterals ecoreEnumLiteral="franca.ecore#//FOperator/GreaterOrEqual"/>
+      <genEnumLiterals ecoreEnumLiteral="franca.ecore#//FOperator/Greater"/>
+      <genEnumLiterals ecoreEnumLiteral="franca.ecore#//FOperator/addition"/>
+      <genEnumLiterals ecoreEnumLiteral="franca.ecore#//FOperator/subtraction"/>
+      <genEnumLiterals ecoreEnumLiteral="franca.ecore#//FOperator/multiplication"/>
+      <genEnumLiterals ecoreEnumLiteral="franca.ecore#//FOperator/division"/>
+      <genEnumLiterals ecoreEnumLiteral="franca.ecore#//FOperator/negation"/>
+    </genEnums>
     <genClasses ecoreClass="franca.ecore#//FModel">
       <genFeatures createChild="false" propertyDescription="the package declaration for this model file"
           ecoreFeature="ecore:EAttribute franca.ecore#//FModel/name"/>
