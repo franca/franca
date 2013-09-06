@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension point="org.franca.deploymodel.dsl.deploySpecProvider">
+      <model
+            FDSpecification="org.example.spec.IPBasedIPC"
+            alias="THE_IpBasedIPC"
+            resource="model/platform/IPBasedIPC.fdepl">
+      </model>
+   </extension>
+   <extension point="org.franca.deploymodel.dsl.deploySpecProvider">
+      <model
+            FDSpecification="org.example.spec.IPBasedIPC_WithAlias"
+            alias="THE_IPBasedIPC_WithAlias"
+            resource="model/platform/IPBasedIPC_WithAlias.fdepl">
+      </model>
+   </extension>
+</plugin>
