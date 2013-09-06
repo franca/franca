@@ -21,6 +21,8 @@ import static extension org.franca.core.framework.FrancaHelpers.*
 import org.eclipse.emf.ecore.EStructuralFeature
 import org.franca.core.franca.FTypedElementRef
 import org.eclipse.emf.ecore.EObject
+import org.franca.core.franca.FOperator
+import org.franca.core.franca.FUnaryOperation
 
 class TypeSystem {
 	
@@ -52,31 +54,46 @@ class TypeSystem {
 		}
 	}
 
+	def private dispatch FTypeRef evalType (FUnaryOperation it, EObject loc, EStructuralFeature feat) {
+		val type = operand.evalType(it, FUNARY_OPERATION__OPERAND)
+		if (FOperator::NEGATION.equals(op)) {
+			if (! type.checkBoolean(it, FUNARY_OPERATION__OPERAND)) {
+				return UNDEFINED_TYPE
+			}
+			return BOOLEAN_TYPE
+		}
+		return UNDEFINED_TYPE
+	}
+	
 	def private dispatch FTypeRef evalType (FBinaryOperation it, EObject loc, EStructuralFeature feat) {
 		val t1 = left.evalType(it, FBINARY_OPERATION__LEFT)
 		val t2 = right.evalType(it, FBINARY_OPERATION__RIGHT)
 		if (t1.isUndefined || t2.isUndefined)
 			return UNDEFINED_TYPE
 
-		if (op.equals("&&") || op.equals("||")) {
+		if (FOperator::AND.equals(op) || FOperator::OR.equals(op)) {
 			if (! t1.checkBoolean(it, FBINARY_OPERATION__LEFT))
 				return UNDEFINED_TYPE
 			if (! t2.checkBoolean(it, FBINARY_OPERATION__RIGHT))
 				return UNDEFINED_TYPE
 			return BOOLEAN_TYPE
-		} else if (op.equals("==") || op.equals("!=")) {
+		} else if (FOperator::EQUAL.equals(op) || FOperator::UNEQUAL.equals(op)) {
 			if (! isSameType(t1, t2)) {
 				addIssue("operands must have same type", loc, feat)
 				return UNDEFINED_TYPE
 			}
 			return BOOLEAN_TYPE
-		} else if (op.equals("<") || op.equals(">") || op.equals("<=") || op.equals(">=")) {
+		} else if (FOperator::SMALLER.equals(op) || FOperator::SMALLER_OR_EQUAL.equals(op) ||
+			FOperator::GREATER_OR_EQUAL.equals(op) || FOperator::GREATER.equals(op)
+		) {
 			if (! t1.checkInteger(it, FBINARY_OPERATION__LEFT))
 				return UNDEFINED_TYPE
 			if (! t2.checkInteger(it, FBINARY_OPERATION__RIGHT))
 				return UNDEFINED_TYPE
 			return BOOLEAN_TYPE
-		} else if (op.equals("+") || op.equals("-") || op.equals("*") || op.equals("/")) {
+		} else if (FOperator::ADDITION.equals(op) || FOperator::SUBTRACTION.equals(op) ||
+			FOperator::MULTIPLICATION.equals(op) || FOperator::DIVISION.equals(op)
+		) {
 			if (! t1.checkInteger(it, FBINARY_OPERATION__LEFT))
 				return UNDEFINED_TYPE
 			if (! t2.checkInteger(it, FBINARY_OPERATION__RIGHT))
