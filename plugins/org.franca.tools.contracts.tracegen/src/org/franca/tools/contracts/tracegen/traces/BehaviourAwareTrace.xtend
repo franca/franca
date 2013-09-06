@@ -27,6 +27,8 @@ import org.franca.tools.contracts.tracegen.strategies.events.EventData
 import org.franca.tools.contracts.tracegen.values.ValueGenerator
 import org.franca.tools.contracts.tracegen.values.complex.CompoundValue
 import org.franca.tools.contracts.tracegen.values.simple.DefaultlyInitializingSimpleValueGenerator
+import org.franca.core.franca.FOperator
+import org.franca.core.franca.FUnaryOperation
 
 class BehaviourAwareTrace extends Trace {
 	
@@ -111,6 +113,14 @@ class BehaviourAwareTrace extends Trace {
 		throw new UnsupportedOperationException
 	}
 	
+	def dispatch Object evaluate(FUnaryOperation expr, EventData triggeringEvent) {
+		val operand = evaluate(expr.operand, triggeringEvent)
+		switch (expr.op) {
+			case FOperator::NEGATION: return !(operand as Boolean)
+		}
+		throw new UnsupportedOperationException
+	}
+	
 	def dispatch Object evaluate(FBinaryOperation expr, EventData triggeringEvent) {
 		val left = evaluate(expr.left, triggeringEvent)
 		val right = evaluate(expr.right, triggeringEvent)
@@ -130,18 +140,18 @@ class BehaviourAwareTrace extends Trace {
 		}
 		
 		switch (expr.op) {
-			case '||': return (left as Boolean || right as Boolean)
-			case '&&': return (left as Boolean && right as Boolean)
-			case '==': return (leftToCompare.equals(rightToCompare))
-			case '!=': return (! left.equals(right))
-			case '<': return (leftToCompare as Comparable<Object> < rightToCompare)
-			case '>': return ((leftToCompare as Comparable<Object>) > rightToCompare)
-			case '<=': return ((leftToCompare as Comparable<Object>) <= rightToCompare)
-			case '>=': return ((leftToCompare as Comparable<Object>) >= rightToCompare)
-			case '+': return ((leftToCompare as Number) + (rightToCompare as Number))
-			case '-': return ((leftToCompare as Number) - (rightToCompare as Number))
-			case '*': return ((leftToCompare as Number) * (rightToCompare as Number))
-			case '/': return ((leftToCompare as Number) / (rightToCompare as Number))
+			case FOperator::OR: return (left as Boolean || right as Boolean)
+			case FOperator::AND: return (left as Boolean && right as Boolean)
+			case FOperator::EQUAL: return (leftToCompare.equals(rightToCompare))
+			case FOperator::UNEQUAL: return (! left.equals(right))
+			case FOperator::SMALLER: return (leftToCompare as Comparable<Object> < rightToCompare)
+			case FOperator::GREATER: return ((leftToCompare as Comparable<Object>) > rightToCompare)
+			case FOperator::SMALLER_OR_EQUAL: return ((leftToCompare as Comparable<Object>) <= rightToCompare)
+			case FOperator::GREATER_OR_EQUAL: return ((leftToCompare as Comparable<Object>) >= rightToCompare)
+			case FOperator::ADDITION: return ((leftToCompare as Number) + (rightToCompare as Number))
+			case FOperator::SUBTRACTION: return ((leftToCompare as Number) - (rightToCompare as Number))
+			case FOperator::MULTIPLICATION: return ((leftToCompare as Number) * (rightToCompare as Number))
+			case FOperator::DIVISION: return ((leftToCompare as Number) / (rightToCompare as Number))
 		}
 		throw new UnsupportedOperationException
 	}

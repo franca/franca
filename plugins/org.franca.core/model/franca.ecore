@@ -185,6 +185,21 @@
     <eLiterals name="source_alias" value="11" literal="@source-alias"/>
     <eLiterals name="details" value="12" literal="@details"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="FOperator">
+    <eLiterals name="Or" literal="||"/>
+    <eLiterals name="Equal" value="1" literal="=="/>
+    <eLiterals name="Unequal" value="2" literal="!="/>
+    <eLiterals name="And" value="3" literal="&amp;&amp;"/>
+    <eLiterals name="Smaller" value="4" literal="&lt;"/>
+    <eLiterals name="SmallerOrEqual" value="5" literal="&lt;="/>
+    <eLiterals name="GreaterOrEqual" value="6" literal=">="/>
+    <eLiterals name="Greater" value="7" literal=">"/>
+    <eLiterals name="addition" value="8" literal="+"/>
+    <eLiterals name="subtraction" value="9" literal="-"/>
+    <eLiterals name="multiplication" value="10" literal="*"/>
+    <eLiterals name="division" value="11" literal="/"/>
+    <eLiterals name="negation" value="12" literal="!"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FAnnotation">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="#//FAnnotationType"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="comment" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -311,7 +326,7 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="val" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FOperation" abstract="true" eSuperTypes="#//FExpression">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="op" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="op" lowerBound="1" eType="#//FOperator"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FBinaryOperation" eSuperTypes="#//FOperation">
     <eStructuralFeatures xsi:type="ecore:EReference" name="left" lowerBound="1" eType="#//FExpression"
