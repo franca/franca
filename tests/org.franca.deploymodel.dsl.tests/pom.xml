@@ -58,7 +58,6 @@
 					<!-- MacOS specific option to run an SWT application from the command line.
 							See http://www.eclipse.org/swt/faq.php#carbonapp
 					-->
-					<argLine>-XstartOnFirstThread</argLine>
 				</configuration>
 			</plugin>
 			<plugin>
