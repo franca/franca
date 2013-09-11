@@ -106,7 +106,7 @@ public class ContentAssistUITest extends AbstractContentAssistProcessorTest {
 				"\"a.fdepl\"", "\"b.fidl\""          // same folder
 				,"\"../anotherModel/c.fdepl\""       // different folder, same project
 				,"\"platform:/resource/libraryproject/model/d.fdepl\"" // different project
-				,"THE_IPBasedIPC_WithAlias", "THE_IpBasedIPC"};        // contributed by plugins
+				,"The_PlatformDeploySpec_WithAlias", "The_PlatformDeploySpec"};        // contributed by plugins
 		super.newBuilder().append("import ").assertText(expectedSuggestions);
 	}
 }
