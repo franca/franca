@@ -1,0 +1,11 @@
+
+import "IPBasedIPC.fdepl"
+
+/** This one in an extension of IPBasedIPC providing an addional attribute "Alias" for instances */
+specification org.example.spec.IPBasedIPC_WithAlias extends org.example.spec.IPBasedIPC
+{
+	for instances {
+	    /** An alias for the given instance. */
+		Alias :    String;
+	}
+}
