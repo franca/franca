@@ -1,22 +1,33 @@
 package test
 
 interface Test1 {
+
 	method m1 {
+	
 	}
+	
 	method m2 {
+	
 	}
+	
+	method m3 {
+	
+	}
+	
 	contract {
 		PSM {
-			initial A state A {
+			initial A 
+			
+			state A {
 				on call m1 -> B {
 				}
 			}
 			state B {
-				on call m1 -> A 
-				on respond m2 -> C
+				on call m2 -> C 
+				//on respond m2 -> C
 			}
 			state C {
-				on call m2 -> C
+				on call m3 -> C
 			}
 		}
 	}
