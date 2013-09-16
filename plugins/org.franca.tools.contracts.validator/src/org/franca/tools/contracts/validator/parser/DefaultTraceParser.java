@@ -9,31 +9,24 @@ package org.franca.tools.contracts.validator.parser;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.franca.core.franca.FEventOnIf;
 import org.franca.core.franca.FInterface;
 import org.franca.core.franca.FModel;
 import org.franca.core.franca.FState;
 import org.franca.core.franca.FTransition;
 
-public class DefaultTraceParser extends ITraceParser {
-
-	private Map<String, FEventOnIf> eventMap;
+public class DefaultTraceParser implements ITraceParser {
 	
-	public DefaultTraceParser(FModel model) {
-		super(model);
-		this.eventMap = new HashMap<String, FEventOnIf>();
-		initialize();
-	}
-	
-	private void initialize() {
+	private Map<String, FEventOnIf> initialize(FModel model) {
+		Map<String, FEventOnIf> eventMap = new HashMap<String, FEventOnIf>();
+		
 		for (FInterface _interface : model.getInterfaces()) {
 			for (FState state : _interface.getContract().getStateGraph().getStates()) {
 				for (FTransition transition : state.getTransitions()) {
@@ -42,24 +35,25 @@ public class DefaultTraceParser extends ITraceParser {
 				}
 			}
 		}
+		
+		return eventMap;
 	}
 
 	@Override
-	public List<FEventOnIf> parseTrace(IFile file) {
+	public List<FEventOnIf> parseTrace(FModel model, InputStream inputStream) {
+		Map<String, FEventOnIf> eventMap = initialize(model);
+		
 		InputStreamReader streamReader = null;
 		BufferedReader bufferedReader = null;
 		List<FEventOnIf> trace = new ArrayList<FEventOnIf>();
 		try {
-			streamReader = new InputStreamReader(file.getContents());
+			streamReader = new InputStreamReader(inputStream);
 			bufferedReader = new BufferedReader(streamReader);
 			String line = null;
 			while ((line = bufferedReader.readLine()) != null) {
 				trace.add(eventMap.get(line));
 			}
 			return trace;
-		}
-		catch (CoreException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

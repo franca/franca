@@ -7,20 +7,17 @@
  *******************************************************************************/
 package org.franca.tools.contracts.validator.parser;
 
+import java.io.InputStream;
 import java.util.List;
 
-import org.eclipse.core.resources.IFile;
 import org.franca.core.franca.FEventOnIf;
 import org.franca.core.franca.FModel;
 
-public abstract class ITraceParser {
+import com.google.inject.ImplementedBy;
 
-	protected FModel model;
+@ImplementedBy(DefaultTraceParser.class)
+public interface ITraceParser {
 	
-	public ITraceParser(FModel model) {
-		this.model = model;
-	}
-	
-	public abstract List<FEventOnIf> parseTrace(IFile file);
+	public List<FEventOnIf> parseTrace(FModel model, InputStream inputStream);
 	
 }
