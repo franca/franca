@@ -21,6 +21,13 @@ import org.eclipse.etrice.core.room.TransitionPoint
 
 import static extension org.franca.connectors.etrice.internal.CommentGenerator.*
 import static extension org.franca.connectors.etrice.internal.RoomModelBuilder.*
+import org.franca.core.franca.FContract
+import org.franca.core.franca.FState
+import java.util.Set
+import java.util.Queue
+import org.franca.core.franca.FEventOnIf
+import org.eclipse.etrice.core.room.SemanticsRule
+import java.util.Map
 
 class ProtocolClassGenerator {
 
@@ -42,8 +49,11 @@ class ProtocolClassGenerator {
 		outgoingMessages.addAll(src.broadcasts.map [transformBroadcast])	
 		
 		// add protocol semantics for request/reply methods
-		// TODO
-//		semantics = reqresp.transformSemantics
+		if (src.contract == null) {
+			semantics = reqresp.createDefaultSemantics
+		} else {
+			semantics = src.contract.createSemantics
+		}
 	}
 
 
@@ -87,23 +97,94 @@ class ProtocolClassGenerator {
 	}
 
 
+	def private createDefaultSemantics (Iterable<FMethod> src) {
+		val it = RoomFactory::eINSTANCE.createProtocolSemantics
 
-//	def create RoomFactory::eINSTANCE.createProtocolSemantics transformSemantics (Iterable<FMethod> src) {
-//		rules.addAll(src.map [createSemanticsInRule])
-//	}
-//	
-//	def createSemanticsInRule (FMethod src) {
-//		var it = RoomFactory::eINSTANCE.createSemanticsInRule 
-//		msg = src.transformMethod
-//		followUps.add(src.createSemanticsOutRule)
-//		return it
-//	}
-//
-//	def create RoomFactory::eINSTANCE.createSemanticsOutRule createSemanticsOutRule (FMethod src) {
-//		msg = src.transformMethodReply
-//	}
+		// add protocol semantics for request/reply methods
+		rules.addAll(src.map[makeSemanticsInOutRule])
+
+		// TODO: add some more semantic rules for attribute behavior
+
+		it
+	}
+
+	def private makeSemanticsInOutRule (FMethod src) {
+		val it = src.makeSemanticsInRule
+		followUps.add(src.makeSemanticsOutRule)
+		it
+	}
+
+	/*
+	 * Create ROOM Protocol semantics from Franca contract.
+	 * This is basically a transformation from protocol state machines (PSM)
+	 * to legal execution trees (LET).
+	 */
+	def private createSemantics (FContract contract) {
+		val it = RoomFactory::eINSTANCE.createProtocolSemantics
+		
+		val psm = contract.stateGraph
+		var Set<FState> visited = newHashSet
+		var Map<FState, SemanticsRule> mapping = newHashMap
+		var Queue<FState> queue = newLinkedList(psm.initial)
+		while (! queue.empty) {
+			val s = queue.poll
+			if (visited.contains(s)) {
+				if (s != psm.initial) {
+					// a cycle which doesn't contain the initial state cannot be transformed to LETs
+					val parent = contract.eContainer as FInterface
+					println("ERROR: Contract of Franca interface " + parent.name +
+						" cannot be transformed to ROOM protocol class semantics spec!")
+				}
+			} else {
+				for(t : s.transitions) {
+					val ev = t.trigger.event
+					val rule = ev.makeSemanticsRule
+					if (mapping.containsKey(s)) {
+						mapping.get(s).followUps.add(rule)
+					} else {
+						rules.add(rule)
+					}
+					mapping.put(t.to, rule)
+					queue.add(t.to)
+				}
+			}
+			visited.add(s)
+		}
+		it
+	}	
+
+	def private SemanticsRule makeSemanticsRule (FEventOnIf ev) {
+		if (ev.call!=null) {
+			ev.call.makeSemanticsInRule
+		} else if (ev.respond!=null) {
+			ev.respond.makeSemanticsOutRule
+		} else if (ev.signal!=null) {
+			ev.signal.makeSemanticsOutRule
+		} else {
+			// this type of event is not supported yet
+			throw new RuntimeException("Franca event type not supported: " + ev.toString)
+		}
+	}
+
+	def private makeSemanticsInRule (FMethod src) {
+		var it = RoomFactory::eINSTANCE.createInSemanticsRule 
+		msg = src.transformMethod
+		it
+	}
+
+	def private makeSemanticsOutRule (FMethod src) {
+		val it = RoomFactory::eINSTANCE.createOutSemanticsRule
+		msg = src.transformMethodReply
+		it
+	}
 	
+	def private makeSemanticsOutRule (FBroadcast src) {
+		val it = RoomFactory::eINSTANCE.createOutSemanticsRule
+		msg = src.transformBroadcast
+		it
+	}
 	
+
 
 	def private transformArg (FArgument src) {
 		var it = RoomFactory::eINSTANCE.createVarDecl 
