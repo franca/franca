@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: org.franca.connectors.etrice
+Bundle-Name: Franca eTrice Connector
 Bundle-SymbolicName: org.franca.connectors.etrice
-Bundle-Version: 0.7.0
+Bundle-Version: 0.8.9.qualifier
 Bundle-Activator: org.franca.connectors.etrice.Activator
 Bundle-Vendor: itemis AG
 Require-Bundle: org.eclipse.core.runtime,
