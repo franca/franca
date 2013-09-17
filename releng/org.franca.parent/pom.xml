@@ -13,7 +13,7 @@
 
 	<properties>
 		<eclipse-site>http://download.eclipse.org/releases/${platform-version-name}</eclipse-site>
-		<platform-version-name>juno</platform-version-name>
+		<platform-version-name>kepler</platform-version-name>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<tycho-version>0.17.0</tycho-version>
 		<junit-version>4.8.1</junit-version>
