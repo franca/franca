@@ -5,12 +5,12 @@
 	<parent>
 		<groupId>org.franca</groupId>
 		<artifactId>org.franca.parent</artifactId>
-		<version>0.8.8-SNAPSHOT</version>
+		<version>0.8.9-SNAPSHOT</version>
 		<relativePath>../../releng/org.franca.parent/pom.xml</relativePath>
 	</parent>
 
 	<artifactId>org.franca.deploymodel.dsl.tests</artifactId>
-	<packaging>eclipse-plugin</packaging>
+	<packaging>eclipse-test-plugin</packaging>
 	<dependencies>
 		<!-- It is important to have JUnit >= 4.7 as dependency to select the right JUnit Provider see http://maven.apache.org/plugins/maven-surefire-plugin/examples/junit.html -->
 		<dependency>
@@ -20,11 +20,26 @@
 		</dependency>
 	</dependencies>
 
+	<profiles>
+		<profile>
+			<id>macosx-jvm-flags</id>
+			<activation>
+				<os>
+					<family>mac</family>
+				</os>
+			</activation>
+			<properties>
+				<os-jvm-flags>-XstartOnFirstThread</os-jvm-flags>
+			</properties>
+		</profile>
+	</profiles>
+
 	<build>
 		<sourceDirectory>src</sourceDirectory>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId> 				<artifactId>maven-clean-plugin</artifactId>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-clean-plugin</artifactId>
 				<configuration>
 					<filesets>
 						<fileset>
@@ -52,7 +67,15 @@
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-surefire-plugin</artifactId>
 				<configuration>
-					<skip>true</skip>
+					<skip>false</skip>
+					<testSuite>org.franca.deploymodel.dsl.tests</testSuite>
+					<testClass>org.franca.deploymodel.dsl.tests.ui.ContentAssistUITest</testClass>
+					<!-- MacOS specific option to run an SWT application from the command line.
+							See http://www.eclipse.org/swt/faq.php#carbonapp
+					-->
+					<argLine>${os-jvm-flags}</argLine>
+					<useUIHarness>true</useUIHarness>
+					<useUIThread>true</useUIThread>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -70,6 +93,9 @@
 							<includes>
 							<include>**/*Test*.java</include>
 							</includes>
+							<excludes>
+							<exclude>**/ContentAssistUITest.java</exclude>
+							</excludes>
 						</configuration>
 						<goals>
 							<goal>test</goal>

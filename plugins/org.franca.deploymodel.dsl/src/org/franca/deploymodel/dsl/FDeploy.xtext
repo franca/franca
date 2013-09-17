@@ -28,7 +28,7 @@ FDModel:
 	;
 
 Import :
-	'import' importURI=STRING;
+	'import' (importURI=STRING|importedSpec=FQN);
 	
 
 // **************************************************************
