@@ -16,11 +16,11 @@
    <extension
          point="org.eclipse.ui.handlers">
       <handler
-            class="org.franca.connectors.dbus.ui.DBusUIExecutableExtensionFactory:org.franca.connectors.dbus.ui.actions.GenerateDBusXMLHandler"
+            class="org.franca.connectors.dbus.ui.DBusUIExecutableExtensionFactory:org.franca.connectors.dbus.ui.handlers.GenerateDBusXMLHandler"
             commandId="org.franca.connectors.dbus.ui.gen_dbus">
       </handler>
       <handler
-            class="org.franca.connectors.dbus.ui.DBusUIExecutableExtensionFactory:org.franca.connectors.dbus.ui.actions.CreateFrancaFromDBusXMLHandler"
+            class="org.franca.connectors.dbus.ui.DBusUIExecutableExtensionFactory:org.franca.connectors.dbus.ui.handlers.CreateFrancaFromDBusXMLHandler"
             commandId="org.franca.connectors.dbus.ui.gen_franca">
       </handler>
    </extension>

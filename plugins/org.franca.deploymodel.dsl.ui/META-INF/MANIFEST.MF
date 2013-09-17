@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Franca Deployment Model UI plugin
 Bundle-Vendor: itemis AG
-Bundle-Version: 0.8.8.qualifier
+Bundle-Version: 0.8.9.qualifier
 Bundle-SymbolicName: org.franca.deploymodel.dsl.ui; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.franca.deploymodel.dsl;visibility:=reexport,
