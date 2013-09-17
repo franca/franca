@@ -38,13 +38,45 @@ interface RobotArm {
 		PSM {
 			initial initialState
 			state initialState {
-				on set testAttr -> initialState {
-					//what can be stated here?
-				}
-				on call move [pos.x == 5] -> initialState {
-					//what can be stated here?
-				} 
+				on call move -> handleMove
+				on call grab -> handleGrab
+				on call release -> handleRelease
+//				on set testAttr -> initialState {
+//					//what can be stated here?
+//				}
+//				on call move [pos.x == 5] -> initialState {
+//					//what can be stated here?
+//				} 
 			}
+			state handleMove {
+				on respond move -> initialState
+			}
+			state handleGrab {
+				on respond grab -> initialState
+			}
+			state handleRelease {
+				on respond release -> initialState
+			}
+
+			// Behavior 2 (just for tests)
+//			state initialState {
+//				on call move -> handleMove
+//			}
+//			state handleMove {
+//				on respond move -> doGrab
+//			}
+//			state doGrab {
+//				on call grab -> handleGrab
+//			}
+//			state handleGrab {
+//				on respond grab -> doRelease
+//			}
+//			state doRelease {
+//				on call release -> handleRelease
+//			}
+//			state handleRelease {
+//				on respond release -> initialState
+//			}
 		}
 	}
 	
