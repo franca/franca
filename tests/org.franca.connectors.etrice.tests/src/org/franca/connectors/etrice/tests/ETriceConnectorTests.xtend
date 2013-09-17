@@ -37,7 +37,7 @@ class ETriceConnectorTests {
 		assertNotNull(workspaceFolder)
 		etrice.setModellibFolder(workspaceFolder + "/org.eclipse.etrice.modellib.java/models")
 
-		val fmodel = fidlLoader.loadModel("model/example1.fidl")
+		val fmodel = fidlLoader.loadModel("model/org/franca/examples/example1.fidl")
 		assertNotNull(fmodel)	
 		
 		// transform Franca model to ROOM model
