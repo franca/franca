@@ -60,7 +60,6 @@ public class TraceValidator {
 			traceGroups.add(initialGuess);
 
 			for (int i = 1; i < trace.size(); i++) {
-				
 				Set<FTransition> guess = guessMap.get(trace.get(i));
 
 				// check whether we can follow the execution on any path
@@ -97,15 +96,6 @@ public class TraceValidator {
 		Set<FTransition> result = new HashSet<FTransition>(left);
 		result.retainAll(right);
 		return result;
-	}
-	
-	@SuppressWarnings("unused")
-	private static boolean equalTransition(FTransition t1, FTransition t2) {
-		return (getCallName(t1) == getCallName(t2) /*&& t1.getTo().equals(t2.getTo())*/);
-	}
-	
-	private static String getCallName(FTransition transition) {
-		return transition.getTrigger().getEvent().getCall().getName();
 	}
 	
 	/**

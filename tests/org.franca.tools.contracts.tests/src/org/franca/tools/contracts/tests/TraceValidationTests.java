@@ -54,10 +54,15 @@ public class TraceValidationTests {
 	@Inject
 	private ITraceParser traceParser;
 
-	@Test
+	/**
+	 * These are on-the-fly trace tests with generated traces.
+	 */
+	//@Test
 	public void generatedTraceValidationTest() {
 		for (String resourcePath : Lists.newArrayList(
-				"resources/contracts/reference.fidl", "resources/contracts/test1.fidl")) {
+				"resources/contracts/reference.fidl" 
+				//"resources/contracts/test1.fidl"
+				)) {
 			FModel model = loader.loadModel(resourcePath);
 
 			assertNotNull(model);
@@ -79,6 +84,9 @@ public class TraceValidationTests {
 		}
 	}
 	
+	/**
+	 * These are simple trace tests with serialized trace files.
+	 */
 	@Test
 	public void defaultTraceTest() {
 		FModel model = loader.loadModel("resources/contracts/test1.fidl");
@@ -95,17 +103,24 @@ public class TraceValidationTests {
 				inputStream = url.openStream();
 				assertEquals(TraceValidator.isValidTrace(contract, traceParser.parseTrace(model, inputStream)), data.get(key));
 			} catch (IOException e) {
+				e.printStackTrace();
 				fail(e.getMessage());
 			} finally {
 				try {
 					inputStream.close();
 				} catch (IOException e) {
+					e.printStackTrace();
 					fail(e.getMessage());
 				}
 			}
 		}
 	}
 	
+	/**
+	 * Test data for default trace tests.
+	 * 
+	 * @return
+	 */
 	private Map<String, Boolean> getDefaultTestData() {
 		Map<String, Boolean> data = new HashMap<String, Boolean>();
 		data.put("/resources/traces/test1.trace", true);
