@@ -80,8 +80,12 @@ class Franca2ETriceTransformation {
 		logical.name = "System"
 		systems.add(logical)
 		
+		val thread = RoomFactory::eINSTANCE.createLogicalThread
+		thread.name = "SubSystemThread"
+		
 		val subsystem = RoomFactory::eINSTANCE.createSubSystemClass
 		subsystem.name = "SubSystem"
+		subsystem.threads.add(thread)
 		logical.subSystems.add(subsystem.getRef("subsystem"))
 		subSystemClasses.add(subsystem)
 		subsystem
