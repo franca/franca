@@ -24,9 +24,12 @@ import static extension org.franca.connectors.etrice.internal.CommentGenerator.*
 import static extension org.franca.connectors.etrice.internal.RoomModelBuilder.*
 import org.franca.core.franca.FType
 import org.franca.core.franca.FMapType
+import com.google.inject.Inject
 
 class TypeGenerator {
 	
+	@Inject ModelLib modellib
+
 	Set<PrimitiveType> newPrimitiveTypes = newHashSet
 	Set<DataClass> newDataClasses = newHashSet
 	
@@ -66,7 +69,7 @@ class TypeGenerator {
 
 	
 	def private PrimitiveType transformBasicType (FTypeRef src) {
-		src.predefined.createPrimitiveType
+		src.predefined.getPrimitiveType
 	}
 	
 
@@ -162,14 +165,14 @@ class TypeGenerator {
 		name = "value"
 		if (n>1)
 			size = n
-		refType = FBasicTypeId::UINT8.createPrimitiveType.toRefableType
+		refType = FBasicTypeId::UINT8.getPrimitiveType.toRefableType
 		return it
 	}
 
 	def private createUInt32Attribute () {
 		var it = RoomFactory::eINSTANCE.createAttribute
 		name = "value"
-		refType = FBasicTypeId::UINT32.createPrimitiveType.toRefableType
+		refType = FBasicTypeId::UINT32.getPrimitiveType.toRefableType
 		return it
 	}
 
@@ -183,7 +186,23 @@ class TypeGenerator {
 
 	def private create RoomFactory::eINSTANCE.createAttribute createDummyAttribute() {
 		name = "dummy"
-		refType = FBasicTypeId::UINT8.createPrimitiveType.toRefableType
+		refType = FBasicTypeId::UINT8.getPrimitiveType.toRefableType
+	}
+
+	def private getPrimitiveType (FBasicTypeId src) {
+		val name = src.mapPrimitiveTypeName
+		if (name==null) {
+			// name couldn't be mapped, create a new type
+			src.createPrimitiveType
+		} else {
+			// name could be mapped, look if we have this type in the modellib
+			val libtype = modellib.getPrimitiveType(name)
+			if (libtype==null) {
+				src.createPrimitiveType		
+			} else {
+				libtype
+			}
+		}
 	}
 
 	def private create RoomFactory::eINSTANCE.createPrimitiveType createPrimitiveType (FBasicTypeId src) {
@@ -205,6 +224,22 @@ class TypeGenerator {
 		}
 		
 		newPrimitiveTypes.add(it)
+	}
+
+	def private mapPrimitiveTypeName (FBasicTypeId src) {
+		switch (src) {
+			case FBasicTypeId::INT8:    "int8"
+			case FBasicTypeId::UINT8:   "char"
+			case FBasicTypeId::INT16:   "int16"
+			case FBasicTypeId::INT32:   "int32"
+			case FBasicTypeId::BOOLEAN: "boolean"
+			case FBasicTypeId::STRING:  "string"
+			case FBasicTypeId::FLOAT:   "float32"
+			case FBasicTypeId::DOUBLE:  "float64"
+
+			// not supported: UINT16, UINT32, INT64, UINT64
+			default: null
+		}
 	}
 	
 	def private initPrimiType (PrimitiveType it, LiteralType lit) {

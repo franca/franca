@@ -55,6 +55,14 @@ class ModelLib {
 		modelTimingService.actorClasses.findFirst[name.equals("ATimingService")]
 	}
 	
+	def getPrimitiveType (String typename) {
+		if (modelTypes==null)
+			null
+		else {
+			modelTypes.primitiveTypes.findFirst[name==typename]
+		}
+	}
+	
 	def getTimerSPPRef() {
 		timingServiceActor.ifSPPs.findFirst[name.equals("timer")]
 	}
