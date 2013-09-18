@@ -6,9 +6,10 @@ Bundle-Version: 0.8.8
 Bundle-Vendor: itemis AG
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.franca.core.utils.digraph,
- org.junit
-Require-Bundle: org.junit4;bundle-version="4.8.1",
- org.franca.core;bundle-version="0.8.8",
+ org.junit;version="4.5.0",
+ org.junit.runner;version="4.5.0",
+ org.junit.runners;version="4.5.0"
+Require-Bundle: org.franca.core;bundle-version="0.8.8",
  org.franca.core.dsl;bundle-version="0.8.8",
  org.franca.generators;bundle-version="0.8.8",
  org.franca.deploymodel.dsl;bundle-version="0.8.8",
