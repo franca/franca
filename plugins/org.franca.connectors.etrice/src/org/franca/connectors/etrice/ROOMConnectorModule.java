@@ -8,6 +8,7 @@
 package org.franca.connectors.etrice;
 
 import org.franca.connectors.etrice.internal.ModelLib;
+import org.franca.connectors.etrice.internal.ProtocolClassGenerator;
 import org.franca.connectors.etrice.internal.TypeGenerator;
 
 import com.google.inject.AbstractModule;
@@ -25,6 +26,7 @@ public class ROOMConnectorModule extends AbstractModule {
 	@Override
 	protected void configure() {
 		bind(TypeGenerator.class).in(Singleton.class);
+		bind(ProtocolClassGenerator.class).in(Singleton.class);
 		bind(ModelLib.class).in(Singleton.class);
 	}
 

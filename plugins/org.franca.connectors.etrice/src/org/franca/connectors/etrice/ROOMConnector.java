@@ -46,6 +46,7 @@ public class ROOMConnector implements IFrancaConnector {
 	
 	public void setModellibFolder (String uri) {
 		uriModellib = uri;
+		resourceSet = null;
 	}
 	
 	@Override

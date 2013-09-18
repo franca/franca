@@ -18,6 +18,7 @@ import java.util.List
 
 import static extension org.franca.connectors.etrice.internal.RoomModelBuilder.*
 import org.eclipse.etrice.core.room.ProtocolClass
+import java.io.File
 
 /**
  * Representation of eTrice modellib during transformation.
@@ -33,8 +34,8 @@ class ModelLib {
 	RoomModel modelTimingService
 
 	def init (String uriModelLib, ResourceSet resourceSet) {
-		uriTypes = uriModelLib + "/Types.room"
-		uriTimingService = uriModelLib + "/TimingService.room"
+		uriTypes = uriModelLib + File::separator + "Types.room"
+		uriTimingService = uriModelLib + File::separator + "TimingService.room"
 
 		modelTypes = resourceSet.loadRoomModel(uriTypes)
 		modelTimingService = resourceSet.loadRoomModel(uriTimingService)

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            id="org.franca.connectors.etrice.ui.gen_etrice"
+            name="etrice xml generation handler">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="org.franca.connectors.etrice.ui.ETriceUIExecutableExtensionFactory:org.franca.connectors.etrice.ui.handlers.GenerateETriceXMLHandler"
+            commandId="org.franca.connectors.etrice.ui.gen_etrice">
+      </handler>
+   </extension>
+ <extension
+       point="org.eclipse.ui.menus">
+    <menuContribution
+          allPopups="false"
+          locationURI="popup:org.franca.core.dsl.ui.francamenu?after=additions">
+          <command
+                commandId="org.franca.connectors.etrice.ui.gen_etrice"
+                label="Generate eTrice model"
+                style="push">
+             <visibleWhen
+                   checkEnabled="false">
+                <reference
+                      definitionId="org.franca.core.dsl.ui.fidl">
+                </reference>
+             </visibleWhen>
+          </command>
+    </menuContribution>
+ </extension>
+</plugin>
