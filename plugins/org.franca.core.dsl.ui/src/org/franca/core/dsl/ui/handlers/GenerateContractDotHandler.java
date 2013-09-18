@@ -16,6 +16,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.console.MessageConsoleStream;
@@ -51,14 +52,16 @@ public class GenerateContractDotHandler extends AbstractHandler {
             }
 
             IFile file = (IFile) ((IStructuredSelection) selection).getFirstElement();
-            String fidlFile = file.getLocationURI().toString();
+            URI uri = URI.createPlatformResourceURI(file.getFullPath().toString(), true);
             String outputDir = file.getParent().getLocation().toString();
 
     		// load Franca IDL file
-            out.println("Loading Franca IDL file '" + fidlFile + "' ...");
-    		FModel fmodel = loader.loadModel(fidlFile);
+            String filename = file.getLocationURI().toString();
+            out.println("Loading Franca IDL file '" + filename + "' ...");
+        	URI rootURI = URI.createURI("classpath:/");
+    		FModel fmodel = loader.loadModel(uri, rootURI);
     		if (fmodel==null) {
-    			err.println("Couldn't load Franca IDL file '" + fidlFile + "'.");
+    			err.println("Couldn't load Franca IDL file '" + filename + "'.");
     			return null;
     		}
     		out.println("Franca IDL: package '" + fmodel.getName() + "'");
