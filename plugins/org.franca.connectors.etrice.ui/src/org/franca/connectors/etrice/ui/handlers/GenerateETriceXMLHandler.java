@@ -28,6 +28,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.xtext.validation.Issue;
 import org.franca.connectors.etrice.ROOMConnector;
 import org.franca.connectors.etrice.ROOMModelContainer;
+import org.franca.connectors.etrice.ui.properties.ETriceConnectorProperties;
 import org.franca.core.dsl.FrancaPersistenceManager;
 import org.franca.core.dsl.ui.util.SpecificConsole;
 import org.franca.core.franca.FModel;
@@ -60,7 +61,6 @@ public class GenerateETriceXMLHandler extends AbstractHandler {
 
             IFile file = (IFile) ((IStructuredSelection) selection).getFirstElement();
             URI uri = URI.createPlatformResourceURI(file.getFullPath().toString(), true);
-            String outputDir = file.getParent().getLocation().toString();
 
     		// load Franca IDL file
             String filename = file.getLocationURI().toString();
@@ -117,8 +117,11 @@ public class GenerateETriceXMLHandler extends AbstractHandler {
     		
     		// save eTrice file
     		int ext = file.getName().lastIndexOf("." + file.getFileExtension());
+			String projectPath = file.getProject().getLocation()
+					.toString();
+			String outputFolder = getOutputFolder(file, err);
     		String outfile = file.getName().substring(0, ext) + ".room";
-    		String outpath = outputDir + "/" + outfile;
+			String outpath = projectPath + File.separator + outputFolder + File.separator + outfile;
     		if (roomConn.saveModel(room, outpath)) {
     			out.println("Saved eTrice file '" + outpath + "'.");
     		} else {
@@ -136,4 +139,18 @@ public class GenerateETriceXMLHandler extends AbstractHandler {
         }
 		return null;
 	}
+
+
+	private String getOutputFolder (IFile file, MessageConsoleStream err) {
+		String path = null;
+		try {
+			path = file.getProject().getPersistentProperty(
+					ETriceConnectorProperties.ETRICE_GEN_MODEL_PATH_QN);
+		} catch (CoreException e) {
+			err.println("Target path for generated model is not readable from project properties.");
+		}
+		return path != null ? path : ETriceConnectorProperties.ETRICE_GEN_MODEL_PATH_DEFAULT;
+	}
+
+
 }

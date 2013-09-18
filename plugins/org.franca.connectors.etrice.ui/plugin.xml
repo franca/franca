@@ -34,4 +34,25 @@
           </command>
     </menuContribution>
  </extension>
+ 
+ <extension
+         point="org.eclipse.ui.propertyPages">
+      <page
+            class="org.franca.connectors.etrice.ui.properties.ETriceConnectorPropertyPage"
+            id="org.franca.connectors.etrice.ui.properties"
+            name="Franca / eTrice"
+            selectionFilter="single">
+         <enabledWhen>
+            <or>
+               <instanceof
+                     value="org.eclipse.core.resources.IProject">
+               </instanceof>
+               <instanceof
+                     value="org.eclipse.jdt.core.IJavaProject">
+               </instanceof>
+            </or>
+         </enabledWhen>
+      </page>
+   </extension>
+ 
 </plugin>
