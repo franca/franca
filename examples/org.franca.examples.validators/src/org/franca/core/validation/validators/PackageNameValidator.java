@@ -17,9 +17,11 @@ public class PackageNameValidator implements IFrancaExternalValidator {
 			ValidationMessageAcceptor messageAcceptor) {
 
 		URI modelURI = model.eResource().getURI();
-		IFile file = ResourcesPlugin.getWorkspace().getRoot()
-				.getFile(new Path(modelURI.toPlatformString(true)));
-
+		String ps = modelURI.toPlatformString(true);
+		if (ps==null) {
+			throw new RuntimeException("Invalid model URI '" + modelURI.toString() + "'");
+		}
+		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(ps));
 		if (file.exists()) {
 			IPath relativePath = file.getProjectRelativePath();
 			String[] tokens = relativePath.toString().split("/");
