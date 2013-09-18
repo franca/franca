@@ -17,11 +17,14 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 import static org.junit.Assert.*
+import java.io.File
 
 @RunWith(typeof(XtextRunner))
 @InjectWith(typeof(ETriceFrancaTestInjectorProvider))
 class ETriceConnectorTests {
 
+	static final String MODELLIB_PROJECT = "org.eclipse.etrice.modellib.java"
+	
 	@Inject	FrancaPersistenceManager fidlLoader
 	@Inject ROOMConnector etrice
 
@@ -35,7 +38,11 @@ class ETriceConnectorTests {
 		//     -Dworkspace.loc=${workspace_loc}
 		val workspaceFolder = System::getProperty("workspace.loc")
 		assertNotNull(workspaceFolder)
-		etrice.setModellibFolder(workspaceFolder + "/org.eclipse.etrice.modellib.java/models")
+		etrice.setModellibFolder(
+			workspaceFolder + File::separator +
+			MODELLIB_PROJECT + File::separator +
+			"models"
+		)
 
 		val fmodel = fidlLoader.loadModel("model/org/franca/examples/example1.fidl")
 		assertNotNull(fmodel)	
