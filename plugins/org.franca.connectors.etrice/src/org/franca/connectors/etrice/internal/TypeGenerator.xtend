@@ -41,6 +41,11 @@ class TypeGenerator {
 		newDataClasses
 	}
 
+	def resetTypeLists() {
+		newPrimitiveTypes.clear
+		newDataClasses.clear
+	}
+
 	def DataType transformType (FTypeRef src) {
 		if (src.derived==null) {
 			src.transformBasicType

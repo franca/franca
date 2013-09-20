@@ -41,6 +41,9 @@ class Franca2ETriceTransformation {
 	def create RoomFactory::eINSTANCE.createRoomModel transform (FModel src, String uriModelLib, ResourceSet resourceSet) {
 		name = src.name
 		
+		// reset type lists of TypeGenerator
+		resetTypeLists
+		
 		var doc = "Generated from Franca IDL model " + src.name + " by Franca2ETriceTransformation."
 		docu = doc.transformComment 
 
