@@ -99,7 +99,7 @@ public class GenerateETriceXMLHandler extends AbstractHandler {
     		roomConn.setModellibFolder(
     				root.getLocation().toString() +
     				modellib.getFullPath().toString() + File.separator +
-    				"models");
+    				"model");
 
     		// transform ROOM model (i.e., eTrice file)
     		out.println("Transforming to eTrice model file ...");

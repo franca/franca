@@ -41,7 +41,7 @@ class ETriceConnectorTests {
 		etrice.setModellibFolder(
 			workspaceFolder + File::separator +
 			MODELLIB_PROJECT + File::separator +
-			"models"
+			"model"
 		)
 
 		val fmodel = fidlLoader.loadModel("model/org/franca/examples/example1.fidl")
