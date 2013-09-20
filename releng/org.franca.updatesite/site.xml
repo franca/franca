@@ -12,6 +12,12 @@
    <feature url="features/org.franca.dbus.feature.sdk_0.0.0.jar" id="org.franca.dbus.feature.sdk" version="0.0.0">
       <category name="franca"/>
    </feature>
+   <feature url="features/org.franca.etrice.feature_0.0.0.jar" id="org.franca.etrice.feature" version="0.0.0">
+      <category name="franca"/>
+   </feature>
+   <feature url="features/org.franca.etrice.feature.sdk_0.0.0.jar" id="org.franca.etrice.feature.sdk" version="0.0.0">
+      <category name="franca"/>
+   </feature>
    <feature url="features/org.franca.ui.feature_0.0.0.jar" id="org.franca.ui.feature" version="0.0.0">
       <category name="franca"/>
    </feature>
