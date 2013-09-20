@@ -3,7 +3,7 @@
 import "IPBasedIPC.fdepl"
 
 // import Franca interfaces we need to reference (as a default) 
-import "classpath:/org/example/idl/Controller.fidl"
+import "platform:/resource/org.franca.examples.deploy/models/org/example/idl/Controller.fidl"
 
 
 /**
@@ -31,5 +31,9 @@ specification org.example.spec.SampleDeploySpec
 	
 	for interfaces {
 		Master:        Interface (default: &org.example.idl.Controller);
+	}
+	
+	for instances {
+		Alias :    String;
 	}
 }

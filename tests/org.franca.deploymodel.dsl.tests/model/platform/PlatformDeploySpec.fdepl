@@ -1,0 +1,12 @@
+
+/**
+ * This is a deployment specification which will be provided by the
+ * platform import mechanism.
+ */
+specification org.example.spec.PlatformDeploySpec
+{
+	for providers {
+		/** interface providers will have some process name */
+		ProcessName:     String;
+	}
+}
