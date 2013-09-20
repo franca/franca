@@ -24,9 +24,9 @@ class BehaviourAwareCollectTransitionsStrategy implements CollectTransitionsStra
 	}
 	
 	override public Collection<Pair<FTransition, Iterable<EventData>>> execute(Trace currentTrace) {
-		if (currentTrace.currentState.name.equals("ReqCancel")) {
-			println
-		}
+//		if (currentTrace.currentState.name.equals("ReqCancel")) {
+//			println
+//		}
 		val Collection<Pair<FTransition, Iterable<EventData>>> result = newArrayList
 		for (transition : currentTrace.currentState.transitions) {
 			val Iterable<EventData> possibleEvents = check(currentTrace, transition)
