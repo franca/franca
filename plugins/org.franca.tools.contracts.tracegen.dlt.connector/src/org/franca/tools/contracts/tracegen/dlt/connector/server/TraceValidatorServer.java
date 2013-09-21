@@ -7,15 +7,23 @@ import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import org.franca.tools.contracts.tracegen.dlt.connector.TraceElementProcessor;
+import org.franca.tools.contracts.tracegen.dlt.connector.TraceElementRequest;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+
 public class TraceValidatorServer extends Thread {
 
 	private static int port = 1234;
 	private volatile boolean interrupted;
-
+	private Gson gson;
+	
 	public TraceValidatorServer() {
 		this.interrupted = false;
 		this.setName("Trace listener server thread");
 		this.start();
+		this.gson = new Gson();
 	}
 
 	@Override
@@ -39,6 +47,13 @@ public class TraceValidatorServer extends Thread {
 						String data = null;
 						
 						while ((data = bufferedReader.readLine()) != null) {
+							try {
+								TraceElementRequest request = gson.fromJson(data, TraceElementRequest.class);
+								TraceElementProcessor.INSTANCE.addRequest(request);
+							}
+							catch (JsonSyntaxException e) {
+								//ignore malformed requests
+							}
 							System.out.println(data);
 						}
 					}
