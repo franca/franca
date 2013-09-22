@@ -57,11 +57,11 @@ public class TraceValidationTests {
 	/**
 	 * These are on-the-fly trace tests with generated traces.
 	 */
-	//@Test
+	@Test
 	public void generatedTraceValidationTest() {
 		for (String resourcePath : Lists.newArrayList(
-				"resources/contracts/reference.fidl" 
-				//"resources/contracts/test1.fidl"
+				"resources/contracts/reference.fidl", 
+				"resources/contracts/test1.fidl"
 				)) {
 			FModel model = loader.loadModel(resourcePath);
 
@@ -79,7 +79,7 @@ public class TraceValidationTests {
 
 			for (BehaviourAwareTrace trace : traces) {
 				assertTrue(TraceValidator.isValidTrace(contract,
-						trace.toEventList()));
+						trace.toEventList()).valid);
 			}
 		}
 	}
@@ -101,7 +101,7 @@ public class TraceValidationTests {
 			InputStream inputStream = null;
 			try {
 				inputStream = url.openStream();
-				assertEquals(TraceValidator.isValidTrace(contract, traceParser.parseTrace(model, inputStream)), data.get(key));
+				assertEquals(TraceValidator.isValidTrace(contract, traceParser.parseTrace(model, inputStream)).valid, data.get(key));
 			} catch (IOException e) {
 				e.printStackTrace();
 				fail(e.getMessage());

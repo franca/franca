@@ -7,6 +7,7 @@
  *******************************************************************************/
 package org.franca.tools.contracts.validator;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -57,6 +58,8 @@ public class TraceValidator {
 		}
 		else {
 			Map<FEventOnIf, Set<FTransition>> guessMap = constructGuessMap(contract);
+			List<FEventOnIf> processedTrace = new ArrayList<FEventOnIf>();
+			processedTrace.add(trace.get(0));
 			
 			// one set inside the set corresponds to a given execution path (possible transition along one path)
 			// it always holds that the starting state of the transitions inside a set is the same
@@ -80,6 +83,7 @@ public class TraceValidator {
 			traceGroups.add((initialTransitions == null) ? guessMap.get(trace.get(0)) : initialTransitions);
 
 			for (int i = 1; i < trace.size(); i++) {
+				processedTrace.add(trace.get(i));
 				Set<FTransition> guess = guessMap.get(trace.get(i));
 
 				// check whether we can follow the execution on any path
@@ -102,7 +106,7 @@ public class TraceValidator {
 				// element, it is not possible to follow further the execution
 				// steps
 				if (temporaryTraceGroups.isEmpty()) {
-					return new TraceValidationResult(false, guess);
+					return new TraceValidationResult(false, guess, processedTrace);
 				}
 				// Swap between temporary and actual groups
 				Set<Set<FTransition>> tmp = temporaryTraceGroups;
