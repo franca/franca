@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 itemis AG (http://www.itemis.de).
+ * Copyright (c) 2013 itemis AG (http://www.itemis.de).
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,15 +30,30 @@ public class TraceValidator {
 
 	/**
 	 * Checks whether the given trace can be matched for the given Franca {@link FContract}.
-	 * It is not necessary for the trace to start at the initial state of the {@link FContract}. 
+	 * It is not necessary for the trace to start at the initial state of the {@link FContract}.
+	 * It is equivalent to calling {@link #isValidTrace(FContract, List, null)}.
 	 * 
 	 * @param contract the contract that defines the state machine
-	 * @param trace the saved trace
-	 * @return true if the trace is valid for the contract, false otherwise
+	 * @param trace the saved trace as a list of events
+	 * @return the validation result
 	 */
-	public static boolean isValidTrace(FContract contract, List<FEventOnIf> trace) {
+	public static TraceValidationResult isValidTrace(FContract contract, List<FEventOnIf> trace) {
+		return isValidTrace(contract, trace, null);
+	}
+	
+	/**
+	 * Checks whether the given trace can be matched for the given Franca {@link FContract} 
+	 * where the initial set of transitions (for the first trace element) is also provided.
+	 * It is not necessary for the trace to start at the initial state of the {@link FContract}.
+	 * 
+	 * @param contract the contract that defines the state machine 
+	 * @param trace the saved trace as a list of events
+	 * @param initialTransitions the set of initial transitions
+	 * @return the validation result
+	 */
+	public static TraceValidationResult isValidTrace(FContract contract, List<FEventOnIf> trace, Set<FTransition> initialTransitions) {
 		if (trace.size() == 0) {
-			return true;
+			return TraceValidationResult.TRUE;
 		}
 		else {
 			Map<FEventOnIf, Set<FTransition>> guessMap = constructGuessMap(contract);
@@ -47,17 +62,22 @@ public class TraceValidator {
 			// it always holds that the starting state of the transitions inside a set is the same
 			Set<Set<FTransition>> traceGroups = new HashSet<Set<FTransition>>();
 			
-			// to store the trace groups temporarily for the next trace element
+			// to store the trace groups temporarily for the next trace element 
+			// the elements correspond to different elements of paths but on the same level 
 			Set<Set<FTransition>> temporaryTraceGroups = new HashSet<Set<FTransition>>();
 			
-			// the initial guess for the first event
-			Set<FTransition> initialGuess = guessMap.get(trace.get(0));
-			
 			if (trace.size() == 1) {
-				return (initialGuess.size() > 0);
+				if (initialTransitions == null) {
+					return (guessMap.get(trace.get(0)).size() > 0) ? 
+							TraceValidationResult.TRUE : TraceValidationResult.FALSE;					
+				}
+				else {
+					return (intersection(guessMap.get(trace.get(0)), initialTransitions).size() > 0) ? 
+							TraceValidationResult.TRUE : TraceValidationResult.FALSE;	
+				}
 			}
 			
-			traceGroups.add(initialGuess);
+			traceGroups.add((initialTransitions == null) ? guessMap.get(trace.get(0)) : initialTransitions);
 
 			for (int i = 1; i < trace.size(); i++) {
 				Set<FTransition> guess = guessMap.get(trace.get(i));
@@ -67,6 +87,9 @@ public class TraceValidator {
 				while (iterator.hasNext()) {
 					for (FTransition t : iterator.next()) {
 						Set<FTransition> isect = intersection(t.getTo().getTransitions(), guess);
+						
+						// only add the new element if it contains at least one element
+						// empty set indicates that the path cannot be followed
 						if (!isect.isEmpty()) {
 							temporaryTraceGroups.add(isect);
 						}
@@ -79,7 +102,7 @@ public class TraceValidator {
 				// element, it is not possible to follow further the execution
 				// steps
 				if (temporaryTraceGroups.isEmpty()) {
-					return false;
+					return new TraceValidationResult(false, guess);
 				}
 				// Swap between temporary and actual groups
 				Set<Set<FTransition>> tmp = temporaryTraceGroups;
@@ -88,7 +111,7 @@ public class TraceValidator {
 			}
 
 			// if we reached this statement then the trace is a valid one
-			return true;
+			return TraceValidationResult.TRUE;
 		}
 	}
 	
