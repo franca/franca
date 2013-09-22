@@ -19,6 +19,8 @@ import org.franca.core.franca.FEventOnIf;
 import org.franca.core.franca.FState;
 import org.franca.core.franca.FTransition;
 
+import com.google.common.collect.Sets;
+
 /**
  * This utility class contains methods to check whether a given trace matches a Franca {@link FContract}.
  * 
@@ -53,20 +55,19 @@ public class TraceValidator {
 	
 	/**
 	 * Checks whether the given trace can be matched for the given Franca {@link FContract} 
-	 * where the initial set of transitions (for the first trace element) is also provided.
+	 * where the initial set of trace groups (for the first trace element) is also provided.
 	 * It is not necessary for the trace to start at the initial state of the {@link FContract}.
 	 * 
 	 * @param contract the contract that defines the state machine 
 	 * @param trace the saved trace as a list of events
-	 * @param initialTransitions the set of initial transitions
+	 * @param initialTraceGroup the set of initial trace groups
 	 * @return the validation result
 	 */
-	public static TraceValidationResult isValidTrace(FContract contract, List<Set<FEventOnIf>> trace, Set<FTransition> initialTransitions) {
-		return isValidTrace(contract, trace, initialTransitions);
+	public static TraceValidationResult isValidTrace(FContract contract, List<Set<FEventOnIf>> trace, Set<Set<FTransition>> initialTraceGroup) {
+		return isValidTrace(contract, trace, initialTraceGroup);
 	}
 	
-	@SuppressWarnings("unchecked")
-	private static TraceValidationResult isValidTrace0(FContract contract, List<? extends Object> trace, Set<FTransition> initialTransitions) {
+	private static TraceValidationResult isValidTrace0(FContract contract, List<? extends Object> trace, Set<Set<FTransition>> initialTraceGroup) {
 		if (trace.size() == 0) {
 			return TraceValidationResult.TRUE;
 		}
@@ -81,50 +82,51 @@ public class TraceValidator {
 			// the elements correspond to different elements of paths but on the same level 
 			Set<Set<FTransition>> temporaryTraceGroups = new HashSet<Set<FTransition>>();
 			
+			Set<FTransition> expected = new HashSet<FTransition>();
+			
 			if (trace.size() == 1) {
-				if (initialTransitions == null) {
-					return (guessMap.get(trace.get(0)).size() > 0) ? 
-							TraceValidationResult.TRUE : new TraceValidationResult(false, 0);					
+				Set<FEventOnIf> events = normalizeEvents(trace.get(0));
+				if (initialTraceGroup == null) {
+					for (FEventOnIf event : events) {
+						traceGroups.add(guessMap.get(event));
+					}
+					// if the trace contains only one element, the trace is always valid (suppose that the trace belongs the the contract)
+					return new TraceValidationResult(true, traceGroups);					
 				}
 				else {
-					return (intersection(guessMap.get(trace.get(0)), initialTransitions).size() > 0) ? 
-							TraceValidationResult.TRUE : new TraceValidationResult(false, 0);	
+					for (FEventOnIf event : events) {
+						fun0(event, guessMap, new HashSet<FTransition>(), initialTraceGroup, temporaryTraceGroups);
+					}
+					if (temporaryTraceGroups.isEmpty()) {
+						return new TraceValidationResult(true, temporaryTraceGroups);
+					}
+					else {
+						return new TraceValidationResult(false, expected, 0, temporaryTraceGroups);
+					}
 				}
 			}
 			
 			// initialize trace groups
-			if (initialTransitions == null) {
-				Object obj = trace.get(0);
-				if (obj instanceof FEventOnIf) {
-					traceGroups.add(guessMap.get(obj));
-				}
-				else if (obj instanceof Set<?>) {
-					for (FEventOnIf event : (Set<FEventOnIf>) obj) {
-						traceGroups.add(guessMap.get(event));
-					}					
+			if (initialTraceGroup == null) {
+				for (FEventOnIf event : normalizeEvents(trace.get(0))) {
+					traceGroups.add(guessMap.get(event));					
 				}
 			}
 			else {
-				traceGroups.add(initialTransitions);
+				traceGroups.addAll(initialTraceGroup);
 			}
 
 			for (int i = 1; i < trace.size(); i++) {
-				Set<FTransition> expected = new HashSet<FTransition>();
-				Object obj = trace.get(i);
-				if (obj instanceof FEventOnIf) {
-					fun0((FEventOnIf) obj, guessMap, traceGroups, temporaryTraceGroups, expected);
-				}
-				else if (obj instanceof Set<?>) {
-					for (FEventOnIf event : (Set<FEventOnIf>) trace.get(i)) {
-						fun0(event, guessMap, traceGroups, temporaryTraceGroups, expected);
-					}					
+				expected.clear();
+				for (FEventOnIf event : normalizeEvents(trace.get(i))) {
+					fun0(event, guessMap, expected, traceGroups, temporaryTraceGroups);
 				}
 				
 				// No transition can be found that matches the actual trace
 				// element, it is not possible to follow further the execution
 				// steps
 				if (temporaryTraceGroups.isEmpty()) {
-					return new TraceValidationResult(false, expected, i);
+					return new TraceValidationResult(false, expected, i, null);
 				}
 				
 				// Swap between temporary and actual groups
@@ -134,17 +136,17 @@ public class TraceValidator {
 			}
 
 			// if we reached this statement then the trace is a valid one
-			return TraceValidationResult.TRUE;
+			return new TraceValidationResult(true, traceGroups);
 		}
 	}
 	
 	private static void fun0(
 			FEventOnIf event, 
-			Map<FEventOnIf, 
-			Set<FTransition>> guessMap, 
-			Set<Set<FTransition>> traceGroups, Set<Set<FTransition>> temporaryTraceGroups,
-			Set<FTransition> expected
-	) {
+			Map<FEventOnIf, Set<FTransition>> guessMap, 
+			Set<FTransition> expected, 
+			Set<Set<FTransition>> traceGroups, 
+			Set<Set<FTransition>> temporaryTraceGroups
+		) {
 		Set<FTransition> guess = guessMap.get(event);
 		expected.addAll(guess);
 		// check whether we can follow the execution on any path
@@ -157,6 +159,17 @@ public class TraceValidator {
 					temporaryTraceGroups.add(isect);
 				}
 			}						
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	private static Set<FEventOnIf> normalizeEvents(Object obj) {
+		if (obj instanceof FEventOnIf) {
+			return Sets.newHashSet((FEventOnIf) obj);
+		}
+		else {
+			// it is guaranteed that in this case the type is Set<FEventOnIf>
+			return (Set<FEventOnIf>) obj;
 		}
 	}
 	
