@@ -12,15 +12,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.franca.core.franca.FEventOnIf;
 import org.franca.core.franca.FInterface;
 import org.franca.core.franca.FModel;
 import org.franca.core.franca.FState;
 import org.franca.core.franca.FTransition;
+
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 
 /**
  * The default trace parser can be used to parse traces from streams which were
@@ -37,10 +43,13 @@ public class DefaultTraceParser implements ITraceParser {
 		CALL, RESPOND, SIGNAL
 	}
 	
-	private Map<EventType, Map<String, FEventOnIf>> initialize(FModel model) {
-		Map<EventType, Map<String, FEventOnIf>> eventMap = new HashMap<DefaultTraceParser.EventType, Map<String,FEventOnIf>>();
+	Map<EventType, Multimap<String, FEventOnIf>> eventMap = null;
+	
+	private Map<EventType, Multimap<String, FEventOnIf>> initialize(FModel model) {
+		Map<EventType, Multimap<String, FEventOnIf>> eventMap = new HashMap<DefaultTraceParser.EventType, Multimap<String,FEventOnIf>>();
 		for (EventType type : EventType.values()) {
-			eventMap.put(type, new HashMap<String, FEventOnIf>());			
+			Multimap<String, FEventOnIf> map = ArrayListMultimap.create();
+			eventMap.put(type, map);			
 		}
 		
 		for (FInterface _interface : model.getInterfaces()) {
@@ -66,21 +75,20 @@ public class DefaultTraceParser implements ITraceParser {
 	}
 
 	@Override
-	public List<FEventOnIf> parseTrace(FModel model, InputStream inputStream) {
-		Map<EventType, Map<String, FEventOnIf>> eventMap = initialize(model);
+	public List<Set<FEventOnIf>> parseAll(FModel model, InputStream inputStream) {
+		if (eventMap == null) {
+			eventMap = initialize(model);
+		}
 
 		InputStreamReader streamReader = null;
 		BufferedReader bufferedReader = null;
-		List<FEventOnIf> trace = new ArrayList<FEventOnIf>();
+		List<Set<FEventOnIf>> trace = new ArrayList<Set<FEventOnIf>>();
 		try {
 			streamReader = new InputStreamReader(inputStream);
 			bufferedReader = new BufferedReader(streamReader);
 			String line = null;
 			while ((line = bufferedReader.readLine()) != null) {
-				String[] tokens = line.split("_");
-				if (tokens.length == 2) {
-					trace.add(eventMap.get(EventType.valueOf(tokens[0].toUpperCase())).get(tokens[1]));
-				}
+				trace.add(parseSingle(model, line));
 			}
 			return trace;
 		} catch (IOException e) {
@@ -100,6 +108,20 @@ public class DefaultTraceParser implements ITraceParser {
 					e.printStackTrace();
 				}
 			}
+		}
+		return null;
+	}
+
+	@Override
+	public Set<FEventOnIf> parseSingle(FModel model, String traceElement) {
+		if (eventMap == null) {
+			eventMap = initialize(model); 
+		}
+		Set<FEventOnIf> events = new HashSet<FEventOnIf>();
+		String[] tokens = traceElement.split("_");
+		if (tokens.length == 2) {
+			events.addAll(eventMap.get(EventType.valueOf(tokens[0].toUpperCase())).get(tokens[1]));
+			return Collections.unmodifiableSet(events);
 		}
 		return null;
 	}

@@ -12,3 +12,4 @@ Require-Bundle: org.franca.core;bundle-version="0.8.8",
  com.google.inject;bundle-version="3.0.0"
 Export-Package: org.franca.tools.contracts.validator,
  org.franca.tools.contracts.validator.parser
+Import-Package: com.google.common.collect
