@@ -32,6 +32,7 @@ import org.franca.core.franca.FState;
 import org.franca.tools.contracts.tracegen.TraceGenerator;
 import org.franca.tools.contracts.tracegen.strategies.BahaviourAwareStrategyCollection;
 import org.franca.tools.contracts.tracegen.traces.BehaviourAwareTrace;
+import org.franca.tools.contracts.validator.TraceValidationResult;
 import org.franca.tools.contracts.validator.TraceValidator;
 import org.franca.tools.contracts.validator.parser.ITraceParser;
 import org.junit.Test;
@@ -78,8 +79,7 @@ public class TraceValidationTests {
 					.simulate(initial);
 
 			for (BehaviourAwareTrace trace : traces) {
-				assertTrue(TraceValidator.isValidTrace(contract,
-						trace.toEventList()).valid);
+				assertTrue(TraceValidator.isValidTracePure(contract, trace.toEventList()).valid);
 			}
 		}
 	}
@@ -101,7 +101,9 @@ public class TraceValidationTests {
 			InputStream inputStream = null;
 			try {
 				inputStream = url.openStream();
-				assertEquals(TraceValidator.isValidTrace(contract, traceParser.parseTrace(model, inputStream)).valid, data.get(key));
+				TraceValidationResult result = TraceValidator.isValidTrace(contract, traceParser.parseAll(model, inputStream));
+				System.out.println(result.traceElementIndex);
+				assertEquals(result.valid, data.get(key));
 			} catch (IOException e) {
 				e.printStackTrace();
 				fail(e.getMessage());
@@ -123,8 +125,9 @@ public class TraceValidationTests {
 	 */
 	private Map<String, Boolean> getDefaultTestData() {
 		Map<String, Boolean> data = new HashMap<String, Boolean>();
-		data.put("/resources/traces/test1.trace", true);
-		data.put("/resources/traces/test2.trace", false);
+		data.put("/resources/traces/test1_fail.trace", false);
+		data.put("/resources/traces/test2_success.trace", true);
+		data.put("/resources/traces/test3_fail.trace", false);
 		return data;
 	}
 
