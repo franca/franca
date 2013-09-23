@@ -8,6 +8,7 @@
 package org.franca.tools.contracts.validator;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -64,7 +65,7 @@ public class TraceValidator {
 	 * @return the validation result
 	 */
 	public static TraceValidationResult isValidTrace(FContract contract, List<Set<FEventOnIf>> trace, Set<Set<FTransition>> initialTraceGroup) {
-		return isValidTrace(contract, trace, initialTraceGroup);
+		return isValidTrace0(contract, trace, initialTraceGroup);
 	}
 	
 	private static TraceValidationResult isValidTrace0(FContract contract, List<? extends Object> trace, Set<Set<FTransition>> initialTraceGroup) {
@@ -98,10 +99,10 @@ public class TraceValidator {
 						fun0(event, guessMap, new HashSet<FTransition>(), initialTraceGroup, temporaryTraceGroups);
 					}
 					if (temporaryTraceGroups.isEmpty()) {
-						return new TraceValidationResult(true, temporaryTraceGroups);
+						return new TraceValidationResult(false, expected, 0, temporaryTraceGroups);
 					}
 					else {
-						return new TraceValidationResult(false, expected, 0, temporaryTraceGroups);
+						return new TraceValidationResult(true, temporaryTraceGroups);
 					}
 				}
 			}
@@ -179,6 +180,8 @@ public class TraceValidator {
 		return result;
 	}
 	
+	private static Map<FContract, Map<FEventOnIf, Set<FTransition>>> guessMapCache = new HashMap<FContract, Map<FEventOnIf,Set<FTransition>>>();
+	
 	/**
 	 * Returns a map where the keys will be the events and the values are those transitions 
 	 * which can be triggered by the given event.
@@ -187,23 +190,25 @@ public class TraceValidator {
 	 * @return the a map projecting the events to the triggered transitions
 	 */
 	private static Map<FEventOnIf, Set<FTransition>> constructGuessMap(FContract contract) {
-		Map<FEventOnIf, Set<FTransition>> guessMap = new WeakHashMap<FEventOnIf, Set<FTransition>>();
-		
-		for (FState state : contract.getStateGraph().getStates()) {
-			for (FTransition transition : state.getTransitions()) {
-				FEventOnIf key = transition.getTrigger().getEvent();
-				//String key = getCallName(transition);
-				if (guessMap.get(key) == null) {
-					Set<FTransition> transitions = new HashSet<FTransition>();
-					transitions.add(transition);
-					guessMap.put(key, transitions);
-				}
-				else {
-					guessMap.get(key).add(transition);
+		if (!guessMapCache.containsKey(contract)) {
+			Map<FEventOnIf, Set<FTransition>> guessMap = new WeakHashMap<FEventOnIf, Set<FTransition>>();
+			
+			for (FState state : contract.getStateGraph().getStates()) {
+				for (FTransition transition : state.getTransitions()) {
+					FEventOnIf key = transition.getTrigger().getEvent();
+					//String key = getCallName(transition);
+					if (guessMap.get(key) == null) {
+						Set<FTransition> transitions = new HashSet<FTransition>();
+						transitions.add(transition);
+						guessMap.put(key, transitions);
+					}
+					else {
+						guessMap.get(key).add(transition);
+					}
 				}
 			}
+			guessMapCache.put(contract, guessMap);
 		}
-		
-		return guessMap;
+		return guessMapCache.get(contract);
 	}
 }
