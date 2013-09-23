@@ -60,19 +60,43 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 	@Check
 	public void checkAnonymousTypeCollections(FModel model) {
 		int count = 0;
+		FTypeCollection anon = null;
 		for (FTypeCollection coll : model.getTypeCollections()) {
-			if (coll.getName() == null || coll.getName().isEmpty()) {
+			if (isAnonymous(coll)) {
+				anon = coll;
 				count++;
 			}
 		}
 		
 		if (count > 1) {
-			this.reportError(
+			error(
 					"There can be only one anonymous type collection in a *.fidl file!", 
 					model, 
 					FrancaPackage.Literals.FMODEL__NAME
 				);
 		}
+		
+		if (anon!=null) {
+			// check against imported type collections
+			ImportedModelInfo imported = FrancaModelExtensions.getAllImportedModels(model);
+			for(FModel m : imported.getImportedModels()) {
+				if (m.getName().equals(model.getName())) {
+					for(FTypeCollection tc : m.getTypeCollections()) {
+						if (isAnonymous(tc)) {
+							error("Another anonymous type collection in same package is imported via " +
+										imported.getViaString(m.eResource()),
+									model,
+									FrancaPackage.Literals.FMODEL__NAME);
+							return;
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	private boolean isAnonymous (FTypeCollection tc) {
+		return tc.getName()==null || tc.getName().isEmpty();
 	}
 	
 	@Check
@@ -121,7 +145,7 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 						error("Type collection name collides with imported type collection " +
 								"(imported via " + imported.getViaString(m.eResource()) + ")",
 								tc0,
-								FrancaPackage.Literals.FMODEL_ELEMENT__NAME, -1);
+								FrancaPackage.Literals.FMODEL_ELEMENT__NAME);
 					}
 				}
 			}
@@ -149,7 +173,7 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 						error("Interface name collides with imported interface " +
 								"(imported via " + imported.getViaString(m.eResource()) + ")",
 								i0,
-								FrancaPackage.Literals.FMODEL_ELEMENT__NAME, -1);
+								FrancaPackage.Literals.FMODEL_ELEMENT__NAME);
 					}
 				}
 			}
