@@ -2,23 +2,41 @@ package org.franca.tools.contracts.tracegen.dlt.connector;
 
 public class TraceElementResponse {
 
-	private int messageIndex;
-	private boolean valid;
+	private int messageId;
+	// changed from boolean to int because of the QT JSON parser
+	private int valid;
+	private String contextId;
 	private String data;
-
-	public int getMessageIndex() {
-		return messageIndex;
+	
+	public TraceElementResponse(int messageId, boolean valid, String contextId, String data) {
+		super();
+		this.messageId = messageId;
+		this.valid = (valid) ? 0 : 1;
+		this.data = data;
+		this.contextId = contextId;
+	}
+	
+	public String getContextId() {
+		return contextId;
 	}
 
-	public void setMessageIndex(int messageIndex) {
-		this.messageIndex = messageIndex;
+	public void setContextId(String contextId) {
+		this.contextId = contextId;
+	}
+	
+	public int getMessageId() {
+		return messageId;
 	}
 
-	public boolean isValid() {
+	public void setMessageId(int messageId) {
+		this.messageId = messageId;
+	}
+
+	public int getValid() {
 		return valid;
 	}
-
-	public void setValid(boolean valid) {
+	
+	public void setValid(int valid) {
 		this.valid = valid;
 	}
 

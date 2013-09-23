@@ -7,7 +7,6 @@ import org.osgi.framework.BundleContext;
 public class Activator implements BundleActivator {
 
 	private static BundleContext context;
-	private TraceValidatorServer server;
 	
 	static BundleContext getContext() {
 		return context;
@@ -15,12 +14,14 @@ public class Activator implements BundleActivator {
 
 	public void start(BundleContext bundleContext) throws Exception {
 		Activator.context = bundleContext;
-		this.server = new TraceValidatorServer();
+		TraceElementProcessor.INSTANCE.start();
+		TraceValidatorServer.INSTANCE.start();
 	}
 
 	public void stop(BundleContext bundleContext) throws Exception {		
 		Activator.context = null;
-		this.server.interruptServer();
+		TraceValidatorServer.INSTANCE.interruptThread();
+		TraceElementProcessor.INSTANCE.interruptThread();
 	}
 }
 

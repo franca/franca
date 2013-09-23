@@ -11,4 +11,9 @@ Bundle-ClassPath: .,
  lib/gson-2.2.4-javadoc.jar,
  lib/gson-2.2.4.jar
 Export-Package: org.franca.tools.contracts.tracegen.dlt.connector
-Require-Bundle: org.franca.tools.contracts.validator;bundle-version="0.8.8"
+Require-Bundle: org.franca.tools.contracts.validator;bundle-version="0.8.8",
+ org.franca.core;bundle-version="0.8.9",
+ org.eclipse.xtext;bundle-version="2.4.2",
+ org.franca.core.dsl;bundle-version="0.8.9",
+ org.eclipse.xtext.xbase.lib;bundle-version="2.4.2",
+ org.eclipse.xtext.xbase;bundle-version="2.4.2"

@@ -18,11 +18,11 @@ public class TraceValidatorServer extends Thread {
 	private static int port = 1234;
 	private volatile boolean interrupted;
 	private Gson gson;
+	public static final TraceValidatorServer INSTANCE = new TraceValidatorServer();
 	
-	public TraceValidatorServer() {
+	private TraceValidatorServer() {
 		this.interrupted = false;
 		this.setName("Trace listener server thread");
-		this.start();
 		this.gson = new Gson();
 	}
 
@@ -47,6 +47,7 @@ public class TraceValidatorServer extends Thread {
 						String data = null;
 						
 						while ((data = bufferedReader.readLine()) != null) {
+							System.out.println(data);
 							try {
 								TraceElementRequest request = gson.fromJson(data, TraceElementRequest.class);
 								TraceElementProcessor.INSTANCE.addRequest(request);
@@ -54,7 +55,6 @@ public class TraceValidatorServer extends Thread {
 							catch (JsonSyntaxException e) {
 								//ignore malformed requests
 							}
-							System.out.println(data);
 						}
 					}
 					
@@ -87,7 +87,7 @@ public class TraceValidatorServer extends Thread {
 
 	}
 
-	public void interruptServer() {
+	public void interruptThread() {
 		this.interrupted = true;
 	}
 
