@@ -15,9 +15,12 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
@@ -27,8 +30,10 @@ import org.eclipse.xtext.junit4.XtextRunner;
 import org.franca.core.dsl.FrancaIDLInjectorProvider;
 import org.franca.core.dsl.FrancaPersistenceManager;
 import org.franca.core.franca.FContract;
+import org.franca.core.franca.FEventOnIf;
 import org.franca.core.franca.FModel;
 import org.franca.core.franca.FState;
+import org.franca.core.franca.FTransition;
 import org.franca.tools.contracts.tracegen.TraceGenerator;
 import org.franca.tools.contracts.tracegen.strategies.BahaviourAwareStrategyCollection;
 import org.franca.tools.contracts.tracegen.traces.BehaviourAwareTrace;
@@ -84,11 +89,32 @@ public class TraceValidationTests {
 		}
 	}
 	
+	@Test
+	public void stepTraceValidationTest() {
+		FModel model = loader.loadModel("resources/contracts/test1.fidl");
+		String[] lines = new String[] {"respond_m1", "call_m3", "call_m2"};
+		
+		assertNotNull(model);
+		assertTrue(!model.getInterfaces().isEmpty());
+		assertNotNull(model.getInterfaces().get(0).getContract());
+
+		FContract contract = model.getInterfaces().get(0).getContract();
+		Set<Set<FTransition>> traceGroup = null;
+		List<Set<FEventOnIf>> trace = new ArrayList<Set<FEventOnIf>>();
+		for (String traceElement : lines) {
+			trace.clear();
+			trace.add(traceParser.parseSingle(model, traceElement));
+			TraceValidationResult result = TraceValidator.isValidTrace(contract, trace, traceGroup);
+			assertTrue(result.valid);
+			traceGroup = result.lastTraceGroup;
+		}
+	}
+	
 	/**
 	 * These are simple trace tests with serialized trace files.
 	 */
 	@Test
-	public void defaultTraceTest() {
+	public void simpleTraceValidationTest() {
 		FModel model = loader.loadModel("resources/contracts/test1.fidl");
 		Bundle bundle = Platform.getBundle(bundleName);
 		Map<String, Boolean> data = getDefaultTestData();
@@ -102,7 +128,6 @@ public class TraceValidationTests {
 			try {
 				inputStream = url.openStream();
 				TraceValidationResult result = TraceValidator.isValidTrace(contract, traceParser.parseAll(model, inputStream));
-				System.out.println(result.traceElementIndex);
 				assertEquals(result.valid, data.get(key));
 			} catch (IOException e) {
 				e.printStackTrace();
