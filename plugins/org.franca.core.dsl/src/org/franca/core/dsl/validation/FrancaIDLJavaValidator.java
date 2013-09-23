@@ -12,9 +12,12 @@ import java.util.Map;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.xtext.naming.IQualifiedNameProvider;
+import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.validation.Check;
 import org.eclipse.xtext.validation.ValidationMessageAcceptor;
 import org.franca.core.FrancaModelExtensions;
+import org.franca.core.ImportedModelInfo;
 import org.franca.core.dsl.validation.internal.ContractValidator;
 import org.franca.core.dsl.validation.internal.CyclicDependenciesValidator;
 import org.franca.core.dsl.validation.internal.NameProvider;
@@ -48,6 +51,8 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 	@Inject
 	protected CyclicDependenciesValidator cyclicDependenciesValidator; 
 	
+	@Inject IQualifiedNameProvider qnProvider;
+
 	FrancaIDLJavaValidator() {
 		ValidationHelpers.setNameProvider(this);
 	}
@@ -97,16 +102,58 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 
 	@Check
 	public void checkTypeCollectionNamesUnique(FModel model) {
+		if (model.getTypeCollections().isEmpty())
+			return;
+
+		// check local type collections
 		ValidationHelpers.checkDuplicates(this, model.getTypeCollections(),
 				FrancaPackage.Literals.FMODEL_ELEMENT__NAME,
 				"type collection name");
+
+		// check against imported type collections
+		ImportedModelInfo imported = FrancaModelExtensions.getAllImportedModels(model);
+		for(FModel m : imported.getImportedModels()) {
+			for(FTypeCollection tc : m.getTypeCollections()) {
+				QualifiedName qn = qnProvider.getFullyQualifiedName(tc);
+				for(FTypeCollection tc0 : model.getTypeCollections()) {
+					QualifiedName qn0 = qnProvider.getFullyQualifiedName(tc0);
+					if (qn.equals(qn0)) {
+						error("Type collection name collides with imported type collection " +
+								"(imported via " + imported.getViaString(m.eResource()) + ")",
+								tc0,
+								FrancaPackage.Literals.FMODEL_ELEMENT__NAME, -1);
+					}
+				}
+			}
+		}
 	}
 
 	@Check
 	public void checkInterfaceNamesUnique(FModel model) {
+		if (model.getInterfaces().isEmpty())
+			return;
+
+		// check local interfaces
 		ValidationHelpers.checkDuplicates(this, model.getInterfaces(),
 				FrancaPackage.Literals.FMODEL_ELEMENT__NAME,
 				"interface name");
+
+		// check against imported interfaces
+		ImportedModelInfo imported = FrancaModelExtensions.getAllImportedModels(model);
+		for(FModel m : imported.getImportedModels()) {
+			for(FInterface i : m.getInterfaces()) {
+				QualifiedName qn = qnProvider.getFullyQualifiedName(i);
+				for(FInterface i0 : model.getInterfaces()) {
+					QualifiedName qn0 = qnProvider.getFullyQualifiedName(i0);
+					if (qn.equals(qn0)) {
+						error("Interface name collides with imported interface " +
+								"(imported via " + imported.getViaString(m.eResource()) + ")",
+								i0,
+								FrancaPackage.Literals.FMODEL_ELEMENT__NAME, -1);
+					}
+				}
+			}
+		}
 	}
 
 	@Check
