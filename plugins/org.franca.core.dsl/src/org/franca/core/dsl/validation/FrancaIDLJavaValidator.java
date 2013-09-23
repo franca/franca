@@ -103,6 +103,13 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 	}
 
 	@Check
+	public void checkInterfaceNamesUnique(FModel model) {
+		ValidationHelpers.checkDuplicates(this, model.getInterfaces(),
+				FrancaPackage.Literals.FMODEL_ELEMENT__NAME,
+				"interface name");
+	}
+
+	@Check
 	public void checkTypeNamesUnique(FTypeCollection collection) {
 		ValidationHelpers.checkDuplicates(this, collection.getTypes(),
 				FrancaPackage.Literals.FMODEL_ELEMENT__NAME, "type name");

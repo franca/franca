@@ -6,9 +6,10 @@ Bundle-Version: 0.8.8
 Bundle-Vendor: Harman Infotainment Division
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.franca.core.utils.digraph,
- org.junit
-Require-Bundle: org.junit4;bundle-version="4.8.1",
- org.franca.core;bundle-version="0.8.8",
+ org.junit;version="4.5.0",
+ org.junit.runner;version="4.5.0",
+ org.junit.runners;version="4.5.0"
+Require-Bundle: org.franca.core;bundle-version="0.8.8",
  org.franca.core.dsl;bundle-version="0.8.8",
  org.franca.generators;bundle-version="0.8.8",
  org.eclipse.xtext.xbase.lib;bundle-version="2.3.1",
@@ -17,4 +18,3 @@ Require-Bundle: org.junit4;bundle-version="4.8.1",
  org.apache.log4j;bundle-version="1.2.15",
  org.eclipse.xtext.junit4;bundle-version="2.3.1",
  org.franca.core.dsl.tests.base;bundle-version="0.8.8"
-

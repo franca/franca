@@ -51,10 +51,10 @@ public class GenerateXMIHandler extends AbstractHandler {
 		
 		if (selection != null && selection instanceof IStructuredSelection && !selection.isEmpty()) {
 			IFile file = (IFile) ((IStructuredSelection) selection).getFirstElement();
-			String fidlFile = file.getLocationURI().toString();
+            URI uri = URI.createPlatformResourceURI(file.getFullPath().toString(), true);
 
-			@SuppressWarnings("deprecation")
-			FModel model = loader.loadModel(fidlFile);
+        	URI rootURI = URI.createURI("classpath:/");
+    		FModel model = loader.loadModel(uri, rootURI);
 			if (model != null) {
 				if (!validator.hasErrors(model.eResource())) {
 					ResourceSet resourceSet = new ResourceSetImpl();
