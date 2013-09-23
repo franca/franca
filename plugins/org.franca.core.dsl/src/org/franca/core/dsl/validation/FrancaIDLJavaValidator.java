@@ -130,22 +130,27 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 			return;
 
 		// check local type collections
-		ValidationHelpers.checkDuplicates(this, model.getTypeCollections(),
+		final Iterable<FTypeCollection> tcs = FrancaModelExtensions.getNamedTypedCollections(model);
+		ValidationHelpers.checkDuplicates(this, tcs,
 				FrancaPackage.Literals.FMODEL_ELEMENT__NAME,
 				"type collection name");
 
 		// check against imported type collections
 		ImportedModelInfo imported = FrancaModelExtensions.getAllImportedModels(model);
+		System.out.println("Check     " + model.eResource().getURI().toString());
 		for(FModel m : imported.getImportedModels()) {
+			System.out.println("  against " + m.eResource().getURI().toString());
 			for(FTypeCollection tc : m.getTypeCollections()) {
-				QualifiedName qn = qnProvider.getFullyQualifiedName(tc);
-				for(FTypeCollection tc0 : model.getTypeCollections()) {
-					QualifiedName qn0 = qnProvider.getFullyQualifiedName(tc0);
-					if (qn.equals(qn0)) {
-						error("Type collection name collides with imported type collection " +
-								"(imported via " + imported.getViaString(m.eResource()) + ")",
-								tc0,
-								FrancaPackage.Literals.FMODEL_ELEMENT__NAME);
+				if (! isAnonymous(tc)) {
+					QualifiedName qn = qnProvider.getFullyQualifiedName(tc);
+					for(FTypeCollection tc0 : tcs) {
+						QualifiedName qn0 = qnProvider.getFullyQualifiedName(tc0);
+						if (qn.equals(qn0)) {
+							error("Type collection name collides with imported type collection " +
+									"(imported via " + imported.getViaString(m.eResource()) + ")",
+									tc0,
+									FrancaPackage.Literals.FMODEL_ELEMENT__NAME);
+						}
 					}
 				}
 			}

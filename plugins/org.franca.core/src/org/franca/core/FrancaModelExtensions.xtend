@@ -20,6 +20,7 @@ import org.franca.core.franca.FModel
 import org.franca.core.franca.FStateGraph
 import org.franca.core.franca.FTypeCollection
 import org.franca.core.franca.Import
+import org.eclipse.core.runtime.CoreException
 
 class FrancaModelExtensions {
 	
@@ -58,6 +59,14 @@ class FrancaModelExtensions {
 
 
 	/**
+	 * Get all non-anonymous type collections of a model.
+	 */
+	 def static getNamedTypedCollections (FModel model) {
+	 	model.typeCollections.filter[name!=null && !name.empty]
+	 }
+
+
+	/**
 	 * Get all FModels which are imported by current model (transitively).
 	 */
 	def static getAllImportedModels (FModel model) {
@@ -73,29 +82,37 @@ class FrancaModelExtensions {
 				
 				val m = r.getFModel
 				if (m!=null) {
-					// add imported models to queue				
+					// add imported models to queue
 					for(imp : m.imports) {
 						val uri = imp.importURI
 						val importURI = URI::createURI(uri)
 						val resolvedURI = importURI.resolve(m.eResource.URI);
-						val res = rset.getResource(resolvedURI, true)
-						todo.add(res)
-						
-						// remember imported model
-						val importedModel = res.getFModel
-						if (importedModel!=null)
-							imported.add(importedModel)
+						try {
+							val res = rset.getResource(resolvedURI, true)
+							todo.add(res)
 							
-						// remember top-level import statement which lead to this import
-						if (! importedVia.containsKey(res))
-							importedVia.put(res, newHashSet)
-						if (m==model) {
-							importedVia.get(res).add(imp)
-						} else {
-							val via = importedVia.get(r)
-							importedVia.get(res).addAll(via)
+							// remember imported model
+							if (! visited.contains(res)) {
+								val importedModel = res.getFModel
+								if (importedModel!=null)
+									imported.add(importedModel)
+	
+								// remember top-level import statement which lead to this import
+								if (! importedVia.containsKey(res))
+									importedVia.put(res, newHashSet)
+								if (m==model) {
+									importedVia.get(res).add(imp)
+								} else {
+									val via = importedVia.get(r)
+									importedVia.get(res).addAll(via)
+								}
+							}
+						} catch (CoreException ex) {
+							// problem when loading the resource, ignore
+							println("WARNING: imported resource '" +
+								resolvedURI.toString + "' could not be loaded."
+							)
 						}
-						
 					}
 				}
 			}
