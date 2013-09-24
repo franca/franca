@@ -71,18 +71,52 @@ public class TraceElementProcessor extends Thread {
 					FModel model = (FModel) contract.eContainer().eContainer();
 					francaContractMap.put(request.getContextId(), contract);
 					Set<FEventOnIf> parsedEvents = traceParser.parseSingle(model, request.getTraceElement());
-					List<Set<FEventOnIf>> trace = new ArrayList<Set<FEventOnIf>>();
-					trace.add(parsedEvents);
-					TraceValidationResult result = TraceValidator.isValidTrace(contract, trace, initial);
-					contextTraceGroupMap.put(request.getContextId(), result.lastTraceGroup);
+					
+					TraceElementResponse response = new TraceElementResponse(request.getMessageId(), false, request.getContextId(), "");
+					if (parsedEvents != null) {
+						TraceValidationResult result = TraceValidator.isValidTrace(contract, parsedEvents, initial);
+						response.setValid(result.valid);
+						response.setData(prettyPrintExpectation(result.expected));
+						contextTraceGroupMap.put(request.getContextId(), result.lastTraceGroup);
+					}
+					// send respond even if the validation failed due to some reason
 					try {
-						TraceValidatorClient.send(new TraceElementResponse(request.getMessageId(), result.valid, request.getContextId(), ""));
+						System.out.println("Response: "+response);
+						TraceValidatorClient.send(response);
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
 				}				
 			}
 		}	
+	}
+	
+	private String prettyPrintExpectation(Set<FTransition> expected) {
+		if (expected == null) return "";
+			else {
+			StringBuilder sb = new StringBuilder();
+			
+			int i = 0;
+			for (FTransition t : expected) {
+				FEventOnIf event = t.getTrigger().getEvent();
+				if (event.getCall() != null) {
+					sb.append("call_"+event.getCall().getName());
+				}
+				else if (event.getRespond() != null) {
+					sb.append("call_"+event.getRespond().getName());
+				}
+				else if (event.getSignal() != null) {
+					sb.append("call_"+event.getSignal().getName());
+				}
+				
+				if (i < expected.size() - 1) {
+					sb.append(", ");
+				}
+				i++;
+			}
+			
+			return sb.toString();
+		}
 	}
 	
 	private FContract loadFrancaModel(String filePath) {

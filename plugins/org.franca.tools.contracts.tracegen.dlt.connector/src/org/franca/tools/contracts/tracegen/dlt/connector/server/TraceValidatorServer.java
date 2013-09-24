@@ -47,9 +47,9 @@ public class TraceValidatorServer extends Thread {
 						String data = null;
 						
 						while ((data = bufferedReader.readLine()) != null) {
-							System.out.println(data);
 							try {
 								TraceElementRequest request = gson.fromJson(data, TraceElementRequest.class);
+								System.out.println("Request: "+request);
 								TraceElementProcessor.INSTANCE.addRequest(request);
 							}
 							catch (JsonSyntaxException e) {

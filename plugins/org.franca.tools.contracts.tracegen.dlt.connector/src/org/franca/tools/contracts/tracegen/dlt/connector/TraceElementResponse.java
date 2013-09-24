@@ -36,8 +36,8 @@ public class TraceElementResponse {
 		return valid;
 	}
 	
-	public void setValid(int valid) {
-		this.valid = valid;
+	public void setValid(boolean valid) {
+		this.valid = valid ? 0 : 1;
 	}
 
 	public String getData() {
@@ -46,6 +46,11 @@ public class TraceElementResponse {
 
 	public void setData(String data) {
 		this.data = data;
+	}
+	
+	@Override
+	public String toString() {
+		return "[messageId: "+messageId+" valid: "+valid+" expected: "+data+"]";
 	}
 
 }

@@ -41,7 +41,7 @@ public class TraceElementRequest {
 
 	@Override
 	public String toString() {
-		return "messageId: "+messageId+" path: "+filePath+" trace: "+traceElement;
+		return "[messageId: "+messageId+" path: "+filePath+" trace: "+traceElement+"]";
 	}
 
 }
