@@ -40,7 +40,8 @@ class FrancaCoreEObjectDescriptions {
 		}
 		val qn = m.getFullyQualifiedName
 		if(qn!=null){
-			val importUris = m.imports?.map[EcoreUtil2::getResource(m.eResource,importURI).URI].join(SEPARATOR_CHAR)
+			val importedResources = m.imports?.map[EcoreUtil2::getResource(m.eResource,importURI)].filterNull
+			val importUris = importedResources.map[URI].join(SEPARATOR_CHAR)
 			val keys = newHashMap(USER_KEY_IMPORT_URIS -> importUris)
 			val result = EObjectDescription::create(qn,m,keys)
 			return result

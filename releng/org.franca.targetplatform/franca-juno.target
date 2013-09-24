@@ -36,20 +36,20 @@
 <repository location="http://update.eclemma.org/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.mylyn_feature.feature.group" version="3.9.0.v20130612-0100"/>
-<unit id="org.eclipse.mylyn.context_feature.feature.group" version="3.9.0.v20130612-0100"/>
-<unit id="org.eclipse.mylyn.hudson.feature.group" version="1.1.0.v20130612-0100"/>
-<unit id="org.eclipse.mylyn.ide_feature.feature.group" version="3.9.0.v20130612-0100"/>
-<unit id="org.eclipse.mylyn.java_feature.feature.group" version="3.9.0.v20130612-0100"/>
-<unit id="org.eclipse.mylyn.pde_feature.feature.group" version="3.9.0.v20130612-0100"/>
-<unit id="org.eclipse.mylyn.team_feature.feature.group" version="3.9.0.v20130612-0100"/>
-<unit id="org.eclipse.mylyn.bugzilla_feature.feature.group" version="3.9.0.v20130612-0100"/>
-<unit id="org.eclipse.mylyn.trac_feature.feature.group" version="3.9.0.v20130612-0100"/>
-<unit id="org.eclipse.mylyn.git.feature.group" version="1.1.0.v20130612-0100"/>
-<unit id="org.eclipse.mylyn.commons.feature.group" version="3.9.0.v20130612-0100"/>
-<unit id="org.eclipse.mylyn.commons.identity.feature.group" version="1.1.0.v20130612-0100"/>
-<unit id="org.eclipse.mylyn.commons.notifications.feature.group" version="1.1.0.v20130612-0100"/>
-<unit id="org.eclipse.mylyn.commons.repositories.feature.group" version="1.1.0.v20130612-0100"/>
+<unit id="org.eclipse.mylyn_feature.feature.group" version="3.9.1.v20130917-0100"/>
+<unit id="org.eclipse.mylyn.context_feature.feature.group" version="3.9.1.v20130917-0100"/>
+<unit id="org.eclipse.mylyn.hudson.feature.group" version="1.1.1.v20130917-0100"/>
+<unit id="org.eclipse.mylyn.ide_feature.feature.group" version="3.9.1.v20130917-0100"/>
+<unit id="org.eclipse.mylyn.java_feature.feature.group" version="3.9.1.v20130917-0100"/>
+<unit id="org.eclipse.mylyn.pde_feature.feature.group" version="3.9.1.v20130917-0100"/>
+<unit id="org.eclipse.mylyn.team_feature.feature.group" version="3.9.1.v20130917-0100"/>
+<unit id="org.eclipse.mylyn.bugzilla_feature.feature.group" version="3.9.1.v20130917-0100"/>
+<unit id="org.eclipse.mylyn.trac_feature.feature.group" version="3.9.1.v20130917-0100"/>
+<unit id="org.eclipse.mylyn.git.feature.group" version="1.1.1.v20130917-0100"/>
+<unit id="org.eclipse.mylyn.commons.feature.group" version="3.9.1.v20130917-0100"/>
+<unit id="org.eclipse.mylyn.commons.identity.feature.group" version="1.1.1.v20130917-0100"/>
+<unit id="org.eclipse.mylyn.commons.notifications.feature.group" version="1.1.1.v20130917-0100"/>
+<unit id="org.eclipse.mylyn.commons.repositories.feature.group" version="1.1.1.v20130917-0100"/>
 <repository location="http://download.eclipse.org/mylyn/releases/latest"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
