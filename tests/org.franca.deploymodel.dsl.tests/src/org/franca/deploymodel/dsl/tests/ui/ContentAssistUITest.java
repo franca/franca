@@ -96,7 +96,11 @@ public class ContentAssistUITest extends AbstractContentAssistProcessorTest {
 			public Injector createInjectorAndDoEMFRegistration() {
 				return FDeployActivator.getInstance().getInjector(FDeployActivator.ORG_FRANCA_DEPLOYMODEL_DSL_FDEPLOY);
 			}
+
+			public void register(Injector injector) {
+			}
 		};
+		
 	}
 
 	

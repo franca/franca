@@ -78,8 +78,6 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 	 * and adds the belonging <i>FDSpecification</i>s to the given scope. */
 	def joinImportedDeploySpecs(IScope scope, EObject ctxt){
 		val model = EcoreUtil2::getContainerOfType(ctxt, typeof(FDModel))
-		println("joinImportedDeploySpecs: model=" + model);
-		println("joinImportedDeploySpecs: model.imports=" + model.imports);
 		val importedAliases = model.imports.filter[importedSpec!=null].map[importedSpec]
 		val List<IEObjectDescription> fdSpecsScopeImports = <IEObjectDescription>newArrayList();
 		try { 
