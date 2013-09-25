@@ -31,127 +31,118 @@ public class DeploySpecProvider {
 	public static final String DEPLOY_SPEC_PROVIDER_ATTRIB_RESOURCE = "resource";
 	public static final String DEPLOY_SPEC_PROVIDER_ATTRIB_ALIAS = "alias";
 	public static final String DEPLOY_SPEC_PROVIDER_ATTRIB_FDSPECIFICATION = "FDSpecification";
-	
+
 	protected Map<String, DeploySpecEntry> deploySpecEntries = new HashMap<String, DeploySpecEntry>();
-	
+
 	@Inject
 	IQualifiedNameProvider qnProvider;
-	
-	public class DeploySpecEntry{
+
+	/** 
+	 * Represents a contribution to extension org.franca.deploymodel.dsl.deploySpecProvider 
+	 * (i.e. the data read from the contributing plugin.xml by means of <code>Platform.getExtensionRegistry()</code>).
+	 * Provides some convenience to process these data.
+	 */
+	public class DeploySpecEntry {
 		public String alias;
 		public String resourceId;
 		public String fdSpec;
 		public String contributorName;
 		protected Resource lazyResource;
 		protected FDSpecification lazyFDSpec;
-		
-		public DeploySpecEntry(String contributorName,  String alias, String resourceId, String fdSpec) {
+
+		public DeploySpecEntry(String contributorName, String alias, String resourceId, String fdSpec) {
 			this.alias = alias;
 			this.resourceId = resourceId;
 			this.fdSpec = fdSpec;
 			this.contributorName = contributorName;
-			
+
 		}
+
 		@Override
 		public String toString() {
-			return "DeploySpecEntry["+contributorName+"','"+alias+"','"+fdSpec+"','"+resourceId+"']";
+			return "DeploySpecEntry[" + contributorName + "','" + alias + "','" + fdSpec + "','" + resourceId + "']";
 		}
-		
-		protected FDSpecification getFDSpecification(){
-		try {
-			//	if(lazyFDSpec==null){
-					Resource resource = getResource();
-					System.out.println(resource);
-					if(resource != null){
-						TreeIterator<EObject> allIt = resource.getAllContents();
-						while(allIt.hasNext()){
-							EObject eObject = allIt.next();
-							if(eObject instanceof FDSpecification){
-								QualifiedName fqn = qnProvider.getFullyQualifiedName(eObject);
-								if(fqn!=null&&fqn.toString().equals(fdSpec)){
-									System.out.println("DeploySpecProvider.DeploySpecEntry.getFDSpecification():" + eObject);
-									lazyFDSpec = (FDSpecification) eObject;
-								}		
+
+		protected FDSpecification getFDSpecification() {
+			if (lazyFDSpec == null) {
+				Resource resource = getResource();
+				if (resource != null) {
+					TreeIterator<EObject> allIt = resource.getAllContents();
+					while (allIt.hasNext()) {
+						EObject eObject = allIt.next();
+						if (eObject instanceof FDSpecification) {
+							QualifiedName fqn = qnProvider.getFullyQualifiedName(eObject);
+							if (fqn != null && fqn.toString().equals(fdSpec)) {
+								lazyFDSpec = (FDSpecification) eObject;
+								break;
 							}
 						}
 					}
-//			}
-		} catch (Exception e) {
-			e.printStackTrace();
+				}
+			}
+			return lazyFDSpec;
 		}
-		return lazyFDSpec;
-		}
-		protected Resource getResource(){
-			if(lazyResource==null){
+
+		protected Resource getResource() {
+			if (lazyResource == null) {
 				URI uri = URI.createPlatformPluginURI(contributorName + "/" + resourceId, true);
 				lazyResource = new ResourceSetImpl().getResource(uri, true);
 			}
 			return lazyResource;
 		}
 	}
-	
-	protected DeploySpecEntry putDeploySpecEntry(String contributorName, String alias, String resource, String fdSpec){
+
+	protected DeploySpecEntry putDeploySpecEntry(String contributorName, String alias, String resource, String fdSpec) {
 		return deploySpecEntries.put(alias, new DeploySpecEntry(contributorName, alias, resource, fdSpec));
 	}
-	
+
 	IRegistryEventListener registryEventListener = null;
-	
-//	public List<URI> getURIs() {
-//		List<URI> result = new ArrayList<URI>();
-//		IConfigurationElement[] extensions = Platform.getExtensionRegistry().getConfigurationElementsFor(DEPLOY_SPEC_PROVIDER_EXTENSION);
-//		for (IConfigurationElement e : extensions) {
-//			String res = e.getAttribute(DEPLOY_SPEC_PROVIDER_RESOURCE_ATTRIB);
-//			String pluginName = e.getContributor().getName();
-//			result.add(URI.createPlatformPluginURI(pluginName + "/" + res, true));
-//		}
-//		return result;
-//	}
 
 	public Set<String> getAliases() {
-		if(deploySpecEntries.isEmpty()){
+		if (deploySpecEntries.isEmpty()) {
 			readDeploySpecEntries();
 		}
 		return deploySpecEntries.keySet();
 	}
 
 	public Collection<DeploySpecEntry> getEntries() {
-		if(deploySpecEntries.isEmpty()){
+		if (deploySpecEntries.isEmpty()) {
 			readDeploySpecEntries();
 		}
 		return deploySpecEntries.values();
 	}
-	
+
 	public DeploySpecEntry getEntry(String alias) {
-		if(deploySpecEntries.isEmpty()){
+		if (deploySpecEntries.isEmpty()) {
 			readDeploySpecEntries();
 		}
 		return deploySpecEntries.get(alias);
 	}
 
-	
-	public void  readDeploySpecEntries() {
+	public void readDeploySpecEntries() {
 		IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
 		IConfigurationElement[] extensions = extensionRegistry.getConfigurationElementsFor(DEPLOY_SPEC_PROVIDER_EXTENSION);
 		for (IConfigurationElement e : extensions) {
-			putDeploySpecEntry(e.getContributor().getName(),
-					e.getAttribute(DEPLOY_SPEC_PROVIDER_ATTRIB_ALIAS), 
-					e.getAttribute(DEPLOY_SPEC_PROVIDER_ATTRIB_RESOURCE), 
-					e.getAttribute(DEPLOY_SPEC_PROVIDER_ATTRIB_FDSPECIFICATION));
+			putDeploySpecEntry(e.getContributor().getName(), e.getAttribute(DEPLOY_SPEC_PROVIDER_ATTRIB_ALIAS),
+					e.getAttribute(DEPLOY_SPEC_PROVIDER_ATTRIB_RESOURCE), e.getAttribute(DEPLOY_SPEC_PROVIDER_ATTRIB_FDSPECIFICATION));
 		}
-		if(registryEventListener==null){
+		if (registryEventListener == null) {
 			registryEventListener = new IRegistryEventListener() {
 				@Override
 				public void removed(IExtensionPoint[] eps) {
 					deploySpecEntries.clear();
 				}
+
 				@Override
 				public void removed(IExtension[] es) {
 					deploySpecEntries.clear();
 				}
+
 				@Override
 				public void added(IExtensionPoint[] eps) {
 					deploySpecEntries.clear();
 				}
+
 				@Override
 				public void added(IExtension[] es) {
 					deploySpecEntries.clear();

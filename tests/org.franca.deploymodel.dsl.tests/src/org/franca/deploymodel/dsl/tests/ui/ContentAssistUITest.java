@@ -101,7 +101,7 @@ public class ContentAssistUITest extends AbstractContentAssistProcessorTest {
 
 	
 	@Test
-	public void testEmptyModel() throws Exception {
+	public void testProposalsForImport() throws Exception {
 		String[] expectedSuggestions = new String[]{
 				"\"a.fdepl\"", "\"b.fidl\""          // same folder
 				,"\"../anotherModel/c.fdepl\""       // different folder, same project
@@ -109,4 +109,22 @@ public class ContentAssistUITest extends AbstractContentAssistProcessorTest {
 				,"The_PlatformDeploySpec_WithAlias", "The_PlatformDeploySpec"};        // contributed by plugins
 		super.newBuilder().append("import ").assertText(expectedSuggestions);
 	}
+
+	@Test
+	public void testProposalsForFDSpecification_base() throws Exception {
+		String[] expectedSuggestions = new String[]{"The_PlatformDeploySpec_WithAlias", "The_PlatformDeploySpec", "org.example.spec.XXX"};
+		super.newBuilder().append("import The_PlatformDeploySpec_WithAlias ")
+						  .append("import The_PlatformDeploySpec ")
+						  .append("specification org.example.spec.XXX extends ").assertText(expectedSuggestions);
+	}
+	
+	@Test
+	public void testProposalsForFDElement_spec() throws Exception {
+		String[] expectedSuggestions = new String[]{"The_PlatformDeploySpec_WithAlias"};
+		super.newBuilder().append("import The_PlatformDeploySpec_WithAlias ")
+						  .append("define ").assertText(expectedSuggestions);
+	}
+	
+	
+	
 }
