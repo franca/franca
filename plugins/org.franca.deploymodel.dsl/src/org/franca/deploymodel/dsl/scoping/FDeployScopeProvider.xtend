@@ -7,11 +7,8 @@
  *******************************************************************************/
 package org.franca.deploymodel.dsl.scoping
 
-import com.google.common.base.Predicate
 import com.google.inject.Inject
-import java.lang.reflect.Method
 import java.util.List
-import org.eclipse.emf.ecore.EClass
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EReference
 import org.eclipse.emf.mwe2.language.scoping.QualifiedNameProvider
@@ -47,6 +44,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDProperty
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyFlag
 import org.franca.deploymodel.dsl.fDeploy.FDProvider
+import org.franca.deploymodel.dsl.fDeploy.FDSpecification
 import org.franca.deploymodel.dsl.fDeploy.FDStruct
 import org.franca.deploymodel.dsl.fDeploy.FDTypes
 import org.franca.deploymodel.dsl.fDeploy.FDUnion
@@ -65,6 +63,11 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 	@Inject IQualifiedNameConverter qnConverter;
 	
 	def scope_FDRootElement_spec(FDProvider ctxt, EReference ref){
+		return delegateGetScope(ctxt,ref).joinImportedDeploySpecs(ctxt);
+	}
+	/** Evaluates the importedAliases of the FDModel containing the <i>ctxt</i> 
+	 * and adds the belonging <i>FDSpecification</i>s to the given scope. */
+	def joinImportedDeploySpecs(IScope scope, EObject ctxt){
 		val model = EcoreUtil2::getContainerOfType(ctxt, typeof(FDModel))
 		val importedAliases = model.imports.filter[importedSpec!=null].map[importedSpec]
 		val List<IEObjectDescription> fdSpecsScopeImports = <IEObjectDescription>newArrayList();
@@ -76,7 +79,11 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 				}
 			}
 		} catch(Exception e) { e.printStackTrace}
-		return new SimpleScope(delegateGetScope(ctxt,ref),fdSpecsScopeImports,false)
+		return new SimpleScope(scope,fdSpecsScopeImports,false)
+	}
+	
+	def scope_FDSpecification_base(FDSpecification ctxt, EReference ref){
+		return delegateGetScope(ctxt,ref).joinImportedDeploySpecs(ctxt);
 	}
 	
 	def scope_FDTypes_target(FDTypes ctxt, EReference ref) {	
