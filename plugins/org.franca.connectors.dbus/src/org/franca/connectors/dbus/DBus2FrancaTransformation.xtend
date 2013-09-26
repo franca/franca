@@ -143,14 +143,16 @@ class DBus2FrancaTransformation {
 		type = FAnnotationType::DESCRIPTION
 		comment = doc.line.get(0)
 	}
-	// ANNOTATION
+	// ANNOTATIONS
 
 	def TypedElem transformTypeSig (String typeSig, String namespace) {
 		//println("DBus2FrancaTransformation: parsing type-sig " + typeSig + " in namespace " + namespace)
 
 		// as DBus doesn't have a detailed typesystem, we have to use an artificial typesystem here
 		val srcType = new DBusTypeParser().parseSingleType(typeSig)
-		// TODO: check for null
+		if (srcType==null) {
+			throw new RuntimeException("Couldn't parse type signature '" + typeSig + "'")
+		}
 		
 		srcType.transformType(namespace)
 	}
