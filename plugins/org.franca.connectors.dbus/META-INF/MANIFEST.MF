@@ -7,7 +7,7 @@ Bundle-Activator: org.franca.connectors.dbus.Activator
 Bundle-Vendor: itemis AG
 Require-Bundle: org.eclipse.core.runtime,
  org.franca.core;bundle-version="0.8.0",
- model.emf.dbusxml;bundle-version="0.7.1";visibility:=reexport,
+ model.emf.dbusxml;bundle-version="0.7.6";visibility:=reexport,
  org.eclipse.xtend.lib;bundle-version="2.4.0",
  com.google.guava,
  org.eclipse.xtext.xbase.lib,
