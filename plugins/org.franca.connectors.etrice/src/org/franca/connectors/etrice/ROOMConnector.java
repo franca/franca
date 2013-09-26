@@ -16,12 +16,18 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.etrice.core.RoomStandaloneSetup;
 import org.eclipse.etrice.core.room.RoomModel;
+import org.eclipse.xtext.resource.IGlobalServiceProvider.ResourceServiceProviderImpl;
+import org.eclipse.xtext.resource.XtextResourceSet;
+import org.eclipse.xtext.util.Modules2;
 import org.franca.connectors.etrice.internal.Franca2ETriceTransformation;
+import org.franca.core.dsl.FrancaIDLRuntimeModule;
 import org.franca.core.framework.IFrancaConnector;
 import org.franca.core.framework.IModelContainer;
 import org.franca.core.franca.FModel;
 
+import com.google.inject.Guice;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.google.inject.Provider;
 
 
@@ -32,21 +38,26 @@ import com.google.inject.Provider;
  */
 public class ROOMConnector implements IFrancaConnector {
 
-	@Inject Provider<ResourceSet> resourceSetProvider;
-	@Inject Franca2ETriceTransformation trafo;
+	private Injector injector;
 
-	private ResourceSet resourceSet = null;
-	
 	private String uriModellib = null;
+	private ResourceSet resourceSet = null;
 
-	/** default constructor */
-	public ROOMConnector() {
-		new RoomStandaloneSetup().createInjectorAndDoEMFRegistration();
-	}
-	
-	public void setModellibFolder (String uri) {
+
+	/** Constructor for ROOMConnector.
+	 * 
+	 * @param uri: The URI prefix to the model-folder of eTrice's modellib project
+	 */
+	public ROOMConnector (String uri) {
 		uriModellib = uri;
 		resourceSet = null;
+		
+		// create own injector
+		injector = Guice.createInjector(
+        		Modules2.mixin(
+//        				new FrancaIDLRuntimeModule(),
+        				new ROOMConnectorModule()
+        		));
 	}
 	
 	@Override
@@ -74,6 +85,7 @@ public class ROOMConnector implements IFrancaConnector {
 
 	@Override
 	public IModelContainer fromFranca (FModel fmodel) {
+		Franca2ETriceTransformation trafo = injector.getInstance(Franca2ETriceTransformation.class);
 		RoomModel room = trafo.transform(fmodel, uriModellib, getResourceSet());
 		return new ROOMModelContainer(room);
 	}
@@ -96,7 +108,7 @@ public class ROOMConnector implements IFrancaConnector {
 	
 	private ResourceSet getResourceSet() {
 		if (resourceSet==null) {
-			resourceSet = resourceSetProvider.get();
+			resourceSet = injector.getInstance(XtextResourceSet.class);
 		}
 		return resourceSet;
 	}

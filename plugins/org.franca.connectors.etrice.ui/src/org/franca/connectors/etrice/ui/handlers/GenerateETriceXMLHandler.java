@@ -19,7 +19,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -42,7 +41,6 @@ public class GenerateETriceXMLHandler extends AbstractHandler {
 
 	@Inject FrancaPersistenceManager loader;
 	@Inject FrancaRecursiveValidator validator;
-	@Inject ROOMConnector roomConn;
 
 	@SuppressWarnings({ "deprecation", "incomplete-switch" })
 	@Override
@@ -94,12 +92,11 @@ public class GenerateETriceXMLHandler extends AbstractHandler {
     		}
   
     		// set path to eTrice's modellib project
+    		// (it must be a project in the workspace where the transformation runs!)
     		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
     		IProject modellib = root.getProject(MODELLIB_PROJECT);
-    		roomConn.setModellibFolder(
-    				root.getLocation().toString() +
-    				modellib.getFullPath().toString() + File.separator +
-    				"model");
+    		String modellibURI = modellib.getRawLocationURI().toString() + File.separator + "model";
+    		ROOMConnector roomConn = new ROOMConnector(modellibURI);
 
     		// transform ROOM model (i.e., eTrice file)
     		out.println("Transforming to eTrice model file ...");
@@ -122,12 +119,21 @@ public class GenerateETriceXMLHandler extends AbstractHandler {
 			String outputFolder = getOutputFolder(file, err);
     		String outfile = file.getName().substring(0, ext) + ".room";
 			String outpath = projectPath + File.separator + outputFolder + File.separator + outfile;
-    		if (roomConn.saveModel(room, outpath)) {
-    			out.println("Saved eTrice file '" + outpath + "'.");
-    		} else {
-    			err.println("eTrice model couldn't be written to file '" + outpath + "'.");
+    		try {
+	    		if (roomConn.saveModel(room, outpath)) {
+	    			out.println("Saved eTrice file '" + outpath + "'.");
+	    		} else {
+	    			err.println("eTrice model couldn't be written to file '" + outpath + "'.");
+	    		}
+    		} catch (Exception e) {
+    			err.println("Exception while persisting result model to file: " + e.toString());
+    			for(StackTraceElement f : e.getStackTrace()) {
+    				err.println("\tat " + f.toString());
+    			}
+    			err.println("Internal transformation error, aborting.");
+				return null;
     		}
-            
+	    	
     		// refresh IDE (in order to make new files visible)
             IProject project = file.getProject();
             try {

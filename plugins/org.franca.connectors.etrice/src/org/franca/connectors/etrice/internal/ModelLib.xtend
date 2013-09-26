@@ -7,18 +7,18 @@
  *******************************************************************************/
 package org.franca.connectors.etrice.internal
 
+import java.io.File
 import java.io.IOException
 import java.util.Collections
+import java.util.List
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.emf.ecore.resource.ResourceSet
-import org.eclipse.etrice.core.room.RoomModel
 import org.eclipse.etrice.core.room.Import
-import java.util.List
-
-import static extension org.franca.connectors.etrice.internal.RoomModelBuilder.*
 import org.eclipse.etrice.core.room.ProtocolClass
-import java.io.File
+import org.eclipse.etrice.core.room.RoomModel
+
+import static org.franca.connectors.etrice.internal.RoomModelBuilder.*
 
 /**
  * Representation of eTrice modellib during transformation.
@@ -44,7 +44,6 @@ class ModelLib {
 		imports.add(createImport("room.basic.types.*", uriTypes))
 		imports.add(createImport("room.basic.service.timing.*", uriTimingService))
 		return imports
-		
 	}
 
 	def getPTimerProtocol() {
@@ -70,7 +69,7 @@ class ModelLib {
 	def private loadRoomModel (ResourceSet resourceSet, String uri) {
 		var Resource resource = null
 		try {
-			resource = resourceSet.getResource(URI::createFileURI(uri), true)
+			resource = resourceSet.getResource(URI::createURI(uri), true)
 			resource.load(Collections::EMPTY_MAP)
 		} catch (IOException e) {
 			e.printStackTrace
