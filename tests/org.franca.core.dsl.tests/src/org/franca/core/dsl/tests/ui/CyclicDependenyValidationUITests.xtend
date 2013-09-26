@@ -41,9 +41,9 @@ class CyclicDependenyValidationUITests extends AbstractMarkerTest{
 		assertEquals("unexpected no of markers:" +  Arrays::toString(c1.markers.map[message]), 1,c1.markers.size)
 		assertEquals("unexpected no of markers:" +  Arrays::toString(c2.markers.map[message]), 1,c2.markers.size)	
 		assertEquals("unexpected no of markers:" +  Arrays::toString(c3.markers.map[message]), 1,c3.markers.size)						
-        assertMarkerExists(c1,5,"<this>->org.example.C2.e2->org.example.C3.e3-><this>");								
-		assertMarkerExists(c2,4,"<this>->org.example.C3.e3->org.example.C1.e1-><this>");						
-		assertMarkerExists(c3,4,"<this>->org.example.C1.e1->org.example.C2.e2-><this>");
+        assertMarkerExists(c1,5,"this->org.example.C2.e2->org.example.C3.e3->this");								
+		assertMarkerExists(c2,4,"this->org.example.C3.e3->org.example.C1.e1->this");						
+		assertMarkerExists(c3,4,"this->org.example.C1.e1->org.example.C2.e2->this");
 		c3 = IResourcesSetupUtil::createFile(
 						"sample/model/org/example/C3.fidl", '''
 							package org.example
@@ -68,9 +68,9 @@ class CyclicDependenyValidationUITests extends AbstractMarkerTest{
 		assertEquals("unexpected no of markers:" +  Arrays::toString(c1.markers.map[message]),1,c1.markers.size)
 		assertEquals("unexpected no of markers:" +  Arrays::toString(c2.markers.map[message]),1,c2.markers.size)	
 		assertEquals("unexpected no of markers:" +  Arrays::toString(c3.markers.map[message]),1,c3.markers.size)						
-        assertMarkerExists(c1,5,"<this>->org.example.C2.e2->org.example.C3.e3-><this>");								
-		assertMarkerExists(c2,4,"<this>->org.example.C3.e3->org.example.C1.e1-><this>");						
-		assertMarkerExists(c3,4,"<this>->org.example.C1.e1->org.example.C2.e2-><this>");											
+        assertMarkerExists(c1,5,"this->org.example.C2.e2->org.example.C3.e3->this");								
+		assertMarkerExists(c2,4,"this->org.example.C3.e3->org.example.C1.e1->this");						
+		assertMarkerExists(c3,4,"this->org.example.C1.e1->org.example.C2.e2->this");											
 							
 	}
 
@@ -93,8 +93,8 @@ class CyclicDependenyValidationUITests extends AbstractMarkerTest{
 							}''');
         assertEquals("unexpected no of markers:" +  Arrays::toString(c1.markers.map[message]),1,c1.markers.size)
 		assertEquals("unexpected no of markers:" +  Arrays::toString(c2.markers.map[message]),1,c2.markers.size)	
-        assertMarkerExists(c1,4,"<this>->org.example.C2.e2-><this>");								
-		assertMarkerExists(c2,4,"<this>->org.example.C1.e1-><this>");						
+        assertMarkerExists(c1,4,"this->org.example.C2.e2->this");								
+		assertMarkerExists(c2,4,"this->org.example.C1.e1->this");						
 		var c3 = IResourcesSetupUtil::createFile(
 						"sample/model/org/example/C3.fidl", '''
 							package org.example
@@ -135,8 +135,8 @@ class CyclicDependenyValidationUITests extends AbstractMarkerTest{
 								}    
 							}''');
         assertEquals("unexpected no of markers:" +  Arrays::toString(c1.markers.map[message]),2,c1.markers.size)
-		assertMarkerExists(c1,6,"<this>->C1.e2->org.example.C3.e3-><this>");					
-        assertMarkerExists(c1,11,"<this>->org.example.C3.e3->C1.e1-><this>");								
+		assertMarkerExists(c1,6,"this->C1.e2->org.example.C3.e3->this");					
+        assertMarkerExists(c1,11,"this->org.example.C3.e3->C1.e1->this");								
 		assertEquals("unexpected no of markers:" +  Arrays::toString(c3.markers.map[message]),1,c3.markers.size)
 	}
 	
