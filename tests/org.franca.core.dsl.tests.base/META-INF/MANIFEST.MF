@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
-Bundle-Vendor: %providerName
+Bundle-Vendor: itemis AG
 Bundle-Localization: plugin
 Bundle-Version: 0.8.10.qualifier
 Bundle-SymbolicName: org.franca.core.dsl.tests.base;singleton:=true
