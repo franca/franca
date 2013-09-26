@@ -98,12 +98,21 @@ public class CreateFrancaFromDBusXMLHandler extends AbstractHandler {
     		int ext = file.getName().lastIndexOf("." + file.getFileExtension());
     		String outfile = file.getName().substring(0, ext) + ".fidl";
     		String outpath = outputDir + "/" + outfile;
-    		if (saver.saveModel(fmodel, outpath)) {
-    			out.println("Saved Franca IDL file '" + outpath + "'.");
-    		} else {
-    			err.println("Franca IDL file couldn't be written to file '" + outpath + "'.");
+    		try {
+	    		if (saver.saveModel(fmodel, outpath)) {
+	    			out.println("Saved Franca IDL file '" + outpath + "'.");
+	    		} else {
+	    			err.println("Franca IDL file couldn't be written to file '" + outpath + "'.");
+	    		}
+    		} catch (Exception e) {
+    			err.println("Exception while persisting result model to file: " + e.toString());
+    			for(StackTraceElement f : e.getStackTrace()) {
+    				err.println("\tat " + f.toString());
+    			}
+    			err.println("Internal transformation error, aborting.");
+				return null;
     		}
-            
+
     		// refresh IDE (in order to make new files visible)
             IProject project = file.getProject();
             try {
