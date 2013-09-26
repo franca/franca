@@ -251,7 +251,7 @@ class DBus2FrancaTransformation {
 	def create FrancaFactory::eINSTANCE.createFField transformField (DBusType src, String namespace, String elementName) {
 		// struct members do not have a name in DBus
 		name = elementName
-		val te = src.transformType(namespace)
+		val te = src.transformType(namespace + elementName.toFirstUpper)
 		type = te.type
 		array = if (te.isArray) "[]" else null
 	}
