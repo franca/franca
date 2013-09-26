@@ -49,9 +49,9 @@ class CyclicDependenciesValidator {
 				for (node : cycle) {
 					// Second loop tinkers messages ...
 					if (node.eResource == m.eResource) {
-						val StringBuilder msg = new StringBuilder("Cyclic dependency detected: <this>")
+						val StringBuilder msg = new StringBuilder("Cyclic dependency detected: this")
 						msgPerNode.tail.forEach[msg.append("->").append(it)]
-						msg.append("-><this>")
+						msg.append("->this")
 						var eAttribute = node.eClass.EAllAttributes.findFirst[it.name == "name"]
 						if(eAttribute==null){
 							eAttribute==node.eClass.EAllAttributes.head
