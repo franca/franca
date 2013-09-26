@@ -218,7 +218,7 @@ class ProtocolClassGenerator {
 		var it = RoomFactory::eINSTANCE.createAttribute
 		name = src.name
 		//size = 1
-		refType = src.type.transformType.toRefableType
+		type = src.type.transformType.toRefableType
 		return it
 	}
 
@@ -303,11 +303,11 @@ class ProtocolClassGenerator {
 		(abstractServer.eContainer as RoomModel).protocolClasses += attributeAccessInterface;
 		
 		val serverPort = createPort(attributeAccessInterface, createUniqueAttributePortName(modelInterface), false);
-		abstractServer.ifPorts += serverPort;
-		abstractServer.extPorts += createExtPort(serverPort)
+		abstractServer.interfacePorts += serverPort;
+		abstractServer.externalPorts += createExtPort(serverPort)
 		val clientPort = createPort(attributeAccessInterface, createUniqueAttributePortName(modelInterface), true);
-		abstractClient.ifPorts += clientPort;
-		abstractClient.extPorts += createExtPort(clientPort)
+		abstractClient.interfacePorts += clientPort;
+		abstractClient.externalPorts += createExtPort(clientPort)
 		
 		modelInterface.attributes.forEach[
 			abstractServer.attributes += createRoomAttribute(it) => [
@@ -329,7 +329,7 @@ class ProtocolClassGenerator {
 				createTrigger(serverPort, getterMessage)
 			) => [
 				action = RoomFactory::eINSTANCE.createDetailCode => [
-					it.commands += getAction
+					lines += getAction
 				]
 			]
 			// update of the attribute on client (sent after getter-Message)
@@ -343,7 +343,7 @@ class ProtocolClassGenerator {
 				createTrigger(clientPort, updateMessage)
 			) => [
 				action = RoomFactory::eINSTANCE.createDetailCode => [
-					it.commands += updateAction
+					lines += updateAction
 				]
 			]
 		]
@@ -358,7 +358,7 @@ class ProtocolClassGenerator {
 				createTrigger(serverPort, setterMessage) 
 			) => [
 				action = RoomFactory::eINSTANCE.createDetailCode => [
-					it.commands += setAction
+					lines += setAction
 				]
 			]
 		]
@@ -368,7 +368,7 @@ class ProtocolClassGenerator {
 	def createRoomAttribute(FAttribute attr) {
 		RoomFactory::eINSTANCE.createAttribute => [
 			name = attr.name
-			refType = attr.type.transformType.toRefableType
+			type = attr.type.transformType.toRefableType
 			if (attr.type.isMultiType) size = 3;
 		]
 	}

@@ -10,9 +10,9 @@ import org.eclipse.etrice.core.room.CompoundProtocolClass
 class RoomModelNavigator {
 	
 	def Iterable<Port> getAllVisibleIfPorts(ActorClass it) {
-		if (base == null) return ifPorts;
+		if (base == null) return interfacePorts;
 		
-		return ifPorts + getAllVisibleIfPorts(base)
+		return interfacePorts + getAllVisibleIfPorts(base)
 	}
 	
 	def dispatch Iterable<Message> getAllVisibleIncomingMessages(ProtocolClass it) {

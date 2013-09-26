@@ -18,9 +18,10 @@ import org.eclipse.etrice.core.room.InterfaceItem
 import org.eclipse.etrice.core.room.Message
 import org.eclipse.etrice.core.room.DataType
 import org.eclipse.etrice.core.room.State
-import org.eclipse.etrice.core.room.SPPRef
+import org.eclipse.etrice.core.room.SPPoint
 import org.eclipse.etrice.core.room.TransitionPoint
 import org.eclipse.etrice.core.room.EntryPoint
+import org.eclipse.etrice.core.room.SPP
 
 class RoomModelBuilder {
 	
@@ -42,21 +43,21 @@ class RoomModelBuilder {
 	
 	def static createExtPort (Port port) {
 		val it = RoomFactory::eINSTANCE.createExternalPort
-		ifport = port
+		interfacePort = port
 		it		
 	}
 
 	def static createSAP (ProtocolClass pc, String name) {
-		val it = RoomFactory::eINSTANCE.createSAPRef
+		val it = RoomFactory::eINSTANCE.createSAP
 		it.name = name
 		it.protocol = pc
 		it
 	}
 
-	def static createSPPoint (ActorRef aref, SPPRef sppref) {
+	def static createSPPoint (ActorRef aref, SPP spp) {
 		val it = RoomFactory::eINSTANCE.createSPPoint
 		ref = aref
-		service = sppref
+		service = spp
 		it
 	}
 	
@@ -102,7 +103,7 @@ class RoomModelBuilder {
 		val it = RoomFactory::eINSTANCE.createActorRef
 		it.name = name
 		it.type = ac
-		it.size = 1
+		it.multiplicity = 1
 		it
 	}
 
@@ -141,7 +142,14 @@ class RoomModelBuilder {
 	
 	def static createDetailCode (String code) {
 		val it = RoomFactory::eINSTANCE.createDetailCode
-		commands.add(code)
+		lines.add(code)
+		it
+	}
+
+	def static createDetailCode (String code1, String code2) {
+		val it = RoomFactory::eINSTANCE.createDetailCode
+		lines.add(code1)
+		lines.add(code2)
 		it
 	}
 	

@@ -1,0 +1,10 @@
+MappingModel org.nanosite.etrice.examples {
+	import org.franca.examples.* from "../model-gen/example1.room"
+	import org.franca.examples.* from "./example1.etphys"
+
+	Mapping System -> PhysSys1 {
+		SubSystemMapping subsystem -> nodeRef1 {
+			ThreadMapping SubSystemThread -> PhysicalThread1
+		}
+	}
+}

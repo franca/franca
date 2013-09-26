@@ -64,7 +64,7 @@ class ModelLib {
 	}
 	
 	def getTimerSPPRef() {
-		timingServiceActor.ifSPPs.findFirst[name.equals("timer")]
+		timingServiceActor.serviceProvisionPoints.findFirst[name.equals("timer")]
 	}
 
 	def private loadRoomModel (ResourceSet resourceSet, String uri) {

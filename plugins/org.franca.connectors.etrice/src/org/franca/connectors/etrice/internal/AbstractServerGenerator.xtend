@@ -13,6 +13,7 @@ import org.eclipse.etrice.core.room.RoomFactory
 import org.franca.core.franca.FInterface
 
 import static extension org.franca.connectors.etrice.internal.RoomModelBuilder.*
+import org.eclipse.etrice.core.common.base.BaseFactory
 
 class AbstractServerGenerator {
 	
@@ -32,15 +33,15 @@ class AbstractServerGenerator {
 		
 				val serverSuperState = RoomFactory::eINSTANCE.createSimpleState => [
 					name = SERVER_SUPER_STATE_NAME
-					docu = RoomFactory::eINSTANCE.createDocumentation => [
-						text += "This is the main state in this base state machine, used for management of attributes."
+					docu = BaseFactory::eINSTANCE.createDocumentation => [
+						lines += "This is the main state in this base state machine, used for management of attributes."
 					]
 				]
 				states += serverSuperState
 				
 				transitions += serverSuperState.terminal.createInitial("initServer") => [
 					action = RoomFactory::eINSTANCE.createDetailCode => [
-						commands += "System.out.println(\"Super initial Transition triggered.\");"
+						lines += "System.out.println(\"Super initial Transition triggered.\");"
 					]
 				]
 				

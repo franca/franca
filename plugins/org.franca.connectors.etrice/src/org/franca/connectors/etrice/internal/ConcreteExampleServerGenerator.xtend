@@ -32,11 +32,11 @@ class ConcreteExampleServerGenerator {
 		//The following ports should be declared in the base actor but because of a bug the behavior wont recognize them
 		//--> TODO move up, once the bug has been solved
 		val messageAPI = pc.createPort("messageAPI", false)
-		concreteServer.ifPorts += messageAPI
+		concreteServer.interfacePorts += messageAPI
 		val port = messageAPI.createExtPort
-		concreteServer.extPorts += port
+		concreteServer.externalPorts += port
 		val timerSAP = timerPC.createSAP("timer")
-		concreteServer.strSAPs += timerSAP
+		concreteServer.serviceAccessPoints += timerSAP
 		//<--
 		
 		//server behavior as sub state machine
@@ -54,7 +54,7 @@ class ConcreteExampleServerGenerator {
 		subStateGraph.states += sIdle
 		subStateGraph.transitions += sIdle.terminal.createInitial("initToIdle") => [
 			action = RoomFactory::eINSTANCE.createDetailCode => [
-				commands += "System.out.println(\"Transition initToIdle triggered.\");"
+				lines += "System.out.println(\"Transition initToIdle triggered.\");"
 			]			
 		]
 		
@@ -62,9 +62,15 @@ class ConcreteExampleServerGenerator {
 		for(m : src.methods) {
 			val s = RoomFactory::eINSTANCE.createSimpleState
 			s.name = "do" + m.name.toFirstUpper
-			s.entryCode = createDetailCode("timer.startTimeout(1000);")
+			s.entryCode = createDetailCode(
+				"System.out.println(\"Server: entered state " + s.name + "\");",
+				"timer.startTimeout(1000);"
+			)
 			val reply = pc.getOutgoingMessage(m)
-			s.exitCode = createDetailCode("messageAPI." + reply.name + "(true); // TODO: insert real value here")
+			s.exitCode = createDetailCode(
+				"System.out.println(\"Server: leaving state " + s.name + "\");",
+				"messageAPI." + reply.name + "(true); // TODO: insert real value here"
+			)
 			subStateGraph.states += s
 
 			val msg = pc.incomingMessages.findFirst[name.equals(m.name)]

@@ -7,10 +7,10 @@
  *******************************************************************************/
 package org.franca.connectors.etrice.internal
 
-import org.eclipse.etrice.core.room.RoomFactory
 import org.franca.core.franca.FAnnotationBlock
 import org.franca.core.franca.FAnnotation
 import org.franca.core.franca.FAnnotationType
+import org.eclipse.etrice.core.common.base.BaseFactory
 
 /**
  * Helper class for generating comments as part of ROOM models.
@@ -18,17 +18,17 @@ import org.franca.core.franca.FAnnotationType
 class CommentGenerator {
 
 	def static transformComment (String comment) {
-		var it = RoomFactory::eINSTANCE.createDocumentation 
+		var it = BaseFactory::eINSTANCE.createDocumentation 
 		for(line : comment.split("\\n")) {
-			text.add(line.replace('\r', ''))
+			lines.add(line.replace('\r', ''))
 		}
 		return it
 	}
 
 	def static transformComment (FAnnotationBlock block) {
-		var it = RoomFactory::eINSTANCE.createDocumentation 
+		var it = BaseFactory::eINSTANCE.createDocumentation 
 		for(a : block.elements) {
-			text.add(getTextual(a)) 
+			lines.add(getTextual(a)) 
 		}
 		return it
 	}

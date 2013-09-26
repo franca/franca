@@ -31,9 +31,9 @@ class ConcreteExampleClientGenerator {
 		base = abstractClient
 
 		val p = pc.createPort("messageAPI", true)
-		ifPorts.add(p)
+		interfacePorts.add(p)
 		val port = p.createExtPort
-		extPorts.add(port)
+		externalPorts.add(port)
 		
 //		val timerSAP = timerPC.createSAP("timer")
 //		strSAPs.add(timerSAP)
@@ -97,16 +97,16 @@ class ConcreteExampleClientGenerator {
 	}
 
 
-	def private dispatch createDefaultStr (PrimitiveType it) {
+	def private dispatch String createDefaultStr (PrimitiveType it) {
 		defaultValueLiteral
 	}
 	
-	def private dispatch createDefaultStr (DataClass it) {
+	def private dispatch String createDefaultStr (DataClass it) {
 		val sb = new StringBuilder
 		sb.append("new " + name + "(")
 		var sep = ''
 		for(a : attributes) {
-			sb.append(sep + a.refType.type.createDefaultStr)
+			sb.append(sep + a.type.type.createDefaultStr)
 			sep = ', '
 		}
 		sb.append(")")
@@ -114,7 +114,7 @@ class ConcreteExampleClientGenerator {
 		
 	}
 
-	def private dispatch createDefaultStr (DataType it) {
+	def private dispatch String createDefaultStr (DataType it) {
 		""
 	}
 	

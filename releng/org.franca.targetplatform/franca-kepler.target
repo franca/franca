@@ -24,20 +24,20 @@
 <repository location="http://update.eclemma.org/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.mylyn_feature.feature.group" version="3.9.0.v20130612-0100"/>
-<unit id="org.eclipse.mylyn.context_feature.feature.group" version="3.9.0.v20130612-0100"/>
-<unit id="org.eclipse.mylyn.hudson.feature.group" version="1.1.0.v20130612-0100"/>
-<unit id="org.eclipse.mylyn.ide_feature.feature.group" version="3.9.0.v20130612-0100"/>
-<unit id="org.eclipse.mylyn.java_feature.feature.group" version="3.9.0.v20130612-0100"/>
-<unit id="org.eclipse.mylyn.pde_feature.feature.group" version="3.9.0.v20130612-0100"/>
-<unit id="org.eclipse.mylyn.team_feature.feature.group" version="3.9.0.v20130612-0100"/>
-<unit id="org.eclipse.mylyn.bugzilla_feature.feature.group" version="3.9.0.v20130612-0100"/>
-<unit id="org.eclipse.mylyn.trac_feature.feature.group" version="3.9.0.v20130612-0100"/>
-<unit id="org.eclipse.mylyn.git.feature.group" version="1.1.0.v20130612-0100"/>
-<unit id="org.eclipse.mylyn.commons.feature.group" version="3.9.0.v20130612-0100"/>
-<unit id="org.eclipse.mylyn.commons.identity.feature.group" version="1.1.0.v20130612-0100"/>
-<unit id="org.eclipse.mylyn.commons.notifications.feature.group" version="1.1.0.v20130612-0100"/>
-<unit id="org.eclipse.mylyn.commons.repositories.feature.group" version="1.1.0.v20130612-0100"/>
+<unit id="org.eclipse.mylyn_feature.feature.group" version="3.9.1.v20130917-0100"/>
+<unit id="org.eclipse.mylyn.context_feature.feature.group" version="3.9.1.v20130917-0100"/>
+<unit id="org.eclipse.mylyn.hudson.feature.group" version="1.1.1.v20130917-0100"/>
+<unit id="org.eclipse.mylyn.ide_feature.feature.group" version="3.9.1.v20130917-0100"/>
+<unit id="org.eclipse.mylyn.java_feature.feature.group" version="3.9.1.v20130917-0100"/>
+<unit id="org.eclipse.mylyn.pde_feature.feature.group" version="3.9.1.v20130917-0100"/>
+<unit id="org.eclipse.mylyn.team_feature.feature.group" version="3.9.1.v20130917-0100"/>
+<unit id="org.eclipse.mylyn.bugzilla_feature.feature.group" version="3.9.1.v20130917-0100"/>
+<unit id="org.eclipse.mylyn.trac_feature.feature.group" version="3.9.1.v20130917-0100"/>
+<unit id="org.eclipse.mylyn.git.feature.group" version="1.1.1.v20130917-0100"/>
+<unit id="org.eclipse.mylyn.commons.feature.group" version="3.9.1.v20130917-0100"/>
+<unit id="org.eclipse.mylyn.commons.identity.feature.group" version="1.1.1.v20130917-0100"/>
+<unit id="org.eclipse.mylyn.commons.notifications.feature.group" version="1.1.1.v20130917-0100"/>
+<unit id="org.eclipse.mylyn.commons.repositories.feature.group" version="1.1.1.v20130917-0100"/>
 <repository location="http://download.eclipse.org/mylyn/releases/latest"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
@@ -58,10 +58,10 @@
 <repository location="http://dbus-emf-model.eclipselabs.org.codespot.com/git/update_site/releases/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.etrice.kieler.feature.feature.group" version="0.3.0.R201307251522"/>
-<unit id="org.eclipse.etrice.layout.feature.feature.group" version="0.3.0.R201307251522"/>
-<unit id="org.eclipse.etrice.feature.feature.group" version="0.3.0.R201307251522"/>
-<repository location="http://download.eclipse.org/etrice/updates/releases/0.3.0"/>
+<unit id="org.eclipse.etrice.kieler.feature.feature.group" version="0.4.0.N201309231015"/>
+<unit id="org.eclipse.etrice.layout.feature.feature.group" version="0.4.0.N201309231015"/>
+<unit id="org.eclipse.etrice.feature.feature.group" version="0.4.0.N201309231015"/>
+<repository location="http://download.eclipse.org/etrice/updates/nightly"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.gef4.zest.sdk.feature.group" version="0.1.0.201309140203"/>

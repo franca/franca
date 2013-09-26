@@ -13,6 +13,7 @@ import org.eclipse.etrice.core.room.RoomFactory
 
 import static extension org.franca.connectors.etrice.internal.RoomModelBuilder.*
 import org.eclipse.etrice.core.room.ActorClass
+import org.eclipse.etrice.core.common.base.BaseFactory
 
 class AbstractClientGenerator {
 
@@ -28,8 +29,8 @@ class AbstractClientGenerator {
 		
 				val serverSuperState = RoomFactory::eINSTANCE.createSimpleState => [
 					name = CLIENT_SUPER_STATE_NAME
-					docu = RoomFactory::eINSTANCE.createDocumentation => [
-						text += "This is the main state in this base state machine, used for handling of attribute updates."
+					docu = BaseFactory::eINSTANCE.createDocumentation => [
+						lines += "This is the main state in this base state machine, used for handling of attribute updates."
 					]
 				]
 				states += serverSuperState

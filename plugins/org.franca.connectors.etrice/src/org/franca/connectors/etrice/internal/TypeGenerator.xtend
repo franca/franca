@@ -8,7 +8,7 @@
 package org.franca.connectors.etrice.internal
 
 import java.util.Set
-import org.eclipse.etrice.core.room.LiteralType
+import org.eclipse.etrice.core.common.base.LiteralType
 import org.eclipse.etrice.core.room.PrimitiveType
 import org.eclipse.etrice.core.room.RoomFactory
 import org.franca.core.franca.FBasicTypeId
@@ -109,7 +109,7 @@ class TypeGenerator {
 		var att = RoomFactory::eINSTANCE.createAttribute
 		att.name = "value"
 		att.size = 99;  // TODO: not_supported: dynamic arrays
-		att.refType = src.elementType.transformType.toRefableType
+		att.type = src.elementType.transformType.toRefableType
 		attributes.add(att)
 
 		newDataClasses.add(it)
@@ -126,7 +126,7 @@ class TypeGenerator {
 			att.name = e.name
 			if (e.comment != null)
 				att.docu = e.comment.transformComment
-			att.refType = e.type.transformType.toRefableType
+			att.type = e.type.transformType.toRefableType
 			attributes.add(att)
 		}
 
@@ -144,7 +144,7 @@ class TypeGenerator {
 				doc = doc + " = " + e.value
 			if (e.comment!=null)
 				doc = doc + " // " + e.comment.transformCommentFlat
-			docu.text.add(doc)
+			docu.lines.add(doc)
 		}
 		
 		attributes.add(createUInt32Attribute)
@@ -159,7 +159,7 @@ class TypeGenerator {
 
 		var att = RoomFactory::eINSTANCE.createAttribute
 		att.name = "value"
-		att.refType = src.actualType.transformType.toRefableType
+		att.type = src.actualType.transformType.toRefableType
 		attributes.add(att)
 
 		newDataClasses.add(it)
@@ -170,14 +170,14 @@ class TypeGenerator {
 		name = "value"
 		if (n>1)
 			size = n
-		refType = FBasicTypeId::UINT8.getPrimitiveType.toRefableType
+		type = FBasicTypeId::UINT8.getPrimitiveType.toRefableType
 		return it
 	}
 
 	def private createUInt32Attribute () {
 		var it = RoomFactory::eINSTANCE.createAttribute
 		name = "value"
-		refType = FBasicTypeId::UINT32.getPrimitiveType.toRefableType
+		type = FBasicTypeId::UINT32.getPrimitiveType.toRefableType
 		return it
 	}
 
@@ -191,7 +191,7 @@ class TypeGenerator {
 
 	def private create RoomFactory::eINSTANCE.createAttribute createDummyAttribute() {
 		name = "dummy"
-		refType = FBasicTypeId::UINT8.getPrimitiveType.toRefableType
+		type = FBasicTypeId::UINT8.getPrimitiveType.toRefableType
 	}
 
 	def private getPrimitiveType (FBasicTypeId src) {

@@ -45,7 +45,7 @@ class Franca2ETriceTransformation {
 		resetTypeLists
 		
 		var doc = "Generated from Franca IDL model " + src.name + " by Franca2ETriceTransformation."
-		docu = doc.transformComment 
+		it.docu = doc.transformComment 
 
 		// load ROOM modellib
 		val importLibs = modellib.init(uriModelLib, resourceSet)
@@ -134,7 +134,7 @@ class Franca2ETriceTransformation {
 		app.actorRefs.add(clientRef)
 		app.actorRefs.add(serverRef)
 		val b = RoomFactory::eINSTANCE.createBinding
-		b.endpoint1 = clientRef.createEndPoint(concreteClient.ifPorts.get(0))
+		b.endpoint1 = clientRef.createEndPoint(concreteClient.interfacePorts.get(0))
 		b.endpoint2 = serverRef.createEndPoint(concreteServer.allVisibleIfPorts.head)
 		app.bindings.add(b)
 	}

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.etrice.generator.launch.java.launchConfigurationType">
+<booleanAttribute key="MSC" value="true"/>
 <listAttribute key="ModelFiles">
-<listEntry value="${workspace_loc:/org.franca.connectors.etrice.tests/model-gen/example1.room}"/>
+<listEntry value="${workspace_loc:/org.franca.connectors.etrice.tests/model/example1.etmap}"/>
 </listAttribute>
 <listAttribute key="org.eclipse.debug.ui.favoriteGroups">
 <listEntry value="org.eclipse.debug.ui.launchGroup.run"/>

@@ -20,7 +20,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.apache.log4j;bundle-version="1.2.15";visibility:=reexport,
  org.franca.core;bundle-version="0.8.4",
  org.franca.core.dsl;bundle-version="0.8.4",
- org.eclipse.etrice.core.room;bundle-version="[0.3.0,0.3.9)";visibility:=reexport
+ org.eclipse.etrice.core.room;bundle-version="[0.3.0,0.4.9)";visibility:=reexport,
+ org.eclipse.etrice.core.common;bundle-version="[0.4.0,0.4.9)";visibility:=reexport
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: org.franca.connectors.etrice
