@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -43,9 +44,9 @@ public class DefaultTraceParser implements ITraceParser {
 		CALL, RESPOND, SIGNAL
 	}
 	
-	Map<EventType, Multimap<String, FEventOnIf>> eventMap = null;
+	Map<FModel, Map<EventType, Multimap<String, FEventOnIf>>> eventMapCache = new HashMap<FModel, Map<EventType,Multimap<String,FEventOnIf>>>();
 	
-	private Map<EventType, Multimap<String, FEventOnIf>> initialize(FModel model) {
+	private void initialize(FModel model) {
 		Map<EventType, Multimap<String, FEventOnIf>> eventMap = new HashMap<DefaultTraceParser.EventType, Multimap<String,FEventOnIf>>();
 		for (EventType type : EventType.values()) {
 			Multimap<String, FEventOnIf> map = ArrayListMultimap.create();
@@ -71,15 +72,11 @@ public class DefaultTraceParser implements ITraceParser {
 			}
 		}
 
-		return eventMap;
+		eventMapCache.put(model, eventMap);
 	}
 
 	@Override
 	public List<Set<FEventOnIf>> parseAll(FModel model, InputStream inputStream) {
-		if (eventMap == null) {
-			eventMap = initialize(model);
-		}
-
 		InputStreamReader streamReader = null;
 		BufferedReader bufferedReader = null;
 		List<Set<FEventOnIf>> trace = new ArrayList<Set<FEventOnIf>>();
@@ -88,7 +85,10 @@ public class DefaultTraceParser implements ITraceParser {
 			bufferedReader = new BufferedReader(streamReader);
 			String line = null;
 			while ((line = bufferedReader.readLine()) != null) {
-				trace.add(parseSingle(model, line));
+				Set<FEventOnIf> element = parseSingle(model, line);
+				if (element != null) {
+					trace.add(element);
+				}
 			}
 			return trace;
 		} catch (IOException e) {
@@ -114,14 +114,19 @@ public class DefaultTraceParser implements ITraceParser {
 
 	@Override
 	public Set<FEventOnIf> parseSingle(FModel model, String traceElement) {
-		if (eventMap == null) {
-			eventMap = initialize(model); 
+		if (!eventMapCache.containsKey(model)) {
+			initialize(model);
 		}
+		
+		Map<EventType, Multimap<String, FEventOnIf>> eventMap = eventMapCache.get(model);
 		Set<FEventOnIf> events = new HashSet<FEventOnIf>();
 		String[] tokens = traceElement.split("_");
 		if (tokens.length == 2) {
-			events.addAll(eventMap.get(EventType.valueOf(tokens[0].toUpperCase())).get(tokens[1]));
-			return Collections.unmodifiableSet(events);
+			Collection<FEventOnIf> value = eventMap.get(EventType.valueOf(tokens[0].toUpperCase())).get(tokens[1]);
+			if (!value.isEmpty()) {
+				events.addAll(value);
+				return Collections.unmodifiableSet(events);
+			}
 		}
 		return null;
 	}

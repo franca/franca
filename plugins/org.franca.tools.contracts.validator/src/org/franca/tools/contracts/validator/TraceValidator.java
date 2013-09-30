@@ -110,7 +110,7 @@ public class TraceValidator {
 	private static TraceValidationResult isValidTrace0(FContract contract,
 			Set<Set<FTransition>> initialTraceGroup, Object... trace) {
 		if (trace.length == 0) {
-			return TraceValidationResult.TRUE;
+			return new TraceValidationResult(false, null);
 		} else {
 			Map<FEventOnIf, Set<FTransition>> guessMap = constructGuessMap(contract);
 

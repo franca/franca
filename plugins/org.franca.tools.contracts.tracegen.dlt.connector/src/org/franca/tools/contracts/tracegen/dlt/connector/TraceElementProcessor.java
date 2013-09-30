@@ -26,8 +26,15 @@ import com.google.inject.Injector;
 
 public class TraceElementProcessor extends Thread {
 
+	// all mapping should be based on the context id as key
+	// maps the context id to the trace groups
 	private Map<String, Set<Set<FTransition>>> contextTraceGroupMap;
+	
+	// maps the file path to the resolved model
 	private Map<String, FContract> francaContractMap;
+	
+	private Map<String, String> contextIdPathMap;
+	
 	private List<TraceElementRequest> requests;
 	private volatile boolean interrupted;
 	private Injector injector;
@@ -40,6 +47,7 @@ public class TraceElementProcessor extends Thread {
 		this.interrupted = false;
 		this.contextTraceGroupMap = new HashMap<String, Set<Set<FTransition>>>();
 		this.francaContractMap = new HashMap<String, FContract>();
+		this.contextIdPathMap = new HashMap<String, String>();
 		this.traceParser = this.injector.getInstance(ITraceParser.class);
 	}
 	
@@ -63,13 +71,20 @@ public class TraceElementProcessor extends Thread {
 			}
 			
 			if (request != null) {
+				
+				// a new file path has been selected by the user
+				if (!request.getFilePath().equals(contextIdPathMap.get(request.getContextId()))) {
+					contextTraceGroupMap.remove(request.getContextId());
+					francaContractMap.remove(request.getContextId());
+				}
+				
+				this.contextIdPathMap.put(request.getContextId(), request.getFilePath());
 				Set<Set<FTransition>> initial = contextTraceGroupMap.get(request.getContextId());
 				FContract contract = loadFrancaModel(request.getFilePath());
 				
 				// try resolving
 				if (contract != null) {
 					FModel model = (FModel) contract.eContainer().eContainer();
-					francaContractMap.put(request.getContextId(), contract);
 					Set<FEventOnIf> parsedEvents = traceParser.parseSingle(model, request.getTraceElement());
 					
 					TraceElementResponse response = new TraceElementResponse(request.getMessageId(), false, request.getContextId(), "");
