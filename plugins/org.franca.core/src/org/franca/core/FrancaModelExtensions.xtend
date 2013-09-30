@@ -23,6 +23,7 @@ import org.franca.core.franca.FModel
 import org.franca.core.franca.FModelElement
 import org.franca.core.franca.FStateGraph
 import org.franca.core.franca.FStructType
+import org.franca.core.franca.FType
 import org.franca.core.franca.FTypeCollection
 import org.franca.core.franca.FTypeDef
 import org.franca.core.franca.FUnionType
@@ -64,44 +65,48 @@ class FrancaModelExtensions {
 		return null
 	}
 	
-	def static Set<FInterface> getInheritationSet(Void i) {
+	def static dispatch Set<FType> getInheritationSet(Void i) {
 		return emptySet
 	}
 	
-	def static Set<FInterface> getInheritationSet(FInterface i) {
+	def static dispatch Set<FType> getInheritationSet(FType t) {
+		return #{t}
+	}
+	
+	def static Set<FInterface> getInterfaceInheritationSet(FInterface i) {
 		if (i == null) return #{};
 		val result = newHashSet
 		result += #{i}
-		result += i.base.inheritationSet
+		result += i.base.interfaceInheritationSet
 		result
 	}
 	
-	def static Set<FStructType> getInheritationSet(FStructType s) {
+	def static dispatch Set<FType> getInheritationSet(FStructType s) {
 		if (s == null) return #{};
-		val result = newHashSet
+		val Set<FType> result = newHashSet
 		result += #{s}
 		result += s.base.inheritationSet
 		result
 	}
 	
-	def static Set<FUnionType> getInheritationSet(FUnionType u) {
+	def static dispatch Set<FType> getInheritationSet(FUnionType u) {
 		if (u == null) return #{};
-		val result = newHashSet
+		val Set<FType> result = newHashSet
 		result += #{u}
 		result += u.base.inheritationSet
 		result
 	}
 	
-	def static Set<FEnumerationType> getInheritationSet(FEnumerationType e) {
+	def static dispatch Set<FType> getInheritationSet(FEnumerationType e) {
 		if (e == null) return #{};
-		val result = newHashSet
+		val Set<FType> result = newHashSet
 		result += #{e}
 		result += e.base.inheritationSet
 		result
 	}
 	
 	def static dispatch Iterable<? extends FModelElement> getAllElements(FInterface i) {
-		i.inheritationSet.map[attributes + methods + broadcasts + types].flatten
+		i.interfaceInheritationSet.map[attributes + methods + broadcasts + types].flatten
 	}
 
 	def static dispatch Iterable<? extends FModelElement> getAllElements(FTypeCollection c) {
@@ -113,11 +118,11 @@ class FrancaModelExtensions {
 	}
 
 	def static dispatch Iterable<? extends FModelElement> getAllElements(FStructType s) {
-		s.inheritationSet.map[elements].flatten
+		s.inheritationSet.map[(it as FStructType).elements].flatten
 	}
 
 	def static dispatch Iterable<? extends FModelElement> getAllElements(FEnumerationType e) {
-		e.inheritationSet.map[enumerators].flatten
+		e.inheritationSet.map[(it as FEnumerationType).enumerators].flatten
 	}
 
 	def static dispatch Iterable<? extends FModelElement> getAllElements(FTypeDef td) {
@@ -125,7 +130,7 @@ class FrancaModelExtensions {
 	}
 
 	def static dispatch Iterable<? extends FModelElement> getAllElements(FUnionType u) {
-		u.inheritationSet.map[elements].flatten
+		u.inheritationSet.map[(it as FUnionType).elements].flatten
 	}
 
 	def static protected dispatch Iterable<? extends FModelElement> getAllElements(Object e) {

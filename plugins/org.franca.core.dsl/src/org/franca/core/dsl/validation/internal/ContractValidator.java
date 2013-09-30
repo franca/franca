@@ -119,7 +119,7 @@ public class ContractValidator {
 		FTypeRef typeRHS = checkExpression(reporter, assignment.getRhs(), assignment, FrancaPackage.Literals.FASSIGNMENT__RHS);
 		if (typeRHS!=null) {
 			FTypeRef typeLHS = assignment.getLhs().getType();
-			if (! TypeSystem.isSameType(typeRHS, typeLHS)) {
+			if (! TypeSystem.isCompatibleType(typeRHS, typeLHS)) {
 				reporter.reportError(
 						"invalid expression type in assignment (is " +
 								FrancaHelpers.getTypeString(typeRHS) + ", expected " +
