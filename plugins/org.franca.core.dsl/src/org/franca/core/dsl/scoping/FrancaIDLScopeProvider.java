@@ -7,22 +7,32 @@
  *******************************************************************************/
 package org.franca.core.dsl.scoping;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.mwe2.language.scoping.QualifiedNameProvider;
+import org.eclipse.xtext.EcoreUtil2;
+import org.eclipse.xtext.naming.QualifiedName;
+import org.eclipse.xtext.resource.EObjectDescription;
+import org.eclipse.xtext.resource.IEObjectDescription;
 import org.eclipse.xtext.scoping.IScope;
 import org.eclipse.xtext.scoping.Scopes;
 import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider;
 import org.eclipse.xtext.scoping.impl.ImportUriGlobalScopeProvider;
+import org.eclipse.xtext.scoping.impl.SimpleScope;
 import org.franca.core.FrancaModelExtensions;
 import org.franca.core.contracts.TypeSystem;
 import org.franca.core.franca.FCompoundType;
 import org.franca.core.franca.FContract;
+import org.franca.core.franca.FCurrentError;
+import org.franca.core.franca.FEnumerationType;
 import org.franca.core.franca.FEventOnIf;
 import org.franca.core.franca.FInterface;
+import org.franca.core.franca.FMethod;
 import org.franca.core.franca.FTransition;
+import org.franca.core.franca.FTrigger;
 import org.franca.core.franca.FType;
 import org.franca.core.franca.FTypeRef;
 import org.franca.core.franca.FTypedElementRef;
@@ -39,6 +49,9 @@ import com.google.inject.Inject;
  */
 public class FrancaIDLScopeProvider extends AbstractDeclarativeScopeProvider {
 
+	@Inject
+	private FrancaModelExtensions francaModelExtensions;
+	
 	@Inject
 	private QualifiedNameProvider qualifiedNameProvider;
 	
@@ -58,7 +71,40 @@ public class FrancaIDLScopeProvider extends AbstractDeclarativeScopeProvider {
 				qualifiedNameProvider
 		);
 	}
+	
+	public IScope scope_FTypeRef_derived (FCurrentError cr, EReference ref) {
+		FTransition tr = EcoreUtil2.getContainerOfType(cr, FTransition.class);
+		
+		FTrigger trigger = tr.getTrigger();
+		if (trigger == null) {
+			return IScope.NULLSCOPE;
+		}
+		
+		FEventOnIf ev = trigger.getEvent();
+		if (ev != null) {
+			if (ev.getError() != null) {
+				FMethod errorMethod = ev.getError();
+				if (errorMethod != null) {
+					FEnumerationType localErrors = errorMethod.getErrors();
+					FEnumerationType referencedErrorEnum = errorMethod.getErrorEnum();
+					IEObjectDescription errorDescription;
+					QualifiedName errorName = QualifiedName.create("error");
+					if (localErrors != null) {
+						errorDescription =
+								new EObjectDescription(errorName, localErrors, null);
+						return new SimpleScope(Collections.singleton(errorDescription));
+					} else if (referencedErrorEnum != null) {
+						errorDescription =
+								new EObjectDescription(errorName, referencedErrorEnum, null);
+						return new SimpleScope(Collections.singleton(errorDescription));
+					}
+				}
+			}
+		}
 
+		return IScope.NULLSCOPE;
+	}
+	
 	public IScope scope_FTypedElementRef_element (FTransition tr, EReference ref) {
 		final List<EObject> scopes = Lists.newArrayList();
 
@@ -84,7 +130,7 @@ public class FrancaIDLScopeProvider extends AbstractDeclarativeScopeProvider {
 
 		return Scopes.scopeFor(scopes);
 	}
-
+	
 	public IScope scope_FTypedElementRef_field (FTypedElementRef var, EReference ref) {
 		if (var.getTarget() == null) {
 			return IScope.NULLSCOPE;

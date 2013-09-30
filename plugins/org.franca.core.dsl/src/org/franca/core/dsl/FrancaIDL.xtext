@@ -293,12 +293,28 @@ PrimaryExpression returns FExpression:
   
 SimplePrimaryExpression returns FExpression:
   FTypedElementRef |
+  FCurrentError |
   FConstant |
   '(' LogicalOrExpression ')';
   
 FUnaryOperation returns FExpression:
 	{FUnaryOperation}
 	op = OperatorUnary operand = SimplePrimaryExpression;
+	
+FCurrentError returns FCurrentError:
+	{FCurrentError}	
+	type=ErrorTypeRef
+	// referencing a virtual FArgument with a type that is defined by a method either by referencing a previously
+	// defined one or by implicitly declaring a new one 
+;
+
+ErrorTypeRef returns FTypeRef:
+	derived=[FEnumerationType|ErrorReferenceTerminal]
+;
+
+ErrorReferenceTerminal:
+	'error'
+;
 
 FTypedElementRef returns FExpression:
 	{FTypedElementRef}
