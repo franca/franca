@@ -255,6 +255,9 @@
       <genFeatures notify="false" createChild="false" propertyDescription="specifies the field of a compound type"
           propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FTypedElementRef/field"/>
     </genClasses>
+    <genClasses ecoreClass="franca.ecore#//FCurrentError">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FCurrentError/type"/>
+    </genClasses>
     <genClasses ecoreClass="franca.ecore#//FConstant"/>
     <genClasses ecoreClass="franca.ecore#//FIntegerConstant">
       <genFeatures createChild="false" propertyDescription="the value of this integer constant (an actual integer)"

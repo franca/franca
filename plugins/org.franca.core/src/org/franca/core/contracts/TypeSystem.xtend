@@ -23,6 +23,7 @@ import org.franca.core.franca.FTypedElementRef
 import org.eclipse.emf.ecore.EObject
 import org.franca.core.franca.FOperator
 import org.franca.core.franca.FUnaryOperation
+import org.franca.core.franca.FCurrentError
 
 class TypeSystem {
 	
@@ -105,6 +106,10 @@ class TypeSystem {
 		UNDEFINED_TYPE
 	}
 	
+	def private dispatch FTypeRef evalType (FCurrentError it, EObject loc, EStructuralFeature feat) {
+		return type
+	}
+
 	def private dispatch FTypeRef evalType (FTypedElementRef expr, EObject loc, EStructuralFeature feat) {
 		if (expr?.target==null) {
 			val te = expr?.element
