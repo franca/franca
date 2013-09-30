@@ -24,6 +24,7 @@ import org.eclipse.emf.ecore.EObject
 import org.franca.core.franca.FOperator
 import org.franca.core.franca.FUnaryOperation
 import org.franca.core.franca.FCurrentError
+import static extension org.franca.core.FrancaModelExtensions.*
 
 class TypeSystem {
 	
@@ -79,8 +80,8 @@ class TypeSystem {
 				return UNDEFINED_TYPE
 			return BOOLEAN_TYPE
 		} else if (FOperator::EQUAL.equals(op) || FOperator::UNEQUAL.equals(op)) {
-			if (! isSameType(t1, t2)) {
-				addIssue("operands must have same type", loc, feat)
+			if (! isCompatibleType(t1, t2) && ! isCompatibleType(t2, t1)) {
+				addIssue("operands must have compatible type", loc, feat)
 				return UNDEFINED_TYPE
 			}
 			return BOOLEAN_TYPE
@@ -156,19 +157,24 @@ class TypeSystem {
 		}
 		return true
 	}
+	
+	def static private isOfCompatiblePrimitiveType(FTypeRef t1, FTypeRef t2) {
+		if (t1.isBoolean) return t2.isBoolean
+		if (t1.isString) return t2.isString
+		if (t1.isInteger) return t2.isInteger
+		if (t1.isFloatingPoint) return t2.isFloatingPoint
+		
+		return false
+	}
+	
+	def static isCompatibleType(FTypeRef reference, FTypeRef type) {
+		return (isOfCompatiblePrimitiveType(reference, type)) ||
+			(reference.derived != null && getInheritationSet(type.derived).contains(reference.derived))
+	}
 
 	def static isSameType (FTypeRef t1, FTypeRef t2) {
-		if (t1.isBoolean && t2.isBoolean)
-			return true
-		if (t1.isString && t2.isString)
-			return true
-		if (t1.isInteger && t2.isInteger)
-			return true
-		
-		if (t1.derived!=null && t2.derived!=null && t1.derived==t2.derived)
-			return true
-
-		return false
+		return isOfCompatiblePrimitiveType(t1, t2) ||
+			(t1.derived!=null /*&& t2.derived!=null*/ && t1.derived==t2.derived)
 	}
 
 	def private getIntegerType (FIntegerConstant value) {
