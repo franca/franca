@@ -31,6 +31,7 @@ codelanguage-def[Franca]
 	attribute,method,broadcast,
 	in,out,error,
 	readonly,noSubscriptions,fireAndForget,selective,
+	manages,
 
 	array,of,struct,union,typedef,is,map,to,enumeration,
 	extends,
