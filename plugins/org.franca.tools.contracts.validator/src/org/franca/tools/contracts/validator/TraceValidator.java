@@ -133,18 +133,19 @@ public class TraceValidator {
 					for (FEventOnIf event : events) {
 						traceGroups.add(guessMap.get(event));
 					}
-					// if the trace contains only one element, the trace is
+					// if the trace contains only one element and 
+					// the initial trace group is null, then the trace is
 					// always valid (suppose that the trace belongs the the
 					// contract)
 					return new TraceValidationResult(true, traceGroups);
 				} else {
 					for (FEventOnIf event : events) {
-						fun0(event, guessMap, new HashSet<FTransition>(),
+						fun0(event, guessMap, expected,
 								initialTraceGroup, temporaryTraceGroups);
 					}
 					if (temporaryTraceGroups.isEmpty()) {
 						return new TraceValidationResult(false, expected, 0,
-								temporaryTraceGroups);
+								null);
 					} else {
 						return new TraceValidationResult(true,
 								temporaryTraceGroups);
