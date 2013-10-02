@@ -21,6 +21,8 @@ import org.franca.core.franca.FTypeCollection
 import org.franca.core.franca.FTypeDef
 import org.franca.core.franca.FUnionType
 import org.franca.core.franca.FType
+import org.franca.core.franca.FEventOnIf
+import org.franca.core.franca.FMethod
 
 class FrancaModelExtensions {
 	
@@ -54,6 +56,16 @@ class FrancaModelExtensions {
 		} while (x!=null)
 		
 		return null
+	}
+	
+	def static getTriggeringMethod(FEventOnIf event) {
+		var FMethod result = null
+		if (event != null) {
+			/*if (result == null)*/ result = event.call
+			if (result == null) result = event.error
+			if (result == null) result = event.respond
+		}
+		return result;
 	}
 	
 	def static dispatch Set<FType> getInheritationSet(Void i) {

@@ -19,12 +19,13 @@ import org.franca.core.franca.FBinaryOperation
 import static org.franca.core.franca.FrancaPackage$Literals.*
 import static extension org.franca.core.framework.FrancaHelpers.*
 import org.eclipse.emf.ecore.EStructuralFeature
-import org.franca.core.franca.FTypedElementRef
 import org.eclipse.emf.ecore.EObject
 import org.franca.core.franca.FOperator
 import org.franca.core.franca.FUnaryOperation
 import org.franca.core.franca.FCurrentError
 import static extension org.franca.core.FrancaModelExtensions.*
+import org.franca.core.franca.FQualifiedElementRef
+import org.franca.core.franca.FTypedElement
 
 class TypeSystem {
 	
@@ -34,12 +35,7 @@ class TypeSystem {
 	
 	var IssueCollector collector
 	
-	def FTypeRef getType (FExpression expr) {
-		this.collector = null
-		expr.evalType(null, null)
-	}
-	
-	def FTypeRef getType (FExpression expr, IssueCollector collector, EObject loc, EStructuralFeature feat) {
+	def FTypeRef evaluateType (FExpression expr, IssueCollector collector, EObject loc, EStructuralFeature feat) {
 		this.collector = collector
 		expr.evalType(loc, feat)
 	}
@@ -111,16 +107,24 @@ class TypeSystem {
 		return type
 	}
 
-	def private dispatch FTypeRef evalType (FTypedElementRef expr, EObject loc, EStructuralFeature feat) {
-		if (expr?.target==null) {
+	def private dispatch FTypeRef evalType (FQualifiedElementRef expr, EObject loc, EStructuralFeature feat) {
+		if (expr?.qualifier==null) {
 			val te = expr?.element
-			if (!(te == null) && te.array) {
-				addIssue("array types not supported yet", loc, feat)
-				return UNDEFINED_TYPE
+			val boolean TODO = true;
+//			if (!(te == null) && te.array) {
+//				addIssue("array types not supported yet", loc, feat)
+//				return UNDEFINED_TYPE
+//			}
+			if (te instanceof FTypedElement) {
+				return (te as FTypedElement).type
 			}
-			return te?.type
+			return null
 		} else {
-			return expr?.field?.type
+			val field = expr?.field;
+			if (field instanceof FTypedElement) {
+				return (field as FTypedElement).type
+			}
+			return null
 		} 
 //		println("TE: " + expr.toString)
 //		if (expr.element!=null)

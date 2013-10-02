@@ -22,13 +22,14 @@ import org.franca.core.franca.FState
 import org.franca.core.franca.FStringConstant
 import org.franca.core.franca.FTransition
 import org.franca.core.franca.FTypedElement
-import org.franca.core.franca.FTypedElementRef
 import org.franca.tools.contracts.tracegen.strategies.events.EventData
 import org.franca.tools.contracts.tracegen.values.ValueGenerator
 import org.franca.tools.contracts.tracegen.values.complex.CompoundValue
 import org.franca.tools.contracts.tracegen.values.simple.DefaultlyInitializingSimpleValueGenerator
 import org.franca.core.franca.FOperator
 import org.franca.core.franca.FUnaryOperation
+import org.franca.core.franca.FQualifiedElementRef
+import org.franca.core.franca.FField
 
 class BehaviourAwareTrace extends Trace {
 	
@@ -85,18 +86,20 @@ class BehaviourAwareTrace extends Trace {
 		//it is unknown what to do here, right now
 	}
 	
-	def Object evaluateComplexReference(FTypedElementRef expr, EventData triggeringEvent) {
-		val indirect = expr.target
+	def Object evaluateComplexReference(FQualifiedElementRef expr, EventData triggeringEvent) {
+		val indirect = expr.qualifier
 		if (indirect === null)
 			return evaluate(expr, triggeringEvent);
 			
 		val left = evaluateComplexReference(indirect, triggeringEvent) as CompoundValue
 		
-		return left.getValue(expr.field)
+		val boolean HANDLE_OTHER_THINGS_THAN_FIELDS_LIKE_FENUMERATORS = true;
+		
+		return left.getValue(expr.field as FField)
 	}
 	
-	def dispatch Object evaluate(FTypedElementRef expr, EventData triggeringEvent) {
-		val indirect = expr.target
+	def dispatch Object evaluate(FQualifiedElementRef expr, EventData triggeringEvent) {
+		val indirect = expr.qualifier
 		if (indirect !== null) {
 			return evaluateComplexReference(expr, triggeringEvent)
 		}

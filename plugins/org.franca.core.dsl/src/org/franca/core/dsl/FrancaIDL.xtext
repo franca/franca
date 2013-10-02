@@ -292,7 +292,7 @@ PrimaryExpression returns FExpression:
   FUnaryOperation | SimplePrimaryExpression;
   
 SimplePrimaryExpression returns FExpression:
-  FTypedElementRef |
+  FQualifiedElementRef |
   FCurrentError |
   FConstant |
   '(' LogicalOrExpression ')';
@@ -313,13 +313,17 @@ ErrorTypeRef returns FTypeRef:
 ;
 
 ErrorReferenceTerminal:
-	'error'
+	'errorval'
 ;
 
-FTypedElementRef returns FExpression:
-	{FTypedElementRef}
-	element=[FTypedElement|ID]
-	({FTypedElementRef.target=current} '.' field=[FField|ID])*;
+AnonymousErrorTypeReferenceTerminal:
+	'errordef'
+;
+
+FQualifiedElementRef returns FExpression:
+	{FQualifiedElementRef}
+	(element=[FTypedElement|ID] | element = [FEnumerationType|AnonymousErrorTypeReferenceTerminal])
+	({FQualifiedElementRef.qualifier=current} '.' field=[FField|ID])*;
 
 FConstant returns FExpression:
 	FIntegerConstant |
