@@ -247,13 +247,10 @@
     </genClasses>
     <genClasses ecoreClass="franca.ecore#//FExpression"/>
     <genClasses image="false" ecoreClass="franca.ecore#//FStatement"/>
-    <genClasses ecoreClass="franca.ecore#//FTypedElementRef">
-      <genFeatures notify="false" createChild="false" propertyDescription="the typed element which is actually referenced by this object"
-          propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FTypedElementRef/element"/>
-      <genFeatures property="None" children="true" createChild="true" propertyDescription="for nested compound types, this property references the next outer level. Otherwise, it is null."
-          ecoreFeature="ecore:EReference franca.ecore#//FTypedElementRef/target"/>
-      <genFeatures notify="false" createChild="false" propertyDescription="specifies the field of a compound type"
-          propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FTypedElementRef/field"/>
+    <genClasses ecoreClass="franca.ecore#//FQualifiedElementRef">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FQualifiedElementRef/element"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FQualifiedElementRef/qualifier"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FQualifiedElementRef/field"/>
     </genClasses>
     <genClasses ecoreClass="franca.ecore#//FCurrentError">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FCurrentError/type"/>

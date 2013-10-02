@@ -18,7 +18,9 @@ import org.eclipse.emf.ecore.resource.Resource
 import org.franca.core.franca.FArrayType
 import org.franca.core.franca.FContract
 import org.franca.core.franca.FEnumerationType
+import org.franca.core.franca.FEventOnIf
 import org.franca.core.franca.FInterface
+import org.franca.core.franca.FMethod
 import org.franca.core.franca.FModel
 import org.franca.core.franca.FModelElement
 import org.franca.core.franca.FStateGraph
@@ -63,6 +65,16 @@ class FrancaModelExtensions {
 		} while (x!=null)
 		
 		return null
+	}
+	
+	def static getTriggeringMethod(FEventOnIf event) {
+		var FMethod result = null
+		if (event != null) {
+			/*if (result == null)*/ result = event.call
+			if (result == null) result = event.error
+			if (result == null) result = event.respond
+		}
+		return result;
 	}
 	
 	def static dispatch Set<FType> getInheritationSet(Void i) {

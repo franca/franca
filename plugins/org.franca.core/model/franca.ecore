@@ -294,14 +294,14 @@
     </eAnnotations>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FStatement" abstract="true"/>
-  <eClassifiers xsi:type="ecore:EClass" name="FTypedElementRef" eSuperTypes="#//FExpression">
+  <eClassifiers xsi:type="ecore:EClass" name="FQualifiedElementRef" eSuperTypes="#//FExpression">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="This class is a reference to some ref:FrancaModelAPIReference_FTypedElement[FTypedElement].&#xA;If the referenced element is no compound type (i.e., struct or union), only the e[element] property&#xA;will be used. The e[target] and e[field] properties will be null. If a field of a compound type is referenced,&#xA;the e[field] property will point to the ref:FrancaModelAPIReference_FField[FField] object. &#xA;If the compound type is nested, the e[target] property will reference the next outer level&#xA;(which is itself a compound referenced by a ref:FrancaModelAPIReference_FTypedElementRef[FTypedElementRef]. &#xA;This might be chained in order to specify a reference to a deeply nested compound element.&#xA;"/>
+      <details key="documentation" value="TODO: update&#xA;&#xA;This class is a reference to some ref:FrancaModelAPIReference_FTypedElement[FTypedElement].&#xA;If the referenced element is no compound type (i.e., struct or union), only the e[element] property&#xA;will be used. The e[target] and e[field] properties will be null. If a field of a compound type is referenced,&#xA;the e[field] property will point to the ref:FrancaModelAPIReference_FField[FField] object. &#xA;If the compound type is nested, the e[target] property will reference the next outer level&#xA;(which is itself a compound referenced by a ref:FrancaModelAPIReference_FTypedElementRef[FTypedElementRef]. &#xA;This might be chained in order to specify a reference to a deeply nested compound element.&#xA;"/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="element" eType="#//FTypedElement"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="#//FTypedElementRef"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="element" eType="#//FModelElement"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="qualifier" eType="#//FQualifiedElementRef"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="field" eType="#//FField"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="field" eType="#//FModelElement"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FCurrentError" eSuperTypes="#//FExpression">
     <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//FTypeRef"

@@ -148,7 +148,7 @@ public class ContractValidator {
 	{
 		TypeSystem ts = new TypeSystem();
 		IssueCollector issues = new IssueCollector();
-		FTypeRef type = ts.getType(expr, issues, loc, feat);
+		FTypeRef type = ts.evaluateType(expr, issues, loc, feat);
 		if (! issues.getIssues().isEmpty()) {
 			for(TypeIssue ti : issues.getIssues()) {
 				reporter.reportError(ti.getMessage(), ti.getLocation(), ti.getFeature());
