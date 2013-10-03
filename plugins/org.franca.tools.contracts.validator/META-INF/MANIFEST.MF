@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: org.franca.tools.contracts.validator
 Bundle-SymbolicName: org.franca.tools.contracts.validator
-Bundle-Version: 0.8.8.qualifier
+Bundle-Version: 0.8.9.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: itemis AG
 Require-Bundle: org.franca.core;bundle-version="0.8.8",
