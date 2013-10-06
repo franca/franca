@@ -192,10 +192,11 @@ public class TraceValidator {
 			Set<FTransition> expected, Set<Set<FTransition>> traceGroups,
 			Set<Set<FTransition>> temporaryTraceGroups) {
 		Set<FTransition> guess = guessMap.get(event);
-		expected.addAll(guess);
+		
 		// check whether we can follow the execution on any path
 		for (Set<FTransition> transitions : traceGroups) {
 			for (FTransition transition : transitions) {
+				expected.addAll(transition.getTo().getTransitions());
 				Set<FTransition> isect = intersection(transition.getTo()
 						.getTransitions(), guess);
 				// only add the new element if it contains at least one element
