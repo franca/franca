@@ -13,6 +13,7 @@ import org.franca.core.franca.FModel;
 import org.franca.core.utils.FileHelper;
 import org.franca.generators.html.HTMLGenerator;
 import org.franca.generators.java.JavaAPIGenerator;
+import org.franca.generators.websocket.WebsocketClientGenerator;
 
 public class FrancaGenerators {
 
@@ -48,6 +49,14 @@ public class FrancaGenerators {
 		}
 
 		return true;
+	}
+	
+	public boolean genWebsocketClient (FModel model, String outDir) {
+		WebsocketClientGenerator genClient = new WebsocketClientGenerator();
+		String output = genClient.generate(model).toString();
+		String basename = getBasename(model);
+		String outPath = outDir + "/" + createPath(model);
+		return FileHelper.save(outPath, basename + ".js", output);
 	}
 	
 
