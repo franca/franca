@@ -36,7 +36,7 @@ public class WebsocketGenTest {
 	
 	@Test
 	public void test01() {
-		genAndSave("org/example/MyInterface.fidl");
+		genAndSave("org/example/SimpleUI.fidl");
 	}
 
 

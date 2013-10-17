@@ -53,10 +53,13 @@ public class FrancaGenerators {
 	
 	public boolean genWebsocketClient (FModel model, String outDir) {
 		WebsocketClientGenerator genClient = new WebsocketClientGenerator();
-		String output = genClient.generate(model).toString();
-		String basename = getBasename(model);
+
+		// we pick the first interface only
+		FInterface api = model.getInterfaces().get(0);
+
+		String output = genClient.generate(api).toString();
 		String outPath = outDir + "/" + createPath(model);
-		return FileHelper.save(outPath, basename + ".js", output);
+		return FileHelper.save(outPath, genClient.getProxyName(api) + ".js", output);
 	}
 	
 
