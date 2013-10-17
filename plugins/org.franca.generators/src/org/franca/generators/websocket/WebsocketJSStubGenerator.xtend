@@ -148,19 +148,7 @@ class WebsocketJSStubGenerator {
 			}
 		}
 
-		«FOR t : api.types.filter(typeof(FEnumerationType))»
-		// definition of enumeration '«t.name»'
-		var «t.name» = function(){
-			return {
-				«FOR e : t.enumerators SEPARATOR ','»
-				'«e.name»':«t.enumerators.indexOf(e)»
-				«ENDFOR»
-			}
-		}();
-
 		«api.types.genEnumerations»
-
-		«ENDFOR»
 
 	'''
 	
