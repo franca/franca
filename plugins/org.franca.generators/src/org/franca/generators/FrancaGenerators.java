@@ -13,6 +13,7 @@ import org.franca.core.franca.FModel;
 import org.franca.core.utils.FileHelper;
 import org.franca.generators.html.HTMLGenerator;
 import org.franca.generators.java.JavaAPIGenerator;
+import org.franca.generators.websocket.WebsocketJSStubGenerator;
 import org.franca.generators.websocket.WebsocketProxyGenerator;
 
 public class FrancaGenerators {
@@ -51,15 +52,19 @@ public class FrancaGenerators {
 		return true;
 	}
 	
-	public boolean genWebsocketClient (FModel model, String outDir) {
-		WebsocketProxyGenerator genClient = new WebsocketProxyGenerator();
+	public boolean genWebsocket (FModel model, String outDir) {
+		WebsocketProxyGenerator genProxy = new WebsocketProxyGenerator();
+		WebsocketJSStubGenerator genStub = new WebsocketJSStubGenerator();
 
 		// we pick the first interface only
 		FInterface api = model.getInterfaces().get(0);
 
-		String output = genClient.generate(api).toString();
 		String outPath = outDir + "/" + createPath(model);
-		return FileHelper.save(outPath, genClient.getProxyName(api) + ".js", output);
+		String output1 = genProxy.generate(api).toString();
+		String output2 = genStub.generate(api).toString();
+		boolean ok1 = FileHelper.save(outPath, genProxy.getProxyName(api) + ".js", output1);
+		boolean ok2 = FileHelper.save(outPath, genStub.getStubName(api) + ".js", output2);
+		return ok1 && ok2;
 	}
 	
 

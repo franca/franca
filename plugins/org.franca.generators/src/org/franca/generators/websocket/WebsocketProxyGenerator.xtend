@@ -8,9 +8,8 @@
 package org.franca.generators.websocket
 
 import org.franca.core.franca.FInterface
-import org.franca.core.franca.FModel
-import org.franca.core.franca.FArgument
-import org.franca.core.franca.FEnumerationType
+
+import static extension org.franca.generators.websocket.WebsocketGeneratorUtils.*
 
 class WebsocketProxyGenerator {
 	
@@ -76,22 +75,8 @@ class WebsocketProxyGenerator {
 		
 		«ENDFOR»
 
-		«FOR t : api.types.filter(typeof(FEnumerationType))»
-		// definition of enumeration '«t.name»'
-		var «t.name» = function(){
-			return {
-				«FOR e : t.enumerators SEPARATOR ','»
-				'«e.name»':«t.enumerators.indexOf(e)»
-				«ENDFOR»
-			}
-		}();
-
-		«ENDFOR»
+		«api.types.genEnumerations»
 
 	'''
-
-	def private genArgList (Iterable<FArgument> args, String prefix)
-		'''«FOR a : args SEPARATOR ", "»«prefix + a.name»«ENDFOR»'''
-
 	
 }

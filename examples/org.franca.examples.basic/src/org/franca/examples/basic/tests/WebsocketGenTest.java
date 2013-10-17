@@ -49,7 +49,7 @@ public class WebsocketGenTest {
 		//System.out.println("Franca IDL: package '" + fmodel.getName() + "'");
 		
 		// create HTML documentation from Franca model
-		assertTrue(FrancaGenerators.instance().genWebsocketClient(fmodel, "websocket-gen"));
+		assertTrue(FrancaGenerators.instance().genWebsocket(fmodel, "websocket-gen"));
 	}
 
 }
