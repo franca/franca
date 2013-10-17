@@ -31,6 +31,9 @@ import com.google.inject.Inject;
 @InjectWith(FrancaIDLInjectorProvider.class)
 public class WebsocketGenTest {
 
+	final static String SERVER_GEN_DIR = "server/gen";
+	final static String CLIENT_GEN_DIR = "websocket-gen";
+
 	@Inject
 	FrancaPersistenceManager loader;
 	
@@ -49,7 +52,8 @@ public class WebsocketGenTest {
 		//System.out.println("Franca IDL: package '" + fmodel.getName() + "'");
 		
 		// create HTML documentation from Franca model
-		assertTrue(FrancaGenerators.instance().genWebsocket(fmodel, "websocket-gen"));
+		assertTrue(FrancaGenerators.instance().genWebsocket(fmodel,
+				SERVER_GEN_DIR, CLIENT_GEN_DIR));
 	}
 
 }
