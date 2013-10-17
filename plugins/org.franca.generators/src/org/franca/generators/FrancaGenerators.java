@@ -13,7 +13,7 @@ import org.franca.core.franca.FModel;
 import org.franca.core.utils.FileHelper;
 import org.franca.generators.html.HTMLGenerator;
 import org.franca.generators.java.JavaAPIGenerator;
-import org.franca.generators.websocket.WebsocketClientGenerator;
+import org.franca.generators.websocket.WebsocketProxyGenerator;
 
 public class FrancaGenerators {
 
@@ -52,7 +52,7 @@ public class FrancaGenerators {
 	}
 	
 	public boolean genWebsocketClient (FModel model, String outDir) {
-		WebsocketClientGenerator genClient = new WebsocketClientGenerator();
+		WebsocketProxyGenerator genClient = new WebsocketProxyGenerator();
 
 		// we pick the first interface only
 		FInterface api = model.getInterfaces().get(0);
