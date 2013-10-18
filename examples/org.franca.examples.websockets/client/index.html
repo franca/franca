@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+<head>
+	<title>Franca Websockets Example</title>
+	
+	<!-- stylesheets -->
+	<link rel="stylesheet" type="text/css" href="css/style.css"/>
+
+	<!-- download the 3rd party JS libs in order to work offline
+	     (they won't be part of the Franca distribution) -->
+	<!--
+	<script type="text/javascript" src="http://code.jquery.com/jquery.js"/>
+	<script type="text/javascript" src="js/cached/modernizr.custom.61082.js" />
+	-->
+	<script type="text/javascript" src="js/cached/raphael.min.js"/>
+	<script type="text/javascript" src="js/cached/raphael.tachometer.min.js"/>
+	
+	<!-- online versions of 3rd party libs -->
+	<!--
+	<script src="http://www.code-front.com/apps/tachometer/js/modernizr.custom.39298.js"/>
+	<script src="http://www.code-front.com/apps/tachometer/js/raphael.min.js"/>
+	<script src="http://www.code-front.com/apps/tachometer/js/raphael.tachometer.min.js"/>
+	-->
+	
+	<!-- generated proxy classes -->
+	<script src="gen/org/example/SimpleUIProxy.js"/>
+	
+</head>
+<body>
+	<h1>HTML5 UI with Franca and Websockets</h1>
+
+	<table class="two" >
+		<tr><td width="300px">
+		<div id="tacho"></div>
+	 	</td><td>
+		<form>
+		<hr/>
+	    <p><input id="m1" type="button" value="Radio" class="button1"></p>
+	    <p><input id="m2" type="button" value="Navigation" class="button1"></p>
+	    <p><input id="m3" type="button" value="Phone" class="button1"></p>
+	    <p><input id="m4" type="button" value="Settings" class="button1"></p>
+		</form>
+		<hr/>
+	 	<p id="reply1"></p>
+		</td></tr>
+	</table>
+
+	<script type="text/javascript">
+/*	var tacho = Raphael("tacho").tachometer(0, {
+		interactive: true,
+		needleAnimationEasing: "<>", // or: bounce, elastic
+		needleAnimationDuration: 600,
+		numberUnit: " km/h",
+		numberMax: 200,
+		number: false  // had to do this because numbers weren't printed right
+	});
+*/
+	</script>
+
+</body>
+</html>

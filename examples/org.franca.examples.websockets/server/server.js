@@ -14,6 +14,12 @@
 	the websocket.io library.
 */
 
+// create http server and listen to port 8080
+// we need this to serve index.html and other files to the client
+var HttpServer = require('./util/HttpServer');
+var http = new HttpServer();
+http.init(8080, '../client');
+
 // create websocket stub for SimpleUI interface and listen to port 9000.
 var SimpleUIStub = require('./gen/org/example/SimpleUIStub');
 var stub = new SimpleUIStub();
