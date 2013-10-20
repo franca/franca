@@ -121,10 +121,10 @@ public class TraceElementProcessor extends Thread {
 					_expected.add("call_"+event.getCall().getName());
 				}
 				else if (event.getRespond() != null) {
-					_expected.add("call_"+event.getRespond().getName());
+					_expected.add("respond_"+event.getRespond().getName());
 				}
 				else if (event.getSignal() != null) {
-					_expected.add("call_"+event.getSignal().getName());
+					_expected.add("signal_"+event.getSignal().getName());
 				}
 			}
 			
