@@ -3,6 +3,7 @@ package org.franca.tools.contracts.tracegen.dlt.connector;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -111,20 +112,26 @@ public class TraceElementProcessor extends Thread {
 			else {
 			StringBuilder sb = new StringBuilder();
 			
-			int i = 0;
+			// to filter out duplicates - there can be multiple different 
+			// (equals yields false) FTransitions with the exact same String representation
+			Set<String> _expected = new HashSet<String>();
 			for (FTransition t : expected) {
 				FEventOnIf event = t.getTrigger().getEvent();
 				if (event.getCall() != null) {
-					sb.append("call_"+event.getCall().getName());
+					_expected.add("call_"+event.getCall().getName());
 				}
 				else if (event.getRespond() != null) {
-					sb.append("call_"+event.getRespond().getName());
+					_expected.add("call_"+event.getRespond().getName());
 				}
 				else if (event.getSignal() != null) {
-					sb.append("call_"+event.getSignal().getName());
+					_expected.add("call_"+event.getSignal().getName());
 				}
-				
-				if (i < expected.size() - 1) {
+			}
+			
+			int i = 0;
+			for (String s : _expected) {
+				sb.append(s);
+				if (i < _expected.size() - 1) {
 					sb.append(", ");
 				}
 				i++;
