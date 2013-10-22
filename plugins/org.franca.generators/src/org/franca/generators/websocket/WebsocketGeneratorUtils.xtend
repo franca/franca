@@ -13,7 +13,7 @@ import org.franca.core.franca.FArgument
 
 class WebsocketGeneratorUtils {
 	
-	def static genEnumerations (Iterable<FType> types) '''
+	def static genEnumerations (Iterable<FType> types, boolean withExport) '''
 		«FOR t : types.filter(typeof(FEnumerationType))»
 		// definition of enumeration '«t.name»'
 		var «t.name» = function(){
@@ -23,6 +23,9 @@ class WebsocketGeneratorUtils {
 				«ENDFOR»
 			}
 		}();
+		«IF withExport»
+		module.exports.«t.name» = «t.name»;
+		«ENDIF»
 
 		«ENDFOR»
 	'''

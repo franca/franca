@@ -148,7 +148,7 @@ class WebsocketJSStubGenerator {
 			}
 		}
 
-		«api.types.genEnumerations»
+		«api.types.genEnumerations(true)»
 
 	'''
 	

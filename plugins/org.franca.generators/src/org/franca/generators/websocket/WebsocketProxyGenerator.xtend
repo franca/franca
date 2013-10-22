@@ -75,7 +75,7 @@ class WebsocketProxyGenerator {
 		
 		«ENDFOR»
 
-		«api.types.genEnumerations»
+		«api.types.genEnumerations(false)»
 
 	'''
 	

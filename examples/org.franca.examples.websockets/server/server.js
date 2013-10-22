@@ -47,10 +47,10 @@ stub.onAllDisconnected = function () {
 stub.setMode = function (mode) {
 	var d = "";
 	switch (mode) {
-		case 0: d = "Bay Radio FM"; break;
-		case 1: d = "Destination?"; break;
-		case 2: d = "Enter number!"; break;
-		case 3: d = "Your settings"; break;
+		case SimpleUIStub.Mode.M_RADIO:      d = "Bay Radio FM"; break;
+		case SimpleUIStub.Mode.M_NAVIGATION: d = "Destination?"; break;
+		case SimpleUIStub.Mode.M_MULTIMEDIA: d = "Ring, ring!"; break;
+		case SimpleUIStub.Mode.M_SETTINGS:   d = "Your settings"; break;
 	}
 
 	return { display: d };
