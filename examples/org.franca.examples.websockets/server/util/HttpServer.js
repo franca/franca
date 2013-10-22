@@ -1,3 +1,11 @@
+/*******************************************************************************
+* Copyright (c) 2013 itemis AG (http://www.itemis.de).
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+*******************************************************************************/
+
 /*
 	Simple HTTP server.
 	The server is a node.js application written in JavaScript.
@@ -29,7 +37,7 @@ HttpServer.prototype.init = function(port, root) {
 	this.httpDomain.run(function() {
 		server.http.createServer(function (req, res) {
 			var pathname = server.url.parse(req.url).pathname;
-			console.log('request: "' + pathname + '"');
+			//console.log('HTTP request: "' + pathname + '"');
 			if (pathname == '/' || pathname == '/index.html') {
 				server.readFile(res, server.root + '/index.html');
 			} else {
@@ -41,23 +49,23 @@ HttpServer.prototype.init = function(port, root) {
 
 
 HttpServer.prototype.readFile = function(res, pathname) {
-	console.log('reading: "' + pathname + '"');
+	//console.log('Reading file: "' + pathname + '"');
 	var mimetype = this.mime.lookup(pathname);
-	console.log('mime type: ' + mimetype);
 	
-	this.fs.readFile(pathname, function (err, data) {
+	this.fs.readFile(pathname, {encoding: 'utf8'}, function (err, data) {
 		if (err) {
 			console.log(err.message);
 			res.writeHead(404, {'content-type': 'text/html'});
 			res.write('File not found: ' + pathname);
 			res.end();
 		} else {
-			res.setHeader("Content-Type", mimetype);
+			res.useChunkedEncodingByDefault = false;
+			res.setHeader("Content-Type", mimetype + '; charset=utf-8');
+			res.setHeader("Connection", 'keep-alive');
 			res.writeHead(200);
 			res.write(data);
 			res.end();
 		}
-		console.log("... done.");
 	});       
 };
 
