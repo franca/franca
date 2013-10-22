@@ -12,6 +12,9 @@ body {
 	background-color:#000;
 }
 
+a:link { color: yellow; } 
+a:visited { color: yellow; }
+
 title {
 	text-align:center;
 	font-family:Georgia,serif;
@@ -21,8 +24,12 @@ title {
 
 #container { height: 600px; width: 600;}
 
-.two td {
-	vertical-align: top;
+.bigframe td {
+	//vertical-align: top;
+	padding: 25px;
+	background-color: grey;
+    border-radius: 15px;
+    -moz-border-radius: 15px;
 }
 
 .desc text {
@@ -41,5 +48,10 @@ title {
 	min-width: 250px;
 	width: 250px;
 	padding:5px 10px;
+}
+
+.text1 {
+	font-size: 32px;
+	fill: lightgrey;
 }
 
