@@ -33,7 +33,7 @@ stub.onConnected = function () {
 		timerID = setInterval(function() {
 			var rand = Math.floor(Math.random()*100);
 			stub.updateVelocity({velocity: rand});
-		}, 1000);
+		}, 2000);
 	}
 }
 
