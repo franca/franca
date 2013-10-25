@@ -27,7 +27,6 @@ import org.eclipse.xtext.scoping.impl.ImportUriGlobalScopeProvider;
 import org.eclipse.xtext.scoping.impl.SimpleScope;
 import org.franca.core.FrancaModelExtensions;
 import org.franca.core.franca.FContract;
-import org.franca.core.franca.FCurrentError;
 import org.franca.core.franca.FEnumerationType;
 import org.franca.core.franca.FEventOnIf;
 import org.franca.core.franca.FInterface;
@@ -36,7 +35,6 @@ import org.franca.core.franca.FModel;
 import org.franca.core.franca.FModelElement;
 import org.franca.core.franca.FQualifiedElementRef;
 import org.franca.core.franca.FTransition;
-import org.franca.core.franca.FTrigger;
 import org.franca.core.franca.FType;
 import org.franca.core.franca.FTypeRef;
 import org.franca.core.franca.FTypedElement;
@@ -76,38 +74,38 @@ public class FrancaIDLScopeProvider extends AbstractDeclarativeScopeProvider {
 		);
 	}
 	
-	public IScope scope_FTypeRef_derived (FCurrentError cr, EReference ref) {
-		FTransition tr = EcoreUtil2.getContainerOfType(cr, FTransition.class);
-		
-		FTrigger trigger = tr.getTrigger();
-		if (trigger == null) {
-			return IScope.NULLSCOPE;
-		}
-		
-		FEventOnIf ev = trigger.getEvent();
-		if (ev != null) {
-			if (ev.getError() != null) {
-				FMethod errorMethod = ev.getError();
-				if (errorMethod != null) {
-					FEnumerationType localErrors = errorMethod.getErrors();
-					FEnumerationType referencedErrorEnum = errorMethod.getErrorEnum();
-					IEObjectDescription errorDescription;
-					QualifiedName errorName = QualifiedName.create("errorval");
-					if (localErrors != null) {
-						errorDescription =
-								new EObjectDescription(errorName, localErrors, null);
-						return new SimpleScope(Collections.singleton(errorDescription));
-					} else if (referencedErrorEnum != null) {
-						errorDescription =
-								new EObjectDescription(errorName, referencedErrorEnum, null);
-						return new SimpleScope(Collections.singleton(errorDescription));
-					}
-				}
-			}
-		}
-
-		return IScope.NULLSCOPE;
-	}
+//	public IScope scope_FTypeRef_derived (FCurrentError cr, EReference ref) {
+//		FTransition tr = EcoreUtil2.getContainerOfType(cr, FTransition.class);
+//		
+//		FTrigger trigger = tr.getTrigger();
+//		if (trigger == null) {
+//			return IScope.NULLSCOPE;
+//		}
+//		
+//		FEventOnIf ev = trigger.getEvent();
+//		if (ev != null) {
+//			if (ev.getError() != null) {
+//				FMethod errorMethod = ev.getError();
+//				if (errorMethod != null) {
+//					FEnumerationType localErrors = errorMethod.getErrors();
+//					FEnumerationType referencedErrorEnum = errorMethod.getErrorEnum();
+//					IEObjectDescription errorDescription;
+//					QualifiedName errorName = QualifiedName.create("errorval");
+//					if (localErrors != null) {
+//						errorDescription =
+//								new EObjectDescription(errorName, localErrors, null);
+//						return new SimpleScope(Collections.singleton(errorDescription));
+//					} else if (referencedErrorEnum != null) {
+//						errorDescription =
+//								new EObjectDescription(errorName, referencedErrorEnum, null);
+//						return new SimpleScope(Collections.singleton(errorDescription));
+//					}
+//				}
+//			}
+//		}
+//
+//		return IScope.NULLSCOPE;
+//	}
 	
 	public IScope scope_FQualifiedElementRef_element (FTransition tr, EReference ref) {
 		final List<EObject> scopes = Lists.newArrayList();
@@ -137,11 +135,14 @@ public class FrancaIDLScopeProvider extends AbstractDeclarativeScopeProvider {
 		
 		FMethod method = getTriggeringMethod(ev);
 		if (method != null) {
-			FEnumerationType errors = method.getErrors();
-			if (errors != null) {
+			FEnumerationType errorTypeDefinition = method.getErrors();
+			if (errorTypeDefinition == null) {
+				errorTypeDefinition = method.getErrorEnum();
+			}
+			if (errorTypeDefinition != null) {
 				QualifiedName errorTypeName = QualifiedName.create("errordef");
 				IEObjectDescription errorDescription =
-						new EObjectDescription(errorTypeName, errors, null);
+						new EObjectDescription(errorTypeName, errorTypeDefinition, null);
 				scope = new SimpleScope(scope, Collections.singleton(errorDescription));
 			}
 			

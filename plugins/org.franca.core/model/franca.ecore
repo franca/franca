@@ -303,10 +303,7 @@
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="field" eType="#//FModelElement"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="FCurrentError" eSuperTypes="#//FExpression">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//FTypeRef"
-        containment="true"/>
-  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FCurrentError" eSuperTypes="#//FExpression"/>
   <eClassifiers xsi:type="ecore:EClass" name="FConstant" abstract="true" eSuperTypes="#//FExpression">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="This is the common base class for all kinds of&#xD;&#xA;constants in the Franca contract action language.&#xD;&#xA;The most important types are integers, booleans and strings."/>
