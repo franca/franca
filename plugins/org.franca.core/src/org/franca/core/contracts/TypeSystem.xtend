@@ -26,8 +26,13 @@ import org.franca.core.franca.FCurrentError
 import static extension org.franca.core.FrancaModelExtensions.*
 import org.franca.core.franca.FQualifiedElementRef
 import org.franca.core.franca.FTypedElement
+import org.eclipse.xtext.EcoreUtil2
+import org.franca.core.franca.FTransition
+import org.franca.core.utils.FrancaModelCreator
 
 class TypeSystem {
+	
+	val FrancaModelCreator francaModelCreator = new FrancaModelCreator
 	
 	static val BOOLEAN_TYPE = getBooleanType
 	static val STRING_TYPE = getStringType
@@ -103,10 +108,6 @@ class TypeSystem {
 		UNDEFINED_TYPE
 	}
 	
-	def private dispatch FTypeRef evalType (FCurrentError it, EObject loc, EStructuralFeature feat) {
-		return type
-	}
-
 	def private dispatch FTypeRef evalType (FQualifiedElementRef expr, EObject loc, EStructuralFeature feat) {
 		if (expr?.qualifier==null) {
 			val te = expr?.element
@@ -134,6 +135,10 @@ class TypeSystem {
 //		if (expr.field!=null)
 //			println("  field  : " + expr.field.toString)
 //		te.type
+	}
+	
+	def private dispatch FTypeRef evalType (FCurrentError expr, EObject loc, EStructuralFeature feat) {
+		francaModelCreator.createTypeRef(expr)
 	}
 	
 	def private dispatch FTypeRef evalType (FExpression expr, EObject loc, EStructuralFeature feat) {

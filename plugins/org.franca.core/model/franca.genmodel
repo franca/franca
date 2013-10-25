@@ -252,9 +252,7 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FQualifiedElementRef/qualifier"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FQualifiedElementRef/field"/>
     </genClasses>
-    <genClasses ecoreClass="franca.ecore#//FCurrentError">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FCurrentError/type"/>
-    </genClasses>
+    <genClasses ecoreClass="franca.ecore#//FCurrentError"/>
     <genClasses ecoreClass="franca.ecore#//FConstant"/>
     <genClasses ecoreClass="franca.ecore#//FIntegerConstant">
       <genFeatures createChild="false" propertyDescription="the value of this integer constant (an actual integer)"

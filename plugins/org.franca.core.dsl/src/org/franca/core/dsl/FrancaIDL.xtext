@@ -302,15 +302,16 @@ FUnaryOperation returns FExpression:
 	op = OperatorUnary operand = SimplePrimaryExpression;
 	
 FCurrentError returns FCurrentError:
-	{FCurrentError}	
-	type=ErrorTypeRef
+	{FCurrentError}
+	ErrorReferenceTerminal
+//	type=ErrorTypeRef
 	// referencing a virtual FArgument with a type that is defined by a method either by referencing a previously
 	// defined one or by implicitly declaring a new one 
 ;
 
-ErrorTypeRef returns FTypeRef:
-	derived=[FEnumerationType|ErrorReferenceTerminal]
-;
+//ErrorTypeRef returns FTypeRef:
+//	derived=[FEnumerationType|ErrorReferenceTerminal]
+//;
 
 ErrorReferenceTerminal:
 	'errorval'
