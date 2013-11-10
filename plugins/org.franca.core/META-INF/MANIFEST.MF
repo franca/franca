@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Franca core plugin
 Bundle-SymbolicName: org.franca.core;singleton:=true
-Bundle-Version: 0.8.9.qualifier
+Bundle-Version: 0.8.10.qualifier
 Bundle-ClassPath: .
 Bundle-Vendor: itemis AG
 Bundle-Localization: plugin

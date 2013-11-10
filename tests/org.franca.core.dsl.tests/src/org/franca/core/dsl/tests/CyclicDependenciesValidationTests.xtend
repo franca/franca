@@ -135,7 +135,7 @@ class CyclicDependenciesValidationTests extends ValidationTestBase {
 				array MyArray of MyArray
 			}
 		'''
-		assertDependencyCycles(model, "<this>-><this>")
+		assertDependencyCycles(model, "this->this")
 	}
 	
 	
@@ -164,7 +164,7 @@ class CyclicDependenciesValidationTests extends ValidationTestBase {
 				}
 			}
 		'''
-		assertDependencyCycles(model, "<this>-><this>")
+		assertDependencyCycles(model, "this->this")
 	}
 
 	@Test
@@ -179,7 +179,7 @@ class CyclicDependenciesValidationTests extends ValidationTestBase {
 				}
 			}
 		'''
-		assertDependencyCycles(model, "<this>-><this>")
+		assertDependencyCycles(model, "this->this")
 	}
 
 	@Test
@@ -190,15 +190,15 @@ class CyclicDependenciesValidationTests extends ValidationTestBase {
 				typedef MyTypedef is MyTypedef
 			}
 		'''
-		assertDependencyCycles(model, "<this>-><this>")
+		assertDependencyCycles(model, "this->this")
 	}
 	def assertDependencyCycles(String model, String... cycles){
 		val issues = model.issues
 		val splitIssues = new ArrayList(Arrays::asList(issues.split("\n")))
         for (cycle:cycles){
         	var c = cycle
-			if(! cycle.startsWith("<this>->")) c= "<this>->" + c
-			if(! cycle.endsWith("-><this>")) c= c+"-><this>"
+			if(! cycle.startsWith("this->")) c= "this->" + c
+			if(! cycle.endsWith("->this")) c= c+"->this"
 			val d = c
 			val hit = splitIssues.findFirst[contains(d)]
 			if(hit==null){

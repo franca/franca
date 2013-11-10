@@ -24,6 +24,7 @@ import org.franca.core.franca.FStructType
 import org.franca.core.franca.FType
 import org.franca.core.franca.FTypeRef
 import org.franca.core.franca.FrancaFactory
+import java.util.ArrayList
 
 class DBus2FrancaTransformation {
 
@@ -46,11 +47,13 @@ class DBus2FrancaTransformation {
 			version = src.version.transformVersion
 		if(src.doc.hasLines) {
 			comment = src.doc.transformAnnotationBlock
-		}			
-		newTypes = types
+		}
+		
+		newTypes = new ArrayList<FType>
 		attributes.addAll(src.property.map [transformAttribute])
 		methods.addAll(src.method.map [transformMethod])
 		broadcasts.addAll(src.signal.map [transformBroadcast])
+		types.addAll(newTypes)
 	}
 
 	def create FrancaFactory::eINSTANCE.createFVersion transformVersion (String ver) {
@@ -73,21 +76,6 @@ class DBus2FrancaTransformation {
 		array = if (te.isArray) "[]" else null
 	}
 	
-//	def private transformAttributeType (String typeSig, String namespace) {
-//		// as DBus doesn't have a detailed typesystem, we have to use an artificial typesystem here
-//		val srcTypeList = new DBusTypeParser().parseTypeList(typeSig)
-//		if (srcTypeList.size==1)
-//			// this is a single-type attribute, just convert it
-//			return srcTypeList.get(0).transformType(namespace)
-//		else {
-//			// this is a multi-type attribute, create synthetic struct type
-//			// NB: didn't find spec or examples for multi-type attributes, just support it here
-//			val it = FrancaFactory::eINSTANCE.createFStructType
-//			buildStructType(srcTypeList, namespace, "property")
-//			return new TypedElem(it.encapsulateTypeRef)
-//		}
-//	}
-
 	def create FrancaFactory::eINSTANCE.createFMethod transformMethod (MethodType src) {
 		val nameNormal = src.name.normalizeId 
 		name = nameNormal
@@ -143,14 +131,16 @@ class DBus2FrancaTransformation {
 		type = FAnnotationType::DESCRIPTION
 		comment = doc.line.get(0)
 	}
-	// ANNOTATION
+	// ANNOTATIONS
 
 	def TypedElem transformTypeSig (String typeSig, String namespace) {
 		//println("DBus2FrancaTransformation: parsing type-sig " + typeSig + " in namespace " + namespace)
 
 		// as DBus doesn't have a detailed typesystem, we have to use an artificial typesystem here
 		val srcType = new DBusTypeParser().parseSingleType(typeSig)
-		// TODO: check for null
+		if (srcType==null) {
+			throw new RuntimeException("Couldn't parse type signature '" + typeSig + "'")
+		}
 		
 		srcType.transformType(namespace)
 	}
@@ -160,7 +150,7 @@ class DBus2FrancaTransformation {
 	 * array "[]" if outermost DBusType is an array.
 	 */
 	def TypedElem transformType (DBusType src, String namespace) {
-		//println("  transformType(" + src + ", " + namespace + ")")
+//		println("  transformType(" + src + ", " + namespace + ")")
 		switch (src) {
 			DBusBasicType: new TypedElem(src.transformBasicType)
 			DBusDictType: new TypedElem(src.transformDictType(namespace).encapsulateTypeRef)
@@ -251,7 +241,7 @@ class DBus2FrancaTransformation {
 	def create FrancaFactory::eINSTANCE.createFField transformField (DBusType src, String namespace, String elementName) {
 		// struct members do not have a name in DBus
 		name = elementName
-		val te = src.transformType(namespace)
+		val te = src.transformType(namespace + elementName.toFirstUpper)
 		type = te.type
 		array = if (te.isArray) "[]" else null
 	}

@@ -137,9 +137,7 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 
 		// check against imported type collections
 		ImportedModelInfo imported = FrancaModelExtensions.getAllImportedModels(model);
-		System.out.println("Check     " + model.eResource().getURI().toString());
 		for(FModel m : imported.getImportedModels()) {
-			System.out.println("  against " + m.eResource().getURI().toString());
 			for(FTypeCollection tc : m.getTypeCollections()) {
 				if (! isAnonymous(tc)) {
 					QualifiedName qn = qnProvider.getFullyQualifiedName(tc);

@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Franca websocket examples
+Bundle-SymbolicName: org.franca.examples.websockets
+Bundle-Version: 0.8.10.qualifier
+Bundle-Vendor: itemis AG
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.junit;version="4.5.0",
+ org.junit.runner;version="4.5.0",
+ org.junit.runners;version="4.5.0"
+Require-Bundle: org.franca.core;bundle-version="0.8.9",
+ org.franca.core.dsl;bundle-version="0.8.9",
+ org.franca.generators;bundle-version="0.8.9",
+ org.eclipse.xtext.xbase.lib;bundle-version="2.3.1",
+ org.eclipse.xtend.lib;bundle-version="2.3.1",
+ org.eclipse.xtext;bundle-version="2.3.1",
+ org.apache.log4j;bundle-version="1.2.15",
+ org.eclipse.xtext.junit4;bundle-version="2.3.1",
+ org.franca.core.dsl.tests.base;bundle-version="0.8.9",
+ org.hamcrest.core;bundle-version="1.1.0",
+ org.eclipse.emf.mwe2.language;bundle-version="2.4.0"

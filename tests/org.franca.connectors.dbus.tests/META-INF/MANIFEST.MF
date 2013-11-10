@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Franca D-Bus connector tests
 Bundle-SymbolicName: org.franca.connectors.dbus.tests
-Bundle-Version: 0.8.9.qualifier
+Bundle-Version: 0.8.10.qualifier
 Bundle-Activator: org.franca.connectors.dbus.tests.Activator
 Bundle-Vendor: itemis AG
 Require-Bundle: org.eclipse.ui,
@@ -19,6 +19,7 @@ Require-Bundle: org.eclipse.ui,
  org.apache.log4j;bundle-version="1.2.15",
  org.eclipse.xtext.xbase.lib;bundle-version="2.4.1",
  org.eclipselabs.xtext.utils.unittesting;bundle-version="0.9.3",
- org.eclipse.emf.compare;bundle-version="2.0.0"
+ org.eclipse.emf.compare;bundle-version="2.0.0",
+ org.eclipse.emf.mwe2.language;bundle-version="2.4.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
