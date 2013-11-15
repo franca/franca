@@ -131,13 +131,12 @@ public class ContractValidator {
 	
 	public static void checkGuard (ValidationMessageReporter reporter, FGuard guard) {
 		FTypeRef type = checkExpression(reporter, guard.getCondition(), guard, FrancaPackage.Literals.FGUARD__CONDITION);
-		if (type!=null) {
-			if (! FrancaHelpers.isBoolean(type)) {
-				reporter.reportError(
-						"expected boolean type for guard expression (is " +
-								FrancaHelpers.getTypeString(type) + ")",
-						guard, FrancaPackage.Literals.FGUARD__CONDITION);
-			}
+		
+		if (! FrancaHelpers.isBoolean(type)) {
+			reporter.reportError(
+					"expected boolean type for guard expression (is " +
+							FrancaHelpers.getTypeString(type) + ")",
+					guard, FrancaPackage.Literals.FGUARD__CONDITION);
 		}
 	}
 

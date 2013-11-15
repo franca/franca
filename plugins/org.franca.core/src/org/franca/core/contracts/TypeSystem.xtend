@@ -26,9 +26,8 @@ import org.franca.core.franca.FCurrentError
 import static extension org.franca.core.FrancaModelExtensions.*
 import org.franca.core.franca.FQualifiedElementRef
 import org.franca.core.franca.FTypedElement
-import org.eclipse.xtext.EcoreUtil2
-import org.franca.core.franca.FTransition
 import org.franca.core.utils.FrancaModelCreator
+import org.franca.core.franca.FEnumerator
 
 class TypeSystem {
 	
@@ -71,6 +70,12 @@ class TypeSystem {
 	def private dispatch FTypeRef evalType (FBinaryOperation it, EObject loc, EStructuralFeature feat) {
 		val t1 = left.evalType(it, FBINARY_OPERATION__LEFT)
 		val t2 = right.evalType(it, FBINARY_OPERATION__RIGHT)
+
+		if (t1 == null || t2 == null) {
+			addIssue("operations on type level are not allowed", loc, feat)
+			return UNDEFINED_TYPE			
+		}
+		
 		if (t1.isUndefined || t2.isUndefined)
 			return UNDEFINED_TYPE
 
@@ -119,13 +124,19 @@ class TypeSystem {
 			if (te instanceof FTypedElement) {
 				return (te as FTypedElement).type
 			}
-			return null
+			if (te instanceof FEnumerator) {
+				return francaModelCreator.createTypeRef(te)
+			}
+			return null; //type would be EClass or something like that
 		} else {
 			val field = expr?.field;
 			if (field instanceof FTypedElement) {
 				return (field as FTypedElement).type
 			}
-			return null
+			if (field instanceof FEnumerator) {
+				return francaModelCreator.createTypeRef(field)
+			}
+			return null; //type would be EClass or something like that
 		} 
 //		println("TE: " + expr.toString)
 //		if (expr.element!=null)
