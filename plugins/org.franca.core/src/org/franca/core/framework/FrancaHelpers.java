@@ -179,6 +179,8 @@ public class FrancaHelpers {
 	
 	/** Returns true if the referenced type is any kind of integer. */
 	public static boolean isInteger (FTypeRef typeRef) {
+		if (typeRef == null) return false;
+		
 		if (typeRef.getDerived() == null) {
 			int id = typeRef.getPredefined().getValue();
 			if (	id==FBasicTypeId.INT8_VALUE  || id==FBasicTypeId.UINT8_VALUE  ||
@@ -200,6 +202,8 @@ public class FrancaHelpers {
 
 	/** Returns true if the referenced type is float or double. */
 	public static boolean isFloatingPoint (FTypeRef typeRef) {
+		if (typeRef == null) return false;
+		
 		if (typeRef.getDerived() == null) {
 			int id = typeRef.getPredefined().getValue();
 			if (id==FBasicTypeId.FLOAT_VALUE || id==FBasicTypeId.DOUBLE_VALUE) {
@@ -222,6 +226,8 @@ public class FrancaHelpers {
 	
 	/** Returns true if the referenced type is a string. */
 	public static boolean isString (FTypeRef typeRef) {
+		if (typeRef == null) return false;
+		
 		if (typeRef.getDerived() == null) {
 			int id = typeRef.getPredefined().getValue();
 			if (id==FBasicTypeId.STRING_VALUE) {
@@ -239,6 +245,8 @@ public class FrancaHelpers {
 
 	/** Returns true if the referenced type is a boolean value. */
 	public static boolean isBoolean (FTypeRef typeRef) {
+		if (typeRef == null) return false;
+		
 		if (typeRef.getDerived() == null) {
 			int id = typeRef.getPredefined().getValue();
 			if (id==FBasicTypeId.BOOLEAN_VALUE) {
@@ -256,6 +264,8 @@ public class FrancaHelpers {
 
 	/** Get a human-readable name for a Franca type. */
 	public static String getTypeString (FTypeRef typeRef) {
+		if (typeRef == null) return "<Type>";
+		
 		if (typeRef.getDerived() == null) {
 			return typeRef.getPredefined().getName();
 		} else {

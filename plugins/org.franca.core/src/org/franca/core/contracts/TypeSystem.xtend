@@ -7,34 +7,32 @@
  *******************************************************************************/
 package org.franca.core.contracts
 
-import org.franca.core.franca.FTypeRef
-import org.franca.core.franca.FExpression
-import org.franca.core.franca.FConstant
-import org.franca.core.franca.FIntegerConstant
-import org.franca.core.franca.FrancaFactory
-import org.franca.core.franca.FBasicTypeId
-import org.franca.core.franca.FBooleanConstant
-import org.franca.core.franca.FStringConstant
-import org.franca.core.franca.FBinaryOperation
-import static org.franca.core.franca.FrancaPackage$Literals.*
-import static extension org.franca.core.framework.FrancaHelpers.*
-import org.eclipse.emf.ecore.EStructuralFeature
 import org.eclipse.emf.ecore.EObject
-import org.franca.core.franca.FOperator
-import org.franca.core.franca.FUnaryOperation
+import org.eclipse.emf.ecore.EStructuralFeature
+import org.franca.core.franca.FBasicTypeId
+import org.franca.core.franca.FBinaryOperation
+import org.franca.core.franca.FBooleanConstant
+import org.franca.core.franca.FConstant
 import org.franca.core.franca.FCurrentError
-import static extension org.franca.core.FrancaModelExtensions.*
-import org.franca.core.franca.FQualifiedElementRef
-import org.franca.core.franca.FTypedElement
-import org.eclipse.xtext.EcoreUtil2
-import org.franca.core.franca.FTransition
-import org.franca.core.utils.FrancaModelCreator
-import org.franca.core.franca.FEnumerationType
 import org.franca.core.franca.FEnumerator
+import org.franca.core.franca.FExpression
+import org.franca.core.franca.FIntegerConstant
+import org.franca.core.franca.FOperator
+import org.franca.core.franca.FQualifiedElementRef
+import org.franca.core.franca.FStringConstant
+import org.franca.core.franca.FTypeRef
+import org.franca.core.franca.FTypedElement
+import org.franca.core.franca.FUnaryOperation
+import org.franca.core.franca.FrancaFactory
+import org.franca.core.utils.FrancaModelCreator
+
+import static org.franca.core.FrancaModelExtensions.*
+import static org.franca.core.franca.FrancaPackage$Literals.*
+
+import static extension org.franca.core.framework.FrancaHelpers.*
 
 class TypeSystem {
 	
-	// TODO: muss das ein member sein? siehe die FrancaModelCreator Klasse selbst...
 	val FrancaModelCreator francaModelCreator = new FrancaModelCreator
 	
 	static val BOOLEAN_TYPE = getBooleanType
@@ -74,6 +72,12 @@ class TypeSystem {
 	def private dispatch FTypeRef evalType (FBinaryOperation it, EObject loc, EStructuralFeature feat) {
 		val t1 = left.evalType(it, FBINARY_OPERATION__LEFT)
 		val t2 = right.evalType(it, FBINARY_OPERATION__RIGHT)
+
+		if (t1 == null || t2 == null) {
+			addIssue("operations on type level are not allowed", loc, feat)
+			return UNDEFINED_TYPE			
+		}
+		
 		if (t1.isUndefined || t2.isUndefined)
 			return UNDEFINED_TYPE
 
@@ -122,12 +126,15 @@ class TypeSystem {
 			if (te instanceof FTypedElement) {
 				return (te as FTypedElement).type
 			}
-			return null
+			if (te instanceof FEnumerator) {
+				return francaModelCreator.createTypeRef(te)
+			}
+			return null; //type would be EClass or something like that
 		} else {
 			val field = expr?.field;
 			switch (field) {
 				FTypedElement: return field.type
-				FEnumerator: return getEnumerationTypeRef(field.eContainer as FEnumerationType)
+				FEnumerator: return francaModelCreator.createTypeRef(field)	
 				default: return null
 			}
 		} 
@@ -213,13 +220,6 @@ class TypeSystem {
 	def private static getUndefinedType() {
 		val it = FrancaFactory::eINSTANCE.createFTypeRef
 		predefined = FBasicTypeId::UNDEFINED
-		it
-	}
-	
-	def private static getEnumerationTypeRef(FEnumerationType type) {
-		val it = FrancaFactory::eINSTANCE.createFTypeRef
-		predefined = null
-		derived = type
 		it
 	}
 	
