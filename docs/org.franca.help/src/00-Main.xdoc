@@ -52,6 +52,8 @@ codelanguage-def[FDeploy]
 	struct_fields,union_fields,
 	arrays,enumerations,enumerators,strings,numbers,integers,floats,
 	
+	Boolean, Integer, String, Interface,
+
 	define,provider,instance,interface, 
 	attribute,method,broadcast,in,out,
 	array,struct,enumeration,
