@@ -981,6 +981,83 @@ code[Franca][
 Downstream tools can access the tags and their string content and use them
 for analysis and code generation.
 
+All built-in tags are listed in ref:CommentTags together with descriptions.
+
+table:CommentTags[
+	caption[List of available tags for structured comments in Franca IDL.]
+	tf[
+		professional
+		tcol[2] tcol[7]
+	]
+	tr[
+		td[e[Tag]]
+		td[e[Description]]
+		---
+	]
+	tr[
+		td[code[Franca][@description]]
+		td[A comment with this tag contains a description of the documented
+		   interface or datatype element.
+		   Typically, the string content of this tag will be used for generated
+		   documentation.]
+	]
+	tr[
+		td[code[Franca][@author]]
+		td[This tag specifies the author of the documented element.]
+	]
+	tr[
+		td[code[Franca][@deprecated]]
+		td[This tag is used to mark the documented element as deprecated.
+		   The string content should point out a better solution which
+		   can be used in order to avoid using this element.]
+	]
+	tr[
+		td[code[Franca][@source-uri]]
+		td[This tag can be used to point to an URI which specifies some kind
+		   kind of source information for this element. E.g., if an interface
+		   has been created by transformation from a D-Bus introspection file,
+		   the source URI could refer to the original D-Bus XML file.]
+	]
+	tr[
+		td[code[Franca][@source-alias]]
+		td[This tag can be used in addition to code[Franca][@source-uri] for
+		   specifying source elements for the corresponding Franca element.]
+	]
+	tr[
+		td[code[Franca][@see]]
+		td[A comment with this tag specifies a further reading or any other
+		   kind of semantic reference.]
+	]
+	tr[
+		td[code[Franca][@experimental]]
+		td[An element marked with this tag is not a stable part of the 
+		   interface definition.]
+	]
+	tr[
+		td[code[Franca][@details]]
+		td[This tag is deprecated, it will be removed in a future version.
+		   The code[Franca][@description] tag should be used instead.]
+	]
+	tr[
+		td[code[Franca][@param]]
+		td[This tag is deprecated, it will be removed in a future version.
+		   Instead, the arguments of methods and broadcasts should be documented using
+		   the code[Franca][@description] tag for the corresponding arguments.]
+	]
+	tr[
+		td[code[Franca][@high-volume]]
+		td[This tag is deprecated, it will be removed in a future version.
+		   Specific information related to performance and QoS aspects should be
+		   modeled using Franca deployment models.]
+	]
+	tr[
+		td[code[Franca][@high-frequency]]
+		td[This tag is deprecated, it will be removed in a future version.
+		   Specific information related to performance and QoS aspects should be
+		   modeled using Franca deployment models.]
+	]
+]
+ 
 
 section:FIDL_MultipleFiles[Fully qualified names, packages, and multiple files]
 
