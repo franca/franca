@@ -230,6 +230,44 @@ If the target language doesn't support inheritance for structure types, the e[ex
 will be transformed into a flat structure consisting of all members of the base
 type(s) and those of the derived type.
 
+section3:FIDL_Types_Struct_Polymorphic[Polymorphic structs]
+
+The root type in a struct inheritance hierarchy may be marked with the 
+e[polymorphic]-keyword. Consider the following example:
+code[Franca][
+method callme {
+	in {
+		BaseStruct t
+	}
+}
+
+struct BaseStruct polymorphic {
+	Int16 a
+}
+
+struct Derived1 extends BaseStruct {
+	Int16 b
+}
+	
+struct Derived2 extends BaseStruct {
+	String c
+}
+]
+
+The caller of method e[callme] might provide an argument of type e[Derived1],
+although the method's argument type is declared as type e[BaseStruct].
+In an environment where polymorphism is fully supported, the server will then
+be able to receive an object of the actual type, i.e., e[Derived1].
+It will be able to access the struct element e[b].
+
+However, as full polymorphism support usually requires some implementation
+overhead in the IPC target platform, this behavior has to be explicitly switched
+on by flagging the root of the struct inheritance hierarchy with the
+keyword e[polymorphic]. Without setting the root struct type to e[polymorphic],
+the server-side implementation of the interface will only be able to access the
+actual type used in the interface definition (and not derived types). 
+This low-footprint behavior is the default.
+
 
 section2:FIDL_Types_Union[Unions (aka variants)]
 
