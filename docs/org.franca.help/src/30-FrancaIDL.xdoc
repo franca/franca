@@ -783,6 +783,11 @@ ul[
 ]
  
 
+section2:FIDL_Interface_Manages[Interfaces managing interfaces]
+
+todo[In this section the manages-concept will be documented.]
+
+
 section:FIDL_Contracts[Contracts]
 
 section2:FIDL_Contracts_Basic[Basic concept of contracts]
