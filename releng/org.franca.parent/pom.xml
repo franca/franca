@@ -219,6 +219,12 @@
 					<groupId>org.eclipse.tycho</groupId>
 					<artifactId>tycho-surefire-plugin</artifactId>
 					<version>${tycho-version}</version>
+					<configuration>
+						<!-- MacOS specific option to run an SWT application from the command line.
+								See http://www.eclipse.org/swt/faq.php#carbonapp
+						-->
+						<argLine>${os-jvm-flags} ${surefireArgLine}</argLine>
+					</configuration>
 				</plugin>
 				<plugin>
 					<groupId>org.eclipse.tycho</groupId>
@@ -378,6 +384,27 @@
 			<url>http://build.eclipse.org/common/xtend/maven/</url>
 		</repository>
 	</repositories>			
+
+	<profiles>
+		<profile>
+			<id>macosx-jvm-flags</id>
+			<activation>
+				<os><family>mac</family></os>
+			</activation>
+			<properties>
+				<os-jvm-flags>-XstartOnFirstThread</os-jvm-flags>
+			</properties>
+		</profile>
+		<profile>
+			<id>non-macosx-jvm-flags</id>
+			<activation>
+				<os><family>!mac</family></os>
+			</activation>
+			<properties>
+				<os-jvm-flags> </os-jvm-flags>
+			</properties>
+		</profile>
+	</profiles>
 
 	<!-- 
     <profiles>
