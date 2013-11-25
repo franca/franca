@@ -287,6 +287,7 @@ union ExampleUnion {
 ]
 Element types might be predefined types or user-defined types.
 This allows e.g. nested unions, or unions of structures.
+No two elements of an union may have the same type. 
 
 section3:FIDL_Types_Union_Inheritance[Union inheritance]
 
