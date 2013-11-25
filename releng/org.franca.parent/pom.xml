@@ -223,7 +223,7 @@
 						<!-- MacOS specific option to run an SWT application from the command line.
 								See http://www.eclipse.org/swt/faq.php#carbonapp
 						-->
-						<argLine>${os-jvm-flags} ${surefireArgLine}</argLine>
+						<argLine>${os-jvm-flags} -XX:PermSize=256m -XX:MaxPermSize=512m ${surefireArgLine}</argLine>
 					</configuration>
 				</plugin>
 				<plugin>
