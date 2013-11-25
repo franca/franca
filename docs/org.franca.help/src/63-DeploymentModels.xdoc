@@ -143,6 +143,12 @@ table:DeploymentInterfaceHostsPart1[
 		td[locally or globally accessible?]
 	]
 	tr[
+		td[code[FDeploy][type_collections]]
+		td[Properties related to Franca type collections]
+		td[code[Franca][typeCollection]]
+		td[type visibility]
+	]
+	tr[
 		td[code[FDeploy][attributes]]
 		td[Properties related to attributes of a Franca IDL interface]
 		td[code[Franca][attribute]]

@@ -48,7 +48,8 @@ codelanguage-def[FDeploy]
 	import,
 	specification,extends,for,optional,default,
 	
-	providers,instances,interfaces,attributes,methods,broadcasts,arguments,
+	providers,instances,interfaces,type_collections,
+	attributes,methods,broadcasts,arguments,
 	struct_fields,union_fields,
 	arrays,enumerations,enumerators,strings,numbers,integers,floats,
 	
