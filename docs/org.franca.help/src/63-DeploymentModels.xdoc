@@ -188,16 +188,28 @@ table:DeploymentInterfaceHostsPart2[
 		---
 	]
 	tr[
+		td[code[FDeploy][structs]]
+		td[Properties related to struct definitions]
+		td[code[Franca][struct]]
+		td[alignment / padding]
+	]
+	tr[
 		td[code[FDeploy][struct_fields]]
 		td[Properties related to fields of struct definitions]
 		td[fields of code[Franca][struct]]
 		td[alignment / padding]
 	]
 	tr[
+		td[code[FDeploy][unions]]
+		td[Properties related to union definitions]
+		td[code[Franca][union]]
+		td[flag for tag generation]
+	]
+	tr[
 		td[code[FDeploy][union_fields]]
 		td[Properties related to fields of union definitions]
 		td[fields of code[Franca][union]]
-		td[alignment / padding]
+		td[explicit tag for each field]
 	]
 	tr[
 		td[code[FDeploy][enumerations]]
