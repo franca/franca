@@ -38,6 +38,7 @@ import org.franca.core.franca.FUnionType
 import org.franca.core.franca.FrancaPackage
 
 import static org.franca.core.framework.TransformationIssue.*
+import static org.franca.core.framework.FrancaModelMapper.*
 
 class Franca2DBusTransformation {
 	
@@ -48,6 +49,7 @@ class Franca2DBusTransformation {
 	def create DbusxmlFactory::eINSTANCE.createNodeType transform (FModel src) {
 		name = src.name
 		interface.addAll(src.interfaces.map [transformInterface])
+		addBacklink(it, src)
 	}
 
 	def getTransformationIssues() {
@@ -69,6 +71,8 @@ class Franca2DBusTransformation {
 		// map methods (request/reponse and broadcast)
 		method.addAll(src.methods.map [transformMethod])		
 		signal.addAll(src.broadcasts.map [transformBroadcast])		
+
+		addBacklink(it, src)
 	}
 			
 	def create DbusxmlFactory::eINSTANCE.createPropertyType transformAttribute (FAttribute src) {
@@ -78,6 +82,7 @@ class Franca2DBusTransformation {
 			access = AccessType::READ
 		else
 			access = AccessType::READWRITE
+		addBacklink(it, src)
 	}
 
 	def create DbusxmlFactory::eINSTANCE.createMethodType transformMethod (FMethod src) {
@@ -86,12 +91,14 @@ class Franca2DBusTransformation {
 		arg.addAll(src.inArgs.map [transformArgument(DirectionType::IN)])
 		arg.addAll(src.outArgs.map [transformArgument(DirectionType::OUT)])
 		if(src.errors != null) error.addAll(src.errors.createErrors)
+		addBacklink(it, src)
 	}
 
 	def create DbusxmlFactory::eINSTANCE.createSignalType transformBroadcast (FBroadcast src) {
 		name = src.name
 		doc = src.createDoc
 		arg.addAll(src.outArgs.map [transformArgument(DirectionType::OUT)])
+		addBacklink(it, src)
 	}
 
 	def create DbusxmlFactory::eINSTANCE.createArgType transformArgument (FArgument src, DirectionType dir) {
@@ -99,6 +106,7 @@ class Franca2DBusTransformation {
 		name = src.name
 		type = transformType2TypeString(src.type, src.array!=null)
 		doc = src.createDoc
+		addBacklink(it, src)
 	}
 
 	def create DbusxmlFactory::eINSTANCE.createDocType createDoc (FArgument src) {
