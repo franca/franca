@@ -20,6 +20,7 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.franca.core.franca.FAttribute;
 import org.franca.core.franca.FBasicTypeId;
 import org.franca.core.franca.FBroadcast;
+import org.franca.core.franca.FConstantDef;
 import org.franca.core.franca.FContract;
 import org.franca.core.franca.FInterface;
 import org.franca.core.franca.FMethod;
@@ -144,13 +145,23 @@ public class FrancaHelpers {
 		return elements;
 	}
 	
-	/** Get all broadcasts of an interface including the inherited ones */
+	/** Get all types of an interface including the inherited ones */
 	public static List<FType> getAllTypes (FInterface api) {
 		List<FType> elements = Lists.newArrayList();
 		if (api.getBase()!=null) {
 			elements.addAll(getAllTypes(api.getBase()));
 		}
 		elements.addAll(api.getTypes());
+		return elements;
+	}
+	
+	/** Get all constants of an interface including the inherited ones */
+	public static List<FConstantDef> getAllConstants (FInterface api) {
+		List<FConstantDef> elements = Lists.newArrayList();
+		if (api.getBase()!=null) {
+			elements.addAll(getAllConstants(api.getBase()));
+		}
+		elements.addAll(api.getConstants());
 		return elements;
 	}
 	

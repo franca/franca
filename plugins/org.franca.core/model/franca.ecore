@@ -28,6 +28,8 @@
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="types" upperBound="-1"
         eType="#//FType" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="constants" upperBound="-1"
+        eType="#//FConstantDef" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FInterface" eSuperTypes="#//FTypeCollection">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -168,6 +170,13 @@
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="predefined" eType="#//FBasicTypeId"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="derived" eType="#//FType"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FConstantDef" eSuperTypes="#//FTypedElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This class represents the definition of a constant&#xD;&#xA;as part of a Franca interface or type collection. Note that the &#xD;&#xA;types available for the constant definition are &#xD;&#xA;all types which are accessible from this interface."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="rhs" lowerBound="1" eType="#//FExpression"
+        containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="FAnnotationType">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">

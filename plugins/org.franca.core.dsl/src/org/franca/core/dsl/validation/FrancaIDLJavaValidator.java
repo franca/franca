@@ -21,6 +21,7 @@ import org.franca.core.ImportedModelInfo;
 import org.franca.core.dsl.validation.internal.ContractValidator;
 import org.franca.core.dsl.validation.internal.CyclicDependenciesValidator;
 import org.franca.core.dsl.validation.internal.NameProvider;
+import org.franca.core.dsl.validation.internal.TypesValidator;
 import org.franca.core.dsl.validation.internal.ValidationHelpers;
 import org.franca.core.dsl.validation.internal.ValidationMessageReporter;
 import org.franca.core.dsl.validation.internal.ValidatorRegistry;
@@ -29,6 +30,7 @@ import org.franca.core.franca.FArgument;
 import org.franca.core.franca.FAssignment;
 import org.franca.core.franca.FBroadcast;
 import org.franca.core.franca.FCompoundType;
+import org.franca.core.franca.FConstantDef;
 import org.franca.core.franca.FContract;
 import org.franca.core.franca.FEnumerationType;
 import org.franca.core.franca.FField;
@@ -196,6 +198,18 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 	}
 
 	@Check
+	public void checkConstantNamesUnique(FTypeCollection collection) {
+		ValidationHelpers.checkDuplicates(this, collection.getConstants(),
+				FrancaPackage.Literals.FMODEL_ELEMENT__NAME, "constant name");
+	}
+
+	@Check
+	public void checkConstantNamesUnique(FInterface iface) {
+		ValidationHelpers.checkDuplicates(this, iface.getConstants(),
+				FrancaPackage.Literals.FMODEL_ELEMENT__NAME, "constant name");
+	}
+
+	@Check
 	public void checkCompoundElementsUnique(FCompoundType type) {
 		ValidationHelpers.checkDuplicates(this, type.getElements(),
 				FrancaPackage.Literals.FMODEL_ELEMENT__NAME, "element name");
@@ -283,6 +297,9 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 		ValidationHelpers.checkDuplicates(this, FrancaHelpers.getAllTypes(api),
 				FrancaPackage.Literals.FMODEL_ELEMENT__NAME, "inherited type");
 
+		ValidationHelpers.checkDuplicates(this, FrancaHelpers.getAllConstants(api),
+				FrancaPackage.Literals.FMODEL_ELEMENT__NAME, "inherited constant");
+
 		if (api.getContract() != null && FrancaHelpers.hasBaseContract(api)) {
 			error("Interface cannot overwrite base contract",
 					api.getContract(),
@@ -296,6 +313,16 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 		cyclicDependenciesValidator.check(this, m);
 	}
 
+	// *****************************************************************************
+
+	// constant-related checks
+	
+	@Check
+	public void checkConstantDef (FConstantDef constantDef) {
+		TypesValidator.checkConstantType(this, constantDef);
+	}
+
+	
 	// *****************************************************************************
 
 	@Check

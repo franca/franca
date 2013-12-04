@@ -10,12 +10,8 @@ package org.franca.core.dsl.validation.internal;
 import java.util.List;
 
 import org.eclipse.emf.common.util.TreeIterator;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.franca.core.FrancaModelExtensions;
-import org.franca.core.contracts.IssueCollector;
-import org.franca.core.contracts.TypeIssue;
 import org.franca.core.contracts.TypeSystem;
 import org.franca.core.dsl.validation.internal.util.FrancaContractDirectedGraphDataSource;
 import org.franca.core.dsl.validation.internal.util.FrancaContractUndirectedGraphDataSource;
@@ -26,7 +22,6 @@ import org.franca.core.franca.FAttribute;
 import org.franca.core.franca.FBroadcast;
 import org.franca.core.franca.FContract;
 import org.franca.core.franca.FEventOnIf;
-import org.franca.core.franca.FExpression;
 import org.franca.core.franca.FGuard;
 import org.franca.core.franca.FInterface;
 import org.franca.core.franca.FMethod;
@@ -116,7 +111,7 @@ public class ContractValidator {
 	
 	
 	public static void checkAssignment (ValidationMessageReporter reporter, FAssignment assignment) {
-		FTypeRef typeRHS = checkExpression(reporter, assignment.getRhs(), assignment, FrancaPackage.Literals.FASSIGNMENT__RHS);
+		FTypeRef typeRHS = TypesValidator.checkExpression(reporter, assignment.getRhs(), assignment, FrancaPackage.Literals.FASSIGNMENT__RHS);
 		if (typeRHS!=null) {
 			FTypeRef typeLHS = assignment.getLhs().getType();
 			if (! TypeSystem.isCompatibleType(typeRHS, typeLHS)) {
@@ -130,7 +125,7 @@ public class ContractValidator {
 	}
 	
 	public static void checkGuard (ValidationMessageReporter reporter, FGuard guard) {
-		FTypeRef type = checkExpression(reporter, guard.getCondition(), guard, FrancaPackage.Literals.FGUARD__CONDITION);
+		FTypeRef type = TypesValidator.checkExpression(reporter, guard.getCondition(), guard, FrancaPackage.Literals.FGUARD__CONDITION);
 		if (type!=null) {
 			if (! FrancaHelpers.isBoolean(type)) {
 				reporter.reportError(
@@ -141,21 +136,4 @@ public class ContractValidator {
 		}
 	}
 
-	private static FTypeRef checkExpression (
-			ValidationMessageReporter reporter,
-			FExpression expr,
-			EObject loc, EStructuralFeature feat)
-	{
-		TypeSystem ts = new TypeSystem();
-		IssueCollector issues = new IssueCollector();
-		FTypeRef type = ts.evaluateType(expr, issues, loc, feat);
-		if (! issues.getIssues().isEmpty()) {
-			for(TypeIssue ti : issues.getIssues()) {
-				reporter.reportError(ti.getMessage(), ti.getLocation(), ti.getFeature());
-			}
-			return null;
-		}
-		
-		return type;
-	}
 }

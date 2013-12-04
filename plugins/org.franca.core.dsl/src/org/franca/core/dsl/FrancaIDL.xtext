@@ -35,6 +35,7 @@ FTypeCollection returns FTypeCollection:
 	'{'
 		('version' version=FVersion)?
 		(types+=FType)*
+		(constants+=FConstantDef)*
 	'}';
 
 FInterface returns FInterface:
@@ -53,6 +54,7 @@ FInterface returns FInterface:
 		(broadcasts+=FBroadcast)*
 		(contract=FContract)?
 		(types+=FType)*
+		(constants+=FConstantDef)*
     '}';
 
 FVersion returns FVersion:
@@ -206,7 +208,15 @@ FTypedElement:
 	FField |
 	FAttribute |
 	FArgument |
-	FDeclaration;
+	FDeclaration |
+	FConstantDef;
+
+
+// **************************************************************
+// constant definitions and initializers
+
+FConstantDef:
+	'const' type=FTypeRef (array?='[]')? name=ID '=' rhs=LogicalOrExpression;
 
 
 // **************************************************************
@@ -263,6 +273,10 @@ FBlock returns FBlock:
 	'{'
 		(statements+=FAssignment)*
 	'}';
+
+
+// **************************************************************
+// expression language
 
 LogicalOrExpression returns FExpression:
   LogicalAndExpression
