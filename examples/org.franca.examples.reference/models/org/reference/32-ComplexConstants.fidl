@@ -1,0 +1,22 @@
+package org.reference
+
+typeCollection MyTypeCollection2 {
+	
+	struct S1 {
+		Boolean e1
+		UInt16 e2
+		String e3
+	}
+	
+	struct S2 {
+		UInt8 e1
+		S1 e2
+		UInt8 e3
+		S1 e4
+	}
+	
+//	const S1 str1 = [ 1, 2 ]
+	const S1 str1 = { true, 1, "foo" }
+	const S2 str2 = { { true, 1, "foo" }, 1, 2, 3 }
+
+}
