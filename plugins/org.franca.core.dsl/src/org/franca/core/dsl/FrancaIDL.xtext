@@ -216,7 +216,46 @@ FTypedElement:
 // constant definitions and initializers
 
 FConstantDef:
-	'const' type=FTypeRef (array?='[]')? name=ID '=' rhs=LogicalOrExpression;
+	'const' type=FTypeRef (array?='[]')? name=ID '='
+		rhs=FInitializerExpression
+	;
+
+FInitializerExpression:
+	LogicalOrExpression |
+	FStructInitializer;
+
+FInitializer:
+	FArrayInitializer |
+	FStructInitializer |
+	FUnionInitializer |
+	FMapInitializer;
+
+FArrayInitializer:
+	{FArrayInitializer}
+	'[' (
+		elements+=FInitializerExpression
+		(',' elements+=FInitializerExpression)*
+	)? ']';
+
+FStructInitializer:
+	{FStructInitializer}
+	'{' (
+		elements+=FInitializerExpression
+		(',' elements+=FInitializerExpression)*
+	)? '}';
+
+FUnionInitializer:
+	'{' element=[FField|ID] ':' value=FInitializerExpression '}';
+
+FMapInitializer:
+	{FMapInitializer}
+	'{' (
+		elements+=FMapElementInitializer
+		(',' elements+=FMapElementInitializer)*
+	)? '}';
+
+FMapElementInitializer:
+	key=FInitializerExpression '=>' value=FInitializerExpression;
 
 
 // **************************************************************
