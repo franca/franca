@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension point="org.franca.deploymodel.dsl.deploySpecProvider">
+      <model
+            FDSpecification="org.example.spec.PlatformDeploySpec"
+            alias="The_PlatformDeploySpec"
+            resource="model/platform/PlatformDeploySpec.fdepl">
+      </model>
+   </extension>
+   <extension point="org.franca.deploymodel.dsl.deploySpecProvider">
+      <model
+            FDSpecification="org.example.spec.PlatformDeploySpec_WithAlias"
+            alias="The_PlatformDeploySpec_WithAlias"
+            resource="model/platform/PlatformDeploySpec_WithAlias.fdepl">
+      </model>
+   </extension>
+</plugin>

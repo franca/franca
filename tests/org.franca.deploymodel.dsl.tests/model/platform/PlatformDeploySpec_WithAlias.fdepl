@@ -1,0 +1,15 @@
+
+import "PlatformDeploySpec.fdepl"
+
+/**
+ * This one is an extension of PlatformDeploySpec providing an additional
+ * property for instances.
+ */
+specification org.example.spec.PlatformDeploySpec_WithAlias
+    extends org.example.spec.PlatformDeploySpec
+{
+	for instances {
+	    /** An alias for the given instance. */
+		Alias :    String;
+	}
+}

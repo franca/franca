@@ -8,12 +8,18 @@
 package org.franca.deploymodel.dsl.scoping
 
 import com.google.inject.Inject
+import java.util.List
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EReference
 import org.eclipse.emf.mwe2.language.scoping.QualifiedNameProvider
+import org.eclipse.xtext.EcoreUtil2
+import org.eclipse.xtext.naming.IQualifiedNameConverter
+import org.eclipse.xtext.resource.EObjectDescription
+import org.eclipse.xtext.resource.IEObjectDescription
 import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
 import org.eclipse.xtext.scoping.impl.ImportUriGlobalScopeProvider
+import org.eclipse.xtext.scoping.impl.SimpleScope
 import org.franca.core.franca.FArrayType
 import org.franca.core.franca.FEnumerationType
 import org.franca.core.franca.FStructType
@@ -33,15 +39,20 @@ import org.franca.deploymodel.dsl.fDeploy.FDField
 import org.franca.deploymodel.dsl.fDeploy.FDInterface
 import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance
 import org.franca.deploymodel.dsl.fDeploy.FDMethod
+import org.franca.deploymodel.dsl.fDeploy.FDModel
 import org.franca.deploymodel.dsl.fDeploy.FDProperty
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyFlag
 import org.franca.deploymodel.dsl.fDeploy.FDProvider
+import org.franca.deploymodel.dsl.fDeploy.FDSpecification
 import org.franca.deploymodel.dsl.fDeploy.FDStruct
 import org.franca.deploymodel.dsl.fDeploy.FDTypes
 import org.franca.deploymodel.dsl.fDeploy.FDUnion
 
 import static extension org.eclipse.xtext.scoping.Scopes.*
+import com.google.common.base.Predicate
+import java.lang.reflect.Method
+import org.eclipse.emf.ecore.EClass
 
 class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 
@@ -50,6 +61,36 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 
 	@Inject
 	private ImportUriGlobalScopeProvider importUriGlobalScopeProvider
+	
+	@Inject DeploySpecProvider deploySpecProvider;
+	@Inject IQualifiedNameConverter qnConverter;
+	
+	def scope_FDRootElement_spec(EObject ctxt, EReference ref){
+		return delegateGetScope(ctxt,ref).joinImportedDeploySpecs(ctxt);
+	}
+	
+		
+	def scope_FDSpecification_base(FDSpecification ctxt, EReference ref){
+		return delegateGetScope(ctxt,ref).joinImportedDeploySpecs(ctxt);
+	}
+	
+	/** Evaluates the importedAliases of the FDModel containing the <i>ctxt</i> 
+	 * and adds the belonging <i>FDSpecification</i>s to the given scope. */
+	def joinImportedDeploySpecs(IScope scope, EObject ctxt){
+		val model = EcoreUtil2::getContainerOfType(ctxt, typeof(FDModel))
+		val importedAliases = model.imports.filter[importedSpec!=null].map[importedSpec]
+		val List<IEObjectDescription> fdSpecsScopeImports = <IEObjectDescription>newArrayList();
+		try { 
+			for(a:importedAliases){
+				val entry = deploySpecProvider.getEntry(a)
+				if(entry.FDSpecification != null){
+					fdSpecsScopeImports.add(new EObjectDescription(qnConverter.toQualifiedName(a),entry.FDSpecification,null));
+				}
+			}
+		} catch(Exception e) { e.printStackTrace}
+		return new SimpleScope(scope,fdSpecsScopeImports,false)
+	}
+
 	
 	def scope_FDTypes_target(FDTypes ctxt, EReference ref) {	
 		return new FTypeCollectionScope(IScope::NULLSCOPE, false, importUriGlobalScopeProvider, ctxt.eResource, qualifiedNameProvider);
@@ -225,7 +266,6 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 				return (type as FDEnumType).getEnumerators.scopeFor
 			}
 		}
-
 		IScope::NULLSCOPE
 	}
 

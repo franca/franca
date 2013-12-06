@@ -26,6 +26,8 @@ import org.franca.core.franca.FCurrentError
 import static extension org.franca.core.FrancaModelExtensions.*
 import org.franca.core.franca.FQualifiedElementRef
 import org.franca.core.franca.FTypedElement
+import org.eclipse.xtext.EcoreUtil2
+import org.franca.core.franca.FTransition
 import org.franca.core.utils.FrancaModelCreator
 import org.franca.core.franca.FEnumerator
 

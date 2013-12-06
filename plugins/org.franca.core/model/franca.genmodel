@@ -71,6 +71,7 @@
           ecoreFeature="ecore:EReference franca.ecore#//FTypeCollection/version"/>
       <genFeatures property="None" children="true" createChild="true" propertyCategory=""
           propertyDescription="the list of Franca types defined in this entity." ecoreFeature="ecore:EReference franca.ecore#//FTypeCollection/types"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FTypeCollection/constants"/>
     </genClasses>
     <genClasses ecoreClass="franca.ecore#//FInterface">
       <genFeatures property="None" children="true" createChild="true" propertyDescription="the list of attributes defined for this interface."
@@ -170,6 +171,28 @@
           ecoreFeature="ecore:EAttribute franca.ecore#//FTypeRef/predefined"/>
       <genFeatures notify="false" createChild="false" propertyDescription="if the referenced type is a user-defined type, this property gives the actual complex type definition. If the reference type is a predefined type, this property will be null."
           propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FTypeRef/derived"/>
+    </genClasses>
+    <genClasses ecoreClass="franca.ecore#//FConstantDef">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FConstantDef/rhs"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="franca.ecore#//FInitializerExpression"/>
+    <genClasses ecoreClass="franca.ecore#//FInitializer"/>
+    <genClasses ecoreClass="franca.ecore#//FArrayInitializer">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FArrayInitializer/elements"/>
+    </genClasses>
+    <genClasses ecoreClass="franca.ecore#//FStructInitializer">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FStructInitializer/elements"/>
+    </genClasses>
+    <genClasses ecoreClass="franca.ecore#//FUnionInitializer">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FUnionInitializer/element"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FUnionInitializer/value"/>
+    </genClasses>
+    <genClasses ecoreClass="franca.ecore#//FMapInitializer">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FMapInitializer/elements"/>
+    </genClasses>
+    <genClasses ecoreClass="franca.ecore#//FMapElementInitializer">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FMapElementInitializer/key"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FMapElementInitializer/value"/>
     </genClasses>
     <genClasses ecoreClass="franca.ecore#//FAnnotation">
       <genFeatures createChild="false" propertyDescription="the tag of this comment (i.e., the type of this annotation)."

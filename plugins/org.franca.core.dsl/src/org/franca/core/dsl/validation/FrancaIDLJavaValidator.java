@@ -12,12 +12,16 @@ import java.util.Map;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.xtext.naming.IQualifiedNameProvider;
+import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.validation.Check;
 import org.eclipse.xtext.validation.ValidationMessageAcceptor;
 import org.franca.core.FrancaModelExtensions;
+import org.franca.core.ImportedModelInfo;
 import org.franca.core.dsl.validation.internal.ContractValidator;
 import org.franca.core.dsl.validation.internal.CyclicDependenciesValidator;
 import org.franca.core.dsl.validation.internal.NameProvider;
+import org.franca.core.dsl.validation.internal.TypesValidator;
 import org.franca.core.dsl.validation.internal.ValidationHelpers;
 import org.franca.core.dsl.validation.internal.ValidationMessageReporter;
 import org.franca.core.dsl.validation.internal.ValidatorRegistry;
@@ -26,6 +30,7 @@ import org.franca.core.franca.FArgument;
 import org.franca.core.franca.FAssignment;
 import org.franca.core.franca.FBroadcast;
 import org.franca.core.franca.FCompoundType;
+import org.franca.core.franca.FConstantDef;
 import org.franca.core.franca.FContract;
 import org.franca.core.franca.FEnumerationType;
 import org.franca.core.franca.FField;
@@ -48,6 +53,8 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 	@Inject
 	protected CyclicDependenciesValidator cyclicDependenciesValidator; 
 	
+	@Inject IQualifiedNameProvider qnProvider;
+
 	FrancaIDLJavaValidator() {
 		ValidationHelpers.setNameProvider(this);
 	}
@@ -55,19 +62,43 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 	@Check
 	public void checkAnonymousTypeCollections(FModel model) {
 		int count = 0;
+		FTypeCollection anon = null;
 		for (FTypeCollection coll : model.getTypeCollections()) {
-			if (coll.getName() == null || coll.getName().isEmpty()) {
+			if (isAnonymous(coll)) {
+				anon = coll;
 				count++;
 			}
 		}
 		
 		if (count > 1) {
-			this.reportError(
+			error(
 					"There can be only one anonymous type collection in a *.fidl file!", 
 					model, 
 					FrancaPackage.Literals.FMODEL__NAME
 				);
 		}
+		
+		if (anon!=null) {
+			// check against imported type collections
+			ImportedModelInfo imported = FrancaModelExtensions.getAllImportedModels(model);
+			for(FModel m : imported.getImportedModels()) {
+				if (m.getName().equals(model.getName())) {
+					for(FTypeCollection tc : m.getTypeCollections()) {
+						if (isAnonymous(tc)) {
+							error("Another anonymous type collection in same package is imported via " +
+										imported.getViaString(m.eResource()),
+									model,
+									FrancaPackage.Literals.FMODEL__NAME);
+							return;
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	private boolean isAnonymous (FTypeCollection tc) {
+		return tc.getName()==null || tc.getName().isEmpty();
 	}
 	
 	@Check
@@ -97,9 +128,61 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 
 	@Check
 	public void checkTypeCollectionNamesUnique(FModel model) {
-		ValidationHelpers.checkDuplicates(this, model.getTypeCollections(),
+		if (model.getTypeCollections().isEmpty())
+			return;
+
+		// check local type collections
+		final Iterable<FTypeCollection> tcs = FrancaModelExtensions.getNamedTypedCollections(model);
+		ValidationHelpers.checkDuplicates(this, tcs,
 				FrancaPackage.Literals.FMODEL_ELEMENT__NAME,
 				"type collection name");
+
+		// check against imported type collections
+		ImportedModelInfo imported = FrancaModelExtensions.getAllImportedModels(model);
+		for(FModel m : imported.getImportedModels()) {
+			for(FTypeCollection tc : m.getTypeCollections()) {
+				if (! isAnonymous(tc)) {
+					QualifiedName qn = qnProvider.getFullyQualifiedName(tc);
+					for(FTypeCollection tc0 : tcs) {
+						QualifiedName qn0 = qnProvider.getFullyQualifiedName(tc0);
+						if (qn.equals(qn0)) {
+							error("Type collection name collides with imported type collection " +
+									"(imported via " + imported.getViaString(m.eResource()) + ")",
+									tc0,
+									FrancaPackage.Literals.FMODEL_ELEMENT__NAME);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	@Check
+	public void checkInterfaceNamesUnique(FModel model) {
+		if (model.getInterfaces().isEmpty())
+			return;
+
+		// check local interfaces
+		ValidationHelpers.checkDuplicates(this, model.getInterfaces(),
+				FrancaPackage.Literals.FMODEL_ELEMENT__NAME,
+				"interface name");
+
+		// check against imported interfaces
+		ImportedModelInfo imported = FrancaModelExtensions.getAllImportedModels(model);
+		for(FModel m : imported.getImportedModels()) {
+			for(FInterface i : m.getInterfaces()) {
+				QualifiedName qn = qnProvider.getFullyQualifiedName(i);
+				for(FInterface i0 : model.getInterfaces()) {
+					QualifiedName qn0 = qnProvider.getFullyQualifiedName(i0);
+					if (qn.equals(qn0)) {
+						error("Interface name collides with imported interface " +
+								"(imported via " + imported.getViaString(m.eResource()) + ")",
+								i0,
+								FrancaPackage.Literals.FMODEL_ELEMENT__NAME);
+					}
+				}
+			}
+		}
 	}
 
 	@Check
@@ -112,6 +195,18 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 	public void checkTypeNamesUnique(FInterface iface) {
 		ValidationHelpers.checkDuplicates(this, iface.getTypes(),
 				FrancaPackage.Literals.FMODEL_ELEMENT__NAME, "type name");
+	}
+
+	@Check
+	public void checkConstantNamesUnique(FTypeCollection collection) {
+		ValidationHelpers.checkDuplicates(this, collection.getConstants(),
+				FrancaPackage.Literals.FMODEL_ELEMENT__NAME, "constant name");
+	}
+
+	@Check
+	public void checkConstantNamesUnique(FInterface iface) {
+		ValidationHelpers.checkDuplicates(this, iface.getConstants(),
+				FrancaPackage.Literals.FMODEL_ELEMENT__NAME, "constant name");
 	}
 
 	@Check
@@ -202,6 +297,9 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 		ValidationHelpers.checkDuplicates(this, FrancaHelpers.getAllTypes(api),
 				FrancaPackage.Literals.FMODEL_ELEMENT__NAME, "inherited type");
 
+		ValidationHelpers.checkDuplicates(this, FrancaHelpers.getAllConstants(api),
+				FrancaPackage.Literals.FMODEL_ELEMENT__NAME, "inherited constant");
+
 		if (api.getContract() != null && FrancaHelpers.hasBaseContract(api)) {
 			error("Interface cannot overwrite base contract",
 					api.getContract(),
@@ -215,6 +313,16 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 		cyclicDependenciesValidator.check(this, m);
 	}
 
+	// *****************************************************************************
+
+	// constant-related checks
+	
+	@Check
+	public void checkConstantDef (FConstantDef constantDef) {
+		TypesValidator.checkConstantType(this, constantDef);
+	}
+
+	
 	// *****************************************************************************
 
 	@Check

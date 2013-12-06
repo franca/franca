@@ -143,6 +143,12 @@ table:DeploymentInterfaceHostsPart1[
 		td[locally or globally accessible?]
 	]
 	tr[
+		td[code[FDeploy][type_collections]]
+		td[Properties related to Franca type collections]
+		td[code[Franca][typeCollection]]
+		td[type visibility]
+	]
+	tr[
 		td[code[FDeploy][attributes]]
 		td[Properties related to attributes of a Franca IDL interface]
 		td[code[Franca][attribute]]
@@ -182,16 +188,28 @@ table:DeploymentInterfaceHostsPart2[
 		---
 	]
 	tr[
+		td[code[FDeploy][structs]]
+		td[Properties related to struct definitions]
+		td[code[Franca][struct]]
+		td[alignment / padding]
+	]
+	tr[
 		td[code[FDeploy][struct_fields]]
 		td[Properties related to fields of struct definitions]
 		td[fields of code[Franca][struct]]
 		td[alignment / padding]
 	]
 	tr[
+		td[code[FDeploy][unions]]
+		td[Properties related to union definitions]
+		td[code[Franca][union]]
+		td[flag for tag generation]
+	]
+	tr[
 		td[code[FDeploy][union_fields]]
 		td[Properties related to fields of union definitions]
 		td[fields of code[Franca][union]]
-		td[alignment / padding]
+		td[explicit tag for each field]
 	]
 	tr[
 		td[code[FDeploy][enumerations]]
@@ -446,6 +464,40 @@ specification org.deployspecs.DerivedSpec
 This allows to build a hierarchy of specifications (i.e., a specification ontology).
 
 
+section2:DeploymentModels_Specifications_InterfaceAsDatatype[The property datatype 'Interface']
+
+Each property defined in a deployment specification is strongly typed.
+In the examples above, the datatypes code[FDeploy][Boolean], code[FDeploy][Integer],
+code[FDeploy][String] and ad-hoc enumerations have been used.
+
+In some use cases, it is necessary to establish relationships between Franca interface
+definitions. E.g., in a large-scale system each functional interface might have a
+corresponding diagnostics interface providing additional functionality used for testing
+and observation.
+
+The following example shows how a property with the datatype code[FDeploy][Interface]
+is defined. In the example, for each Franca interface the e[Master] property can be 
+set in order to define another interface which is the master of this interface. 
+The example also defines a specific interface reference e[&org.example.idl.Controller]
+as a default value.
+  
+code[FDeploy][
+specification org.deployspecs.Channel
+{
+	for interfaces {
+		Master:   Interface (default: &org.example.idl.Controller);
+	}
+
+	// put more specification details here
+}
+]
+
+Note that the code[FDeploy][Interface] datatype allows to refer to interface
+e[definitions], not interface e[instances]. If you are looking for a way to
+establish relations between interface instances, the code[Franca][manages] concept
+might be a proper solution (see section
+ref:FIDL_Interface_Manages[Interfaces managing interfaces]).
+
 
 section:DeploymentModels_Definitions[Defining deployment definitions]
 
@@ -666,8 +718,8 @@ e[InterfacePropertyAccessors] as described above.
 
 section2:DeploymentModels_DeploymentAccessSupport_Examples[Example project]
 
-The example project e[org.franca.examples.basic] contains two example generators
-in the package e[org.franca.examples.basic.generators]:
+The example project e[org.franca.examples.deploy] contains two example generators
+in the package e[org.franca.examples.deploy.generators]:
 ul[ 
 	item[e[ExampleHppGeneratorWithDeployment]: This example code generator shows
 		how deployment information can be accessed during traversal of an actual

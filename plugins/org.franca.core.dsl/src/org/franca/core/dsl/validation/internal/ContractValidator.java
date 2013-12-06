@@ -116,7 +116,7 @@ public class ContractValidator {
 	
 	
 	public static void checkAssignment (ValidationMessageReporter reporter, FAssignment assignment) {
-		FTypeRef typeRHS = checkExpression(reporter, assignment.getRhs(), assignment, FrancaPackage.Literals.FASSIGNMENT__RHS);
+		FTypeRef typeRHS = TypesValidator.checkExpression(reporter, assignment.getRhs(), assignment, FrancaPackage.Literals.FASSIGNMENT__RHS);
 		if (typeRHS!=null) {
 			FTypeRef typeLHS = checkExpression(reporter, assignment.getLhs(), assignment, FrancaPackage.Literals.FASSIGNMENT__LHS);
 			if (! TypeSystem.isCompatibleType(typeRHS, typeLHS)) {
@@ -130,13 +130,14 @@ public class ContractValidator {
 	}
 	
 	public static void checkGuard (ValidationMessageReporter reporter, FGuard guard) {
-		FTypeRef type = checkExpression(reporter, guard.getCondition(), guard, FrancaPackage.Literals.FGUARD__CONDITION);
-		
-		if (! FrancaHelpers.isBoolean(type)) {
-			reporter.reportError(
-					"expected boolean type for guard expression (is " +
-							FrancaHelpers.getTypeString(type) + ")",
-					guard, FrancaPackage.Literals.FGUARD__CONDITION);
+		FTypeRef type = TypesValidator.checkExpression(reporter, guard.getCondition(), guard, FrancaPackage.Literals.FGUARD__CONDITION);
+		if (type!=null) {
+			if (! FrancaHelpers.isBoolean(type)) {
+				reporter.reportError(
+						"expected boolean type for guard expression (is " +
+								FrancaHelpers.getTypeString(type) + ")",
+						guard, FrancaPackage.Literals.FGUARD__CONDITION);
+			}
 		}
 	}
 
