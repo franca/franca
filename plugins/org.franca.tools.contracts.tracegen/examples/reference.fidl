@@ -2,6 +2,10 @@ package org.franca.tools.contracts.tracegen.examples.reference
 
 typeCollection MyTypes {
 	
+	enumeration UnusedErrors {
+		UNUSED
+	}
+	
 	enumeration BasicErrors {
 		BasicError
 		ErrorWithValueID = ErrorValueID
@@ -10,7 +14,7 @@ typeCollection MyTypes {
 	}
 	
 	enumeration ErrorsExtension extends BasicErrors {
-		AdditionalsError
+		ExtensionsAdditionalError
 	}
 
 	struct SimpleStruct {
@@ -45,16 +49,16 @@ interface Reference {
 //		in {UInt32 summand}
 //		out {UInt64 result}
 //	}
-//	method addParamComplex {
-//		in {Int32 int32Summand Int64 int64Summand Double doubleSummand Float floatSummand}
-//		out {Int32 int32Result Int64 int64Result Double doubleResult Float floatResult}
-//	}
+	method addParamComplex {
+		in {Int32 int32Summand Int64 int64Summand Double doubleSummand Float floatSummand}
+		out {Int32 int32Result Int64 int64Result Double doubleResult Float floatResult}
+	}
 	method forceEnumError {
-		error MyTypes.ErrorsExtension
+		error MyTypes.ErrorsExtension 
 	}
 	method forceSimpleError {
-		error {
-			additionError
+		error extends MyTypes.BasicErrors {
+			additionalError
 			otherError = otherErrorValue
 			stringValuedError = "This is an Error with a string as its value"
 		}
@@ -69,16 +73,18 @@ interface Reference {
 		in {Boolean a Boolean b}
 		out {Boolean r}
 	}
-//	method handleStringParams {
-//		in {String str1 String str2 String str3}
-//		out {String outStr1 String outStr2 String outStr3}
-//	}
+	method handleStringParams {
+		in {String str1 String str2 String str3}
+		out {String outStr1 String outStr2 String outStr3}
+	}
 	method handleStructs {
 		in { MyTypes.SimpleStruct simple MyTypes.ComplexStruct complex}
 		out { MyTypes.VeryComplexStruct veryComplex }
 	}
 	
+	
 	contract {
+		
 		vars {
 			Boolean isTheWeatherFine;
 			UInt32 aNumber;
@@ -86,6 +92,8 @@ interface Reference {
 //			Double aDouble; not usable as there are no double constants available right now
 			String aString;
 			MyTypes.VeryComplexStruct aComplexStruct;
+			MyTypes.BasicErrors lastBasicError;
+//			forceSimpleError.error lastImplicitErrorTypeError;
 		}
 		PSM {
 			initial Idle
@@ -154,7 +162,16 @@ interface Reference {
 					aNumber = aNumber + summand
 				}
 				//there might be calls here that will be ignored!!!
-				on call addParam [true] -> testingComplexBooleans
+				on call addParam [true] -> testingComplexParameterizedCalls
+			}
+			state testingComplexParameterizedCalls {
+				on call addParamComplex [int32Summand > 0 ] -> testingComplexBooleans {
+					aNumber = int32Summand * (0 + 1)
+				}
+				on call addParamComplex [int32Summand == 0 ] -> testingComplexBooleans {
+					aNumber = int32Summand * (0 + 1)
+				}
+				on call addParamComplex -> testingComplexParameterizedCalls //implicit else
 			}
 			state testingComplexBooleans {
 				on call complexBooleans [ a ] -> testingComplexBooleans {
@@ -163,29 +180,53 @@ interface Reference {
 				on call complexBooleans [ b ] -> testingComplexBooleans {
 					isTheWeatherFine = b
 				}
-				on respond complexBooleans [ r ] -> testingStructs
+				on respond complexBooleans [ r ] -> testingStringParams
 			}
-//			state testingStringParams {
-//				on call handleStringParams -> testingStringParams {
-//					aString = aString + str1 + str2 + str3 //bug
-//				}
-//			}
+			state testingStringParams {
+				on call handleStringParams [aString != "" && str2 == "test"] -> testingStructs  {
+					aString = ""
+					aString = aString
+					aString = str1
+					isTheWeatherFine = "sunshine" == str3
+					// aString = str1 + str2 + str3
+				}
+				on respond handleStringParams -> testingStructs {
+					aString = outStr1
+				}
+			}
 			
 			state testingStructs {
-				on call handleStructs [ simple.simpleStructsUInt32Value < 2 && aComplexStruct.complextData.complexStructsInt32Value <= 2] -> testingStructs {
-//					aComplexStruct.complextData.complexStructsInt32Value = aComplexStruct.complextData.complexStructsInt32Value + 3
+				on call handleStructs -> testDone {
+					aComplexStruct.complextData.complexStructsInt32Value = 99
+					//aComplexStruct.complextData.complexStructsInt32Value = simple.simpleStructsUInt32Value
+					//aComplexStruct.complextData.complexStructsInt32Value = aComplexStruct.complextData.complexStructsInt32Value + 99
+				}
+				/*
+				on call handleStructs [simple.simpleStructsUInt32Value < 1] -> testingStructs {
+					aNumber = simple.simpleStructsUInt32Value
+				}
+				on call handleStructs [aComplexStruct.complextData.complexStructsInt32Value <= 2] -> testingStructs {
+					aNumber = aComplexStruct.complextData.complexStructsInt32Value
+				}
+				on call handleStructs [ simple.simpleStructsUInt32Value < 3 && aComplexStruct.complextData.complexStructsInt32Value <= 4] -> testingStructs {
+					aComplexStruct.complextData.complexStructsInt32Value = aComplexStruct.complextData.complexStructsInt32Value + 5
 				}
 				
-				on call handleStructs [ complex.complexStructsInt32Value < 2 ] -> testingStructs
-				//BUG: franca cant reference on the inherited fields of structs
-//				on respond handleStructs [ veryComplex.complextData.simpleStructsUInt32Value < 2 ] -> testingStructs
-				on respond handleStructs [ veryComplex.complextData.complexStructsInt32Value < 2 ] -> testingStructs
-				
+				on call handleStructs [ complex.complexStructsInt32Value < 6 ] -> testingStructs
+				on respond handleStructs [ veryComplex.complextData.complexStructsInt32Value < 7 ] -> testingStructs
+
+				on respond handleStructs [ veryComplex.complextData.simpleStructsUInt32Value < 8 ] -> testingStructs
+				*/
+				/*
 				on call handleStructs -> testingErrors
 				on respond handleStructs -> testingErrors
+				*/
 			}
+			
 			state testingErrors {
-				on respond forceSimpleError -> testingErrors
+				on error forceEnumError [  errordef.ExtensionsAdditionalError == errorval] -> testDone
+				on error forceSimpleError [ errordef.additionalError == errorval ] -> testingErrors
+				on error forceSimpleError [ lastBasicError ==  MyTypes.BasicErrors.BasicError  ] -> testingErrors
 				on respond forceEnumError -> testDone
 			}
 			
@@ -200,5 +241,9 @@ interface Reference {
 			}
 			
 		}
+	
+	}
+	enumeration LocalEnum {
+		LocalError
 	}
 }

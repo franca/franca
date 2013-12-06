@@ -74,50 +74,13 @@ public class FrancaIDLScopeProvider extends AbstractDeclarativeScopeProvider {
 		);
 	}
 	
-//	public IScope scope_FTypeRef_derived (FCurrentError cr, EReference ref) {
-//		FTransition tr = EcoreUtil2.getContainerOfType(cr, FTransition.class);
-//		
-//		FTrigger trigger = tr.getTrigger();
-//		if (trigger == null) {
-//			return IScope.NULLSCOPE;
-//		}
-//		
-//		FEventOnIf ev = trigger.getEvent();
-//		if (ev != null) {
-//			if (ev.getError() != null) {
-//				FMethod errorMethod = ev.getError();
-//				if (errorMethod != null) {
-//					FEnumerationType localErrors = errorMethod.getErrors();
-//					FEnumerationType referencedErrorEnum = errorMethod.getErrorEnum();
-//					IEObjectDescription errorDescription;
-//					QualifiedName errorName = QualifiedName.create("errorval");
-//					if (localErrors != null) {
-//						errorDescription =
-//								new EObjectDescription(errorName, localErrors, null);
-//						return new SimpleScope(Collections.singleton(errorDescription));
-//					} else if (referencedErrorEnum != null) {
-//						errorDescription =
-//								new EObjectDescription(errorName, referencedErrorEnum, null);
-//						return new SimpleScope(Collections.singleton(errorDescription));
-//					}
-//				}
-//			}
-//		}
-//
-//		return IScope.NULLSCOPE;
-//	}
-	
 	public IScope scope_FQualifiedElementRef_element (FTransition tr, EReference ref) {
 		final List<EObject> scopes = Lists.newArrayList();
 
 		// add state variables of the enclosing contract to this scope
 		FContract contract = FrancaModelExtensions.getContract(tr);
-//		System.out.println("Scope " + tr.getTrigger().getEvent().toString());
 		if (contract!=null) { 
 			scopes.addAll(contract.getVariables());
-//			for(FDeclaration d : contract.getVariables()) {
-//				System.out.println("  var " + d.getName());
-//			}
 		}
 
 		// add the trigger's parameters to this scope
@@ -157,8 +120,6 @@ public class FrancaIDLScopeProvider extends AbstractDeclarativeScopeProvider {
 		if (qualifier == null) {
 			return IScope.NULLSCOPE;
 		}
-		
-//		TypeSystem ts = new TypeSystem();
 		
 		FModelElement lastQualifier = qualifier.getElement();
 		if (lastQualifier == null) lastQualifier = qualifier.getField();

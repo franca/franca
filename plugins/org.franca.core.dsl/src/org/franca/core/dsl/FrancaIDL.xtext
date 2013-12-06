@@ -256,7 +256,7 @@ FGuard:
 
 	
 FAssignment returns FAssignment:
-	lhs=[FDeclaration|ID] '=' rhs=LogicalOrExpression;
+	lhs=FQualifiedElementRef '=' rhs=LogicalOrExpression;
 
 FBlock returns FBlock:
 	{FBlock}
@@ -321,7 +321,7 @@ AnonymousErrorTypeReferenceTerminal:
 	'errordef'
 ;
 
-FQualifiedElementRef returns FExpression:
+FQualifiedElementRef:
 	{FQualifiedElementRef}
 	(element=[FTypedElement|ID] | element = [FEnumerationType|AnonymousErrorTypeReferenceTerminal])
 	({FQualifiedElementRef.qualifier=current} '.' field=[FField|ID])*;
