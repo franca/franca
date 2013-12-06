@@ -9,10 +9,23 @@ package org.franca.core.contracts
 
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EStructuralFeature
-import org.eclipse.xtend.lib.Data
 
-@Data class TypeIssue {
+//@Data
+class TypeIssue {
 	String message
 	EObject location
 	EStructuralFeature feature
+	
+	def String getMessage() {
+		this.message
+	}
+	
+	def EObject getLocation() {
+		this.location
+	}
+	
+	def EStructuralFeature getFeature() {
+		this.feature
+	}
+	
 }
