@@ -16,6 +16,12 @@ class TypeIssue {
 	EObject location
 	EStructuralFeature feature
 	
+	new (String message, EObject location, EStructuralFeature feature) {
+		this.message = message
+		this.location = location
+		this.feature = feature
+	}
+	
 	def String getMessage() {
 		this.message
 	}
