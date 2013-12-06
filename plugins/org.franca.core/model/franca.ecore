@@ -325,7 +325,8 @@
         eType="#//FStatement" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FAssignment" eSuperTypes="#//FStatement">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="lhs" lowerBound="1" eType="#//FDeclaration"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="lhs" lowerBound="1" eType="#//FQualifiedElementRef"
+        containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="rhs" lowerBound="1" eType="#//FExpression"
         containment="true"/>
   </eClassifiers>
