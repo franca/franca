@@ -14,18 +14,11 @@ class ElementInstance {
 	
 	FTypedElement element
 	Object value
-//	boolean isPrimitive
 	
 	new(FTypedElement element, Object actualValue) {
 		this.element = element
-//		this.isPrimitive = element.type.derived == null		
 		this.value = actualValue//getSimulatedValue(element.type)
 	}
-//	new(FArgument arg, EventData triggeringEvent) {
-//		this.element = arg
-//		this.isPrimitive = arg.type.derived == null		
-//		this.value = triggeringEvent.getActualValue(arg)
-//	}
 	
 	private new() {}
 	
@@ -37,26 +30,15 @@ class ElementInstance {
 		val result = new ElementInstance
 		result.element = this.element
 		result.value = copy(this.value)
-//		result.isPrimitive = this.isPrimitive
 		return result
 	}
 	
 	
 	def setValue(Object object) {
-//		if (isPrimitive) {
-			value = object
-//		} else {
-//			(value as SimulatedValue).setValue(object)
-//			throw new UnsupportedOperationException
-//		}
+		value = object
 	}
 	
 	def getValue() {
-//		if (isPrimitive) {
-			return value
-//		} else {
-//			return (value as SimulatedValue).getValue
-//			throw new UnsupportedOperationException
-//		}
+		return value
 	}
 }

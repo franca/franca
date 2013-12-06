@@ -17,6 +17,8 @@ import org.franca.core.franca.FCompoundType
 import org.franca.tools.contracts.tracegen.values.complex.ComplexValue
 import org.franca.tools.contracts.tracegen.values.complex.CompoundValue
 import org.franca.tools.contracts.tracegen.values.complex.EnumValue
+import static extension org.franca.core.FrancaModelExtensions.*
+import org.franca.core.franca.FField
 
 class ValueGenerator {
 	
@@ -47,12 +49,11 @@ class ValueGenerator {
 	}
 	
 	def private dispatch ComplexValue createActualComplexValueInternal(FCompoundType struct) {
-		val actualValues = newHashMap
-		//TODO take respect of arrays
-		//TODO take respect of base!!
-		struct.elements.forEach[
+		val actualValues = newHashMap;
+		//TODO: take respect of arrays
+		(struct.allElements as Iterable<FField>).forEach([
 			actualValues.put(it, createActualValue(type))
-		]
+		])
 		val result = new CompoundValue(actualValues)
 		
 		return result

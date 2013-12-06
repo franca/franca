@@ -70,9 +70,6 @@ class TraceGenerator {
 		var possibleSteps = collector.execute(trace)
 		var nextStep = selector.execute(trace, possibleSteps)
 		while (nextStep != null) {
-			if (trace.currentState.name.equals("ReqCancel") && !nextStep.key.to.name.equals("Idle")) {
-				println("bullshit")
-			}
 			possiblyStartNewTraces(trace, nextStep.value, possibleSteps, traces)
 			trace.use(nextStep.key, nextStep.value)
 			possibleSteps = collector.execute(trace)

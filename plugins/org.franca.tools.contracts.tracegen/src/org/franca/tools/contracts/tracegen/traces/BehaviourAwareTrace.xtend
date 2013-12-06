@@ -30,6 +30,9 @@ import org.franca.core.franca.FOperator
 import org.franca.core.franca.FUnaryOperation
 import org.franca.core.franca.FQualifiedElementRef
 import org.franca.core.franca.FField
+import org.franca.core.franca.FModelElement
+import org.eclipse.emf.ecore.EObject
+import org.franca.tools.contracts.tracegen.values.complex.ComplexValue
 
 class BehaviourAwareTrace extends Trace {
 	
@@ -62,7 +65,11 @@ class BehaviourAwareTrace extends Trace {
 		super.use(transition, triggeringEventData)
 	}
 	
-	def ElementInstance getOrCreate(FTypedElement e) {
+	def dispatch ElementInstance getOrCreate(EObject obj) {
+		throw new RuntimeException("It is only possible to create simulated values for typed elements (was " + obj.eClass.name + ")")
+	}
+	
+	def dispatch ElementInstance getOrCreate(FTypedElement e) {
 		var currentInstance = elementInstances.get(e)
 		if (currentInstance == null) {
 			currentInstance = new ElementInstance(e, vgen.createActualValue(e.type))
@@ -180,11 +187,42 @@ class BehaviourAwareTrace extends Trace {
 		expr.^val
 	}
 	
+	def private FModelElement getRoot(FQualifiedElementRef ref) {
+		val qualifier = ref.qualifier
+		if (qualifier !== null) {
+			return getRoot(qualifier)
+		}
+		val field = ref.field
+		if (field !== null) {
+			return field
+		}
+		return ref.element
+	}
+	
 	def dispatch Object evaluate(FAssignment a, EventData triggeringEvent) {
-		val declaration = a.lhs
+		val declaration = getRoot(a.lhs)
 		val currentInstance = getOrCreate(declaration)
+		
 		val newValue = evaluate(a.rhs, triggeringEvent)
-		currentInstance.setValue(newValue)
+		
+		val currentValue = currentInstance.value
+		val field = a.lhs.field
+		if (currentValue instanceof CompoundValue) {
+			if (field instanceof FField) {
+				(currentValue as CompoundValue).setValue(a.lhs.field as FField, newValue)
+			} else {
+				throw new RuntimeException(
+					"Try to assign a value to a field in a compound element but " +
+					"the reference on the left side did not contain a field.")
+			}
+		}
+		//} else if (currentValue instanceof ArrayValue)
+		else if (! (currentValue instanceof ComplexValue)) {
+			currentInstance.setValue(newValue)
+		} else {
+			throw new IllegalArgumentException
+		}
+		
 		return newValue;
 	}
 	

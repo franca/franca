@@ -103,36 +103,6 @@ class Trace {
 	 * precondition: transition.from == oderedTransitions.last.to || (states.size == 1 && transition.from == states.head)
 	 */
 	def use(FTransition transition, EventData triggeringEventData) {
-		//debug:
-		if (orderedTransitions.last != null && orderedTransitions.last.key.to != currentState) {
-			println("bullshit")
-		}
-		
-		{
-			//debug:
-			var int ii = 0
-			var boolean error = false
-			while (!error && ii < this.orderedTransitions.size - 1) {
-				error = this.orderedTransitions.get(ii).key.to.name.equals("ReqCancel") &&
-					! this.orderedTransitions.get(ii + 1).key.to.name.equals("Idle");
-				ii = ii + 1;
-			}
-			if (error) {
-				println("bullshit")
-			}
-		}
-		
-		if (orderedTransitions.last!=null && !triggeringEventData.actualArguments.empty && triggeringEventData.equals(orderedTransitions.last.value)) {
-			println("seams to be bullshit")
-			if (orderedTransitions.last.value === triggeringEventData) {
-				println("big bullshit")
-			}
-		}
-		
-		if (orderedTransitions.last != null && orderedTransitions.last.key.to != transition.eContainer) {
-			println("bullshit")
-		}
-		
 		orderedTransitions += transition -> triggeringEventData
 		usedTransitions += transition
 		this.currentState = transition.to
@@ -143,20 +113,6 @@ class Trace {
 			this.statistics.put(start, new TraceUsageStatistics(transition, triggeringEventData))
 		} else {
 			statistics.use(transition, triggeringEventData)
-		}
-		
-		{
-			//debug:
-			var int ii = 0
-			var boolean error = false
-			while (!error && ii < this.orderedTransitions.size - 1) {
-				error = this.orderedTransitions.get(ii).key.to.name.equals("ReqCancel") &&
-					! this.orderedTransitions.get(ii + 1).key.to.name.equals("Idle");
-				ii = ii + 1;
-			}
-			if (error) {
-				println("bullshit")
-			}
 		}
 	}
 	
