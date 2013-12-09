@@ -21,6 +21,7 @@ import org.franca.core.ImportedModelInfo;
 import org.franca.core.dsl.validation.internal.ContractValidator;
 import org.franca.core.dsl.validation.internal.CyclicDependenciesValidator;
 import org.franca.core.dsl.validation.internal.NameProvider;
+import org.franca.core.dsl.validation.internal.TypesValidator;
 import org.franca.core.dsl.validation.internal.ValidationHelpers;
 import org.franca.core.dsl.validation.internal.ValidationMessageReporter;
 import org.franca.core.dsl.validation.internal.ValidatorRegistry;
@@ -29,6 +30,7 @@ import org.franca.core.franca.FArgument;
 import org.franca.core.franca.FAssignment;
 import org.franca.core.franca.FBroadcast;
 import org.franca.core.franca.FCompoundType;
+import org.franca.core.franca.FConstantDef;
 import org.franca.core.franca.FContract;
 import org.franca.core.franca.FEnumerationType;
 import org.franca.core.franca.FField;
@@ -196,8 +198,20 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 	}
 
 	@Check
+	public void checkConstantNamesUnique(FTypeCollection collection) {
+		ValidationHelpers.checkDuplicates(this, collection.getConstants(),
+				FrancaPackage.Literals.FMODEL_ELEMENT__NAME, "constant name");
+	}
+
+	@Check
+	public void checkConstantNamesUnique(FInterface iface) {
+		ValidationHelpers.checkDuplicates(this, iface.getConstants(),
+				FrancaPackage.Literals.FMODEL_ELEMENT__NAME, "constant name");
+	}
+
+	@Check
 	public void checkCompoundElementsUnique(FCompoundType type) {
-		ValidationHelpers.checkDuplicates(this, type.getElements(),
+		ValidationHelpers.checkDuplicates(this, FrancaModelExtensions.getAllElements(type),
 				FrancaPackage.Literals.FMODEL_ELEMENT__NAME, "element name");
 	}
 
@@ -215,13 +229,13 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 
 	@Check
 	public void checkEnumeratorsUnique(FEnumerationType type) {
-		ValidationHelpers.checkDuplicates(this, type.getEnumerators(),
+		ValidationHelpers.checkDuplicates(this, FrancaModelExtensions.getAllElements(type),
 				FrancaPackage.Literals.FMODEL_ELEMENT__NAME, "enumerator name");
 	}
 
 	@Check
 	public void checkMethodFlags(FMethod method) {
-		if (method.getFireAndForget() != null) {
+		if (method.isFireAndForget()) {
 			if (!method.getOutArgs().isEmpty()) {
 				error("Fire-and-forget methods cannot have out arguments",
 						method,
@@ -281,7 +295,10 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 				"inherited broadcast");
 
 		ValidationHelpers.checkDuplicates(this, FrancaHelpers.getAllTypes(api),
-				FrancaPackage.Literals.FMODEL_ELEMENT__NAME, "inherited type");
+				FrancaPackage.Literals.FMODEL_ELEMENT__NAME, "type");
+
+		ValidationHelpers.checkDuplicates(this, FrancaHelpers.getAllConstants(api),
+				FrancaPackage.Literals.FMODEL_ELEMENT__NAME, "constant");
 
 		if (api.getContract() != null && FrancaHelpers.hasBaseContract(api)) {
 			error("Interface cannot overwrite base contract",
@@ -296,6 +313,16 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 		cyclicDependenciesValidator.check(this, m);
 	}
 
+	// *****************************************************************************
+
+	// constant-related checks
+	
+	@Check
+	public void checkConstantDef (FConstantDef constantDef) {
+		TypesValidator.checkConstantType(this, constantDef);
+	}
+
+	
 	// *****************************************************************************
 
 	@Check
@@ -379,8 +406,12 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 		} else if (e instanceof FTypeRef) {
 			name = getName((FTypeRef)e);
 		} else {
-			name = e.eGet(FrancaPackage.Literals.FMODEL_ELEMENT__NAME)
-					.toString();
+			Object modelElementName = e.eGet(FrancaPackage.Literals.FMODEL_ELEMENT__NAME);
+			//while editing the model the modelElementName might not be set
+			if (modelElementName != null) {
+				name = e.eGet(FrancaPackage.Literals.FMODEL_ELEMENT__NAME)
+						.toString();
+			}
 		}
 		return name;
 	}
@@ -389,8 +420,8 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 		StringBuilder typeName = new StringBuilder();
 
 		typeName.append(getName(arg.getType()));
-		if (arg.getArray() != null) {
-			typeName.append(arg.getArray());
+		if (arg.isArray()) {
+			typeName.append("[]");
 		}
 		return typeName.toString();
 	}
@@ -410,6 +441,11 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 			EStructuralFeature feature) {
 		error(message, object, feature,
 				ValidationMessageAcceptor.INSIGNIFICANT_INDEX);
+	}
+
+	public void reportError(String message, EObject object,
+			EStructuralFeature feature, int index) {
+		error(message, object, feature, index);
 	}
 
 	public void reportWarning(String message, EObject object,

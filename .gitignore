@@ -1,2 +1,5 @@
 *.xml_gen
 *.MF_gen
+plugins/org.franca.tools.contracts.tracegen/bin
+plugins/org.franca.tools.contracts.tracegen/traces
+plugins/org.franca.tools.contracts.tracegen/xtend-gen

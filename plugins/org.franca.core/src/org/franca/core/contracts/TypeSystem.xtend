@@ -7,22 +7,33 @@
  *******************************************************************************/
 package org.franca.core.contracts
 
-import org.franca.core.franca.FTypeRef
-import org.franca.core.franca.FExpression
-import org.franca.core.franca.FConstant
-import org.franca.core.franca.FIntegerConstant
-import org.franca.core.franca.FrancaFactory
-import org.franca.core.franca.FBasicTypeId
-import org.franca.core.franca.FBooleanConstant
-import org.franca.core.franca.FStringConstant
-import org.franca.core.franca.FBinaryOperation
-import static org.franca.core.franca.FrancaPackage$Literals.*
-import static extension org.franca.core.framework.FrancaHelpers.*
-import org.eclipse.emf.ecore.EStructuralFeature
-import org.franca.core.franca.FTypedElementRef
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.emf.ecore.EStructuralFeature
+import org.franca.core.franca.FBasicTypeId
+import org.franca.core.franca.FBinaryOperation
+import org.franca.core.franca.FBooleanConstant
+import org.franca.core.franca.FConstant
+import org.franca.core.franca.FCurrentError
+import org.franca.core.franca.FEnumerator
+import org.franca.core.franca.FExpression
+import org.franca.core.franca.FIntegerConstant
+import org.franca.core.franca.FOperator
+import org.franca.core.franca.FQualifiedElementRef
+import org.franca.core.franca.FStringConstant
+import org.franca.core.franca.FTypeRef
+import org.franca.core.franca.FTypedElement
+import org.franca.core.franca.FUnaryOperation
+import org.franca.core.franca.FrancaFactory
+import org.franca.core.utils.FrancaModelCreator
+
+import static org.franca.core.FrancaModelExtensions.*
+import static org.franca.core.franca.FrancaPackage$Literals.*
+
+import static extension org.franca.core.framework.FrancaHelpers.*
 
 class TypeSystem {
+	
+	val FrancaModelCreator francaModelCreator = new FrancaModelCreator
 	
 	static val BOOLEAN_TYPE = getBooleanType
 	static val STRING_TYPE = getStringType
@@ -30,12 +41,7 @@ class TypeSystem {
 	
 	var IssueCollector collector
 	
-	def FTypeRef getType (FExpression expr) {
-		this.collector = null
-		expr.evalType(null, null)
-	}
-	
-	def FTypeRef getType (FExpression expr, IssueCollector collector, EObject loc, EStructuralFeature feat) {
+	def FTypeRef evaluateType (FExpression expr, IssueCollector collector, EObject loc, EStructuralFeature feat) {
 		this.collector = collector
 		expr.evalType(loc, feat)
 	}
@@ -52,31 +58,52 @@ class TypeSystem {
 		}
 	}
 
+	def private dispatch FTypeRef evalType (FUnaryOperation it, EObject loc, EStructuralFeature feat) {
+		val type = operand.evalType(it, FUNARY_OPERATION__OPERAND)
+		if (FOperator::NEGATION.equals(op)) {
+			if (! type.checkBoolean(it, FUNARY_OPERATION__OPERAND)) {
+				return UNDEFINED_TYPE
+			}
+			return BOOLEAN_TYPE
+		}
+		return UNDEFINED_TYPE
+	}
+	
 	def private dispatch FTypeRef evalType (FBinaryOperation it, EObject loc, EStructuralFeature feat) {
 		val t1 = left.evalType(it, FBINARY_OPERATION__LEFT)
 		val t2 = right.evalType(it, FBINARY_OPERATION__RIGHT)
+
+		if (t1 == null || t2 == null) {
+			addIssue("operations on type level are not allowed", loc, feat)
+			return UNDEFINED_TYPE			
+		}
+		
 		if (t1.isUndefined || t2.isUndefined)
 			return UNDEFINED_TYPE
 
-		if (op.equals("&&") || op.equals("||")) {
+		if (FOperator::AND.equals(op) || FOperator::OR.equals(op)) {
 			if (! t1.checkBoolean(it, FBINARY_OPERATION__LEFT))
 				return UNDEFINED_TYPE
 			if (! t2.checkBoolean(it, FBINARY_OPERATION__RIGHT))
 				return UNDEFINED_TYPE
 			return BOOLEAN_TYPE
-		} else if (op.equals("==") || op.equals("!=")) {
-			if (! isSameType(t1, t2)) {
-				addIssue("operands must have same type", loc, feat)
+		} else if (FOperator::EQUAL.equals(op) || FOperator::UNEQUAL.equals(op)) {
+			if (! isCompatibleType(t1, t2) && ! isCompatibleType(t2, t1)) {
+				addIssue("operands must have compatible type", loc, feat)
 				return UNDEFINED_TYPE
 			}
 			return BOOLEAN_TYPE
-		} else if (op.equals("<") || op.equals(">") || op.equals("<=") || op.equals(">=")) {
+		} else if (FOperator::SMALLER.equals(op) || FOperator::SMALLER_OR_EQUAL.equals(op) ||
+			FOperator::GREATER_OR_EQUAL.equals(op) || FOperator::GREATER.equals(op)
+		) {
 			if (! t1.checkInteger(it, FBINARY_OPERATION__LEFT))
 				return UNDEFINED_TYPE
 			if (! t2.checkInteger(it, FBINARY_OPERATION__RIGHT))
 				return UNDEFINED_TYPE
 			return BOOLEAN_TYPE
-		} else if (op.equals("+") || op.equals("-") || op.equals("*") || op.equals("/")) {
+		} else if (FOperator::ADDITION.equals(op) || FOperator::SUBTRACTION.equals(op) ||
+			FOperator::MULTIPLICATION.equals(op) || FOperator::DIVISION.equals(op)
+		) {
 			if (! t1.checkInteger(it, FBINARY_OPERATION__LEFT))
 				return UNDEFINED_TYPE
 			if (! t2.checkInteger(it, FBINARY_OPERATION__RIGHT))
@@ -88,16 +115,28 @@ class TypeSystem {
 		UNDEFINED_TYPE
 	}
 	
-	def private dispatch FTypeRef evalType (FTypedElementRef expr, EObject loc, EStructuralFeature feat) {
-		if (expr.target==null) {
-			val te = expr.element
-			if (te.array!=null) {
-				addIssue("array types not supported yet", loc, feat)
-				return UNDEFINED_TYPE
+	def private dispatch FTypeRef evalType (FQualifiedElementRef expr, EObject loc, EStructuralFeature feat) {
+		if (expr?.qualifier==null) {
+			val te = expr?.element
+			val boolean TODO = true;
+//			if (!(te == null) && te.array) {
+//				addIssue("array types not supported yet", loc, feat)
+//				return UNDEFINED_TYPE
+//			}
+			if (te instanceof FTypedElement) {
+				return (te as FTypedElement).type
 			}
-			return te.type
+			if (te instanceof FEnumerator) {
+				return francaModelCreator.createTypeRef(te)
+			}
+			return null; //type would be EClass or something like that
 		} else {
-			return expr.field.type
+			val field = expr?.field;
+			switch (field) {
+				FTypedElement: return field.type
+				FEnumerator: return francaModelCreator.createTypeRef(field)	
+				default: return null
+			}
 		} 
 //		println("TE: " + expr.toString)
 //		if (expr.element!=null)
@@ -107,6 +146,10 @@ class TypeSystem {
 //		if (expr.field!=null)
 //			println("  field  : " + expr.field.toString)
 //		te.type
+	}
+	
+	def private dispatch FTypeRef evalType (FCurrentError expr, EObject loc, EStructuralFeature feat) {
+		francaModelCreator.createTypeRef(expr)
 	}
 	
 	def private dispatch FTypeRef evalType (FExpression expr, EObject loc, EStructuralFeature feat) {
@@ -134,19 +177,24 @@ class TypeSystem {
 		}
 		return true
 	}
+	
+	def static private isOfCompatiblePrimitiveType(FTypeRef t1, FTypeRef t2) {
+		if (t1.isBoolean) return t2.isBoolean
+		if (t1.isString) return t2.isString
+		if (t1.isInteger) return t2.isInteger
+		if (t1.isFloatingPoint) return t2.isFloatingPoint
+		
+		return false
+	}
+	
+	def static isCompatibleType(FTypeRef reference, FTypeRef type) {
+		return (isOfCompatiblePrimitiveType(reference, type)) ||
+			(reference.derived != null && getInheritationSet(type.derived).contains(reference.derived))
+	}
 
 	def static isSameType (FTypeRef t1, FTypeRef t2) {
-		if (t1.isBoolean && t2.isBoolean)
-			return true
-		if (t1.isString && t2.isString)
-			return true
-		if (t1.isInteger && t2.isInteger)
-			return true
-		
-		if (t1.derived!=null && t2.derived!=null && t1.derived==t2.derived)
-			return true
-
-		return false
+		return isOfCompatiblePrimitiveType(t1, t2) ||
+			(t1.derived!=null /*&& t2.derived!=null*/ && t1.derived==t2.derived)
 	}
 
 	def private getIntegerType (FIntegerConstant value) {

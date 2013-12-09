@@ -28,6 +28,8 @@
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="types" upperBound="-1"
         eType="#//FType" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="constants" upperBound="-1"
+        eType="#//FConstantDef" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FInterface" eSuperTypes="#//FTypeCollection">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -49,7 +51,7 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="The definition of a Franca method as part of an FInterface.&#xD;&#xA;Methods without out arguments might have be flagged as&#xD;&#xA;'fireAndForget'. See the Franca IDL chapter in the Franca&#xD;&#xA;User Guide for very detailed information on method semantics.&#xD;&#xA;"/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="fireAndForget" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="fireAndForget" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="inArgs" upperBound="-1"
         eType="#//FArgument" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="outArgs" upperBound="-1"
@@ -64,7 +66,7 @@
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="outArgs" upperBound="-1"
         eType="#//FArgument" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="selective" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="selective" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FAttribute" eSuperTypes="#//FTypedElement">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -132,7 +134,7 @@
   <eClassifiers xsi:type="ecore:EClass" name="FTypedElement" abstract="true" eSuperTypes="#//FModelElement">
     <eStructuralFeatures xsi:type="ecore:EReference" name="type" lowerBound="1" eType="#//FTypeRef"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="array" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="array" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FVariable" eSuperTypes="#//FTypedElement"/>
   <eClassifiers xsi:type="ecore:EClass" name="FStructType" eSuperTypes="#//FCompoundType">
@@ -169,6 +171,45 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="predefined" eType="#//FBasicTypeId"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="derived" eType="#//FType"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FConstantDef" eSuperTypes="#//FTypedElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This class represents the definition of a constant&#xD;&#xA;as part of a Franca interface or type collection. Note that the &#xD;&#xA;types available for the constant definition are &#xD;&#xA;all types which are accessible from this interface."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="rhs" lowerBound="1" eType="#//FInitializerExpression"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FInitializerExpression" abstract="true"/>
+  <eClassifiers xsi:type="ecore:EClass" name="FInitializer" eSuperTypes="#//FInitializerExpression"/>
+  <eClassifiers xsi:type="ecore:EClass" name="FArrayInitializer" eSuperTypes="#//FInitializer">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The initializer for an object of an array type."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="elements" upperBound="-1"
+        eType="#//FInitializerExpression" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FStructInitializer" eSuperTypes="#//FInitializer">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The initializer for an object of a struct type."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="elements" upperBound="-1"
+        eType="#//FInitializerExpression" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FUnionInitializer" eSuperTypes="#//FInitializer">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="element" lowerBound="1"
+        eType="#//FField"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="value" lowerBound="1" eType="#//FInitializerExpression"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FMapInitializer" eSuperTypes="#//FInitializer">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="elements" upperBound="-1"
+        eType="#//FMapElementInitializer" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FMapElementInitializer">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="key" lowerBound="1" eType="#//FInitializerExpression"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="value" lowerBound="1" eType="#//FInitializerExpression"
+        containment="true"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="FAnnotationType">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="This enum represents the type of a structured comment (i.e., the tag starting with a '@').&#xD;&#xA;"/>
@@ -184,6 +225,21 @@
     <eLiterals name="source_uri" value="10" literal="@source-uri"/>
     <eLiterals name="source_alias" value="11" literal="@source-alias"/>
     <eLiterals name="details" value="12" literal="@details"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="FOperator">
+    <eLiterals name="Or" literal="||"/>
+    <eLiterals name="Equal" value="1" literal="=="/>
+    <eLiterals name="Unequal" value="2" literal="!="/>
+    <eLiterals name="And" value="3" literal="&amp;&amp;"/>
+    <eLiterals name="Smaller" value="4" literal="&lt;"/>
+    <eLiterals name="SmallerOrEqual" value="5" literal="&lt;="/>
+    <eLiterals name="GreaterOrEqual" value="6" literal=">="/>
+    <eLiterals name="Greater" value="7" literal=">"/>
+    <eLiterals name="addition" value="8" literal="+"/>
+    <eLiterals name="subtraction" value="9" literal="-"/>
+    <eLiterals name="multiplication" value="10" literal="*"/>
+    <eLiterals name="division" value="11" literal="/"/>
+    <eLiterals name="negation" value="12" literal="!"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FAnnotation">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="#//FAnnotationType"/>
@@ -235,7 +291,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="guard" eType="#//FGuard"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="to" lowerBound="1" eType="#//FState"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="action" eType="#//FExpression"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="action" eType="#//FBlock"
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FTrigger">
@@ -251,6 +307,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="signal" eType="#//FBroadcast"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="set" eType="#//FAttribute"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="update" eType="#//FAttribute"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="error" eType="#//FMethod"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FGuard">
     <eStructuralFeatures xsi:type="ecore:EReference" name="condition" lowerBound="1"
@@ -263,29 +320,32 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="base" eType="#//FUnionType"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FField" eSuperTypes="#//FTypedElement"/>
-  <eClassifiers xsi:type="ecore:EClass" name="FBlockExpression" eSuperTypes="#//FExpression">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="expressions" upperBound="-1"
-        eType="#//FExpression" containment="true"/>
+  <eClassifiers xsi:type="ecore:EClass" name="FBlock" eSuperTypes="#//FStatement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="statements" upperBound="-1"
+        eType="#//FStatement" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="FAssignment" eSuperTypes="#//FExpression">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="lhs" lowerBound="1" eType="#//FDeclaration"/>
+  <eClassifiers xsi:type="ecore:EClass" name="FAssignment" eSuperTypes="#//FStatement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="lhs" lowerBound="1" eType="#//FQualifiedElementRef"
+        containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="rhs" lowerBound="1" eType="#//FExpression"
         containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="FExpression" abstract="true">
+  <eClassifiers xsi:type="ecore:EClass" name="FExpression" abstract="true" eSuperTypes="#//FInitializerExpression">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="This is the common base class for all expressions of&#xD;&#xA;the Franca contract action language.&#xD;&#xA;The FExpression class will never be instantiated.&#xD;&#xA;"/>
     </eAnnotations>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="FTypedElementRef" eSuperTypes="#//FExpression">
+  <eClassifiers xsi:type="ecore:EClass" name="FStatement" abstract="true"/>
+  <eClassifiers xsi:type="ecore:EClass" name="FQualifiedElementRef" eSuperTypes="#//FExpression">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="This class is a reference to some ref:FrancaModelAPIReference_FTypedElement[FTypedElement].&#xA;If the referenced element is no compound type (i.e., struct or union), only the e[element] property&#xA;will be used. The e[target] and e[field] properties will be null. If a field of a compound type is referenced,&#xA;the e[field] property will point to the ref:FrancaModelAPIReference_FField[FField] object. &#xA;If the compound type is nested, the e[target] property will reference the next outer level&#xA;(which is itself a compound referenced by a ref:FrancaModelAPIReference_FTypedElementRef[FTypedElementRef]. &#xA;This might be chained in order to specify a reference to a deeply nested compound element.&#xA;"/>
+      <details key="documentation" value="TODO: update&#xA;&#xA;This class is a reference to some ref:FrancaModelAPIReference_FTypedElement[FTypedElement].&#xA;If the referenced element is no compound type (i.e., struct or union), only the e[element] property&#xA;will be used. The e[target] and e[field] properties will be null. If a field of a compound type is referenced,&#xA;the e[field] property will point to the ref:FrancaModelAPIReference_FField[FField] object. &#xA;If the compound type is nested, the e[target] property will reference the next outer level&#xA;(which is itself a compound referenced by a ref:FrancaModelAPIReference_FTypedElementRef[FTypedElementRef]. &#xA;This might be chained in order to specify a reference to a deeply nested compound element.&#xA;"/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="element" eType="#//FTypedElement"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="#//FTypedElementRef"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="element" eType="#//FModelElement"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="qualifier" eType="#//FQualifiedElementRef"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="field" eType="#//FField"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="field" eType="#//FModelElement"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FCurrentError" eSuperTypes="#//FExpression"/>
   <eClassifiers xsi:type="ecore:EClass" name="FConstant" abstract="true" eSuperTypes="#//FExpression">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="This is the common base class for all kinds of&#xD;&#xA;constants in the Franca contract action language.&#xD;&#xA;The most important types are integers, booleans and strings."/>
@@ -309,11 +369,17 @@
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="val" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="FBinaryOperation" eSuperTypes="#//FExpression">
+  <eClassifiers xsi:type="ecore:EClass" name="FOperation" abstract="true" eSuperTypes="#//FExpression">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="op" lowerBound="1" eType="#//FOperator"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FBinaryOperation" eSuperTypes="#//FOperation">
     <eStructuralFeatures xsi:type="ecore:EReference" name="left" lowerBound="1" eType="#//FExpression"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="op" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="right" lowerBound="1" eType="#//FExpression"
         containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FUnaryOperation" eSuperTypes="#//FOperation">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="operand" lowerBound="1"
+        eType="#//FExpression" containment="true"/>
   </eClassifiers>
 </ecore:EPackage>
