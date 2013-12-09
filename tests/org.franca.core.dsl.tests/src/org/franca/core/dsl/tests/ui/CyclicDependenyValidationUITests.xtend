@@ -50,7 +50,7 @@ class CyclicDependenyValidationUITests extends AbstractMarkerTest{
 							import model "C1.fidl"
 							typeCollection C3 {
 								enumeration e3  {
-									C3 
+									C4 
 								}    
 							}''');
 		assertEquals("unexpected no of markers:" +  Arrays::toString(c1.markers.map[message]),0,c1.markers.size)
@@ -82,14 +82,14 @@ class CyclicDependenyValidationUITests extends AbstractMarkerTest{
 							package org.example
 							import model "C2.fidl"
 							typeCollection C1 {
-								enumeration e1 extends org.example.C2.e2 {C1}
+								enumeration e1 extends org.example.C2.e2 { C1 }
 							}''');
 		var c2 = IResourcesSetupUtil::createFile(
 						"sample/model/org/example/C2.fidl", '''
 							package org.example
 							import model "C1.fidl"
 							typeCollection C2 {
-								enumeration e2 extends org.example.C1.e1 {C2}
+								enumeration e2 extends org.example.C1.e1 { C2 }
 							}''');
         assertEquals("unexpected no of markers:" +  Arrays::toString(c1.markers.map[message]),1,c1.markers.size)
 		assertEquals("unexpected no of markers:" +  Arrays::toString(c2.markers.map[message]),1,c2.markers.size)	
@@ -119,11 +119,11 @@ class CyclicDependenyValidationUITests extends AbstractMarkerTest{
 									e1 
 										extends 
 											e2 
-												{C1}
+												{ C1 }
 								enumeration 
 									e2 
 										extends 
-											org.example.C3.e3 {C1}
+											org.example.C3.e3 { C2 }
 							}''');
 		var c3 = IResourcesSetupUtil::createFile(
 						"sample/model/org/example/C3.fidl", '''

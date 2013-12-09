@@ -295,10 +295,10 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 				"inherited broadcast");
 
 		ValidationHelpers.checkDuplicates(this, FrancaHelpers.getAllTypes(api),
-				FrancaPackage.Literals.FMODEL_ELEMENT__NAME, "inherited type");
+				FrancaPackage.Literals.FMODEL_ELEMENT__NAME, "type");
 
 		ValidationHelpers.checkDuplicates(this, FrancaHelpers.getAllConstants(api),
-				FrancaPackage.Literals.FMODEL_ELEMENT__NAME, "inherited constant");
+				FrancaPackage.Literals.FMODEL_ELEMENT__NAME, "constant");
 
 		if (api.getContract() != null && FrancaHelpers.hasBaseContract(api)) {
 			error("Interface cannot overwrite base contract",

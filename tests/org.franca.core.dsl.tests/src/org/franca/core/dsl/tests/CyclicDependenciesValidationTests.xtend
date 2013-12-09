@@ -47,10 +47,10 @@ class CyclicDependenciesValidationTests extends ValidationTestBase {
 		val model = '''
 			package a.b.c
 			typeCollection MyTypes {
-				enumeration e1 extends e2{A}
-				enumeration e2 extends e3{B}
-				enumeration e3 extends e4{C}
-				enumeration e4 extends e1{D}
+				enumeration e1 extends e2 { A }
+				enumeration e2 extends e3 { B }
+				enumeration e3 extends e4 { C }
+				enumeration e4 extends e1 { D }
 			}	
 		'''
 		assertDependencyCycles(model, "MyTypes.e2->MyTypes.e3->MyTypes.e4",
@@ -69,8 +69,8 @@ class CyclicDependenciesValidationTests extends ValidationTestBase {
 				}
 				union u1 { S b }
 				union u2 extends u1 {}
-				union i1  extends i2 {}
-				union i2  extends i1 {}
+				union i1 extends i2 {}
+				union i2 extends i1 {}
 			}
 		'''
 		assertDependencyCycles(model, "MyTypes.u2->MyTypes.u1",

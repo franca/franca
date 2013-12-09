@@ -74,7 +74,7 @@ typeCollection MyTypeCollection2 {
 	// struct constants
 	const UInt16 x = 123
 	const S1 str1 = { true, 1, "foo" }
-	const S2 str2 = { 1, { 47<11, x+1, "foo" }, false, str1 }
+	const S2 str2 = { 1, { 47<11, x+1, str1.e3 }, false, str1 }
 	const S4 str3 = { 5, str1, false, str1, "bar", E1.Enum2 }
 
 	// union constants
