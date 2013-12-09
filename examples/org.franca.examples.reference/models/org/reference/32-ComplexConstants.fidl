@@ -2,6 +2,21 @@ package org.reference
 
 typeCollection MyTypeCollection2 {
 	
+	// type definitions
+	
+	enumeration E1 {
+		Enum1 Enum2 Enum3
+	}
+	
+	enumeration E2 extends E1 {
+		Enum4 Enum5 Enum6
+	}
+	
+	array A1 of UInt16
+	array A2 of E2
+	array A3 of A1
+	array A4 of S1
+
 	struct S1 {
 		Boolean e1
 		UInt16 e2
@@ -11,12 +26,58 @@ typeCollection MyTypeCollection2 {
 	struct S2 {
 		UInt8 e1
 		S1 e2
-		UInt8 e3
+		Boolean e3
 		S1 e4
 	}
+
+	struct S3 extends S2 {
+		String e5
+	}
+
+	struct S4 extends S3 {
+		E1 e6
+	}
 	
-//	const S1 str1 = [ 1, 2 ]
+	union U1 {
+		UInt16 e1
+		Boolean e2
+		String e3
+	}
+	
+//	union U2 { }
+
+
+	// constant definitions using the above types
+
+	// enumeration constants
+	const E1 e1 = E1.Enum1
+	const E1 e2 = e1
+	const E2 e3 = E1.Enum1
+	const E2 e4 = E2.Enum4
+
+	// array constants
+	const A1 a0 = [ ]
+	const A1 a1 = [ 1, 2, 2+3, 100*100+100 ]
+	const A2 a2 = [ E1.Enum1, E1.Enum2, E2.Enum1, E2.Enum4, e1, e2, e3, e4 ]
+	const A3 a3 = [
+		[ 1, 2 ],
+		[ 3, 4, 5 ],
+		[ 0 ]
+	]
+	const A4 a4 = [
+		{ true, 1, "foo" },
+		{ true, 1, "foo" },
+		str1,
+		str3.e4
+	]
+
+	// struct constants
+	const UInt16 x = 123
 	const S1 str1 = { true, 1, "foo" }
-	const S2 str2 = { { true, 1, "foo" }, 1, 2, 3 }
+	const S2 str2 = { 1, { 47<11, x+1, "foo" }, false, str1 }
+	const S4 str3 = { 5, str1, false, str1, "bar", E1.Enum2 }
+
+	// union constants
+//	const U1 uni1 = { e1 : 1 }
 
 }

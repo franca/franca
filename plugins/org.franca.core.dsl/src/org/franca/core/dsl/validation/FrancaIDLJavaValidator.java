@@ -443,6 +443,11 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 				ValidationMessageAcceptor.INSIGNIFICANT_INDEX);
 	}
 
+	public void reportError(String message, EObject object,
+			EStructuralFeature feature, int index) {
+		error(message, object, feature, index);
+	}
+
 	public void reportWarning(String message, EObject object,
 			EStructuralFeature feature) {
 		warning(message, object, feature,

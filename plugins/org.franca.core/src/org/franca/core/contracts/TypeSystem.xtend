@@ -29,9 +29,12 @@ import org.franca.core.franca.FTypedElement
 import org.eclipse.xtext.EcoreUtil2
 import org.franca.core.franca.FTransition
 import org.franca.core.utils.FrancaModelCreator
+import org.franca.core.franca.FEnumerationType
+import org.franca.core.franca.FEnumerator
 
 class TypeSystem {
 	
+	// TODO: muss das ein member sein? siehe die FrancaModelCreator Klasse selbst...
 	val FrancaModelCreator francaModelCreator = new FrancaModelCreator
 	
 	static val BOOLEAN_TYPE = getBooleanType
@@ -122,10 +125,11 @@ class TypeSystem {
 			return null
 		} else {
 			val field = expr?.field;
-			if (field instanceof FTypedElement) {
-				return (field as FTypedElement).type
+			switch (field) {
+				FTypedElement: return field.type
+				FEnumerator: return getEnumerationTypeRef(field.eContainer as FEnumerationType)
+				default: return null
 			}
-			return null
 		} 
 //		println("TE: " + expr.toString)
 //		if (expr.element!=null)
@@ -209,6 +213,13 @@ class TypeSystem {
 	def private static getUndefinedType() {
 		val it = FrancaFactory::eINSTANCE.createFTypeRef
 		predefined = FBasicTypeId::UNDEFINED
+		it
+	}
+	
+	def private static getEnumerationTypeRef(FEnumerationType type) {
+		val it = FrancaFactory::eINSTANCE.createFTypeRef
+		predefined = null
+		derived = type
 		it
 	}
 	

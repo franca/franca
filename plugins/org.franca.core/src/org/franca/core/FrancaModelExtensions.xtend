@@ -33,6 +33,7 @@ import org.franca.core.franca.Import
 
 import static extension org.franca.core.FrancaModelExtensions.*
 import org.franca.core.franca.FConstantDef
+import org.franca.core.franca.FField
 
 class FrancaModelExtensions {
 	
@@ -133,7 +134,13 @@ class FrancaModelExtensions {
 	}
 
 	def static dispatch Iterable<? extends FModelElement> getAllElements(FStructType s) {
-		s.inheritationSet.map[(it as FStructType).elements].flatten
+		// the order of elements is important here.
+		// first elements of base structs, then own elements (top-down)
+		val List<FField> result = newArrayList
+		if (s.base!=null)
+			result += s.base.getAllElements as Iterable<FField>
+		result += s.elements 
+		result
 	}
 
 	def static dispatch Iterable<? extends FModelElement> getAllElements(FEnumerationType e) {
