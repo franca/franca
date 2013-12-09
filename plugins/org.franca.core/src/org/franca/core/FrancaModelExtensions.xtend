@@ -32,6 +32,7 @@ import org.franca.core.franca.FUnionType
 import org.franca.core.franca.Import
 
 import static extension org.franca.core.FrancaModelExtensions.*
+import org.franca.core.franca.FConstantDef
 
 class FrancaModelExtensions {
 	
@@ -118,7 +119,9 @@ class FrancaModelExtensions {
 	}
 	
 	def static dispatch Iterable<? extends FModelElement> getAllElements(FInterface i) {
-		i.interfaceInheritationSet.map[attributes + methods + broadcasts + types].flatten
+		i.interfaceInheritationSet.map[
+			attributes + methods + broadcasts + types + constants
+		].flatten
 	}
 
 	def static dispatch Iterable<? extends FModelElement> getAllElements(FTypeCollection c) {

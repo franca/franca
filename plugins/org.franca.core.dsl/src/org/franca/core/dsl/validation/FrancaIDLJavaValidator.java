@@ -211,7 +211,7 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 
 	@Check
 	public void checkCompoundElementsUnique(FCompoundType type) {
-		ValidationHelpers.checkDuplicates(this, type.getElements(),
+		ValidationHelpers.checkDuplicates(this, FrancaModelExtensions.getAllElements(type),
 				FrancaPackage.Literals.FMODEL_ELEMENT__NAME, "element name");
 	}
 
@@ -229,7 +229,7 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 
 	@Check
 	public void checkEnumeratorsUnique(FEnumerationType type) {
-		ValidationHelpers.checkDuplicates(this, type.getEnumerators(),
+		ValidationHelpers.checkDuplicates(this, FrancaModelExtensions.getAllElements(type),
 				FrancaPackage.Literals.FMODEL_ELEMENT__NAME, "enumerator name");
 	}
 
