@@ -42,7 +42,7 @@ class WebsocketProxyGenerator {
 			this.connection.onmessage = function (message) {
 				var msg = JSON.parse(message.data);
 				switch (msg.tag) {
-					«FOR m : api.methods.filter[fireAndForget==null]»
+					«FOR m : api.methods.filter[!fireAndForget]»
 					case "«m.name»":
 						this.proxy.reply«m.name.toFirstUpper»(«m.outArgs.genArgList("msg.")»);
 						break;
