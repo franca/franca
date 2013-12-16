@@ -16,7 +16,6 @@ import org.franca.core.contracts.TypeSystem;
 import org.franca.core.dsl.validation.internal.util.FrancaContractDirectedGraphDataSource;
 import org.franca.core.dsl.validation.internal.util.FrancaContractUndirectedGraphDataSource;
 import org.franca.core.dsl.validation.internal.util.GraphUtil;
-import org.franca.core.framework.FrancaHelpers;
 import org.franca.core.franca.FAssignment;
 import org.franca.core.franca.FAttribute;
 import org.franca.core.franca.FBroadcast;
@@ -111,29 +110,21 @@ public class ContractValidator {
 	
 	
 	public static void checkAssignment (ValidationMessageReporter reporter, FAssignment assignment) {
-		FTypeRef typeRHS = TypesValidator.checkExpression(reporter, assignment.getRhs(), assignment, FrancaPackage.Literals.FASSIGNMENT__RHS);
-		if (typeRHS!=null) {
-			FTypeRef typeLHS = TypesValidator.checkExpression(reporter, assignment.getLhs(), assignment, FrancaPackage.Literals.FASSIGNMENT__LHS);
-			if (! TypeSystem.isCompatibleType(typeRHS, typeLHS)) {
-				reporter.reportError(
-						"invalid expression type in assignment (is " +
-								FrancaHelpers.getTypeString(typeRHS) + ", expected " +
-								FrancaHelpers.getTypeString(typeLHS) + ")",
-						assignment, FrancaPackage.Literals.FASSIGNMENT__RHS);
-			}
+		TypeSystem ts = new TypeSystem();
+		FTypeRef typeLHS = ts.getTypeOf(assignment.getLhs());
+		if (typeLHS==null) {
+			reporter.reportError("invalid left-hand side in assignment", assignment, FrancaPackage.Literals.FASSIGNMENT__LHS);
+		} else {
+			TypesValidator.checkExpression(reporter,
+				assignment.getRhs(), typeLHS,
+				assignment, FrancaPackage.Literals.FASSIGNMENT__RHS);
 		}
 	}
 	
 	public static void checkGuard (ValidationMessageReporter reporter, FGuard guard) {
-		FTypeRef type = TypesValidator.checkExpression(reporter, guard.getCondition(), guard, FrancaPackage.Literals.FGUARD__CONDITION);
-		if (type!=null) {
-			if (! FrancaHelpers.isBoolean(type)) {
-				reporter.reportError(
-						"expected boolean type for guard expression (is " +
-								FrancaHelpers.getTypeString(type) + ")",
-						guard, FrancaPackage.Literals.FGUARD__CONDITION);
-			}
-		}
+		TypesValidator.checkExpression(reporter,
+			guard.getCondition(), TypeSystem.BOOLEAN_TYPE,
+			guard, FrancaPackage.Literals.FGUARD__CONDITION);
 	}
 
 }

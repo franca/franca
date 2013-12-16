@@ -17,18 +17,23 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.jdt.annotation.NonNull;
 import org.franca.core.franca.FAttribute;
 import org.franca.core.franca.FBasicTypeId;
 import org.franca.core.franca.FBroadcast;
 import org.franca.core.franca.FConstantDef;
 import org.franca.core.franca.FContract;
+import org.franca.core.franca.FEnumerationType;
 import org.franca.core.franca.FInterface;
+import org.franca.core.franca.FMapType;
 import org.franca.core.franca.FMethod;
 import org.franca.core.franca.FModel;
 import org.franca.core.franca.FStateGraph;
+import org.franca.core.franca.FStructType;
 import org.franca.core.franca.FType;
 import org.franca.core.franca.FTypeDef;
 import org.franca.core.franca.FTypeRef;
+import org.franca.core.franca.FUnionType;
 import org.franca.core.franca.FrancaPackage;
 
 import com.google.common.collect.Lists;
@@ -175,7 +180,7 @@ public class FrancaHelpers {
 	
 
 	// *****************************************************************************
-	// type system
+	// basic type system
 	
 	/** Returns true if the referenced type is any kind of integer. */
 	public static boolean isInteger (FTypeRef typeRef) {
@@ -262,10 +267,24 @@ public class FrancaHelpers {
 		return false;
 	}
 
-	/** Get a human-readable name for a Franca type. */
-	public static String getTypeString (FTypeRef typeRef) {
-		if (typeRef == null) return "<Type>";
+	/** Returns true if the referenced type is an enumeration type. */
+	public static boolean isEnumeration (FTypeRef typeRef) {
+		if (typeRef == null) return false;
 		
+		if (typeRef.getDerived() != null) {
+			FType type = typeRef.getDerived();
+			if (type instanceof FEnumerationType) {
+				return true;
+			} else if (type instanceof FTypeDef) {
+				FTypeDef typedef = (FTypeDef)type;
+				return isEnumeration(typedef.getActualType());
+			}
+		}
+		return false;
+	}
+	
+	/** Get a human-readable name for a Franca type. */
+	public static String getTypeString (@NonNull FTypeRef typeRef) {
 		if (typeRef.getDerived() == null) {
 			return typeRef.getPredefined().getName();
 		} else {
@@ -273,8 +292,16 @@ public class FrancaHelpers {
 			if (type instanceof FTypeDef) {
 				FTypeDef typedef = (FTypeDef)type;
 				return getTypeString(typedef.getActualType());
+			} else if (type instanceof FEnumerationType) {
+				return "enumeration '" + type.getName() + "'";
+			} else if (type instanceof FStructType) {
+				return "struct '" + type.getName() + "'";
+			} else if (type instanceof FUnionType) {
+				return "union '" + type.getName() + "'";
+			} else if (type instanceof FMapType) {
+				return "map '" + type.getName() + "'";
 			} else {
-				return type.getName();
+				return "'" + type.getName() + "'";
 			}
 		}
 	}
