@@ -48,17 +48,7 @@ class TypesValidator {
 	) {
 		switch (rhs) {
 			FExpression: {
-				val typeRHS = checkExpression(reporter, rhs, ctxt, feature, index)
-				if (typeRHS!=null) {
-					if (! TypeSystem::isCompatibleType(typeRHS, typeLHS)) {
-						reporter.reportError(
-							"invalid expression type in constant definition (is " +
-								FrancaHelpers::getTypeString(typeRHS) + ", expected " +
-								FrancaHelpers::getTypeString(typeLHS) + ")",
-							ctxt, feature, index);
-					}
-				}
-				
+				checkExpression(reporter, rhs, typeLHS, ctxt, feature, index)
 			}
 			FInitializer: {
 				checkInitializer(rhs, typeLHS, reporter, ctxt, feature, index)
@@ -171,30 +161,35 @@ class TypesValidator {
 	}
 	
 
-	def static FTypeRef checkExpression (
+	def static boolean checkExpression (
 			ValidationMessageReporter reporter,
 			FExpression expr,
+			FTypeRef expected,
 			EObject loc, EStructuralFeature feat)
 	{
-		checkExpression(reporter, expr, loc, feat, -1)
+		checkExpression(reporter, expr, expected, loc, feat, -1)
 	}
 
-	def private static FTypeRef checkExpression (
+	def private static boolean checkExpression (
 			ValidationMessageReporter reporter,
 			FExpression expr,
+			FTypeRef expected,
 			EObject loc, EStructuralFeature feat, int index)
 	{
 		val ts = new TypeSystem
 		val issues = new IssueCollector
-		val type = ts.evaluateType(expr, issues, loc, feat)
-		if (! issues.issues.empty) {
-			for(TypeIssue ti : issues.issues) {
-				reporter.reportError(ti.message, ti.location, ti.feature)
+		val type = ts.checkType(expr, expected, issues, loc, feat)
+		if (type==null) {
+			if (issues.issues.empty) {
+				// no issues, report a generic error message
+				reporter.reportError("invalid expression", loc, feat)
+			} else {
+				for(TypeIssue ti : issues.issues) {
+					reporter.reportError(ti.message, ti.location, ti.feature)
+				}
 			}
-			return null
 		}
-		
-		return type
+		type!=null
 	}
 }
 
