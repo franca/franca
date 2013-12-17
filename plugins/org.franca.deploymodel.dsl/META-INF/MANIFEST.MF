@@ -13,14 +13,13 @@ Require-Bundle: org.eclipse.xtext.generator;bundle-version="2.4.0";resolution:=o
  org.antlr.runtime,
  org.eclipse.xtext;bundle-version="2.4.0",
  org.eclipse.xtext.util;bundle-version="2.4.0",
- org.eclipse.xtext.generator;bundle-version="2.4.0",
  org.eclipse.xtext.smap;bundle-version="2.4.0",
  org.eclipse.xtext.ecore;bundle-version="2.4.0",
  org.eclipse.xtext.xbase;bundle-version="2.4.0";visibility:=reexport,
  org.eclipse.xtext.xbase.lib;bundle-version="2.4.0",
  org.eclipse.xtend.lib;bundle-version="2.4.0",
- org.eclipse.core.runtime;bundle-version="3.8.0"
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+ org.eclipse.core.runtime;bundle-version="3.7.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.franca.deploymodel.core,
  org.franca.deploymodel.dsl,
  org.franca.deploymodel.dsl.fDeploy,
