@@ -16,7 +16,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.eclipse.emf.mwe2.language.scoping.QualifiedNameProvider;
+import org.eclipse.xtext.naming.IQualifiedNameProvider;
 import org.eclipse.xtext.resource.EObjectDescription;
 import org.eclipse.xtext.resource.IEObjectDescription;
 import org.eclipse.xtext.resource.IResourceDescription;
@@ -39,13 +39,13 @@ public class FTypeCollectionScope extends AbstractScope {
 
 	private ImportUriGlobalScopeProvider importUriGlobalScopeProvider;
 	private Resource resource;
-	private QualifiedNameProvider qualifiedNameProvider;
+	private IQualifiedNameProvider qualifiedNameProvider;
 	private FDModel deploymentModel;
 	private Set<URI> imports;
 
 	protected FTypeCollectionScope(IScope parent, boolean ignoreCase,
 			ImportUriGlobalScopeProvider importUriGlobalScopeProvider,
-			Resource resource, QualifiedNameProvider qualifiedNameProvider) {
+			Resource resource, IQualifiedNameProvider qualifiedNameProvider) {
 		super(parent, ignoreCase);
 		this.importUriGlobalScopeProvider = importUriGlobalScopeProvider;
 		this.resource = resource;
