@@ -27,14 +27,10 @@ import org.franca.core.franca.FStateGraph
 import org.franca.core.franca.FStructType
 import org.franca.core.franca.FType
 import org.franca.core.franca.FTypeCollection
-import org.franca.core.franca.FEventOnIf
-import org.franca.core.franca.FMethod
 import org.franca.core.franca.FTypeDef
 import org.franca.core.franca.FUnionType
 import org.franca.core.franca.Import
 
-import static extension org.franca.core.FrancaModelExtensions.*
-import org.franca.core.franca.FConstantDef
 import org.franca.core.franca.FField
 
 class FrancaModelExtensions {
@@ -95,15 +91,15 @@ class FrancaModelExtensions {
 	}
 	
 	def static dispatch Set<FType> getInheritationSet(FStructType s) {
-		getInheritationList(s, [base]).toSet
+		<FType, FStructType>getInheritationList(s, [base]).toSet
 	}
 	
 	def static dispatch Set<FType> getInheritationSet(FUnionType u) {
-		getInheritationList(u, [base]).toSet
+		<FType, FUnionType>getInheritationList(u, [base]).toSet
 	}
 	
 	def static dispatch Set<FType> getInheritationSet(FEnumerationType e) {
-		getInheritationList(e, [base]).toSet
+		<FType, FEnumerationType>getInheritationList(e, [base]).toSet
 	}
 	
 	/**
