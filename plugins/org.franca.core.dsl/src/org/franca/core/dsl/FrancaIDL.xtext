@@ -222,13 +222,13 @@ FConstantDef:
 
 FInitializerExpression:
 	LogicalOrExpression |
-	FStructInitializer;
+	FInitializer;
 
 FInitializer:
 	FArrayInitializer |
-	FStructInitializer |
-	FUnionInitializer |
-	FMapInitializer;
+	FStructInitializer; // |
+//	FUnionInitializer |
+//	FMapInitializer;
 
 FArrayInitializer:
 	{FArrayInitializer}

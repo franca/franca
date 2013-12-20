@@ -34,6 +34,8 @@ import org.franca.core.franca.FUnionType
 import org.franca.core.franca.Import
 
 import static extension org.franca.core.FrancaModelExtensions.*
+import org.franca.core.franca.FConstantDef
+import org.franca.core.franca.FField
 
 class FrancaModelExtensions {
 	
@@ -79,6 +81,11 @@ class FrancaModelExtensions {
 		return result;
 	}
 	
+
+	def static Set<FInterface> getInterfaceInheritationSet(FInterface i) {
+		getInheritationList(i, [base]).toSet
+	}
+	
 	def static dispatch Set<FType> getInheritationSet(Void i) {
 		return emptySet
 	}
@@ -87,40 +94,47 @@ class FrancaModelExtensions {
 		return #{t}
 	}
 	
-	def static Set<FInterface> getInterfaceInheritationSet(FInterface i) {
-		if (i == null) return #{};
-		val result = newHashSet
-		result += #{i}
-		result += i.base.interfaceInheritationSet
-		result
-	}
-	
 	def static dispatch Set<FType> getInheritationSet(FStructType s) {
-		if (s == null) return #{};
-		val Set<FType> result = newHashSet
-		result += #{s}
-		result += s.base.inheritationSet
-		result
+		getInheritationList(s, [base]).toSet
 	}
 	
 	def static dispatch Set<FType> getInheritationSet(FUnionType u) {
-		if (u == null) return #{};
-		val Set<FType> result = newHashSet
-		result += #{u}
-		result += u.base.inheritationSet
-		result
+		getInheritationList(u, [base]).toSet
 	}
 	
 	def static dispatch Set<FType> getInheritationSet(FEnumerationType e) {
-		if (e == null) return #{};
-		val Set<FType> result = newHashSet
-		result += #{e}
-		result += e.base.inheritationSet
-		result
+		getInheritationList(e, [base]).toSet
 	}
 	
+	/**
+	 * This helper function returns a list the inheritance chain of element 'elem',
+	 * starting with the root element of the chain down to the element 'elem' itself.
+	 * Note: If there is a cycle in the hierarchy, the inheritance chain will be cut!
+	 */
+	def static private <R extends FModelElement, T extends R> List<R> getInheritationList (T elem, (T)=>T base) {
+		val Set<R> visited = newHashSet
+		val List<R> result = newArrayList
+		visited.add(elem)
+		result.add(elem)
+		var i = elem
+		while (base.apply(i) != null) {
+			i = base.apply(i);
+			
+			// stop if hierarchy has a cycle, validation will tell this issue to the user 
+			if (visited.contains(i))
+				return result.reverse
+
+			visited.add(i)			
+			result.add(i)			
+		}
+		result.reverse
+	}
+
+
 	def static dispatch Iterable<? extends FModelElement> getAllElements(FInterface i) {
-		i.interfaceInheritationSet.map[attributes + methods + broadcasts + types].flatten
+		i.interfaceInheritationSet.map[
+			attributes + methods + broadcasts + types + constants
+		].flatten
 	}
 
 	def static dispatch Iterable<? extends FModelElement> getAllElements(FTypeCollection c) {
@@ -132,7 +146,15 @@ class FrancaModelExtensions {
 	}
 
 	def static dispatch Iterable<? extends FModelElement> getAllElements(FStructType s) {
-		s.inheritationSet.map[(it as FStructType).elements].flatten
+		// the correct ordering of elements is important here.
+		// first elements of base structs, then own elements (top-down)
+		val List<FField> result = newArrayList
+		
+		// first collect complete hierarchy (cycles will be cut off)
+		val List<FStructType> all = getInheritationList(s, [base])
+		for(i : all)
+			result += i.elements
+		result
 	}
 
 	def static dispatch Iterable<? extends FModelElement> getAllElements(FEnumerationType e) {

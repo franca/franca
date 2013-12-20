@@ -211,7 +211,7 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 
 	@Check
 	public void checkCompoundElementsUnique(FCompoundType type) {
-		ValidationHelpers.checkDuplicates(this, type.getElements(),
+		ValidationHelpers.checkDuplicates(this, FrancaModelExtensions.getAllElements(type),
 				FrancaPackage.Literals.FMODEL_ELEMENT__NAME, "element name");
 	}
 
@@ -229,7 +229,7 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 
 	@Check
 	public void checkEnumeratorsUnique(FEnumerationType type) {
-		ValidationHelpers.checkDuplicates(this, type.getEnumerators(),
+		ValidationHelpers.checkDuplicates(this, FrancaModelExtensions.getAllElements(type),
 				FrancaPackage.Literals.FMODEL_ELEMENT__NAME, "enumerator name");
 	}
 
@@ -295,10 +295,10 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 				"inherited broadcast");
 
 		ValidationHelpers.checkDuplicates(this, FrancaHelpers.getAllTypes(api),
-				FrancaPackage.Literals.FMODEL_ELEMENT__NAME, "inherited type");
+				FrancaPackage.Literals.FMODEL_ELEMENT__NAME, "type");
 
 		ValidationHelpers.checkDuplicates(this, FrancaHelpers.getAllConstants(api),
-				FrancaPackage.Literals.FMODEL_ELEMENT__NAME, "inherited constant");
+				FrancaPackage.Literals.FMODEL_ELEMENT__NAME, "constant");
 
 		if (api.getContract() != null && FrancaHelpers.hasBaseContract(api)) {
 			error("Interface cannot overwrite base contract",
@@ -441,6 +441,11 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 			EStructuralFeature feature) {
 		error(message, object, feature,
 				ValidationMessageAcceptor.INSIGNIFICANT_INDEX);
+	}
+
+	public void reportError(String message, EObject object,
+			EStructuralFeature feature, int index) {
+		error(message, object, feature, index);
 	}
 
 	public void reportWarning(String message, EObject object,
