@@ -21,12 +21,9 @@
       <update label="%updateSiteName" url="http://franca.org.codespot.com/git.distribution/releases"/>
    </url>
 
-   <plugin
-         id="org.franca.core.ui.addons"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+   <includes
+         id="org.franca.ui.feature"
+         version="0.0.0"/>
 
    <plugin
          id="org.franca.core.ui.addons.source"
