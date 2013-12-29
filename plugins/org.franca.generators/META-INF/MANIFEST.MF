@@ -8,7 +8,7 @@ Bundle-Vendor: itemis AG
 Require-Bundle: org.eclipse.core.runtime,
  org.franca.core,
  org.eclipse.xtext.xbase.lib;bundle-version="2.4.0",
- org.eclipse.xtext.generator;bundle-version="2.4.0",
+ org.eclipse.xtext.generator;bundle-version="2.4.0";resolution:=optional,
  org.eclipse.xtend.lib;bundle-version="2.4.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy

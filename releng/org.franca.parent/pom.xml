@@ -34,6 +34,7 @@
 			<module>../../plugins/org.franca.generators</module>
             <module>../../plugins/org.franca.connectors.dbus</module>
             <module>../../plugins/org.franca.connectors.dbus.ui</module>
+            <module>../../plugins/org.franca.product.ui</module>
     		<!-- test base modules -->
             <module>../../tests/org.franca.core.dsl.tests.base</module>
             <module>../../tests/org.franca.deploymodel.dsl.tests.base</module>
@@ -49,6 +50,7 @@
             <module>../../features/org.franca.ui.feature</module>
             <module>../../features/org.franca.ui.feature.sdk</module>
 			<module>../../releng/org.franca.updatesite</module>
+			<module>../../releng/org.franca.product</module>
 			<!-- 
 			   <module>../../docs/org.franca.help</module>
 			-->

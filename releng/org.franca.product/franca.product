@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="Franca IDE" uid="org.franca.product" id="org.franca.product.ui.FrancaIDE" application="org.eclipse.ui.ide.workbench" version="0.8.10.qualifier" useFeatures="true" includeLaunchers="true">
+
+   <configIni use="default">
+   </configIni>
+
+   <launcherArgs>
+      <vmArgs>-Xms128m -Xmx512m -XX:MaxPermSize=128m</vmArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
+   </launcherArgs>
+
+   <windowImages/>
+
+   <launcher>
+      <solaris/>
+      <win useIco="false">
+         <bmp/>
+      </win>
+   </launcher>
+
+   <vm>
+   </vm>
+
+	<configurations>
+	   <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="2" />
+	   <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="3" />
+	   <plugin id="org.eclipse.equinox.event" autoStart="true" startLevel="3" />
+	</configurations>
+
+   <plugins>
+   </plugins>
+
+   <features>
+      <feature id="org.franca.feature"/>
+      <feature id="org.franca.dbus.feature"/>
+      <feature id="org.eclipse.sdk"/>
+      <feature id="org.eclipse.equinox.p2.core.feature"/>
+      <feature id="org.eclipse.equinox.p2.rcp.feature"/>
+      <feature id="org.eclipse.equinox.p2.user.ui"/>
+      <feature id="org.eclipse.equinox.p2.extras.feature"/>
+      <feature id="org.eclipse.platform"/>
+      <feature id="org.eclipse.help"/>
+      <feature id="org.eclipse.rcp"/>
+      <feature id="org.eclipse.e4.rcp"/>
+      <feature id="org.eclipse.jdt"/>
+      <feature id="org.eclipse.emf.common"/>
+      <feature id="org.eclipse.pde"/>
+      <feature id="org.eclipse.emf.ecore"/>
+      <feature id="org.eclipse.emf.sdk"/>
+      <feature id="org.eclipse.xtend.sdk"/>
+      <feature id="org.eclipse.xtext.runtime"/>
+   </features>
+
+
+</product>
