@@ -159,7 +159,7 @@ class TypeSystem {
 		}
 	}
 
-	def public FTypeRef getTypeOf (FQualifiedElementRef expr) {
+	def FTypeRef getTypeOf (FQualifiedElementRef expr) {
 		if (expr?.qualifier==null) {
 			val te = expr?.element
 			// TODO: support array types
