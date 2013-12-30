@@ -12,10 +12,10 @@
    <feature url="features/org.franca.dbus.feature.sdk_0.0.0.jar" id="org.franca.dbus.feature.sdk" version="0.0.0">
       <category name="franca"/>
    </feature>
-   <feature url="features/org.franca.ui.feature_0.0.0.jar" id="org.franca.ui.feature" version="0.0.0">
+   <feature url="features/org.franca.ui.addons.feature_0.0.0.jar" id="org.franca.ui.addons.feature" version="0.0.0">
       <category name="franca"/>
    </feature>
-   <feature url="features/org.franca.ui.feature.sdk_0.0.0.jar" id="org.franca.ui.feature.sdk" version="0.0.0">
+   <feature url="features/org.franca.ui.addons.feature.sdk_0.0.0.jar" id="org.franca.ui.addons.feature.sdk" version="0.0.0">
       <category name="franca"/>
    </feature>
    <category-def name="franca" label="Franca"/>
