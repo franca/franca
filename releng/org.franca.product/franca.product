@@ -33,8 +33,8 @@
    </plugins>
 
    <features>
-      <feature id="org.franca.feature"/>
-      <feature id="org.franca.dbus.feature"/>
+      <feature id="org.franca.core"/>
+      <feature id="org.franca.dbus"/>
       <feature id="org.eclipse.sdk"/>
       <feature id="org.eclipse.equinox.p2.core.feature"/>
       <feature id="org.eclipse.equinox.p2.rcp.feature"/>

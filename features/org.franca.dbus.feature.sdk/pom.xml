@@ -8,6 +8,7 @@
 		<relativePath>../../releng/org.franca.parent/pom.xml</relativePath>
 	</parent>
 
-	<artifactId>org.franca.dbus.feature.sdk</artifactId>
+	<groupId>org.franca.feature</groupId>
+	<artifactId>org.franca.dbus.sdk</artifactId>
 	<packaging>eclipse-feature</packaging>
 </project>

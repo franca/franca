@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.franca.feature.sdk"
+      id="org.franca.core.sdk"
       label="%featureName"
       version="0.8.10.qualifier"
       provider-name="%providerName">
@@ -22,7 +22,7 @@
    </url>
 
    <includes
-         id="org.franca.feature"
+         id="org.franca.core"
          version="0.0.0"/>
 
    <plugin
