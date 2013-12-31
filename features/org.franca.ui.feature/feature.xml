@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.franca.core.sdk"
+      id="org.franca.ui"
       label="%featureName"
       version="0.8.10.qualifier"
       provider-name="%providerName">
@@ -26,35 +26,21 @@
          version="0.0.0"/>
 
    <plugin
-         id="org.franca.core.source"
+         id="org.franca.core.dsl.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.franca.core.edit.source"
+         id="org.franca.deploymodel.dsl.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.franca.core.dsl.source"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.franca.deploymodel.dsl.source"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.franca.generators.source"
+         id="org.franca.product.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"

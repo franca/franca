@@ -21,6 +21,10 @@
       <update label="%updateSiteName" url="http://franca.org.codespot.com/git.distribution/releases"/>
    </url>
 
+   <includes
+         id="org.franca.core"
+         version="0.0.0"/>
+
    <plugin
          id="org.franca.connectors.dbus"
          download-size="0"

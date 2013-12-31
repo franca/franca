@@ -34,6 +34,7 @@
 
    <features>
       <feature id="org.franca.core"/>
+      <feature id="org.franca.ui"/>
       <feature id="org.franca.dbus"/>
       <feature id="org.eclipse.sdk"/>
       <feature id="org.eclipse.equinox.p2.core.feature"/>

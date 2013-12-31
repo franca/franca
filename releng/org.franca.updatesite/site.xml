@@ -6,6 +6,12 @@
    <feature url="features/org.franca.core.sdk_0.0.0.jar" id="org.franca.core.sdk" version="0.0.0">
       <category name="franca"/>
    </feature>
+   <feature url="features/org.franca.ui_0.0.0.jar" id="org.franca.ui" version="0.0.0">
+      <category name="franca"/>
+   </feature>
+   <feature url="features/org.franca.ui.sdk_0.0.0.jar" id="org.franca.ui.sdk" version="0.0.0">
+      <category name="franca"/>
+   </feature>
    <feature url="features/org.franca.dbus_0.0.0.jar" id="org.franca.dbus" version="0.0.0">
       <category name="franca"/>
    </feature>
