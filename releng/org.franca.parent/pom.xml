@@ -47,10 +47,12 @@
             <module>../../features/org.franca.core.feature.sdk</module>
             <module>../../features/org.franca.ui.feature</module>
             <module>../../features/org.franca.ui.feature.sdk</module>
-            <module>../../features/org.franca.dbus.feature</module>
-            <module>../../features/org.franca.dbus.feature.sdk</module>
             <module>../../features/org.franca.ui.addons.feature</module>
             <module>../../features/org.franca.ui.addons.feature.sdk</module>
+            <module>../../features/org.franca.dbus.feature</module>
+            <module>../../features/org.franca.dbus.feature.sdk</module>
+            <module>../../features/org.franca.dbus.ui.feature</module>
+            <module>../../features/org.franca.dbus.ui.feature.sdk</module>
 			<module>../../releng/org.franca.updatesite</module>
 			<module>../../releng/org.franca.product</module>
 			<!-- 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.franca.dbus.sdk"
+      id="org.franca.dbus.ui"
       label="%featureName"
       version="0.8.10.qualifier"
       provider-name="%providerName">
@@ -22,11 +22,15 @@
    </url>
 
    <includes
+         id="org.franca.core"
+         version="0.0.0"/>
+
+   <includes
          id="org.franca.dbus"
          version="0.0.0"/>
 
    <plugin
-         id="org.franca.connectors.dbus.source"
+         id="org.franca.connectors.dbus.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"
