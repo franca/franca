@@ -37,7 +37,6 @@
       <feature id="org.franca.ui"/>
       <feature id="org.franca.dbus"/>
       <feature id="org.franca.dbus.ui"/>
-      <feature id="org.eclipse.sdk"/>
       <feature id="org.eclipse.equinox.p2.core.feature"/>
       <feature id="org.eclipse.equinox.p2.rcp.feature"/>
       <feature id="org.eclipse.equinox.p2.user.ui"/>
@@ -46,12 +45,9 @@
       <feature id="org.eclipse.help"/>
       <feature id="org.eclipse.rcp"/>
       <feature id="org.eclipse.e4.rcp"/>
-      <feature id="org.eclipse.jdt"/>
       <feature id="org.eclipse.emf.common"/>
-      <feature id="org.eclipse.pde"/>
       <feature id="org.eclipse.emf.ecore"/>
       <feature id="org.eclipse.emf.sdk"/>
-      <feature id="org.eclipse.xtend.sdk"/>
       <feature id="org.eclipse.xtext.runtime"/>
    </features>
 
