@@ -28,6 +28,11 @@ Workflow {
     }
 
     component = Generator {
+		// Don't merge manifest files as they are checked out read-only by default.
+		// Note that this might make manual merges necessary, see MANIFEST.MF_gen
+		// I consider this a bug, see https://bugs.eclipse.org/bugs/show_bug.cgi?id=323108
+		mergeManifest = false
+		
         pathRtProject = runtimeProject
         pathUiProject = "${runtimeProject}.ui"
 		pathTestProject = "../../tests/${projectName}.tests.base"
