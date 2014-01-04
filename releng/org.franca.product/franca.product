@@ -45,10 +45,6 @@
       <feature id="org.eclipse.help"/>
       <feature id="org.eclipse.rcp"/>
       <feature id="org.eclipse.e4.rcp"/>
-      <feature id="org.eclipse.emf.common"/>
-      <feature id="org.eclipse.emf.ecore"/>
-      <feature id="org.eclipse.emf.sdk"/>
-      <feature id="org.eclipse.xtext.runtime"/>
    </features>
 
 
