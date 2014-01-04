@@ -18,13 +18,8 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-clean-plugin</artifactId>
 				<configuration>
-					<filesets>
-                        <fileset>
-                            <directory>${basedir}/xtend-gen</directory>
-                            <excludes>
-                                <exclude>.gitignore</exclude>
-                            </excludes>
-                        </fileset>
+					<filesets combine.self="override">
+						<!-- Do not delete "src-gen", it is managed by org.franca.deployment.dsl plug-in -->
 					</filesets>
 				</configuration>
 			</plugin>
