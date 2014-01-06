@@ -42,6 +42,8 @@
             <module>../../tests/org.franca.core.dsl.tests</module>
             <module>../../tests/org.franca.deploymodel.dsl.tests</module>
             <module>../../tests/org.franca.connectors.dbus.tests</module>
+    		<!-- documentation/help modules -->
+            <module>../../docs/org.franca.help</module>
 			<!-- release modules -->
             <module>../../features/org.franca.core.feature</module>
             <module>../../features/org.franca.core.feature.sdk</module>

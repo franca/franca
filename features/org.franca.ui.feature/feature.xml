@@ -40,6 +40,13 @@
          unpack="false"/>
 
    <plugin
+         id="org.franca.help"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.franca.product.ui"
          download-size="0"
          install-size="0"
