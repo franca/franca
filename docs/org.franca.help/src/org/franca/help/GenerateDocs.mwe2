@@ -64,13 +64,13 @@ Workflow {
 	}
 
 	// convert Latex format to pdf
-	component = org.eclipse.xtext.xdoc.generator.util.LatexRunner auto-inject {
-		//pdfLatexCommandParams = "-halt-on-error"
-		pdfLatex = pdfLatex
-		outputDir = targetDir
-		inputSlot = "doc"
-		cleanAfterRun = cleanAfterRun
-	}
+//	component = org.eclipse.xtext.xdoc.generator.util.LatexRunner auto-inject {
+//		//pdfLatexCommandParams = "-halt-on-error"
+//		pdfLatex = pdfLatex
+//		outputDir = targetDir
+//		inputSlot = "doc"
+//		cleanAfterRun = cleanAfterRun
+//	}
 
 }
 
