@@ -14,7 +14,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.gef4.zest.core.widgets.Graph;
 import org.eclipse.gef4.zest.core.widgets.ZestStyles;
-import org.eclipse.gef4.zest.layouts.algorithms.SpringLayoutAlgorithm;
+import org.eclipse.gef4.layout.algorithms.SpringLayoutAlgorithm;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Composite;
