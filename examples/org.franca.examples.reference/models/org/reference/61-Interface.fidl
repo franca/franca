@@ -1,0 +1,138 @@
+/*******************************************************************************
+ * Copyright (c) 2013 itemis AG (http://www.itemis.de).
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************/
+package org.reference
+
+<** @description: This interface covers the typical issues of transformations
+                  from Franca to D-Bus Introspection XML. (findmedoc) **>
+interface MyInterface61 {
+	version { major 1 minor 0 }
+
+	<** @description: Method m1 description (findmedoc) **>
+	attribute Int32 attrSubscrRW
+	attribute Int32 attrSubscrRO readonly
+	attribute Int32 attrNoSubscrRW noSubscriptions
+	attribute Int32 attrNoSubscrRO readonly noSubscriptions
+
+	<** @description: Method m1 description (findmedoc) **>
+	method m1 {
+		in {
+			<** @description: Argument m1.argInt8 description (findmedoc) **>
+			Int8 argInt8
+
+			UInt8 argUInt8
+			Float argFloat
+			ByteBuffer argByteBuffer
+		}
+	}
+	
+	<** @description: Method m2 description (findmedoc) **>
+	method m2 {
+		in {
+			MyUnion01 argMyUnion01
+			MyUnion02 argMyUnion02
+			MyUnion03 argMyUnion03
+			MyEnum01 argMyEnum01
+			MyEnum02 argMyEnum02
+			MyStruct01 argMyStruct01
+			MyStruct02 argMyStruct02
+			MyStructPoly03 argMyStructPoly03
+			MyStructPoly04 argMyStructPoly04
+			MyMap01 argMyMap01
+			MyMap02 argMyMap02
+		}
+	} 
+
+	<** @description: Method m3 description (findmedoc) **>
+	method m3 {
+		in {
+			UInt32 arg1
+			UInt32 arg2
+		}
+		out {
+			String ret1
+		}
+		error { ERR1 ERR2 ERR3 }
+	}
+
+	<** @description: Method m4 description (findmedoc) **>
+	method m4 fireAndForget {
+		in {
+			UInt32 arg1
+			UInt32 arg2
+		}
+	}
+
+	<** @description: Broadcast b1 description (findmedoc) **>
+	broadcast b1 {
+		out {
+			UInt32 arg1
+			String arg2
+		}
+	}
+
+	<** @description: Broadcast b2 description (findmedoc) **>
+	broadcast b2 selective {
+		out {
+			UInt32 arg1
+			String arg2
+		}
+	}
+
+
+	// ************ TYPE DEFINITIONS ************
+ 
+	<** @description: Union MyUnion01 description (findmedoc) **>
+	union MyUnion01 {
+		UInt16 elem1
+		String elem2
+	}
+	
+	union MyUnion02 extends MyUnion01 {
+		UInt32 elem3
+		Int32 elem4
+	}
+	
+	union MyUnion03 extends MyUnion02 {
+		Double elem5
+	}
+	
+	struct MyStruct01 {
+		UInt16 elem1
+		UInt16 elem2
+	}
+
+	struct MyStruct02 extends MyStruct01 {
+		UInt32 elem3
+	}
+
+	struct MyStructPoly03 polymorphic {
+		UInt16 elem1
+		UInt16 elem2
+	}
+
+	struct MyStructPoly04 extends MyStructPoly03 {
+		UInt32 elem3
+	}
+
+	enumeration MyEnum01 {
+		ENU1 ENU2 ENU3
+	}
+	
+	enumeration MyEnum02 extends MyEnum01 {
+		ENU4
+	}
+	
+	map MyMap01 {
+		MyStruct01 to Int32
+	}
+
+	map MyMap02 {
+		Int32 to MyStruct01
+	}
+}
+
