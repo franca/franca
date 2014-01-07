@@ -14,7 +14,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.ide,
  org.franca.deploymodel.dsl,
  org.eclipse.gef4.zest.core,
- org.eclipse.gef4.zest.layouts
+ org.eclipse.gef4.layout
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Activator: org.franca.core.ui.addons.Activator

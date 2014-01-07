@@ -14,7 +14,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.gef4.zest.core.widgets.Graph;
 import org.eclipse.gef4.zest.core.widgets.ZestStyles;
-import org.eclipse.gef4.zest.layouts.algorithms.SpringLayoutAlgorithm;
+import org.eclipse.gef4.layout.algorithms.SpringLayoutAlgorithm;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Composite;
@@ -33,6 +33,7 @@ import org.franca.core.ui.addons.contractviewer.util.FrancaEditorPartListener;
 import org.franca.core.ui.addons.contractviewer.util.GraphSelectionListener;
 import org.franca.core.ui.addons.contractviewer.util.IntermediateFrancaGraphModel;
 import org.franca.core.ui.addons.contractviewer.util.ResourceChangeListener;
+import org.franca.core.utils.FrancaRecursiveValidator;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -62,6 +63,9 @@ public class FrancaContractVisualizerView extends ViewPart {
 	
 	@Inject
 	private Injector injector;
+	
+	@Inject
+	private FrancaRecursiveValidator validator;
 	
 	public FrancaContractVisualizerView() {
 		this.previousIntermediateModel = null;
