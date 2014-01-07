@@ -51,7 +51,7 @@ typeCollection MyTypeCollection32 {
 		String e3
 	}
 	
-//	union U2 { }
+	union U2 extends U1 { }
 
 
 	// constant definitions using the above types

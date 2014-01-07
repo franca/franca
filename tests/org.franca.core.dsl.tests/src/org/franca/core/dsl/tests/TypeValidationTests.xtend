@@ -70,5 +70,19 @@ class TypeValidationTests extends ValidationTestBase {
 		assertEquals(expected.toString, text.getIssues)
 	}
 
+	@Test
+	def validateUnionHasElements() {
+		val text = '''
+			package a.b.c
+			typeCollection MyTypes {
+				union MyUnion { }
+			}
+		'''
+		
+		assertEquals('''
+			3:Union must have own or inherited elements
+		'''.toString, text.getIssues)
+	}
+	
 }
 

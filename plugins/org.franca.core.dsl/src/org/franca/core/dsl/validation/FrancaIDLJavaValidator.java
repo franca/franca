@@ -228,6 +228,15 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 	}
 
 	@Check
+	public void checkUnionHasElements(FUnionType type) {
+		if (type.getBase()==null && type.getElements().isEmpty()) {
+			error("Union must have own or inherited elements",
+					type,
+					FrancaPackage.Literals.FMODEL_ELEMENT__NAME, -1);
+		}
+	}
+	
+	@Check
 	public void checkEnumeratorsUnique(FEnumerationType type) {
 		ValidationHelpers.checkDuplicates(this, FrancaModelExtensions.getAllElements(type),
 				FrancaPackage.Literals.FMODEL_ELEMENT__NAME, "enumerator name");
