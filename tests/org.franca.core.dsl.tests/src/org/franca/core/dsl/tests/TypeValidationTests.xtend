@@ -71,6 +71,59 @@ class TypeValidationTests extends ValidationTestBase {
 	}
 
 	@Test
+	def validateUnionElementNamesUnique() {
+		val text = '''
+			package a.b.c
+			typeCollection MyTypes {
+				union MyUnion1 {
+					String e1
+					UInt16 e2
+				}
+				union MyUnion2 extends MyUnion1 {
+					UInt32 e1
+					
+				}
+				union MyUnion3 extends MyUnion2 {
+					Int32 e2
+				}
+			}
+		'''
+		
+		assertEquals('''
+			8:Element name collision with base element 'MyUnion1.e1'
+			12:Element name collision with base element 'MyUnion1.e2'
+		'''.toString, text.getIssues)
+	}
+	
+	@Test
+	def validateUnionElementTypesUnique() {
+		val text = '''
+			package a.b.c
+			typeCollection MyTypes {
+				union MyUnion1 {
+					String e1
+					UInt16 e2
+				}
+				union MyUnion2 extends MyUnion1 {
+					UInt16 e4
+				}
+				union MyUnion3 extends MyUnion2 {
+					String e9
+					Int16 u1
+					Int16 u2
+				}
+			}
+		'''
+		
+		assertEquals('''
+			8:Element type collision with base element 'MyUnion1.e2'
+			11:Element type collision with base element 'MyUnion1.e1'
+			12:Duplicate element type 'Int16'
+			13:Duplicate element type 'Int16'
+		'''.toString, text.getIssues)
+	}
+
+	@Test
 	def validateUnionHasElements() {
 		val text = '''
 			package a.b.c
@@ -84,5 +137,37 @@ class TypeValidationTests extends ValidationTestBase {
 		'''.toString, text.getIssues)
 	}
 	
+	@Test
+	def validateEnumerationElementNamesUnique() {
+		val text = '''
+			package a.b.c
+			typeCollection MyTypes {
+				enumeration MyEnum1 {
+					E1
+					E2
+					E3
+					E3
+				}
+				enumeration MyEnum2 extends MyEnum1 {
+					E1
+					E4
+				}
+				enumeration MyEnum3 extends MyEnum2 {
+					E1
+					E4
+					E2
+				}
+			}
+		'''
+		
+		assertEquals('''
+			6:Name conflict for enumerator name 'E3'
+			7:Name conflict for enumerator name 'E3'
+			10:Enumerator name collision with base element 'MyEnum1.E1'
+			14:Enumerator name collision with base element 'MyEnum2.E1'
+			15:Enumerator name collision with base element 'MyEnum2.E4'
+			16:Enumerator name collision with base element 'MyEnum1.E2'
+		'''.toString, text.getIssues)
+	}
+	
 }
-

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 Harman International (http://www.harman.com).
+ * Copyright (c) 2014 itemis AG (http://www.itemis.de).
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,7 @@ import org.franca.core.FrancaModelExtensions;
 import org.franca.core.ImportedModelInfo;
 import org.franca.core.dsl.validation.internal.ContractValidator;
 import org.franca.core.dsl.validation.internal.CyclicDependenciesValidator;
-import org.franca.core.dsl.validation.internal.NameProvider;
+import org.franca.core.dsl.validation.internal.FrancaIDLValidator;
 import org.franca.core.dsl.validation.internal.TypesValidator;
 import org.franca.core.dsl.validation.internal.ValidationHelpers;
 import org.franca.core.dsl.validation.internal.ValidationMessageReporter;
@@ -33,7 +33,6 @@ import org.franca.core.franca.FCompoundType;
 import org.franca.core.franca.FConstantDef;
 import org.franca.core.franca.FContract;
 import org.franca.core.franca.FEnumerationType;
-import org.franca.core.franca.FField;
 import org.franca.core.franca.FGuard;
 import org.franca.core.franca.FInterface;
 import org.franca.core.franca.FMethod;
@@ -48,17 +47,16 @@ import org.franca.core.franca.FrancaPackage;
 import com.google.inject.Inject;
 
 public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
-		implements ValidationMessageReporter, NameProvider {
+		implements ValidationMessageReporter {
 	
 	@Inject
 	protected CyclicDependenciesValidator cyclicDependenciesValidator; 
 	
 	@Inject IQualifiedNameProvider qnProvider;
 
-	FrancaIDLJavaValidator() {
-		ValidationHelpers.setNameProvider(this);
-	}
-	
+	// delegate to FrancaIDLValidator
+	FrancaIDLValidator auxValidator = new FrancaIDLValidator(this);
+
 	@Check
 	public void checkAnonymousTypeCollections(FModel model) {
 		int count = 0;
@@ -211,20 +209,12 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 
 	@Check
 	public void checkCompoundElementsUnique(FCompoundType type) {
-		ValidationHelpers.checkDuplicates(this, FrancaModelExtensions.getAllElements(type),
-				FrancaPackage.Literals.FMODEL_ELEMENT__NAME, "element name");
+		auxValidator.checkCompoundElementsUnique(type);
 	}
 
 	@Check
 	public void checkUnionElementTypesUnique(FUnionType type) {
-		ValidationHelpers.NameList names = ValidationHelpers.createNameList();
-		for(FField f : type.getElements()) {
-			names.add(f, getName(f.getType()));
-		}
-		ValidationHelpers
-				.checkDuplicates(this, names,
-						FrancaPackage.Literals.FTYPED_ELEMENT__TYPE,
-						"element type");
+		auxValidator.checkUnionElementTypesUnique(type);
 	}
 
 	@Check
@@ -238,8 +228,7 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 	
 	@Check
 	public void checkEnumeratorsUnique(FEnumerationType type) {
-		ValidationHelpers.checkDuplicates(this, FrancaModelExtensions.getAllElements(type),
-				FrancaPackage.Literals.FMODEL_ELEMENT__NAME, "enumerator name");
+		auxValidator.checkEnumeratorsUnique(type);
 	}
 
 	@Check
@@ -378,68 +367,6 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 							FrancaPackage.Literals.FTYPE_REF__DERIVED, -1);
 				}
 			}
-		}
-	}
-
-	// *****************************************************************************
-
-	/**
-	 * Helper function that computes the name of a method, broadcast including
-	 * its signature. Used to identify uniquely the element in a restricted
-	 * scope.
-	 * 
-	 * @param e
-	 *            the object to get the name
-	 * @return the name
-	 */
-	public String getName(EObject e) {
-		String name = new String();
-
-		if (e instanceof FMethod) {
-			FMethod method = (FMethod) e;
-
-			name += method.getName();
-			for (FArgument arg : method.getInArgs()) {
-				name += getTypeName(arg);
-			}
-			for (FArgument arg : method.getOutArgs()) {
-				name += getTypeName(arg);
-			}
-		} else if (e instanceof FBroadcast) {
-			FBroadcast broadcast = (FBroadcast) e;
-
-			name += broadcast.getName();
-			for (FArgument arg : broadcast.getOutArgs()) {
-				name += getTypeName(arg);
-			}
-		} else if (e instanceof FTypeRef) {
-			name = getName((FTypeRef)e);
-		} else {
-			Object modelElementName = e.eGet(FrancaPackage.Literals.FMODEL_ELEMENT__NAME);
-			//while editing the model the modelElementName might not be set
-			if (modelElementName != null) {
-				name = e.eGet(FrancaPackage.Literals.FMODEL_ELEMENT__NAME)
-						.toString();
-			}
-		}
-		return name;
-	}
-
-	private static String getTypeName(FArgument arg) {
-		StringBuilder typeName = new StringBuilder();
-
-		typeName.append(getName(arg.getType()));
-		if (arg.isArray()) {
-			typeName.append("[]");
-		}
-		return typeName.toString();
-	}
-
-	private static String getName(FTypeRef type) {
-		if (type.getDerived()==null) {
-			return type.getPredefined().getLiteral();
-		} else {
-			return type.getDerived().getName();
 		}
 	}
 

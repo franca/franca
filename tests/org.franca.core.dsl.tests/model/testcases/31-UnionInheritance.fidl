@@ -8,6 +8,6 @@ typeCollection MyTypes {
 	}
 	
 	union MyUnion2 extends MyUnion1 {
-		Int8 field3
+		Int16 field3
 	}
 }
