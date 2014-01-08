@@ -3,6 +3,7 @@
 
 <product name="Franca IDE" uid="org.franca.product" id="org.franca.product.ui.FrancaIDE" application="org.eclipse.ui.ide.workbench" version="0.8.10.qualifier" useFeatures="true" includeLaunchers="true">
 
+
    <configIni use="default">
    </configIni>
 
@@ -11,28 +12,19 @@
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
-   <windowImages/>
+   <windowImages i16="/org.franca.product/icons/eclipse16.gif" i32="/org.franca.product/icons/eclipse32.gif" i48="/org.franca.product/icons/eclipse48.gif"/>
 
    <launcher>
+      <macosx icon="/icons/Eclipse.icns"/>
       <solaris/>
       <win useIco="false">
          <bmp/>
       </win>
    </launcher>
 
+
    <vm>
    </vm>
-
-	<configurations>
-	   <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="4" />
-       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
-       <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
-       <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
-       <plugin id="org.eclipse.osgi" autoStart="true" startLevel="0" />
-       <plugin id="org.eclipse.update.configurator" autoStart="true" startLevel="4" />
-	   <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="2" />
-	   <plugin id="org.eclipse.equinox.event" autoStart="true" startLevel="3" />
-	</configurations>
 
    <plugins>
    </plugins>
@@ -52,5 +44,10 @@
       <feature id="org.eclipse.e4.rcp"/>
    </features>
 
+   <configurations>
+      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="3" />
+      <plugin id="org.eclipse.equinox.event" autoStart="true" startLevel="3" />
+   </configurations>
 
 </product>
