@@ -27,23 +27,32 @@ import com.google.inject.Inject;
 @InjectWith(FrancaIDLTestsInjectorProvider.class)
 public class Franca2DBusTests {
 
+	private static final String LOCAL_FRANCA_MODELS = "model/testcases/";
+	private static final String REF_EXAMPLE_FRANCA_MODELS =
+			"../../examples/org.franca.examples.reference/models/org/reference/";
+
 	@Inject	FrancaPersistenceManager loader;
 	
 	@Test
 	public void test_30() {
-		doTransformTest("30-SimpleAttribute");
+		doTransformTest(LOCAL_FRANCA_MODELS, "30-SimpleAttribute");
 	}
 	
 	@Test
 	public void test_40() {
-		doTransformTest("40-PolymorphicStructs");
+		doTransformTest(LOCAL_FRANCA_MODELS, "40-PolymorphicStructs");
+	}
+
+	@Test
+	public void test_ref_61() {
+		doTransformTest(REF_EXAMPLE_FRANCA_MODELS, "61-Interface");
 	}
 
 
 	@SuppressWarnings("restriction")
-	private void doTransformTest (String fileBasename) {
+	private void doTransformTest (String path, String fileBasename) {
 		// load example Franca IDL interface
-		String inputfile = "model/testcases/" + fileBasename + ".fidl";
+		String inputfile = path + fileBasename + ".fidl";
 		System.out.println("Loading Franca file " + inputfile + " ...");
 		FModel fmodel = loader.loadModel(inputfile);
 		assertNotNull(fmodel);

@@ -56,7 +56,7 @@ interface MyInterface61 {
 		out {
 			String ret1
 		}
-		error { ERR1 ERR2 ERR3 }
+		error { ERR1 ERR2="2" ERR3 ERR7="0x7" ERR8 }
 	}
 
 	<** @description: Method m4 description (findmedoc) **>
