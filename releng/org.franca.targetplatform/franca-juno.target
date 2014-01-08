@@ -58,7 +58,7 @@
 <repository location="http://download.eclipse.org/releases/kepler/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="model.emf.dbusxml.feature.feature.group" version="0.7.6.201309261942"/>
+<unit id="model.emf.dbusxml.feature.feature.group" version="0.7.7.201401081316"/>
 <repository location="http://dbus-emf-model.eclipselabs.org.codespot.com/git/update_site/releases/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">

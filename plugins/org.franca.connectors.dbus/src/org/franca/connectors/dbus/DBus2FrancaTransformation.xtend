@@ -186,7 +186,7 @@ class DBus2FrancaTransformation {
 		var it = FrancaFactory::eINSTANCE.createFTypeRef
 		// @ignore src.name
 		switch (src) {
-			case DBusBasicType::DBUS_TYPE_INT8: predefined = FBasicTypeId::INT8
+			case DBusBasicType::DBUS_TYPE_BYTE: predefined = FBasicTypeId::UINT8
 			case DBusBasicType::DBUS_TYPE_INT16: predefined = FBasicTypeId::INT16
 			case DBusBasicType::DBUS_TYPE_UINT16: predefined = FBasicTypeId::UINT16
 			case DBusBasicType::DBUS_TYPE_INT32: predefined = FBasicTypeId::INT32
