@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="introspect.xsl"?>
+<node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="introspect.xsd" name="org.reference">
+  <interface name="MyInterface61">
+    <version>1.0</version>
+    <property access="readwrite" name="attrSubscrRW" type="i"/>
+    <property access="read" name="attrSubscrRO" type="i"/>
+    <property access="readwrite" name="attrNoSubscrRW" type="i"/>
+    <property access="read" name="attrNoSubscrRO" type="i"/>
+    <method name="m1">
+      <doc>
+        <line>m1 = Method m1 description (findmedoc)</line>
+      </doc>
+      <arg direction="in" name="argInt8" type="n">
+        <doc>
+          <line>argInt8 = Argument m1.argInt8 description (findmedoc)</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="argUInt8" type="y">
+        <doc>
+          <line>argUInt8 = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="argFloat" type="d">
+        <doc>
+          <line>argFloat = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="argByteBuffer" type="ay">
+        <doc>
+          <line>argByteBuffer = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="m2">
+      <doc>
+        <line>m2 = Method m2 description (findmedoc)</line>
+      </doc>
+      <arg direction="in" name="argMyUnion01" type="(uv)">
+        <doc>
+          <line>argMyUnion01 (of type MyUnion01) = Description missing</line>
+          <line>MyUnion01 variant[elem1, elem2] = Union MyUnion01 description (findmedoc)</line>
+          <line>0: MyUnion01.elem1 ('q') = Description missing</line>
+          <line>1: MyUnion01.elem2 ('s') = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="argMyUnion02" type="(uv)">
+        <doc>
+          <line>argMyUnion02 = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="argMyUnion03" type="(uv)">
+        <doc>
+          <line>argMyUnion03 = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="argMyEnum01" type="u">
+        <doc>
+          <line>argMyEnum01 = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="argMyEnum02" type="u">
+        <doc>
+          <line>argMyEnum02 = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="argMyStruct01" type="(qq)">
+        <doc>
+          <line>argMyStruct01 = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="argMyStruct02" type="(qqu)">
+        <doc>
+          <line>argMyStruct02 = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="argMyStructPoly03" type="(iv)">
+        <doc>
+          <line>argMyStructPoly03 = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="argMyStructPoly04" type="(iv)">
+        <doc>
+          <line>argMyStructPoly04 = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="argMyMap01" type="?">
+        <doc>
+          <line>argMyMap01 = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="argMyMap02" type="a{i(qq)}">
+        <doc>
+          <line>argMyMap02 = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="m3">
+      <doc>
+        <line>m3 = Method m3 description (findmedoc)</line>
+      </doc>
+      <arg direction="in" name="arg1" type="u">
+        <doc>
+          <line>arg1 = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="arg2" type="u">
+        <doc>
+          <line>arg2 = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="ret1" type="s">
+        <doc>
+          <line>ret1 = Description missing</line>
+        </doc>
+      </arg>
+      <error name="MyInterface61.Error.ERR1" id="0"/>
+      <error name="MyInterface61.Error.ERR2" id="2"/>
+      <error name="MyInterface61.Error.ERR3" id="3"/>
+      <error name="MyInterface61.Error.ERR7" id="7"/>
+      <error name="MyInterface61.Error.ERR8" id="8"/>
+    </method>
+    <method name="m4">
+      <doc>
+        <line>m4 = Method m4 description (findmedoc)</line>
+      </doc>
+      <arg direction="in" name="arg1" type="u">
+        <doc>
+          <line>arg1 = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="arg2" type="u">
+        <doc>
+          <line>arg2 = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <signal name="b1">
+      <doc>
+        <line>b1 = Broadcast b1 description (findmedoc)</line>
+      </doc>
+      <arg direction="out" name="arg1" type="u">
+        <doc>
+          <line>arg1 = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="arg2" type="s">
+        <doc>
+          <line>arg2 = Description missing</line>
+        </doc>
+      </arg>
+    </signal>
+    <signal name="b2">
+      <doc>
+        <line>b2 = Broadcast b2 description (findmedoc)</line>
+      </doc>
+      <arg direction="out" name="arg1" type="u">
+        <doc>
+          <line>arg1 = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="arg2" type="s">
+        <doc>
+          <line>arg2 = Description missing</line>
+        </doc>
+      </arg>
+    </signal>
+  </interface>
+</node>
