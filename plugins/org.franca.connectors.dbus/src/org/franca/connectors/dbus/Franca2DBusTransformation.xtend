@@ -50,6 +50,8 @@ class Franca2DBusTransformation {
 	String mInterfaceName
 	
 	def create DbusxmlFactory::eINSTANCE.createNodeType transform (FModel src) {
+		clearIssues
+
 		name = src.name
 		interface.addAll(src.interfaces.map [transformInterface])
 		addBacklink(it, src)

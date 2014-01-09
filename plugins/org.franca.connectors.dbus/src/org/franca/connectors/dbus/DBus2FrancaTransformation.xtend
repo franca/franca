@@ -9,6 +9,8 @@ package org.franca.connectors.dbus
 
 import com.google.inject.Inject
 import java.util.List
+import java.util.ArrayList
+
 import model.emf.dbusxml.ArgType
 import model.emf.dbusxml.DirectionType
 import model.emf.dbusxml.DocType
@@ -24,6 +26,8 @@ import model.emf.dbusxml.typesystem.DBusStructType
 import model.emf.dbusxml.typesystem.DBusType
 import model.emf.dbusxml.typesystem.DBusTypeList
 import model.emf.dbusxml.typesystem.DBusTypeParser
+import model.emf.dbusxml.DbusxmlPackage
+
 import org.franca.core.framework.TransformationLogger
 import org.franca.core.franca.FAnnotationType
 import org.franca.core.franca.FBasicTypeId
@@ -31,7 +35,16 @@ import org.franca.core.franca.FStructType
 import org.franca.core.franca.FType
 import org.franca.core.franca.FTypeRef
 import org.franca.core.franca.FrancaFactory
-import java.util.ArrayList
+import org.franca.core.franca.FUnionType
+
+import static org.franca.core.framework.TransformationIssue.*
+import org.eclipse.emf.ecore.EObject
+
+@Data
+class TransformContext {
+	EObject location
+	int feature	
+}
 
 class DBus2FrancaTransformation {
 
@@ -40,6 +53,8 @@ class DBus2FrancaTransformation {
 	List<FType> newTypes
 	
 	def create FrancaFactory::eINSTANCE.createFModel transform (NodeType src) {
+		clearIssues
+
 		name = src.name.replace('/', '_')
 		interfaces.addAll(src.interface.map [transformInterface])
 	}
@@ -78,7 +93,8 @@ class DBus2FrancaTransformation {
 		val nameNormal = src.name.normalizeId 
 		name = nameNormal
 //		val te = src.type.transformAttributeType(nameNormal) 
-		val te = src.type.transformTypeSig(nameNormal) 
+		val te = src.type.transformTypeSig(nameNormal,
+			new TransformContext(src, DbusxmlPackage::PROPERTY_TYPE__TYPE)) 
 		type = te.type
 		array = te.isArray
 	}
@@ -112,7 +128,8 @@ class DBus2FrancaTransformation {
 			name = src.name.normalizeId
 		else
 			name = dfltName
-		val te = src.type.transformTypeSig(namespace + "_" + name) 
+		val te = src.type.transformTypeSig(namespace + "_" + name,
+			new TransformContext(src, DbusxmlPackage::ARG_TYPE__TYPE)) 
 		type = te.type
 		array = te.isArray
 		if(src.doc.hasLines && src.primitiveType) {
@@ -140,7 +157,7 @@ class DBus2FrancaTransformation {
 	}
 	// ANNOTATIONS
 
-	def TypedElem transformTypeSig (String typeSig, String namespace) {
+	def TypedElem transformTypeSig (String typeSig, String namespace, TransformContext tc) {
 		//println("DBus2FrancaTransformation: parsing type-sig " + typeSig + " in namespace " + namespace)
 
 		// as DBus doesn't have a detailed typesystem, we have to use an artificial typesystem here
@@ -149,20 +166,20 @@ class DBus2FrancaTransformation {
 			throw new RuntimeException("Couldn't parse type signature '" + typeSig + "'")
 		}
 		
-		srcType.transformType(namespace)
+		srcType.transformType(namespace, tc)
 	}
 
 	/**
 	 * Transform an arbitrary type and create a Franca inline
 	 * array "[]" if outermost DBusType is an array.
 	 */
-	def TypedElem transformType (DBusType src, String namespace) {
+	def TypedElem transformType (DBusType src, String namespace, TransformContext tc) {
 //		println("  transformType(" + src + ", " + namespace + ")")
 		switch (src) {
-			DBusBasicType: new TypedElem(src.transformBasicType)
-			DBusDictType: new TypedElem(src.transformDictType(namespace).encapsulateTypeRef)
-			DBusArrayType: src.createInlineArrayType(namespace)
-			DBusStructType: new TypedElem(src.transformStructType(namespace).encapsulateTypeRef)
+			DBusBasicType: new TypedElem(src.transformBasicType(tc))
+			DBusDictType: new TypedElem(src.transformDictType(namespace, tc).encapsulateTypeRef)
+			DBusArrayType: src.createInlineArrayType(namespace, tc)
+			DBusStructType: new TypedElem(src.transformStructOrUnion(namespace, tc))
 			default: new TypedElem()
 		}
 	}	
@@ -171,18 +188,36 @@ class DBus2FrancaTransformation {
 	 * Transform an arbitrary type, but create an explicit Franca array type
 	 * if outermost DBusType is an array.
 	 */
-	def FTypeRef transformTypeNoInlineArray (DBusType src, String namespace) {
+	def FTypeRef transformTypeNoInlineArray (DBusType src, String namespace, TransformContext tc) {
 		//println("  transformTypeNoInlineArray(" + src + ", " + namespace + ")")
 		switch (src) {
-			DBusBasicType: src.transformBasicType
-			DBusDictType: src.transformDictType(namespace).encapsulateTypeRef
-			DBusArrayType: src.transformArrayType(namespace).encapsulateTypeRef
-			DBusStructType: src.transformStructType(namespace).encapsulateTypeRef
+			DBusBasicType: src.transformBasicType(tc)
+			DBusDictType: src.transformDictType(namespace, tc).encapsulateTypeRef
+			DBusArrayType: src.transformArrayType(namespace, tc).encapsulateTypeRef
+			DBusStructType: src.transformStructOrUnion(namespace, tc)
 			default: FrancaFactory::eINSTANCE.createFTypeRef
 		}
 	}	
-	
-	def FTypeRef transformBasicType (DBusBasicType src) {
+
+	def private FTypeRef transformStructOrUnion (DBusStructType src, String namespace, TransformContext tc) {
+		val elems = src.elementTypes
+		if (elems.size==2 &&
+			elems.get(0).isBasicType(DBusBasicType::DBUS_TYPE_UINT32) &&
+			elems.get(1).isBasicType(DBusBasicType::DBUS_TYPE_VARIANT)
+		) {
+			// This is a "(uv)" type signature. This would be created when transforming
+			// a Franca union type to DBus. Create the union type here.
+			transformUnionType(namespace).encapsulateTypeRef
+		} else {
+			src.transformStructType(namespace, tc).encapsulateTypeRef
+		}
+	}	
+
+	def private boolean isBasicType (DBusType t, DBusBasicType expected) {
+		(t instanceof DBusBasicType) && (t as DBusBasicType)==expected
+	}
+
+	def FTypeRef transformBasicType (DBusBasicType src, TransformContext tc) {
 		var it = FrancaFactory::eINSTANCE.createFTypeRef
 		// @ignore src.name
 		switch (src) {
@@ -196,7 +231,12 @@ class DBus2FrancaTransformation {
 			case DBusBasicType::DBUS_TYPE_BOOLEAN: predefined = FBasicTypeId::BOOLEAN
 			case DBusBasicType::DBUS_TYPE_DOUBLE: predefined = FBasicTypeId::DOUBLE
 			case DBusBasicType::DBUS_TYPE_STRING: predefined = FBasicTypeId::STRING
-			case DBusBasicType::DBUS_TYPE_VARIANT: predefined = FBasicTypeId::UNDEFINED // not_supported yet
+			case DBusBasicType::DBUS_TYPE_VARIANT: {
+				addIssue(IMPORT_WARNING,
+					tc.location, tc.feature,
+					"Variant type not supported by this transformation")
+				predefined = FBasicTypeId::UNDEFINED // not_supported yet
+			}
 			default: predefined = FBasicTypeId::UNDEFINED
 		}
 		it
@@ -208,47 +248,68 @@ class DBus2FrancaTransformation {
 		return it
 	}
 
-	def createInlineArrayType (DBusArrayType src, String namespace) {
-		val elementType = src.elementType.transformTypeNoInlineArray(namespace)
+	def createInlineArrayType (DBusArrayType src, String namespace, TransformContext tc) {
+		val elementType = src.elementType.transformTypeNoInlineArray(namespace, tc)
 		new TypedElem(elementType, true);
 	}	
 	
-	def create FrancaFactory::eINSTANCE.createFArrayType transformArrayType (DBusArrayType src, String namespace) {
+	def create FrancaFactory::eINSTANCE.createFArrayType transformArrayType (DBusArrayType src, String namespace, TransformContext tc) {
 		name = "t" + namespace + "Array"
 		comment = createAnnotationBlock("array generated for DBus argument " + namespace)
 		
 		val ns = namespace + "Elem"
-		elementType = src.elementType.transformTypeNoInlineArray(ns)
+		elementType = src.elementType.transformTypeNoInlineArray(ns, tc)
 		newTypes.add(it)
 	}
 
-	def create FrancaFactory::eINSTANCE.createFStructType transformStructType (DBusStructType src, String namespace) {
-		buildStructType(src.elementTypes, namespace, "argument")
+	def create FrancaFactory::eINSTANCE.createFStructType transformStructType (DBusStructType src, String namespace, TransformContext tc) {
+		buildStructType(src.elementTypes, namespace, "argument", tc)
 	}
 
-	def private buildStructType (FStructType it, DBusTypeList srcTypeList, String namespace, String tag) {
+	def private buildStructType (FStructType it, DBusTypeList srcTypeList, String namespace, String tag, TransformContext tc) {
 		name = "t" + namespace.toFirstUpper + "Struct"
 		comment = createAnnotationBlock("struct generated for DBus " + tag + " " + namespace)
 		var i = 1
 		for(e : srcTypeList) {
-			elements.add(e.transformField(namespace, "elem" + i))
+			elements.add(e.transformField(namespace, "elem" + i, tc))
 			i = i + 1
 		}
 		newTypes.add(it)
 	}
 
-	def create FrancaFactory::eINSTANCE.createFMapType transformDictType (DBusDictType src, String namespace) {
-		name = "t" + namespace + "Dict"
-		//comment = createAnnotationBlock("...")
-		keyType = src.keyType.transformTypeNoInlineArray(namespace+"Key")
-		valueType = src.valueType.transformTypeNoInlineArray(namespace+"Value")
+	def create FrancaFactory::eINSTANCE.createFUnionType transformUnionType (String namespace) {
+		buildUnionType(namespace, "argument")
+	}
+
+	def private buildUnionType (FUnionType it, String namespace, String tag) {
+		name = "t" + namespace.toFirstUpper + "Union"
+		comment = createAnnotationBlock("union generated for DBus " + tag + " " + namespace)
+
+		// create dummy element for the union
+		// TODO: we could retrieve the union's elements from some doc/line tags or
+		// some D-Bus introspection xml annotations. 
+		val dummy = FrancaFactory::eINSTANCE.createFField
+		dummy.name = "dummy"
+		var dt = FrancaFactory::eINSTANCE.createFTypeRef
+		dt.predefined = FBasicTypeId::UINT8
+		dummy.type = dt
+		elements.add(dummy)
+
 		newTypes.add(it)
 	}
 
-	def create FrancaFactory::eINSTANCE.createFField transformField (DBusType src, String namespace, String elementName) {
+	def create FrancaFactory::eINSTANCE.createFMapType transformDictType (DBusDictType src, String namespace, TransformContext tc) {
+		name = "t" + namespace + "Dict"
+		//comment = createAnnotationBlock("...")
+		keyType = src.keyType.transformTypeNoInlineArray(namespace+"Key", tc)
+		valueType = src.valueType.transformTypeNoInlineArray(namespace+"Value", tc)
+		newTypes.add(it)
+	}
+
+	def create FrancaFactory::eINSTANCE.createFField transformField (DBusType src, String namespace, String elementName, TransformContext tc) {
 		// struct members do not have a name in DBus
 		name = elementName
-		val te = src.transformType(namespace + elementName.toFirstUpper)
+		val te = src.transformType(namespace + elementName.toFirstUpper, tc)
 		type = te.type
 		array = te.isArray
 	}
