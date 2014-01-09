@@ -65,7 +65,7 @@
 <repository location="http://download.eclipse.org/etrice/updates/releases/0.2.0"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.gef4.zest.sdk.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.gef4.zest.sdk.feature.group" version="0.1.0.201311151505"/>
 <repository location="http://download.eclipse.org/tools/gef/gef4/updates/integration"/>
 </location>
 </locations>
