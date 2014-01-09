@@ -16,6 +16,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Set;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -26,6 +27,7 @@ import org.eclipse.emf.ecore.xmi.impl.URIHandlerImpl;
 import org.franca.core.framework.IFrancaConnector;
 import org.franca.core.framework.IModelContainer;
 import org.franca.core.framework.IssueReporter;
+import org.franca.core.framework.TransformationIssue;
 import org.franca.core.franca.FModel;
 import org.franca.core.utils.FileHelper;
 
@@ -43,6 +45,8 @@ public class DBusConnector implements IFrancaConnector {
 	private Injector injector;
 
 	private String fileExtension = "xml";
+
+	private Set<TransformationIssue> lastTransformationIssues = null;
 
 	/** constructor */
 	public DBusConnector () {
@@ -85,7 +89,8 @@ public class DBusConnector implements IFrancaConnector {
 		DBus2FrancaTransformation trafo = injector.getInstance(DBus2FrancaTransformation.class);
 		DBusModelContainer dbus = (DBusModelContainer)model;
 		FModel fmodel = trafo.transform(dbus.model());
-		System.out.println(IssueReporter.getReportString(trafo.getTransformationIssues()));
+		lastTransformationIssues = trafo.getTransformationIssues();
+		System.out.println(IssueReporter.getReportString(lastTransformationIssues));
 
 		return fmodel;
 	}
@@ -94,11 +99,15 @@ public class DBusConnector implements IFrancaConnector {
 	public IModelContainer fromFranca (FModel fmodel) {
 		Franca2DBusTransformation trafo = injector.getInstance(Franca2DBusTransformation.class);
 		NodeType dbus = trafo.transform(fmodel);
-		System.out.println(IssueReporter.getReportString(trafo.getTransformationIssues()));
+		lastTransformationIssues = trafo.getTransformationIssues();
+		System.out.println(IssueReporter.getReportString(lastTransformationIssues));
 
 		return new DBusModelContainer(dbus);
 	}
 	
+	public Set<TransformationIssue> getLastTransformationIssues() {
+		return lastTransformationIssues;
+	}
 	
 	private ResourceSet createConfiguredResourceSet() {
 		// create new resource set
