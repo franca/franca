@@ -9,12 +9,12 @@ Require-Bundle: org.eclipse.ui,
  org.franca.core.dsl,
  org.franca.core.dsl.ui,
  org.eclipse.draw2d,
- org.eclipse.gef4.zest.layouts,
+ org.eclipse.gef4.zest.layouts;bundle-version="[0.1.0.201311151505,0.1.0.201312280305)",
  org.eclipse.jdt.ui,
  org.eclipse.jdt.core,
  org.eclipse.ui.ide,
  org.franca.deploymodel.dsl,
- org.eclipse.gef4.zest.core
+ org.eclipse.gef4.zest.core;bundle-version="[0.1.0.201311151505,0.1.0.201312280305)"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Activator: org.franca.core.ui.addons.Activator

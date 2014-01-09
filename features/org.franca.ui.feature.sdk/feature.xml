@@ -21,19 +21,6 @@
       <update label="%updateSiteName" url="http://franca.org.codespot.com/git.distribution/releases"/>
    </url>
 
-   <requires>
-      <import feature="org.franca.feature"/>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.xtext.ui"/>
-      <import plugin="org.eclipse.jdt.ui"/>
-      <import plugin="org.eclipse.jdt.core"/>
-      <import plugin="org.eclipse.ui.ide"/>
-      <import plugin="org.eclipse.draw2d"/>
-      <import plugin="org.eclipse.gef4.zest.core"/>
-      <import plugin="org.eclipse.gef4.zest.layouts"/>
-   </requires>
-
    <plugin
          id="org.franca.core.ui.addons"
          download-size="0"
