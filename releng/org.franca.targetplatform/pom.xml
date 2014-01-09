@@ -4,13 +4,12 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.franca</groupId>
 	<artifactId>org.franca.targetplatform</artifactId>
-	<version>0.8.10-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<parent>
 		<groupId>org.franca</groupId>
 		<artifactId>org.franca.parent</artifactId>
-		<version>0.8.10-SNAPSHOT</version>
+		<version>0.8.11-SNAPSHOT</version>
 		<relativePath>../../releng/org.franca.parent/pom.xml</relativePath>
 	</parent>
 
