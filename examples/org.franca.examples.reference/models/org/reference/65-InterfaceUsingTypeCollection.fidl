@@ -1,0 +1,29 @@
+/*******************************************************************************
+ * Copyright (c) 2013 itemis AG (http://www.itemis.de).
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************/
+package org.reference
+
+import org.reference.MyTypeCollection10.* from "10-TypesInTypeCollection.fidl"
+
+interface MyInterface65 {
+	version { major 1 minor 0 }
+	
+	method method1 {
+		in {
+			MyUnion01 arg1		
+		}
+	}
+
+	method method2 {
+		in {
+			MyStruct07 argMyStruct07
+			MyStruct20 argMyStruct20
+			MyStruct21 argMyStruct21
+			MyStruct22 argMyStruct22
+		}
+	}
+}

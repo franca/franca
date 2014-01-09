@@ -201,10 +201,10 @@ typeCollection MyTypeCollection10 {
 	
 	// derived union
 	union MyUnion03 extends MyUnion02 {
-		Int32 ue10
-		String ue11
-		MyStruct11 ue12
-		MyUnion01 ue20
+		Int32 ue11
+		Double ue12
+		MyStruct11 ue13
+		MyUnion02 ue20
 	}
 
 	// derived union, second level
