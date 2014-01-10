@@ -87,6 +87,7 @@ interface Reference {
 	contract {
 		
 		vars {
+			Integer (-unlimited to +unlimited) interval;
 			Boolean isTheWeatherFine;
 			UInt32 aNumber;
 //			Float aFloat; not usable as there are no float constants available right now

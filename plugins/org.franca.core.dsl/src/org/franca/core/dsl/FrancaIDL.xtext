@@ -110,7 +110,7 @@ FArgument:
 // type system
 
 FTypeRef returns FTypeRef:
-	predefined=FBasicTypeId | derived=[FType|FQN];
+	predefined=FBasicTypeId | derived=[FType|FQN] | interval=FIntegerInterval;
 
 enum FBasicTypeId returns FBasicTypeId:
 	undefined = 'undefined' |
@@ -127,6 +127,11 @@ enum FBasicTypeId returns FBasicTypeId:
 	Float = 'Float' |
 	Double = 'Double' |
 	ByteBuffer = 'ByteBuffer' ;
+	
+FIntegerInterval returns FIntegerInterval:
+	{FIntegerInterval}
+	'Integer' ('(' (lowerBound=E_EBigInteger | '-unlimited') 'to' (upperBound=E_EBigInteger | '+unlimited') ')')?
+;
 
 FType returns FType:
 	FArrayType |
@@ -455,6 +460,10 @@ EBoolean returns ecore::EBoolean:
 
 EString returns ecore::EString:
 	STRING | ID;
+
+E_EBigInteger returns ecore::EBigInteger:
+	E_INT
+;
 
 E_INT returns ecore::EInt:
 	NEGATIVE_INT | INT

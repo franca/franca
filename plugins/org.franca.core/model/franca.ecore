@@ -170,6 +170,8 @@
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="predefined" eType="#//FBasicTypeId"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="derived" eType="#//FType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="interval" eType="#//FIntegerInterval"
+        containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FConstantDef" eSuperTypes="#//FTypedElement">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -389,5 +391,9 @@
         eType="#//FStatement" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="elseClause" eType="#//FIfClause"
         containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FIntegerInterval" eSuperTypes="#//FType">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="lowerBound" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigInteger"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="upperBound" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigInteger"/>
   </eClassifiers>
 </ecore:EPackage>
