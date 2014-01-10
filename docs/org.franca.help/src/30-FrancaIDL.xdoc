@@ -104,7 +104,7 @@ which is not specified by the API. This bypass of the API definition
 weakens the API abstraction and will inevitably lead to integration
 issues and runtime problems.
 
-The actual physical encoding of the primitives types depends on the target language.
+The actual physical encoding of the primitive types depends on the target language.
 A default encoding will be defined as part of Franca's deployment model. 
 Exceptions from this default encoding can be defined in the target-language-specific
 deployment model.
@@ -128,7 +128,7 @@ array ExampleArray of ExampleArrayRow
 ] 
 
 Implicit ("inline") array types are defined by attaching square brackets (e.g., code[Franca][UInt8\[\]])
-to any other type definition. This can be done for attributes, struct members, and
+to any other type definition. This can be done for attributes, struct members and
 arguments of methods and broadcasts. See more examples below. Note: Inline arrays can only be defined
 one-dimensional. If multi-dimensional arrays are needed, only one dimension can be defined as unnamed
 array. 

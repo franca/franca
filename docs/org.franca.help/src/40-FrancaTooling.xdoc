@@ -7,6 +7,7 @@ to review and edit Franca IDL files. The Franca IDL Editor is a textual editor
 which is similar to Eclipse's text-based editors like in JDT or CDT.
 It is provided as Eclipse plugin and can be installed in any Eclipse environment
 which provides modeling support.
+
 The following screenshot shows Franca in action:
 
 img[images/franca_editor_screenshot_1.png][Screenshot of Franca IDL editor with
