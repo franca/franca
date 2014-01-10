@@ -11,6 +11,13 @@
 	<version>0.8.10-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
+	<parent>
+    	<groupId>org.sonatype.oss</groupId>
+    	<artifactId>oss-parent</artifactId>
+    	<version>7</version>
+  	</parent>
+
+
 	<properties>
 		<eclipse-site>http://download.eclipse.org/releases/${platform-version-name}</eclipse-site>
 		<platform-version-name>juno</platform-version-name>
@@ -206,6 +213,18 @@
 					</configuration>
 				</plugin>
 				-->
+				<!--  If you are releasing your artifacts on OSSRH, you need to make one more configuration change  -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>2.1</version>
+					<configuration>
+						<mavenExecutorId>forked-path</mavenExecutorId>
+						<useReleaseProfile>false</useReleaseProfile>
+						<arguments>${arguments} -Psonatype-oss-release</arguments>
+					</configuration>
+				</plugin>
+				
 				<!-- OTHER PLUGINS -->
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
@@ -299,110 +318,36 @@
 		</pluginRepository>
 	</pluginRepositories>
 
-	<repositories>
-		<repository>
-			<id>maven.eclipse.org</id>
-			<url>http://maven.eclipse.org/nexus/content/groups/public/</url>
-		</repository>
-		<repository>
-			<id>xtend</id>
-			<url>http://build.eclipse.org/common/xtend/maven/</url>
-		</repository>
-	</repositories>			
-
-	<!-- 
-    <profiles>
-        <profile>
-            <id>local-build</id>
-            <activation>
-                <property>
-                    <name>local-build</name>
-                </property>
-            </activation>
-            <repositories>
-                <repository>
-                    <id>franca-dependencies</id>
-                    <layout>p2</layout>
-                    <url>file:../../releng/org.franca.repository/target/repository</url>
-                </repository>
-            </repositories>
-        </profile>
-		<profile>
-			<id>remote-build-release</id>
-			<activation>
-				<property>
-					<name>remote-build-release</name>
-				</property>
-			</activation>			
-			<repositories>
-				<repository>
-					<id>franca-dependencies</id>
-					<layout>p2</layout>
-					<url>http://franca.eclipselabs.org.codespot.com/git.distribution/releases/</url>
-				</repository>
-			</repositories>
-		</profile>
-		<profile>
-			<id>release</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.sonatype.tycho</groupId>
-						<artifactId>maven-osgi-packaging-plugin</artifactId>
-						<configuration>
-							<strictVersions>false</strictVersions>
-						</configuration>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-scm-plugin</artifactId>
-						<configuration>
-							<basedir>${basedir}</basedir>
-							<includes>${basedir}/../feature/feature.xml,${basedir}/../site/site.xml,${basedir}/repository/category.xml</includes>
-							<message>[maven-release-plugin] prepare release of OSGI artifacts</message>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
-			<id>skip-ui-tests</id>
-			<activation>
-				<property>
-					<name>skip-ui-tests</name>
-				</property>
-			</activation>
-			<properties>
-				<tycho.surefire.skipUiTest>true</tycho.surefire.skipUiTest>
-			</properties>
-		</profile>
-		<profile>
-			<id>macosx</id>
-			<activation>
-				<os>
-					<name>mac os x</name>
-					<family>mac</family>
-				</os>
-			</activation>
-			<properties>
-				<ui.test.vmargs>-Xmx512m -XX:MaxPermSize=256m -XstartOnFirstThread</ui.test.vmargs>
-			</properties>
-		</profile>
-		<profile>
-			<id>other-os</id>
-			<activation>
-				<os>
-					<name>not-mac</name>
-					<family>!mac</family>
-				</os>
-			</activation>
-			<properties>
-				<ui.test.vmargs>-Xmx512m -XX:MaxPermSize=256m</ui.test.vmargs>
-			</properties>
-		</profile>
+	<profiles>
+	  <profile>
+	    <id>release-sign-artifacts</id>
+	    <activation>
+	      <property>
+	        <!-- When you use maven-release-plugin and run mvn release:perform, the property value will be set to true  -->
+	        <name>performRelease</name>
+	        <value>true</value>
+	      </property>
+	    </activation>
+	    <build>
+	      <plugins>
+	        <plugin>
+	          <groupId>org.apache.maven.plugins</groupId>
+	          <artifactId>maven-gpg-plugin</artifactId>
+	          <version>1.1</version>
+	          <executions>
+	            <execution>
+	              <id>sign-artifacts</id>
+	              <phase>verify</phase>
+	              <goals>
+	                <goal>sign</goal>
+	              </goals>
+	            </execution>
+	          </executions>
+	        </plugin>
+	      </plugins>
+	    </build>
+	  </profile>
 	</profiles>
-	-->
-
 
 	<dependencyManagement>
 		<dependencies>
@@ -440,6 +385,10 @@
 		</dependencies>
 	</dependencyManagement>
 
+	
+	<name>Franca IDL</name>
+	<description>Franca IDL is a textual language which allows to define software interfaces and APIs in a consistent, user-friendly way. Franca includes a framework for IDL transformation and building code generators from API specifications.</description>
+	<url>http://code.google.com/a/eclipselabs.org/p/franca/</url>
 	<licenses>
 		<license>
 			<name>Eclipse Public License v1.0</name>
@@ -450,12 +399,9 @@
        available under the terms of the Eclipse Public License v1.0
        which accompanies this distribution, and is available at
        http://www.eclipse.org/legal/epl-v10.htm
-      </comments>
+      		</comments>
 		</license>
 	</licenses>
-
-	<description>Franca IDL is a textual language which allows to define software interfaces and APIs in a consistent, user-friendly way. Franca includes a framework for IDL transformation and building code generators from API specifications.</description>
-	<url>http://code.google.com/a/eclipselabs.org/p/franca/</url>
 	<inceptionYear>2012</inceptionYear>
 	<issueManagement>
 		<system>GoogleCode Issue Tracker</system>
@@ -466,12 +412,52 @@
 		<url>http://code.google.com/a/eclipselabs.org/hosting/</url>
 	</organization>
 	<scm>
-		<developerConnection>https://code.google.com/a/eclipselabs.org/franca</developerConnection>
-		<url>https://code.google.com/a/eclipselabs.org/franca</url>
-		<connection>https://code.google.com/a/eclipselabs.org/franca</connection>
+		<connection>scm:git:https://code.google.com/a/eclipselabs.org/franca</connection>
+		<developerConnection>scm:git:https://code.google.com/a/eclipselabs.org/franca</developerConnection>
+		<url>http://code.google.com/a/eclipselabs.org/p/franca/source/browse</url>
 	</scm>
 	<ciManagement>
 		<system>Cloudbees Jenkins</system>
 		<url>https://nanosite.ci.cloudbees.com/job/Franca-main/</url>
 	</ciManagement>
+	<developers>
+		<developer>
+			<id>klaus</id>
+			<name>Klaus Birken</name>
+			<email>franca@itemis.de</email>
+			<organization>itemis</organization>
+      		<organizationUrl>http://www.itemis.com</organizationUrl>
+			<roles>
+				<role>project owner</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>boris</id>
+			<name>Boris Holzer</name>
+			<url>http://borisdevnotes.wordpress.com/</url>
+			<email>franca@itemis.de</email>
+			<organization>itemis</organization>
+      		<organizationUrl>http://www.itemis.com</organizationUrl>
+			<roles>
+				<role>team</role>
+			</roles>
+		</developer>
+		<developer>
+	        <id>weik</id>
+	        <name>Steffen Weik</name>
+	        <url></url>
+	        <email>steffenweik77@gmail.com<email>
+	        <organization>itemis</organization>
+	        <organizationurl>http://www.itemis.com</organizationurl>
+	        <roles><role>team</role></roles>
+		</developer>
+		<developer>
+			<id>szabta89</id>
+			<name>Tamas Szabo</name>
+			<email>tamas.szabo@itemis.de</email>
+			<organization>itemis</organization>
+			<organizationUrl>http://www.itemis.com</organizationUrl>
+			<roles><role>team</role></roles>
+		</developer>
+	</developers>
 </project>
