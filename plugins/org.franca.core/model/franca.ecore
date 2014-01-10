@@ -382,4 +382,12 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="operand" lowerBound="1"
         eType="#//FExpression" containment="true"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FIfClause" eSuperTypes="#//FStatement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="condition" eType="#//FExpression"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="statements" upperBound="-1"
+        eType="#//FStatement" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="elseClause" eType="#//FIfClause"
+        containment="true"/>
+  </eClassifiers>
 </ecore:EPackage>

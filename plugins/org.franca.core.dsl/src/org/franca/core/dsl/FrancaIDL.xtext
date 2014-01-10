@@ -303,6 +303,18 @@ FEventOnIf:
 FGuard:
 	'[' condition=LogicalOrExpression ']';
 
+FStatement returns FStatement:
+	FAssignment | FIfClause
+;
+
+FIfClause returns FIfClause:
+	'if' '(' condition=LogicalOrExpression')' '{'
+		statements+=FStatement*
+	'}'
+	(
+		'else' elseClause=FIfClause
+	)?
+;
 	
 FAssignment returns FAssignment:
 	lhs=FQualifiedElementRef '=' rhs=LogicalOrExpression;
@@ -310,7 +322,7 @@ FAssignment returns FAssignment:
 FBlock returns FBlock:
 	{FBlock}
 	'{'
-		(statements+=FAssignment)*
+		(statements+=FStatement)*
 	'}';
 
 LogicalOrExpression returns FExpression:

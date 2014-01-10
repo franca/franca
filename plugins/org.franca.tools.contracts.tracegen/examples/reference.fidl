@@ -41,6 +41,7 @@ interface Reference {
 	
 	method init {}
 	method reset {}
+	method doSomething {}
 	method addConst {}
 	method addParam {
 		in {UInt32 summand}
@@ -224,17 +225,32 @@ interface Reference {
 			}
 			
 			state testingErrors {
-				on error forceEnumError [  errordef.ExtensionsAdditionalError == errorval] -> testDone
-				on error forceSimpleError [ errordef.additionalError == errorval ] -> testingErrors
-				on error forceSimpleError [ lastBasicError ==  MyTypes.BasicErrors.BasicError  ] -> testingErrors
-				on respond forceEnumError -> testDone
+				on error forceEnumError [  errordef.ExtensionsAdditionalError == errorval] -> testingStatements
+				on error forceSimpleError [ errordef.additionalError == errorval ] -> testingStatements
+				on error forceSimpleError [ lastBasicError ==  MyTypes.BasicErrors.BasicError  ] -> testingStatements
+				on respond forceEnumError -> testingStatements
 			}
 			
 			////////////////
 			
 //			state testingSetAttributes {
-//				on set boolAttrib -> testDone
+//				on set boolAttrib -> testingStatements
 //			}
+
+			state testingStatements {
+				on call doSomething -> testDone {
+					if (true) {
+						if (false) {
+							isTheWeatherFine = false
+						} else if (! isTheWeatherFine) {
+							isTheWeatherFine = true
+						}
+						if (false || isTheWeatherFine) {
+							isTheWeatherFine = false
+						}
+					}
+				}
+			}
 			
 			state testDone {
 				on call reset -> Idle
