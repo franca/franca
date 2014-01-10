@@ -34,6 +34,7 @@
 			<module>../../plugins/org.franca.generators</module>
             <module>../../plugins/org.franca.connectors.dbus</module>
             <module>../../plugins/org.franca.connectors.dbus.ui</module>
+            <module>../../plugins/org.franca.product.ui</module>
     		<!-- test base modules -->
             <module>../../tests/org.franca.core.dsl.tests.base</module>
             <module>../../tests/org.franca.deploymodel.dsl.tests.base</module>
@@ -41,14 +42,21 @@
             <module>../../tests/org.franca.core.dsl.tests</module>
             <module>../../tests/org.franca.deploymodel.dsl.tests</module>
             <module>../../tests/org.franca.connectors.dbus.tests</module>
+    		<!-- documentation/help modules -->
+            <module>../../docs/org.franca.help</module>
 			<!-- release modules -->
-            <module>../../features/org.franca.feature</module>
-            <module>../../features/org.franca.feature.sdk</module>
-            <module>../../features/org.franca.dbus.feature</module>
-            <module>../../features/org.franca.dbus.feature.sdk</module>
+            <module>../../features/org.franca.core.feature</module>
+            <module>../../features/org.franca.core.feature.sdk</module>
             <module>../../features/org.franca.ui.feature</module>
             <module>../../features/org.franca.ui.feature.sdk</module>
+            <module>../../features/org.franca.ui.addons.feature</module>
+            <module>../../features/org.franca.ui.addons.feature.sdk</module>
+            <module>../../features/org.franca.dbus.feature</module>
+            <module>../../features/org.franca.dbus.feature.sdk</module>
+            <module>../../features/org.franca.dbus.ui.feature</module>
+            <module>../../features/org.franca.dbus.ui.feature.sdk</module>
 			<module>../../releng/org.franca.updatesite</module>
+			<module>../../releng/org.franca.product</module>
 			<!-- 
 			   <module>../../docs/org.franca.help</module>
 			-->
@@ -124,6 +132,33 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-clean-plugin</artifactId>
+				<version>2.4.1</version>
+				<configuration>
+					<filesets>
+						<fileset>
+							<directory>${basedir}/src-gen</directory>
+							<includes>
+								<include>**</include>
+							</includes>
+							<excludes>
+								<exclude>.gitignore</exclude>
+							</excludes>
+						</fileset>
+						<fileset>
+							<directory>${basedir}/xtend-gen</directory>
+							<includes>
+								<include>**</include>
+							</includes>
+							<excludes>
+								<exclude>.gitignore</exclude>
+							</excludes>
+						</fileset>
+					</filesets>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.jacoco</groupId>
@@ -260,11 +295,6 @@
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-clean-plugin</artifactId>
-					<version>2.4.1</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-assembly-plugin</artifactId>
 					<version>2.2-beta-4</version>
 				</plugin>
@@ -382,6 +412,11 @@
 		<repository>
 			<id>xtend</id>
 			<url>http://build.eclipse.org/common/xtend/maven/</url>
+		</repository>
+		<repository>
+			<id>xdoc</id>
+			<layout>p2</layout>
+			<url>http://xdoc4franca-release.eclipselabs.org.codespot.com/git/update_site/releases/</url>
 		</repository>
 	</repositories>			
 

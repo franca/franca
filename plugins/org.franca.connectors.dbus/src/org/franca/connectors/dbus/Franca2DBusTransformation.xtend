@@ -7,12 +7,15 @@
  *******************************************************************************/
 package org.franca.connectors.dbus
 
-import com.google.inject.Inject
 import java.util.List
+import java.util.Map
+import com.google.inject.Inject
+
 import model.emf.dbusxml.AccessType
 import model.emf.dbusxml.DbusxmlFactory
 import model.emf.dbusxml.DirectionType
 import model.emf.dbusxml.DocType
+
 import org.franca.core.framework.TransformationLogger
 import org.franca.core.franca.FAnnotation
 import org.franca.core.franca.FAnnotationType
@@ -24,6 +27,7 @@ import org.franca.core.franca.FBroadcast
 import org.franca.core.franca.FCompoundType
 import org.franca.core.franca.FEnumerationType
 import org.franca.core.franca.FEnumerator
+import org.franca.core.franca.FField
 import org.franca.core.franca.FInterface
 import org.franca.core.franca.FMapType
 import org.franca.core.franca.FMethod
@@ -33,7 +37,6 @@ import org.franca.core.franca.FStructType
 import org.franca.core.franca.FType
 import org.franca.core.franca.FTypeDef
 import org.franca.core.franca.FTypeRef
-import org.franca.core.franca.FTypedElement
 import org.franca.core.franca.FUnionType
 import org.franca.core.franca.FrancaPackage
 
@@ -47,6 +50,8 @@ class Franca2DBusTransformation {
 	String mInterfaceName
 	
 	def create DbusxmlFactory::eINSTANCE.createNodeType transform (FModel src) {
+		clearIssues
+
 		name = src.name
 		interface.addAll(src.interfaces.map [transformInterface])
 		addBacklink(it, src)
@@ -179,7 +184,13 @@ class Franca2DBusTransformation {
     }												
 				
 	def dispatch List<String> lineComment(FCompoundType src) {
-		val fieldComment = [FTypedElement e| src.name+"."+e.name+ " ('"+e.type.transformBasicType+"') = "+e.description ]
+		val fieldComment =
+			[ FField e, int index |
+				index + ": " +
+				src.name + "." + e.name +
+				" ('" + e.type.transformBasicType + "') = " +
+				e.description
+			]
 		
 		val typename =  switch(src) {
 			FStructType:      "struct"
@@ -187,7 +198,9 @@ class Franca2DBusTransformation {
 		}
 		
 		val s = newArrayList(src.name + " "+typename + src.elements.map([name])+" = " + src.description)
-		s.addAll(src.elements.map(fieldComment))	
+		for(e : src.elements) {
+			s.add(fieldComment.apply(e, src.elements.indexOf(e)))
+		}
 		s
 	}								
 				
@@ -228,12 +241,56 @@ class Franca2DBusTransformation {
 
     }				
 				
-	def createErrors (FEnumerationType src) {
-		src.allEnumerators.map([toError])
+	def private createErrors (FEnumerationType src) {
+		val valueMap = src.computeValues
+		src.allEnumerators.map([toError(valueMap.get(it))])
+	}
+	
+	// TODO: this method should be moved to org.franca.core 
+	def private computeValues (FEnumerationType src) {
+		val Map<FEnumerator, Integer> values = newHashMap
+		var i = 0
+		for(e : src.enumerators) {
+			val v = e.parseEnumValue
+			if (v!=null) {
+				if (v <= i) {
+					addIssue(IMPORT_WARNING, e,
+						FrancaPackage::FENUMERATOR__VALUE,
+						"Enumerator values must be increasing, ignoring value of '" + e.name + "'.")
+				} else {
+					i = v
+				}
+			}
+			values.put(e, i)
+			i = i + 1
+		}
+		values
 	}
 
-	def create DbusxmlFactory::eINSTANCE.createErrorType toError(FEnumerator e) {
-		name = mInterfaceName+".Error."+e.name		
+	// TODO: remove this function after enumerators have integer values instead of strings
+    def private Integer parseEnumValue (FEnumerator e) {
+    	if (e.value==null) {
+    		null
+    	} else {
+    		try {
+	    		val v = Long::decode(e.value).intValue
+	    		if (v<0)
+	    			null
+	    		else
+	    			new Integer(v)
+    		}
+    		catch (NumberFormatException ex) {
+				addIssue(IMPORT_WARNING, e,
+					FrancaPackage::FENUMERATOR__VALUE,
+					"Invalid value for enumerator '" + e.name + "', must be integer.")
+    			null
+    		}
+    	}
+    }
+
+	def private create DbusxmlFactory::eINSTANCE.createErrorType toError(FEnumerator e, Integer value) {
+		name = mInterfaceName+".Error."+e.name
+		id = "" + value
 		doc = e.createDoc
 	}
 
@@ -275,8 +332,9 @@ class Franca2DBusTransformation {
 			case FBasicTypeId::UINT64:  't'
 			case FBasicTypeId::BOOLEAN: 'b'
 			case FBasicTypeId::STRING:  's'
-			case FBasicTypeId::FLOAT:   'd'  // TODO: not_supported in DBus?
+			case FBasicTypeId::FLOAT:   'd'  // not_supported in DBus, use DOUBLE instead
 			case FBasicTypeId::DOUBLE:  'd'
+			case FBasicTypeId::BYTE_BUFFER: 'ay'
 			default: {
 				addIssue(FEATURE_NOT_SUPPORTED, src,
 					FrancaPackage::FTYPE_REF__PREDEFINED,
@@ -331,7 +389,7 @@ class Franca2DBusTransformation {
 				"Inheritance for enumeration " + src.name + " not yet supported")
 		}
 
-		'i'
+		'u'
 	}
 
 	def String transformVariantType (FUnionType src) {
@@ -342,7 +400,7 @@ class Franca2DBusTransformation {
 				"Inheritance for union " + src.name + " not yet supported")
 		}
 
-		'v'
+		'(uv)'
 	}
 
 	def String transformMapType (FMapType src) {

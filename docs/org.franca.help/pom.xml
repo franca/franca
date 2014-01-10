@@ -5,11 +5,103 @@
 	<parent>
 		<groupId>org.franca</groupId>
 		<artifactId>org.franca.parent</artifactId>
-		<version>0.8.1-SNAPSHOT</version>
+		<version>0.8.10-SNAPSHOT</version>
 		<relativePath>../../releng/org.franca.parent/pom.xml</relativePath>
 	</parent>
 	<artifactId>org.franca.help</artifactId>
-	<version>0.8.1-SNAPSHOT</version>
+	<version>0.8.10-SNAPSHOT</version>
 	<packaging>eclipse-plugin</packaging>
 
+	<build>
+		<resources>
+			<resource>
+				<directory>${project.build.directory}/xdoc</directory>
+			</resource>
+		</resources>
+
+		<sourceDirectory>src</sourceDirectory>
+		<plugins>
+			<!-- Copy all xDoc related sources to separate folder that is registered 
+				as resource folder -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-resources</id>
+						<phase>initialize</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/xdoc</outputDirectory>
+							<resources>
+								<resource>
+									<directory>src</directory>
+									<includes>
+										<include>**/*.mwe2</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.fornax.toolsupport</groupId>
+				<artifactId>fornax-oaw-m2-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>xdoc</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>run-workflow</goal>
+						</goals>
+						<configuration>
+							<workflowEngine>mwe2</workflowEngine>
+							<workflowDescriptor>org.franca.help.GenerateDocs</workflowDescriptor>
+							<timestampFileName>emf-generator.timestamp</timestampFileName>
+							<jvmSettings>
+								<fork>true</fork>
+								<jvmArgs>
+									<jvmArg>-Xms64m</jvmArg>
+									<jvmArg>-Xmx256m</jvmArg>
+									<jvmArg>-XX:MaxPermSize=64m</jvmArg>
+								</jvmArgs>
+							</jvmSettings>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-clean-plugin</artifactId>
+				<configuration>
+					<filesets combine.children="append">
+						<fileset>
+							<directory>contents</directory>
+							<includes>
+								<include>**</include>
+							</includes>
+							<excludes>
+								<exclude>.gitignore</exclude>
+								<exclude>*.css</exclude>
+							</excludes>
+						</fileset>
+						<fileset>
+							<directory>website</directory>
+							<includes>
+								<include>**</include>
+							</includes>
+							<excludes>
+								<exclude>.gitignore</exclude>
+								<exclude>*.css</exclude>
+								<exclude>*.gif</exclude>
+							</excludes>
+						</fileset>
+					</filesets>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>

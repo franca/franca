@@ -8,8 +8,6 @@
 package org.franca.core.ui.addons.wizard;
 
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.jdt.internal.ui.dialogs.StatusInfo;
-import org.eclipse.jdt.internal.ui.dialogs.StatusUtil;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -19,9 +17,10 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.xtext.ui.preferences.StatusInfo;
 
 @SuppressWarnings("restriction")
-public class FrancaFDEPLFileWizardConfigurationPage extends WizardPage {
+public class FrancaFDEPLFileWizardConfigurationPage extends StatusWizardPage {
 
     private static final String ONE_MUST_BE_SET = "At least either the deployment specification name or the deployment definition name must be set!";
     private Text specificationNameText;
@@ -108,7 +107,7 @@ public class FrancaFDEPLFileWizardConfigurationPage extends WizardPage {
 
     protected void updateStatus(IStatus status) {
         setPageComplete(!status.matches(IStatus.ERROR));
-        StatusUtil.applyToStatusLine(this, status);
+        applyStatus(status);
     }
 
     public String getSpecificationName() {

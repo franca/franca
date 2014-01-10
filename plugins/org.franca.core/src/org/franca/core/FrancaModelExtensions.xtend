@@ -32,6 +32,7 @@ import org.franca.core.franca.FUnionType
 import org.franca.core.franca.Import
 
 import org.franca.core.franca.FField
+import org.franca.core.franca.FCompoundType
 
 class FrancaModelExtensions {
 	
@@ -77,6 +78,13 @@ class FrancaModelExtensions {
 		return result;
 	}
 	
+	def static FCompoundType getBase (FCompoundType c) {
+		switch (c) {
+			FStructType: c.getBase()
+			FUnionType: c.getBase()
+			default: null
+		}
+	}
 
 	def static Set<FInterface> getInterfaceInheritationSet(FInterface i) {
 		getInheritationList(i, [base]).toSet

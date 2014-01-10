@@ -49,25 +49,7 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-clean-plugin</artifactId>
 				<configuration>
-					<filesets>
-						<fileset>
-							<directory>src-gen</directory>
-							<includes>
-								<include>**</include>
-							</includes>
-							<excludes>
-								<exclude>.gitignore</exclude>
-							</excludes>
-						</fileset>
-						<fileset>
-							<directory>xtend-gen</directory>
-							<includes>
-								<include>**</include>
-							</includes>
-							<excludes>
-								<exclude>.gitignore</exclude>
-							</excludes>
-						</fileset>
+					<filesets combine.children="append">
 						<fileset>
 							<directory>../${project.artifactId}.ui/src-gen</directory>
 							<includes>
@@ -78,7 +60,10 @@
 							</excludes>
 						</fileset>
 						<fileset>
-							<directory>${basedir}/xtend-gen</directory>
+							<directory>../../tests/${project.artifactId}.tests.base/src-gen</directory>
+							<includes>
+								<include>**</include>
+							</includes>
 							<excludes>
 								<exclude>.gitignore</exclude>
 							</excludes>

@@ -118,8 +118,8 @@ The e[host] attribute of a property defines at what locations in a definition
 this property applies; this is a similar concept as e[pointcuts] in aspect-oriented
 programming (but there are also some differences to that concept).
 
-There is a variety of hosts; ref:DeploymentInterfaceHostsPart1 and
-ref:DeploymentInterfaceHostsPart2 list those related to
+There is a variety of hosts; ref:DeploymentInterfaceHostsPart1[the following table] and
+ref:DeploymentInterfaceHostsPart2[its second part] list those related to
 Franca interfaces. Note that the properties for some hosts will
 be applied to several locations of a Franca IDL interface.
 
@@ -285,7 +285,8 @@ the same interface. Deployment models often have to support this, e.g., in order
 define network addresses on the interface instance level. 
 
 These concepts are supported by Franca deployment models by the e[host] definitions
-e[providers] and e[instances]. ref:DeploymentProviderHosts lists the property hosts
+e[providers] and e[instances].
+ref:DeploymentProviderHosts[The following table] lists the property hosts
 related to providers and interface instances.
 
 table:DeploymentProviderHosts[

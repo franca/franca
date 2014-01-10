@@ -20,15 +20,6 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 //TODO: this class is not depending on a particular DSL, should be factored to a common helper package
 public class ValidationHelpers {
 
-   /**
-    * When checking for duplicates we need to get the name of a model element.
-    */
-   private static NameProvider nameProvider;
-
-   public static void setNameProvider(NameProvider newNameProvider) {
-      nameProvider = newNameProvider;
-   }
-
    // simple helper for finding duplicates in ELists
    public static <T extends EObject> int checkDuplicates(ValidationMessageReporter reporter, Iterable<T> items,
          EStructuralFeature feature, String description) {
@@ -41,7 +32,7 @@ public class ValidationHelpers {
 
       // iterate (once!) over all types in the model
       for (EObject i : items) {
-         String name = nameProvider.getName(i);
+         String name = FrancaNameProvider.getName(i);
 
          // if the name already occurred we have a duplicate name and hence an error
          if (firstOccurrenceOfName.get(name) != null) {
@@ -76,8 +67,8 @@ public class ValidationHelpers {
       private List<Entry> list = new ArrayList<Entry>();
 
       public void add(EObject object, String name) {
-         list.add(new Entry(object, name));
-      }
+          list.add(new Entry(object, name));
+       }
 
       public Iterable<Entry> iterable() {
          return list;
@@ -104,7 +95,7 @@ public class ValidationHelpers {
          // if the name already occurred we have a duplicate name and hence an error
          if (firstOccurrenceOfName.get(p.name) != null) {
             duplicateNames.add(p.name);
-            reporter.reportError(msg + p.name, p.object, feature);
+            reporter.reportError(msg + "'" + p.name + "'", p.object, feature);
             nErrors++;
          } else {
             firstOccurrenceOfName.put(p.name, p.object);

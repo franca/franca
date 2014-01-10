@@ -1,21 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.franca.feature_0.0.0.jar" id="org.franca.feature" version="0.0.0">
+   <feature url="features/org.franca.core_0.0.0.jar" id="org.franca.core" version="0.0.0">
       <category name="franca"/>
    </feature>
-   <feature url="features/org.franca.feature.sdk_0.0.0.jar" id="org.franca.feature.sdk" version="0.0.0">
+   <feature url="features/org.franca.core.sdk_0.0.0.jar" id="org.franca.core.sdk" version="0.0.0">
       <category name="franca"/>
    </feature>
-   <feature url="features/org.franca.dbus.feature_0.0.0.jar" id="org.franca.dbus.feature" version="0.0.0">
+   <feature url="features/org.franca.ui_0.0.0.jar" id="org.franca.ui" version="0.0.0">
       <category name="franca"/>
    </feature>
-   <feature url="features/org.franca.dbus.feature.sdk_0.0.0.jar" id="org.franca.dbus.feature.sdk" version="0.0.0">
+   <feature url="features/org.franca.ui.sdk_0.0.0.jar" id="org.franca.ui.sdk" version="0.0.0">
       <category name="franca"/>
    </feature>
-   <feature url="features/org.franca.ui.feature_0.0.0.jar" id="org.franca.ui.feature" version="0.0.0">
+   <feature url="features/org.franca.ui.addons_0.0.0.jar" id="org.franca.ui.addons" version="0.0.0">
       <category name="franca"/>
    </feature>
-   <feature url="features/org.franca.ui.feature.sdk_0.0.0.jar" id="org.franca.ui.feature.sdk" version="0.0.0">
+   <feature url="features/org.franca.ui.addons.sdk_0.0.0.jar" id="org.franca.ui.addons.sdk" version="0.0.0">
+      <category name="franca"/>
+   </feature>
+   <feature url="features/org.franca.dbus_0.0.0.jar" id="org.franca.dbus" version="0.0.0">
+      <category name="franca"/>
+   </feature>
+   <feature url="features/org.franca.dbus.sdk_0.0.0.jar" id="org.franca.dbus.sdk" version="0.0.0">
+      <category name="franca"/>
+   </feature>
+   <feature url="features/org.franca.dbus.ui_0.0.0.jar" id="org.franca.dbus.ui" version="0.0.0">
+      <category name="franca"/>
+   </feature>
+   <feature url="features/org.franca.dbus.ui.sdk_0.0.0.jar" id="org.franca.dbus.ui.sdk" version="0.0.0">
       <category name="franca"/>
    </feature>
    <category-def name="franca" label="Franca"/>
