@@ -442,10 +442,9 @@
 		<developer>
 	        <id>weik</id>
 	        <name>Steffen Weik</name>
-	        <url></url>
-	        <email>steffenweik77@gmail.com<email>
+	        <email>steffenweik77@gmail.com</email>
 	        <organization>itemis</organization>
-	        <organizationurl>http://www.itemis.com</organizationurl>
+	        <organizationUrl>http://www.itemis.com</organizationUrl>
 	        <roles><role>team</role></roles>
 		</developer>
 		<developer>
