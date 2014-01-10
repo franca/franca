@@ -130,7 +130,7 @@ enum FBasicTypeId returns FBasicTypeId:
 	
 FIntegerInterval returns FIntegerInterval:
 	{FIntegerInterval}
-	'Integer' ('(' (lowerBound=E_EBigInteger | '-unlimited') 'to' (upperBound=E_EBigInteger | '+unlimited') ')')?
+	'Integer' ('(' (lowerBound=E_BigInteger | 'minInt') '..' (upperBound=E_BigInteger | 'maxInt') ')')?
 ;
 
 FType returns FType:
@@ -461,7 +461,7 @@ EBoolean returns ecore::EBoolean:
 EString returns ecore::EString:
 	STRING | ID;
 
-E_EBigInteger returns ecore::EBigInteger:
+E_BigInteger returns ecore::EBigInteger:
 	E_INT
 ;
 

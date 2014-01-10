@@ -2,6 +2,9 @@ package org.franca.tools.contracts.tracegen.examples.reference
 
 typeCollection MyTypes {
 	
+	typedef OneOrTwo is Integer (1..2)
+	typedef One is Integer
+	
 	enumeration UnusedErrors {
 		UNUSED
 	}
