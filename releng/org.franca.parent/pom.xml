@@ -315,6 +315,18 @@
 		</pluginRepository>
 	</pluginRepositories>
 
+	<repositories>
+		<repository>
+			<id>maven.eclipse.org</id>
+			<url>http://maven.eclipse.org/nexus/content/groups/public/</url>
+		</repository>
+		<repository>
+			<id>xtend</id>
+			<url>http://build.eclipse.org/common/xtend/maven/</url>
+		</repository>
+	</repositories>		
+
+
 	<profiles>
 	  <profile>
 	    <id>release-sign-artifacts</id>
