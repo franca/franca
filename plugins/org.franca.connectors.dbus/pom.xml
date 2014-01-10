@@ -45,5 +45,6 @@
 	</build>
 	<properties>
 		<project.build.sourceEncoding>Cp1252</project.build.sourceEncoding>
+		<skip.deployment>false</skip.deployment>
 	</properties>
 </project>

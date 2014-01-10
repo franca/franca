@@ -25,6 +25,7 @@
 		<tycho-version>0.17.0</tycho-version>
 		<junit-version>4.8.1</junit-version>
 		<slf4j-version>1.6.1</slf4j-version>
+		<skip.deployment>true</skip.deployment>
 	</properties>
 
     <modules>
@@ -200,19 +201,6 @@
 					<artifactId>maven-assembly-plugin</artifactId>
 					<version>2.2-beta-4</version>
 				</plugin>
-				<!--
-				<plugin>
-					<artifactId>maven-release-plugin</artifactId>
-					<configuration>
-						<preparationGoals>clean -DnewVersion=${releaseVersion}
-							-Dprudent=true
-							org.eclipse.tycho:tycho-versions-plugin:set-version
-							verify
-							scm:checkin</preparationGoals>
-						<arguments>-Prelease</arguments>
-					</configuration>
-				</plugin>
-				-->
 				<!--  If you are releasing your artifacts on OSSRH, you need to make one more configuration change  -->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -222,6 +210,15 @@
 						<mavenExecutorId>forked-path</mavenExecutorId>
 						<useReleaseProfile>false</useReleaseProfile>
 						<arguments>${arguments} -Psonatype-oss-release</arguments>
+					</configuration>
+				</plugin>
+				<!--  Establish property to control whether to relaese an artifact -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-deploy-plugin</artifactId>
+					<configuration>
+					  <!-- default is true, i.e. do skip -->
+					  <skip>${skip.deployment}</skip>
 					</configuration>
 				</plugin>
 				
