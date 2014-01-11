@@ -21,8 +21,6 @@
       <update label="%updateSiteName" url="http://franca.org.codespot.com/git.distribution/releases"/>
    </url>
 
-<<<<<<< HEAD
-=======
    <includes
          id="org.franca.ui"
          version="0.0.0"/>
@@ -38,7 +36,6 @@
          version="0.0.0"
          unpack="false"/>
 
->>>>>>> develop
    <plugin
          id="org.franca.deploymodel.dsl.ui.source"
          download-size="0"

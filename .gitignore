@@ -1,5 +1,6 @@
 *.xml_gen
 *.MF_gen
+.DS_Store
 plugins/org.franca.tools.contracts.tracegen/bin
 plugins/org.franca.tools.contracts.tracegen/traces
 plugins/org.franca.tools.contracts.tracegen/xtend-gen
