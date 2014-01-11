@@ -19,4 +19,18 @@
 			<version>4.8.1</version>
 		</dependency>
 	</dependencies>
+	<build>
+		<sourceDirectory>src</sourceDirectory>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-clean-plugin</artifactId>
+				<configuration>
+					<filesets combine.self="override">
+						<!-- Do not delete "src-gen", it is managed by org.franca.deployment.dsl plug-in -->
+					</filesets>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>

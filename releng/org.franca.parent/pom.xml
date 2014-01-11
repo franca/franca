@@ -15,7 +15,7 @@
 		<eclipse-site>http://download.eclipse.org/releases/${platform-version-name}</eclipse-site>
 		<platform-version-name>juno</platform-version-name>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<tycho-version>0.17.0</tycho-version>
+		<tycho-version>0.19.0</tycho-version>
 		<junit-version>4.8.1</junit-version>
 		<slf4j-version>1.6.1</slf4j-version>
 	</properties>
@@ -34,6 +34,7 @@
 			<module>../../plugins/org.franca.generators</module>
             <module>../../plugins/org.franca.connectors.dbus</module>
             <module>../../plugins/org.franca.connectors.dbus.ui</module>
+            <module>../../plugins/org.franca.product.ui</module>
     		<!-- test base modules -->
             <module>../../tests/org.franca.core.dsl.tests.base</module>
             <module>../../tests/org.franca.deploymodel.dsl.tests.base</module>
@@ -41,14 +42,21 @@
             <module>../../tests/org.franca.core.dsl.tests</module>
             <module>../../tests/org.franca.deploymodel.dsl.tests</module>
             <module>../../tests/org.franca.connectors.dbus.tests</module>
+    		<!-- documentation/help modules -->
+            <module>../../docs/org.franca.help</module>
 			<!-- release modules -->
-            <module>../../features/org.franca.feature</module>
-            <module>../../features/org.franca.feature.sdk</module>
-            <module>../../features/org.franca.dbus.feature</module>
-            <module>../../features/org.franca.dbus.feature.sdk</module>
+            <module>../../features/org.franca.core.feature</module>
+            <module>../../features/org.franca.core.feature.sdk</module>
             <module>../../features/org.franca.ui.feature</module>
             <module>../../features/org.franca.ui.feature.sdk</module>
+            <module>../../features/org.franca.ui.addons.feature</module>
+            <module>../../features/org.franca.ui.addons.feature.sdk</module>
+            <module>../../features/org.franca.dbus.feature</module>
+            <module>../../features/org.franca.dbus.feature.sdk</module>
+            <module>../../features/org.franca.dbus.ui.feature</module>
+            <module>../../features/org.franca.dbus.ui.feature.sdk</module>
 			<module>../../releng/org.franca.updatesite</module>
+			<module>../../releng/org.franca.product</module>
 			<!-- 
 			   <module>../../docs/org.franca.help</module>
 			-->
@@ -125,6 +133,99 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-clean-plugin</artifactId>
+				<version>2.4.1</version>
+				<configuration>
+					<filesets>
+						<fileset>
+							<directory>${basedir}/src-gen</directory>
+							<includes>
+								<include>**</include>
+							</includes>
+							<excludes>
+								<exclude>.gitignore</exclude>
+							</excludes>
+						</fileset>
+						<fileset>
+							<directory>${basedir}/xtend-gen</directory>
+							<includes>
+								<include>**</include>
+							</includes>
+							<excludes>
+								<exclude>.gitignore</exclude>
+							</excludes>
+						</fileset>
+					</filesets>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.6.3.201306030806</version>
+				<configuration>
+					<excludes>
+						<exclude>**/*.ecore</exclude>
+					</excludes>
+					<!-- 
+						<append>true</append> 
+					-->
+				</configuration>
+				<executions>
+					<execution>
+						<id>pre-unit-test</id>
+						<phase>initialize</phase>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+						<configuration>
+							<!-- Sets the path to the file which contains the execution data. -->
+							<destFile>${project.build.directory}/coverage-data/jacoco-ut.exec</destFile>
+							<!--
+							   Sets the name of the property containing the settings
+							   for JaCoCo runtime agent.
+							-->
+							<propertyName>surefireArgLine</propertyName>
+						</configuration>
+					</execution>
+					<execution>
+						<id>post-unit-test</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+						<configuration>
+							<!-- Sets the path to the file which contains the execution data. -->
+							<dataFile>${project.build.directory}/coverage-data/jacoco-ut.exec</dataFile>
+							<!-- Sets the output directory for the code coverage report. -->
+							<outputDirectory>${project.build.directory}/coverage-reports/jacoco-ut</outputDirectory>
+						</configuration>
+					</execution>
+					<!--
+					<execution>
+						<id>default-check</id>
+						<goals>
+							<goal>check</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<rule>
+									<element>BUNDLE</element>
+									<limits>
+										<limit>
+											<counter>COMPLEXITY</counter>
+											<value>COVEREDRATIO</value>
+											<minimum>0.60</minimum>
+										</limit>
+									</limits>
+								</rule>
+							</rules>
+						</configuration>
+					</execution>
+					-->
+				</executions>
+			</plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>
@@ -153,6 +254,12 @@
 					<groupId>org.eclipse.tycho</groupId>
 					<artifactId>tycho-surefire-plugin</artifactId>
 					<version>${tycho-version}</version>
+					<configuration>
+						<!-- MacOS specific option to run an SWT application from the command line.
+								See http://www.eclipse.org/swt/faq.php#carbonapp
+						-->
+						<argLine>${os-jvm-flags} -XX:PermSize=256m -XX:MaxPermSize=512m ${surefireArgLine}</argLine>
+					</configuration>
 				</plugin>
 				<plugin>
 					<groupId>org.eclipse.tycho</groupId>
@@ -181,12 +288,10 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
-					<version>2.12.2</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-clean-plugin</artifactId>
-					<version>2.4.1</version>
+					<version>2.15</version>
+					<configuration>
+						<argLine>${surefireArgLine}</argLine>
+					</configuration>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -308,7 +413,33 @@
 			<id>xtend</id>
 			<url>http://build.eclipse.org/common/xtend/maven/</url>
 		</repository>
+		<repository>
+			<id>xdoc</id>
+			<layout>p2</layout>
+			<url>http://xdoc4franca-release.eclipselabs.org.codespot.com/git/update_site/releases/</url>
+		</repository>
 	</repositories>			
+
+	<profiles>
+		<profile>
+			<id>macosx-jvm-flags</id>
+			<activation>
+				<os><family>mac</family></os>
+			</activation>
+			<properties>
+				<os-jvm-flags>-XstartOnFirstThread</os-jvm-flags>
+			</properties>
+		</profile>
+		<profile>
+			<id>non-macosx-jvm-flags</id>
+			<activation>
+				<os><family>!mac</family></os>
+			</activation>
+			<properties>
+				<os-jvm-flags> </os-jvm-flags>
+			</properties>
+		</profile>
+	</profiles>
 
 	<!-- 
     <profiles>

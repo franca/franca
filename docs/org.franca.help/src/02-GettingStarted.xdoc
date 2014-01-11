@@ -89,10 +89,12 @@ Xtend language, which translates directly to Java classes.
 Further documentation about Xtend can be found link[http://www.xtend-lang.org][here].
 
 The example generator e[ExampleHppGenerator.xtend] is located in folder e[src],
-in package e[org.franca.examples.basic.generators]. For starting quickly, clone
-this xtend file and also the corresponding test case and adapt the copied files 
-for your needs.
+in package
 
+e[org.franca.examples.basic.generators].
+
+For starting quickly, clone this xtend file and also the corresponding test case
+and adapt the copied files for your needs.
 For more information on generator development, please refer to
 ref:BuildingGenerators[Building generators with Franca].
  

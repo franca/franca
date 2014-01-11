@@ -1,0 +1,337 @@
+/*******************************************************************************
+ * Copyright (c) 2013 itemis AG (http://www.itemis.de).
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************/
+package org.reference
+
+<**
+	@description: This reference type collection uses all kinds of type definitions
+	              which can be done within one type collection.
+**>
+typeCollection MyTypeCollection10 {
+	
+	// one array for each basic type
+	array MyArray01 of Int8
+	array MyArray02 of UInt8
+	array MyArray03 of Int16
+	array MyArray04 of UInt16
+	array MyArray05 of Int32
+	array MyArray06 of UInt32
+	array MyArray07 of Int64
+	array MyArray08 of UInt64
+	array MyArray09 of Boolean
+	array MyArray10 of String
+	array MyArray11 of Float
+	array MyArray12 of Double
+	array MyArray13 of ByteBuffer
+	
+	// arrays of user-defined types
+	array MyArray20 of MyStruct01
+	array MyArray21 of MyStruct02
+	array MyArray22 of MyUnion02
+	array MyArray23 of MyEnum03
+	array MyArray24 of MyMap04
+	array MyArray25 of MyType11
+	array MyArray26 of MyType20
+
+	// arrays of arrays
+	array MyArray30 of MyArray01
+	array MyArray31 of MyArray07
+	array MyArray32 of MyArray09
+	array MyArray33 of MyArray10
+	array MyArray34 of MyArray13
+	array MyArray35 of MyArray20
+	array MyArray36 of MyArray21
+	
+	// three-dimensional arrays
+	array MyArray40 of MyArray30
+	array MyArray41 of MyArray34
+	array MyArray42 of MyArray35
+
+
+	// struct with all basic types
+	struct MyStruct01 {
+		Int8 se01
+		UInt8 se02
+		Int16 se03
+		UInt16 se04
+		Int32 se05
+		UInt32 se06
+		Int64 se07
+		UInt64 se08
+		Boolean se09
+		String se10
+		ByteBuffer se11
+	}
+	
+	// struct for checking alignment/padding
+	struct MyStruct02 {
+		UInt8 se01
+		UInt32 se02
+		UInt8 se03
+		UInt8 se04
+		UInt32 se05
+		UInt8 se06
+		UInt8 se07
+		UInt8 se08
+		UInt32 se09
+	}
+	
+	// empty struct
+	struct MyStruct03 { }
+
+	// struct of arrays
+	struct MyStruct04 {
+		MyArray05 se01
+		MyArray20 se02
+		MyArray30 se03
+	}
+	
+	// struct with elements of implicit array type
+	struct MyStruct05 {
+		UInt8[] se01
+		String[] se02
+		ByteBuffer[] se03
+		MyArray01[] se10
+		MyStruct02[] se11
+		MyEnum03[] se12
+	}
+	
+	// struct of enums
+	struct MyStruct06 {
+		MyEnum01 se01
+		MyEnum02 se02
+		MyEnum03 se03
+		MyEnum10 se10
+	}
+	
+	// polymorphic struct
+	struct MyStruct07 polymorphic {
+		UInt16 se01
+		String se02
+		Double se03
+		Double se04
+	}
+	
+	// struct of maps and typedefs
+	struct MyStruct08 {
+		MyMap05 se01
+		MyMap08 se02
+		MyType01 se03
+		MyType03 se04
+	}
+	
+	// derived struct (without polymorphic root)
+	struct MyStruct10 extends MyStruct01 {
+		UInt32 se20
+		String se21
+		UInt32 se22
+	}
+
+	// other derived struct (without polymorphic root)
+	struct MyStruct11 extends MyStruct01 {
+		Float se20
+		Float se21
+		Float se22
+		Boolean se23
+	}
+
+	// derived struct, second level
+	struct MyStruct12 extends MyStruct10 {
+		Boolean se30
+		Boolean se31
+	}
+	
+	// derived struct with empty base (and also non-polymorphic)
+	struct MyStruct13 extends MyStruct03 {
+		UInt16 se10
+	}
+	
+	// derived struct (with polymorphic root)
+	struct MyStruct20 extends MyStruct07 {
+		UInt8 se20
+		Float se21
+	}
+
+	// other derived struct (with polymorphic root)
+	struct MyStruct21 extends MyStruct07 {
+		MyEnum01 se20
+		MyEnum02 se21
+		Boolean se22
+	}
+
+	// derived struct, second level (with polymorphic root)
+	struct MyStruct22 extends MyStruct20 {
+		MyArray04 se30
+		MyArray05 se31
+	}
+
+
+	// union with all basic types
+	union MyUnion01 {
+		Int8 ue01
+		UInt8 ue02
+		Int16 ue03
+		UInt16 ue04
+		Int32 ue05
+		UInt32 ue06
+		Int64 ue07
+		UInt64 ue08
+		Boolean ue09
+		String ue10
+		ByteBuffer ue11
+	}
+	
+	// union with a combination of basic and user-defined types
+	union MyUnion02 {
+		Int16 ue01
+		MyArray05 ue02
+		MyArray20 ue03
+		MyStruct02 ue04
+		String ue05
+		MyStruct10 ue06
+		MyUnion01 ue07
+		MyEnum03 ue08
+		MyMap30 ue09
+		MyType04 ue10
+	}
+	
+	// derived union
+	union MyUnion03 extends MyUnion02 {
+		Int32 ue11
+		Double ue12
+		MyStruct11 ue13
+		MyUnion02 ue20
+	}
+
+	// derived union, second level
+	union MyUnion04 extends MyUnion03 {
+		Boolean ue30
+	}
+	
+	// union with elements of implicit array type
+	union MyUnion05 {
+		UInt8[] se01
+		String[] se02
+		ByteBuffer[] se03
+		MyArray01[] se10
+		MyStruct02[] se11
+		MyEnum03[] se12
+	}
+
+
+	// empty enumeration
+	enumeration MyEnum01 { }
+
+	// enumeration without values
+	enumeration MyEnum02 {
+		ENUM01
+		ENUM02
+		ENUM03
+	}
+	
+	// enumeration with values
+	enumeration MyEnum03 {
+		ENUM01 = "1"
+		ENUM02 = "2"
+		ENUM03 = "0x03"
+	}
+	
+ 	// derived enumeration
+ 	enumeration MyEnum10 extends MyEnum02 {
+ 		ENUM10
+ 		ENUM11
+ 	}
+
+ 	// derived enumeration, second level
+ 	enumeration MyEnum11 extends MyEnum10 {
+ 		ENUM20
+ 		ENUM21
+ 	}
+
+ 	// another derived enumeration
+ 	enumeration MyEnum15 extends MyEnum03 {
+ 		ENUM10
+ 		ENUM11
+ 	}
+
+ 	// yet another derived enumeration
+ 	enumeration MyEnum16 extends MyEnum02 {
+ 		ENUM15 = "33"
+ 		ENUM16 = "34"
+ 	}
+ 	
+ 	
+ 	// maps of basic key types
+ 	map MyMap01 { Int8 to String }
+ 	map MyMap02 { UInt8 to String }
+ 	map MyMap03 { Int16 to String }
+ 	map MyMap04 { UInt16 to String }
+ 	map MyMap05 { Int32 to String }
+ 	map MyMap06 { UInt32 to String }
+ 	map MyMap07 { Int64 to String }
+ 	map MyMap08 { UInt64 to String }
+ 	map MyMap09 { Float to String }
+ 	map MyMap10 { Double to String }
+ 	map MyMap12 { Boolean to String }
+ 	map MyMap13 { ByteBuffer to String }
+ 
+ 	// maps of basic value types
+ 	map MyMap20 { UInt32 to Int8 }
+ 	map MyMap21 { UInt32 to UInt8 }
+ 	map MyMap22 { UInt32 to Int16 }
+ 	map MyMap23 { UInt32 to UInt16 }
+ 	map MyMap24 { UInt32 to Int32 }
+ 	map MyMap25 { UInt32 to UInt32 }
+ 	map MyMap26 { UInt32 to Int64 }
+ 	map MyMap27 { UInt32 to UInt64 }
+ 	map MyMap28 { UInt32 to Float }
+ 	map MyMap29 { UInt32 to Double }
+ 	map MyMap30 { UInt32 to Boolean }
+ 	map MyMap31 { UInt32 to ByteBuffer }
+ 
+ 	// maps of user-defined key types
+ 	map MyMap40 { MyArray01 to String }
+ 	map MyMap41 { MyStruct01 to String }
+ 	map MyMap42 { MyUnion01 to String }
+ 	map MyMap43 { MyEnum02 to String }
+ 	map MyMap44 { MyMap01 to String }
+ 	map MyMap45 { MyType10 to String }
+
+ 	// maps of user-defined value types
+ 	map MyMap60 { UInt16 to MyArray01 }
+ 	map MyMap61 { UInt16 to MyStruct01 }
+ 	map MyMap62 { UInt16 to MyUnion01 }
+ 	map MyMap63 { UInt16 to MyEnum02 }
+ 	map MyMap64 { UInt16 to MyMap01 }
+ 	map MyMap65 { UInt16 to MyType10 }
+
+	// some mixed maps
+	map MyMap80 { MyStruct01 to MyArray10 }
+	map MyMap81 { MyEnum03 to MyMap27 }
+	map MyMap82 { MyEnum15 to MyEnum16 }
+
+ 
+ 	// typedefs from basic types
+ 	typedef MyType01 is UInt16
+ 	typedef MyType02 is String
+ 	typedef MyType03 is Double
+ 	typedef MyType04 is ByteBuffer
+
+ 	// typedefs from user-defined types
+ 	typedef MyType10 is MyArray10
+ 	typedef MyType11 is MyStruct01
+ 	typedef MyType12 is MyStruct10
+ 	typedef MyType13 is MyUnion03
+ 
+ 	// typedefs from other typedefs
+ 	typedef MyType20 is MyType01
+ 	typedef MyType21 is MyType04
+ 	typedef MyType22 is MyType10
+ 	typedef MyType23 is MyType12
+ 
+}
+

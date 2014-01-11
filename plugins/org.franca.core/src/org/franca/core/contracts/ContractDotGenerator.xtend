@@ -14,7 +14,7 @@ import org.franca.core.franca.FEventOnIf
 import org.franca.core.franca.FGuard
 import org.franca.core.franca.FExpression
 import org.franca.core.franca.FBinaryOperation
-import org.franca.core.franca.FTypedElementRef
+import org.franca.core.franca.FQualifiedElementRef
 import org.franca.core.franca.FTypeRef
 import org.franca.core.franca.FIntegerConstant
 import org.franca.core.franca.FBooleanConstant
@@ -77,11 +77,11 @@ class ContractDotGenerator {
 		left.gen + op + right.gen
 	}
 
-	def dispatch private String gen (FTypedElementRef it) {
-		if (target==null) {
+	def dispatch private String gen (FQualifiedElementRef it) {
+		if (qualifier==null) {
 			element.name
 		} else {
-			target.gen + "." + field.name
+			qualifier.gen + "." + field.name
 		}
 	}
 	

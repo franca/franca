@@ -1,0 +1,47 @@
+/*******************************************************************************
+<<<<<<< HEAD:plugins/org.franca.core.dsl/src/org/franca/core/dsl/validation/internal/NameProvider.java
+ * Copyright (c) 2012 Harman International (http://www.harman.com).
+=======
+ * Copyright (c) 2013 itemis AG (http://www.itemis.de).
+>>>>>>> develop:examples/org.franca.examples.reference/models/org/reference/65-InterfaceUsingTypeCollection.fidl
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************/
+<<<<<<< HEAD:plugins/org.franca.core.dsl/src/org/franca/core/dsl/validation/internal/NameProvider.java
+package org.franca.core.dsl.validation.internal;
+
+import org.eclipse.emf.ecore.EObject;
+
+/**
+ * Get the complete name of an model element together with its signature.
+ * 
+ */
+public interface NameProvider {
+
+   String getName(EObject obj);
+=======
+package org.reference
+
+import org.reference.MyTypeCollection10.* from "10-TypesInTypeCollection.fidl"
+
+interface MyInterface65 {
+	version { major 1 minor 0 }
+	
+	method method1 {
+		in {
+			MyUnion01 arg1		
+		}
+	}
+
+	method method2 {
+		in {
+			MyStruct07 argMyStruct07
+			MyStruct20 argMyStruct20
+			MyStruct21 argMyStruct21
+			MyStruct22 argMyStruct22
+		}
+	}
+>>>>>>> develop:examples/org.franca.examples.reference/models/org/reference/65-InterfaceUsingTypeCollection.fidl
+}

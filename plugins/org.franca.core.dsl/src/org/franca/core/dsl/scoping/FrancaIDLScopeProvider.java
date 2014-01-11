@@ -7,25 +7,37 @@
  *******************************************************************************/
 package org.franca.core.dsl.scoping;
 
+import static org.franca.core.FrancaModelExtensions.getAllElements;
+import static org.franca.core.FrancaModelExtensions.getTriggeringMethod;
+
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
-import org.eclipse.emf.mwe2.language.scoping.QualifiedNameProvider;
+import org.eclipse.xtext.EcoreUtil2;
+import org.eclipse.xtext.naming.IQualifiedNameProvider;
+import org.eclipse.xtext.naming.QualifiedName;
+import org.eclipse.xtext.resource.EObjectDescription;
+import org.eclipse.xtext.resource.IEObjectDescription;
 import org.eclipse.xtext.scoping.IScope;
 import org.eclipse.xtext.scoping.Scopes;
 import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider;
 import org.eclipse.xtext.scoping.impl.ImportUriGlobalScopeProvider;
+import org.eclipse.xtext.scoping.impl.SimpleScope;
 import org.franca.core.FrancaModelExtensions;
-import org.franca.core.contracts.TypeSystem;
-import org.franca.core.franca.FCompoundType;
 import org.franca.core.franca.FContract;
+import org.franca.core.franca.FEnumerationType;
 import org.franca.core.franca.FEventOnIf;
 import org.franca.core.franca.FInterface;
+import org.franca.core.franca.FMethod;
+import org.franca.core.franca.FModel;
+import org.franca.core.franca.FModelElement;
+import org.franca.core.franca.FQualifiedElementRef;
 import org.franca.core.franca.FTransition;
 import org.franca.core.franca.FType;
 import org.franca.core.franca.FTypeRef;
-import org.franca.core.franca.FTypedElementRef;
+import org.franca.core.franca.FTypedElement;
 
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -40,7 +52,10 @@ import com.google.inject.Inject;
 public class FrancaIDLScopeProvider extends AbstractDeclarativeScopeProvider {
 
 	@Inject
-	private QualifiedNameProvider qualifiedNameProvider;
+	private FrancaModelExtensions francaModelExtensions;
+	
+	@Inject
+	private IQualifiedNameProvider qualifiedNameProvider;
 	
 	@Inject
 	private ImportUriGlobalScopeProvider importUriGlobalScopeProvider;
@@ -58,18 +73,14 @@ public class FrancaIDLScopeProvider extends AbstractDeclarativeScopeProvider {
 				qualifiedNameProvider
 		);
 	}
-
-	public IScope scope_FTypedElementRef_element (FTransition tr, EReference ref) {
+	
+	public IScope scope_FQualifiedElementRef_element (FTransition tr, EReference ref) {
 		final List<EObject> scopes = Lists.newArrayList();
 
 		// add state variables of the enclosing contract to this scope
 		FContract contract = FrancaModelExtensions.getContract(tr);
-//		System.out.println("Scope " + tr.getTrigger().getEvent().toString());
 		if (contract!=null) { 
 			scopes.addAll(contract.getVariables());
-//			for(FDeclaration d : contract.getVariables()) {
-//				System.out.println("  var " + d.getName());
-//			}
 		}
 
 		// add the trigger's parameters to this scope
@@ -81,24 +92,49 @@ public class FrancaIDLScopeProvider extends AbstractDeclarativeScopeProvider {
 		} else if (ev.getSignal()!=null) {
 			scopes.addAll(ev.getSignal().getOutArgs());
 		}
+		
+		IScope outerTypeScope = this.getScope(EcoreUtil2.getContainerOfType(tr, FModel.class), ref);
+		IScope scope = Scopes.scopeFor(scopes, outerTypeScope);
+		
+		FMethod method = getTriggeringMethod(ev);
+		if (method != null) {
+			FEnumerationType errorTypeDefinition = method.getErrors();
+			if (errorTypeDefinition == null) {
+				errorTypeDefinition = method.getErrorEnum();
+			}
+			if (errorTypeDefinition != null) {
+				QualifiedName errorTypeName = QualifiedName.create("errordef");
+				IEObjectDescription errorDescription =
+						new EObjectDescription(errorTypeName, errorTypeDefinition, null);
+				scope = new SimpleScope(scope, Collections.singleton(errorDescription));
+			}
+			
+		}
 
-		return Scopes.scopeFor(scopes);
+		return scope;
 	}
-
-	public IScope scope_FTypedElementRef_field (FTypedElementRef var, EReference ref) {
-		if (var.getTarget() == null) {
+	
+	public IScope scope_FQualifiedElementRef_field (FQualifiedElementRef var, EReference ref) {
+		FQualifiedElementRef qualifier = var.getQualifier();
+		
+		if (qualifier == null) {
 			return IScope.NULLSCOPE;
 		}
 		
-		TypeSystem ts = new TypeSystem();
-		FTypeRef typeRef = ts.getType(var.getTarget());
-		//FTypedElement te = var.getTarget().getElement();
-		//FType type = te.getType().getDerived();
-		FType type = typeRef.getDerived();
-		if (type!=null && type instanceof FCompoundType) {
-			FCompoundType compound = (FCompoundType)type;
-			return Scopes.scopeFor(compound.getElements());
+		FModelElement lastQualifier = qualifier.getElement();
+		if (lastQualifier == null) lastQualifier = qualifier.getField();
+		
+		if (lastQualifier instanceof FTypedElement) {
+			FTypeRef typeRef = ((FTypedElement) lastQualifier).getType();
+			FType type = typeRef.getDerived();
+			Iterable<? extends FModelElement> elements = getAllElements(type);
+			return Scopes.scopeFor(elements);
+		} else if (lastQualifier != null) {
+			// probably we are referencing a type
+			Iterable<? extends FModelElement> elements = getAllElements(lastQualifier);
+			return Scopes.scopeFor(elements);
 		}
+		
 		return IScope.NULLSCOPE;
 	}
 

@@ -8,9 +8,6 @@
 package org.franca.core.ui.addons.wizard;
 
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.jdt.internal.ui.dialogs.StatusInfo;
-import org.eclipse.jdt.internal.ui.dialogs.StatusUtil;
-import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -19,9 +16,10 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.xtext.ui.preferences.StatusInfo;
 
 @SuppressWarnings("restriction")
-public class FrancaIDLFileWizardConfigurationPage extends WizardPage {
+public class FrancaIDLFileWizardConfigurationPage extends StatusWizardPage {
 
     private static final String ONE_MUST_BE_SET = "At least either the type collection name or the interface name must be set!";
     private static final String MODEL_NAME_MUST_BE_SET = "The package name of the Franca model must be set!";
@@ -135,7 +133,7 @@ public class FrancaIDLFileWizardConfigurationPage extends WizardPage {
 
     protected void updateStatus(IStatus status) {
         setPageComplete(!status.matches(IStatus.ERROR));
-        StatusUtil.applyToStatusLine(this, status);
+        applyStatus(status);
     }
 
     public String getInterfaceName() {

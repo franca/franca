@@ -65,7 +65,7 @@ class WebsocketJSStubGenerator {
 						switch (msg.tag) {
 							«FOR m : api.methods»
 							case "«m.name»":
-								«IF m.fireAndForget==null»
+								«IF !m.fireAndForget»
 									var ret = stub.setMode(«m.inArgs.genArgList("msg.")»);
 									ret.tag = "«m.name»";
 									stub.sendSingle(this, ret);

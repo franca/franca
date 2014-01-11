@@ -11,9 +11,9 @@ import com.google.inject.Inject
 import java.util.List
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EReference
-import org.eclipse.emf.mwe2.language.scoping.QualifiedNameProvider
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.naming.IQualifiedNameConverter
+import org.eclipse.xtext.naming.IQualifiedNameProvider
 import org.eclipse.xtext.resource.EObjectDescription
 import org.eclipse.xtext.resource.IEObjectDescription
 import org.eclipse.xtext.scoping.IScope
@@ -50,14 +50,11 @@ import org.franca.deploymodel.dsl.fDeploy.FDTypes
 import org.franca.deploymodel.dsl.fDeploy.FDUnion
 
 import static extension org.eclipse.xtext.scoping.Scopes.*
-import com.google.common.base.Predicate
-import java.lang.reflect.Method
-import org.eclipse.emf.ecore.EClass
 
 class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 
 	@Inject
-	private QualifiedNameProvider qualifiedNameProvider
+	private IQualifiedNameProvider qualifiedNameProvider
 
 	@Inject
 	private ImportUriGlobalScopeProvider importUriGlobalScopeProvider

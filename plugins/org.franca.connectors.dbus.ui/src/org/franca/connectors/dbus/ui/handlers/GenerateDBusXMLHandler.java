@@ -26,6 +26,7 @@ import org.franca.connectors.dbus.DBusConnector;
 import org.franca.connectors.dbus.DBusModelContainer;
 import org.franca.core.dsl.FrancaPersistenceManager;
 import org.franca.core.dsl.ui.util.SpecificConsole;
+import org.franca.core.framework.IssueReporter;
 import org.franca.core.franca.FModel;
 import org.franca.core.utils.FrancaRecursiveValidator;
 
@@ -92,6 +93,7 @@ public class GenerateDBusXMLHandler extends AbstractHandler {
     		DBusModelContainer dbus = null;
     		try {
     			dbus = (DBusModelContainer) dbusConn.fromFranca(fmodel);
+    			out.println(IssueReporter.getReportString(dbusConn.getLastTransformationIssues()));    			
     		} catch (Exception e) {
     			err.println("Exception during transformation: " + e.toString());
     			for(StackTraceElement f : e.getStackTrace()) {

@@ -14,5 +14,16 @@
 	<description>This Eclipse plugin contains the EMF edit code for the Franca ecore model.</description>
 	<packaging>eclipse-plugin</packaging>
 	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-clean-plugin</artifactId>
+				<configuration>
+					<filesets combine.self="override">
+						<!-- Do not delete "src-gen", it is managed by org.franca.core plug-in -->
+					</filesets>
+				</configuration>
+			</plugin>
+		</plugins>
 	</build>
 </project>

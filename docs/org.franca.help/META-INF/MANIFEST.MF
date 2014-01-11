@@ -11,4 +11,6 @@ Require-Bundle: org.eclipse.help,
  org.eclipse.xtext.xbase;bundle-version="2.3.1",
  org.eclipse.emf.mwe2.launch;bundle-version="2.4.0",
  org.apache.commons.logging;bundle-version="1.0.4",
- org.franca.deploymodel.dsl;bundle-version="0.8.9"
+ org.franca.deploymodel.dsl;bundle-version="0.8.9",
+ org.eclipse.xtext.xdoc;bundle-version="0.1.0",
+ org.apache.commons.lang;bundle-version="2.6.0"

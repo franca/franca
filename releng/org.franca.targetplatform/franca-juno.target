@@ -29,6 +29,7 @@
 <unit id="org.eclipse.zest.sdk.feature.group" version="1.5.0.201212170307"/>
 <unit id="org.eclipse.graphiti.sdk.plus.feature.feature.group" version="0.9.2.v20130211-0913"/>
 <unit id="org.eclipse.swt" version="3.100.1.v4236b"/>
+<unit id="org.eclipse.equinox.executable.feature.group" version="0.0.0"/>
 <repository location="http://download.eclipse.org/releases/juno"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
@@ -57,7 +58,7 @@
 <repository location="http://download.eclipse.org/releases/kepler/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="model.emf.dbusxml.feature.feature.group" version="0.7.6.201309261942"/>
+<unit id="model.emf.dbusxml.feature.feature.group" version="0.7.7.201401081316"/>
 <repository location="http://dbus-emf-model.eclipselabs.org.codespot.com/git/update_site/releases/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
@@ -68,6 +69,13 @@
 <unit id="org.eclipse.gef4.zest.sdk.feature.group" version="0.1.0.201312280305"/>
 <repository location="http://download.eclipse.org/tools/gef/gef4/updates/integration"/>
 </location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.xtext.xdoc.feature.feature.group" version="0.1.2.201401061353"/>
+<repository location="http://xdoc4franca-release.eclipselabs.org.codespot.com/git/update_site/releases"/>
+</location>
+
+
+
 </locations>
 <environment>
 <nl>en</nl>

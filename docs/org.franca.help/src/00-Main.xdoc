@@ -34,7 +34,7 @@ codelanguage-def[Franca]
 	manages,
 
 	array,of,struct,union,typedef,is,map,to,enumeration,
-	extends,
+	extends, polymorphic,
 	
 	Int8,UInt8,Int16,UInt16,Int32,UInt32,Int64,UInt64,
 	Boolean,String,Float,Double,ByteBuffer,
@@ -48,10 +48,13 @@ codelanguage-def[FDeploy]
 	import,
 	specification,extends,for,optional,default,
 	
-	providers,instances,interfaces,attributes,methods,broadcasts,arguments,
-	struct_fields,union_fields,
+	providers,instances,interfaces,type_collections,
+	attributes,methods,broadcasts,arguments,
+	structs,struct_fields,unions,union_fields,
 	arrays,enumerations,enumerators,strings,numbers,integers,floats,
 	
+	Boolean, Integer, String, Interface,
+
 	define,provider,instance,interface, 
 	attribute,method,broadcast,in,out,
 	array,struct,enumeration,
@@ -93,4 +96,6 @@ chapter-ref[BuildingGenerators]
 chapter-ref[BuildingTransformations]
 
 chapter-ref[FrancaConnectors]
+
+chapter-ref[FrancaExtensions]
 

@@ -11,16 +11,28 @@ import java.util.List
 import java.util.Map
 import java.util.Queue
 import java.util.Set
+import org.eclipse.core.runtime.CoreException
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.resource.Resource
+import org.franca.core.franca.FArrayType
 import org.franca.core.franca.FContract
+import org.franca.core.franca.FEnumerationType
+import org.franca.core.franca.FEventOnIf
 import org.franca.core.franca.FInterface
+import org.franca.core.franca.FMethod
 import org.franca.core.franca.FModel
+import org.franca.core.franca.FModelElement
 import org.franca.core.franca.FStateGraph
+import org.franca.core.franca.FStructType
+import org.franca.core.franca.FType
 import org.franca.core.franca.FTypeCollection
+import org.franca.core.franca.FTypeDef
+import org.franca.core.franca.FUnionType
 import org.franca.core.franca.Import
-import org.eclipse.core.runtime.CoreException
+
+import org.franca.core.franca.FField
+import org.franca.core.franca.FCompoundType
 
 class FrancaModelExtensions {
 	
@@ -44,7 +56,6 @@ class FrancaModelExtensions {
 		getParentObject(obj, typeof(FContract))
 	}
 	
-	
 	def private static <T extends EObject> getParentObject (EObject it, Class<T> clazz) {
 		var x = it
 		
@@ -55,6 +66,119 @@ class FrancaModelExtensions {
 		} while (x!=null)
 		
 		return null
+	}
+	
+	def static getTriggeringMethod(FEventOnIf event) {
+		var FMethod result = null
+		if (event != null) {
+			/*if (result == null)*/ result = event.call
+			if (result == null) result = event.error
+			if (result == null) result = event.respond
+		}
+		return result;
+	}
+	
+	def static FCompoundType getBase (FCompoundType c) {
+		switch (c) {
+			FStructType: c.getBase()
+			FUnionType: c.getBase()
+			default: null
+		}
+	}
+
+	def static Set<FInterface> getInterfaceInheritationSet(FInterface i) {
+		getInheritationList(i, [base]).toSet
+	}
+	
+	def static dispatch Set<FType> getInheritationSet(Void i) {
+		return emptySet
+	}
+	
+	def static dispatch Set<FType> getInheritationSet(FType t) {
+		return #{t}
+	}
+	
+	def static dispatch Set<FType> getInheritationSet(FStructType s) {
+		<FType, FStructType>getInheritationList(s, [base]).toSet
+	}
+	
+	def static dispatch Set<FType> getInheritationSet(FUnionType u) {
+		<FType, FUnionType>getInheritationList(u, [base]).toSet
+	}
+	
+	def static dispatch Set<FType> getInheritationSet(FEnumerationType e) {
+		<FType, FEnumerationType>getInheritationList(e, [base]).toSet
+	}
+	
+	/**
+	 * This helper function returns a list the inheritance chain of element 'elem',
+	 * starting with the root element of the chain down to the element 'elem' itself.
+	 * Note: If there is a cycle in the hierarchy, the inheritance chain will be cut!
+	 */
+	def static private <R extends FModelElement, T extends R> List<R> getInheritationList (T elem, (T)=>T base) {
+		val Set<R> visited = newHashSet
+		val List<R> result = newArrayList
+		visited.add(elem)
+		result.add(elem)
+		var i = elem
+		while (base.apply(i) != null) {
+			i = base.apply(i);
+			
+			// stop if hierarchy has a cycle, validation will tell this issue to the user 
+			if (visited.contains(i))
+				return result.reverse
+
+			visited.add(i)			
+			result.add(i)			
+		}
+		result.reverse
+	}
+
+
+	def static dispatch Iterable<? extends FModelElement> getAllElements(FInterface i) {
+		i.interfaceInheritationSet.map[
+			attributes + methods + broadcasts + types + constants
+		].flatten
+	}
+
+	def static dispatch Iterable<? extends FModelElement> getAllElements(FTypeCollection c) {
+		c.types
+	}
+
+	def static dispatch Iterable<? extends FModelElement> getAllElements(FArrayType a) {
+		a.elementType.derived.getAllElements
+	}
+
+	def static dispatch Iterable<? extends FModelElement> getAllElements(FStructType s) {
+		// the correct ordering of elements is important here.
+		// first elements of base structs, then own elements (top-down)
+		val List<FField> result = newArrayList
+		
+		// first collect complete hierarchy (cycles will be cut off)
+		val List<FStructType> all = getInheritationList(s, [base])
+		for(i : all)
+			result += i.elements
+		result
+	}
+
+	def static dispatch Iterable<? extends FModelElement> getAllElements(FEnumerationType e) {
+		e.inheritationSet.map[(it as FEnumerationType).enumerators].flatten
+	}
+
+	def static dispatch Iterable<? extends FModelElement> getAllElements(FTypeDef td) {
+		td.actualType.derived.getAllElements
+	}
+
+	def static dispatch Iterable<? extends FModelElement> getAllElements(FUnionType u) {
+		u.inheritationSet.map[(it as FUnionType).elements].flatten
+	}
+
+	def static protected dispatch Iterable<? extends FModelElement> getAllElements(Object e) {
+		throw new IllegalStateException("Unhandled parameter types: getAllElements not yet implemented for" + e)
+	}
+
+	def static protected dispatch Iterable<? extends FModelElement> getAllElements(Void e) {
+		<FModelElement>emptyList
 	}
 
 

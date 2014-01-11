@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.franca.dbus.feature.sdk"
+      id="org.franca.dbus.sdk"
       label="%featureName"
       version="0.8.10.qualifier"
       provider-name="%providerName">
@@ -21,54 +21,12 @@
       <update label="%updateSiteName" url="http://franca.org.codespot.com/git.distribution/releases"/>
    </url>
 
-   <requires>
-      <import feature="org.franca.feature"/>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.emf.ecore"/>
-      <import plugin="org.eclipse.emf.mwe.utils"/>
-      <import plugin="org.apache.log4j"/>
-      <import plugin="org.apache.commons.logging"/>
-      <import plugin="org.eclipse.emf.mwe2.launch"/>
-      <import plugin="org.eclipse.emf.mwe2.lib"/>
-      <import plugin="org.eclipse.xtext" version="2.1.0" match="greaterOrEqual"/>
-      <import plugin="org.apache.log4j" version="1.2.15" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.xtext.util"/>
-      <import plugin="org.antlr.runtime"/>
-      <import plugin="org.eclipse.xtext.ui"/>
-      <import plugin="org.eclipse.ui.editors" version="3.5.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui.ide" version="3.5.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.xtext.ui.shared"/>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.compare"/>
-      <import plugin="org.eclipse.xtext.builder"/>
-      <import plugin="org.eclipse.xtext.xbase.lib" version="2.3.1" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.xtext.generator" version="2.3.1" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.xtend.lib" version="2.3.1" match="greaterOrEqual"/>
-   </requires>
-
-   <plugin
-         id="org.franca.connectors.dbus"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+   <includes
+         id="org.franca.dbus"
+         version="0.0.0"/>
 
    <plugin
          id="org.franca.connectors.dbus.source"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.franca.connectors.dbus.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.franca.connectors.dbus.ui.source"
          download-size="0"
          install-size="0"
          version="0.0.0"

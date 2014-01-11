@@ -10,23 +10,17 @@ package org.franca.core.dsl.validation.internal;
 import java.util.List;
 
 import org.eclipse.emf.common.util.TreeIterator;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.franca.core.FrancaModelExtensions;
-import org.franca.core.contracts.IssueCollector;
-import org.franca.core.contracts.TypeIssue;
 import org.franca.core.contracts.TypeSystem;
 import org.franca.core.dsl.validation.internal.util.FrancaContractDirectedGraphDataSource;
 import org.franca.core.dsl.validation.internal.util.FrancaContractUndirectedGraphDataSource;
 import org.franca.core.dsl.validation.internal.util.GraphUtil;
-import org.franca.core.framework.FrancaHelpers;
 import org.franca.core.franca.FAssignment;
 import org.franca.core.franca.FAttribute;
 import org.franca.core.franca.FBroadcast;
 import org.franca.core.franca.FContract;
 import org.franca.core.franca.FEventOnIf;
-import org.franca.core.franca.FExpression;
 import org.franca.core.franca.FGuard;
 import org.franca.core.franca.FInterface;
 import org.franca.core.franca.FMethod;
@@ -63,17 +57,20 @@ public class ContractValidator {
 			if (obj instanceof FTransition) {
 				FTransition tt = (FTransition)obj;
 				FEventOnIf ev = tt.getTrigger().getEvent();
-				if (ev.getSet()!=null) {
-					usedAttributes.add(ev.getSet());
-				} else if (ev.getUpdate()!=null) {
-					usedAttributes.add(ev.getUpdate());
-				} else if (ev.getCall()!=null) {
-					usedMethods.add(ev.getCall());
-				} else if (ev.getRespond()!=null) {
-					usedMethods.add(ev.getRespond());
-				} else if (ev.getSignal()!=null) {
-					usedBroadcasts.add(ev.getSignal());
-				}  
+				//during editing the model, there might not be an event right now
+				if (ev != null) {
+					if (ev.getSet()!=null) {
+						usedAttributes.add(ev.getSet());
+					} else if (ev.getUpdate()!=null) {
+						usedAttributes.add(ev.getUpdate());
+					} else if (ev.getCall()!=null) {
+						usedMethods.add(ev.getCall());
+					} else if (ev.getRespond()!=null) {
+						usedMethods.add(ev.getRespond());
+					} else if (ev.getSignal()!=null) {
+						usedBroadcasts.add(ev.getSignal());
+					}
+				}
 			}
 		}
 
@@ -100,55 +97,34 @@ public class ContractValidator {
 
 	
 	public static void checkTrigger (ValidationMessageReporter reporter, FTrigger trigger) {
-	   FMethod method = trigger.getEvent().getRespond(); 
-	   if (method!=null && method.getFireAndForget()!=null) {
-		   reporter.reportError("Fire-and-forget method will not send response message",
-				   	trigger, FrancaPackage.Literals.FTRIGGER__EVENT);
-	   } 
+	   FEventOnIf event = trigger.getEvent();
+	   //while editing there might be no event right now
+	   if (event != null) {
+		   FMethod method = event.getRespond(); 
+		   if (method!=null && method.isFireAndForget()) {
+			   reporter.reportError("Fire-and-forget method will not send response message",
+					   	trigger, FrancaPackage.Literals.FTRIGGER__EVENT);
+		   }
+	   }
 	}
 	
 	
 	public static void checkAssignment (ValidationMessageReporter reporter, FAssignment assignment) {
-		FTypeRef typeRHS = checkExpression(reporter, assignment.getRhs(), assignment, FrancaPackage.Literals.FASSIGNMENT__RHS);
-		if (typeRHS!=null) {
-			FTypeRef typeLHS = assignment.getLhs().getType();
-			if (! TypeSystem.isSameType(typeRHS, typeLHS)) {
-				reporter.reportError(
-						"invalid expression type in assignment (is " +
-								FrancaHelpers.getTypeString(typeRHS) + ", expected " +
-								FrancaHelpers.getTypeString(typeLHS) + ")",
-						assignment, FrancaPackage.Literals.FASSIGNMENT__RHS);
-			}
+		TypeSystem ts = new TypeSystem();
+		FTypeRef typeLHS = ts.getTypeOf(assignment.getLhs());
+		if (typeLHS==null) {
+			reporter.reportError("invalid left-hand side in assignment", assignment, FrancaPackage.Literals.FASSIGNMENT__LHS);
+		} else {
+			TypesValidator.checkExpression(reporter,
+				assignment.getRhs(), typeLHS,
+				assignment, FrancaPackage.Literals.FASSIGNMENT__RHS);
 		}
 	}
 	
 	public static void checkGuard (ValidationMessageReporter reporter, FGuard guard) {
-		FTypeRef type = checkExpression(reporter, guard.getCondition(), guard, FrancaPackage.Literals.FGUARD__CONDITION);
-		if (type!=null) {
-			if (! FrancaHelpers.isBoolean(type)) {
-				reporter.reportError(
-						"expected boolean type for guard expression (is " +
-								FrancaHelpers.getTypeString(type) + ")",
-						guard, FrancaPackage.Literals.FGUARD__CONDITION);
-			}
-		}
+		TypesValidator.checkExpression(reporter,
+			guard.getCondition(), TypeSystem.BOOLEAN_TYPE,
+			guard, FrancaPackage.Literals.FGUARD__CONDITION);
 	}
 
-	private static FTypeRef checkExpression (
-			ValidationMessageReporter reporter,
-			FExpression expr,
-			EObject loc, EStructuralFeature feat)
-	{
-		TypeSystem ts = new TypeSystem();
-		IssueCollector issues = new IssueCollector();
-		FTypeRef type = ts.getType(expr, issues, loc, feat);
-		if (! issues.getIssues().isEmpty()) {
-			for(TypeIssue ti : issues.getIssues()) {
-				reporter.reportError(ti.getMessage(), ti.getLocation(), ti.getFeature());
-			}
-			return null;
-		}
-		
-		return type;
-	}
 }

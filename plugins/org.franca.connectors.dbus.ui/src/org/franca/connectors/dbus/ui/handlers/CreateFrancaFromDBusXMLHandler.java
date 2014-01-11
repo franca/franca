@@ -25,6 +25,7 @@ import org.franca.connectors.dbus.DBusModelContainer;
 import org.franca.connectors.dbus.util.XMLRootCheck;
 import org.franca.core.dsl.FrancaPersistenceManager;
 import org.franca.core.dsl.ui.util.SpecificConsole;
+import org.franca.core.framework.IssueReporter;
 import org.franca.core.franca.FModel;
 
 import com.google.inject.Inject;
@@ -85,7 +86,8 @@ public class CreateFrancaFromDBusXMLHandler extends AbstractHandler {
     		FModel fmodel = null;
     		try {
     			fmodel = conn.toFranca(dbus);
-    		} catch (Exception e) {
+    			out.println(IssueReporter.getReportString(conn.getLastTransformationIssues()));    			
+   		} catch (Exception e) {
     			err.println("Exception during transformation: " + e.toString());
     			for(StackTraceElement f : e.getStackTrace()) {
     				err.println("\tat " + f.toString());
@@ -125,4 +127,3 @@ public class CreateFrancaFromDBusXMLHandler extends AbstractHandler {
 		return null;
 	}
 }
-

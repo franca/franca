@@ -131,7 +131,7 @@ as soon as a Franca IDL interface is incarnated on a real target, the Franca Fra
 provides support for defining and creating deployment models.
 A separate Franca Deployment Language is available, which contains of two parts:
 ul[
-	item[specification of deployment properties (done only once per deployment target platform]
+	item[specification of deployment properties (done only once per deployment target platform)]
 	item[definition of actual values for deployment properties (done for every Franca interface
 		which has to be deployed on the target platform)
 	]

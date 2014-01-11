@@ -1,0 +1,30 @@
+package a.b.c
+typeCollection TC {
+	enumeration Errors {
+		Error
+	}
+	enumeration OtherErrors {
+		OtherError
+	}
+}
+interface InterfaceTest {
+	method forceEnumError {
+		error TC.Errors
+	}
+	contract {
+		vars {
+			TC.Errors savedError;
+			TC.OtherErrors otherError;
+		}
+
+		PSM {
+			initial start
+			state start {
+				on error forceEnumError [errordef] -> start
+				on error forceEnumError [errorval] -> start
+				on error forceEnumError [! errordef] -> start
+				on error forceEnumError [! errorval] -> start
+			}
+		}
+	}
+}

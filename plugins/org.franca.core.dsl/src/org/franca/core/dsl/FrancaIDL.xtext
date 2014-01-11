@@ -14,6 +14,7 @@ import "http://core.franca.org"
 
 import "http://www.eclipse.org/emf/2002/Ecore" as ecore
 
+
 // **************************************************************
 // model root
 
@@ -34,6 +35,7 @@ FTypeCollection returns FTypeCollection:
 	'{'
 		('version' version=FVersion)?
 		(types+=FType)*
+		(constants+=FConstantDef)*
 	'}';
 
 FInterface returns FInterface:
@@ -52,13 +54,14 @@ FInterface returns FInterface:
 		(broadcasts+=FBroadcast)*
 		(contract=FContract)?
 		(types+=FType)*
+		(constants+=FConstantDef)*
     '}';
 
 FVersion returns FVersion:
 	{FVersion}
 	'{'
-		'major' major=EInt
-		'minor' minor=EInt
+		'major' major=INT
+		'minor' minor=INT
     '}';
 
 
@@ -67,7 +70,7 @@ FVersion returns FVersion:
 
 FAttribute:
 	(comment=FAnnotationBlock)?
-	'attribute'	type=FTypeRef (array='[]')? name=ID
+	'attribute'	type=FTypeRef (array?='[]')? name=ID
 		(readonly?='readonly')?
 		(noSubscriptions?='noSubscriptions')?
 	;
@@ -79,7 +82,7 @@ FAttribute:
 FMethod returns FMethod:
 	{FMethod}
 	(comment=FAnnotationBlock)?
-	'method' name=ID (fireAndForget='fireAndForget')?
+	'method' name=ID (fireAndForget?='fireAndForget')?
 	'{'
 		('in' '{' (inArgs+=FArgument)* '}' )?
 		('out' '{' (outArgs+=FArgument)* '}' )?
@@ -93,22 +96,21 @@ FMethod returns FMethod:
 FBroadcast returns FBroadcast:
 	{FBroadcast}
 	(comment=FAnnotationBlock)?
-	'broadcast' name=ID (selective='selective')?
+	'broadcast' name=ID (selective?='selective')?
 	'{'
 		('out' '{' (outArgs+=FArgument)* '}' )?
     '}';
 
 FArgument:
 	(comment=FAnnotationBlock)?
-	type=FTypeRef (array='[]')? name=ID;
+	type=FTypeRef (array?='[]')? name=ID;
 
 
 // **************************************************************
 // type system
 
 FTypeRef returns FTypeRef:
-	predefined=FBasicTypeId | derived=[FType|FQN]
-	;
+	predefined=FBasicTypeId | derived=[FType|FQN];
 
 enum FBasicTypeId returns FBasicTypeId:
 	undefined = 'undefined' |
@@ -196,17 +198,64 @@ FMapType returns FMapType:
 
 FField:
 	(comment=FAnnotationBlock)?
-	type=FTypeRef (array='[]')? name=ID;
+	type=FTypeRef (array?='[]')? name=ID;
 
 
 FDeclaration:
-	type=FTypeRef (array='[]')? name=ID;
+	type=FTypeRef (array?='[]')? name=ID;
 
 FTypedElement:
 	FField |
 	FAttribute |
 	FArgument |
-	FDeclaration;
+	FDeclaration |
+	FConstantDef;
+
+
+// **************************************************************
+// constant definitions and initializers
+
+FConstantDef:
+	'const' type=FTypeRef (array?='[]')? name=ID '='
+		rhs=FInitializerExpression
+	;
+
+FInitializerExpression:
+	LogicalOrExpression |
+	FInitializer;
+
+FInitializer:
+	FArrayInitializer |
+	FStructInitializer; // |
+//	FUnionInitializer |
+//	FMapInitializer;
+
+FArrayInitializer:
+	{FArrayInitializer}
+	'[' (
+		elements+=FInitializerExpression
+		(',' elements+=FInitializerExpression)*
+	)? ']';
+
+FStructInitializer:
+	{FStructInitializer}
+	'{' (
+		elements+=FInitializerExpression
+		(',' elements+=FInitializerExpression)*
+	)? '}';
+
+FUnionInitializer:
+	'{' element=[FField|ID] ':' value=FInitializerExpression '}';
+
+FMapInitializer:
+	{FMapInitializer}
+	'{' (
+		elements+=FMapElementInitializer
+		(',' elements+=FMapElementInitializer)*
+	)? '}';
+
+FMapElementInitializer:
+	key=FInitializerExpression '=>' value=FInitializerExpression;
 
 
 // **************************************************************
@@ -236,9 +285,8 @@ FTransition:
 	'on' trigger=FTrigger
 		(guard=FGuard)?
 		'->' to=[FState|ID]
-		(action=FBlockExpression)?
+		(action=FBlock)?
 	;
-
 
 FTrigger:
 	event=FEventOnIf;
@@ -248,59 +296,88 @@ FEventOnIf:
 	('respond' respond=[FMethod|ID]   ) |
 	('signal'  signal=[FBroadcast|ID] ) |
 	('set'     set=[FAttribute|ID]    ) |
-	('update'  update=[FAttribute|ID] )
+	('update'  update=[FAttribute|ID] ) |
+	('error'   error=[FMethod|ID])
 ;
 
 FGuard:
 	'[' condition=LogicalOrExpression ']';
 
 	
-FExpression returns FExpression:
-	FAssignment;
+FAssignment returns FAssignment:
+	lhs=FQualifiedElementRef '=' rhs=LogicalOrExpression;
 
-FAssignment returns FExpression:
-	{FAssignment}
-	lhs=[FDeclaration|ID] '=' rhs=LogicalOrExpression;
-
-FBlockExpression returns FExpression: 
-	{FBlockExpression}
+FBlock returns FBlock:
+	{FBlock}
 	'{'
-		(expressions+=FExpression)*
+		(statements+=FAssignment)*
 	'}';
+
+
+// **************************************************************
+// expression language
 
 LogicalOrExpression returns FExpression:
   LogicalAndExpression
-  ({FBinaryOperation.left=current} op='||' right=LogicalAndExpression)*;
+  ({FBinaryOperation.left=current} op=OperatorOr right=LogicalAndExpression)*;
 
 LogicalAndExpression returns FExpression:
   EqualityExpression
-  ({FBinaryOperation.left=current} op='&&' right=EqualityExpression)*;
+  ({FBinaryOperation.left=current} op=OperatorAnd right=EqualityExpression)*;
 
 EqualityExpression returns FExpression:
   RelationalExpression
-  ({FBinaryOperation.left=current} op=('=='|'!=') right=RelationalExpression)*;
+  ({FBinaryOperation.left=current} op=OperatorEquality right=RelationalExpression)*;
 
 RelationalExpression returns FExpression:
   AdditiveExpression
-  ({FBinaryOperation.left=current} op=('<'|'>'|'<='|'>=') right=AdditiveExpression)*;
+  ({FBinaryOperation.left=current} op=OperatorRelational right=AdditiveExpression)*;
 
 AdditiveExpression returns FExpression:
   MultiplicativeExpression
-  ({FBinaryOperation.left=current} op=('+'|'-') right=MultiplicativeExpression)*;
+  ({FBinaryOperation.left=current} op=OperatorAdditive right=MultiplicativeExpression)*;
 
 MultiplicativeExpression returns FExpression:
   PrimaryExpression
-  ({FBinaryOperation.left=current} op=('*'|'/') right=PrimaryExpression)*;
+  ({FBinaryOperation.left=current} op=OperatorMultiplicative right=PrimaryExpression)*;
 
 PrimaryExpression returns FExpression:
-  FTypedElementRef |
+  FUnaryOperation | SimplePrimaryExpression;
+  
+SimplePrimaryExpression returns FExpression:
+  FQualifiedElementRef |
+  FCurrentError |
   FConstant |
-  '(' FExpression ')';
+  '(' LogicalOrExpression ')';
+  
+FUnaryOperation returns FExpression:
+	{FUnaryOperation}
+	op = OperatorUnary operand = SimplePrimaryExpression;
+	
+FCurrentError returns FCurrentError:
+	{FCurrentError}
+	ErrorReferenceTerminal
+//	type=ErrorTypeRef
+	// referencing a virtual FArgument with a type that is defined by a method either by referencing a previously
+	// defined one or by implicitly declaring a new one 
+;
 
-FTypedElementRef returns FExpression:
-	{FTypedElementRef}
-	element=[FTypedElement|ID]
-	({FTypedElementRef.target=current} '.' field=[FField|ID])*;
+//ErrorTypeRef returns FTypeRef:
+//	derived=[FEnumerationType|ErrorReferenceTerminal]
+//;
+
+ErrorReferenceTerminal:
+	'errorval'
+;
+
+AnonymousErrorTypeReferenceTerminal:
+	'errordef'
+;
+
+FQualifiedElementRef:
+	{FQualifiedElementRef}
+	(element=[FTypedElement|ID] | element = [FEnumerationType|AnonymousErrorTypeReferenceTerminal])
+	({FQualifiedElementRef.qualifier=current} '.' field=[FField|ID])*;
 
 FConstant returns FExpression:
 	FIntegerConstant |
@@ -308,7 +385,7 @@ FConstant returns FExpression:
 	FStringConstant;
 
 FIntegerConstant:
-	val=EInt;
+	val= E_INT;
 
 FBooleanConstant:
 	val=EBoolean;
@@ -316,6 +393,27 @@ FBooleanConstant:
 FStringConstant:
 	val=STRING;
 
+enum OperatorOr returns FOperator:
+	Or="||"
+;
+enum OperatorAnd returns FOperator:
+	And="&&"
+;
+enum OperatorEquality returns FOperator:
+	Equal="==" | Unequal="!="
+;
+enum OperatorRelational returns FOperator:
+	Smaller="<" | SmallerOrEqual="<=" | GreaterOrEqual=">=" | Greater=">"
+;
+enum OperatorAdditive returns FOperator:
+	addition="+" | subtraction="-"
+;
+enum OperatorMultiplicative returns FOperator:
+	multiplication="*" | division="/"
+;
+enum OperatorUnary returns FOperator:
+	negation="!"
+;
 
 // **************************************************************
 // annotations
@@ -350,8 +448,11 @@ EBoolean returns ecore::EBoolean:
 EString returns ecore::EString:
 	STRING | ID;
 
-EInt returns ecore::EInt:
-	'-'? INT;
+E_INT returns ecore::EInt:
+	NEGATIVE_INT | INT
+;
+terminal NEGATIVE_INT returns ecore::EInt:
+	'-'INT;
 
 terminal COMMENT_STRING returns ecore::EString:
 	':' ( ('\\' ('b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\')) | !('\\'|'*'|'@') )*
