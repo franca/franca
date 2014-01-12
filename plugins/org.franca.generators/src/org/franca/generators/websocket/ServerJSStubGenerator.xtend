@@ -17,36 +17,36 @@ class ServerJSStubGenerator {
 		server.onConnection(client);
 	});
 	
-	server.nonSubscribableAttributes = [Â«FOR attribute : api.attributes.filter[it.noSubscriptions] SEPARATOR ', 'Â»Â«attribute.nameÂ»Â«ENDFORÂ»];
+	server.nonSubscribableAttributes = [«FOR attribute : api.attributes.filter[it.noSubscriptions] SEPARATOR ', '»«attribute.name»«ENDFOR»];
 	
-	Â«FOR attribute : api.attributesÂ»
-	// Generated code for attribute Â«attribute.nameÂ»
-	server.Â«attribute.nameÂ» = null;
+	«FOR attribute : api.attributes»
+	// Generated code for attribute «attribute.name»
+	server.«attribute.name» = null;
 	
 	server.rpc('http://localhost/get', function() {
-		this.register('Â«attribute.nameÂ»', function(cb) {
-			cb(null, onGetÂ«attribute.name.toFirstUpperÂ»Attribute());
+		this.register('«attribute.name»', function(cb) {
+			cb(null, onGet«attribute.name.toFirstUpper»Attribute());
 		});
 	});
 
-	Â«IF !attribute.readonlyÂ»
+	«IF !attribute.readonly»
 	server.rpc('http://localhost/set', function() {
-		this.register('Â«attribute.nameÂ»', function(cb, Â«attribute.nameÂ») {
-			onSetÂ«attribute.name.toFirstUpperÂ»Attribute(Â«attribute.nameÂ»);
+		this.register('«attribute.name»', function(cb, «attribute.name») {
+			onSet«attribute.name.toFirstUpper»Attribute(«attribute.name»);
 		});
 	});
 	
-	Â«ENDIFÂ»
-	function onGetÂ«attribute.name.toFirstUpperÂ»Attribute() {
-		return server.Â«attribute.nameÂ»;
+	«ENDIF»
+	function onGet«attribute.name.toFirstUpper»Attribute() {
+		return server.«attribute.name»;
 	};
 	
-	Â«IF !attribute.readonlyÂ»
-	function onSetÂ«attribute.name.toFirstUpperÂ»Attribute(Â«attribute.nameÂ») {
-		server.Â«attribute.nameÂ» = Â«attribute.nameÂ»;
+	«IF !attribute.readonly»
+	function onSet«attribute.name.toFirstUpper»Attribute(«attribute.name») {
+		server.«attribute.name» = «attribute.name»;
 	};
 	
-	Â«ENDIFÂ»
-	Â«ENDFORÂ»
+	«ENDIF»
+	«ENDFOR»
 	'''
 }
