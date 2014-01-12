@@ -1,58 +1,131 @@
 /*******************************************************************************
-* Copyright (c) 2013 itemis AG (http://www.itemis.de).
-* All rights reserved. This program and the accompanying materials
-* are made available under the terms of the Eclipse Public License v1.0
-* which accompanies this distribution, and is available at
-* http://www.eclipse.org/legal/epl-v10.html
-*******************************************************************************/
+ * iowamp - WAMP(TM) server in NodeJS Copyright (c) 2013 Pascal Mathis
+ * <dev@snapserv.net>
+ * 
+ * Code changes: Tamas Szabo (itemis AG)
+ ******************************************************************************/
+var EventEmitter = process.EventEmitter, protocol = require('./protocol/wamp_v1'), packets = protocol.packets, handlers = protocol.handlers;
 
-/*
-	This is an example websocket server which uses the JS-stub as generated
-	by Franca's WebsocketJSStubGenerator. 
+function Server() {
+    this.rpcClasses = {};
+    this.topics = {}; // this maps the topic URI to set of client ids
+    this.clients = {};
+};
+Server.prototype.__proto__ = EventEmitter.prototype;
 
-	The server is implemented in JavaScript and is based on node.js and
-	the websocket.io library.
-*/
+/**
+ * Generates a random UUID
+ */
+function generateUUID(a) {
+    return a ? (a ^ Math.random() * 16 >> a / 4).toString(16) : ([ 1e7 ] + -1e3
+	    + -4e3 + -8e3 + -1e11).replace(/[018]/g, generateUUID);
+};
 
-// create http server and listen to port 8080
-// we need this to serve index.html and other files to the client
-var HttpServer = require('./util/HttpServer');
-var http = new HttpServer();
-http.init(8080, '../client');
+/**
+ * Handles new connections
+ * 
+ * @param {wsio.Socket}
+ *                client Client instance
+ * @return {Server} Own instance for chaining
+ */
+Server.prototype.onConnection = function(client) {
+    var _this = this;
 
-// create websocket stub for SimpleUI interface and listen to port 9000.
-var SimpleUIStub = require('./gen/org/example/SimpleUIStub');
-var stub = new SimpleUIStub();
-stub.init(9000);
+    if (!client.id)
+	client.id = generateUUID();
+    client.sid = client.id.split('-')[0];
+    client.topics = [];
+    client.prefixes = {};
 
-var timerID = null;
+    // Add client to client list and send welcome message
+    this.clients[client.id] = client;
+    
+    console.log('[' + client.sid + '] New connection');
+    client.send(packets.WELCOME(client.id, 'iowamp'));
 
-// the callback after a client has connected
-stub.onConnected = function () {
-	if (timerID == null) {
-		timerID = setInterval(function() {
-			var rand = Math.floor(Math.random()*100);
-			stub.updateVelocity({velocity: rand});
-		}, 2000);
+    // React if client sends a message
+    client.on('message', function(data) {
+	// Try to parse the received data as JSON
+	console.log('[' + client.sid + '] Data received: ' + data);
+	try {
+	    var msg = JSON.parse(data);
+	} catch (e) {
+	    console.log('[' + client.sid + '] Can not parse as JSON');
+	    return;
 	}
-}
 
-// the generic callback after last client has disconnected
-stub.onAllDisconnected = function () {
-	clearInterval(timerID);
-	timerID = null;
-}
-
-// the callback for calls to SimpleUI.setMode
-stub.setMode = function (mode) {
-	var d = "";
-	switch (mode) {
-		case SimpleUIStub.Mode.M_RADIO:      d = "Bay Radio FM"; break;
-		case SimpleUIStub.Mode.M_NAVIGATION: d = "Destination?"; break;
-		case SimpleUIStub.Mode.M_MULTIMEDIA: d = "Ring, ring!"; break;
-		case SimpleUIStub.Mode.M_SETTINGS:   d = "Your settings"; break;
+	// The parsed JSON data should be an array
+	if (!Array.isArray(msg)) {
+	    console.log('[' + client.sid
+		    + '] Invalid packet (should be an array)');
+	    return;
 	}
 
-	return { display: d };
-}
+	// Checks if an handler exists
+	var messageType = protocol.getMessageType(msg.shift());
+	if (!handlers.hasOwnProperty(messageType)) {
+	    console.log('[' + client.sid
+		    + '] No handler implemented for message type: '
+		    + messageType);
+	    return;
+	}
 
+	// Call the handler with its arguments
+	handlers[messageType].apply(_this, [ _this, client ].concat(msg));
+    });
+
+    // React if client closes connection
+    client.on('close', function() {
+	console.log('[' + client.sid + '] Closed connection');
+	if (!client.id)
+	    return;
+
+	// Remove client in all topics and the client list
+	for ( var i in client.topics) {
+	    console.log('Client ' + client + ' has unsubscribed from topic ' + client.topics[i]);
+	    var id = _this.topics[client.topics[i]].indexOf(client.id);
+	    if (id > -1) {
+		_this.topics[client.topics[i]].splice(id, 1);
+	    }
+	}
+	
+	// this will also delete the prefixes stored for the given client
+	delete _this.clients[client.id];
+    });
+
+    // Specify an empty error handler
+    client.on('error', function(error) {
+	console.log('[' + client.sid + '] ' + error.toString());
+    });
+
+    return this;
+};
+
+Server.prototype.rpc = function(baseURI, rpcClass) {
+    var _this = this;
+
+    var rpcClassConstructor = {
+	register : function(name, method) {
+	    console.log('Registered new rcp method: ' + baseURI + " " + name);
+	    _this.rpcClasses[baseURI][name] = method;
+	}
+    };
+
+    // Validate parameters
+    var regexBaseURI = /^(http|https):\/\/\S+\/[\w_-]+$/;
+    if (!regexBaseURI.test(baseURI))
+	throw new Error('Invalid URI specified. (CURIE is not allowed)');
+    if (!rpcClass || rpcClass.constructor != Function)
+	throw new Error('No constructor for RPC class specified');
+
+    // Create a new RPC class
+    this.rpcClasses[baseURI] = {};
+    rpcClass.apply(rpcClassConstructor);
+};
+
+/**
+ * Module exports
+ * 
+ * @type Server
+ */
+module.exports = Server;
