@@ -12,8 +12,24 @@ socket.on('connection', function(client) {
     server.onConnection(client);
 });
 
-server.rpc('http://localhost/calc', function() {
-	this.register('add', function(cb, a, b) {
-		cb(null, a + b);
+server.title = "";
+
+server.rpc('http://localhost/get', function() {
+	this.register('title', function(cb) {
+		cb(null, onGetTitleAttribute());
 	});
 });
+
+server.rpc('http://localhost/set', function() {
+	this.register('title', function(cb, title) {
+		onSetTitleAttribute(title);
+	});
+});
+
+function onSetTitleAttribute(title) {
+	server.title = title;
+};
+
+function onGetTitleAttribute() {
+	return server.title;
+}

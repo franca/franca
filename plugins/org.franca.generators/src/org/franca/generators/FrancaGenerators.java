@@ -13,6 +13,7 @@ import org.franca.core.franca.FModel;
 import org.franca.core.utils.FileHelper;
 import org.franca.generators.html.HTMLGenerator;
 import org.franca.generators.java.JavaAPIGenerator;
+import org.franca.generators.websocket.ServerJSStubGenerator;
 import org.franca.generators.websocket.WebsocketJSStubGenerator;
 import org.franca.generators.websocket.WebsocketProxyGenerator;
 
@@ -54,17 +55,19 @@ public class FrancaGenerators {
 	
 	public boolean genWebsocket (FModel model, String serverGenDir, String clientGenDir) {
 		WebsocketProxyGenerator genProxy = new WebsocketProxyGenerator();
-		WebsocketJSStubGenerator genStub = new WebsocketJSStubGenerator();
-
+		
+		//WebsocketJSStubGenerator genStub = new WebsocketJSStubGenerator();
+		ServerJSStubGenerator genServer = new ServerJSStubGenerator();
+		
 		// we pick the first interface only
 		FInterface api = model.getInterfaces().get(0);
 
-		String outPath1 = clientGenDir + "/" + createPath(model);
-		String outPath2 = serverGenDir + "/" + createPath(model);
+		String outPath1 = clientGenDir; // + "/" + createPath(model);
+		String outPath2 = serverGenDir; // + "/" + createPath(model);
 		String output1 = genProxy.generate(api).toString();
-		String output2 = genStub.generate(api).toString();
+		String output2 = genServer.generate(api).toString();
 		boolean ok1 = FileHelper.save(outPath1, genProxy.getProxyName(api) + ".js", output1);
-		boolean ok2 = FileHelper.save(outPath2, genStub.getStubName(api) + ".js", output2);
+		boolean ok2 = FileHelper.save(outPath2, genServer.getStubName(api) + ".js", output2);
 		return ok1 && ok2;
 	}
 	
