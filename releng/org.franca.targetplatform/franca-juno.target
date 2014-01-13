@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="Franca Target Platform - Eclipse 4.2" sequenceNumber="40">
+<?pde version="3.8"?><target name="Franca Target Platform - Eclipse 4.2" sequenceNumber="42">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="de.itemis.xtext.antlr.sdk.feature.group" version="2.0.0.v201108011202"/>
@@ -65,7 +65,7 @@
 <repository location="http://download.eclipse.org/etrice/updates/releases/0.2.0"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.gef4.zest.sdk.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.gef4.zest.sdk.feature.group" version="0.1.0.201312280305"/>
 <repository location="http://download.eclipse.org/tools/gef/gef4/updates/integration"/>
 </location>
 </locations>
