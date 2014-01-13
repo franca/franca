@@ -21,6 +21,10 @@ function generateUUID(a) {
 	    + -4e3 + -8e3 + -1e11).replace(/[018]/g, generateUUID);
 };
 
+Server.prototype.publishChanges = function(topicURI, event) {
+	handlers[protocol.getMessageType(7)].apply(this, [ this, null, topicURI, event ]);
+};
+
 /**
  * Handles new connections
  * 

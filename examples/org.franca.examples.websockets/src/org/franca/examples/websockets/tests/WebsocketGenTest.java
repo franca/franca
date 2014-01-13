@@ -32,7 +32,7 @@ import com.google.inject.Inject;
 public class WebsocketGenTest {
 
 	final static String SERVER_GEN_DIR = "server/";
-	final static String CLIENT_GEN_DIR = "client/gen";
+	final static String CLIENT_GEN_DIR = "client/";
 
 	@Inject
 	FrancaPersistenceManager loader;

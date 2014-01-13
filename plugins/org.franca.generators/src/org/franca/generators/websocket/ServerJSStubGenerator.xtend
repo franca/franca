@@ -5,7 +5,7 @@ import org.franca.core.franca.FInterface
 class ServerJSStubGenerator {
 
 	def getStubName (FInterface api) {
-		api.name.toFirstUpper + "Stub"
+		api.name.toFirstUpper + "Server"
 	}
 
 	def generate(FInterface api) '''
@@ -15,6 +15,10 @@ class ServerJSStubGenerator {
 
 	socket.on('connection', function(client) {
 		server.onConnection(client);
+	});
+	
+	server.on('publishChanges', function(topicURI, event) {
+		server.publishChanges(topicURI, event);
 	});
 	
 	server.nonSubscribableAttributes = [«FOR attribute : api.attributes.filter[it.noSubscriptions] SEPARATOR ', '»«attribute.name»«ENDFOR»];
@@ -32,7 +36,9 @@ class ServerJSStubGenerator {
 	«IF !attribute.readonly»
 	server.rpc('http://localhost/set', function() {
 		this.register('«attribute.name»', function(cb, «attribute.name») {
-			onSet«attribute.name.toFirstUpper»Attribute(«attribute.name»);
+			var newValue = onSet«attribute.name.toFirstUpper»Attribute(«attribute.name»);
+			server.«attribute.name» = newValue;
+			server.emit('publishChanges', "topic#«attribute.name»", newValue);
 		});
 	});
 	
@@ -43,7 +49,7 @@ class ServerJSStubGenerator {
 	
 	«IF !attribute.readonly»
 	function onSet«attribute.name.toFirstUpper»Attribute(«attribute.name») {
-		server.«attribute.name» = «attribute.name»;
+		return «attribute.name»;
 	};
 	
 	«ENDIF»

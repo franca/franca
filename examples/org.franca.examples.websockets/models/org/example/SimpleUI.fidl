@@ -5,6 +5,8 @@ package org.example
  */
 interface SimpleUI {
 
+	attribute String title
+
 	method setMode {
 		in  { Mode mode }
 		out { String display }
