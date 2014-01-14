@@ -10,8 +10,6 @@ server.on('publishChanges', function(topicURI, event) {
 	server.publishChanges(topicURI, event);
 });
 
-server.nonSubscribableAttributes = [];
-
 // Generated code for attribute title
 server.title = null;
 
@@ -36,4 +34,28 @@ function onGetTitleAttribute() {
 function onSetTitleAttribute(title) {
 	return title;
 };
+
+server.rpc('http://localhost/invoke', function() {
+	this.register('setMode', function(cb, mode) {
+		var result = setMode(mode);
+		if (result !== 'undefined') { 
+			cb(null, result);
+		};
+	});
+});
+
+function setMode(mode) {
+	
+};
+
+// definition of enumeration 'Mode'
+var Mode = function(){
+	return {
+		'M_RADIO':0,
+		'M_NAVIGATION':1,
+		'M_MULTIMEDIA':2,
+		'M_SETTINGS':3
+	}
+}();
+module.exports.Mode = Mode;
 

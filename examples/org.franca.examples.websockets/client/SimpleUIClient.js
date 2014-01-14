@@ -30,6 +30,16 @@ function unsubscribeTitleChanged() {
 	ws.send('[6, "topic#title"]');
 };
 
+// call this method to invoke setMode on the server side
+function callSetMode(mode) {
+	ws.send('[2, "setMode", "http://localhost/invoke#setMode", "' + mode + '"]');
+};
+
+// callback to handle the result of the setMode invocation
+function onCallSetMode(result) {
+	
+};
+
 ws.on('open', function() {
     subscribeTitleChanged();
 	setTitle("2014");
@@ -47,6 +57,9 @@ ws.on('message', function(data) {
 			if (callID === "title") {
 				onGetTitle(message);
 			}
+			if (callID === "setMode") {
+				onCallSetMode(message);
+			}
 		}
 		// handling of EVENT messages
 		else if (messageType === 8) {
@@ -57,3 +70,15 @@ ws.on('message', function(data) {
 		}
 	}
 });
+
+// definition of enumeration 'Mode'
+var Mode = function(){
+	return {
+		'M_RADIO':0,
+		'M_NAVIGATION':1,
+		'M_MULTIMEDIA':2,
+		'M_SETTINGS':3
+	}
+}();
+module.exports.Mode = Mode;
+

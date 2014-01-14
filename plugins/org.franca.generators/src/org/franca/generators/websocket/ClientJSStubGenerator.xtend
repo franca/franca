@@ -1,6 +1,7 @@
 package org.franca.generators.websocket
 
 import org.franca.core.franca.FInterface
+import static extension org.franca.generators.websocket.WebsocketGeneratorUtils.*
 
 class ClientJSStubGenerator {
 
@@ -44,7 +45,19 @@ class ClientJSStubGenerator {
 	function unsubscribe«attribute.name.toFirstUpper»Changed() {
 		ws.send('[6, "topic#«attribute.name»"]');
 	};
+	
 	«ENDIF»
+	«ENDFOR»
+	«FOR method : api.methods»
+	// call this method to invoke «method.name» on the server side
+	function call«method.name.toFirstUpper»(«method.inArgs.genArgList("", ", ")») {
+		ws.send('[2, "«method.name»", "http://localhost/invoke#«method.name»"«IF !method.inArgs.empty», "' + «method.inArgs.genArgList("", " + '\", \"' + ")»«ENDIF» + '"]');
+	};
+	
+	// callback to handle the result of the «method.name» invocation
+	function onCall«method.name.toFirstUpper»(result) {
+		
+	};
 	«ENDFOR»
 
 	ws.on('open', function() {
@@ -66,6 +79,11 @@ class ClientJSStubGenerator {
 					onGet«attribute.name.toFirstUpper»(message);
 				}
 				«ENDFOR»
+				«FOR method : api.methods»
+				if (callID === "«method.name»") {
+					onCall«method.name.toFirstUpper»(message);
+				}
+				«ENDFOR»
 			}
 			// handling of EVENT messages
 			else if (messageType === 8) {
@@ -78,6 +96,7 @@ class ClientJSStubGenerator {
 			}
 		}
 	});
+	
+	«api.types.genEnumerations(true)»
 	'''
-
 }

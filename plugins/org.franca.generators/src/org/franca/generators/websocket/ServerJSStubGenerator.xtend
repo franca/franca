@@ -1,6 +1,7 @@
 package org.franca.generators.websocket
 
 import org.franca.core.franca.FInterface
+import static extension org.franca.generators.websocket.WebsocketGeneratorUtils.*
 
 class ServerJSStubGenerator {
 
@@ -20,8 +21,6 @@ class ServerJSStubGenerator {
 	server.on('publishChanges', function(topicURI, event) {
 		server.publishChanges(topicURI, event);
 	});
-	
-	server.nonSubscribableAttributes = [«FOR attribute : api.attributes.filter[it.noSubscriptions] SEPARATOR ', '»«attribute.name»«ENDFOR»];
 	
 	«FOR attribute : api.attributes»
 	// Generated code for attribute «attribute.name»
@@ -54,5 +53,21 @@ class ServerJSStubGenerator {
 	
 	«ENDIF»
 	«ENDFOR»
+	«FOR method : api.methods»
+	server.rpc('http://localhost/invoke', function() {
+		this.register('«method.name»', function(cb«IF !method.inArgs.empty», «method.inArgs.genArgList("", ", ")»«ENDIF») {
+			var result = «method.name»(«method.inArgs.genArgList("", ", ")»);
+			if (result !== 'undefined') { 
+				cb(null, result);
+			};
+		});
+	});
+	
+	function «method.name»(«method.inArgs.genArgList("", ", ")») {
+		
+	};
+	«ENDFOR»
+	
+	«api.types.genEnumerations(true)»
 	'''
 }

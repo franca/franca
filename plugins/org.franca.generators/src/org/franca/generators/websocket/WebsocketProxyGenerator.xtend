@@ -44,12 +44,12 @@ class WebsocketProxyGenerator {
 				switch (msg.tag) {
 					«FOR m : api.methods.filter[!fireAndForget]»
 					case "«m.name»":
-						this.proxy.reply«m.name.toFirstUpper»(«m.outArgs.genArgList("msg.")»);
+						this.proxy.reply«m.name.toFirstUpper»(«m.outArgs.genArgList("msg.", ", ")»);
 						break;
 	            	«ENDFOR»
 					«FOR b : api.broadcasts»
 					case "«b.name»":
-						this.proxy.signal«b.name.toFirstUpper»(«b.outArgs.genArgList("msg.")»);
+						this.proxy.signal«b.name.toFirstUpper»(«b.outArgs.genArgList("msg.", ", ")»);
 						break;
 	            	«ENDFOR»
 				};
@@ -57,7 +57,7 @@ class WebsocketProxyGenerator {
 		};
 
 		«FOR m : api.methods»
-		«api.proxyName».prototype.call«m.name.toFirstUpper» = function(«m.inArgs.genArgList("")») {
+		«api.proxyName».prototype.call«m.name.toFirstUpper» = function(«m.inArgs.genArgList("", ", ")») {
 			try {
 				var data = {
 					tag : "«m.name»",
