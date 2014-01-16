@@ -14,7 +14,6 @@ import "http://core.franca.org"
 
 import "http://www.eclipse.org/emf/2002/Ecore" as ecore
 
-
 // **************************************************************
 // model root
 
@@ -23,7 +22,6 @@ FModel returns FModel:
 	'package' name=FQN
 	(imports+=Import)*
 	( typeCollections+=FTypeCollection | interfaces+=FInterface	)*;
-
 
 // **************************************************************
 // type collection and interface
@@ -130,7 +128,7 @@ enum FBasicTypeId returns FBasicTypeId:
 	
 FIntegerInterval returns FIntegerInterval:
 	{FIntegerInterval}
-	'Integer' ('(' (lowerBound=E_BigInteger | 'minInt') '..' (upperBound=E_BigInteger | 'maxInt') ')')?
+	'Integer' ('(' (lowerBound=E_BigInteger | 'minInt') ',' (upperBound=E_BigInteger | 'maxInt') ')')?
 ;
 
 FType returns FType:
