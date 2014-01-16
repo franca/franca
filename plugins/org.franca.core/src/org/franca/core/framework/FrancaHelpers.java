@@ -224,6 +224,42 @@ public class FrancaHelpers {
 		return false;
 	}
 
+	public static boolean isFloat (FTypeRef typeRef) {
+		if (typeRef == null) return false;
+		
+		if (typeRef.getDerived() == null) {
+			int id = typeRef.getPredefined().getValue();
+			if (id==FBasicTypeId.FLOAT_VALUE) {
+				return true;
+			}
+		} else {
+			FType type = typeRef.getDerived();
+			if (type instanceof FTypeDef) {
+				FTypeDef typedef = (FTypeDef)type;
+				return isFloat(typedef.getActualType());
+			}
+		}
+		return false;
+	}
+	
+	public static boolean isDouble (FTypeRef typeRef) {
+		if (typeRef == null) return false;
+		
+		if (typeRef.getDerived() == null) {
+			int id = typeRef.getPredefined().getValue();
+			if (id==FBasicTypeId.DOUBLE_VALUE) {
+				return true;
+			}
+		} else {
+			FType type = typeRef.getDerived();
+			if (type instanceof FTypeDef) {
+				FTypeDef typedef = (FTypeDef)type;
+				return isDouble(typedef.getActualType());
+			}
+		}
+		return false;
+	}
+	
 	/** Returns true if the referenced type is any number. */
 	public static boolean isNumber (FTypeRef typeRef) {
 		return isInteger(typeRef) || isFloatingPoint(typeRef);

@@ -391,9 +391,19 @@ FQualifiedElementRef:
 	({FQualifiedElementRef.qualifier=current} '.' field=[FField|ID])*;
 
 FConstant returns FExpression:
+	FFloatConstant |
+	FDoubleConstant |
 	FIntegerConstant |
 	FBooleanConstant |
 	FStringConstant;
+
+FDoubleConstant:
+	val=E_DOUBLE_OBJECT
+;
+
+FFloatConstant:
+	val=E_FLOAT_OBJECT
+;
 
 FIntegerConstant:
 	val= E_INT;
@@ -461,6 +471,13 @@ EString returns ecore::EString:
 
 E_BigInteger returns ecore::EBigInteger:
 	E_INT
+;
+
+terminal E_DOUBLE_OBJECT returns ecore::EDoubleObject :
+	 '-'? INT '.' INT ('e' '-'? INT)? 'd'
+;
+terminal E_FLOAT_OBJECT returns ecore::EFloatObject :
+	 '-'? INT '.' INT ('e' '-'? INT)? 'f'
 ;
 
 E_INT returns ecore::EInt:

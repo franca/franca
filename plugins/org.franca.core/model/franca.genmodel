@@ -282,6 +282,12 @@
       <genFeatures createChild="false" propertyDescription="the value of this integer constant (an actual integer)"
           ecoreFeature="ecore:EAttribute franca.ecore#//FIntegerConstant/val"/>
     </genClasses>
+    <genClasses ecoreClass="franca.ecore#//FDoubleConstant">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute franca.ecore#//FDoubleConstant/val"/>
+    </genClasses>
+    <genClasses ecoreClass="franca.ecore#//FFloatConstant">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute franca.ecore#//FFloatConstant/val"/>
+    </genClasses>
     <genClasses ecoreClass="franca.ecore#//FBooleanConstant">
       <genFeatures createChild="false" propertyDescription="the value of this boolean constant (an actual boolean)"
           ecoreFeature="ecore:EAttribute franca.ecore#//FBooleanConstant/val"/>

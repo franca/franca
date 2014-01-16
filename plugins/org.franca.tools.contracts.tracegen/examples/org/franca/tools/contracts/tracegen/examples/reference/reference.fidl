@@ -2,7 +2,7 @@ package org.franca.tools.contracts.tracegen.examples.reference
 
 typeCollection MyTypes {
 	
-	typedef OneOrTwo is Integer (1..2)
+	typedef OneOrTwo is Integer (1 ,  2)
 	typedef One is Integer
 	
 	enumeration UnusedErrors {
@@ -54,7 +54,7 @@ interface Reference {
 //		out {UInt64 result}
 //	}
 	method addParamComplex {
-		in {Int32 int32Summand Int64 int64Summand Double doubleSummand Float floatSummand}
+		in {MyTypes.OneOrTwo oneOrTwoSummand Integer (minInt, 42) strangeSummand Integer (42 ,42) theAnswer Int32 int32Summand Int64 int64Summand Double doubleSummand Float floatSummand}
 		out {Int32 int32Result Int64 int64Result Double doubleResult Float floatResult}
 	}
 	method forceEnumError {
@@ -90,11 +90,11 @@ interface Reference {
 	contract {
 		
 		vars {
-			Integer (-unlimited to +unlimited) interval;
+			Integer (minInt, maxInt) interval;
 			Boolean isTheWeatherFine;
 			UInt32 aNumber;
-//			Float aFloat; not usable as there are no float constants available right now
-//			Double aDouble; not usable as there are no double constants available right now
+			Float aFloat;
+			Double aDouble;
 			String aString;
 			MyTypes.VeryComplexStruct aComplexStruct;
 			MyTypes.BasicErrors lastBasicError;
@@ -107,8 +107,8 @@ interface Reference {
 				on call init -> testingStructs {//testingAddConst {
 					isTheWeatherFine = false
 					aNumber = 0
-					//aFloat = f1.0
-					//aDouble = d1.0
+					//aFloat = 1.0f
+					aDouble = -1.1234e-12d
 					aString = ""
 				}
 			}
