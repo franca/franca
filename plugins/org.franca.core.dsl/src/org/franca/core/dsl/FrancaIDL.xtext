@@ -31,7 +31,7 @@ FModel returns FModel:
 FTypeCollection returns FTypeCollection:
 	{FTypeCollection}
 	(comment=FAnnotationBlock)?
-	'typeCollection' (name=FQN)?
+	'typeCollection' (name=ID)?
 	'{'
 		('version' version=FVersion)?
 		(types+=FType)*
@@ -41,7 +41,7 @@ FTypeCollection returns FTypeCollection:
 FInterface returns FInterface:
 	{FInterface}
 	(comment=FAnnotationBlock)?
-	'interface' name=FQN
+	'interface' name=ID
 		('extends' base=[FInterface|FQN])?
 		('manages'
 			managedInterfaces+=[FInterface|FQN]
