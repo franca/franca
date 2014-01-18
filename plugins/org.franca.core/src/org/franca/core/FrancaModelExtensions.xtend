@@ -210,7 +210,8 @@ class FrancaModelExtensions {
 					for(imp : m.imports) {
 						val uri = imp.importURI
 						val importURI = URI::createURI(uri)
-						val resolvedURI = importURI.resolve(m.eResource.URI);
+						val baseURI = m.eResource.URI
+						val resolvedURI = importURI.resolve(baseURI)
 						try {
 							val res = rset.getResource(resolvedURI, true)
 							todo.add(res)
