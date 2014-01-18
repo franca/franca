@@ -58,12 +58,13 @@ class ServerJSStubGenerator {
 		«ENDIF»
 		«ENDFOR»
 		«FOR method : api.methods»
-		this.server.rpc('invoke', function() {
+		_this.server.rpc('invoke', function() {
 			this.register('«method.name»', function(cb, callID«IF !method.inArgs.empty», «method.inArgs.genArgList("", ", ")»«ENDIF») {
-				var result = «method.name»(«method.inArgs.genArgList("", ", ")»);
-				if (result !== 'undefined') { 
-					cb(null, result);
-				};
+				// fireAndForget = «method.fireAndForget»
+				var result = _this.«method.name»(«method.inArgs.genArgList("", ", ")»);
+				«IF !method.fireAndForget»
+				cb(null, result);
+				«ENDIF»
 			});
 		});
 		«ENDFOR»

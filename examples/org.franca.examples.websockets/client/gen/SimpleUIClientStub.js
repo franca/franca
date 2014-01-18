@@ -35,6 +35,12 @@ SimpleUIClientStub.prototype.unsubscribeTitleChanged = function() {
 	this.socket.send('[6, "topic:title"]');
 };
 
+// call this method to invoke setMode on the server side
+SimpleUIClientStub.prototype.setMode = function(p1) {
+	var cid = this.getNextCallID();
+	this.socket.send('[2, "invoke:setMode:' + cid + '", "invoke:setMode", "' + p1 + '"]');
+	return cid;
+};
 
 SimpleUIClientStub.prototype.init = function() {
 	var _this = this;
@@ -62,6 +68,9 @@ SimpleUIClientStub.prototype.init = function() {
 					}
 				}
 				else if (mode === "invoke") {
+					if (name === "setMode" && typeof(_this.replySetMode) === "function") {
+						_this.replySetMode(cid);
+					}
 				}
 			}
 			// handling of EVENT messages
@@ -74,4 +83,15 @@ SimpleUIClientStub.prototype.init = function() {
 		}
 	});	
 };
+
+// definition of enumeration 'Mode'
+var Mode = function(){
+	return {
+		'M_RADIO':0,
+		'M_NAVIGATION':1,
+		'M_MULTIMEDIA':2,
+		'M_SETTINGS':3
+	}
+}();
+module.exports.Mode = Mode;
 

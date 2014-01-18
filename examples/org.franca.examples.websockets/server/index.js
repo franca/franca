@@ -9,3 +9,7 @@ stub.onGetTitle = function() {
 stub.onSetTitle = function(title) {
 	return title;
 }
+
+stub.setMode = function(p1) {
+	
+}

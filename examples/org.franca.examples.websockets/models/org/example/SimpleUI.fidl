@@ -7,21 +7,20 @@ interface SimpleUI {
 
 	attribute String title
 
-//	method setMode {
-//		in  { Mode mode }
-//		out { String display }
-//		error {big small}
-//	}
+	method setMode fireAndForget {
+		in  { String p1 }
+		//out { String p2 }
+	}
 //	
 //	broadcast updateVelocity {
 //		out { UInt16 velocity }
 //	}
 //	
-//	enumeration Mode {
-//		M_RADIO
-//		M_NAVIGATION
-//		M_MULTIMEDIA
-//		M_SETTINGS
-//	}
+	enumeration Mode {
+		M_RADIO
+		M_NAVIGATION
+		M_MULTIMEDIA
+		M_SETTINGS
+	}
 }
 

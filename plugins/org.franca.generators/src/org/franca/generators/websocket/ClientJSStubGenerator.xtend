@@ -55,12 +55,13 @@ class ClientJSStubGenerator {
 	«ENDFOR»
 	«FOR method : api.methods»
 	// call this method to invoke «method.name» on the server side
-	//function call«method.name.toFirstUpper»(«method.inArgs.genArgList("", ", ")») {
-	//	ws.send('[2, "«method.name»", "invoke:«method.name»"«IF !method.inArgs.empty», "' + «method.inArgs.genArgList("", " + '\", \"' + ")»«ENDIF» + '"]');
-	//};
+	«getStubName(api)».prototype.«method.name» = function(«method.inArgs.genArgList("", ", ")») {
+		var cid = this.getNextCallID();
+		this.socket.send('[2, "invoke:«method.name»:' + cid + '", "invoke:«method.name»"«IF !method.inArgs.empty», "' + «method.inArgs.genArgList("", " + '\", \"' + ")»«ENDIF» + '"]');
+		return cid;
+	};
 	
 	«ENDFOR»
-	
 	«getStubName(api)».prototype.init = function() {
 		var _this = this;
 		_this.socket.on('message', function(data) {
@@ -93,7 +94,7 @@ class ClientJSStubGenerator {
 					else if (mode === "invoke") {
 						«FOR method : api.methods»
 						if (name === "«method.name»" && typeof(_this.reply«method.name.toFirstUpper») === "function") {
-							_this.reply«method.name.toFirstUpper»(cid, message);
+							_this.reply«method.name.toFirstUpper»(cid«IF !method.outArgs.empty», message«ENDIF»);
 						}
 						«ENDFOR»
 					}

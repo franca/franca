@@ -39,5 +39,21 @@ SimpleUIServerStub.prototype.init = function() {
 		});
 	});
 	
+	_this.server.rpc('invoke', function() {
+		this.register('setMode', function(cb, callID, p1) {
+			var result = _this.setMode(p1);
+		});
+	});
 };
+
+// definition of enumeration 'Mode'
+var Mode = function(){
+	return {
+		'M_RADIO':0,
+		'M_NAVIGATION':1,
+		'M_MULTIMEDIA':2,
+		'M_SETTINGS':3
+	}
+}();
+module.exports.Mode = Mode;
 

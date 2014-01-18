@@ -3,8 +3,7 @@ var stub = new SimpleUIClientStub('http://localhost:8000');
 stub.init();
 
 stub.socket.on('open', function() {
-	stub.setTitle("This is the new title");
-	stub.getTitle();
+	stub.setMode("mode1");
 });
 
 stub.onGetTitle = function(callID, title) {
@@ -14,3 +13,15 @@ stub.onGetTitle = function(callID, title) {
 stub.onSetTitle = function(callID) {
 	console.log('Client1 onSetTitle ' + callID);
 }
+
+stub.onChangedTitle = function(title) {
+	console.log('Client1 onChangedTitle ' + title);
+}
+
+stub.replySetMode = function(callID) {
+	console.log('Client1 replySetMode ' + callID);
+} 
+
+//stub.replySetMode = function(callID, p2) {
+//	console.log('Client1 replySetMode ' + callID + ' ' + p2);
+//} 

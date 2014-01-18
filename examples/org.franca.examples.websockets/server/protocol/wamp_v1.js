@@ -121,7 +121,7 @@ handlers.UNSUBSCRIBE = function(server, client, topicURI) {
 
 handlers.PUBLISH = function(server, client, topicURI, event) {
 	if (topicURI !== null && event !== null) {
-		for ( var cid in server.topics[topicURI]) {
+		for ( var cid in server.topics[topicURI]) {			
 			if (client === null || server.topics[topicURI][cid] !== client.id) {
 				server.clients[server.topics[topicURI][cid]].send(packets.EVENT(topicURI, event));
 			}

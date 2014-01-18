@@ -14,3 +14,7 @@ stub.onGetTitle = function(callID, title) {
 stub.onSetTitle = function(callID) {
 	console.log('Client2 onSetTitle ' + callID);
 }
+
+stub.onChangedTitle = function(title) {
+	console.log('Client2 onChangedTitle ' + title);
+}
