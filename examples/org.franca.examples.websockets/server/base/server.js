@@ -22,8 +22,7 @@ function generateUUID(a) {
 };
 
 Server.prototype.publishChanges = function(topicURI, event) {
-	handlers[protocol.getMessageType(7)].apply(this, [ this, null, topicURI,
-			event ]);
+	handlers[protocol.getMessageType(7)].apply(this, [ this, null, [topicURI].concat(event) ]);
 };
 
 /**

@@ -119,12 +119,28 @@ handlers.UNSUBSCRIBE = function(server, client, topicURI) {
 	}
 };
 
-handlers.PUBLISH = function(server, client, topicURI, event) {
-	if (topicURI !== null && event !== null) {
-		for ( var cid in server.topics[topicURI]) {			
-			if (client === null || server.topics[topicURI][cid] !== client.id) {
+// topicURI, event
+// topicURI, event, excludeMe
+// topicURI, event, exclude, eligible
+handlers.PUBLISH = function(server, client, data) {
+	if (data !== null) {
+		var topicURI = data[0];
+		var event = data[1];
+		
+		if (data.length === 2) {
+			for ( var cid in server.topics[topicURI]) {			
+				// sends the EVENT to every client
 				server.clients[server.topics[topicURI][cid]].send(packets.EVENT(topicURI, event));
-			}
+			}			
+		}
+		else if (data.length === 3) {
+			var excludeMe = data[2];
+			for ( var cid in server.topics[topicURI]) {			
+				// sends the EVENT to every client except client if excludeMe is set
+				if (!(server.topics[topicURI][cid] == client.id && excludeMe)) {
+					server.clients[server.topics[topicURI][cid]].send(packets.EVENT(topicURI, event));
+				}
+			}	
 		}
 	}
 };

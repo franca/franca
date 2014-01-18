@@ -27,12 +27,12 @@ SimpleUIClientStub.prototype.setTitle = function(title) {
 
 // call this method to subscribe for the changes of the attribute title
 SimpleUIClientStub.prototype.subscribeTitleChanged = function() {
-	this.socket.send('[5, "topic:title"]');
+	this.socket.send('[5, "signal:title"]');
 };
 
 // call this method to unsubscribe from the changes of the attribute title
 SimpleUIClientStub.prototype.unsubscribeTitleChanged = function() {
-	this.socket.send('[6, "topic:title"]');
+	this.socket.send('[6, "signal:title"]');
 };
 
 // call this method to invoke setMode on the server side
@@ -42,8 +42,18 @@ SimpleUIClientStub.prototype.setMode = function(p1) {
 	return cid;
 };
 
+SimpleUIClientStub.prototype.open = function(f) {
+	var _this = this;
+	_this.socket.on('open', function() {
+		// subscribing for all broadcasts
+		_this.socket.send('[5, "broadcast:updateVelocity"]');
+		f();
+	});
+};
+
 SimpleUIClientStub.prototype.init = function() {
 	var _this = this;
+	
 	_this.socket.on('message', function(data) {
 		var message = JSON.parse(data);
 		if (Array.isArray(message)) {
@@ -76,8 +86,11 @@ SimpleUIClientStub.prototype.init = function() {
 			// handling of EVENT messages
 			else if (messageType === 8) {
 				var topicURI = message.shift();
-				if (topicURI === "topic:title" && typeof(_this.onChangedTitle) === "function") {
+				if (topicURI === "signal:title" && typeof(_this.onChangedTitle) === "function") {
 					_this.onChangedTitle(message);
+				}
+				if (topicURI === "broadcast:updateVelocity" && typeof(_this.signalUpdateVelocity) === "function") {
+					_this.signalUpdateVelocity(message);
 				}
 			}
 		}

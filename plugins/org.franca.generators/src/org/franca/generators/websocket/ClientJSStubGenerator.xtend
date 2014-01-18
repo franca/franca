@@ -43,12 +43,12 @@ class ClientJSStubGenerator {
 	«IF !attribute.noSubscriptions»	
 	// call this method to subscribe for the changes of the attribute «attribute.name»
 	«getStubName(api)».prototype.subscribe«attribute.name.toFirstUpper»Changed = function() {
-		this.socket.send('[5, "topic:«attribute.name»"]');
+		this.socket.send('[5, "signal:«attribute.name»"]');
 	};
 	
 	// call this method to unsubscribe from the changes of the attribute «attribute.name»
 	«getStubName(api)».prototype.unsubscribe«attribute.name.toFirstUpper»Changed = function() {
-		this.socket.send('[6, "topic:«attribute.name»"]');
+		this.socket.send('[6, "signal:«attribute.name»"]');
 	};
 	
 	«ENDIF»
@@ -62,8 +62,20 @@ class ClientJSStubGenerator {
 	};
 	
 	«ENDFOR»
+	«getStubName(api)».prototype.open = function(f) {
+		var _this = this;
+		_this.socket.on('open', function() {
+			// subscribing for all broadcasts
+			«FOR broadcast : api.broadcasts»
+			_this.socket.send('[5, "broadcast:«broadcast.name»"]');
+			«ENDFOR»
+			f();
+		});
+	};
+	
 	«getStubName(api)».prototype.init = function() {
 		var _this = this;
+		
 		_this.socket.on('message', function(data) {
 			var message = JSON.parse(data);
 			if (Array.isArray(message)) {
@@ -103,8 +115,13 @@ class ClientJSStubGenerator {
 				else if (messageType === 8) {
 					var topicURI = message.shift();
 					«FOR attribute : api.attributes»
-					if (topicURI === "topic:«attribute.name»" && typeof(_this.onChanged«attribute.name.toFirstUpper») === "function") {
+					if (topicURI === "signal:«attribute.name»" && typeof(_this.onChanged«attribute.name.toFirstUpper») === "function") {
 						_this.onChanged«attribute.name.toFirstUpper»(message);
+					}
+					«ENDFOR»
+					«FOR broadcast : api.broadcasts»
+					if (topicURI === "broadcast:«broadcast.name»" && typeof(_this.signal«broadcast.name.toFirstUpper») === "function") {
+						_this.signal«broadcast.name.toFirstUpper»(message);
 					}
 					«ENDFOR»
 				}

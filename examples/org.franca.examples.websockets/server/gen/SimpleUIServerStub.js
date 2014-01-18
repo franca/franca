@@ -8,6 +8,10 @@ function SimpleUIServerStub(port) {
 // export the "constructor" function to provide a class-like interface
 module.exports = SimpleUIServerStub;
 
+SimpleUIServerStub.prototype.getClients = function() {
+	return Objects.keys(this.server.clients);
+};
+
 SimpleUIServerStub.prototype.init = function() {
 	var _this = this;
 	
@@ -19,12 +23,14 @@ SimpleUIServerStub.prototype.init = function() {
 		_this.server.publishChanges(topicURI, event);
 	});
 	
+	// RPC stub for the getter of attribute title
 	_this.server.rpc('get', function() {
 		this.register('title', function(cb) {
 			cb(null, _this.onGetTitle());
 		});
 	});
 	
+	// RPC stub for the setter of attribute title
 	_this.server.rpc('set', function() {
 		this.register('title', function(cb, title) {
 			var newValue = _this.onSetTitle(title);
@@ -34,16 +40,22 @@ SimpleUIServerStub.prototype.init = function() {
 			// events will only be sent to subscribed clients if the value has changed
 			if (newValue !== this.title) {
 				_this.title = newValue;
-				_this.server.emit('publishChanges', "topic:title", newValue);
+				_this.server.emit('publishChanges', "signal:title", newValue);
 			}
 		});
 	});
 	
+	// RPC stub for method setMode
 	_this.server.rpc('invoke', function() {
 		this.register('setMode', function(cb, callID, p1) {
+			// fireAndForget = true
 			var result = _this.setMode(p1);
 		});
 	});
+};
+
+SimpleUIServerStub.prototype.updateVelocity = function(data) {
+	this.server.emit('publishChanges', "broadcast:updateVelocity", data);
 };
 
 // definition of enumeration 'Mode'

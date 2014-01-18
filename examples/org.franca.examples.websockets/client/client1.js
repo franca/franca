@@ -2,7 +2,8 @@ var SimpleUIClientStub = require('./gen/SimpleUIClientStub');
 var stub = new SimpleUIClientStub('http://localhost:8000');
 stub.init();
 
-stub.socket.on('open', function() {
+stub.open(function() {
+	stub.subscribeTitleChanged();
 	stub.setMode("mode1");
 });
 
@@ -21,6 +22,10 @@ stub.onChangedTitle = function(title) {
 stub.replySetMode = function(callID) {
 	console.log('Client1 replySetMode ' + callID);
 } 
+
+stub.signalUpdateVelocity = function(data) {
+	console.log('Client1 signalUpdateVelocity ' + data);
+}
 
 //stub.replySetMode = function(callID, p2) {
 //	console.log('Client1 replySetMode ' + callID + ' ' + p2);

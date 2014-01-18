@@ -11,5 +11,5 @@ stub.onSetTitle = function(title) {
 }
 
 stub.setMode = function(p1) {
-	
+	setInterval(function() { stub.updateVelocity(11); }, 1000);
 }

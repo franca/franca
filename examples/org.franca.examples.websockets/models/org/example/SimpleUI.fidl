@@ -11,11 +11,11 @@ interface SimpleUI {
 		in  { String p1 }
 		//out { String p2 }
 	}
-//	
-//	broadcast updateVelocity {
-//		out { UInt16 velocity }
-//	}
-//	
+	
+	broadcast updateVelocity {
+		out { UInt16 velocity }
+	}
+	
 	enumeration Mode {
 		M_RADIO
 		M_NAVIGATION
