@@ -6,96 +6,110 @@ import static extension org.franca.generators.websocket.WebsocketGeneratorUtils.
 class ClientJSStubGenerator {
 
 	def getStubName(FInterface api) {
-		api.name.toFirstUpper + "Client"
+		api.name.toFirstUpper + "ClientStub"
 	}
 	
 	def generate(FInterface api) '''
-	var WebSocket = require('ws'), ws = new WebSocket('http://localhost:8000');
+	function «getStubName(api)»(address) {
+		this.socket = new (require('ws'))(address);
+		this.callID = 0;
+	}
+	
+	// export the "constructor" function to provide a class-like interface
+	module.exports = «getStubName(api)»;
+	
+	«getStubName(api)».prototype.getNextCallID = function() {
+		this.callID = this.callID + 1;
+		return this.callID;
+	};
 
 	«FOR attribute : api.attributes»
 	// call to get the value of «attribute.name» asynchronously
-	function get«attribute.name.toFirstUpper»() {
-		ws.send('[2, "«attribute.name»", "http://localhost/get#«attribute.name»"]');
+	«getStubName(api)».prototype.get«attribute.name.toFirstUpper» = function() {
+		var cid = this.getNextCallID();
+		this.socket.send('[2, "get:«attribute.name»:' + cid + '", "get:«attribute.name»"]');
+		return cid;
 	};
 	
 	«IF !attribute.readonly»
 	// call to set the value of «attribute.name» asynchronously
-	function set«attribute.name.toFirstUpper»(«attribute.name») {
-		ws.send('[2, "«attribute.name»", "http://localhost/set#«attribute.name»", "' + «attribute.name» + '"]');
-	};
-	«ENDIF»
-	
-	// callback for the value getter for attribute «attribute.name»
-	function onGet«attribute.name.toFirstUpper»(«attribute.name») {
-		console.log('The value of «attribute.name» is ' + «attribute.name»);
+	«getStubName(api)».prototype.set«attribute.name.toFirstUpper» = function(«attribute.name») {
+		var cid = this.getNextCallID();
+		this.socket.send('[2, "set:«attribute.name»:' + cid + '", "set:«attribute.name»", "' + «attribute.name» + '"]');
+		return cid;
 	};
 	
-	«IF !attribute.noSubscriptions»
-	// asynchronous callback which is called if the value of «attribute.name» has changed on the server side
-	function on«attribute.name.toFirstUpper»Changed(«attribute.name») {
-		console.log('The value of «attribute.name» has changed ' + «attribute.name»);
-	};
-	
+	«ENDIF»	
+	«IF !attribute.noSubscriptions»	
 	// call this method to subscribe for the changes of the attribute «attribute.name»
-	function subscribe«attribute.name.toFirstUpper»Changed() {
-		ws.send('[5, "topic#«attribute.name»"]');
+	«getStubName(api)».prototype.subscribe«attribute.name.toFirstUpper»Changed = function() {
+		this.socket.send('[5, "topic:«attribute.name»"]');
 	};
 	
 	// call this method to unsubscribe from the changes of the attribute «attribute.name»
-	function unsubscribe«attribute.name.toFirstUpper»Changed() {
-		ws.send('[6, "topic#«attribute.name»"]');
+	«getStubName(api)».prototype.unsubscribe«attribute.name.toFirstUpper»Changed = function() {
+		this.socket.send('[6, "topic:«attribute.name»"]');
 	};
 	
 	«ENDIF»
 	«ENDFOR»
 	«FOR method : api.methods»
 	// call this method to invoke «method.name» on the server side
-	function call«method.name.toFirstUpper»(«method.inArgs.genArgList("", ", ")») {
-		ws.send('[2, "«method.name»", "http://localhost/invoke#«method.name»"«IF !method.inArgs.empty», "' + «method.inArgs.genArgList("", " + '\", \"' + ")»«ENDIF» + '"]');
-	};
+	//function call«method.name.toFirstUpper»(«method.inArgs.genArgList("", ", ")») {
+	//	ws.send('[2, "«method.name»", "invoke:«method.name»"«IF !method.inArgs.empty», "' + «method.inArgs.genArgList("", " + '\", \"' + ")»«ENDIF» + '"]');
+	//};
 	
-	// callback to handle the result of the «method.name» invocation
-	function onCall«method.name.toFirstUpper»(result) {
-		
-	};
 	«ENDFOR»
-
-	ws.on('open', function() {
-	    subscribeTitleChanged();
-		setTitle("2014");
-		getTitle();
-	});
 	
-	ws.on('message', function(data) {
-		var message = JSON.parse(data);
-		if (Array.isArray(message)) {
-			var messageType = message.shift();
-			
-			// handling of CALLRESULT messages
-			if (messageType === 3) {
-				var callID = message.shift();
-				«FOR attribute : api.attributes»
-				if (callID === "«attribute.name»") {
-					onGet«attribute.name.toFirstUpper»(message);
+	«getStubName(api)».prototype.init = function() {
+		var _this = this;
+		_this.socket.on('message', function(data) {
+			var message = JSON.parse(data);
+			if (Array.isArray(message)) {
+				var messageType = message.shift();
+				
+				// handling of CALLRESULT messages
+				if (messageType === 3) {
+					var tokens = message.shift().split(":");
+					var mode = tokens[0];
+					var name = tokens[1];
+					var cid = tokens[2];
+					
+					if (mode === "get") {
+						«FOR attribute : api.attributes»
+						if (name === "«attribute.name»" && typeof(_this.onGet«attribute.name.toFirstUpper») === "function") {
+							_this.onGet«attribute.name.toFirstUpper»(cid, message);
+						}
+						«ENDFOR»
+					}
+					else if (mode === "set") {
+						«FOR attribute : api.attributes»
+						if (name === "«attribute.name»" && typeof(_this.onSet«attribute.name.toFirstUpper») === "function") {
+							// no message is passed
+							_this.onSet«attribute.name.toFirstUpper»(cid);
+						}
+						«ENDFOR»
+					}
+					else if (mode === "invoke") {
+						«FOR method : api.methods»
+						if (name === "«method.name»" && typeof(_this.reply«method.name.toFirstUpper») === "function") {
+							_this.reply«method.name.toFirstUpper»(cid, message);
+						}
+						«ENDFOR»
+					}
 				}
-				«ENDFOR»
-				«FOR method : api.methods»
-				if (callID === "«method.name»") {
-					onCall«method.name.toFirstUpper»(message);
+				// handling of EVENT messages
+				else if (messageType === 8) {
+					var topicURI = message.shift();
+					«FOR attribute : api.attributes»
+					if (topicURI === "topic:«attribute.name»" && typeof(_this.onChanged«attribute.name.toFirstUpper») === "function") {
+						_this.onChanged«attribute.name.toFirstUpper»(message);
+					}
+					«ENDFOR»
 				}
-				«ENDFOR»
 			}
-			// handling of EVENT messages
-			else if (messageType === 8) {
-				var topicURI = message.shift();
-				«FOR attribute : api.attributes»
-				if (topicURI === "topic#«attribute.name»") {
-					on«attribute.name.toFirstUpper»Changed(message);
-				}
-				«ENDFOR»
-			}
-		}
-	});
+		});	
+	};
 	
 	«api.types.genEnumerations(true)»
 	'''

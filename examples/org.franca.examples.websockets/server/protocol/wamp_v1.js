@@ -62,9 +62,8 @@ handlers.CALL = function(server, client, callID, procURI) {
 
 	// Create callback function
 	var cb = function(err, result) {
-		if (err) {
-			client.send(packets.CALLERROR(callID,
-					'http://localhost/error#generic', err.toString()));
+		if (err !== null) {
+			client.send(packets.CALLERROR(callID, 'error:generic', err.toString()));
 		} else {
 			client.send(packets.CALLRESULT(callID, result));
 		}
@@ -124,8 +123,7 @@ handlers.PUBLISH = function(server, client, topicURI, event) {
 	if (topicURI !== null && event !== null) {
 		for ( var cid in server.topics[topicURI]) {
 			if (client === null || server.topics[topicURI][cid] !== client.id) {
-				server.clients[server.topics[topicURI][cid]].send(packets
-						.EVENT(topicURI, event));
+				server.clients[server.topics[topicURI][cid]].send(packets.EVENT(topicURI, event));
 			}
 		}
 	}

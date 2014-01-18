@@ -31,8 +31,8 @@ import com.google.inject.Inject;
 @InjectWith(FrancaIDLInjectorProvider.class)
 public class WebsocketGenTest {
 
-	final static String SERVER_GEN_DIR = "server/";
-	final static String CLIENT_GEN_DIR = "client/";
+	final static String SERVER_GEN_DIR = "server/gen";
+	final static String CLIENT_GEN_DIR = "client/gen";
 
 	@Inject
 	FrancaPersistenceManager loader;

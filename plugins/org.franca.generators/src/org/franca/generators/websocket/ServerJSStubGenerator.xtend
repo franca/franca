@@ -6,67 +6,68 @@ import static extension org.franca.generators.websocket.WebsocketGeneratorUtils.
 class ServerJSStubGenerator {
 
 	def getStubName (FInterface api) {
-		api.name.toFirstUpper + "Server"
+		api.name.toFirstUpper + "ServerStub"
 	}
 
 	def generate(FInterface api) '''
-	var wsio = require('websocket.io');
-	var socket = wsio.listen(8000);
-	var server = new (require('./server'))();
+	function «getStubName(api)»(port) {
+		this.wsio = require('websocket.io');
+		this.socket = this.wsio.listen(port);
+		this.server = new (require('../base/server'))();
+		«FOR attribute : api.attributes»
+		this.«attribute.name» = null;
+		«ENDFOR»
+	}
 
-	socket.on('connection', function(client) {
-		server.onConnection(client);
-	});
-	
-	server.on('publishChanges', function(topicURI, event) {
-		server.publishChanges(topicURI, event);
-	});
-	
-	«FOR attribute : api.attributes»
-	// Generated code for attribute «attribute.name»
-	server.«attribute.name» = null;
-	
-	server.rpc('http://localhost/get', function() {
-		this.register('«attribute.name»', function(cb) {
-			cb(null, onGet«attribute.name.toFirstUpper»Attribute());
-		});
-	});
+	// export the "constructor" function to provide a class-like interface
+	module.exports = «getStubName(api)»;
 
-	«IF !attribute.readonly»
-	server.rpc('http://localhost/set', function() {
-		this.register('«attribute.name»', function(cb, «attribute.name») {
-			var newValue = onSet«attribute.name.toFirstUpper»Attribute(«attribute.name»);
-			server.«attribute.name» = newValue;
-			server.emit('publishChanges', "topic#«attribute.name»", newValue);
-		});
-	});
-	
-	«ENDIF»
-	function onGet«attribute.name.toFirstUpper»Attribute() {
-		return server.«attribute.name»;
-	};
-	
-	«IF !attribute.readonly»
-	function onSet«attribute.name.toFirstUpper»Attribute(«attribute.name») {
-		return «attribute.name»;
-	};
-	
-	«ENDIF»
-	«ENDFOR»
-	«FOR method : api.methods»
-	server.rpc('http://localhost/invoke', function() {
-		this.register('«method.name»', function(cb«IF !method.inArgs.empty», «method.inArgs.genArgList("", ", ")»«ENDIF») {
-			var result = «method.name»(«method.inArgs.genArgList("", ", ")»);
-			if (result !== 'undefined') { 
-				cb(null, result);
-			};
-		});
-	});
-	
-	function «method.name»(«method.inArgs.genArgList("", ", ")») {
+	«getStubName(api)».prototype.init = function() {
+		var _this = this;
 		
+		_this.socket.on('connection', function(client) {
+			_this.server.onConnection(client);
+		});
+		
+		_this.server.on('publishChanges', function(topicURI, event) {
+			_this.server.publishChanges(topicURI, event);
+		});
+		
+		«FOR attribute : api.attributes»
+		_this.server.rpc('get', function() {
+			this.register('«attribute.name»', function(cb) {
+				cb(null, _this.onGet«attribute.name.toFirstUpper»());
+			});
+		});
+		
+		«IF !attribute.readonly»
+		_this.server.rpc('set', function() {
+			this.register('«attribute.name»', function(cb, «attribute.name») {
+				var newValue = _this.onSet«attribute.name.toFirstUpper»(«attribute.name»);
+				// send callID back to client
+				cb(null, null);
+				
+				// events will only be sent to subscribed clients if the value has changed
+				if (newValue !== this.«attribute.name») {
+					_this.«attribute.name» = newValue;
+					_this.server.emit('publishChanges', "topic:«attribute.name»", newValue);
+				}
+			});
+		});
+		
+		«ENDIF»
+		«ENDFOR»
+		«FOR method : api.methods»
+		this.server.rpc('invoke', function() {
+			this.register('«method.name»', function(cb, callID«IF !method.inArgs.empty», «method.inArgs.genArgList("", ", ")»«ENDIF») {
+				var result = «method.name»(«method.inArgs.genArgList("", ", ")»);
+				if (result !== 'undefined') { 
+					cb(null, result);
+				};
+			});
+		});
+		«ENDFOR»
 	};
-	«ENDFOR»
 	
 	«api.types.genEnumerations(true)»
 	'''

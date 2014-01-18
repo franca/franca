@@ -18,14 +18,14 @@ exports.resolveURI = function(client, uri) {
 		};
 	} else if (regexCURIE.test(uri)) {
 		var _uri = uri.split(':');
-		if (client.prefixes.hasOwnProperty(_uri[0])) {
+		//if (client.prefixes.hasOwnProperty(_uri[0])) {
 			return {
-				baseURI : client.prefixes[_uri[0]],
+				baseURI : /*client.prefixes[*/_uri[0]/*]*/,
 				methodURI : _uri[1]
 			};
-		} else {
-			return null;
-		}
+		//} else {
+		//	return null;
+		//}
 	} else {
 		return null;
 	}

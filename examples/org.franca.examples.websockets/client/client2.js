@@ -1,13 +1,16 @@
-var WebSocket = require('ws'), ws = new WebSocket('http://localhost:8000');
+var SimpleUIClientStub = require('./gen/SimpleUIClientStub');
+var stub = new SimpleUIClientStub('http://localhost:8000');
+stub.init();
 
-ws.id = 11;
-
-ws.on('open', function() {
-    ws.send('[5, "news"]');
-    ws.send('[5, "weather"]');
-    ws.send('[7, "news", "These are the news"]');
+stub.socket.on('open', function() {
+	stub.subscribeTitleChanged();
+	stub.getTitle();
 });
 
-ws.on('message', function(message) {
-    console.log('Client 2 received: %s', message);
-});
+stub.onGetTitle = function(callID, title) {
+	console.log('Client2 onGetTitle ' + callID + ' ' + title);
+}
+
+stub.onSetTitle = function(callID) {
+	console.log('Client2 onSetTitle ' + callID);
+}
