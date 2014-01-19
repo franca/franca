@@ -1,5 +1,12 @@
+// create http server and listen to port 8080
+// we need this to serve index.html and other files to the client
+var HttpServer = require('./util/HttpServer');
+var http = new HttpServer();
+http.init(8080, '../client');
+
+// create websocket stub for SimpleUI interface and listen to websocket port.
 var SimpleUIServerStub = require('./gen/SimpleUIServerStub');
-var stub = new SimpleUIServerStub(8000);
+var stub = new SimpleUIServerStub(8081);
 stub.init();
 
 stub.onGetTitle = function() {

@@ -1,0 +1,105 @@
+<!doctype html>
+<html>
+<head>
+	<title>Franca Websockets Example</title>
+	
+	<!-- stylesheets -->
+	<link rel="stylesheet" type="text/css" href="css/style.css"></link>
+
+	<!-- download the 3rd party JS libs in order to work offline
+	     (they won't be part of the Franca distribution) -->
+	<!--
+	<script src="js/cached/raphael.min.js"></script>
+	<script src="js/cached/raphael.tachometer.min.js"></script>
+	-->
+	
+	<!-- online versions of 3rd party libs -->
+	<!--
+	-->
+	<script src="http://www.code-front.com/apps/tachometer/js/raphael.min.js"></script>
+	<script src="http://www.code-front.com/apps/tachometer/js/raphael.tachometer.min.js"></script>
+	
+	<!-- generated proxy classes -->
+	<!-- 
+	<script src="gen/org/example/SimpleUIProxy.js"></script>
+	-->
+	<script src="gen/org/example/SimpleUIProxy.js"></script>
+	
+</head>
+<body>
+	<h1>HTML5 UI with Franca and Websockets</h1>
+
+	<table class="bigframe" >
+		<tr><td width="320px"><div id="tacho"></div></td>
+		<td><form>
+		<hr/>
+	    <p><input id="m1" type="button" value="Radio" class="button1"></p>
+	    <p><input id="m2" type="button" value="Navigation" class="button1"></p>
+	    <p><input id="m3" type="button" value="Phone" class="button1"></p>
+	    <p><input id="m4" type="button" value="Settings" class="button1"></p>
+		</form>
+		<hr/>
+	 	<p id="reply1" class="text1">Please choose!</p>
+		</td></tr>
+	</table>
+
+	<p><br>
+	The sources for this page can be found in example project <em>org.franca.example.websockets</em>.
+	</p>
+	<p>
+	For more details on Franca, please visit the
+	<a href="http://code.google.com/a/eclipselabs.org/p/franca/" target="_blank">Franca homepage</a>!
+	</p>
+
+
+	<script type="text/javascript">
+
+	// initialize tacho widget	
+	var tacho = Raphael("tacho").tachometer(0, {
+		interactive: true,
+		needleAnimationEasing: "<>", // or: bounce, elastic
+		needleAnimationDuration: 600,
+		numberMax: 100
+	});
+
+	// initialize proxy for SimpleUI interface
+//    var settings = { host: 'ws://localhost:8081' };
+//    var proxy = new SimpleUIProxy();
+//    proxy.connect(settings);
+
+	var proxy = new SimpleUIClientStub('http://localhost:8081');
+	proxy.init();
+
+	proxy.open(function() {
+		proxy.subscribeTitleChanged();
+		proxy.setTitle("This is the new title");
+		proxy.setMode("mode1", 223);
+	});
+
+
+	// register callback for SimpleUI.setMode() replies
+	proxy.replySetMode = function(display) {
+		document.getElementById('reply1').innerHTML = display;
+    };
+
+	// register callback for SimpleUI.updateVelocity() broadcasts
+	proxy.signalUpdateVelocity = function(velocity) {
+		tacho.set(velocity);
+	};
+
+	// connect UI buttons with setMode() calls
+	document.getElementById("m1").addEventListener("click",
+		function(event) { proxy.setMode(Mode.M_RADIO); },
+		false);
+	document.getElementById("m2").addEventListener("click",
+		function(event) { proxy.setMode(Mode.M_NAVIGATION); },
+		false);
+	document.getElementById("m3").addEventListener("click",
+		function(event) { proxy.setMode(Mode.M_MULTIMEDIA); },
+		false);
+	document.getElementById("m4").addEventListener("click",
+		function(event) { proxy.setMode(Mode.M_SETTINGS); },
+		false);
+	</script>
+</body>
+</html>
