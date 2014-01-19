@@ -36,9 +36,9 @@ SimpleUIClientStub.prototype.unsubscribeTitleChanged = function() {
 };
 
 // call this method to invoke setMode on the server side
-SimpleUIClientStub.prototype.setMode = function(p1) {
+SimpleUIClientStub.prototype.setMode = function(p1, p2) {
 	var cid = this.getNextCallID();
-	this.socket.send('[2, "invoke:setMode:' + cid + '", "invoke:setMode", "' + p1 + '"]');
+	this.socket.send('[2, "invoke:setMode:' + cid + '", "invoke:setMode", ["' + p1 + '", "' + p2 + '"]]');
 	return cid;
 };
 
@@ -79,7 +79,8 @@ SimpleUIClientStub.prototype.init = function() {
 				}
 				else if (mode === "invoke") {
 					if (name === "setMode" && typeof(_this.replySetMode) === "function") {
-						_this.replySetMode(cid);
+						var outArgs = message.shift();
+						_this.replySetMode(cid, outArgs.shift(), outArgs.shift());
 					}
 				}
 			}

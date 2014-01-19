@@ -31,6 +31,6 @@ class WebsocketGeneratorUtils {
 	'''
 
 	def static genArgList (Iterable<FArgument> args, String prefix, String separator)
-		'''«FOR a : args SEPARATOR separator»«prefix + a.name»«ENDFOR»'''
+	'''«FOR a : args SEPARATOR separator»«prefix + a.name»«ENDFOR»'''
 
 }

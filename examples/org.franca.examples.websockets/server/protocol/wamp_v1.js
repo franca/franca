@@ -75,7 +75,7 @@ handlers.CALL = function(server, client, callID, procURI) {
 			var rpcClass = server.rpcClasses[procURI.baseURI];
 			if (rpcClass.hasOwnProperty(procURI.methodURI)) {
 				var rpcMethod = rpcClass[procURI.methodURI];
-				rpcMethod.apply(null, [ cb ].concat(args));
+				rpcMethod.apply(null, [ client, cb ].concat(args));
 				return;
 			}
 		}

@@ -7,9 +7,9 @@ interface SimpleUI {
 
 	attribute String title
 
-	method setMode fireAndForget {
-		in  { String p1 }
-		//out { String p2 }
+	method setMode {
+		in  { String p1 Int16 p2 }
+		out { String p3 Int32 p4 }
 	}
 	
 	broadcast updateVelocity {

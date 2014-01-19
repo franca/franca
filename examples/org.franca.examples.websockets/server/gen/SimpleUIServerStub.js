@@ -19,20 +19,28 @@ SimpleUIServerStub.prototype.init = function() {
 		_this.server.onConnection(client);
 	});
 	
-	_this.server.on('publishChanges', function(topicURI, event) {
-		_this.server.publishChanges(topicURI, event);
+	_this.server.on('publishAll', function(topicURI, event) {
+		_this.server.publishAll(topicURI, event);
+	});
+	
+	_this.server.on('publishExcludeSingle', function(client, topicURI, event) {
+		_this.server.publishExcludeSingle(client, topicURI, event);
+	});
+	
+	_this.server.on('publishEligibleList', function(topicURI, event, eligible) {
+		_this.server.publishEligibleList(topicURI, event, eligible);
 	});
 	
 	// RPC stub for the getter of attribute title
 	_this.server.rpc('get', function() {
-		this.register('title', function(cb) {
+		this.register('title', function(client, cb) {
 			cb(null, _this.onGetTitle());
 		});
 	});
 	
 	// RPC stub for the setter of attribute title
 	_this.server.rpc('set', function() {
-		this.register('title', function(cb, title) {
+		this.register('title', function(client, cb, title) {
 			var newValue = _this.onSetTitle(title);
 			// send callID back to client
 			cb(null, null);
@@ -40,22 +48,23 @@ SimpleUIServerStub.prototype.init = function() {
 			// events will only be sent to subscribed clients if the value has changed
 			if (newValue !== this.title) {
 				_this.title = newValue;
-				_this.server.emit('publishChanges', "signal:title", newValue);
+				_this.server.emit('publishExcludeSingle', client, "signal:title", newValue);
 			}
 		});
 	});
 	
 	// RPC stub for method setMode
 	_this.server.rpc('invoke', function() {
-		this.register('setMode', function(cb, callID, p1) {
-			// fireAndForget = true
-			var result = _this.setMode(p1);
+		this.register('setMode', function(client, cb, args) {
+			// fireAndForget = false
+			var result = _this.setMode(args.shift(), args.shift());
+			cb(null, result);
 		});
 	});
 };
 
 SimpleUIServerStub.prototype.updateVelocity = function(data) {
-	this.server.emit('publishChanges', "broadcast:updateVelocity", data);
+	this.server.emit('publishAll', "broadcast:updateVelocity", data);
 };
 
 // definition of enumeration 'Mode'

@@ -4,7 +4,8 @@ stub.init();
 
 stub.open(function() {
 	stub.subscribeTitleChanged();
-	stub.setMode("mode1");
+	stub.setTitle("This is the new title");
+	stub.setMode("mode1", 223);
 });
 
 stub.onGetTitle = function(callID, title) {
@@ -19,8 +20,8 @@ stub.onChangedTitle = function(title) {
 	console.log('Client1 onChangedTitle ' + title);
 }
 
-stub.replySetMode = function(callID) {
-	console.log('Client1 replySetMode ' + callID);
+stub.replySetMode = function(callID, p3, p4) {
+	console.log('Client1 replySetMode ' + callID + ' ' + p3 + ' '+ p4);
 } 
 
 stub.signalUpdateVelocity = function(data) {

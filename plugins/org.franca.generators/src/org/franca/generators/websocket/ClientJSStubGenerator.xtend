@@ -1,3 +1,10 @@
+/*******************************************************************************
+* Copyright (c) 2013 itemis AG (http://www.itemis.de).
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+*******************************************************************************/
 package org.franca.generators.websocket
 
 import org.franca.core.franca.FInterface
@@ -57,7 +64,7 @@ class ClientJSStubGenerator {
 	// call this method to invoke «method.name» on the server side
 	«getStubName(api)».prototype.«method.name» = function(«method.inArgs.genArgList("", ", ")») {
 		var cid = this.getNextCallID();
-		this.socket.send('[2, "invoke:«method.name»:' + cid + '", "invoke:«method.name»"«IF !method.inArgs.empty», "' + «method.inArgs.genArgList("", " + '\", \"' + ")»«ENDIF» + '"]');
+		this.socket.send('[2, "invoke:«method.name»:' + cid + '", "invoke:«method.name»"«IF !method.inArgs.empty», ["' + «method.inArgs.genArgList("", " + '\", \"' + ")»«ENDIF» + '"]]');
 		return cid;
 	};
 	
@@ -106,7 +113,8 @@ class ClientJSStubGenerator {
 					else if (mode === "invoke") {
 						«FOR method : api.methods»
 						if (name === "«method.name»" && typeof(_this.reply«method.name.toFirstUpper») === "function") {
-							_this.reply«method.name.toFirstUpper»(cid«IF !method.outArgs.empty», message«ENDIF»);
+							var outArgs = message.shift();
+							_this.reply«method.name.toFirstUpper»(cid«IF !method.outArgs.empty», «FOR a : method.outArgs SEPARATOR ", "»outArgs.shift()«ENDFOR»«ENDIF»);
 						}
 						«ENDFOR»
 					}
