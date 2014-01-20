@@ -9,15 +9,18 @@ var SimpleUIServerStub = require('./gen/SimpleUIServerStub');
 var stub = new SimpleUIServerStub(8081);
 stub.init();
 
-stub.onGetTitle = function() {
-	return this.title;
-}
+stub.setMode = function (mode) {
+	var d = "";
+	
+	switch (mode) {
+		case SimpleUIServerStub.Mode.M_RADIO:      d = "Bay Radio FM"; break;
+		case SimpleUIServerStub.Mode.M_NAVIGATION: d = "Destination?"; break;
+		case SimpleUIServerStub.Mode.M_MULTIMEDIA: d = "Ring, ring!"; break;
+		case SimpleUIServerStub.Mode.M_SETTINGS:   d = "Your settings"; break;
+		default: d = "Weird JS radio";
+	}
+	
+	stub.updateVelocity(Math.floor((Math.random()*100)+1));
 
-stub.onSetTitle = function(title) {
-	return title;
-}
-
-stub.setMode = function(p1, p2) {
-	setInterval(function() { stub.updateVelocity(11); }, 1000);
-	return ["mode2", 334]
+	return d;
 }

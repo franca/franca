@@ -17,13 +17,10 @@ class ClientJSStubGenerator {
 	}
 	
 	def generate(FInterface api) '''
-	function «getStubName(api)»(address) {
-		this.socket = new (require('ws'))(address);
+	function «getStubName(api)»() {
+		this.socket = null;
 		this.callID = 0;
 	}
-	
-	// export the "constructor" function to provide a class-like interface
-	module.exports = «getStubName(api)»;
 	
 	«getStubName(api)».prototype.getNextCallID = function() {
 		this.callID = this.callID + 1;
@@ -67,24 +64,26 @@ class ClientJSStubGenerator {
 		this.socket.send('[2, "invoke:«method.name»:' + cid + '", "invoke:«method.name»"«IF !method.inArgs.empty», ["' + «method.inArgs.genArgList("", " + '\", \"' + ")»«ENDIF» + '"]]');
 		return cid;
 	};
-	
 	«ENDFOR»
-	«getStubName(api)».prototype.open = function(f) {
+	
+	«getStubName(api)».prototype.connect = function(address) {
 		var _this = this;
-		_this.socket.on('open', function() {
+		
+		// create WebSocket for this proxy	
+		_this.socket = new WebSocket(address);
+	
+		_this.socket.onopen = function () {
 			// subscribing for all broadcasts
 			«FOR broadcast : api.broadcasts»
 			_this.socket.send('[5, "broadcast:«broadcast.name»"]');
 			«ENDFOR»
-			f();
-		});
-	};
-	
-	«getStubName(api)».prototype.init = function() {
-		var _this = this;
+		};
+
+		// store reference for this proxy in the WebSocket object
+		_this.socket.proxy = _this;
 		
-		_this.socket.on('message', function(data) {
-			var message = JSON.parse(data);
+		_this.socket.onmessage = function(data) {
+			var message = JSON.parse(data.data);
 			if (Array.isArray(message)) {
 				var messageType = message.shift();
 				
@@ -113,8 +112,7 @@ class ClientJSStubGenerator {
 					else if (mode === "invoke") {
 						«FOR method : api.methods»
 						if (name === "«method.name»" && typeof(_this.reply«method.name.toFirstUpper») === "function") {
-							var outArgs = message.shift();
-							_this.reply«method.name.toFirstUpper»(cid«IF !method.outArgs.empty», «FOR a : method.outArgs SEPARATOR ", "»outArgs.shift()«ENDFOR»«ENDIF»);
+							_this.reply«method.name.toFirstUpper»(cid, message);
 						}
 						«ENDFOR»
 					}
@@ -134,9 +132,9 @@ class ClientJSStubGenerator {
 					«ENDFOR»
 				}
 			}
-		});	
+		};	
 	};
 	
-	«api.types.genEnumerations(true)»
+	«api.types.genEnumerations(false)»
 	'''
 }

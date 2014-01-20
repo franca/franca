@@ -67,18 +67,11 @@
 //    var proxy = new SimpleUIProxy();
 //    proxy.connect(settings);
 
-	var proxy = new SimpleUIClientStub('http://localhost:8081');
-	proxy.init();
-
-	proxy.open(function() {
-		proxy.subscribeTitleChanged();
-		proxy.setTitle("This is the new title");
-		proxy.setMode("mode1", 223);
-	});
-
+	var proxy = new SimpleUIClientStub();
+	proxy.connect('ws://localhost:8081');
 
 	// register callback for SimpleUI.setMode() replies
-	proxy.replySetMode = function(display) {
+	proxy.replySetMode = function(cid, display) {
 		document.getElementById('reply1').innerHTML = display;
     };
 

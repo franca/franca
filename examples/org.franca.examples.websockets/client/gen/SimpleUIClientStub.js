@@ -1,61 +1,36 @@
-function SimpleUIClientStub(address) {
-	this.socket = new (require('ws'))(address);
+function SimpleUIClientStub() {
+	this.socket = null;
 	this.callID = 0;
 }
-
-// export the "constructor" function to provide a class-like interface
-module.exports = SimpleUIClientStub;
 
 SimpleUIClientStub.prototype.getNextCallID = function() {
 	this.callID = this.callID + 1;
 	return this.callID;
 };
 
-// call to get the value of title asynchronously
-SimpleUIClientStub.prototype.getTitle = function() {
-	var cid = this.getNextCallID();
-	this.socket.send('[2, "get:title:' + cid + '", "get:title"]');
-	return cid;
-};
-
-// call to set the value of title asynchronously
-SimpleUIClientStub.prototype.setTitle = function(title) {
-	var cid = this.getNextCallID();
-	this.socket.send('[2, "set:title:' + cid + '", "set:title", "' + title + '"]');
-	return cid;
-};
-
-// call this method to subscribe for the changes of the attribute title
-SimpleUIClientStub.prototype.subscribeTitleChanged = function() {
-	this.socket.send('[5, "signal:title"]');
-};
-
-// call this method to unsubscribe from the changes of the attribute title
-SimpleUIClientStub.prototype.unsubscribeTitleChanged = function() {
-	this.socket.send('[6, "signal:title"]');
-};
-
 // call this method to invoke setMode on the server side
-SimpleUIClientStub.prototype.setMode = function(p1, p2) {
+SimpleUIClientStub.prototype.setMode = function(mode) {
 	var cid = this.getNextCallID();
-	this.socket.send('[2, "invoke:setMode:' + cid + '", "invoke:setMode", ["' + p1 + '", "' + p2 + '"]]');
+	this.socket.send('[2, "invoke:setMode:' + cid + '", "invoke:setMode", ["' + mode + '"]]');
 	return cid;
 };
 
-SimpleUIClientStub.prototype.open = function(f) {
-	var _this = this;
-	_this.socket.on('open', function() {
-		// subscribing for all broadcasts
-		_this.socket.send('[5, "broadcast:updateVelocity"]');
-		f();
-	});
-};
-
-SimpleUIClientStub.prototype.init = function() {
+SimpleUIClientStub.prototype.connect = function(address) {
 	var _this = this;
 	
-	_this.socket.on('message', function(data) {
-		var message = JSON.parse(data);
+	// create WebSocket for this proxy	
+	_this.socket = new WebSocket(address);
+
+	_this.socket.onopen = function () {
+		// subscribing for all broadcasts
+		_this.socket.send('[5, "broadcast:updateVelocity"]');
+	};
+
+	// store reference for this proxy in the WebSocket object
+	_this.socket.proxy = _this;
+	
+	_this.socket.onmessage = function(data) {
+		var message = JSON.parse(data.data);
 		if (Array.isArray(message)) {
 			var messageType = message.shift();
 			
@@ -67,35 +42,24 @@ SimpleUIClientStub.prototype.init = function() {
 				var cid = tokens[2];
 				
 				if (mode === "get") {
-					if (name === "title" && typeof(_this.onGetTitle) === "function") {
-						_this.onGetTitle(cid, message);
-					}
 				}
 				else if (mode === "set") {
-					if (name === "title" && typeof(_this.onSetTitle) === "function") {
-						// no message is passed
-						_this.onSetTitle(cid);
-					}
 				}
 				else if (mode === "invoke") {
 					if (name === "setMode" && typeof(_this.replySetMode) === "function") {
-						var outArgs = message.shift();
-						_this.replySetMode(cid, outArgs.shift(), outArgs.shift());
+						_this.replySetMode(cid, message);
 					}
 				}
 			}
 			// handling of EVENT messages
 			else if (messageType === 8) {
 				var topicURI = message.shift();
-				if (topicURI === "signal:title" && typeof(_this.onChangedTitle) === "function") {
-					_this.onChangedTitle(message);
-				}
 				if (topicURI === "broadcast:updateVelocity" && typeof(_this.signalUpdateVelocity) === "function") {
 					_this.signalUpdateVelocity(message);
 				}
 			}
 		}
-	});	
+	};	
 };
 
 // definition of enumeration 'Mode'
@@ -107,5 +71,4 @@ var Mode = function(){
 		'M_SETTINGS':3
 	}
 }();
-module.exports.Mode = Mode;
 

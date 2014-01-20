@@ -1,26 +1,29 @@
 package org.example
 
 /*
- * Interface used for HTML5/Websockets example.
- */
+* Interface used for HTML5/Websockets example.
+*/
 interface SimpleUI {
-
-	attribute String title
-
+	
 	method setMode {
-		in  { String p1 Int16 p2 }
-		out { String p3 Int32 p4 }
+		in {
+			Mode mode
+		}
+		out {
+			String display
+		}
 	}
-	
 	broadcast updateVelocity {
-		out { UInt16 velocity }
+		out {
+			UInt16 velocity
+		}
 	}
-	
 	enumeration Mode {
 		M_RADIO
 		M_NAVIGATION
 		M_MULTIMEDIA
 		M_SETTINGS
 	}
+
 }
 
