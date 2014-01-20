@@ -8,7 +8,9 @@
 package org.franca.generators.websocket
 
 import org.franca.core.franca.FInterface
+
 import static extension org.franca.generators.websocket.WebsocketGeneratorUtils.*
+import org.franca.core.franca.FrancaPackage
 
 class ServerJSStubGenerator {
 
@@ -20,7 +22,7 @@ class ServerJSStubGenerator {
 	function «getStubName(api)»(port) {
 		this.wsio = require('websocket.io');
 		this.socket = this.wsio.listen(port);
-		this.server = new (require('../base/server'))();
+		this.server = new (require('«FOR t : api.eContainer.eGet(FrancaPackage.Literals.FMODEL_ELEMENT__NAME).toString.split("\\.")»../«ENDFOR»../base/server'))();
 		«FOR attribute : api.attributes»
 		this.«attribute.name» = null;
 		«ENDFOR»

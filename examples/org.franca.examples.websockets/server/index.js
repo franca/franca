@@ -5,7 +5,7 @@ var http = new HttpServer();
 http.init(8080, '../client');
 
 // create websocket stub for SimpleUI interface and listen to websocket port.
-var SimpleUIStub = require('./gen/SimpleUIStub');
+var SimpleUIStub = require('./gen/org/example/SimpleUIStub');
 var stub = new SimpleUIStub(8081);
 stub.init();
 
