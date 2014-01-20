@@ -20,11 +20,7 @@
 	<script src="http://www.code-front.com/apps/tachometer/js/raphael.tachometer.min.js"></script>
 	
 	<!-- generated proxy classes -->
-	<!-- 
-	<script src="gen/org/example/SimpleUIProxy.js"></script>
-	-->
-	<script src="gen/SimpleUIClientStub.js"></script>
-	
+	<script src="gen/SimpleUIProxy.js"></script>	
 </head>
 <body>
 	<h1>HTML5 UI with Franca and Websockets</h1>
@@ -63,11 +59,7 @@
 	});
 
 	// initialize proxy for SimpleUI interface
-//    var settings = { host: 'ws://localhost:8081' };
-//    var proxy = new SimpleUIProxy();
-//    proxy.connect(settings);
-
-	var proxy = new SimpleUIClientStub();
+	var proxy = new SimpleUIProxy();
 	proxy.connect('ws://localhost:8081');
 
 	// register callback for SimpleUI.setMode() replies

@@ -13,7 +13,7 @@ import static extension org.franca.generators.websocket.WebsocketGeneratorUtils.
 class ServerJSStubGenerator {
 
 	def getStubName (FInterface api) {
-		api.name.toFirstUpper + "ServerStub"
+		api.name.toFirstUpper + "Stub"
 	}
 
 	def generate(FInterface api) '''
@@ -56,7 +56,7 @@ class ServerJSStubGenerator {
 		// RPC stub for the getter of attribute «attribute.name»
 		_this.server.rpc('get', function() {
 			this.register('«attribute.name»', function(client, cb) {
-				cb(null, _this.onGet«attribute.name.toFirstUpper»());
+				cb(null, _this.«attribute.name»);
 			});
 		});
 		

@@ -13,7 +13,7 @@ import static extension org.franca.generators.websocket.WebsocketGeneratorUtils.
 class ClientJSStubGenerator {
 
 	def getStubName(FInterface api) {
-		api.name.toFirstUpper + "ClientStub"
+		api.name.toFirstUpper + "Proxy"
 	}
 	
 	def generate(FInterface api) '''
