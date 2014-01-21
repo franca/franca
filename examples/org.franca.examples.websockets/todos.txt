@@ -6,8 +6,6 @@ Remarks:
   we will use Google's issue tracker again. This is just to be agile :-)
 - Simply copy resolved issues to the DONE section.
 
-
-
 NOW:
 
 * Improve example [Klaus]
@@ -20,15 +18,8 @@ NOW:
   - prio 1: struct, array
   - prio 2: map, union
 
-* Bug: More than one methods should work [Tamas]
-  - currently only one of the method calls will work correctly
-  - analysis: SimpleUIStub.js, it seems that only the last of the 
-    register calls to "_this.server.rpc('invoke', ..." is registered, previous
-    ones are neutralized by later ones.
-
 * Support more than one out-argument for methods [Tamas]
   - startNavigation method in example could be used for this
-
 
 LATER:
 
@@ -38,6 +29,9 @@ LATER:
 * Use contracts somehow to demonstrate another benefit of Franca
   - generate additional code to check the correct usage (?)
 
-
-
 DONE:
+* Bug: More than one methods should work [Tamas]
+  - currently only one of the method calls will work correctly
+  - analysis: SimpleUIStub.js, it seems that only the last of the 
+    register calls to "_this.server.rpc('invoke', ..." is registered, previous
+    ones are neutralized by later ones.
