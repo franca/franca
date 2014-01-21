@@ -1,6 +1,8 @@
 <!doctype html>
 <html>
 <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<title>Franca Websockets Example</title>
 	
 	<!-- stylesheets -->
@@ -18,47 +20,152 @@
 	-->
 	<script src="http://www.code-front.com/apps/tachometer/js/raphael.min.js"></script>
 	<script src="http://www.code-front.com/apps/tachometer/js/raphael.tachometer.min.js"></script>
-	
+
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.0/jquery.mobile-1.4.0.min.css"></link>
+	<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+	<script src="http://code.jquery.com/mobile/1.4.0/jquery.mobile-1.4.0.min.js"></script>
+<!--
+-->
+
 	<!-- generated proxy classes -->
-	<script src="gen/org/example/SimpleUIProxy.js"></script>	
+	<script src="gen/org/example/SimpleUIProxy.js"></script>
+
 </head>
 <body>
+<header id="constantheader-wrapper">
+<div data-role="header" data-position="fixed" data-theme="a" >
 	<h1>HTML5 UI with Franca and Websockets</h1>
+	<!-- <a href="#" data-icon="gear" class="ui-btn-right">Options</a> -->
+	<div data-role="navbar">
+		<ul>
+			<li><a href="#pHome" data-transition="flip">Home</a></li>
+			<li><a href="#pNav" data-transition="flip">Navigation</a></li>
+			<li><a href="#pMap" data-transition="flip">Map</a></li>
+			<li><a href="#pPhone" data-transition="flip">Phone</a></li>
+			<li><a href="#pAbout" data-transition="flip">About</a></li>
+		</ul>
+	</div><!-- /navbar -->
+</div><!-- /header -->
+</header>
 
-	<form>
-	<table class="bigframe" >
-		<tr><td width="320px"><div id="tacho"></div></td>
-		<td>
-		<hr/>
-	    <p><input id="m1" type="button" value="Radio" class="button1"></p>
-	    <p><input id="m2" type="button" value="Navigation" class="button1"></p>
-	    <p><input id="m3" type="button" value="Phone" class="button1"></p>
-	    <p><input id="m4" type="button" value="Settings" class="button1"></p>
-		<hr/>
-	 	<p id="reply1" class="text1">Please choose!</p>
-		</td></tr>
-		<tr>
-		<td>
-	    <p><input id="street" type="text" name="street" placeholder="<Enter street here>" size=50></p>
-	    <p><input id="city" type="text" name="city" placeholder="<Enter city here>" size=50></p>
-		</td>
-		<td>
-	    <p><input id="mStart" type="button" value="Start" class="button1"></p>
-		</td>
-		</tr>
-	</table>
-	</form>
+<div data-role="page" id="pHome" pagetype="standard" class="franca-example">
 
-	<p><br>
-	The sources for this page can be found in example project <em>org.franca.example.websockets</em>.
-	</p>
-	<p>
-	For more details on Franca, please visit the
-	<a href="http://code.google.com/a/eclipselabs.org/p/franca/" target="_blank">Franca homepage</a>!
-	</p>
+	<div role="main" class="ui-content franca-content">
+
+		<table class="bigframe" >
+			<tr><td><div id="tacho"></div></td>
+			<td><div style="width: 200px">
+			<hr/>
+		    <p><input id="m1" type="button" value="Radio" class="button1"></p>
+		    <p><input id="m2" type="button" value="Navigation" class="button1"></p>
+		    <p><input id="m3" type="button" value="Phone" class="button1"></p>
+		    <p><input id="m4" type="button" value="Settings" class="button1"></p>
+			<hr/>
+		 	<p id="reply1" class="text1">Please choose!</p>
+			</div></td></tr>
+		</table>
+
+	</div><!-- /content -->
+</div><!-- /page one -->
 
 
-	<script type="text/javascript">
+<!-- Start of Navigation page -->
+<div data-role="page" id="pNav" pagetype="standard" class="franca-example" data-theme="a">
+
+	<div role="main" class="ui-content franca-content">
+		<h2>Navigation</h2>
+
+		<p>Simulate navigation input...</p>
+
+		<table class="bigframe" >
+			<tr>
+			<td>
+		    <p><input id="street" type="text" name="street" placeholder="<Enter street here>" size=30></p>
+		    <p><input id="city" type="text" name="city" placeholder="<Enter city here>" size=30></p>
+			</td>
+			<td><div style="width: 200px">
+		    <p><input id="mStart" type="button" value="Start" class="button1"></p>
+			</div></td>
+			</tr>
+		</table>
+
+	</div><!-- /content -->
+</div><!-- /page Navigation -->
+
+
+<!-- Start of Map page -->
+<div data-role="page" id="pMap" pagetype="standard" class="franca-example" data-theme="a">
+
+	<div role="main" class="ui-content franca-content">
+		<h2>TBD: GoogleMaps integration</h2>
+
+		<p>This will be cool!</p>
+
+	</div><!-- /content -->
+</div><!-- /page Map -->
+
+
+<!-- Start of Phone page -->
+<div data-role="page" id="pPhone" pagetype="standard" class="franca-example" data-theme="a">
+
+	<div role="main" class="ui-content franca-content">
+		<h2>Phone and Connectivity</h2>
+
+		<p>I am sure someone will call you, soon!</p>
+
+		<TODO>
+		<br/>
+
+		<a href="#pIncomingCall" data-rel="dialog" data-transition="pop">Simulate phone call...</a>
+
+	</div><!-- /content -->
+</div><!-- /page Phone -->
+
+
+<!-- Start of About page -->
+<div data-role="page" id="pAbout" pagetype="standard" class="franca-example" data-theme="a">
+
+	<div role="main" class="ui-content franca-content">
+		<h2>About this demo</h2>
+
+		<p>The sources for this page can be found in example project
+			<em>org.franca.example.websockets</em>.</p>
+		<p>
+		For more details on Franca, please visit the
+		<a href="http://code.google.com/a/eclipselabs.org/p/franca/" target="_blank">Franca homepage</a>!
+		</p>
+
+		<br/>
+
+		<p>This demo and the Franca JS/Websocket generator was built by
+			Tamas Szabo and Klaus Birken.</p>
+
+	</div><!-- /content -->
+</div><!-- /page About -->
+
+
+<!-- Start of IncomingCall popup page -->
+<div data-role="page" id="pIncomingCall">
+
+	<div data-role="header" data-theme="b">
+		<h1>Incoming Call</h1>
+	</div><!-- /header -->
+
+	<div role="main" class="ui-content">
+		<h2>Mary is calling...</h2>
+		<p><a href="#pHome" data-rel="back" class="ui-btn ui-shadow ui-corner-all ui-btn-inline ui-icon-back ui-btn-icon-left">Back to "Home"</a></p>
+	</div><!-- /content -->
+</div><!-- /page popup -->
+
+
+
+<div data-role="footer" data-position="fixed" data-theme="a">
+	<h4>org.franca.examples.websockets</h4>
+</div><!-- /footer -->
+
+<script type="text/javascript">
+
+	// switch page programmatically: $.mobile.changePage("#pNav")
 
 	// initialize tacho widget	
 	var tacho = Raphael("tacho").tachometer(0, {
@@ -100,13 +207,32 @@
 	document.getElementById("m4").addEventListener("click",
 		function(event) { proxy.setMode(Mode.M_SETTINGS); },
 		false);
+
 	document.getElementById("mStart").addEventListener("click",
 		function(event) {
+			console.log("click!");
 			proxy.startNavigation(
 				document.getElementById("street").value,
 				document.getElementById("city").value);
 		},
 		false);
-	</script>
+
+	jQuery.fn.headerOnAllPages = function() {
+		var theHeader = $('#constantheader-wrapper').html();
+  		var allPages = $('div[pagetype="standard"]');
+
+		for (var i = 1; i < allPages.length; i++) {
+			allPages[i].innerHTML = theHeader + allPages[i].innerHTML;
+  		}
+	};
+
+	$(function() {
+		$().headerOnAllPages();
+		$( "[data-role='navbar']" ).navbar();
+		$( "[data-role='header'], [data-role='footer']" ).toolbar();
+	});
+
+</script>
+
 </body>
 </html>

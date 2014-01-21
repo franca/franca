@@ -12,24 +12,29 @@ body {
 	background-color:#000;
 }
 
+.franca-example .franca-content {
+	padding-top: 6em;
+}
+
 a:link { color: yellow; } 
 a:visited { color: yellow; }
 
 title {
 	text-align:center;
 	font-family:Georgia,serif;
-	font-size:18px;
+	font-size:16px;
 	color:#2E2E2E;
 }
 
-#container { height: 600px; width: 600;}
+#container { height: 500px; width: 500;}
 
 .bigframe td {
 	//vertical-align: top;
-	padding: 25px;
+	width: 100%;
+	padding: 20px;
 	background-color: grey;
-    border-radius: 15px;
-    -moz-border-radius: 15px;
+    border-radius: 12px;
+    -moz-border-radius: 12px;
 }
 
 .desc text {
@@ -39,19 +44,19 @@ title {
 .button1 {
 	background-color: lightyellow;
 	color: black;
-	font-size: 32px;
+	font-size: 24px;
 	border-radius: 6px;
 	border: none;
 	
 	// fixed width
 	display: inline-block;
-	min-width: 250px;
-	width: 250px;
+	min-width: 180px;
+	width: 180px;
 	padding:5px 10px;
 }
 
 .text1 {
-	font-size: 32px;
+	font-size: 24px;
 	fill: lightgrey;
 }
 
