@@ -136,7 +136,9 @@ Server.prototype.rpc = function(baseURI, rpcClass) {
 	}
 
 	// Create a new RPC class
-	this.rpcClasses[baseURI] = {};
+	if (!_this.rpcClasses.hasOwnProperty(baseURI)) {
+		this.rpcClasses[baseURI] = {};
+	}
 	rpcClass.apply(rpcClassConstructor);
 };
 
