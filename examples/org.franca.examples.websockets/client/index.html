@@ -25,19 +25,29 @@
 <body>
 	<h1>HTML5 UI with Franca and Websockets</h1>
 
+	<form>
 	<table class="bigframe" >
 		<tr><td width="320px"><div id="tacho"></div></td>
-		<td><form>
+		<td>
 		<hr/>
 	    <p><input id="m1" type="button" value="Radio" class="button1"></p>
 	    <p><input id="m2" type="button" value="Navigation" class="button1"></p>
 	    <p><input id="m3" type="button" value="Phone" class="button1"></p>
 	    <p><input id="m4" type="button" value="Settings" class="button1"></p>
-		</form>
 		<hr/>
 	 	<p id="reply1" class="text1">Please choose!</p>
 		</td></tr>
+		<tr>
+		<td>
+	    <p><input id="street" type="text" name="street" placeholder="<Enter street here>" size=50></p>
+	    <p><input id="city" type="text" name="city" placeholder="<Enter city here>" size=50></p>
+		</td>
+		<td>
+	    <p><input id="mStart" type="button" value="Start" class="button1"></p>
+		</td>
+		</tr>
 	</table>
+	</form>
 
 	<p><br>
 	The sources for this page can be found in example project <em>org.franca.example.websockets</em>.
@@ -67,6 +77,11 @@
 		document.getElementById('reply1').innerHTML = display;
     };
 
+	// register callback for SimpleUI.startNavigation() replies
+	proxy.replySetMode = function(cid, routeLength) {
+		document.getElementById('mStart').value = routeLength + " km";
+    };
+
 	// register callback for SimpleUI.updateVelocity() broadcasts
 	proxy.signalUpdateVelocity = function(velocity) {
 		tacho.set(velocity);
@@ -84,6 +99,13 @@
 		false);
 	document.getElementById("m4").addEventListener("click",
 		function(event) { proxy.setMode(Mode.M_SETTINGS); },
+		false);
+	document.getElementById("mStart").addEventListener("click",
+		function(event) {
+			proxy.startNavigation(
+				document.getElementById("street").value,
+				document.getElementById("city").value);
+		},
 		false);
 	</script>
 </body>

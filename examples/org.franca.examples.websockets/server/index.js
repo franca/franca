@@ -12,14 +12,21 @@ stub.init();
 stub.setMode = function (mode) {
 	var d = "";
 	
+	console.log("setMode: mode=" + mode);
 	switch (parseInt(mode)) {
 		case SimpleUIStub.Mode.M_RADIO:      d = "Bay Radio FM"; break;
 		case SimpleUIStub.Mode.M_NAVIGATION: d = "Destination?"; break;
 		case SimpleUIStub.Mode.M_MULTIMEDIA: d = "Ring, ring!"; break;
 		case SimpleUIStub.Mode.M_SETTINGS:   d = "Your settings"; break;
+		default: console.error("Invalid value " + mode + " for parameter 'mode'!");
 	}
 	
 	stub.updateVelocity(Math.floor((Math.random()*100)+1));
-
 	return d;
 }
+
+stub.startNavigation = function (street, city) {
+	console.log("startNavigation: street=" + street + " city=" + city);
+	return street.length + 10*city.length;
+}
+
