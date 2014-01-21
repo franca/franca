@@ -1,0 +1,43 @@
+
+********** TODOs for the Franca/JS example **********
+
+Remarks:
+- This file will be removed after the exploration mode is over,
+  we will use Google's issue tracker again. This is just to be agile :-)
+- Simply copy resolved issues to the DONE section.
+
+
+
+NOW:
+
+* Improve example [Klaus]
+  - use attributes
+  - maybe more than one application screen
+  - add more controls/interaction
+  - include Google Maps (?)
+
+* Test usage of more complex data structures in example [Klaus]
+  - prio 1: struct, array
+  - prio 2: map, union
+
+* Bug: More than one methods should work [Tamas]
+  - currently only one of the method calls will work correctly
+  - analysis: SimpleUIStub.js, it seems that only the last of the 
+    register calls to "_this.server.rpc('invoke', ..." is registered, previous
+    ones are neutralized by later ones.
+
+* Support more than one out-argument for methods [Tamas]
+  - startNavigation method in example could be used for this
+
+
+LATER:
+
+* Generate initial/example client/server interface
+  - this serves as a quick starting point for developers
+
+* Use contracts somehow to demonstrate another benefit of Franca
+  - generate additional code to check the correct usage (?)
+
+
+
+DONE:
