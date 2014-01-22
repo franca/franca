@@ -14,6 +14,20 @@ function initApp() {
 	var proxy = new SimpleUIProxy();
 	proxy.connect('ws://localhost:8081');
 
+	// register callback for SimpleUI.onChangedClock() updates
+	proxy.onChangedClock = function(clock) {
+		console.log("onChangedClock " + clock)
+		//$('tClock').text(clock);
+	};
+	proxy.onGetClock = function(clock) {
+		console.log("onGetClock " + clock)
+		$('tClock').text("Time: " + clock);
+	};
+
+	// TODO: this doesn't work yet, error message:
+	// Uncaught InvalidStateError: Failed to execute 'send' on 'WebSocket': already in CONNECTING state.
+	//proxy.getClock();
+
 	// register callback for SimpleUI.setMode() replies
 	proxy.replySetMode = function(cid, display) {
 		document.getElementById('reply1').innerHTML = display;

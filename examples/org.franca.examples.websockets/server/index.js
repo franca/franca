@@ -9,6 +9,9 @@ var SimpleUIStub = require('./gen/org/example/SimpleUIStub');
 var stub = new SimpleUIStub(8081);
 stub.init();
 
+// TODO: will this really work? We need a setClock function in the stub which also sends updates to the clients
+stub.clock = "11:55";
+
 stub.setMode = function (mode) {
 	var d = "";
 	
@@ -22,6 +25,7 @@ stub.setMode = function (mode) {
 	}
 	
 	stub.updateVelocity(Math.floor((Math.random()*100)+1));
+
 	return d;
 }
 

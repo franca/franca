@@ -5,6 +5,8 @@ package org.example
 */
 interface SimpleUI {
 	
+	attribute String clock readonly
+
 	method setMode {
 		in {
 			Mode mode
@@ -30,6 +32,7 @@ interface SimpleUI {
 			UInt16 velocity
 		}
 	}
+	
 	enumeration Mode {
 		M_RADIO
 		M_NAVIGATION
