@@ -15,21 +15,17 @@ function initApp() {
 
 	// initialize proxy for SimpleUI interface
 	var proxy = new SimpleUIProxy();
-	proxy.connect('ws://localhost:8081');
+	proxy.connect('ws://localhost:8081', function() {proxy.getClock()});
 
 	// register callback for SimpleUI.onChangedClock() updates
 	proxy.onChangedClock = function(clock) {
 		console.log("onChangedClock " + clock)
 		//$('tClock').text(clock);
 	};
-	proxy.onGetClock = function(clock) {
+	proxy.onGetClock = function(cid, clock) {
 		console.log("onGetClock " + clock)
 		$('tClock').text("Time: " + clock);
 	};
-
-	// TODO: this doesn't work yet, error message:
-	// Uncaught InvalidStateError: Failed to execute 'send' on 'WebSocket': already in CONNECTING state.
-	//proxy.getClock();
 
 	// register callback for SimpleUI.setMode() replies
 	proxy.replySetMode = function(cid, display) {
@@ -42,7 +38,7 @@ function initApp() {
 	};
 
 	// connect UI buttons with setMode() calls
-	$("#m1").click(function() { proxy.setMode(Mode.M_RADIO); });
+	$("#m1").click(function() { proxy.getClock(); proxy.setMode(Mode.M_RADIO); });
 	$("#m2").click(function() { proxy.setMode(Mode.M_NAVIGATION); });
 	$("#m3").click(function() { proxy.setMode(Mode.M_MULTIMEDIA); });
 	$("#m4").click(function() { proxy.setMode(Mode.M_SETTINGS); });
