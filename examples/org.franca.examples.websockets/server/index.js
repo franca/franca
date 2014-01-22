@@ -45,7 +45,6 @@ var timerID = setInterval(function() {
 			vTarget = 1 + Math.random()*120;
 			acc = 3.0 + Math.random()*8.0;
 			if (vTarget<vActual) acc = -acc;
-			if (Math.abs(vTarget-vActual) < 1) acc = 0;
 			phase = 1;
 			break;
 
