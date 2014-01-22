@@ -85,9 +85,9 @@ class ServerJSStubGenerator {
 		_this.server.rpc('invoke', function() {
 			this.register('«method.name»', function(client, cb, args) {
 				// fireAndForget = «method.fireAndForget»
-				var result = _this.«method.name»(«FOR a : method.inArgs SEPARATOR ", "»args.shift()«ENDFOR»);
+				var result = _this.«method.name»(«FOR arg : method.inArgs SEPARATOR ", "»args["«arg.name»"]«ENDFOR»);
 				«IF !method.fireAndForget»
-				cb(null, result);
+				cb(null, JSON.stringify(result));
 				«ENDIF»
 			});
 		});

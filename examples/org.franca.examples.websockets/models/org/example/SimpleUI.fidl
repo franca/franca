@@ -21,7 +21,7 @@ interface SimpleUI {
 		}
 		out {
 			UInt32 routeLength
-			//String arrivalTime
+			String arrivalTime
 		}
 	}
 

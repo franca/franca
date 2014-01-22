@@ -13,7 +13,7 @@ stub.setMode = function (mode) {
 	var d = "";
 	
 	console.log("setMode: mode=" + mode);
-	switch (parseInt(mode)) {
+	switch (mode) {
 		case SimpleUIStub.Mode.M_RADIO:      d = "Bay Radio FM"; break;
 		case SimpleUIStub.Mode.M_NAVIGATION: d = "Destination?"; break;
 		case SimpleUIStub.Mode.M_MULTIMEDIA: d = "Ring, ring!"; break;
@@ -27,6 +27,6 @@ stub.setMode = function (mode) {
 
 stub.startNavigation = function (street, city) {
 	console.log("startNavigation: street=" + street + " city=" + city);
-	return street.length + 10*city.length;
+	return {"routeLength" : street.length + 10*city.length, "arrivalTime" : "22:00"};
 }
 

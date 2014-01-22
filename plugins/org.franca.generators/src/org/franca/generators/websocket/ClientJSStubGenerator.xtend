@@ -39,7 +39,7 @@ class ClientJSStubGenerator {
 	// call to set the value of «attribute.name» asynchronously
 	«getStubName(api)».prototype.set«attribute.name.toFirstUpper» = function(«attribute.name») {
 		var cid = this.getNextCallID();
-		this.socket.send('[2, "set:«attribute.name»:' + cid + '", "set:«attribute.name»", "' + «attribute.name» + '"]');
+		this.socket.send('[2, "set:«attribute.name»:' + cid + '", "set:«attribute.name»", ' + «attribute.name» + ']');
 		return cid;
 	};
 	
@@ -61,7 +61,7 @@ class ClientJSStubGenerator {
 	// call this method to invoke «method.name» on the server side
 	«getStubName(api)».prototype.«method.name» = function(«method.inArgs.genArgList("", ", ")») {
 		var cid = this.getNextCallID();
-		this.socket.send('[2, "invoke:«method.name»:' + cid + '", "invoke:«method.name»"«IF !method.inArgs.empty», ["' + «method.inArgs.genArgList("", " + '\", \"' + ")»«ENDIF» + '"]]');
+		this.socket.send('[2, "invoke:«method.name»:' + cid + '", "invoke:«method.name»"«IF !method.inArgs.empty», ' + JSON.stringify({«FOR arg : method.inArgs SEPARATOR ", "»"«arg.name»" : «arg.name»«ENDFOR»})«ENDIF» + ']');
 		return cid;
 	};
 	«ENDFOR»
@@ -112,7 +112,11 @@ class ClientJSStubGenerator {
 					else if (mode === "invoke") {
 						«FOR method : api.methods»
 						if (name === "«method.name»" && typeof(_this.reply«method.name.toFirstUpper») === "function") {
-							_this.reply«method.name.toFirstUpper»(cid, message);
+							«IF method.outArgs.size > 1»
+							// needs to parse the map which contains the multiple output parameters
+							message = JSON.parse(message);
+							«ENDIF»
+							_this.reply«method.name.toFirstUpper»(cid«IF !method.outArgs.empty», «IF method.outArgs.size == 1»message«ELSE»«FOR arg : method.outArgs SEPARATOR ", "»message["«arg.name»"]«ENDFOR»«ENDIF»«ENDIF»);
 						}
 						«ENDFOR»
 					}
