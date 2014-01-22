@@ -5,9 +5,12 @@ function initApp() {
 	// initialize tacho widget	
 	var tacho = Raphael("tacho").tachometer(0, {
 		interactive: true,
-		needleAnimationEasing: "<>", // or: bounce, elastic
-		needleAnimationDuration: 600,
-		numberMax: 100
+		needleAnimationEasing: "linear", // or: <>, bounce, elastic
+		needleAnimationDuration: 500,
+		numberMax: 160,
+		longScaleCount: 8,
+		shortScaleCount: 80,
+		numberUnit: " km/h"
 	});
 
 	// initialize proxy for SimpleUI interface
