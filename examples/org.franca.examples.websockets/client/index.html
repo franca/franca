@@ -22,11 +22,11 @@
 	<script src="http://www.code-front.com/apps/tachometer/js/raphael.tachometer.min.js"></script>
 
 	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.0/jquery.mobile-1.4.0.min.css"></link>
-	<!--<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
-	<script src="http://code.jquery.com/mobile/1.4.0/jquery.mobile-1.4.0.min.js"></script>-->
+	<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+	<script src="http://code.jquery.com/mobile/1.4.0/jquery.mobile-1.4.0.min.js"></script>
 
 	<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
-	<!--<script src="http://maps.google.com/maps/api/js?sensor=false"></script>-->
+	<script src="http://maps.google.com/maps/api/js?sensor=false"></script>
 <!--
 -->
 
@@ -81,8 +81,6 @@
 	<div role="main" class="ui-content franca-content">
 		<h2>Navigation</h2>
 
-		<p>Simulate navigation input...</p>
-
 		<table class="bigframe" >
 			<tr>
 			<td>
@@ -93,6 +91,7 @@
 			<p><input id="mStart" type="button" value="Start" class="button1"></p>
 			</div></td>
 			</tr>
+			<tr><td colspan="2"><div id="navresult">Please enter destination!</div></td></tr>
 		</table>
 
 	</div><!-- /content -->
@@ -168,6 +167,7 @@
 
 
 <script type="text/javascript">
+	initFixedHeaders();
 	initApp();
 </script>
 

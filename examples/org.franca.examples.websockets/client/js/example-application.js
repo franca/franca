@@ -19,60 +19,37 @@ function initApp() {
 		document.getElementById('reply1').innerHTML = display;
 	};
 
-	// register callback for SimpleUI.startNavigation() replies
-	proxy.replyStartNavigation = function(cid, routeLength) {
-		document.getElementById('mStart').value = routeLength + " km";
-	};
-
 	// register callback for SimpleUI.updateVelocity() broadcasts
 	proxy.signalUpdateVelocity = function(velocity) {
 		tacho.set(velocity);
 	};
 
 	// connect UI buttons with setMode() calls
-	document.getElementById("m1").addEventListener("click",
-		function(event) { proxy.setMode(Mode.M_RADIO); },
-		false);
-	document.getElementById("m2").addEventListener("click",
-		function(event) { proxy.setMode(Mode.M_NAVIGATION); },
-		false);
-	document.getElementById("m3").addEventListener("click",
-		function(event) { proxy.setMode(Mode.M_MULTIMEDIA); },
-		false);
-	document.getElementById("m4").addEventListener("click",
-		function(event) { proxy.setMode(Mode.M_SETTINGS); },
-		false);
+	$("#m1").click(function() { proxy.setMode(Mode.M_RADIO); });
+	$("#m2").click(function() { proxy.setMode(Mode.M_NAVIGATION); });
+	$("#m3").click(function() { proxy.setMode(Mode.M_MULTIMEDIA); });
+	$("#m4").click(function() { proxy.setMode(Mode.M_SETTINGS); });
 
-	document.getElementById("mStart").addEventListener("click",
-		function(event) {
-			console.log("click!");
+
+	$(document).on( "pageinit", "#pNav", function() {
+		$("#mStart").click(function() {
 			proxy.startNavigation(
 				document.getElementById("street").value,
 				document.getElementById("city").value);
-		},
-		false);
+		});
 
-	jQuery.fn.headerOnAllPages = function() {
-		var theHeader = $('#constantheader-wrapper').html();
-			var allPages = $('div[pagetype="standard"]');
+		// register callback for SimpleUI.startNavigation() replies
+		proxy.replyStartNavigation = function(cid, routeLength) {
+			$('#navresult').text("Distance to destination: " + routeLength + " km");
+		};
 
-		for (var i = 1; i < allPages.length; i++) {
-			allPages[i].innerHTML = theHeader + allPages[i].innerHTML;
-			}
-	};
-
-	$(function() {
-		$().headerOnAllPages();
-		$( "[data-role='navbar']" ).navbar();
-		$( "[data-role='header'], [data-role='footer']" ).toolbar();
 	});
-
 
 	/*
 	 * Google Maps documentation: http://code.google.com/apis/maps/documentation/javascript/basics.html
 	 * Geolocation documentation: http://dev.w3.org/geo/api/spec-source.html
 	 */
-	$( document ).on( "pageinit", "#pMap", function() {
+	$(document).on( "pageinit", "#pMap", function() {
 		var defaultLatLng = new google.maps.LatLng(34.0983425, -118.3267434);  // Default to Hollywood, CA when no geolocation support
 		if ( navigator.geolocation ) {
 			function success(pos) {
@@ -104,4 +81,24 @@ function initApp() {
 			});
 		}
 	});
+}
+
+
+function initFixedHeaders() {
+	jQuery.fn.headerOnAllPages = function() {
+		var theHeader = $('#constantheader-wrapper').html();
+			var allPages = $('div[pagetype="standard"]');
+
+		for (var i = 1; i < allPages.length; i++) {
+			allPages[i].innerHTML = theHeader + allPages[i].innerHTML;
+			}
+	};
+
+	$(function() {
+		$().headerOnAllPages();
+		$( "[data-role='navbar']" ).navbar();
+		$( "[data-role='header'], [data-role='footer']" ).toolbar();
+	});
+
+
 }
