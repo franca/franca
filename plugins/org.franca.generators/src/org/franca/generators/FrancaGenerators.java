@@ -7,6 +7,7 @@
 *******************************************************************************/
 package org.franca.generators;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.emf.ecore.EObject;
 import org.franca.core.franca.FInterface;
 import org.franca.core.franca.FModel;
@@ -51,19 +52,19 @@ public class FrancaGenerators {
 		return true;
 	}
 	
-	public boolean genWebsocket (FModel model, String serverGenDir, String clientGenDir) {
+	public boolean genWebsocket (IProject project, FModel model, String serverGenDir, String clientGenDir) {
 		ClientJSStubGenerator genClient = new ClientJSStubGenerator();
 		ServerJSStubGenerator genServer = new ServerJSStubGenerator();
 		
 		// we pick the first interface only
 		FInterface api = model.getInterfaces().get(0);
 
-		String outPath1 = clientGenDir + "/" + createPath(model);
-		String outPath2 = serverGenDir + "/" + createPath(model);
-		String output1 = genClient.generate(api).toString();
-		String output2 = genServer.generate(api).toString();
-		boolean ok1 = FileHelper.save(outPath1, genClient.getStubName(api) + ".js", output1);
-		boolean ok2 = FileHelper.save(outPath2, genServer.getStubName(api) + ".js", output2);
+		String clientStubPath = project.getLocation().append(clientGenDir + "/gen/" + createPath(model)).toString();
+		String serverStubPath = project.getLocation().append(serverGenDir + "/gen/" + createPath(model)).toString();
+		String clientStubContent = genClient.generate(api).toString();
+		String serverStubContent = genServer.generate(api).toString();
+		boolean ok1 = FileHelper.save(clientStubPath, genClient.getStubName(api) + ".js", clientStubContent);
+		boolean ok2 = FileHelper.save(serverStubPath, genServer.getStubName(api) + ".js", serverStubContent);
 		return ok1 && ok2;
 	}
 	
