@@ -10,7 +10,7 @@ var stub = new SimpleUIStub(8081);
 stub.init();
 
 // TODO: will this really work? We need a setClock function in the stub which also sends updates to the clients
-stub.clock = "11:55";
+stub.clock = getTime();
 
 stub.setMode = function (mode) {
 	var d = "";
@@ -32,6 +32,16 @@ stub.startNavigation = function (street, city) {
 	return {"routeLength" : street.length + 10*city.length, "arrivalTime" : "22:00"};
 }
 
+function getTime() {
+	var date = new Date();
+    var hour = date.getHours();
+    hour = (hour < 10 ? "0" : "") + hour;
+
+    var min  = date.getMinutes();
+    min = (min < 10 ? "0" : "") + min;
+
+    return hour + ":" + min
+}
 
 // simulation of driving car, sending broadcasts for current velocity
 var vTarget = 0.0;
