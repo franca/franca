@@ -66,13 +66,13 @@ Server.prototype.onConnection = function(client) {
 
 	// Specify an empty error handler
 	client.on('error', function(error) {
-		_this.onError(client);
+		_this.onError(client, error);
 	});
 
 	return this;
 };
 
-Server.prototype.onError = function(client) {
+Server.prototype.onError = function(client, error) {
 	console.log('[' + client.sid + '] ' + error.toString());
 };
 
