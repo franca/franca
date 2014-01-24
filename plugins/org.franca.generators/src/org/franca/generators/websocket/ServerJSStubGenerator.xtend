@@ -34,6 +34,13 @@ class ServerJSStubGenerator {
 	«getStubName(api)».prototype.getClients = function() {
 		return Objects.keys(this.server.clients);
 	};
+	
+	«FOR attribute : api.attributes»
+	«getStubName(api)».prototype.set«attribute.name.toFirstUpper» = function(newValue) {
+		this.«attribute.name» = newValue;
+		this.server.emit('publishAll', "broadcast:«attribute.name»", newValue);
+	};
+	«ENDFOR»
 
 	«getStubName(api)».prototype.init = function() {
 		var _this = this;
