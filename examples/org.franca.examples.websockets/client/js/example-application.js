@@ -15,9 +15,7 @@ function initApp() {
 
 	// initialize proxy for SimpleUI interface
 	var proxy = new SimpleUIProxy();
-	proxy.connect('ws://localhost:8081', function() {
-		proxy.getClock()
-	});
+	proxy.connect('ws://localhost:8081');
 
 	// register callback for SimpleUI.onChangedClock() updates
 	proxy.onChangedClock = function(clock) {
@@ -38,6 +36,15 @@ function initApp() {
 	proxy.signalUpdateVelocity = function(velocity) {
 		tacho.set(velocity);
 	};
+	
+	proxy.onOpened = function() {
+		console.log('The connection has been opened!')
+		proxy.getClock();
+	}
+	
+	proxy.onClosed = function() {
+		console.log('The connection has been closed!')
+	}
 
 	// connect UI buttons with setMode() calls
 	$("#m1").click(function() { proxy.setMode(Mode.M_RADIO); });

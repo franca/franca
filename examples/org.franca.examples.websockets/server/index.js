@@ -12,6 +12,14 @@ stub.init();
 // TODO: will this really work? We need a setClock function in the stub which also sends updates to the clients
 stub.clock = getTime();
 
+stub.onClientConnected = function(clientID) {
+	console.log('The ID of the newly connected client is ' + clientID);
+};
+
+stub.onClientDisconnected = function(clientID) {
+	console.log('The client with ID ' + clientID + ' has disconnected');
+}
+
 stub.setMode = function (mode) {
 	var d = "";
 	

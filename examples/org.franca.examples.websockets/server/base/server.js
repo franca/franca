@@ -36,8 +36,7 @@ Server.prototype.publishEligibleList = function(topicURI, event, eligible) {
 /**
  * Handles new connections
  * 
- * @param {wsio.Socket}
- *            client Client instance
+ * @param {wsio.Socket} client Client instance
  * @return {Server} Own instance for chaining
  */
 Server.prototype.onConnection = function(client) {
@@ -50,68 +49,82 @@ Server.prototype.onConnection = function(client) {
 	client.prefixes = {};
 
 	// Add client to client list and send welcome message
-	this.clients[client.id] = client;
+	_this.clients[client.id] = client;
 
 	console.log('[' + client.sid + '] New connection');
 	client.send(packets.WELCOME(client.id, 'iowamp'));
 
 	// React if client sends a message
 	client.on('message', function(data) {
-		// Try to parse the received data as JSON
-		console.log('[' + client.sid + '] Data received: ' + data);
-		try {
-			var msg = JSON.parse(data);
-		} catch (e) {
-			console.log('[' + client.sid + '] Can not parse as JSON');
-			return;
-		}
-
-		// The parsed JSON data should be an array
-		if (!Array.isArray(msg)) {
-			console.log('[' + client.sid
-					+ '] Invalid packet (should be an array)');
-			return;
-		}
-
-		// Checks if an handler exists
-		var messageType = protocol.getMessageType(msg.shift());
-		if (!handlers.hasOwnProperty(messageType)) {
-			console.log('[' + client.sid
-					+ '] No handler implemented for message type: '
-					+ messageType);
-			return;
-		}
-
-		// Call the handler with its arguments
-		handlers[messageType].apply(_this, [ _this, client ].concat(msg));
+		_this.onMessage(client, data);
 	});
 
 	// React if client closes connection
 	client.on('close', function() {
-		console.log('[' + client.sid + '] Closed connection');
-		if (!client.id)
-			return;
-
-		// Remove client in all topics and the client list
-		for ( var i in client.topics) {
-			console.log('Client ' + client + ' has unsubscribed from topic '
-					+ client.topics[i]);
-			var id = _this.topics[client.topics[i]].indexOf(client.id);
-			if (id > -1) {
-				_this.topics[client.topics[i]].splice(id, 1);
-			}
-		}
-
-		// this will also delete the prefixes stored for the given client
-		delete _this.clients[client.id];
+		_this.onClose(client);
 	});
 
 	// Specify an empty error handler
 	client.on('error', function(error) {
-		console.log('[' + client.sid + '] ' + error.toString());
+		_this.onError(client);
 	});
 
 	return this;
+};
+
+Server.prototype.onError = function(client) {
+	console.log('[' + client.sid + '] ' + error.toString());
+};
+
+Server.prototype.onClose = function(client) {
+	var _this = this;
+	console.log('[' + client.sid + '] Closed connection');
+	if (!client.id)
+		return;
+
+	// Remove client in all topics and the client list
+	for ( var i in client.topics) {
+		console.log('Client ' + client + ' has unsubscribed from topic '
+				+ client.topics[i]);
+		var id = _this.topics[client.topics[i]].indexOf(client.id);
+		if (id > -1) {
+			_this.topics[client.topics[i]].splice(id, 1);
+		}
+	}
+
+	// this will also delete the prefixes stored for the given client
+	delete _this.clients[client.id];
+};
+
+Server.prototype.onMessage = function(client, data) {
+	var _this = this;
+	// Try to parse the received data as JSON
+	console.log('[' + client.sid + '] Data received: ' + data);
+	try {
+		var msg = JSON.parse(data);
+	} catch (e) {
+		console.log('[' + client.sid + '] Can not parse as JSON');
+		return;
+	}
+
+	// The parsed JSON data should be an array
+	if (!Array.isArray(msg)) {
+		console.log('[' + client.sid
+				+ '] Invalid packet (should be an array)');
+		return;
+	}
+
+	// Checks if an handler exists
+	var messageType = protocol.getMessageType(msg.shift());
+	if (!handlers.hasOwnProperty(messageType)) {
+		console.log('[' + client.sid
+				+ '] No handler implemented for message type: '
+				+ messageType);
+		return;
+	}
+
+	// Call the handler with its arguments
+	handlers[messageType].apply(_this, [ _this, client ].concat(msg));
 };
 
 Server.prototype.rpc = function(baseURI, rpcClass) {
