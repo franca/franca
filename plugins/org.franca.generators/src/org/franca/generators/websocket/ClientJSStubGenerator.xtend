@@ -66,7 +66,7 @@ class ClientJSStubGenerator {
 	};
 	«ENDFOR»
 	
-	«getStubName(api)».prototype.connect = function(address, init) {
+	«getStubName(api)».prototype.connect = function(address) {
 		var _this = this;
 		
 		// create WebSocket for this proxy	
@@ -77,13 +77,19 @@ class ClientJSStubGenerator {
 			«FOR broadcast : api.broadcasts»
 			_this.socket.send('[5, "broadcast:«broadcast.name»"]');
 			«ENDFOR»
-			if (init !== null) {
-				init();
+			if (typeof(_this.onOpened) === "function") {
+				_this.onOpened();
 			}
 		};
 
 		// store reference for this proxy in the WebSocket object
 		_this.socket.proxy = _this;
+		
+		_this.socket.onclose = function() {
+			if (typeof(_this.onClosed) === "function") {
+				_this.onClosed();
+			}
+		};
 		
 		_this.socket.onmessage = function(data) {
 			var message = JSON.parse(data.data);

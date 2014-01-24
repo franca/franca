@@ -40,6 +40,15 @@ class ServerJSStubGenerator {
 		
 		_this.socket.on('connection', function(client) {
 			_this.server.onConnection(client);
+			if (typeof(_this.onClientConnected) === "function") {
+				_this.onClientConnected(client.id);
+			}
+			
+			client.on('close', function() {
+				if (typeof(_this.onClientDisconnected) === "function") {
+					_this.onClientDisconnected(client.id);
+				}
+			});
 		});
 		
 		_this.server.on('publishAll', function(topicURI, event) {
