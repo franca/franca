@@ -15,7 +15,9 @@ function initApp() {
 
 	// initialize proxy for SimpleUI interface
 	var proxy = new SimpleUIProxy();
-	proxy.connect('ws://localhost:8081', function() {proxy.getClock()});
+	proxy.connect('ws://localhost:8081', function() {
+		proxy.getClock()
+	});
 
 	// register callback for SimpleUI.onChangedClock() updates
 	proxy.onChangedClock = function(clock) {
@@ -24,7 +26,7 @@ function initApp() {
 	};
 	proxy.onGetClock = function(cid, clock) {
 		console.log("onGetClock " + clock)
-		$('tClock').text("Time: " + clock);
+		$('#tClock').text("Time: " + clock);
 	};
 
 	// register callback for SimpleUI.setMode() replies
@@ -38,7 +40,7 @@ function initApp() {
 	};
 
 	// connect UI buttons with setMode() calls
-	$("#m1").click(function() { proxy.getClock(); proxy.setMode(Mode.M_RADIO); });
+	$("#m1").click(function() { proxy.setMode(Mode.M_RADIO); });
 	$("#m2").click(function() { proxy.setMode(Mode.M_NAVIGATION); });
 	$("#m3").click(function() { proxy.setMode(Mode.M_MULTIMEDIA); });
 	$("#m4").click(function() { proxy.setMode(Mode.M_SETTINGS); });
