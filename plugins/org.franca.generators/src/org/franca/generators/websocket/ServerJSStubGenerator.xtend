@@ -38,7 +38,7 @@ class ServerJSStubGenerator {
 	«FOR attribute : api.attributes»
 	«getStubName(api)».prototype.set«attribute.name.toFirstUpper» = function(newValue) {
 		this.«attribute.name» = newValue;
-		this.server.emit('publishAll', "broadcast:«attribute.name»", newValue);
+		this.server.emit('publishAll', "signal:«attribute.name»", newValue);
 	};
 	«ENDFOR»
 
