@@ -19,12 +19,7 @@ function initApp() {
 
 	// register callback for SimpleUI.onChangedClock() updates
 	proxy.onChangedClock = function(clock) {
-		console.log("onChangedClock " + clock)
-		//$('tClock').text(clock);
-	};
-	proxy.onGetClock = function(cid, clock) {
-		console.log("onGetClock " + clock)
-		$('#tClock').text("Time: " + clock);
+		$('#tClock').text(clock);
 	};
 
 	// register callback for SimpleUI.setMode() replies
@@ -39,7 +34,7 @@ function initApp() {
 	
 	proxy.onOpened = function() {
 		console.log('The connection has been opened!')
-		proxy.getClock();
+		proxy.subscribeClockChanged();
 	}
 	
 	proxy.onClosed = function() {

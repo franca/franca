@@ -7,10 +7,11 @@ http.init(8080, '../client');
 // create websocket stub for SimpleUI interface and listen to websocket port.
 var SimpleUIStub = require('./gen/org/example/SimpleUIStub');
 var stub = new SimpleUIStub(8081);
-stub.init();
 
-// TODO: will this really work? We need a setClock function in the stub which also sends updates to the clients
+// set initial values for attributes
 stub.clock = getTime();
+
+stub.init();
 
 stub.onClientConnected = function(clientID) {
 	console.log('The ID of the newly connected client is ' + clientID);
@@ -38,7 +39,12 @@ stub.setMode = function (mode) {
 stub.startNavigation = function (street, city) {
 	console.log("startNavigation: street=" + street + " city=" + city);
 	return {"routeLength" : street.length + 10*city.length, "arrivalTime" : "22:00"};
-}
+};
+
+
+var driveTimerID = setInterval(function() {
+	stub.setClock(getTime());
+}, 1000);
 
 function getTime() {
 	var date = new Date();
@@ -48,8 +54,12 @@ function getTime() {
     var min  = date.getMinutes();
     min = (min < 10 ? "0" : "") + min;
 
-    return hour + ":" + min
+    var sec  = date.getSeconds();
+    sec = (sec < 10 ? "0" : "") + sec;
+
+    return hour + ":" + min + ":" + sec
 }
+
 
 // simulation of driving car, sending broadcasts for current velocity
 var vTarget = 0.0;
@@ -57,7 +67,7 @@ var vActual = 0.0;
 var acc = 0.0;
 var phase = 0;
 var t = 0;
-var timerID = setInterval(function() {
+var driveTimerID = setInterval(function() {
 	switch (phase) {
 		case 0: // set target values
 			vTarget = 1 + Math.random()*120;
