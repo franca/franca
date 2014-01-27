@@ -3,7 +3,7 @@
 
 function initApp() {
 	// initialize tacho widget	
-	var tacho = Raphael("tacho").tachometer(0, {
+	var tacho = Raphael("tacho", 260, 260).tachometer(0, {
 		interactive: true,
 		needleAnimationEasing: "linear", // or: <>, bounce, elastic
 		needleAnimationDuration: 500,
