@@ -7,13 +7,8 @@ interface SimpleUI {
 	
 	attribute String clock readonly
 
-	method setMode {
-		in {
-			Mode mode
-		}
-		out {
-			String display
-		}
+	method playMusic {
+		in { Genre genre }
 	}
 	
 	method startNavigation {
@@ -28,16 +23,18 @@ interface SimpleUI {
 	}
 
 	broadcast updateVelocity {
-		out {
-			UInt16 velocity
-		}
+		out { UInt16 velocity }
 	}
-	
-	enumeration Mode {
-		M_RADIO
-		M_NAVIGATION
-		M_MULTIMEDIA
-		M_SETTINGS
+
+	broadcast playingTitle {
+		out { String title }
+	}
+
+	enumeration Genre {
+		M_NONE
+		M_POP
+		M_TECHNO
+		M_TRANCE
 	}
 
 }

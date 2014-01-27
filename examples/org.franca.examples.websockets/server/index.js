@@ -4,6 +4,11 @@ var HttpServer = require('./util/HttpServer');
 var http = new HttpServer();
 http.init(8080, '../client');
 
+// MusicPlayer stuff
+var MusicPlayer = require('./MusicPlayer');
+var player = new MusicPlayer();
+
+
 // create websocket stub for SimpleUI interface and listen to websocket port.
 var SimpleUIStub = require('./gen/org/example/SimpleUIStub');
 var stub = new SimpleUIStub(8081);
@@ -21,19 +26,21 @@ stub.onClientDisconnected = function(clientID) {
 	console.log('The client with ID ' + clientID + ' has disconnected');
 }
 
-stub.setMode = function (mode) {
+stub.playMusic = function (genre) {
 	var d = "";
 	
-	console.log("setMode: mode=" + mode);
-	switch (mode) {
-		case SimpleUIStub.Mode.M_RADIO:      d = "Bay Radio FM"; break;
-		case SimpleUIStub.Mode.M_NAVIGATION: d = "Destination?"; break;
-		case SimpleUIStub.Mode.M_MULTIMEDIA: d = "Ring, ring!"; break;
-		case SimpleUIStub.Mode.M_SETTINGS:   d = "Your settings"; break;
-		default: console.error("Invalid value " + mode + " for parameter 'mode'!");
+	switch (genre) {
+		case SimpleUIStub.Genre.M_NONE:   player.stop(); break;
+		case SimpleUIStub.Genre.M_POP:    player.play('http://icecast.radio24.ch/radio24pop'); break;
+		case SimpleUIStub.Genre.M_TECHNO: player.play('http://firewall.pulsradio.com'); break;
+		case SimpleUIStub.Genre.M_TRANCE: player.play('http://firewall.trance.pulsradio.com'); break;
+		default: console.error("Invalid value " + genre + " for parameter 'genre'!");
 	}
+}
 
-	return d;
+player.onStreamTitle = function(title) {
+	// forward to UI
+	stub.playingTitle(title);
 }
 
 stub.startNavigation = function (street, city) {

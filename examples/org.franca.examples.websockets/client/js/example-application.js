@@ -28,12 +28,12 @@ function initApp() {
 		$('#tClock').text(clock);
 	};
 
-	// register callback for SimpleUI.setMode() replies
-	proxy.replySetMode = function(cid, display) {
-		document.getElementById('reply1').innerHTML = display;
+	// register callback for SimpleUI.playingTitle() broadcast
+	proxy.signalPlayingTitle = function(title) {
+		document.getElementById('current-title').innerHTML = title;
 	};
 
-	// register callback for SimpleUI.updateVelocity() broadcasts
+	// register callback for SimpleUI.updateVelocity() broadcast
 	proxy.signalUpdateVelocity = function(velocity) {
 		tacho.set(velocity);
 	};
@@ -47,11 +47,11 @@ function initApp() {
 		console.log('The connection has been closed!')
 	}
 
-	// connect UI buttons with setMode() calls
-	$("#m1").click(function() { proxy.setMode(Mode.M_RADIO); });
-	$("#m2").click(function() { proxy.setMode(Mode.M_NAVIGATION); });
-	$("#m3").click(function() { proxy.setMode(Mode.M_MULTIMEDIA); });
-	$("#m4").click(function() { proxy.setMode(Mode.M_SETTINGS); });
+	// connect UI buttons with playMusic() calls
+	$("#m1").click(function() { proxy.playMusic(Genre.M_NONE); });
+	$("#m2").click(function() { proxy.playMusic(Genre.M_POP); });
+	$("#m3").click(function() { proxy.playMusic(Genre.M_TECHNO); });
+	$("#m4").click(function() { proxy.playMusic(Genre.M_TRANCE); });
 
 
 	$(document).on( "pageinit", "#pNav", function() {
