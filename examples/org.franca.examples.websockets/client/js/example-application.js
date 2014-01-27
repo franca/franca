@@ -12,6 +12,12 @@ function initApp() {
 		shortScaleCount: 80,
 		numberUnit: " km/h"
 	});
+	
+	// this fixes a tachometer layout issue on WebKit (Chrome, Safari)
+	var elems = $('tspan');
+	for(var i = 0; i < elems.length; i++) {
+		elems[i].setAttribute('dy', 0);
+	}
 
 	// initialize proxy for SimpleUI interface
 	var proxy = new SimpleUIProxy();
