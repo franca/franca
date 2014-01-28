@@ -1,5 +1,11 @@
+/*******************************************************************************
+* Copyright (c) 2014 itemis AG (http://www.itemis.de).
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+*******************************************************************************/
 
-// switch page programmatically: $.mobile.changePage("#pNav")
 
 function initApp() {
 	// initialize proxy for SimpleUI interface
@@ -11,45 +17,46 @@ function initApp() {
 		$('#tClock').text(clock);
 	};
 
-	// register callback for SimpleUI.playingTitle() broadcast
-	proxy.signalPlayingTitle = function(title) {
-		document.getElementById('current-title').innerHTML = title;
-	};
-
-	// register callback for SimpleUI.updateVelocity() broadcast
-	proxy.signalUpdateVelocity = function(velocity) {
-		tacho.set(velocity);
-	};
-	
 	proxy.onOpened = function() {
-		console.log('The connection has been opened!')
+		$('#user-message').text("Connection to server established.");
 		proxy.subscribeClockChanged();
 	}
 	
+	// this callback is invoked when the server connection is closed
 	proxy.onClosed = function() {
-		console.log('The connection has been closed!')
+		$('#user-message').text("Connection to server lost!");
+		$('#tClock').text("???");
 	}
 
-	// connect UI buttons with playMusic() calls
-	$("#m1").click(function() { proxy.playMusic(Genre.M_NONE); });
-	$("#m2").click(function() { proxy.playMusic(Genre.M_POP); });
-	$("#m3").click(function() { proxy.playMusic(Genre.M_TECHNO); });
-	$("#m4").click(function() { proxy.playMusic(Genre.M_TRANCE); });
+	// register callback for SimpleUI.userMessage() broadcast
+	proxy.signalUserMessage = function(text) {
+		$('#user-message').text(text);
+	};
+	
+	// connect UI buttons with setOperation() calls
+	$("#m1").click(function() { proxy.setOperation(Operation.OP_ADD);      callCompute(); });
+	$("#m2").click(function() { proxy.setOperation(Operation.OP_SUBTRACT); callCompute(); });
+	$("#m3").click(function() { proxy.setOperation(Operation.OP_MULTIPLY); callCompute(); });
+	$("#m4").click(function() { proxy.setOperation(Operation.OP_DIVIDE);   callCompute(); });
 
+	// connect operand input fields with compute() calls
+	$("#number-1").bind('change', function() { callCompute(); });
+	$("#number-2").bind('change', function() { callCompute(); });
+	$("#number-1").bind('keyup', function() { callCompute(); });
+	$("#number-2").bind('keyup', function() { callCompute(); });
 
-	$(document).on( "pageinit", "#pNav", function() {
-		$("#mStart").click(function() {
-			proxy.startNavigation(
-				document.getElementById("street").value,
-				document.getElementById("city").value);
-		});
+	function callCompute() {
+		var a = $("#number-1").val();
+		var b = $("#number-2").val();
+		if (a.length>0 && b.length>0) {
+			proxy.compute(parseInt(a), parseInt(b));
+		}
+	}
 
-		// register callback for SimpleUI.startNavigation() replies
-		proxy.replyStartNavigation = function(cid, routeLength) {
-			$('#navresult').text("Distance to destination: " + routeLength + " km");
-		};
-
-	});
+	// register callback for SimpleUI.compute() response
+	proxy.replyCompute = function(cid, result) {
+		$('#result').text("Result: " + result);
+	};
 
 }
 

@@ -46,17 +46,33 @@
 <div data-role="page" id="pHome" pagetype="standard" class="franca-example">
 
 	<div role="main" class="ui-content franca-content">
+		<form>
+		    <fieldset data-role="controlgroup" data-type="horizontal">
+		        <input type="radio" name="radio-op" id="m1">
+		        <label for="m1">Add</label>
+		        <input type="radio" name="radio-op" id="m2">
+		        <label for="m2">Subtract</label>
+		        <input type="radio" name="radio-op" id="m3">
+		        <label for="m3">Multiply</label>
+		        <input type="radio" name="radio-op" id="m4">
+		        <label for="m4">Divide</label>
+		    </fieldset>
 
-		<table class="bigframe" >
-			<td><div style="width: 120px">
-			<hr/>
-			<p><input id="m1" type="button" value="Off" class="button1"></p>
-			<p><input id="m2" type="button" value="Pop" class="button1"></p>
-			<p><input id="m3" type="button" value="Techno" class="button1"></p>
-			<p><input id="m4" type="button" value="Trance" class="button1"></p>
-			<hr/>
-			</div></td></tr>
-		</table>
+		    <label for="number-1">Operand 1</label>
+     		<input type="number" data-clear-btn="false" name="number-1" id="number-1" value="">
+		    <label for="number-2">Operand 2</label>
+     		<input type="number" data-clear-btn="false" name="number-2" id="number-2" value="">
+
+     		<br/>
+
+			<div id="result" class="ui-bar ui-bar-a ui-corner-all" style="margin-bottom:1em;">
+				<p>Enter operands to get a result!</p>
+			</div>
+
+			<div id="user-message" class="ui-bar ui-bar-a ui-corner-all" style="margin-bottom:1em;">
+				<p></p>
+			</div>
+		</form>
 	</div><!-- /content -->
 </div><!-- /page one -->
 

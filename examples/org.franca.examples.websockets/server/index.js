@@ -37,21 +37,34 @@ stub.onClientDisconnected = function(clientID) {
 	console.log('The client with ID ' + clientID + ' has disconnected');
 }
 
-stub.playMusic = function (genre) {
-	var d = "";
-	
-	switch (genre) {
-		case SimpleUIStub.Genre.M_NONE:   break;
-		case SimpleUIStub.Genre.M_POP:    break;
-		case SimpleUIStub.Genre.M_TECHNO: break;
-		case SimpleUIStub.Genre.M_TRANCE: break;
-		default: console.error("Invalid value " + genre + " for parameter 'genre'!");
-	}
+var currentOperation = -1;
+
+stub.setOperation = function (operation) {
+	currentOperation = operation;
 }
 
-stub.startNavigation = function (street, city) {
-	console.log("startNavigation: street=" + street + " city=" + city);
-	return {"routeLength" : street.length + 10*city.length, "arrivalTime" : "22:00"};
+stub.compute = function (a, b) {
+	if (currentOperation<0) {
+		stub.userMessage("Please select an operation first!");
+		return 0;
+	} else {
+		stub.userMessage("");
+	}
+
+	var result = 0;
+	switch (currentOperation) {
+		case SimpleUIStub.Operation.OP_ADD:       result = a + b; break;
+		case SimpleUIStub.Operation.OP_SUBTRACT:  result = a - b; break;
+		case SimpleUIStub.Operation.OP_MULTIPLY:  result = a * b; break;
+		case SimpleUIStub.Operation.OP_DIVIDE:
+			if (b==0) {
+				stub.userMessage("Division by zero!");
+			} else {
+				result = a / b;
+			}
+			break;
+	}
+	return result;
 };
 
 

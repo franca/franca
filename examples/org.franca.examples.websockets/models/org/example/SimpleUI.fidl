@@ -7,34 +7,29 @@ interface SimpleUI {
 	
 	attribute String clock readonly
 
-	method playMusic {
-		in { Genre genre }
+	method setOperation fireAndForget {
+		in  { Operation op }
 	}
 	
-	method startNavigation {
+	method compute {
 		in {
-			String street
-			String city
+			UInt32 a
+			UInt32 b
 		}
 		out {
-			UInt32 routeLength
-			String arrivalTime
+			UInt32 result
 		}
 	}
 
-	broadcast updateVelocity {
-		out { UInt16 velocity }
+	broadcast userMessage {
+		out { String text }
 	}
 
-	broadcast playingTitle {
-		out { String title }
-	}
-
-	enumeration Genre {
-		M_NONE
-		M_POP
-		M_TECHNO
-		M_TRANCE
+	enumeration Operation {
+		OP_ADD
+		OP_SUBTRACT
+		OP_MULTIPLY
+		OP_DIVIDE
 	}
 
 }
