@@ -4,7 +4,7 @@
  * 
  * Code changes: Tamas Szabo (itemis AG)
  ******************************************************************************/
-var util = require('../util/util');
+var util = require('./util');
 
 var messageTypes = {
 	WELCOME : 0,

@@ -1,11 +1,11 @@
 // create http server and listen to port 8080
 // we need this to serve index.html and other files to the client
-var HttpServer = require('./util/HttpServer');
+var HttpServer = require('./base/util/HttpServer');
 var http = new HttpServer();
 http.init(8080, '../client');
 
 // MusicPlayer application
-var MusicPlayer = require('./MusicPlayer');
+var MusicPlayer = require('./applications/MusicPlayer');
 var player = new MusicPlayer();
 
 // Vehicle application
