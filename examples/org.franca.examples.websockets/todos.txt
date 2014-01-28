@@ -8,12 +8,6 @@ Remarks:
 
 NOW:
 
-* Improve example [Klaus]
-  - use attributes
-  - maybe more than one application screen
-  - add more controls/interaction
-  - include Google Maps (?)
-
 * Test usage of more complex data structures in example [Klaus]
   - prio 1: struct, array
   - prio 2: map, union
@@ -23,13 +17,12 @@ NOW:
     (simply changing it with an assignment will not send updates to clients)
   - no onSet... callback should be generated on client side for readonly attributes
 
-LATER:
-
 * Generate initial/example client/server interface
   - this serves as a quick starting point for developers
 
-* Use contracts somehow to demonstrate another benefit of Franca
-  - generate additional code to check the correct usage (?)
+LATER:
+
+
 
 DONE:
 * Bug: More than one methods should work [Tamas]
