@@ -8,6 +8,14 @@
 
 Speaker = require('speaker');
 
+/*
+    Music player component.
+
+    Currently it is able to play mp3 streams from icecast servers.
+    It will also intercept meta data events and provide some information a
+    about artist/title of the currently played song.
+*/
+
 function MusicPlayer() {
   this.lame = require('lame');
   this.icecast = require('icecast');
