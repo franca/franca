@@ -1,3 +1,19 @@
+/*******************************************************************************
+* Copyright (c) 2014 itemis AG (http://www.itemis.de).
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+*******************************************************************************/
+
+/*
+	This is an example websocket server which uses the JS-stub as generated
+	by Franca's WAMP/Websocket generator in org.franca.generators.websocket. 
+
+	The server is implemented in JavaScript and is based on node.js and
+	the websocket.io library.
+*/
+
 // create http server and listen to port 8080
 // we need this to serve index.html and other files to the client
 var HttpServer = require('./base/util/HttpServer');
