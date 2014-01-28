@@ -12,6 +12,11 @@ NOW:
   - prio 1: struct, array
   - prio 2: map, union
 
+* Bug: Codegen for fireAndForget methods [Tamas]
+  - if a method is flagged "fireAndForget", there is no response needed
+  - see example SimpleUI.setOperation()
+  - the generation of "replySetOperation" in the proxy should be removed
+
 * Bug: Codegen for arguments [Tamas]
   - there is no call on server side to change the attribute's value
     (simply changing it with an assignment will not send updates to clients)
