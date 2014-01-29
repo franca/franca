@@ -12,24 +12,24 @@ import static extension org.franca.generators.websocket.WebsocketGeneratorUtils.
 
 class ClientJSStubGenerator {
 
-	def getStubName(FInterface api) {
+	def getFileName(FInterface api) {
 		api.name.toFirstUpper + "Proxy"
 	}
 	
 	def generate(FInterface api) '''
-	function «getStubName(api)»() {
+	function «getFileName(api)»() {
 		this.socket = null;
 		this.callID = 0;
 	}
 	
-	«getStubName(api)».prototype.getNextCallID = function() {
+	«getFileName(api)».prototype.getNextCallID = function() {
 		this.callID = this.callID + 1;
 		return this.callID;
 	};
 
 	«FOR attribute : api.attributes»
 	// call to get the value of «attribute.name» asynchronously
-	«getStubName(api)».prototype.get«attribute.name.toFirstUpper» = function() {
+	«getFileName(api)».prototype.get«attribute.name.toFirstUpper» = function() {
 		var cid = this.getNextCallID();
 		this.socket.send('[2, "get:«attribute.name»:' + cid + '", "get:«attribute.name»"]');
 		return cid;
@@ -37,7 +37,7 @@ class ClientJSStubGenerator {
 	
 	«IF !attribute.readonly»
 	// call to set the value of «attribute.name» asynchronously
-	«getStubName(api)».prototype.set«attribute.name.toFirstUpper» = function(«attribute.name») {
+	«getFileName(api)».prototype.set«attribute.name.toFirstUpper» = function(«attribute.name») {
 		var cid = this.getNextCallID();
 		this.socket.send('[2, "set:«attribute.name»:' + cid + '", "set:«attribute.name»", ' + «attribute.name» + ']');
 		return cid;
@@ -46,12 +46,12 @@ class ClientJSStubGenerator {
 	«ENDIF»	
 	«IF !attribute.noSubscriptions»	
 	// call this method to subscribe for the changes of the attribute «attribute.name»
-	«getStubName(api)».prototype.subscribe«attribute.name.toFirstUpper»Changed = function() {
+	«getFileName(api)».prototype.subscribe«attribute.name.toFirstUpper»Changed = function() {
 		this.socket.send('[5, "signal:«attribute.name»"]');
 	};
 	
 	// call this method to unsubscribe from the changes of the attribute «attribute.name»
-	«getStubName(api)».prototype.unsubscribe«attribute.name.toFirstUpper»Changed = function() {
+	«getFileName(api)».prototype.unsubscribe«attribute.name.toFirstUpper»Changed = function() {
 		this.socket.send('[6, "signal:«attribute.name»"]');
 	};
 	
@@ -59,14 +59,14 @@ class ClientJSStubGenerator {
 	«ENDFOR»
 	«FOR method : api.methods»
 	// call this method to invoke «method.name» on the server side
-	«getStubName(api)».prototype.«method.name» = function(«method.inArgs.genArgList("", ", ")») {
+	«getFileName(api)».prototype.«method.name» = function(«method.inArgs.genArgList("", ", ")») {
 		var cid = this.getNextCallID();
 		this.socket.send('[2, "invoke:«method.name»:' + cid + '", "invoke:«method.name»"«IF !method.inArgs.empty», ' + JSON.stringify({«FOR arg : method.inArgs SEPARATOR ", "»"«arg.name»" : «arg.name»«ENDFOR»})«ENDIF» + ']');
 		return cid;
 	};
 	«ENDFOR»
 	
-	«getStubName(api)».prototype.connect = function(address) {
+	«getFileName(api)».prototype.connect = function(address) {
 		var _this = this;
 		
 		// create WebSocket for this proxy	

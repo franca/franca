@@ -14,35 +14,35 @@ import static org.franca.core.franca.FrancaPackage$Literals.*
 
 class ServerJSStubGenerator {
 
-	def getStubName (FInterface api) {
+	def getFileName (FInterface api) {
 		api.name.toFirstUpper + "Stub"
 	}
 
 	def generate(FInterface api) '''
-	function «getStubName(api)»(port) {
+	function «getFileName(api)»(port) {
 		this.wsio = require('websocket.io');
 		this.socket = this.wsio.listen(port);
-		this.server = new (require('«FOR t : api.eContainer.eGet(FMODEL_ELEMENT__NAME).toString.split("\\.")»../«ENDFOR»../base/iowamp/server'))();
+		this.server = new (require('«genPathToRoot(api.eContainer.eGet(FMODEL_ELEMENT__NAME).toString)»base/iowamp/server'))();
 		«FOR attribute : api.attributes»
 		this.«attribute.name» = null;
 		«ENDFOR»
 	}
 
 	// export the "constructor" function to provide a class-like interface
-	module.exports = «getStubName(api)»;
+	module.exports = «getFileName(api)»;
 
-	«getStubName(api)».prototype.getClients = function() {
+	«getFileName(api)».prototype.getClients = function() {
 		return Objects.keys(this.server.clients);
 	};
 	
 	«FOR attribute : api.attributes»
-	«getStubName(api)».prototype.set«attribute.name.toFirstUpper» = function(newValue) {
+	«getFileName(api)».prototype.set«attribute.name.toFirstUpper» = function(newValue) {
 		this.«attribute.name» = newValue;
 		this.server.emit('publishAll', "signal:«attribute.name»", newValue);
 	};
 	«ENDFOR»
 
-	«getStubName(api)».prototype.init = function() {
+	«getFileName(api)».prototype.init = function() {
 		var _this = this;
 		
 		_this.socket.on('connection', function(client) {
@@ -111,7 +111,7 @@ class ServerJSStubGenerator {
 	};
 	
 	«FOR broadcast : api.broadcasts»
-	«getStubName(api)».prototype.«broadcast.name» = function(data) {
+	«getFileName(api)».prototype.«broadcast.name» = function(data) {
 		this.server.emit('publishAll', "broadcast:«broadcast.name»", data);
 	};
 	«ENDFOR»
