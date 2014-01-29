@@ -1,92 +1,127 @@
 <!doctype html>
 <html>
 <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<title>Franca Websockets Example</title>
 	
 	<!-- stylesheets -->
 	<link rel="stylesheet" type="text/css" href="css/style.css"></link>
 
 	<!-- download the 3rd party JS libs in order to work offline
-	     (they won't be part of the Franca distribution) -->
+		 (they won't be part of the Franca distribution) -->
 	<!--
-	<script src="js/cached/raphael.min.js"></script>
-	<script src="js/cached/raphael.tachometer.min.js"></script>
 	-->
 	
 	<!-- online versions of 3rd party libs -->
 	<!--
 	-->
-	<script src="http://www.code-front.com/apps/tachometer/js/raphael.min.js"></script>
-	<script src="http://www.code-front.com/apps/tachometer/js/raphael.tachometer.min.js"></script>
-	
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.0/jquery.mobile-1.4.0.min.css"></link>
+	<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+	<script src="http://code.jquery.com/mobile/1.4.0/jquery.mobile-1.4.0.min.js"></script>
+<!--
+-->
+
 	<!-- generated proxy classes -->
 	<script src="gen/org/example/SimpleUIProxy.js"></script>
-	
+
+	<!-- own JS files -->
+	<script src="js/example-application.js"></script>
+
 </head>
 <body>
+<header id="constantheader-wrapper">
+<div data-role="header" data-position="fixed" data-theme="a" >
 	<h1>HTML5 UI with Franca and Websockets</h1>
+	<!-- <a href="#" data-icon="gear" class="ui-btn-right">Options</a> -->
+	<div data-role="navbar">
+		<ul>
+			<li><a href="#pHome" data-transition="flip">Home</a></li>
+			<li><a href="#pAbout" data-transition="flip">About</a></li>
+		</ul>
+	</div><!-- /navbar -->
+</div><!-- /header -->
+</header>
 
-	<table class="bigframe" >
-		<tr><td width="320px"><div id="tacho"></div></td>
-		<td><form>
-		<hr/>
-	    <p><input id="m1" type="button" value="Radio" class="button1"></p>
-	    <p><input id="m2" type="button" value="Navigation" class="button1"></p>
-	    <p><input id="m3" type="button" value="Phone" class="button1"></p>
-	    <p><input id="m4" type="button" value="Settings" class="button1"></p>
+<div data-role="page" id="pHome" pagetype="standard" class="franca-example">
+
+	<div role="main" class="ui-content franca-content">
+		<form>
+		    <fieldset data-role="controlgroup" data-type="horizontal">
+		        <input type="radio" name="radio-op" id="m1">
+		        <label for="m1">Add</label>
+		        <input type="radio" name="radio-op" id="m2">
+		        <label for="m2">Subtract</label>
+		        <input type="radio" name="radio-op" id="m3">
+		        <label for="m3">Multiply</label>
+		        <input type="radio" name="radio-op" id="m4">
+		        <label for="m4">Divide</label>
+		    </fieldset>
+
+		    <label for="number-1">Operand 1</label>
+     		<input type="number" data-clear-btn="false" name="number-1" id="number-1" value="">
+		    <label for="number-2">Operand 2</label>
+     		<input type="number" data-clear-btn="false" name="number-2" id="number-2" value="">
+
+     		<br/>
+
+			<div id="result" class="ui-bar ui-bar-a ui-corner-all" style="margin-bottom:1em;">
+				<p>Enter operands to get a result!</p>
+			</div>
+
+			<div id="user-message" class="ui-bar ui-bar-a ui-corner-all" style="margin-bottom:1em;">
+				<p></p>
+			</div>
 		</form>
-		<hr/>
-	 	<p id="reply1" class="text1">Please choose!</p>
-		</td></tr>
-	</table>
-
-	<p><br>
-	The sources for this page can be found in example project <em>org.franca.example.websockets</em>.
-	</p>
-	<p>
-	For more details on Franca, please visit the
-	<a href="http://code.google.com/a/eclipselabs.org/p/franca/" target="_blank">Franca homepage</a>!
-	</p>
+	</div><!-- /content -->
+</div><!-- /page one -->
 
 
-	<script type="text/javascript">
+<!-- Start of About page -->
+<div data-role="page" id="pAbout" pagetype="standard" class="franca-example" data-theme="a">
 
-	// initialize tacho widget	
-	var tacho = Raphael("tacho").tachometer(0, {
-		interactive: true,
-		needleAnimationEasing: "<>", // or: bounce, elastic
-		needleAnimationDuration: 600,
-		numberMax: 100
-	});
+	<div role="main" class="ui-content franca-content">
+		<h2>About this demo</h2>
 
-	// initialize proxy for SimpleUI interface
-    var settings = { host: 'ws://localhost:9000' };
-    var proxy = new SimpleUIProxy();
-    proxy.connect(settings);
+		<p>The sources for this page can be found in example project
+			<em>org.franca.example.websockets</em>.</p>
+		<p>
+		For more details on Franca, please visit the
+		<a href="http://code.google.com/a/eclipselabs.org/p/franca/" target="_blank">Franca homepage</a>!
+		</p><br/>
+		<p>
+		Find a more elaborate showcase of using Franca for HTML5 UIs on github:
+		<a href="https://github.com/kbirken/franca-html5-showcase" target="_blank">franca-html5-showcase</a>!
+		</p><br/>
 
-	// register callback for SimpleUI.setMode() replies
-	proxy.replySetMode = function(display) {
-		document.getElementById('reply1').innerHTML = display;
-    };
+		<br/>
 
-	// register callback for SimpleUI.updateVelocity() broadcasts
-	proxy.signalUpdateVelocity = function(velocity) {
-		tacho.set(velocity);
-	};
+		<p>This demo and the Franca JS/Websocket generator was built by
+			Tamas Szabo and Klaus Birken.</p>
 
-	// connect UI buttons with setMode() calls
-	document.getElementById("m1").addEventListener("click",
-		function(event) { proxy.callSetMode(Mode.M_RADIO); },
-		false);
-	document.getElementById("m2").addEventListener("click",
-		function(event) { proxy.callSetMode(Mode.M_NAVIGATION); },
-		false);
-	document.getElementById("m3").addEventListener("click",
-		function(event) { proxy.callSetMode(Mode.M_MULTIMEDIA); },
-		false);
-	document.getElementById("m4").addEventListener("click",
-		function(event) { proxy.callSetMode(Mode.M_SETTINGS); },
-		false);
-	</script>
+	</div><!-- /content -->
+</div><!-- /page About -->
+
+
+<!-- Footer: Status line -->
+<div data-role="footer" data-position="fixed" data-theme="a" class="ui-grid-a" id="statusline">
+	<div class="ui-block-a">
+		<div class="ui-bar ui-bar-a">
+			<p>org.franca.examples.websockets</p>
+		</div>
+	</div>
+	<div class="ui-block-b">
+		<div class="ui-bar ui-bar-a">
+			<p><div id="tClock"></p>
+		</div>
+	</div>
+</div><!-- /footer -->
+
+
+<script type="text/javascript">
+	initFixedHeaders();
+	initApp();
+</script>
+
 </body>
 </html>

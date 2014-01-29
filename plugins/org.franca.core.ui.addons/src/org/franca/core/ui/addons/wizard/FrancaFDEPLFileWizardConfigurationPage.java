@@ -8,7 +8,6 @@
 package org.franca.core.ui.addons.wizard;
 
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;

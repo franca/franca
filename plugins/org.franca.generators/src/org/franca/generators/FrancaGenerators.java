@@ -13,8 +13,10 @@ import org.franca.core.franca.FModel;
 import org.franca.core.utils.FileHelper;
 import org.franca.generators.html.HTMLGenerator;
 import org.franca.generators.java.JavaAPIGenerator;
-import org.franca.generators.websocket.WebsocketJSStubGenerator;
-import org.franca.generators.websocket.WebsocketProxyGenerator;
+import org.franca.generators.websocket.ClientJSBlueprintGenerator;
+import org.franca.generators.websocket.ClientJSStubGenerator;
+import org.franca.generators.websocket.ServerJSBlueprintGenerator;
+import org.franca.generators.websocket.ServerJSStubGenerator;
 
 public class FrancaGenerators {
 
@@ -27,7 +29,6 @@ public class FrancaGenerators {
 		String outPath = outDir + "/" + createPath(model);
 		return FileHelper.save(outPath, basename + ".html", html);
 	}
-	
 	
 	public boolean genJava (String srcGenDir, String pkg, FModel model) {
 		String genDir = srcGenDir + "/" + pkg.replace(".", "/") + "/";
@@ -53,19 +54,26 @@ public class FrancaGenerators {
 	}
 	
 	public boolean genWebsocket (FModel model, String serverGenDir, String clientGenDir) {
-		WebsocketProxyGenerator genProxy = new WebsocketProxyGenerator();
-		WebsocketJSStubGenerator genStub = new WebsocketJSStubGenerator();
-
+		ClientJSStubGenerator genClientStub = new ClientJSStubGenerator();
+		ServerJSStubGenerator genServerStub = new ServerJSStubGenerator();
+		ServerJSBlueprintGenerator genServerBlueprint = new ServerJSBlueprintGenerator();
+		ClientJSBlueprintGenerator genClientBlueprint = new ClientJSBlueprintGenerator();
+		
 		// we pick the first interface only
 		FInterface api = model.getInterfaces().get(0);
 
-		String outPath1 = clientGenDir + "/" + createPath(model);
-		String outPath2 = serverGenDir + "/" + createPath(model);
-		String output1 = genProxy.generate(api).toString();
-		String output2 = genStub.generate(api).toString();
-		boolean ok1 = FileHelper.save(outPath1, genProxy.getProxyName(api) + ".js", output1);
-		boolean ok2 = FileHelper.save(outPath2, genStub.getStubName(api) + ".js", output2);
-		return ok1 && ok2;
+		String clientGenPath = clientGenDir + "/" + createPath(model);
+		String serverGenPath = serverGenDir + "/" + createPath(model);
+		
+		String clientStubContent = genClientStub.generate(api).toString();
+		String serverStubContent = genServerStub.generate(api).toString();
+		String clientBlueprintContent = genClientBlueprint.generate(api).toString();
+		String serverBlueprintContent = genServerBlueprint.generate(api).toString();
+		
+		return FileHelper.save(clientGenPath, genClientStub.getFileName(api) + ".js", clientStubContent)
+			&& FileHelper.save(serverGenPath, genServerStub.getFileName(api) + ".js", serverStubContent)
+			&& FileHelper.save(serverGenPath, genServerBlueprint.getFileName(api) + ".js", serverBlueprintContent)
+			&& FileHelper.save(clientGenPath, genClientBlueprint.getFileName(api) + ".js", clientBlueprintContent);
 	}
 	
 
