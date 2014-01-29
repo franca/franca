@@ -170,6 +170,8 @@
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="predefined" eType="#//FBasicTypeId"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="derived" eType="#//FType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="interval" eType="#//FIntegerInterval"
+        containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FConstantDef" eSuperTypes="#//FTypedElement">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -357,6 +359,12 @@
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="val" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDoubleConstant" eSuperTypes="#//FConstant">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="val" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDoubleObject"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FFloatConstant" eSuperTypes="#//FConstant">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="val" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloatObject"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FBooleanConstant" eSuperTypes="#//FConstant">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="This class represents boolean constants in the Franca contract action language."/>
@@ -381,5 +389,17 @@
   <eClassifiers xsi:type="ecore:EClass" name="FUnaryOperation" eSuperTypes="#//FOperation">
     <eStructuralFeatures xsi:type="ecore:EReference" name="operand" lowerBound="1"
         eType="#//FExpression" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FIfClause" eSuperTypes="#//FStatement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="condition" eType="#//FExpression"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="statements" upperBound="-1"
+        eType="#//FStatement" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="elseClause" eType="#//FIfClause"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FIntegerInterval" eSuperTypes="#//FType">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="lowerBound" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigInteger"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="upperBound" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigInteger"/>
   </eClassifiers>
 </ecore:EPackage>

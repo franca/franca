@@ -32,6 +32,8 @@ import static org.franca.core.FrancaModelExtensions.*
 import static org.franca.core.franca.FrancaPackage$Literals.*
 
 import static extension org.franca.core.framework.FrancaHelpers.*
+import org.franca.core.franca.FDoubleConstant
+import org.franca.core.franca.FFloatConstant
 
 class TypeSystem {
 	
@@ -39,6 +41,8 @@ class TypeSystem {
 	
 	public static val BOOLEAN_TYPE = getBooleanType
 	static val INTEGER_TYPE = getIntegerType
+	static val FLOAT_TYPE = getFloatType
+	static val DOUBLE_TYPE = getDoubleType
 	static val STRING_TYPE = getStringType
 	
 	var IssueCollector collector
@@ -55,6 +59,8 @@ class TypeSystem {
 		switch (expr) {
 			FBooleanConstant: if (expected.checkIsBoolean(loc, feat)) BOOLEAN_TYPE else null
 			FIntegerConstant: if (expected.checkIsInteger(loc, feat)) INTEGER_TYPE else null
+			FFloatConstant: if (expected.checkIsFloat(loc, feat)) FLOAT_TYPE else null
+			FDoubleConstant: if (expected.checkIsDouble(loc, feat)) DOUBLE_TYPE else null
 			FStringConstant:  if (expected.checkIsString(loc, feat)) STRING_TYPE else null
 			default: {
 				addIssue("invalid type of constant value (expected " +
@@ -236,6 +242,34 @@ class TypeSystem {
 		ok
 	}	
 
+	def private checkIsFloat (FTypeRef expected, EObject loc, EStructuralFeature feat) {
+		if (expected==null)
+			return true
+
+		val ok = expected.isFloat
+		if (!ok) {
+			addIssue("invalid type (is Float, expected " +
+				FrancaHelpers::getTypeString(expected) + ")",
+				loc, feat
+			)
+		}
+		ok
+	}
+
+	def private checkIsDouble (FTypeRef expected, EObject loc, EStructuralFeature feat) {
+		if (expected==null)
+			return true
+
+		val ok = expected.isDouble
+		if (!ok) {
+			addIssue("invalid type (is Double, expected " +
+				FrancaHelpers::getTypeString(expected) + ")",
+				loc, feat
+			)
+		}
+		ok
+	}
+	
 	def private checkIsString (FTypeRef expected, EObject loc, EStructuralFeature feat) {
 		if (expected==null)
 			return true
@@ -274,6 +308,22 @@ class TypeSystem {
 		
 		// TODO: we should be more specific here depending on the actual value
 		predefined = FBasicTypeId::INT32
+		it
+	}
+	
+	def private static getFloatType (/*FIntegerConstant value*/) {
+		val it = FrancaFactory::eINSTANCE.createFTypeRef
+		
+		// TODO: we should be more specific here depending on the actual value
+		predefined = FBasicTypeId::FLOAT
+		it
+	}
+	
+	def private static getDoubleType (/*FIntegerConstant value*/) {
+		val it = FrancaFactory::eINSTANCE.createFTypeRef
+		
+		// TODO: we should be more specific here depending on the actual value
+		predefined = FBasicTypeId::DOUBLE
 		it
 	}
 

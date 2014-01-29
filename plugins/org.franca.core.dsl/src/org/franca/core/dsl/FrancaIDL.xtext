@@ -110,7 +110,7 @@ FArgument:
 // type system
 
 FTypeRef returns FTypeRef:
-	predefined=FBasicTypeId | derived=[FType|FQN];
+	predefined=FBasicTypeId | derived=[FType|FQN] | interval=FIntegerInterval;
 
 enum FBasicTypeId returns FBasicTypeId:
 	undefined = 'undefined' |
@@ -127,6 +127,11 @@ enum FBasicTypeId returns FBasicTypeId:
 	Float = 'Float' |
 	Double = 'Double' |
 	ByteBuffer = 'ByteBuffer' ;
+	
+FIntegerInterval returns FIntegerInterval:
+	{FIntegerInterval}
+	'Integer' ('(' (lowerBound=E_BigInteger | 'minInt') ',' (upperBound=E_BigInteger | 'maxInt') ')')?
+;
 
 FType returns FType:
 	FArrayType |
@@ -303,6 +308,18 @@ FEventOnIf:
 FGuard:
 	'[' condition=LogicalOrExpression ']';
 
+FStatement returns FStatement:
+	FAssignment | FIfClause
+;
+
+FIfClause returns FIfClause:
+	'if' '(' condition=LogicalOrExpression')' '{'
+		statements+=FStatement*
+	'}'
+	(
+		'else' elseClause=FIfClause
+	)?
+;
 	
 FAssignment returns FAssignment:
 	lhs=FQualifiedElementRef '=' rhs=LogicalOrExpression;
@@ -310,12 +327,8 @@ FAssignment returns FAssignment:
 FBlock returns FBlock:
 	{FBlock}
 	'{'
-		(statements+=FAssignment)*
+		(statements+=FStatement)*
 	'}';
-
-
-// **************************************************************
-// expression language
 
 LogicalOrExpression returns FExpression:
   LogicalAndExpression
@@ -380,9 +393,19 @@ FQualifiedElementRef:
 	({FQualifiedElementRef.qualifier=current} '.' field=[FField|ID])*;
 
 FConstant returns FExpression:
+	FFloatConstant |
+	FDoubleConstant |
 	FIntegerConstant |
 	FBooleanConstant |
 	FStringConstant;
+
+FDoubleConstant:
+	val=E_DOUBLE_OBJECT
+;
+
+FFloatConstant:
+	val=E_FLOAT_OBJECT
+;
 
 FIntegerConstant:
 	val= E_INT;
@@ -447,6 +470,17 @@ EBoolean returns ecore::EBoolean:
 
 EString returns ecore::EString:
 	STRING | ID;
+
+E_BigInteger returns ecore::EBigInteger:
+	E_INT
+;
+
+terminal E_DOUBLE_OBJECT returns ecore::EDoubleObject :
+	 '-'? INT '.' INT ('e' '-'? INT)? 'd'
+;
+terminal E_FLOAT_OBJECT returns ecore::EFloatObject :
+	 '-'? INT '.' INT ('e' '-'? INT)? 'f'
+;
 
 E_INT returns ecore::EInt:
 	NEGATIVE_INT | INT
