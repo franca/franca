@@ -22,15 +22,15 @@ function generateUUID(a) {
 };
 
 Server.prototype.publishAll = function(topicURI, event) {
-	handlers[protocol.getMessageType(7)].apply(this, [ this, null, [topicURI, event] ]);
+	handlers['PUBLISH'].apply(this, [ this, null, [topicURI, event] ]);
 };
 
 Server.prototype.publishExcludeSingle = function(client, topicURI, event) {
-	handlers[protocol.getMessageType(7)].apply(this, [ this, client, [topicURI, event, true] ]);		
+	handlers['PUBLISH'].apply(this, [ this, client, [topicURI, event, true] ]);		
 };
 
 Server.prototype.publishEligibleList = function(topicURI, event, eligible) {
-	handlers[protocol.getMessageType(7)].apply(this, [ this, null, [topicURI, event, null, eligible] ]);		
+	handlers['PUBLISH'].apply(this, [ this, null, [topicURI, event, null, eligible] ]);		
 };
 
 /**
