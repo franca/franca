@@ -21,6 +21,8 @@ typeCollection MyTypeCollection30 {
 	const UInt64 i31 = 10000000
 	const Int64  i32 = -10000000
 
+//	const Integer(1,10) i40 = 5
+
 	const String s1 = "abc"
 	
 	const Boolean b1 = true
@@ -32,9 +34,20 @@ typeCollection MyTypeCollection30 {
 	const Boolean b7 = i01 != 0
 	const Boolean b8 = s1=="foo" || (i21>10 && i21<20)
 
-//	const Float f1 = 1.0
+	const Float f1 = 1.0f
+	const Float f2 = -1.0f
+	const Float f3 = 1.0e3f
+	const Float f4 = 1.0e-3f
+	const Float f5 = -1.0e-3f
+	const Float f6 = f1
+	const Float f7 = d1
 
-//	const Double d1 = 1.0
+	const Double d1 = 1.0d
+	const Double d2 = -1.0d
+	const Double d3 = 1.0e3d
+	const Double d4 = 1.0e-3d
+	const Double d5 = -1.0e-3d
+	const Double d6 = d1
+	const Double d7 = f1
 
-	
 }
