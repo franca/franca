@@ -12,7 +12,7 @@ import org.franca.core.franca.FInterface
 class ClientJSBlueprintGenerator {
 
 	def getFileName(FInterface api) {
-		api.name.toFirstUpper + "Blueprint"
+		api.name.toFirstUpper + "ClientBlueprint"
 	}
 	
 	def getStubName(FInterface api) {
@@ -95,6 +95,23 @@ class ClientJSBlueprintGenerator {
 	proxy.signal«broadcast.name.toFirstUpper» = function(«broadcast.name») {
 		// here goes your code
 	};
+
+	«ENDFOR»
+	// These functions are provided by the proxy
+	«FOR attribute : api.attributes»
+	proxy.get«attribute.name.toFirstUpper»();
+	«IF !attribute.readonly»
+	proxy.set«attribute.name.toFirstUpper»(null);
+	«ENDIF»	
+	«IF !attribute.noSubscriptions»	
+	proxy.subscribe«attribute.name.toFirstUpper»Changed();
+	proxy.unsubscribe«attribute.name.toFirstUpper»Changed();
+	«ENDIF»
+	«ENDFOR»
+	
+	«FOR method : api.methods»
+	proxy.«method.name»(«FOR arg : method.inArgs SEPARATOR ", "»null«ENDFOR»);
+	
 	«ENDFOR»
 	'''
 }

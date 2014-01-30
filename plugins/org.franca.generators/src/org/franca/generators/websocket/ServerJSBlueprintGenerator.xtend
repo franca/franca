@@ -15,7 +15,7 @@ import static org.franca.generators.websocket.WebsocketGeneratorUtils.*
 class ServerJSBlueprintGenerator {
 
 	def getFileName(FInterface api) {
-		api.name.toFirstUpper + "Blueprint"
+		api.name.toFirstUpper + "ServerBlueprint"
 	} 
 
 	def getStubName (FInterface api) {
@@ -96,6 +96,23 @@ class ServerJSBlueprintGenerator {
 	stub.«method.name» = function(«FOR arg : method.inArgs SEPARATOR ", "»«arg.name»«ENDFOR») {
 		// here goes your code
 	};
+	«ENDFOR»
+	
+	// The following attributes are defined
+	«FOR attribute : api.attributes»
+	stub.«attribute.name» = null;
+	«ENDFOR»
+	
+	// These functions are provided by the stub
+	stub.getClients();
+
+	«FOR attribute : api.attributes»
+	stub.set«attribute.name.toFirstUpper»(null);
+	
+	«ENDFOR»
+	«FOR broadcast : api.broadcasts»
+	stub.«broadcast.name»(null);
+	
 	«ENDFOR»
 	'''
 }
