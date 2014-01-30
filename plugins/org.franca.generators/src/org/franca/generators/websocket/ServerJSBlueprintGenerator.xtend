@@ -9,7 +9,7 @@ package org.franca.generators.websocket
 
 import org.franca.core.franca.FInterface
 
-import static org.franca.core.franca.FrancaPackage.Literals.*
+import static org.franca.core.franca.FrancaPackage$Literals.*
 import static org.franca.generators.websocket.WebsocketGeneratorUtils.*
 
 class ServerJSBlueprintGenerator {
