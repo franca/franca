@@ -6,8 +6,6 @@ import java.util.Map
 import java.util.Queue
 import java.util.Set
 
-import static org.franca.core.utils.CycleChecker.*
-
 class CycleChecker {
 	
 	/**

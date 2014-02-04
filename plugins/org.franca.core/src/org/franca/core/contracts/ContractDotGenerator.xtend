@@ -15,7 +15,6 @@ import org.franca.core.franca.FGuard
 import org.franca.core.franca.FExpression
 import org.franca.core.franca.FBinaryOperation
 import org.franca.core.franca.FQualifiedElementRef
-import org.franca.core.franca.FTypeRef
 import org.franca.core.franca.FIntegerConstant
 import org.franca.core.franca.FBooleanConstant
 

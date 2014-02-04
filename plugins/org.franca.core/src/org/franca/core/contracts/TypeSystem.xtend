@@ -26,15 +26,14 @@ import org.franca.core.franca.FTypeRef
 import org.franca.core.franca.FTypedElement
 import org.franca.core.franca.FUnaryOperation
 import org.franca.core.franca.FrancaFactory
+import org.franca.core.franca.FDoubleConstant
+import org.franca.core.franca.FFloatConstant
 import org.franca.core.utils.FrancaModelCreator
 
 import static org.franca.core.FrancaModelExtensions.*
 import static org.franca.core.franca.FrancaPackage$Literals.*
 
 import static extension org.franca.core.framework.FrancaHelpers.*
-import org.franca.core.franca.FDoubleConstant
-import org.franca.core.franca.FFloatConstant
-import org.franca.core.franca.FEnumerationType
 
 class TypeSystem {
 	
