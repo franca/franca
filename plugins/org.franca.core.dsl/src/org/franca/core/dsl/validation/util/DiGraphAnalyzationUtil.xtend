@@ -28,8 +28,8 @@ class DiGraphAnalyzationUtil {
 	 * The Multimap is expected to be the result of {@link #toMultiMap(Iterator)} after the DiGraph has been topoSorted.
 	 * {1=[2], 2=[1], 10=[11], 11=[10]} returns [[1,2][10,11]] <br/>
 	 * NOTE:
-	 * The underlying algo relies on the abovementioned expectation.
-	 * If the mappedEdges do not represent the abovementioned expectation, 
+	 * The underlying algorithm relies on the above mentioned expectation.
+	 * If the mappedEdges do not represent the above mentioned expectation, 
 	 * i.e they are not part-of-a-cycle-edges of a digraph only, results are unpredictable.
 	 */	
 	def <T> List<List<T>> separateCycles(Multimap<T, T> mappedEdges){

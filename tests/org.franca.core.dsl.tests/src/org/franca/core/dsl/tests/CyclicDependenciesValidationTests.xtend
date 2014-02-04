@@ -111,6 +111,7 @@ class CyclicDependenciesValidationTests extends ValidationTestBase {
 				"MyTypes.M3"
 		) 
 	}
+
 	@Test
 	def void validateFTypeDefCycles() {
 		val model = '''
@@ -123,6 +124,7 @@ class CyclicDependenciesValidationTests extends ValidationTestBase {
 		'''
 		assertDependencyCycles(model, "MyTypes.TD1","MyTypes.S1")
 	}
+
 	@Test
 	@Ignore("Validation won't kick in due to issue http://code.google.com/a/eclipselabs.org/p/franca/issues/detail?id=45")
 	def void validateFInterfaceCycles() {
@@ -145,7 +147,6 @@ class CyclicDependenciesValidationTests extends ValidationTestBase {
 		assertDependencyCycles(model, "this->this")
 	}
 	
-	
 	@Test
 	def void validateArrayNoIndirectSelfReference() {
 		val model = '''
@@ -157,7 +158,6 @@ class CyclicDependenciesValidationTests extends ValidationTestBase {
 		'''
 		assertDependencyCycles(model, "MyTypes.MyArray","MyTypes.OtherArray")
 	}
-	
 	
 	@Test
 	def void validateStructNoSelfReference() {
@@ -199,6 +199,41 @@ class CyclicDependenciesValidationTests extends ValidationTestBase {
 		'''
 		assertDependencyCycles(model, "this->this")
 	}
+
+	@Test
+	def void validateConstantDefNoSelfReference() {
+		val model = '''
+			package a.b.c
+			typeCollection MyTypes {
+				const UInt8 a = a
+			}
+		'''
+		assertDependencyCycles(model, "this->this")
+	}
+
+	@Test
+	def void validateConstantDefNoIndirectReference() {
+		val model = '''
+			package a.b.c
+			typeCollection MyTypes {
+				const UInt8 a = b
+				const UInt8 b = a
+			}
+		'''
+		assertDependencyCycles(model, "MyTypes.a", "MyTypes.b")
+	}
+
+	@Test
+	def void validateConstantDefNoSelfRefViaExpression() {
+		val model = '''
+			package a.b.c
+			typeCollection MyTypes {
+				const UInt8 a = 3 * a
+			}
+		'''
+		assertDependencyCycles(model, "this->this")
+	}
+
 	def assertDependencyCycles(String model, String... cycles){
 		val issues = model.issues
 		val splitIssues = new ArrayList(Arrays::asList(issues.split("\n")))

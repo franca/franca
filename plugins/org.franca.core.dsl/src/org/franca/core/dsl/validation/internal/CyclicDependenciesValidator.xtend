@@ -24,6 +24,16 @@ import org.franca.core.franca.FTypeCollection
 import org.franca.core.franca.FTypeDef
 import org.franca.core.franca.FUnionType
 import org.franca.core.utils.digraph.Digraph
+import org.franca.core.franca.FConstantDef
+import org.franca.core.franca.FQualifiedElementRef
+import org.franca.core.franca.FConstant
+import org.franca.core.franca.FBinaryOperation
+import org.franca.core.franca.FUnaryOperation
+import org.franca.core.franca.FEnumerator
+import org.franca.core.franca.FArrayInitializer
+import org.franca.core.franca.FStructInitializer
+import org.franca.core.franca.FType
+import org.franca.core.franca.FTypedElement
 
 class CyclicDependenciesValidator {
 	@Inject IQualifiedNameProvider qnProvider;
@@ -44,16 +54,24 @@ class CyclicDependenciesValidator {
 			val edgesMap = d.edgesIterator.toMultiMap
 			val cycles = edgesMap.separateCycles
 			for (cycle : cycles) {
-				val msgPerNode = newLinkedList()
+				val msgPerNode = newLinkedList
+				val nodes = newLinkedList
 				// First loop collects messages per node
 				for (node : cycle) {
-					var msgForNode = qnProvider.getFullyQualifiedName(node).toString
-					if (node.eResource == eResourceOfModel) {
-						msgForNode = msgForNode.replaceAll(fqNameOfModel + "\\.?", "")
+					var fqn = qnProvider.getFullyQualifiedName(node)
+					var msgForNode = ""
+					if (fqn==null) {
+						// skip intermediate nodes (e.g., FExpressions, FQualifiedElementRefs, ...)
+					} else {
+						msgForNode = fqn.toString
+						if (node.eResource == eResourceOfModel) {
+							msgForNode = msgForNode.replaceAll(fqNameOfModel + "\\.?", "")
+						}
+						msgPerNode += msgForNode
+						nodes += node
 					}
-					msgPerNode += msgForNode;
 				}
-				for (node : cycle) {
+				for (node : nodes) {
 					// Second loop tinkers messages ...
 					if (node.eResource == m.eResource) {
 						val StringBuilder msg = new StringBuilder("Cyclic dependency detected: this")
@@ -67,7 +85,7 @@ class CyclicDependenciesValidator {
 							reporter.reportError(msg.toString, node, eAttribute);
 						} 
 					}
-					// ... and shifts msdPerNode in order to make the errormessage appear specific per node 
+					// ... and shifts msgPerNode in order to make the errormessage appear specific per node 
 					msgPerNode.add(msgPerNode.head)
 					msgPerNode.remove
 				}
@@ -90,7 +108,10 @@ class CyclicDependenciesValidator {
 	}
 
 	def dispatch dependencies(FTypeCollection c) {
-		c.types
+		val result = new ArrayList<EObject>();
+		result.addAll(c.types)
+		result.addAll(c.constants)
+		result
 	}
 
 	def dispatch dependencies(FArrayType a) {
@@ -123,6 +144,48 @@ class CyclicDependenciesValidator {
 		newArrayList(m.keyType, m.valueType).map[derived]
 	}
 
+	def dispatch dependencies(FConstantDef c) {
+		newArrayList(c.rhs)
+	}
+	
+	def dispatch dependencies(FBinaryOperation op) {
+		newArrayList(op.left, op.right)
+	}
+	
+	def dispatch dependencies(FUnaryOperation op) {
+		newArrayList(op.operand)
+	}
+	
+	def dispatch dependencies(FConstant c) {
+		<EObject>newArrayList()
+	}
+	
+	def dispatch dependencies(FArrayInitializer ai) {
+		val result = newArrayList
+		result.addAll(ai.elements)
+		result
+	}
+		
+	def dispatch dependencies(FStructInitializer si) {
+		val result = newArrayList
+		result.addAll(si.elements)
+		result
+	}
+		
+	def dispatch dependencies(FQualifiedElementRef e) {
+		val result = newArrayList
+		if (e.qualifier==null) {
+			result.add(e.element)
+		} else {
+			var f = e.field
+			switch (f) {
+				FType: result.add(f)
+				FTypedElement: result.add(f.type.derived)
+			}
+		}
+		result
+	}
+	
 	def protected dispatch List<EObject> dependencies(Object e) {
 		throw new IllegalStateException("Unhandled parameter types: dependencies not yet implemented for" + e)
 	}
