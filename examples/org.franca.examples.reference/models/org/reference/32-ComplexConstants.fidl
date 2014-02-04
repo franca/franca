@@ -61,6 +61,7 @@ typeCollection MyTypeCollection32 {
 	const E1 e2 = e1
 	const E2 e3 = E1.Enum1
 	const E2 e4 = E2.Enum4
+	const E1 e5 = E2.Enum3 // E2.Enum3 is actually a E1.Enum3
 
 	// array constants
 	const A1 a0 = [ ]
@@ -83,6 +84,8 @@ typeCollection MyTypeCollection32 {
 	const S1 str1 = { true, 1, "foo" }
 	const S2 str2 = { 1, { 47<11, x+1, str1.e3 }, false, str1 }
 	const S4 str3 = { 5, str1, false, str1, "bar", E1.Enum2 }
+	const S3 str4 = str3 // initialize from sub-struct instance 
+	const S2 str5 = str3 // initialize from sub-sub-struct instance 
 
 	// union constants
 //	const U1 uni1 = { e1 : 1 }

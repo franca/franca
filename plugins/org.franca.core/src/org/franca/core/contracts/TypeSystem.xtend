@@ -34,6 +34,7 @@ import static org.franca.core.franca.FrancaPackage$Literals.*
 import static extension org.franca.core.framework.FrancaHelpers.*
 import org.franca.core.franca.FDoubleConstant
 import org.franca.core.franca.FFloatConstant
+import org.franca.core.franca.FEnumerationType
 
 class TypeSystem {
 	
@@ -151,15 +152,25 @@ class TypeSystem {
 			if (expected==null) {
 				result
 			} else {
-				if (isCompatibleType(expected, result)) {
-					result
+				if (expected.isEnumeration && result.isEnumeration) {
+					// expr is an enumerator value, check if its type is as expected
+					val iset = getInheritationSet(expected.derived)
+					if (iset.contains(result.derived))
+						result
+					else
+						null
 				} else {
-					addIssue("invalid type (is " +
-						FrancaHelpers::getTypeString(result) + ", expected " +
-						FrancaHelpers::getTypeString(expected) + ")",
-						loc, feat
-					)
-					null
+					// default: check type compatibility
+					if (isCompatibleType(expected, result)) {
+						result
+					} else {
+						addIssue("invalid type (is " +
+							FrancaHelpers::getTypeString(result) + ", expected " +
+							FrancaHelpers::getTypeString(expected) + ")",
+							loc, feat
+						)
+						null
+					}
 				}
 			}
 		}
@@ -293,9 +304,19 @@ class TypeSystem {
 		return false
 	}
 	
+	/**
+	 * Checks if type "type" can be used as a replacement of type "reference".
+	 */
 	def static isCompatibleType(FTypeRef reference, FTypeRef type) {
-		return (isOfCompatiblePrimitiveType(reference, type)) ||
-			(reference.derived != null && getInheritationSet(type.derived).contains(reference.derived))
+		if (isOfCompatiblePrimitiveType(reference, type))
+			return true
+		
+		if (reference.derived==null || type.derived==null)
+			return false
+		
+		// all other derived types
+		val bases = getInheritationSet(type.derived)
+		return bases.contains(reference.derived)
 	}
 
 	def static isSameType (FTypeRef t1, FTypeRef t2) {
