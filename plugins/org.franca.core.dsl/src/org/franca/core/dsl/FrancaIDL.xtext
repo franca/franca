@@ -445,21 +445,7 @@ FAnnotationBlock returns FAnnotationBlock:
 	'<**' (elements+=FAnnotation)+ '**>';
 
 FAnnotation returns FAnnotation:
-	type=FAnnotationType comment=COMMENT_STRING;
-
-enum FAnnotationType returns FAnnotationType:
-	description = '@description' |
-	author = '@author' |
-	experimental = '@experimental' |
-	deprecated = '@deprecated' |
-	see = '@see' |
-	param = '@param' |
-	high_volume = '@high-volume' |
-	high_frequency = '@high-frequency' |
-	source_uri = '@source-uri' | 
-	source_alias = '@source-alias' | 
-	details = '@details'
-	;
+	rawText=ANNOTATION_STRING;
 
 
 // **************************************************************
@@ -488,9 +474,11 @@ E_INT returns ecore::EInt:
 terminal NEGATIVE_INT returns ecore::EInt:
 	'-'INT;
 
-terminal COMMENT_STRING returns ecore::EString:
-	':' ( ('\\' ('b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\')) | !('\\'|'*'|'@') )*
+terminal ANNOTATION_STRING returns ecore::EString:
+	'@' (('a'..'z')|'-')+ (' '|'\t')* ':'
+	( ('\\' ('b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\')) | !('\\'|'*'|'@') )*
 ;
+
 
 // **************************************************************
 // general

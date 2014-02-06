@@ -43,7 +43,6 @@ public class FrancaIDLFormatter extends AbstractDeclarativeFormatter {
 		c.setLinewrap(2).before(f.getFAnnotationBlockRule());
 		c.setLinewrap(1).after(f.getFAnnotationBlockRule());
 		c.setLinewrap(1).bounds(f.getFAnnotationRule(), f.getFAnnotationRule());
-		c.setNoLinewrap().after(f.getFAnnotationTypeRule());
 		
 		c.setLinewrap(0, 1, 2).before(f.getSL_COMMENTRule());
 		c.setLinewrap(0, 1, 2).before(f.getML_COMMENTRule());

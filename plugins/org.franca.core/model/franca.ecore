@@ -244,8 +244,29 @@
     <eLiterals name="negation" value="12" literal="!"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FAnnotation">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="#//FAnnotationType"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="comment" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eOperations name="getType" eType="#//FAnnotationType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="body" value="return FAnnotationAuxImpl.getType(rawText);"/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="getComment" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="body" value="return FAnnotationAuxImpl.getComment(rawText);"/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="setType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="body" value="FAnnotationAuxImpl.setType(this, type);"/>
+      </eAnnotations>
+      <eParameters name="type" eType="#//FAnnotationType"/>
+    </eOperations>
+    <eOperations name="setComment">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="body" value="FAnnotationAuxImpl.setComment(this, comment);"/>
+      </eAnnotations>
+      <eParameters name="comment" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eOperations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="rawText" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FAnnotationBlock">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
