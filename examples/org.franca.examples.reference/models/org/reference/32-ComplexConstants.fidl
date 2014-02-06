@@ -52,6 +52,9 @@ typeCollection MyTypeCollection32 {
 	}
 	
 	union U2 extends U1 { }
+	union U3 extends U2 {
+		S1 e5
+	}
 
 
 	// constant definitions using the above types
@@ -73,21 +76,37 @@ typeCollection MyTypeCollection32 {
 		[ 0 ]
 	]
 	const A4 a4 = [
-		{ true, 1, "foo" },
-		{ true, 1, "foo" },
+		{ e1 : true, e2 : 1, e3 : "foo" },
+		{ e1 : false, e2 : 1, e3 : "foo" },
 		str1,
 		str3.e4
 	]
 
 	// struct constants
 	const UInt16 x = 123
-	const S1 str1 = { true, 1, "foo" }
-	const S2 str2 = { 1, { 47<11, x+1, str1.e3 }, false, str1 }
-	const S4 str3 = { 5, str1, false, str1, "bar", E1.Enum2 }
+	const S1 str1 = { e1 : true, e2: 1, e3 : "foo" }
+	const S2 str2 = {
+		e1 : 1,
+		e2 : { e1 : 47<11, e2 : x+1, e3 : str1.e3 },
+		e3 : false,
+		e4 : str1
+	}
+	const S4 str3 = {
+		e1 : 5,
+		e2 : str1,
+		e3 : false,
+		e4 : str1,
+		e5 : "bar",
+		e6 : E1.Enum2
+	}
 	const S3 str4 = str3 // initialize from sub-struct instance 
 	const S2 str5 = str3 // initialize from sub-sub-struct instance 
 
 	// union constants
-//	const U1 uni1 = { e1 : 1 }
+	const U1 uni1 = { e1 : 1 }
+	const U1 uni2 = { e2 : 1!=2 }
+	const U1 uni3 = { e3 : str3.e5 }
+	const U2 uni4 = { e2 : false}
+	const U3 uni5 = { e5 : { e1 : uni2.e2,  e2 : 1, e3 : "foo" } }
 
 }

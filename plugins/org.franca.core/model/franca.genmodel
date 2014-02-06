@@ -181,12 +181,12 @@
     <genClasses ecoreClass="franca.ecore#//FArrayInitializer">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FArrayInitializer/elements"/>
     </genClasses>
-    <genClasses ecoreClass="franca.ecore#//FStructInitializer">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FStructInitializer/elements"/>
+    <genClasses ecoreClass="franca.ecore#//FCompoundInitializer">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FCompoundInitializer/elements"/>
     </genClasses>
-    <genClasses ecoreClass="franca.ecore#//FUnionInitializer">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FUnionInitializer/element"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FUnionInitializer/value"/>
+    <genClasses ecoreClass="franca.ecore#//FFieldInitializer">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FFieldInitializer/element"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FFieldInitializer/value"/>
     </genClasses>
     <genClasses ecoreClass="franca.ecore#//FMapInitializer">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FMapInitializer/elements"/>
@@ -196,10 +196,15 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FMapElementInitializer/value"/>
     </genClasses>
     <genClasses ecoreClass="franca.ecore#//FAnnotation">
-      <genFeatures createChild="false" propertyDescription="the tag of this comment (i.e., the type of this annotation)."
-          ecoreFeature="ecore:EAttribute franca.ecore#//FAnnotation/type"/>
-      <genFeatures createChild="false" propertyDescription="the actual comment as part of an FAnnotation"
-          ecoreFeature="ecore:EAttribute franca.ecore#//FAnnotation/comment"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute franca.ecore#//FAnnotation/rawText"/>
+      <genOperations ecoreOperation="franca.ecore#//FAnnotation/getType"/>
+      <genOperations ecoreOperation="franca.ecore#//FAnnotation/getComment"/>
+      <genOperations ecoreOperation="franca.ecore#//FAnnotation/setType">
+        <genParameters ecoreParameter="franca.ecore#//FAnnotation/setType/type"/>
+      </genOperations>
+      <genOperations ecoreOperation="franca.ecore#//FAnnotation/setComment">
+        <genParameters ecoreParameter="franca.ecore#//FAnnotation/setComment/comment"/>
+      </genOperations>
     </genClasses>
     <genClasses ecoreClass="franca.ecore#//FAnnotationBlock">
       <genFeatures property="None" children="true" createChild="true" propertyCategory=""

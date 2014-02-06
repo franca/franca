@@ -319,6 +319,43 @@ public class FrancaHelpers {
 		return false;
 	}
 	
+	/** Returns true if the referenced type is an struct type. */
+	public static boolean isStruct (FTypeRef typeRef) {
+		if (typeRef == null) return false;
+		
+		if (typeRef.getDerived() != null) {
+			FType type = typeRef.getDerived();
+			if (type instanceof FStructType) {
+				return true;
+			} else if (type instanceof FTypeDef) {
+				FTypeDef typedef = (FTypeDef)type;
+				return isStruct(typedef.getActualType());
+			}
+		}
+		return false;
+	}
+	
+	/** Returns true if the referenced type is an union type. */
+	public static boolean isUnion (FTypeRef typeRef) {
+		if (typeRef == null) return false;
+		
+		if (typeRef.getDerived() != null) {
+			FType type = typeRef.getDerived();
+			if (type instanceof FUnionType) {
+				return true;
+			} else if (type instanceof FTypeDef) {
+				FTypeDef typedef = (FTypeDef)type;
+				return isUnion(typedef.getActualType());
+			}
+		}
+		return false;
+	}
+	
+	/** Returns true if the referenced type is an compound type. */
+	public static boolean isCompound (FTypeRef typeRef) {
+		return isStruct(typeRef) || isUnion(typeRef);
+	}
+
 	/** Get a human-readable name for a Franca type. */
 	public static String getTypeString (@NonNull FTypeRef typeRef) {
 		if (typeRef.getDerived() == null) {

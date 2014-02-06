@@ -29,7 +29,7 @@ import org.franca.core.franca.FConstant
 import org.franca.core.franca.FBinaryOperation
 import org.franca.core.franca.FUnaryOperation
 import org.franca.core.franca.FArrayInitializer
-import org.franca.core.franca.FStructInitializer
+import org.franca.core.franca.FCompoundInitializer
 import org.franca.core.franca.FType
 import org.franca.core.franca.FTypedElement
 import org.franca.core.utils.digraph.Digraph
@@ -165,9 +165,9 @@ class CyclicDependenciesValidator {
 		result
 	}
 		
-	def dispatch dependencies(FStructInitializer si) {
+	def dispatch dependencies(FCompoundInitializer si) {
 		val result = newArrayList
-		result.addAll(si.elements)
+		result.addAll(si.elements.map[value])
 		result
 	}
 		

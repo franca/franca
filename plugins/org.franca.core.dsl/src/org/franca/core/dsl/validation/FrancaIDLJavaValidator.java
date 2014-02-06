@@ -235,6 +235,12 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 	}
 
 	@Check
+	public void checkCompoundInitializerUnique(FCompoundInitializer ci) {
+		auxValidator.checkCompoundInitializersUnique(ci);
+	}
+
+
+	@Check
 	public void checkMethodFlags(FMethod method) {
 		if (method.isFireAndForget()) {
 			if (!method.getOutArgs().isEmpty()) {

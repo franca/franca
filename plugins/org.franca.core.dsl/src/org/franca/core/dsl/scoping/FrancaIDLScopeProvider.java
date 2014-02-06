@@ -26,9 +26,12 @@ import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider;
 import org.eclipse.xtext.scoping.impl.ImportUriGlobalScopeProvider;
 import org.eclipse.xtext.scoping.impl.SimpleScope;
 import org.franca.core.FrancaModelExtensions;
+import org.franca.core.franca.FCompoundInitializer;
+import org.franca.core.franca.FConstantDef;
 import org.franca.core.franca.FContract;
 import org.franca.core.franca.FEnumerationType;
 import org.franca.core.franca.FEventOnIf;
+import org.franca.core.franca.FInitializerExpression;
 import org.franca.core.franca.FInterface;
 import org.franca.core.franca.FMethod;
 import org.franca.core.franca.FModel;
@@ -47,7 +50,7 @@ import com.google.inject.Inject;
  * 
  * see : http://www.eclipse.org/Xtext/documentation/latest/xtext.html#scoping on
  * how and when to use it
- * 
+ *
  */
 public class FrancaIDLScopeProvider extends AbstractDeclarativeScopeProvider {
 
@@ -138,4 +141,13 @@ public class FrancaIDLScopeProvider extends AbstractDeclarativeScopeProvider {
 		return IScope.NULLSCOPE;
 	}
 
+	public IScope scope_FFieldInitializer_element (FCompoundInitializer initializer, EReference ref) {
+		FTypeRef expected = InitializerMapper.getExpectedType(initializer);
+		if (expected.getDerived()==null)
+			return IScope.NULLSCOPE;
+
+		Iterable<? extends FModelElement> elements = getAllElements(expected.getDerived());
+		return Scopes.scopeFor(elements);
+	}
+	
 }

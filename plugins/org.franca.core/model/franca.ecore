@@ -189,14 +189,14 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="elements" upperBound="-1"
         eType="#//FInitializerExpression" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="FStructInitializer" eSuperTypes="#//FInitializer">
+  <eClassifiers xsi:type="ecore:EClass" name="FCompoundInitializer" eSuperTypes="#//FInitializer">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="The initializer for an object of a struct type."/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="elements" upperBound="-1"
-        eType="#//FInitializerExpression" containment="true"/>
+        eType="#//FFieldInitializer" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="FUnionInitializer" eSuperTypes="#//FInitializer">
+  <eClassifiers xsi:type="ecore:EClass" name="FFieldInitializer">
     <eStructuralFeatures xsi:type="ecore:EReference" name="element" lowerBound="1"
         eType="#//FField"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="value" lowerBound="1" eType="#//FInitializerExpression"

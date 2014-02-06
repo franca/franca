@@ -231,8 +231,7 @@ FInitializerExpression:
 
 FInitializer:
 	FArrayInitializer |
-	FStructInitializer; // |
-//	FUnionInitializer |
+	FCompoundInitializer; // |
 //	FMapInitializer;
 
 FArrayInitializer:
@@ -242,15 +241,15 @@ FArrayInitializer:
 		(',' elements+=FInitializerExpression)*
 	)? ']';
 
-FStructInitializer:
-	{FStructInitializer}
+FCompoundInitializer:
+	{FCompoundInitializer}
 	'{' (
-		elements+=FInitializerExpression
-		(',' elements+=FInitializerExpression)*
+		elements+=FFieldInitializer
+		(',' elements+=FFieldInitializer)*
 	)? '}';
 
-FUnionInitializer:
-	'{' element=[FField|ID] ':' value=FInitializerExpression '}';
+FFieldInitializer:
+	element=[FField|ID] ':' value=FInitializerExpression;
 
 FMapInitializer:
 	{FMapInitializer}
