@@ -6,6 +6,13 @@
 <unit id="de.itemis.xtext.antlr.feature.feature.group" version="2.0.0.v201108011202"/>
 <repository location="http://download.itemis.com/updates/releases/"/>
 </location>
+
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.jdt.junit.runners.feature.feature.group" version="0.1.0.201308221506"/>
+<unit id="org.xpect.sdk.feature.group" version="0.1.0.201401101421"/>
+<repository location="http://www.xpect-tests.org/updatesite/nightly/"/>
+</location>
+
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.xtext.sdk.feature.group" version="2.4.1.v201304180855"/>
 <unit id="org.eclipse.xtend.sdk.feature.group" version="2.4.1.v201304180855"/>

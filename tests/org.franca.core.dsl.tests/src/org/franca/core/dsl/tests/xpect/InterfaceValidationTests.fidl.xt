@@ -1,0 +1,38 @@
+// XPECT_SETUP org.franca.core.dsl.tests.xpect.FrancaIDLXtextTests END_SETUP
+package a.b.c
+interface DuplicateArgumentNames {
+	method MyMethod {
+		in {
+			// XPECT errors --> "Duplicate argument name 'a' used for in and out" at "a"
+			UInt8 a
+			// XPECT errors --> "Duplicate argument name 'b' used for in and out" at "b"
+			Int16 b
+			String c
+		}
+		out {
+			// XPECT errors --> "Duplicate argument name 'a' used for in and out" at "a"
+			String a
+			// XPECT errors --> "Duplicate argument name 'b' used for in and out" at "b"
+			Int16 b
+		}
+	}
+}
+
+interface DuplicateMethodeNameBase {
+	// XPECT errors --> "Name conflict for inherited method 'MyMethod'" at "MyMethod"
+	method MyMethod { }
+}
+interface DuplicateMethodeNameDerived extends DuplicateMethodeNameBase {
+	// XPECT errors --> "Name conflict for inherited method 'MyMethod'" at "MyMethod"
+	method MyMethod { }
+}
+
+
+interface DuplicateBroadcastNameBase {
+	// XPECT errors --> "Name conflict for inherited broadcast 'MyBroadcast'" at "MyBroadcast"
+	broadcast MyBroadcast { }
+}
+interface DuplicateBroadcastNameDerived extends DuplicateBroadcastNameBase {
+	// XPECT errors --> "Name conflict for inherited broadcast 'MyBroadcast'" at "MyBroadcast"
+	broadcast MyBroadcast { }
+}			

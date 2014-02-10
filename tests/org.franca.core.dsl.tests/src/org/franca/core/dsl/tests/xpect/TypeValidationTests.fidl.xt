@@ -1,0 +1,30 @@
+// XPECT_SETUP org.franca.core.dsl.tests.xpect.FrancaIDLXtextTests END_SETUP
+package a.b.c
+typeCollection MyPrimitiveTypes {
+	// XPECT errors --> "Name conflict for type name 'MyArray'" at "MyArray"
+	array MyArray of Int8
+	// XPECT errors --> "Name conflict for type name 'MyArray'" at "MyArray"
+	array MyArray of String
+} 
+
+typeCollection MyStructTypes {
+	// XPECT errors --> "Name conflict for type name 'MyStruct'" at "MyStruct"
+	struct MyStruct { Int16 i }
+	// XPECT errors --> "Name conflict for type name 'MyStruct'" at "MyStruct"
+	struct MyStruct { Int32 k }
+}
+
+typeCollection MyVariousTypes {
+	// XPECT errors --> "Name conflict for type name 'MyType'" at "MyType"
+	array MyType of Int8
+	// XPECT errors --> "Name conflict for type name 'MyType'" at "MyType"
+	struct MyType { Int32 k }
+	// XPECT errors --> "Name conflict for type name 'MyType'" at "MyType"
+	union MyType { Int32 i }
+	// XPECT errors --> "Name conflict for type name 'MyType'" at "MyType"
+	map MyType { Int16 to String }
+	// XPECT errors --> "Name conflict for type name 'MyType'" at "MyType"
+	enumeration MyType { A B C }
+	// XPECT errors --> "Name conflict for type name 'MyType'" at "MyType"
+	typedef MyType is Float
+}
