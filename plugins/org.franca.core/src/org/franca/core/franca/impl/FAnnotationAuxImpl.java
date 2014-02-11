@@ -7,6 +7,9 @@ public class FAnnotationAuxImpl {
 	private static final String SEP = ":";
 
 	public static FAnnotationType getType (String raw) {
+		if (raw == null)
+			return null;
+
 		int sep = raw.indexOf(SEP);
 		if (sep<0)
 			return null;
@@ -21,6 +24,9 @@ public class FAnnotationAuxImpl {
 	}
 
 	public static String getComment (String raw) {
+		if (raw == null)
+			return null;
+		
 		int sep = raw.indexOf(SEP);
 		if (sep<0)
 			return null;
