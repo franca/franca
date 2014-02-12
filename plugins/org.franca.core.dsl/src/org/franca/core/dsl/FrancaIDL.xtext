@@ -70,7 +70,7 @@ FVersion returns FVersion:
 
 FAttribute:
 	(comment=FAnnotationBlock)?
-	'attribute'	type=FTypeRef (array?='[]')? name=ID
+	'attribute'	type=FTypeRef (array?='[' ']')? name=ID
 		(readonly?='readonly')?
 		(noSubscriptions?='noSubscriptions')?
 	;
@@ -103,7 +103,7 @@ FBroadcast returns FBroadcast:
 
 FArgument:
 	(comment=FAnnotationBlock)?
-	type=FTypeRef (array?='[]')? name=ID;
+	type=FTypeRef (array?='[' ']')? name=ID;
 
 
 // **************************************************************
@@ -203,11 +203,11 @@ FMapType returns FMapType:
 
 FField:
 	(comment=FAnnotationBlock)?
-	type=FTypeRef (array?='[]')? name=ID;
+	type=FTypeRef (array?='[' ']')? name=ID;
 
 
 FDeclaration:
-	type=FTypeRef (array?='[]')? name=ID;
+	type=FTypeRef (array?='[' ']')? name=ID;
 
 FTypedElement:
 	FField |
