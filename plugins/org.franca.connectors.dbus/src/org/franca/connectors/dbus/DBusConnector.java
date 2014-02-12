@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.Collections;
@@ -176,7 +177,7 @@ public class DBusConnector implements IFrancaConnector {
 			res.save(Collections.EMPTY_MAP);
 	        System.out.println("Created DBus Introspection file " + fileName);
 	        
-	        //FIXME, 'cause I am a very dirty hack :)
+	        // add "xml-stylesheet" tag to output xml file 
 	        addStyleSheet(new File(fileName));
 	        
 		} catch (IOException e) {
@@ -188,35 +189,33 @@ public class DBusConnector implements IFrancaConnector {
 	}
 	
 	private static void addStyleSheet(File inFile) throws IOException {
-		
-	     // temp file
-	     File outFile = new File("helpfile.tmp");
-	     
-	     // input
-	     FileInputStream fis  = new FileInputStream(inFile);
-	     BufferedReader in = new BufferedReader
-	         (new InputStreamReader(fis));
+	     String content = contents(inFile);
+	     content = content.replaceAll(
+	    		 "(<\\?xml version.*\\?>)",
+	    		 "$1\n<?xml-stylesheet type=\"text/xsl\" href=\"introspect.xsl\"?>");
 
-	     // output         
-	     FileOutputStream fos = new FileOutputStream(outFile);
+	     FileOutputStream fos = new FileOutputStream(inFile);
 	     PrintWriter out = new PrintWriter(fos);
+	     out.print(content);
+	     out.flush();
+	     out.close();
+	}		
 
-	     String thisLine = "";
+	private static String contents (File file) throws IOException {
+		InputStream in = new FileInputStream(file);
+		byte[] b  = new byte[(int) file.length()];
+		int len = b.length;
+		int total = 0;
 
-	     while ((thisLine = in.readLine()) != null) {
-	    	 out.println(thisLine);
-	    	 if(thisLine.startsWith("<?xml version")) {
-	    		 out.println("<?xml-stylesheet type=\"text/xsl\" href=\"introspect.xsl\"?>");
-	    	 }
-	     }
-	     
-	    out.flush();
-	    out.close();
+		while (total < len) {
+		  int result = in.read(b, total, len - total);
+		  if (result == -1) {
+		    break;
+		  }
+		  total += result;
+		}
 		in.close();
-	    
-	    inFile.delete();
-	    outFile.renameTo(inFile);		
-		
+		return new String(b);
 	}
-	
 }
+
