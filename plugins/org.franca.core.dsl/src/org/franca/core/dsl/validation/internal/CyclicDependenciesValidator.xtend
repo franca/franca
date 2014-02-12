@@ -28,11 +28,12 @@ import org.franca.core.franca.FQualifiedElementRef
 import org.franca.core.franca.FConstant
 import org.franca.core.franca.FBinaryOperation
 import org.franca.core.franca.FUnaryOperation
-import org.franca.core.franca.FArrayInitializer
+import org.franca.core.franca.FBracketInitializer
 import org.franca.core.franca.FCompoundInitializer
 import org.franca.core.franca.FType
 import org.franca.core.franca.FTypedElement
 import org.franca.core.utils.digraph.Digraph
+import org.franca.core.franca.FElementInitializer
 
 class CyclicDependenciesValidator {
 	@Inject IQualifiedNameProvider qnProvider;
@@ -159,9 +160,17 @@ class CyclicDependenciesValidator {
 		<EObject>newArrayList()
 	}
 	
-	def dispatch dependencies(FArrayInitializer ai) {
+	def dispatch dependencies(FBracketInitializer ai) {
 		val result = newArrayList
 		result.addAll(ai.elements)
+		result
+	}
+		
+	def dispatch dependencies(FElementInitializer ai) {
+		val result = newArrayList
+		result.add(ai.first)
+		if (ai.second!=null)
+			result.add(ai.second)
 		result
 	}
 		

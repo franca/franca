@@ -19,8 +19,9 @@ import org.franca.core.franca.FInitializer
 import org.franca.core.franca.FTypeRef
 import org.franca.core.franca.FCompoundInitializer
 import org.franca.core.franca.FStructType
-import org.franca.core.franca.FArrayInitializer
+import org.franca.core.franca.FBracketInitializer
 import org.franca.core.franca.FArrayType
+import org.franca.core.franca.FMapType
 import org.franca.core.franca.FInitializerExpression
 
 import static org.franca.core.franca.FrancaPackage$Literals.*
@@ -54,28 +55,55 @@ class TypesValidator {
 	}
 	
 	def private static dispatch checkInitializer (
-		FArrayInitializer rhs,
+		FBracketInitializer rhs,
 		FTypeRef type,
 		ValidationMessageReporter reporter,
 		EObject ctxt,
 		EStructuralFeature feature,
 		int index
 	) {
-		if (type.derived==null || !(type.derived instanceof FArrayType)) {
+		if (! (type.isArray || type.isMap)) {
 			reporter.reportError(
-					"invalid array initializer in constant definition (expected " +
+					"invalid initializer in constant definition (expected " +
 						FrancaHelpers::getTypeString(type) + ")",
 					ctxt, feature);
 			return;
 		}
 		
-		val t = type.derived as FArrayType
-		for(e : rhs.elements) {
-			checkConstantRHS(e,
-				t.elementType,
-				reporter, rhs, FARRAY_INITIALIZER__ELEMENTS, rhs.elements.indexOf(e)
-			)
-			
+		if (type.isArray) {
+			val t = type.actualDerived as FArrayType
+			for(e : rhs.elements) {
+				val idx = rhs.elements.indexOf(e)
+				if (e.second!=null) {
+					reporter.reportError(
+							"invalid initializer for array element",
+							rhs, FBRACKET_INITIALIZER__ELEMENTS, idx);
+				} else {
+					checkConstantRHS(e.first,
+						t.elementType,
+						reporter, e, FELEMENT_INITIALIZER__FIRST, -1
+					)
+				}
+			}
+		} else if (type.isMap) {
+			val t = type.actualDerived as FMapType
+			for(e : rhs.elements) {
+				val idx = rhs.elements.indexOf(e)
+				if (e.second==null) {
+					reporter.reportError(
+							"invalid initializer for map element",
+							rhs, FBRACKET_INITIALIZER__ELEMENTS, idx);
+				} else {
+					checkConstantRHS(e.first,
+						t.keyType,
+						reporter, e, FELEMENT_INITIALIZER__FIRST, -1
+					)
+					checkConstantRHS(e.second,
+						t.valueType,
+						reporter, e, FELEMENT_INITIALIZER__SECOND, -1
+					)
+				}
+			}
 		}
 	}
 	
@@ -96,7 +124,7 @@ class TypesValidator {
 		}
 		
 		if (type.isStruct) {
-			val t = type.derived as FStructType
+			val t = type.actualDerived as FStructType
 			val elems = t.getAllElements
 			
 			// check if there are initializers for all struct elements

@@ -221,7 +221,7 @@ FTypedElement:
 // constant definitions and initializers
 
 FConstantDef:
-	'const' type=FTypeRef (array?='[]')? name=ID '='
+	'const' type=FTypeRef (array?='[' ']')? name=ID '='
 		rhs=FInitializerExpression
 	;
 
@@ -230,17 +230,10 @@ FInitializerExpression:
 	FInitializer;
 
 FInitializer:
-	FArrayInitializer |
-	FCompoundInitializer; // |
-//	FMapInitializer;
+	FCompoundInitializer |
+	FBracketInitializer;
 
-FArrayInitializer:
-	{FArrayInitializer}
-	'[' (
-		elements+=FInitializerExpression
-		(',' elements+=FInitializerExpression)*
-	)? ']';
-
+// this is used for struct and union types
 FCompoundInitializer:
 	{FCompoundInitializer}
 	'{' (
@@ -251,15 +244,18 @@ FCompoundInitializer:
 FFieldInitializer:
 	element=[FField|ID] ':' value=FInitializerExpression;
 
-FMapInitializer:
-	{FMapInitializer}
-	'{' (
-		elements+=FMapElementInitializer
-		(',' elements+=FMapElementInitializer)*
-	)? '}';
+// this is used for array and map types
+FBracketInitializer:
+	{FBracketInitializer}
+	'[' (
+		elements+=FElementInitializer
+		(',' elements+=FElementInitializer)*
+	)? ']';
 
-FMapElementInitializer:
-	key=FInitializerExpression '=>' value=FInitializerExpression;
+// for array type initializers, the second element is omitted
+FElementInitializer:
+	{FElementInitializer}
+	first=FInitializerExpression ('=>' second=FInitializerExpression)?;
 
 
 // **************************************************************

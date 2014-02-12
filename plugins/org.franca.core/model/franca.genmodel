@@ -178,9 +178,6 @@
     </genClasses>
     <genClasses image="false" ecoreClass="franca.ecore#//FInitializerExpression"/>
     <genClasses ecoreClass="franca.ecore#//FInitializer"/>
-    <genClasses ecoreClass="franca.ecore#//FArrayInitializer">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FArrayInitializer/elements"/>
-    </genClasses>
     <genClasses ecoreClass="franca.ecore#//FCompoundInitializer">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FCompoundInitializer/elements"/>
     </genClasses>
@@ -188,12 +185,12 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FFieldInitializer/element"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FFieldInitializer/value"/>
     </genClasses>
-    <genClasses ecoreClass="franca.ecore#//FMapInitializer">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FMapInitializer/elements"/>
+    <genClasses ecoreClass="franca.ecore#//FBracketInitializer">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FBracketInitializer/elements"/>
     </genClasses>
-    <genClasses ecoreClass="franca.ecore#//FMapElementInitializer">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FMapElementInitializer/key"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FMapElementInitializer/value"/>
+    <genClasses ecoreClass="franca.ecore#//FElementInitializer">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FElementInitializer/first"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FElementInitializer/second"/>
     </genClasses>
     <genClasses ecoreClass="franca.ecore#//FAnnotation">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute franca.ecore#//FAnnotation/rawText"/>

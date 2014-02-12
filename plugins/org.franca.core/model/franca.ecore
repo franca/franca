@@ -182,13 +182,6 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FInitializerExpression" abstract="true"/>
   <eClassifiers xsi:type="ecore:EClass" name="FInitializer" eSuperTypes="#//FInitializerExpression"/>
-  <eClassifiers xsi:type="ecore:EClass" name="FArrayInitializer" eSuperTypes="#//FInitializer">
-    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="The initializer for an object of an array type."/>
-    </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="elements" upperBound="-1"
-        eType="#//FInitializerExpression" containment="true"/>
-  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FCompoundInitializer" eSuperTypes="#//FInitializer">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="The initializer for an object of a struct type."/>
@@ -202,14 +195,14 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="value" lowerBound="1" eType="#//FInitializerExpression"
         containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="FMapInitializer" eSuperTypes="#//FInitializer">
+  <eClassifiers xsi:type="ecore:EClass" name="FBracketInitializer" eSuperTypes="#//FInitializer">
     <eStructuralFeatures xsi:type="ecore:EReference" name="elements" upperBound="-1"
-        eType="#//FMapElementInitializer" containment="true"/>
+        eType="#//FElementInitializer" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="FMapElementInitializer">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="key" lowerBound="1" eType="#//FInitializerExpression"
+  <eClassifiers xsi:type="ecore:EClass" name="FElementInitializer">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="first" lowerBound="1" eType="#//FInitializerExpression"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="value" lowerBound="1" eType="#//FInitializerExpression"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="second" eType="#//FInitializerExpression"
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="FAnnotationType">
