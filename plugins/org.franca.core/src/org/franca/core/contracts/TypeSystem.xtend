@@ -28,22 +28,24 @@ import org.franca.core.franca.FUnaryOperation
 import org.franca.core.franca.FrancaFactory
 import org.franca.core.utils.FrancaModelCreator
 
-import static org.franca.core.FrancaModelExtensions.*
 import static org.franca.core.franca.FrancaPackage$Literals.*
 
 import static extension org.franca.core.framework.FrancaHelpers.*
 import org.franca.core.franca.FDoubleConstant
 import org.franca.core.franca.FFloatConstant
 
+import static org.franca.core.contracts.ComparisonResult.*
+
 class TypeSystem {
 	
 	val FrancaModelCreator francaModelCreator = new FrancaModelCreator
 	
-	public static val BOOLEAN_TYPE = getBooleanType
-	static val INTEGER_TYPE = getIntegerType
-	static val FLOAT_TYPE = getFloatType
-	static val DOUBLE_TYPE = getDoubleType
-	static val STRING_TYPE = getStringType
+	public static val BOOLEAN_TYPE = FrancaFactory::eINSTANCE.createFTypeRef => [predefined = FBasicTypeId::BOOLEAN]
+	//static val INTEGER_TYPE = getIntegerType
+	static val ANY_INTEGER_TYPE = FrancaFactory::eINSTANCE.createFTypeRef => [derived = FrancaFactory::eINSTANCE.createFIntegerInterval]
+	static val FLOAT_TYPE = FrancaFactory::eINSTANCE.createFTypeRef => [predefined = FBasicTypeId::FLOAT]
+	static val DOUBLE_TYPE = FrancaFactory::eINSTANCE.createFTypeRef => [predefined = FBasicTypeId::DOUBLE]
+	static val STRING_TYPE = FrancaFactory::eINSTANCE.createFTypeRef => [predefined = FBasicTypeId::STRING]
 	
 	var IssueCollector collector
 	
@@ -60,7 +62,7 @@ class TypeSystem {
 			FBooleanConstant: if (expected.checkIsBoolean(loc, feat)) BOOLEAN_TYPE else null
 			FFloatConstant: if (expected.checkIsFloat(loc, feat)) FLOAT_TYPE else null
 			FDoubleConstant: if (expected.checkIsDouble(loc, feat)) DOUBLE_TYPE else null
-			FIntegerConstant: if (expected.checkIsInteger(loc, feat)) INTEGER_TYPE else null
+			FIntegerConstant: if (expected.checkIsInteger(loc, feat)) ANY_INTEGER_TYPE else null
 			FStringConstant:  if (expected.checkIsString(loc, feat)) STRING_TYPE else null
 			default: {
 				addIssue("invalid type of constant value (expected " +
@@ -93,7 +95,7 @@ class TypeSystem {
 			// check that both operands have compatible type
 			val t1 = left.checkType(null, it, FBINARY_OPERATION__LEFT)
 			val t2 = right.checkType(null, it, FBINARY_OPERATION__RIGHT)
-			if (checkOperandsType(t1, t2, loc, feat)) {
+			if (isComparable(t1, t2, loc, feat)) {
 				val ok = expected.checkIsBoolean(loc, feat)
 				if (ok) BOOLEAN_TYPE else null	
 			} else {
@@ -104,7 +106,7 @@ class TypeSystem {
 		) {
 			val t1 = left.checkType(null, it, FBINARY_OPERATION__LEFT)
 			val t2 = right.checkType(null, it, FBINARY_OPERATION__RIGHT)
-			if (checkOperandsType(t1, t2, loc, feat)) {
+			if (isOrdered(t1, t2, loc, feat)) {
 				val ok = expected.checkIsBoolean(loc, feat)
 				if (ok) BOOLEAN_TYPE else null	
 			} else {
@@ -112,35 +114,46 @@ class TypeSystem {
 			}
 		} else if (FOperator::ADDITION.equals(op) || FOperator::SUBTRACTION.equals(op) ||
 			FOperator::MULTIPLICATION.equals(op) || FOperator::DIVISION.equals(op)
-		) {
-			// TODO: this doesn't work for floats and doubles
-			// TODO: this also doesn't check for various integer sizes and unsigned/signed
-			val t1 = left.checkType(INTEGER_TYPE, it, FBINARY_OPERATION__LEFT)
-			val t2 = right.checkType(INTEGER_TYPE, it, FBINARY_OPERATION__RIGHT)
-			if (checkOperandsType(t1, t2, loc, feat)) {
-				val ok = expected.checkIsInteger(loc, feat)
-				if (ok) t1 else null	
-			} else {
-				null
+		) {		
+			val FTypeRef lhsType = left.checkType(null, it, FBINARY_OPERATION__LEFT)
+			val FTypeRef rhsType = right.checkType(null, it, FBINARY_OPERATION__RIGHT)
+			val ComparisonResult typesCompared = compareCardinality(lhsType, rhsType)
+			
+			val resultingType =
+					if (lhsType.isNumber && rhsType.isNumber)
+						switch typesCompared {
+							case GREATER : {lhsType}
+							case EQUAL : {lhsType}
+							case SMALLER : {rhsType}
+							default : null
+						}
+					else null;
+					
+			if (resultingType == null) {
+				addIssue("Types are incompatible for operation '" + op + "'.", loc, feat)
+				return null;
+			} 
+			
+			val resultCompared = compareCardinality(resultingType, expected)
+			
+			switch resultCompared {
+				case SMALLER : {return resultingType}
+				case EQUAL : {return resultingType}
+				case GREATER : {
+					addIssue("Cardinality of type '" + resultingType.typeString +
+						"' is too large for expected type '" + expected.typeString + "'.", loc, feat)
+					return null
+				}
+				default: {
+					addIssue("Types are incompatible for operation '" + op + "'.", loc, feat)
+					return null
+				}
 			}
 		} else {
 			addIssue("unknown binary operator '" + op + "'", loc, feat)
 			null
 		}
 	}
-
-	def private checkOperandsType (FTypeRef t1, FTypeRef t2, EObject loc, EStructuralFeature feat) {
-		if (t1==null || t2==null) {
-			false
-		} else {
-			if (! isCompatibleType(t1, t2) && ! isCompatibleType(t2, t1)) {
-				addIssue("operands must have compatible type", loc, feat)
-				false
-			} else {
-				true
-			}
-		}
-	}	
 
 	def private dispatch FTypeRef checkType (FQualifiedElementRef expr, FTypeRef expected, EObject loc, EStructuralFeature feat) {
 		val result = expr.typeOf
@@ -151,7 +164,7 @@ class TypeSystem {
 			if (expected==null) {
 				result
 			} else {
-				if (isCompatibleType(expected, result)) {
+				if (isAssignableTo(result, expected)) {
 					result
 				} else {
 					addIssue("invalid type (is " +
@@ -189,7 +202,7 @@ class TypeSystem {
 		else {
 			if (expected.isEnumeration) {
 				val type = francaModelCreator.createTypeRef(expr)
-				if (isCompatibleType(expected, type)) {
+				if (isAssignableTo(type, expected)) {
 					type
 				} else {
 					addIssue("invalid type (is error enumerator, expected " +
@@ -213,7 +226,6 @@ class TypeSystem {
 		null
 	}
 	
-
 	def private checkIsBoolean (FTypeRef expected, EObject loc, EStructuralFeature feat) {
 		if (expected==null)
 			return true
@@ -284,64 +296,187 @@ class TypeSystem {
 		ok
 	}	
 
-	def static private isOfCompatiblePrimitiveType(FTypeRef t1, FTypeRef t2) {
-		if (t1.isBoolean) return t2.isBoolean
-		if (t1.isInteger) return t2.isInteger
-		if (t1.isString) return t2.isString
-		if (t1.isFloatingPoint) return t2.isFloatingPoint
-		
-		return false
+	def private boolean isComparable(FTypeRef t1, FTypeRef t2, EObject loc, EStructuralFeature feat) {
+		if (t1==null || t2==null) {
+			return false
+		} else {
+			if ((t1.isBoolean && t2.isBoolean) || (t1.isString && t2.isString) ||
+				(t1.isNumber && t2.isNumber) || (t1.isEnumeration && t2.isEnumeration)
+				//if we would like to have complex types comparable: || (t1.derived != null && t2.derived != null)
+			) {
+				return true
+			}
+			addIssue("types are not comparable", loc, feat)				
+			return false
+		} 
 	}
 	
-	def static isCompatibleType(FTypeRef reference, FTypeRef type) {
-		return (isOfCompatiblePrimitiveType(reference, type)) ||
-			(reference.derived != null && getInheritationSet(type.derived).contains(reference.derived))
-	}
-
-	def static isSameType (FTypeRef t1, FTypeRef t2) {
-		return isOfCompatiblePrimitiveType(t1, t2) ||
-			(t1.derived!=null /*&& t2.derived!=null*/ && t1.derived==t2.derived)
-	}
-
-	def private static getIntegerType (/*FIntegerConstant value*/) {
-		val it = FrancaFactory::eINSTANCE.createFTypeRef
-		
-		// TODO: we should be more specific here depending on the actual value
-		predefined = FBasicTypeId::INT32
-		it
-	}
-	
-	def private static getFloatType (/*FIntegerConstant value*/) {
-		val it = FrancaFactory::eINSTANCE.createFTypeRef
-		
-		// TODO: we should be more specific here depending on the actual value
-		predefined = FBasicTypeId::FLOAT
-		it
-	}
-	
-	def private static getDoubleType (/*FIntegerConstant value*/) {
-		val it = FrancaFactory::eINSTANCE.createFTypeRef
-		
-		// TODO: we should be more specific here depending on the actual value
-		predefined = FBasicTypeId::DOUBLE
-		it
-	}
-
-	def private static getBooleanType() {
-		val it = FrancaFactory::eINSTANCE.createFTypeRef
-		predefined = FBasicTypeId::BOOLEAN
-		it
-	}
-
-	def private static getStringType() {
-		val it = FrancaFactory::eINSTANCE.createFTypeRef
-		predefined = FBasicTypeId::STRING
-		it
+	def private boolean isOrdered(FTypeRef t1, FTypeRef t2, EObject loc, EStructuralFeature feat) {
+		if (t1==null || t2==null) {
+			return false
+		} else {
+			if (t1.isNumber && t2.isNumber) {
+				return true
+			}
+			addIssue("types are not ordered", loc, feat)				
+			return false
+		} 
 	}
 
 	def private addIssue (String mesg, EObject loc, EStructuralFeature feat) {
 		if (collector!=null)
 			collector.addIssue(mesg, loc, feat)
+	}
+	
+	def static boolean isAssignableTo(FTypeRef source, FTypeRef target) {
+		val comp = compareCardinality(source, target)
+		return comp == EQUAL || comp == SMALLER
+	}
+	
+	def static ComparisonResult compareCardinality(FTypeRef tr1, FTypeRef tr2) {
+		val derived1 = tr1.derived
+		val derived2 = tr2.derived
+		if (derived1 != null || derived2 != null) {
+			if (derived1 == derived2) {
+				//TODO fqn should get compared. statically impossible, because provider can not be injected!
+				return EQUAL
+			}
+			return INCOMPATIBLE
+		}
+		
+		
+		if (tr1.isDouble) {
+			if (tr2.isDouble) return EQUAL
+			if (tr2.isFloat) return GREATER
+			return ComparisonResult::INCOMPATIBLE
+		}
+		if (tr1.isFloat) {
+			if (tr2.isDouble) return SMALLER
+			if (tr2.isFloat) return EQUAL
+			return ComparisonResult::INCOMPATIBLE
+		}
+		if (tr1.basicTypeEquals(FBasicTypeId::INT8)) {
+			if (tr2.basicTypeEquals(FBasicTypeId::INT8)) return EQUAL
+			if (tr2.basicTypeEquals(FBasicTypeId::UINT8)) return ComparisonResult::INCOMPATIBLE
+			if (tr2.isInteger) return SMALLER
+			return ComparisonResult::INCOMPATIBLE
+		}
+		if (tr1.basicTypeEquals(FBasicTypeId::UINT8)) {
+			if (tr2.basicTypeEquals(FBasicTypeId::UINT8)) return EQUAL
+			if (tr2.basicTypeEquals(FBasicTypeId::INT8)) return ComparisonResult::INCOMPATIBLE
+			if (tr2.isInteger) return SMALLER
+			return ComparisonResult::INCOMPATIBLE
+		}
+		if (tr1.basicTypeEquals(FBasicTypeId::INT16)) {
+			if (tr2.basicTypeEquals(FBasicTypeId::INT8) || tr2.basicTypeEquals(FBasicTypeId::UINT8)) return GREATER
+			if (tr2.basicTypeEquals(FBasicTypeId::INT16)) return EQUAL
+			if (tr2.basicTypeEquals(FBasicTypeId::UINT16)) return ComparisonResult::INCOMPATIBLE
+			if (tr2.isInteger) return SMALLER
+			return ComparisonResult::INCOMPATIBLE
+		}
+		if (tr1.basicTypeEquals(FBasicTypeId::UINT16)) {
+			if (tr2.basicTypeEquals(FBasicTypeId::UINT8)) return GREATER
+			if (tr2.basicTypeEquals(FBasicTypeId::UINT16)) return EQUAL
+			if (tr2.basicTypeEquals(FBasicTypeId::INT8) || tr2.basicTypeEquals(FBasicTypeId::INT16)) return ComparisonResult::INCOMPATIBLE
+			if (tr2.isInteger) return SMALLER
+			return ComparisonResult::INCOMPATIBLE
+		}
+		if (tr1.basicTypeEquals(FBasicTypeId::INT32)) {
+			if (tr2.basicTypeEquals(FBasicTypeId::INT8) || tr2.basicTypeEquals(FBasicTypeId::UINT8) ||
+			    tr2.basicTypeEquals(FBasicTypeId::INT16) || tr2.basicTypeEquals(FBasicTypeId::UINT16)) return GREATER
+			if (tr2.basicTypeEquals(FBasicTypeId::INT32)) return EQUAL
+			if (tr2.basicTypeEquals(FBasicTypeId::UINT32)) return ComparisonResult::INCOMPATIBLE
+			if (tr2.isInteger) return SMALLER
+			return ComparisonResult::INCOMPATIBLE
+		}
+		if (tr1.basicTypeEquals(FBasicTypeId::UINT32)) {
+			if (tr2.basicTypeEquals(FBasicTypeId::UINT8) || tr2.basicTypeEquals(FBasicTypeId::UINT16)) return GREATER
+			if (tr2.basicTypeEquals(FBasicTypeId::UINT32)) return EQUAL
+			if (tr2.basicTypeEquals(FBasicTypeId::INT8) || tr2.basicTypeEquals(FBasicTypeId::INT16) ||
+				tr2.basicTypeEquals(FBasicTypeId::INT32)) return ComparisonResult::INCOMPATIBLE
+			if (tr2.isInteger) return SMALLER
+			return ComparisonResult::INCOMPATIBLE
+		}
+		if (tr1.basicTypeEquals(FBasicTypeId::INT64)) {
+			if (tr2.basicTypeEquals(FBasicTypeId::INT64)) return EQUAL
+			if (tr2.basicTypeEquals(FBasicTypeId::UINT64)) return ComparisonResult::INCOMPATIBLE
+			if (tr2.isInteger) return GREATER
+			return ComparisonResult::INCOMPATIBLE
+		}
+		if (tr1.basicTypeEquals(FBasicTypeId::UINT64)) {
+			if (tr2.basicTypeEquals(FBasicTypeId::UINT64)) return EQUAL
+			if (tr2.basicTypeEquals(FBasicTypeId::INT8) || tr2.basicTypeEquals(FBasicTypeId::INT16) ||
+				tr2.basicTypeEquals(FBasicTypeId::INT32) || tr2.basicTypeEquals(FBasicTypeId::INT64)) return ComparisonResult::INCOMPATIBLE
+			if (tr2.isInteger) return GREATER
+			return ComparisonResult::INCOMPATIBLE
+		}
+		
+		
+		
+		val interval1 = tr1.interval
+		val interval2 = tr2.interval
+		
+		if (interval1 !=null && interval2 != null) {
+			val lowerBound1 = interval1.lowerBound
+			val lowerBound2 = interval2.lowerBound
+			val upperBound1 = interval1.upperBound
+			val upperBound2 = interval2.upperBound
+			
+			if (lowerBound1 == null) { // lower bound interval1 -infinite
+				if (lowerBound2 == null) { // lower bound both -infinite
+					if (upperBound1 == null) {
+						if (upperBound2 == null) {
+							return EQUAL
+						}
+						return GREATER
+					} else { // upperBound of interval1 finite
+						if (upperBound2 == null) {
+							return SMALLER
+						}
+						return ComparisonResult::fromInt(upperBound1.compareTo(upperBound2))
+					}
+				
+				// left hand side GREATER
+				} else if (upperBound1 == null || (upperBound2 != null && upperBound1.compareTo(upperBound2) >= 0)) {
+					return GREATER
+				}
+			} else { // lower bound of interval1 is finite
+				if (lowerBound2 == null) { // interval1 seems to be smaller
+					if (upperBound2 == null || (upperBound1 != null && upperBound1.compareTo(upperBound2) <= 0)) {
+						return SMALLER
+					}
+				} else {
+					switch lowerBound1.compareTo(lowerBound2) {
+						case -1 : { // interval1 seems to be GREATER
+							if (upperBound1 == null || (upperBound2 != null && upperBound1.compareTo(upperBound2) >= 0)) {
+								return GREATER
+							}
+						}
+						case  0 : { // intervals seem to be EQUAL
+							if (upperBound1 == null) {
+								if (upperBound2 == null) {
+									return EQUAL
+								}
+								return GREATER
+							} else {
+								if (upperBound2 == null) {
+									return SMALLER
+								}
+								return ComparisonResult::fromInt(upperBound1.compareTo(upperBound2))
+							}
+						}
+						case  1 : { // interval1 seems to be SMALLER
+							if (upperBound2 == null || (upperBound1 != null && upperBound1.compareTo(upperBound2) <= 0)) {
+								return SMALLER
+							}
+						}
+					}
+				}
+			}
+			// return ComparisonResult::INCOMPATIBLE
+		}
+		
+		return ComparisonResult::INCOMPATIBLE
 	}
 	
 }

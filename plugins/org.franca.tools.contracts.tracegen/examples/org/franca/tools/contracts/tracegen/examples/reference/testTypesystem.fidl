@@ -1,0 +1,123 @@
+package org.franca.tools.contracts.tracegen.examples.reference
+
+typeCollection MyTypes {
+	
+	typedef OneOrTwo is Integer (1 ,  2)
+	typedef One is Integer
+	
+	enumeration UnusedErrors {
+		UNUSED
+	}
+	
+	enumeration BasicErrors {
+		BasicError
+		ErrorWithValueID = ErrorValueID
+		ErrorWithStringValue = "This is the id of a basic error"
+		ErrorWithValueIDSubst = ErrorWithValueID
+	}
+	
+	enumeration ErrorsExtension extends BasicErrors {
+		ExtensionsAdditionalError
+	}
+
+	struct SimpleStruct {
+		UInt32 simpleStructsUInt32Value
+	}
+	
+	struct ComplexStruct extends SimpleStruct {
+		Int32 complexStructsInt32Value
+	}
+	
+	struct VeryComplexStruct extends ComplexStruct {
+		ComplexStruct complextData 
+	}
+	
+	//TODO why are structs with self references not allowed? (larger circles are not checked) 
+}
+
+interface Reference {
+	
+//	attribute Int32 int32Attrib
+//	attribute UInt8 uint8Attrib
+//	attribute Boolean boolAttrib
+//	attribute Float floatAttrib
+	
+	method init {}
+	method reset {}
+	method doSomething {}
+	method addConst {}
+	method addParam {
+		in {UInt32 summand}
+	}
+//	method addParamSimpleResult {
+//		in {UInt32 summand}
+//		out {UInt64 result}
+//	}
+	method addParamComplex {
+		in {MyTypes.OneOrTwo oneOrTwoSummand Integer (minInt, 42) strangeSummand Integer (42 ,42) theAnswer Int32 int32Summand Int64 int64Summand Double doubleSummand Float floatSummand}
+		out {Int32 int32Result Int64 int64Result Double doubleResult Float floatResult}
+	}
+	method forceEnumError {
+		error MyTypes.ErrorsExtension 
+	}
+	method forceSimpleError {
+		error extends MyTypes.BasicErrors {
+			additionalError
+			otherError = otherErrorValue
+			stringValuedError = "This is an Error with a string as its value"
+		}
+	}
+	method subConst {}
+	method multConst {}
+	method divConst {}
+	method equalToConst {}
+	method notEqualToConst {}
+	method severalBooleansConst {}
+	method complexBooleans {
+		in {Boolean a Boolean b}
+		out {Boolean r}
+	}
+	method handleStringParams {
+		in {String str1 String str2 String str3}
+		out {String outStr1 String outStr2 String outStr3}
+	}
+	method handleStructs {
+		in { MyTypes.SimpleStruct simple MyTypes.ComplexStruct complex}
+		out { MyTypes.VeryComplexStruct veryComplex }
+	}
+	
+	
+	contract {
+		
+		vars {
+			Integer (minInt, maxInt) allIntegers;
+			Integer (1, 5) interval1;
+			Integer (2, 5) interval2;
+			Boolean aBoolean;
+			UInt16 aUInt16;
+			Int32 aInt32;
+			UInt32 aUInt32;
+			Int16 aInt16;
+			Float aFloat;
+			Double aDouble;
+			String aString;
+			MyTypes.VeryComplexStruct aComplexStruct;
+			MyTypes.BasicErrors lastBasicError;
+//			forceSimpleError.error lastImplicitErrorTypeError;
+		}
+		PSM {
+			initial State1
+			
+			state State1 {
+				on call init -> State1 {
+					aBoolean = true || interval1 < interval2
+					interval1 = interval2
+					//wrong error message interval2 = interval1
+					aInt32 = aInt16
+					//aInt16 = aInt32
+				}
+			}
+			
+		}
+	}
+}

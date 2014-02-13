@@ -9,6 +9,7 @@ package org.franca.core.framework;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.Collections;
 import java.util.List;
 
@@ -17,6 +18,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.emf.mwe2.language.scoping.QualifiedNameProvider;
 import org.eclipse.jdt.annotation.NonNull;
 import org.franca.core.franca.FAttribute;
 import org.franca.core.franca.FBasicTypeId;
@@ -24,6 +26,7 @@ import org.franca.core.franca.FBroadcast;
 import org.franca.core.franca.FConstantDef;
 import org.franca.core.franca.FContract;
 import org.franca.core.franca.FEnumerationType;
+import org.franca.core.franca.FIntegerInterval;
 import org.franca.core.franca.FInterface;
 import org.franca.core.franca.FMapType;
 import org.franca.core.franca.FMethod;
@@ -37,11 +40,15 @@ import org.franca.core.franca.FUnionType;
 import org.franca.core.franca.FrancaPackage;
 
 import com.google.common.collect.Lists;
+import com.google.inject.Inject;
 
 
 public class FrancaHelpers {
 	// configuration data
 	private ResourceSet resourceSet = null;
+	
+	@Inject
+	private QualifiedNameProvider fqnProvider;
 
 	// *****************************************************************************
 	// constructor(s)
@@ -187,12 +194,13 @@ public class FrancaHelpers {
 		if (typeRef == null) return false;
 		
 		if (typeRef.getDerived() == null) {
-			int id = typeRef.getPredefined().getValue();
-			if (	id==FBasicTypeId.INT8_VALUE  || id==FBasicTypeId.UINT8_VALUE  ||
-					id==FBasicTypeId.INT16_VALUE || id==FBasicTypeId.UINT16_VALUE ||
-					id==FBasicTypeId.INT32_VALUE || id==FBasicTypeId.UINT32_VALUE ||
-					id==FBasicTypeId.INT64_VALUE || id==FBasicTypeId.UINT64_VALUE   )
-			{
+			FBasicTypeId id = typeRef.getPredefined();
+			if (	id==FBasicTypeId.INT8  || id==FBasicTypeId.UINT8  ||
+					id==FBasicTypeId.INT16 || id==FBasicTypeId.UINT16 ||
+					id==FBasicTypeId.INT32 || id==FBasicTypeId.UINT32 ||
+					id==FBasicTypeId.INT64 || id==FBasicTypeId.UINT64 ||
+					typeRef.getInterval() != null
+			) {
 				return true;
 			}
 		} else {
@@ -207,54 +215,49 @@ public class FrancaHelpers {
 
 	/** Returns true if the referenced type is float or double. */
 	public static boolean isFloatingPoint (FTypeRef typeRef) {
-		if (typeRef == null) return false;
-		
-		if (typeRef.getDerived() == null) {
-			int id = typeRef.getPredefined().getValue();
-			if (id==FBasicTypeId.FLOAT_VALUE || id==FBasicTypeId.DOUBLE_VALUE) {
-				return true;
-			}
-		} else {
-			FType type = typeRef.getDerived();
-			if (type instanceof FTypeDef) {
-				FTypeDef typedef = (FTypeDef)type;
-				return isFloatingPoint(typedef.getActualType());
-			}
-		}
-		return false;
+		return basicTypeEquals(typeRef, FBasicTypeId.FLOAT) || basicTypeEquals(typeRef, FBasicTypeId.DOUBLE);
 	}
-
-	public static boolean isFloat (FTypeRef typeRef) {
-		if (typeRef == null) return false;
-		
-		if (typeRef.getDerived() == null) {
-			int id = typeRef.getPredefined().getValue();
-			if (id==FBasicTypeId.FLOAT_VALUE) {
-				return true;
-			}
-		} else {
-			FType type = typeRef.getDerived();
-			if (type instanceof FTypeDef) {
-				FTypeDef typedef = (FTypeDef)type;
-				return isFloat(typedef.getActualType());
-			}
+	
+	public static boolean typeEquals(FTypeRef typeRef1, FTypeRef typeRef2) {
+		FBasicTypeId predef = typeRef2.getPredefined();
+		if (predef != null) {
+			return basicTypeEquals(typeRef1, predef);
 		}
+		
+		FIntegerInterval interval1 = typeRef1.getInterval();
+		FIntegerInterval interval2 = typeRef2.getInterval();
+		if (interval1 != null || interval2 != null) {
+			if (interval1 != null && interval2 != null) {
+				return (interval1.getLowerBound() == null || interval1.getLowerBound().equals(interval2.getLowerBound())) &&
+						(interval1.getUpperBound() == null || interval1.getUpperBound().equals(interval2.getUpperBound()));
+			}
+			return false;
+		}
+		
+		//TODO: fqnProvider statically not available!!!
+//		FType derived1 = typeRef1.getDerived();
+//		FType derived2 = typeRef2.getDerived();
+//		QualifiedName fqn1 = fqnProvider.getFullyQualifiedName(derived1);
+//		if (fqn1 != null) { //otherwise we would be somewhere in the middle of parsing
+//			return fqn1.equals(fqnProvider.getFullyQualifiedName(derived2));
+//		}
+		
 		return false;
 	}
 	
-	public static boolean isDouble (FTypeRef typeRef) {
+	public static boolean basicTypeEquals(FTypeRef typeRef, FBasicTypeId basicTypeID) {
 		if (typeRef == null) return false;
 		
 		if (typeRef.getDerived() == null) {
-			int id = typeRef.getPredefined().getValue();
-			if (id==FBasicTypeId.DOUBLE_VALUE) {
+			FBasicTypeId id = typeRef.getPredefined();
+			if (id==basicTypeID) {
 				return true;
 			}
 		} else {
 			FType type = typeRef.getDerived();
 			if (type instanceof FTypeDef) {
 				FTypeDef typedef = (FTypeDef)type;
-				return isDouble(typedef.getActualType());
+				return basicTypeEquals(typedef.getActualType(), basicTypeID);
 			}
 		}
 		return false;
@@ -265,42 +268,22 @@ public class FrancaHelpers {
 		return isInteger(typeRef) || isFloatingPoint(typeRef);
 	}
 	
+	/** Returns true if the referenced type is a double. */
+	public static boolean isDouble(FTypeRef typeRef) {
+		return basicTypeEquals(typeRef, FBasicTypeId.DOUBLE);
+	}
+	/** Returns true if the referenced type is a float. */
+	public static boolean isFloat(FTypeRef typeRef) {
+		return basicTypeEquals(typeRef, FBasicTypeId.FLOAT);
+	}
 	/** Returns true if the referenced type is a string. */
 	public static boolean isString (FTypeRef typeRef) {
-		if (typeRef == null) return false;
-		
-		if (typeRef.getDerived() == null) {
-			int id = typeRef.getPredefined().getValue();
-			if (id==FBasicTypeId.STRING_VALUE) {
-				return true;
-			}
-		} else {
-			FType type = typeRef.getDerived();
-			if (type instanceof FTypeDef) {
-				FTypeDef typedef = (FTypeDef)type;
-				return isString(typedef.getActualType());
-			}
-		}
-		return false;
+		return basicTypeEquals(typeRef, FBasicTypeId.STRING);
 	}
 
-	/** Returns true if the referenced type is a boolean value. */
+	/** Returns true if the referenced type is a boolean. */
 	public static boolean isBoolean (FTypeRef typeRef) {
-		if (typeRef == null) return false;
-		
-		if (typeRef.getDerived() == null) {
-			int id = typeRef.getPredefined().getValue();
-			if (id==FBasicTypeId.BOOLEAN_VALUE) {
-				return true;
-			}
-		} else {
-			FType type = typeRef.getDerived();
-			if (type instanceof FTypeDef) {
-				FTypeDef typedef = (FTypeDef)type;
-				return isBoolean(typedef.getActualType());
-			}
-		}
-		return false;
+		return basicTypeEquals(typeRef, FBasicTypeId.BOOLEAN);
 	}
 
 	/** Returns true if the referenced type is an enumeration type. */
@@ -328,6 +311,11 @@ public class FrancaHelpers {
 			if (type instanceof FTypeDef) {
 				FTypeDef typedef = (FTypeDef)type;
 				return getTypeString(typedef.getActualType());
+			} else if (type instanceof FIntegerInterval) {
+				FIntegerInterval interval = (FIntegerInterval) type;
+				BigInteger lowerBound = interval.getLowerBound();
+				BigInteger upperBound = interval.getLowerBound();
+				return "integer interval (" + lowerBound == null ? "minInt" : lowerBound.toString() + "," + upperBound == null ? "maxInt" : upperBound.toString() + ")";
 			} else if (type instanceof FEnumerationType) {
 				return "enumeration '" + type.getName() + "'";
 			} else if (type instanceof FStructType) {
