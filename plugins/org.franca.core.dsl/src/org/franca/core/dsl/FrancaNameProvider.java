@@ -8,10 +8,10 @@
 package org.franca.core.dsl;
 
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.xtext.naming.DefaultDeclarativeQualifiedNameProvider;
 import org.eclipse.xtext.naming.QualifiedName;
-import org.eclipse.xtext.naming.SimpleNameProvider;
 
-public class FrancaNameProvider extends SimpleNameProvider {
+public class FrancaNameProvider extends DefaultDeclarativeQualifiedNameProvider {
 
 	@Override
 	public QualifiedName getFullyQualifiedName(EObject e) {

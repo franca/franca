@@ -109,29 +109,7 @@ public class ModelPersistenceHandler {
 	public EObject loadModel(String filename, String cwd) {
 		URI fileURI = normalizeURI(URI.createURI(filename));
 		URI cwdURI = normalizeURI(URI.createURI(cwd));
-		Resource resource = null;
-
-		if (cwd != null && cwd.length() > 0) {
-			//System.out.println("(" + fileURI + "," + cwdURI.toString() + "/" + fileURI.toString() + ")");
-			resourceSet.getURIConverter().getURIMap().put(fileURI, URI.createURI((cwdURI.toString() + "/" + fileURI.toString()).replaceAll("/+", "/")));
-		}
-
-		//load root model
-		try {
-			resource = resourceSet.getResource(fileURI, true);
-			resource.load(Collections.EMPTY_MAP);
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
-		}
-		EObject model = resource.getContents().get(0);
-		
-		//and all its imports recursively
-		for (Iterator<String> it = fileHandlerRegistry.get(fileURI.fileExtension()).importsIterator(model); it.hasNext();) {
-			String importURI = it.next();
-			loadModel(importURI, getCWDForImport(fileURI, cwdURI).toString());
-		}
-		return model;
+		return loadModel(fileURI, cwdURI);
 	}
 
 	/**

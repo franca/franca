@@ -26,9 +26,12 @@ import org.franca.core.dsl.validation.internal.ValidationHelpers;
 import org.franca.core.dsl.validation.internal.ValidationMessageReporter;
 import org.franca.core.dsl.validation.internal.ValidatorRegistry;
 import org.franca.core.framework.FrancaHelpers;
+import org.franca.core.franca.FAnnotation;
+import org.franca.core.franca.FAnnotationType;
 import org.franca.core.franca.FArgument;
 import org.franca.core.franca.FAssignment;
 import org.franca.core.franca.FBroadcast;
+import org.franca.core.franca.FCompoundInitializer;
 import org.franca.core.franca.FCompoundType;
 import org.franca.core.franca.FConstantDef;
 import org.franca.core.franca.FContract;
@@ -232,6 +235,12 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 	}
 
 	@Check
+	public void checkCompoundInitializerUnique(FCompoundInitializer ci) {
+		auxValidator.checkCompoundInitializersUnique(ci);
+	}
+
+
+	@Check
 	public void checkMethodFlags(FMethod method) {
 		if (method.isFireAndForget()) {
 			if (!method.getOutArgs().isEmpty()) {
@@ -367,6 +376,17 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 							FrancaPackage.Literals.FTYPE_REF__DERIVED, -1);
 				}
 			}
+		}
+	}
+
+	// *****************************************************************************
+
+	@Check
+	public void checkAnnotationType (FAnnotation annotation) {
+		FAnnotationType type = annotation.getType();
+		if (type==null) {
+			error("Invalid annotation type", annotation,
+					FrancaPackage.Literals.FANNOTATION__RAW_TEXT, -1);
 		}
 	}
 

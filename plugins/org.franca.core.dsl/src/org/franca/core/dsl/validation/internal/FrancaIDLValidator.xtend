@@ -20,6 +20,7 @@ import static org.franca.core.dsl.validation.internal.ValidationHelpers.*
 
 import static extension org.franca.core.FrancaModelExtensions.*
 import static extension org.franca.core.dsl.validation.internal.FrancaNameProvider.*
+import org.franca.core.franca.FCompoundInitializer
 
 class FrancaIDLValidator {
 	
@@ -82,6 +83,15 @@ class FrancaIDLValidator {
 		}
 	}
 
+	def checkCompoundInitializersUnique (FCompoundInitializer initializer) {
+		val names = createNameList
+		for(e : initializer.elements) {
+			names.add(e, e.element.name)
+		}
+		checkDuplicates(reporter, names,
+				FFIELD_INITIALIZER__ELEMENT, "initializer field");
+	}
+	
 	def private Map<String, String> getBaseElementNames (FCompoundType type, (FField) => EObject nameProvider) {
 		val Map<String, String> baseNames = newHashMap
 		val base = type.getBase

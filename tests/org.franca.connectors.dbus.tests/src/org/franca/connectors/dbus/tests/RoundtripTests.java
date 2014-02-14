@@ -57,7 +57,7 @@ public class RoundtripTests {
 				nDiffs++;
 			}
 		}
-		assertEquals(nDiffs, 0);
+		assertEquals(0, nDiffs);
 	}
 
 }

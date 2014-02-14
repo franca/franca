@@ -57,27 +57,35 @@ public class FileHelper {
 	 * createURI from file paths for Unix, MacOS and Windows.
 	 */
 	public static URI createURI(String filename) {
-		URI uri = URI.createURI(filename);
+		String fname = filename;
+		URI uri = URI.createURI(fname);
+
+		// relative paths are interpreted as file paths relative to the current working dir 
+		if (uri.isRelative()) {
+	    	String cwd = System.getProperty("user.dir");
+	    	fname = cwd + File.separator + fname;
+	    	uri = URI.createURI(fname);
+		}
 
 		String os = System.getProperty("os.name");
 		boolean isWindows = os.startsWith("Windows");
 		boolean isUnix = !isWindows; // this might be too clumsy...
 		if (uri.scheme() != null) {
-			// If we are under Windows and s starts with x: it is an absolute path
+			// if we are under Windows and s starts with x: it is an absolute path
 			if (isWindows && uri.scheme().length() == 1) {
-				return URI.createFileURI(filename);
+				return URI.createFileURI(fname);
 			}
 			// otherwise it is a proper URI
 			else {
 				return uri;
 			}
 		}
-		// Handle paths that start with / under Unix e.g. /local/foo.txt
-		else if (isUnix && filename.startsWith("/")) { 
-			return URI.createFileURI(filename);
+		else if (isUnix && fname.startsWith("/")) { 
+			// handle paths that start with / under Unix e.g. /local/foo.txt
+			return URI.createFileURI(fname);
 		}
-		// otherwise it is a proper URI
 		else {
+			// otherwise it is a proper URI
 			return uri;
 		}
 	}

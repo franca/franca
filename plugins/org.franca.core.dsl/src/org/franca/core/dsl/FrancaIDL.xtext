@@ -14,6 +14,7 @@ import "http://core.franca.org"
 
 import "http://www.eclipse.org/emf/2002/Ecore" as ecore
 
+
 // **************************************************************
 // model root
 
@@ -23,13 +24,14 @@ FModel returns FModel:
 	(imports+=Import)*
 	( typeCollections+=FTypeCollection | interfaces+=FInterface	)*;
 
+
 // **************************************************************
 // type collection and interface
 
 FTypeCollection returns FTypeCollection:
 	{FTypeCollection}
 	(comment=FAnnotationBlock)?
-	'typeCollection' (name=FQN)?
+	'typeCollection' (name=ID)?
 	'{'
 		('version' version=FVersion)?
 		(types+=FType)*
@@ -39,7 +41,7 @@ FTypeCollection returns FTypeCollection:
 FInterface returns FInterface:
 	{FInterface}
 	(comment=FAnnotationBlock)?
-	'interface' name=FQN
+	'interface' name=ID
 		('extends' base=[FInterface|FQN])?
 		('manages'
 			managedInterfaces+=[FInterface|FQN]
@@ -68,7 +70,7 @@ FVersion returns FVersion:
 
 FAttribute:
 	(comment=FAnnotationBlock)?
-	'attribute'	type=FTypeRef (array?='[]')? name=ID
+	'attribute'	type=FTypeRef (array?='[' ']')? name=ID
 		(readonly?='readonly')?
 		(noSubscriptions?='noSubscriptions')?
 	;
@@ -101,7 +103,7 @@ FBroadcast returns FBroadcast:
 
 FArgument:
 	(comment=FAnnotationBlock)?
-	type=FTypeRef (array?='[]')? name=ID;
+	type=FTypeRef (array?='[' ']')? name=ID;
 
 
 // **************************************************************
@@ -201,11 +203,11 @@ FMapType returns FMapType:
 
 FField:
 	(comment=FAnnotationBlock)?
-	type=FTypeRef (array?='[]')? name=ID;
+	type=FTypeRef (array?='[' ']')? name=ID;
 
 
 FDeclaration:
-	type=FTypeRef (array?='[]')? name=ID;
+	type=FTypeRef (array?='[' ']')? name=ID;
 
 FTypedElement:
 	FField |
@@ -219,7 +221,7 @@ FTypedElement:
 // constant definitions and initializers
 
 FConstantDef:
-	'const' type=FTypeRef (array?='[]')? name=ID '='
+	'const' type=FTypeRef (array?='[' ']')? name=ID '='
 		rhs=FInitializerExpression
 	;
 
@@ -228,37 +230,32 @@ FInitializerExpression:
 	FInitializer;
 
 FInitializer:
-	FArrayInitializer |
-	FStructInitializer; // |
-//	FUnionInitializer |
-//	FMapInitializer;
+	FCompoundInitializer |
+	FBracketInitializer;
 
-FArrayInitializer:
-	{FArrayInitializer}
+// this is used for struct and union types
+FCompoundInitializer:
+	{FCompoundInitializer}
+	'{' (
+		elements+=FFieldInitializer
+		(',' elements+=FFieldInitializer)*
+	)? '}';
+
+FFieldInitializer:
+	element=[FField|ID] ':' value=FInitializerExpression;
+
+// this is used for array and map types
+FBracketInitializer:
+	{FBracketInitializer}
 	'[' (
-		elements+=FInitializerExpression
-		(',' elements+=FInitializerExpression)*
+		elements+=FElementInitializer
+		(',' elements+=FElementInitializer)*
 	)? ']';
 
-FStructInitializer:
-	{FStructInitializer}
-	'{' (
-		elements+=FInitializerExpression
-		(',' elements+=FInitializerExpression)*
-	)? '}';
-
-FUnionInitializer:
-	'{' element=[FField|ID] ':' value=FInitializerExpression '}';
-
-FMapInitializer:
-	{FMapInitializer}
-	'{' (
-		elements+=FMapElementInitializer
-		(',' elements+=FMapElementInitializer)*
-	)? '}';
-
-FMapElementInitializer:
-	key=FInitializerExpression '=>' value=FInitializerExpression;
+// for array type initializers, the second element is omitted
+FElementInitializer:
+	{FElementInitializer}
+	first=FInitializerExpression ('=>' second=FInitializerExpression)?;
 
 
 // **************************************************************
@@ -436,21 +433,7 @@ FAnnotationBlock returns FAnnotationBlock:
 	'<**' (elements+=FAnnotation)+ '**>';
 
 FAnnotation returns FAnnotation:
-	type=FAnnotationType comment=COMMENT_STRING;
-
-enum FAnnotationType returns FAnnotationType:
-	description = '@description' |
-	author = '@author' |
-	experimental = '@experimental' |
-	deprecated = '@deprecated' |
-	see = '@see' |
-	param = '@param' |
-	high_volume = '@high-volume' |
-	high_frequency = '@high-frequency' |
-	source_uri = '@source-uri' | 
-	source_alias = '@source-alias' | 
-	details = '@details'
-	;
+	rawText=ANNOTATION_STRING;
 
 
 // **************************************************************
@@ -479,9 +462,11 @@ E_INT returns ecore::EInt:
 terminal NEGATIVE_INT returns ecore::EInt:
 	'-'INT;
 
-terminal COMMENT_STRING returns ecore::EString:
-	':' ( ('\\' ('b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\')) | !('\\'|'*'|'@') )*
+terminal ANNOTATION_STRING returns ecore::EString:
+	'@' (('a'..'z')|'-')+ (' '|'\t')* ':'
+	( ('\\' ('b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\')) | !('\\'|'*'|'@') )*
 ;
+
 
 // **************************************************************
 // general

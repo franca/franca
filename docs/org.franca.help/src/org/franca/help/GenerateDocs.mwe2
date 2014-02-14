@@ -1,7 +1,5 @@
 module org.franca.help.GenerateDocs
 
-//import org.eclipse.emf.mwe.utils.*
-
 var document = "Franca User Guide"
 var targetDir = "src-gen"
 var release = false
@@ -64,13 +62,16 @@ Workflow {
 	}
 
 	// convert Latex format to pdf
-//	component = org.eclipse.xtext.xdoc.generator.util.LatexRunner auto-inject {
-//		//pdfLatexCommandParams = "-halt-on-error"
-//		pdfLatex = pdfLatex
-//		outputDir = targetDir
-//		inputSlot = "doc"
-//		cleanAfterRun = cleanAfterRun
-//	}
-
+	component = org.franca.core.utils.IfFileExistsComponent {
+		// Latex will only be called if the pdfLatex path is available
+		fileName = pdfLatex
+		component = org.eclipse.xtext.xdoc.generator.util.LatexRunner auto-inject {
+			//pdfLatexCommandParams = "-halt-on-error"
+			pdfLatex = pdfLatex
+			outputDir = targetDir
+			inputSlot = "doc"
+			cleanAfterRun = cleanAfterRun
+		}
+	}
 }
 

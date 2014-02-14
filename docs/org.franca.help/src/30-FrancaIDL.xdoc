@@ -104,7 +104,7 @@ which is not specified by the API. This bypass of the API definition
 weakens the API abstraction and will inevitably lead to integration
 issues and runtime problems.
 
-The actual physical encoding of the primitives types depends on the target language.
+The actual physical encoding of the primitive types depends on the target language.
 A default encoding will be defined as part of Franca's deployment model. 
 Exceptions from this default encoding can be defined in the target-language-specific
 deployment model.
@@ -128,7 +128,7 @@ array ExampleArray of ExampleArrayRow
 ] 
 
 Implicit ("inline") array types are defined by attaching square brackets (e.g., code[Franca][UInt8\[\]])
-to any other type definition. This can be done for attributes, struct members, and
+to any other type definition. This can be done for attributes, struct members and
 arguments of methods and broadcasts. See more examples below. Note: Inline arrays can only be defined
 one-dimensional. If multi-dimensional arrays are needed, only one dimension can be defined as unnamed
 array. 
@@ -344,8 +344,10 @@ top-level of a Franca model. This has been banned with Franca-0.8.0 in order to
 provide a consistent scheme of fully qualified names and versioning for
 user-defined types.
 
-Each type collection in Franca has some metadata: a mandatory fully qualified
+Each type collection in Franca has some metadata: a single identifier
 e[name] for the collection and an optional e[version number] (with major/minor scheme).
+The name of the type collection will be scoped relative to the fully qualified name
+of the package defined at the beginning of the Franca file.
 The following example shows the basic type collection definition:
 
 code[Franca][
@@ -379,8 +381,11 @@ section2:FIDL_Interface_Basic[Basic interface definition]
 
 section3:FIDL_Interface_Basic_Structure[Interface name, version and contents]
 
-The basic interface definition using Franca includes an interface name and a version number (major/minor
-scheme):
+The basic interface definition using Franca includes an interface name
+and a version number (major/minor scheme).
+The name of an interface has to be a single identifier.
+The following example gives a blueprint for the structure of an interface definition:
+
 code[Franca][
 interface ExampleInterface {
 	version { major 5 minor 0 }
@@ -395,16 +400,11 @@ interface ExampleInterface {
 }
 ]
 
+The name of the interface will be scoped relative to the fully qualified name
+of the package defined at the beginning of the Franca file.
+
 The order of the elements of an interface has been chosen deliberately and cannot be changed.
 
-The name of an interface has to be a fully qualified name, i.e., a list of segments which are
-separated by dots. The fully qualified name thus defines a path which is to be interpreted
-relatively to the package name specified at the beginning of each Franca file. Example:
-code[Franca][
-interface examples.franca.ExampleInterface {
-	// ...
-}
-]
 
 section3:FIDL_Interface_Basic_Versioning[Interface versioning and change compatibility]
 

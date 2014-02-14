@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2014 itemis AG (http://www.itemis.de).
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************/
 package org.franca.core.dsl.validation.util
 
 import com.google.common.collect.ArrayListMultimap
@@ -21,8 +28,8 @@ class DiGraphAnalyzationUtil {
 	 * The Multimap is expected to be the result of {@link #toMultiMap(Iterator)} after the DiGraph has been topoSorted.
 	 * {1=[2], 2=[1], 10=[11], 11=[10]} returns [[1,2][10,11]] <br/>
 	 * NOTE:
-	 * The underlying algo relies on the abovementioned expectation.
-	 * If the mappedEdges do not represent the abovementioned expectation, 
+	 * The underlying algorithm relies on the above mentioned expectation.
+	 * If the mappedEdges do not represent the above mentioned expectation, 
 	 * i.e they are not part-of-a-cycle-edges of a digraph only, results are unpredictable.
 	 */	
 	def <T> List<List<T>> separateCycles(Multimap<T, T> mappedEdges){

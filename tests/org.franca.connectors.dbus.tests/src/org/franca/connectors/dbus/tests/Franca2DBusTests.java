@@ -81,7 +81,7 @@ public class Franca2DBusTests {
 				nDiffs++;
 			}
 		}
-		assertEquals(nDiffs, 0);
+		assertEquals(0, nDiffs);
 	}
 }
 

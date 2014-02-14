@@ -17,18 +17,16 @@ import org.franca.core.franca.FConstantDef
 import org.franca.core.franca.FExpression
 import org.franca.core.franca.FInitializer
 import org.franca.core.franca.FTypeRef
-
-import static org.franca.core.franca.FrancaPackage$Literals.*
-import org.franca.core.franca.FStructInitializer
+import org.franca.core.franca.FCompoundInitializer
 import org.franca.core.franca.FStructType
-import org.franca.core.franca.FArrayInitializer
+import org.franca.core.franca.FBracketInitializer
 import org.franca.core.franca.FArrayType
+import org.franca.core.franca.FMapType
 import org.franca.core.franca.FInitializerExpression
 
+import static org.franca.core.franca.FrancaPackage$Literals.*
 import static extension org.franca.core.FrancaModelExtensions.*
-import org.franca.core.franca.FField
-import org.franca.core.franca.FUnionInitializer
-import org.franca.core.franca.FUnionType
+import static extension org.franca.core.framework.FrancaHelpers.*
 
 class TypesValidator {
 
@@ -57,94 +55,105 @@ class TypesValidator {
 	}
 	
 	def private static dispatch checkInitializer (
-		FArrayInitializer rhs,
+		FBracketInitializer rhs,
 		FTypeRef type,
 		ValidationMessageReporter reporter,
 		EObject ctxt,
 		EStructuralFeature feature,
 		int index
 	) {
-		if (type.derived==null || !(type.derived instanceof FArrayType)) {
+		if (! (type.isArray || type.isMap)) {
 			reporter.reportError(
-					"invalid array initializer in constant definition (expected " +
+					"invalid initializer in constant definition (expected " +
 						FrancaHelpers::getTypeString(type) + ")",
 					ctxt, feature);
 			return;
 		}
 		
-		val t = type.derived as FArrayType
-		for(e : rhs.elements) {
-			checkConstantRHS(e,
-				t.elementType,
-				reporter, rhs, FARRAY_INITIALIZER__ELEMENTS, rhs.elements.indexOf(e)
-			)
-			
-		}
-	}
-	
-	def private static dispatch checkInitializer (
-		FStructInitializer rhs,
-		FTypeRef type,
-		ValidationMessageReporter reporter,
-		EObject ctxt,
-		EStructuralFeature feature,
-		int index
-	) {
-		if (type.derived==null || !(type.derived instanceof FStructType)) {
-			reporter.reportError(
-					"invalid struct initializer in constant definition (expected " +
-						FrancaHelpers::getTypeString(type) + ")",
-					ctxt, feature, index);
-			return;
-		}
-		
-		val t = type.derived as FStructType
-		val elems = t.getAllElements
-		if (elems.size != rhs.elements.size) {
-			reporter.reportError(
-					"invalid number of elements in struct initializer (is " +
-						rhs.elements.size + ", expected " +
-						elems.size + ")",
-					ctxt, feature, index);
-		} else {
-			for(i : 0..elems.size-1) {
-				checkConstantRHS(rhs.elements.get(i),
-					(elems.get(i) as FField).type,
-					reporter, rhs, FSTRUCT_INITIALIZER__ELEMENTS, i
-				)
+		if (type.isArray) {
+			val t = type.actualDerived as FArrayType
+			for(e : rhs.elements) {
+				val idx = rhs.elements.indexOf(e)
+				if (e.second!=null) {
+					reporter.reportError(
+							"invalid initializer for array element",
+							rhs, FBRACKET_INITIALIZER__ELEMENTS, idx);
+				} else {
+					checkConstantRHS(e.first,
+						t.elementType,
+						reporter, e, FELEMENT_INITIALIZER__FIRST, -1
+					)
+				}
+			}
+		} else if (type.isMap) {
+			val t = type.actualDerived as FMapType
+			for(e : rhs.elements) {
+				val idx = rhs.elements.indexOf(e)
+				if (e.second==null) {
+					reporter.reportError(
+							"invalid initializer for map element",
+							rhs, FBRACKET_INITIALIZER__ELEMENTS, idx);
+				} else {
+					checkConstantRHS(e.first,
+						t.keyType,
+						reporter, e, FELEMENT_INITIALIZER__FIRST, -1
+					)
+					checkConstantRHS(e.second,
+						t.valueType,
+						reporter, e, FELEMENT_INITIALIZER__SECOND, -1
+					)
+				}
 			}
 		}
 	}
 	
 	def private static dispatch checkInitializer (
-		FUnionInitializer rhs,
+		FCompoundInitializer rhs,
 		FTypeRef type,
 		ValidationMessageReporter reporter,
 		EObject ctxt,
 		EStructuralFeature feature,
 		int index
 	) {
-		if (type.derived==null || !(type.derived instanceof FUnionType)) {
+		if (! type.isCompound) {
 			reporter.reportError(
-					"invalid union initializer in constant definition (expected " +
+					"invalid compound initializer in constant definition (expected " +
 						FrancaHelpers::getTypeString(type) + ")",
 					ctxt, feature, index);
 			return;
 		}
 		
-		val t = type.derived as FUnionType
-		val elems = t.getAllElements
-		val e = elems.findFirst[it==rhs.element]
-		if (e==null) {
-			reporter.reportError(
-					"union initializer references invalid field '" +
-						rhs.element.name + "' in constant definition",
-					rhs, FUNION_INITIALIZER__ELEMENT, -1);
-		} else {
-			rhs.element.type
-			checkConstantRHS(rhs.value,
-				(e as FField).type,
-				reporter, rhs, FUNION_INITIALIZER__VALUE, -1
+		if (type.isStruct) {
+			val t = type.actualDerived as FStructType
+			val elems = t.getAllElements
+			
+			// check if there are initializers for all struct elements
+			val fields = rhs.elements.map[element]
+			for(e : elems) {
+				if (! fields.contains(e)) {
+					reporter.reportError(
+							"initializer for element '" + e.name + "' missing",
+							ctxt, feature, index);
+				}
+			}
+			
+			// check the types for all initializers
+			for(e : rhs.elements) {
+				checkConstantRHS(e.value, e.element.type,
+					reporter, e, FFIELD_INITIALIZER__VALUE, -1
+				)
+			}
+		} else if (type.isUnion) {
+			if (rhs.elements.size!=1) {
+				reporter.reportError(
+						"union initializer must have exactly one element",
+						ctxt, feature, index);
+			}
+
+			// check type
+			val e = rhs.elements.get(0)
+			checkConstantRHS(e.value, e.element.type,
+				reporter, e, FFIELD_INITIALIZER__VALUE, 0
 			)
 		}
 	}

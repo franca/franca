@@ -102,7 +102,7 @@ are no predefined properties. This ensures maximum flexibility when writing spec
 
 The following example shows one property as part of a deployment specification.
 The property is named e[PerformanceImpact]; it is located at the host e[methods].
-The property is of e[enumeration] type, with to enum values e[none], e[medium] and
+The property is of e[enumeration] type, with enum values e[none], e[medium] and
 e[substantial]. It has the flag e[optional].
 
 code[FDeploy][
@@ -392,7 +392,7 @@ organization of specifications. Each property can be either defined as single
 value or as array. For example, property code[FDeploy][Range] has been defined
 as array of integers, and the default value is an array which contains the 
 values 1, 2 and 3. Property code[FDeploy][Groups] is an array of enumeration
-values g1, g2, g3 and g4. Thus, values for this property might be an abitrary subset
+values g1, g2, g3 and g4. Thus, values for this property might be an arbitrary subset
 of this enumeration.
 
 code[FDeploy][
@@ -720,7 +720,10 @@ e[InterfacePropertyAccessors] as described above.
 section2:DeploymentModels_DeploymentAccessSupport_Examples[Example project]
 
 The example project e[org.franca.examples.deploy] contains two example generators
-in the package e[org.franca.examples.deploy.generators]:
+in the package
+
+e[org.franca.examples.deploy.generators]:
+
 ul[ 
 	item[e[ExampleHppGeneratorWithDeployment]: This example code generator shows
 		how deployment information can be accessed during traversal of an actual

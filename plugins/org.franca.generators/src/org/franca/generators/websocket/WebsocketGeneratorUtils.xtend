@@ -29,8 +29,10 @@ class WebsocketGeneratorUtils {
 
 		«ENDFOR»
 	'''
+	
+	def static genPathToRoot (String packageName) '''../«FOR t : packageName.split("\\.")»../«ENDFOR»'''
 
-	def static genArgList (Iterable<FArgument> args, String prefix)
-		'''«FOR a : args SEPARATOR ", "»«prefix + a.name»«ENDFOR»'''
+	def static genArgList (Iterable<FArgument> args, String prefix, String separator)
+	'''«FOR a : args SEPARATOR separator»«prefix + a.name»«ENDFOR»'''
 
 }

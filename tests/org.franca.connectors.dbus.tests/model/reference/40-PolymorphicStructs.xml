@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="introspect.xsl"?>
 <node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="introspect.xsd" name="testcases">
-  <interface name="MyInterface">
+  <interface name="testcases.MyInterface">
     <method name="doNonPolymorphic">
       <arg direction="in" name="arg1" type="(nn)">
         <doc>

@@ -64,7 +64,7 @@ class DBus2FrancaTransformation {
 	}
 
 	def create FrancaFactory::eINSTANCE.createFInterface transformInterface (InterfaceType src) {
-		name = src.name
+		name = src.name.split ("\\.").last
 		if (src.version != null)
 			version = src.version.transformVersion
 		if(src.doc.hasLines) {

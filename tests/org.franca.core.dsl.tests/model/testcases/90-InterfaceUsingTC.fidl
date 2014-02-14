@@ -1,0 +1,16 @@
+// test interface definition which uses external type collection
+package testcases
+
+import testcases.MyTypes.* from "11-GlobalStruct.fidl"
+
+interface MyInterface {
+	method callme {
+		in {
+			MyStruct param1
+		}
+		out {
+			Int32 retcode
+		}
+	}
+}
+

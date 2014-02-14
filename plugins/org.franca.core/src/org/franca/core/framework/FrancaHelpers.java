@@ -18,8 +18,8 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.emf.mwe2.language.scoping.QualifiedNameProvider;
 import org.eclipse.jdt.annotation.NonNull;
+import org.franca.core.franca.FArrayType;
 import org.franca.core.franca.FAttribute;
 import org.franca.core.franca.FBasicTypeId;
 import org.franca.core.franca.FBroadcast;
@@ -40,16 +40,12 @@ import org.franca.core.franca.FUnionType;
 import org.franca.core.franca.FrancaPackage;
 
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
 
 
 public class FrancaHelpers {
 	// configuration data
 	private ResourceSet resourceSet = null;
 	
-	@Inject
-	private QualifiedNameProvider fqnProvider;
-
 	// *****************************************************************************
 	// constructor(s)
 
@@ -189,114 +185,149 @@ public class FrancaHelpers {
 	// *****************************************************************************
 	// basic type system
 	
-	/** Returns true if the referenced type is any kind of integer. */
-	public static boolean isInteger (FTypeRef typeRef) {
-		if (typeRef == null) return false;
-		
+	/**
+	 * Returns actual predefined type for a FTypeRef.
+	 * 
+	 * This function hides typedefs properly.
+	 */
+	public static FBasicTypeId getActualPredefined (FTypeRef typeRef) {
 		if (typeRef.getDerived() == null) {
-			FBasicTypeId id = typeRef.getPredefined();
-			if (	id==FBasicTypeId.INT8  || id==FBasicTypeId.UINT8  ||
-					id==FBasicTypeId.INT16 || id==FBasicTypeId.UINT16 ||
-					id==FBasicTypeId.INT32 || id==FBasicTypeId.UINT32 ||
-					id==FBasicTypeId.INT64 || id==FBasicTypeId.UINT64 ||
-					typeRef.getInterval() != null
-			) {
-				return true;
-			}
+			return typeRef.getPredefined();
 		} else {
 			FType type = typeRef.getDerived();
 			if (type instanceof FTypeDef) {
 				FTypeDef typedef = (FTypeDef)type;
-				return isInteger(typedef.getActualType());
+				return getActualPredefined(typedef.getActualType());
+			} else {
+				return null;
+			}
+		}
+	}
+
+	/**
+	 * Returns actual derived type for a FTypeRef.
+	 * 
+	 * This function hides typedefs properly.
+	 */
+	public static FType getActualDerived (FTypeRef typeRef) {
+		if (typeRef.getDerived() == null) {
+			return null;
+		} else {
+			FType type = typeRef.getDerived();
+			if (type instanceof FTypeDef) {
+				FTypeDef typedef = (FTypeDef)type;
+				return getActualDerived(typedef.getActualType());
+			} else {
+				return type;
+			}
+		}
+	}
+
+	/** Returns true if the referenced type is any kind of integer. */
+	public static boolean isInteger (FTypeRef typeRef) {
+		if (typeRef == null) return false;
+		FBasicTypeId bt = getActualPredefined(typeRef);
+		if (bt != null) {
+			int id = bt.getValue();
+			if (id==FBasicTypeId.INT8_VALUE  || id==FBasicTypeId.UINT8_VALUE  ||
+				id==FBasicTypeId.INT16_VALUE || id==FBasicTypeId.UINT16_VALUE ||
+				id==FBasicTypeId.INT32_VALUE || id==FBasicTypeId.UINT32_VALUE ||
+				id==FBasicTypeId.INT64_VALUE || id==FBasicTypeId.UINT64_VALUE ||
+				typeRef.getInterval() != null
+			) {
+				return true;
 			}
 		}
 		return false;
 	}
 
+	/** Returns true if the referenced type is a float number. */
+	public static boolean isFloat (FTypeRef typeRef) {
+		return isBasicType(typeRef, FBasicTypeId.FLOAT);
+	}
+	
+	/** Returns true if the referenced type is a double number. */
+	public static boolean isDouble (FTypeRef typeRef) {
+		return isBasicType(typeRef, FBasicTypeId.DOUBLE);
+	}
+	
 	/** Returns true if the referenced type is float or double. */
 	public static boolean isFloatingPoint (FTypeRef typeRef) {
-		return basicTypeEquals(typeRef, FBasicTypeId.FLOAT) || basicTypeEquals(typeRef, FBasicTypeId.DOUBLE);
+		return isFloat(typeRef) || isDouble(typeRef);
 	}
-	
-	public static boolean typeEquals(FTypeRef typeRef1, FTypeRef typeRef2) {
-		FBasicTypeId predef = typeRef2.getPredefined();
-		if (predef != null) {
-			return basicTypeEquals(typeRef1, predef);
-		}
-		
-		FIntegerInterval interval1 = typeRef1.getInterval();
-		FIntegerInterval interval2 = typeRef2.getInterval();
-		if (interval1 != null || interval2 != null) {
-			if (interval1 != null && interval2 != null) {
-				return (interval1.getLowerBound() == null || interval1.getLowerBound().equals(interval2.getLowerBound())) &&
-						(interval1.getUpperBound() == null || interval1.getUpperBound().equals(interval2.getUpperBound()));
-			}
-			return false;
-		}
-		
-		//TODO: fqnProvider statically not available!!!
-//		FType derived1 = typeRef1.getDerived();
-//		FType derived2 = typeRef2.getDerived();
-//		QualifiedName fqn1 = fqnProvider.getFullyQualifiedName(derived1);
-//		if (fqn1 != null) { //otherwise we would be somewhere in the middle of parsing
-//			return fqn1.equals(fqnProvider.getFullyQualifiedName(derived2));
-//		}
-		
-		return false;
-	}
-	
-	public static boolean basicTypeEquals(FTypeRef typeRef, FBasicTypeId basicTypeID) {
-		if (typeRef == null) return false;
-		
-		if (typeRef.getDerived() == null) {
-			FBasicTypeId id = typeRef.getPredefined();
-			if (id==basicTypeID) {
-				return true;
-			}
-		} else {
-			FType type = typeRef.getDerived();
-			if (type instanceof FTypeDef) {
-				FTypeDef typedef = (FTypeDef)type;
-				return basicTypeEquals(typedef.getActualType(), basicTypeID);
-			}
-		}
-		return false;
-	}
-	
+
 	/** Returns true if the referenced type is any number. */
 	public static boolean isNumber (FTypeRef typeRef) {
 		return isInteger(typeRef) || isFloatingPoint(typeRef);
 	}
 	
-	/** Returns true if the referenced type is a double. */
-	public static boolean isDouble(FTypeRef typeRef) {
-		return basicTypeEquals(typeRef, FBasicTypeId.DOUBLE);
-	}
-	/** Returns true if the referenced type is a float. */
-	public static boolean isFloat(FTypeRef typeRef) {
-		return basicTypeEquals(typeRef, FBasicTypeId.FLOAT);
-	}
 	/** Returns true if the referenced type is a string. */
 	public static boolean isString (FTypeRef typeRef) {
-		return basicTypeEquals(typeRef, FBasicTypeId.STRING);
+		return isBasicType(typeRef, FBasicTypeId.STRING);
 	}
 
 	/** Returns true if the referenced type is a boolean. */
 	public static boolean isBoolean (FTypeRef typeRef) {
-		return basicTypeEquals(typeRef, FBasicTypeId.BOOLEAN);
+		return isBasicType(typeRef, FBasicTypeId.BOOLEAN);
 	}
 
+	/** Returns true if the referenced type is an array type. */
+	public static boolean isArray (FTypeRef typeRef) {
+		return isUserDefinedType(typeRef, FArrayType.class);
+	}
+	
 	/** Returns true if the referenced type is an enumeration type. */
 	public static boolean isEnumeration (FTypeRef typeRef) {
+		return isUserDefinedType(typeRef, FEnumerationType.class);
+	}
+	
+	/** Returns true if the referenced type is an struct type. */
+	public static boolean isStruct (FTypeRef typeRef) {
+		return isUserDefinedType(typeRef, FStructType.class);
+	}
+	
+	/** Returns true if the referenced type is an union type. */
+	public static boolean isUnion (FTypeRef typeRef) {
+		return isUserDefinedType(typeRef, FUnionType.class);
+	}
+	
+	/** Returns true if the referenced type is an compound type. */
+	public static boolean isCompound (FTypeRef typeRef) {
+		return isStruct(typeRef) || isUnion(typeRef);
+	}
+
+	/** Returns true if the referenced type is a map type. */
+	public static boolean isMap (FTypeRef typeRef) {
+		return isUserDefinedType(typeRef, FMapType.class);
+	}
+
+	/**
+	 * Returns true if the referenced type is a given user-defined type.
+	 * 
+	 * This function handles typedefs correctly.
+	 */ 
+	public static <E extends FType> boolean isBasicType (FTypeRef typeRef, FBasicTypeId expected) {
 		if (typeRef == null) return false;
-		
-		if (typeRef.getDerived() != null) {
-			FType type = typeRef.getDerived();
-			if (type instanceof FEnumerationType) {
+		FBasicTypeId id = getActualPredefined(typeRef);
+		if (id != null) {
+			if (id == expected) {
 				return true;
-			} else if (type instanceof FTypeDef) {
-				FTypeDef typedef = (FTypeDef)type;
-				return isEnumeration(typedef.getActualType());
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Returns true if the referenced type is a given user-defined type.
+	 * 
+	 * This function handles typedefs correctly.
+	 */ 
+	private static <E extends FType> boolean isUserDefinedType (FTypeRef typeRef, Class<E> clazz) {
+		if (typeRef == null) return false;
+		FType type = getActualDerived(typeRef);
+		if (type != null) {
+			if (clazz.isInstance(type)) {
+				return true;
 			}
 		}
 		return false;
@@ -304,18 +335,20 @@ public class FrancaHelpers {
 	
 	/** Get a human-readable name for a Franca type. */
 	public static String getTypeString (@NonNull FTypeRef typeRef) {
-		if (typeRef.getDerived() == null) {
-			return typeRef.getPredefined().getName();
+		FType derived = getActualDerived(typeRef);
+		if (derived == null) {
+			return getActualPredefined(typeRef).getName();
 		} else {
-			FType type = typeRef.getDerived();
-			if (type instanceof FTypeDef) {
-				FTypeDef typedef = (FTypeDef)type;
-				return getTypeString(typedef.getActualType());
-			} else if (type instanceof FIntegerInterval) {
+			FType type = getActualDerived(typeRef);
+			if (type instanceof FIntegerInterval) {
 				FIntegerInterval interval = (FIntegerInterval) type;
 				BigInteger lowerBound = interval.getLowerBound();
 				BigInteger upperBound = interval.getLowerBound();
-				return "integer interval (" + lowerBound == null ? "minInt" : lowerBound.toString() + "," + upperBound == null ? "maxInt" : upperBound.toString() + ")";
+				return "integer interval (" +
+						(lowerBound == null ? "minInt" : lowerBound.toString()) +
+						"," +
+						(upperBound == null ? "maxInt" : upperBound.toString()) +
+						")";
 			} else if (type instanceof FEnumerationType) {
 				return "enumeration '" + type.getName() + "'";
 			} else if (type instanceof FStructType) {

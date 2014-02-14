@@ -35,7 +35,7 @@ class AbstractMarkerTest {
 	}
 	
 	def toString(IMarker[] markers){
-		return '''[Â«markers.map['''[Â«getAttribute(IMarker::LINE_NUMBER)Â» : Â«getAttribute(IMarker::MESSAGE)Â»]'''].join(", ")Â»]'''
+		return '''«markers.map['''«getAttribute(IMarker::LINE_NUMBER)» : «getAttribute(IMarker::MESSAGE)»]'''].join(", ")»]'''
 	}
 
 	
@@ -45,7 +45,7 @@ class AbstractMarkerTest {
 				return
 			}
 		}
-		fail('''Couldn't find message 'Â«messageSubStringÂ»@Â«lineÂ»' within Â«file.markersÂ»''')	
+		fail('''Couldn't find message '«messageSubString»@«line»' within Â«file.markers»''')	
 	}
 	
 }

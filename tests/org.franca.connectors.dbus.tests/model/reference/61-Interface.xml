@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="introspect.xsl"?>
 <node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="introspect.xsd" name="org.reference">
-  <interface name="MyInterface61">
+  <interface name="org.reference.MyInterface61">
     <version>1.0</version>
     <property access="readwrite" name="attrSubscrRW" type="i"/>
     <property access="read" name="attrSubscrRO" type="i"/>
@@ -114,11 +114,11 @@
           <line>ret1 = Description missing</line>
         </doc>
       </arg>
-      <error name="MyInterface61.Error.ERR1" id="0"/>
-      <error name="MyInterface61.Error.ERR2" id="2"/>
-      <error name="MyInterface61.Error.ERR3" id="3"/>
-      <error name="MyInterface61.Error.ERR7" id="7"/>
-      <error name="MyInterface61.Error.ERR8" id="8"/>
+      <error name="org.reference.MyInterface61.Error.ERR1" id="0"/>
+      <error name="org.reference.MyInterface61.Error.ERR2" id="2"/>
+      <error name="org.reference.MyInterface61.Error.ERR3" id="3"/>
+      <error name="org.reference.MyInterface61.Error.ERR7" id="7"/>
+      <error name="org.reference.MyInterface61.Error.ERR8" id="8"/>
     </method>
     <method name="m4">
       <doc>

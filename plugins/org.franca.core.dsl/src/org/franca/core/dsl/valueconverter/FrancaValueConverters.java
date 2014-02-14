@@ -14,22 +14,13 @@ import org.eclipse.xtext.conversion.impl.AbstractNullSafeConverter;
 import org.eclipse.xtext.nodemodel.INode;
 
 public class FrancaValueConverters extends Ecore2XtextTerminalConverters {
-	
-	@ValueConverter(rule = "COMMENT_STRING")
-	public IValueConverter<String> COMMENT_STRING() {
+
+	@ValueConverter(rule = "ANNOTATION_STRING")
+	public IValueConverter<String> ANNOTATION_STRING() {
 		return new AbstractNullSafeConverter<String>() {
 			@Override
 			protected String internalToValue(String string, INode node) {
-				int i = 0;
 				String value = string;
-				
-				// cut leading ':' and following whitespace
-				if (string.charAt(0)==':') {
-					i++;
-					while (i<string.length() && string.charAt(i)==' ') {
-						i++;
-					}
-				}
 				
 				// cut trailing whitespace or newlines
 				int j = string.length()-1;
@@ -38,14 +29,14 @@ public class FrancaValueConverters extends Ecore2XtextTerminalConverters {
 				}
 				
 				if (j>=0) {
-					value = string.substring(i, j+1);
+					value = string.substring(0, j+1);
 				}
 				return value;
 			}
 
 			@Override
 			protected String internalToString(String value) {
-				return ": " + value;
+				return value;
 			}
 		};
 	}

@@ -42,6 +42,7 @@ import org.franca.core.franca.FrancaPackage
 
 import static org.franca.core.framework.TransformationIssue.*
 import static org.franca.core.framework.FrancaModelMapper.*
+import org.franca.core.franca.FTypeCollection
 
 class Franca2DBusTransformation {
 	
@@ -65,7 +66,7 @@ class Franca2DBusTransformation {
 		//println("transformInterface: " + src.name)
 
 		// map metadata of interface
-		name = mInterfaceName = src.name
+		name = mInterfaceName = src.model.name + "." + src.name
 		if (src.version!=null)
 			version = "" + src.version.major + "." + src.version.minor
 		//doc = src.comment
@@ -426,6 +427,10 @@ class Franca2DBusTransformation {
 		else
 			src.predefined.name
 	}
+		
+	private def model (FTypeCollection it) {
+		eContainer as FModel
+	} 	
 }
 
 
