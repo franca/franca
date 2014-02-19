@@ -274,11 +274,11 @@ class Franca2DBusTransformation {
     		null
     	} else {
     		try {
-    			val v = e.value.evaluate as Integer
-	    		if (v<0)
+    			val v = e.value.evaluateInteger
+	    		if (v.intValue<0)
 	    			null
 	    		else
-	    			new Integer(v)
+	    			new Integer(v.intValue)
     		}
     		catch (NumberFormatException ex) {
 				addIssue(IMPORT_WARNING, e,

@@ -1,0 +1,27 @@
+// a type collection with many integer expressions
+package testcases
+
+typeCollection MyTypes {
+
+	// simple integer operations (normal range)
+	const UInt32 i01 = 1
+	const UInt32 i02 = 1 + 2
+	const UInt32 i03 = 100 - 44
+	const UInt32 i04 = 11 * 7
+	const UInt32 i05 = 120 / 6
+	const UInt32 i06 = 20 / 7
+
+	// complex integer operations (normal range)
+	const UInt32 i10 = 1 + 2 + 3 + 4 + 5
+	const UInt32 i11 = 8 * 90 - 12 / 4
+	const UInt32 i12 = 8 * (90 - 12) / 4
+	const UInt32 i13 = 2 * 2 * 2 * 2 * 2 - 32
+	
+	// huge numbers
+	const UInt64 h10 = 1000000 * 1000000
+
+	// reference to other ConstantDefs
+	const UInt32 r10 = i02 + 3
+	const UInt32 r11 = i02 * i02 - i01
+
+}
