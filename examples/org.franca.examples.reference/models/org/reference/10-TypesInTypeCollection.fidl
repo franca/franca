@@ -235,9 +235,12 @@ typeCollection MyTypeCollection10 {
 	
 	// enumeration with values
 	enumeration MyEnum03 {
-		ENUM01 = "1"
-		ENUM02 = "2"
-		ENUM03 = "0x03"
+		ENUM01 = 1
+		ENUM02
+		ENUM03 = 10
+		ENUM04 = 7+7
+		ENUM05 = "20"
+		ENUM06 = "0x20"
 	}
 	
  	// derived enumeration
@@ -260,8 +263,8 @@ typeCollection MyTypeCollection10 {
 
  	// yet another derived enumeration
  	enumeration MyEnum16 extends MyEnum02 {
- 		ENUM15 = "33"
- 		ENUM16 = "34"
+ 		ENUM15 = 33
+ 		ENUM16 = 34
  	}
  	
  	

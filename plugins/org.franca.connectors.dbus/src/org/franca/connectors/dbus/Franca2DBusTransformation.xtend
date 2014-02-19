@@ -39,10 +39,11 @@ import org.franca.core.franca.FTypeDef
 import org.franca.core.franca.FTypeRef
 import org.franca.core.franca.FUnionType
 import org.franca.core.franca.FrancaPackage
+import org.franca.core.franca.FTypeCollection
 
 import static org.franca.core.framework.TransformationIssue.*
 import static org.franca.core.framework.FrancaModelMapper.*
-import org.franca.core.franca.FTypeCollection
+import static extension org.franca.core.utils.ExpressionEvaluator.*
 
 class Franca2DBusTransformation {
 	
@@ -252,7 +253,7 @@ class Franca2DBusTransformation {
 		val Map<FEnumerator, Integer> values = newHashMap
 		var i = 0
 		for(e : src.enumerators) {
-			val v = e.parseEnumValue
+			val v = e.computeEnumValue
 			if (v!=null) {
 				if (v <= i) {
 					addIssue(IMPORT_WARNING, e,
@@ -268,13 +269,12 @@ class Franca2DBusTransformation {
 		values
 	}
 
-	// TODO: remove this function after enumerators have integer values instead of strings
-    def private Integer parseEnumValue (FEnumerator e) {
+    def private Integer computeEnumValue (FEnumerator e) {
     	if (e.value==null) {
     		null
     	} else {
     		try {
-	    		val v = Long::decode(e.value).intValue
+    			val v = e.value.evaluate as Integer
 	    		if (v<0)
 	    			null
 	    		else

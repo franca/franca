@@ -40,10 +40,10 @@ class TypeSystem {
 	val FrancaModelCreator francaModelCreator = new FrancaModelCreator
 	
 	public static val BOOLEAN_TYPE = getBooleanType
-	static val INTEGER_TYPE = getIntegerType
+	public static val INTEGER_TYPE = getIntegerType
+	public static val STRING_TYPE = getStringType
 	static val FLOAT_TYPE = getFloatType
 	static val DOUBLE_TYPE = getDoubleType
-	static val STRING_TYPE = getStringType
 	
 	var IssueCollector collector
 	

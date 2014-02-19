@@ -36,6 +36,7 @@ import org.franca.core.franca.FCompoundType;
 import org.franca.core.franca.FConstantDef;
 import org.franca.core.franca.FContract;
 import org.franca.core.franca.FEnumerationType;
+import org.franca.core.franca.FEnumerator;
 import org.franca.core.franca.FGuard;
 import org.franca.core.franca.FInterface;
 import org.franca.core.franca.FMethod;
@@ -322,11 +323,17 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 
 	// *****************************************************************************
 
-	// constant-related checks
+	// type-related checks
 	
 	@Check
 	public void checkConstantDef (FConstantDef constantDef) {
 		TypesValidator.checkConstantType(this, constantDef);
+	}
+
+	@Check
+	public void checkEnumValue (FEnumerator enumerator) {
+		if (enumerator.getValue() != null)
+			TypesValidator.checkEnumValueType(this, enumerator);
 	}
 
 	
