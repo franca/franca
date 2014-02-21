@@ -236,6 +236,15 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 	}
 
 	@Check
+	public void checkEnumerationHasEnumerators(FEnumerationType type) {
+		if (type.getEnumerators().isEmpty()) {
+			error("Enumeration must not be empty",
+					type,
+					FrancaPackage.Literals.FMODEL_ELEMENT__NAME, -1);
+		}
+	}
+
+	@Check
 	public void checkCompoundInitializerUnique(FCompoundInitializer ci) {
 		auxValidator.checkCompoundInitializersUnique(ci);
 	}

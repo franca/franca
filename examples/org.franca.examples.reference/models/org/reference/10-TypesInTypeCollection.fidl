@@ -224,7 +224,7 @@ typeCollection MyTypeCollection10 {
 
 
 	// empty enumeration
-	enumeration MyEnum01 { }
+	enumeration MyEnum01 { ENUM00 }
 
 	// enumeration without values
 	enumeration MyEnum02 {

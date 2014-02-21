@@ -21,6 +21,7 @@ typeCollection MyTypeCollection15 {
 	}
 	
 	enumeration MyEnum70 extends MyEnum10 {
+		ENUM70
 		//ENUM10 ENUM02
 	}
 }
