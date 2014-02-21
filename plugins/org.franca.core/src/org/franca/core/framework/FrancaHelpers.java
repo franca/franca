@@ -222,6 +222,25 @@ public class FrancaHelpers {
 			}
 		}
 	}
+	
+	/**
+	 * Returns actual interval type for a FTypeRef.
+	 * 
+	 * This function hides typedefs properly.
+	 */
+	public static FIntegerInterval getActualInterval (FTypeRef typeRef) {
+		if (typeRef.getDerived() == null) {
+			return typeRef.getInterval();
+		} else {
+			FType type = typeRef.getDerived();
+			if (type instanceof FTypeDef) {
+				FTypeDef typedef = (FTypeDef)type;
+				return getActualInterval(typedef.getActualType());
+			} else {
+				return null;
+			}
+		}
+	}
 
 	/** Returns true if the referenced type is any kind of integer. */
 	public static boolean isInteger (FTypeRef typeRef) {
