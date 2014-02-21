@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Bundle-Version: 0.8.10.qualifier
+Bundle-Version: 0.9.0.qualifier
 Bundle-SymbolicName: org.franca.deploymodel.dsl.tests;singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.core.runtime,
@@ -11,16 +11,16 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.xtext.junit4;bundle-version="2.4.0",
  org.eclipse.xtext.ui.junit,
  org.eclipse.ui.workbench;resolution:=optional,
- org.franca.core;bundle-version="0.8.9",
- org.franca.core.dsl;bundle-version="0.8.9",
- org.franca.core.dsl.ui;bundle-version="0.8.9",
- org.franca.deploymodel.dsl;bundle-version="0.8.9",
- org.franca.deploymodel.dsl.ui;bundle-version="0.8.9",
+ org.franca.core;bundle-version="0.9.0",
+ org.franca.core.dsl;bundle-version="0.9.0",
+ org.franca.core.dsl.ui;bundle-version="0.9.0",
+ org.franca.deploymodel.dsl;bundle-version="0.9.0",
+ org.franca.deploymodel.dsl.ui;bundle-version="0.9.0",
  org.eclipselabs.xtext.utils.unittesting;bundle-version="0.9.3",
  org.eclipse.emf.codegen.ecore;bundle-version="2.7.0",
  org.eclipse.core.resources;bundle-version="3.7.100",
  org.eclipse.xtext.xbase.lib;bundle-version="2.4.0",
- org.franca.deploymodel.dsl.tests.base;bundle-version="0.8.9",
+ org.franca.deploymodel.dsl.tests.base;bundle-version="0.9.0",
  org.eclipse.emf.mwe2.language;bundle-version="2.4.0",
  org.eclipse.xtext.ui;bundle-version="2.4.1",
  org.eclipse.jdt.core;bundle-version="3.8.3",

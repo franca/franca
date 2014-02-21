@@ -79,7 +79,7 @@ class CyclicDependenciesValidator {
 						msg.append("->this")
 						var eAttribute = node.eClass.EAllAttributes.findFirst[it.name == "name"]
 						if(eAttribute==null){
-							eAttribute==node.eClass.EAllAttributes.head
+							eAttribute = node.eClass.EAllAttributes.head
 						}
 						if(eAttribute!=null){
 							reporter.reportError(msg.toString, node, eAttribute);

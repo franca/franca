@@ -191,7 +191,7 @@ FEnumerationTypeBody returns FEnumerationType:
 FEnumerator returns FEnumerator:
 	{FEnumerator}
 	(comment=FAnnotationBlock)?
-	name=ID ('=' value=EString)?
+	name=ID ('=' value=STRING)?
     ;
     
 FMapType returns FMapType:
@@ -396,7 +396,7 @@ FFloatConstant:
 ;
 
 FIntegerConstant:
-	val= E_INT;
+	val=E_INT;
 
 FBooleanConstant:
 	val=EBoolean;
@@ -442,9 +442,6 @@ FAnnotation returns FAnnotation:
 EBoolean returns ecore::EBoolean:
 	'false' | 'true';
 
-EString returns ecore::EString:
-	STRING | ID;
-
 E_BigInteger returns ecore::EBigInteger:
 	E_INT
 ;
@@ -462,6 +459,9 @@ E_INT returns ecore::EInt:
 terminal NEGATIVE_INT returns ecore::EInt:
 	'-'INT;
 
+//terminal HEX:
+//	'0' ('x'|'X')(('0'..'9')|('a'..'f')|('A'..'F'))+;
+	
 terminal ANNOTATION_STRING returns ecore::EString:
 	'@' (('a'..'z')|'-')+ (' '|'\t')* ':'
 	( ('\\' ('b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\')) | !('\\'|'*'|'@') )*

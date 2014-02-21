@@ -425,7 +425,7 @@ class Franca2DBusTransformation {
 		if (src.derived!=null)
 			src.derived.name
 		else
-			src.predefined.name
+			src.predefined.getName()
 	}
 		
 	private def model (FTypeCollection it) {

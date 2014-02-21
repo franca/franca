@@ -2,11 +2,11 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Franca example generators plugin
 Bundle-SymbolicName: org.franca.generators
-Bundle-Version: 0.8.10.qualifier
+Bundle-Version: 0.9.0.qualifier
 Bundle-Activator: org.franca.generators.Activator
 Bundle-Vendor: itemis AG
 Require-Bundle: org.eclipse.core.runtime,
- org.franca.core,
+ org.franca.core;bundle-version="0.9.0",
  org.eclipse.xtext.xbase.lib;bundle-version="2.4.0",
  org.eclipse.xtext.generator;bundle-version="2.4.0";resolution:=optional,
  org.eclipse.xtend.lib;bundle-version="2.4.0"

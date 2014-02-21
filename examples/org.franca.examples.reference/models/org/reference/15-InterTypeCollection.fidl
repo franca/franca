@@ -16,11 +16,11 @@ import org.reference.MyTypeCollection10.* from "10-TypesInTypeCollection.fidl"
 typeCollection MyTypeCollection15 {
 	
 	union MyUnion70 extends MyUnion03 {
-		String ue05
-		String a
+		//String ue05
+		//String a
 	}
 	
 	enumeration MyEnum70 extends MyEnum10 {
-		ENUM10 ENUM02
+		//ENUM10 ENUM02
 	}
 }
