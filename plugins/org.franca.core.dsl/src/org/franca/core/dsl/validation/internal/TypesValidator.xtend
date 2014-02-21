@@ -27,6 +27,7 @@ import org.franca.core.franca.FInitializerExpression
 import static org.franca.core.franca.FrancaPackage$Literals.*
 import static extension org.franca.core.FrancaModelExtensions.*
 import static extension org.franca.core.framework.FrancaHelpers.*
+import org.franca.core.franca.FEnumerator
 
 class TypesValidator {
 
@@ -35,7 +36,28 @@ class TypesValidator {
 			reporter, constantDef, FCONSTANT_DEF__RHS, -1
 		)
 	}
-	
+
+	def static void checkEnumValueType (ValidationMessageReporter reporter, FEnumerator enumerator) {
+		// for backward compatibility, we allow Strings as enum values
+		// TODO: remove this section when the deprecated feature is removed
+		val type = getCheckedExpressionType(reporter, enumerator.value, null,
+			enumerator, FENUMERATOR__VALUE, -1
+		)
+		if (TypeSystem.isSameType(type, TypeSystem::STRING_TYPE)) {
+			// String values for enumerators are deprecated
+			reporter.reportWarning(
+				"Deprecated: String value for enumerator (use integer expression instead).",
+				enumerator, FENUMERATOR__VALUE)
+			return
+		}
+
+		// this is the "real" check, value must be integer
+		checkExpression(reporter, enumerator.value, TypeSystem.INTEGER_TYPE,
+			enumerator, FENUMERATOR__VALUE, -1
+		)
+	}
+
+
 	def private static void checkConstantRHS (
 		FInitializerExpression rhs,
 		FTypeRef typeLHS,
@@ -53,7 +75,7 @@ class TypesValidator {
 			}
 		}
 	}
-	
+
 	def private static dispatch checkInitializer (
 		FBracketInitializer rhs,
 		FTypeRef type,
@@ -179,7 +201,38 @@ class TypesValidator {
 		checkExpression(reporter, expr, expected, loc, feat, -1)
 	}
 
+	/**
+	 * Check if an expression has the expected type.
+	 * 
+	 * If any issues occur while checking the expression, these will be reported.
+	 * 
+	 * @param expr  the expression which should be checked
+	 * @param expected  the expected type, must not be null
+	 */
 	def private static boolean checkExpression (
+			ValidationMessageReporter reporter,
+			FExpression expr,
+			FTypeRef expected,
+			EObject loc, EStructuralFeature feat, int index)
+	{
+		val type = getCheckedExpressionType(reporter, expr, expected, loc, feat, index)
+		type!=null
+	}
+	
+	/**
+	 * Get the type of an expression.
+	 * 
+	 * If param expected is null, the type of the expression will be returned.
+	 * If the expression is inconsistent and no type can be determined, the 
+	 * relevant issues will be reported (via reporter) and null will be returned.
+	 * 
+	 * If param expected is not null, the above functionality will be done, 
+	 * including an additional check that the overall expression type is as expected.
+	 *  
+	 * @param expr  the expression which should be checked
+	 * @param expected  the expected type, may be null
+	 */
+	def private static FTypeRef getCheckedExpressionType (
 			ValidationMessageReporter reporter,
 			FExpression expr,
 			FTypeRef expected,
@@ -198,7 +251,7 @@ class TypesValidator {
 				}
 			}
 		}
-		type!=null
+		type
 	}
 }
 

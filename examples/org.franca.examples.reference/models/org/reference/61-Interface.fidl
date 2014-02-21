@@ -56,7 +56,7 @@ interface MyInterface61 {
 		out {
 			String ret1
 		}
-		error { ERR1 ERR2="2" ERR3 ERR7="0x7" ERR8 }
+		error { ERR1 ERR2="2" ERR3 ERR7="0xA7" ERR8=200 }
 	}
 
 	<** @description: Method m4 description (findmedoc) **>
@@ -120,11 +120,13 @@ interface MyInterface61 {
 	}
 
 	enumeration MyEnum01 {
-		ENU1 ENU2 ENU3
+		ENU1
+		ENU2 = 5
+		ENU3
 	}
 	
 	enumeration MyEnum02 extends MyEnum01 {
-		ENU4
+		ENU4 = 10 + 1
 	}
 	
 	map MyMap01 {

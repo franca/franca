@@ -151,8 +151,7 @@
           ecoreFeature="ecore:EAttribute franca.ecore#//FStructType/polymorphic"/>
     </genClasses>
     <genClasses ecoreClass="franca.ecore#//FEnumerator">
-      <genFeatures createChild="false" propertyDescription="the value of this enumerator. As the value definition for an enumerator is optional, value might be null."
-          ecoreFeature="ecore:EAttribute franca.ecore#//FEnumerator/value"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FEnumerator/value"/>
     </genClasses>
     <genClasses ecoreClass="franca.ecore#//FEnumerationType">
       <genFeatures property="None" children="true" createChild="true" propertyDescription="the list of enumerators of this enumeration"

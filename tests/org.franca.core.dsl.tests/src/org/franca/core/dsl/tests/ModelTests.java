@@ -61,6 +61,7 @@ public class ModelTests extends XtextTest {
     @Test
     public void test_14_GlobalEnum() {
     	testFile("testcases/14-GlobalEnum.fidl");
+    	handleEnumValueDeprecated(2);
     }
 
     @Test
@@ -96,8 +97,9 @@ public class ModelTests extends XtextTest {
     @Test
     public void test_32_EnumInheritance() {
     	testFile("testcases/32-EnumInheritance.fidl");
+    	handleEnumValueDeprecated(4);
     }
-
+    
     @Test
     public void test_35_StructInheritanceDifferentCollections() {
     	testFile("testcases/35-StructInheritanceDifferentCollections.fidl");
@@ -147,5 +149,12 @@ public class ModelTests extends XtextTest {
     public void test_90_InterfaceUsingTC() {
     	testFile("testcases/90-InterfaceUsingTC.fidl");
     }
-    
+
+    private void handleEnumValueDeprecated(int n) {
+    	// check that there _are_ a given number of "Deprecated" warnings.
+    	// this will help us to adapt the testcases as soon as the deprecated phase is over.
+    	assertConstraints(issues.nOfThemContain(n, "Deprecated"));
+    }
+
+
 }

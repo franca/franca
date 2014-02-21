@@ -16,7 +16,9 @@ typeCollection MyTypeCollection32 {
 	}
 	
 	enumeration E2 extends E1 {
-		Enum4 Enum5 Enum6
+		Enum4 = 10
+		Enum5 = x
+		Enum6 = str3.e1 + x
 	}
 	
 	array A1 of UInt16

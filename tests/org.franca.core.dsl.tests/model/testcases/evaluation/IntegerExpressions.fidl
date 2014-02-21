@@ -1,0 +1,71 @@
+// a type collection with many integer expressions
+package testcases
+
+typeCollection MyTypes {
+
+	// some helper types to assist the tests
+	struct S1 {
+		Boolean e1
+		UInt32 e2
+	}
+	struct S2 {
+		S1 f1
+	}
+
+	
+	// simple boolean operations
+	const Boolean b01 = true
+	const Boolean b02 = false && true
+	const Boolean b03 = false || true
+	const Boolean b04 = ! (false || true)
+	const Boolean b05 = true || false && true // || before &&
+	const Boolean b06 = false || true || false
+
+	// comparison operations
+	const Boolean b20 = 1==2
+	const Boolean b21 = 1!=2
+	const Boolean b22 = 7 > 4
+	const Boolean b23 = 7 >= 4
+	const Boolean b24 = 7 >= 7
+	const Boolean b25 = 7 <= 4
+	const Boolean b26 = 7 <= 7
+	const Boolean b27 = 4 < 7
+	const Boolean b28 = 4 + 10 < 20 - 5
+
+	// simple integer operations (normal range)
+	const UInt32 i01 = 1
+	const UInt32 i02 = 1 + 2
+	const UInt32 i03 = 100 - 44
+	const UInt32 i04 = 11 * 7
+	const UInt32 i05 = 120 / 6
+	const UInt32 i06 = 20 / 7
+
+	// complex integer operations (normal range)
+	const UInt32 i10 = 1 + 2 + 3 + 4 + 5
+	const UInt32 i11 = 8 * 90 - 12 / 4
+	const UInt32 i12 = 8 * (90 - 12) / 4
+	const UInt32 i13 = 2 * 2 * 2 * 2 * 2 - 32
+	
+	// huge numbers
+	const UInt64 h10 = 1000000 * 1000000
+	const UInt64 h11 = h10 + 1 + h10
+
+	// simple string constants
+	const String s10 = "foo"
+
+	// reference to other ConstantDefs
+	const Boolean r10 = b01 && b02 
+	const UInt32 r20 = i02 + 3
+	const UInt32 r21 = i02 * i02 - i01
+	const String r25 = s10
+
+	// reference to struct members
+	const S1 s1 = { e1: true, e2: 7 }
+	const S2 s2 = { f1: s1 }
+	const Boolean r30 = s1.e1
+	const UInt32 r31 = s1.e2
+	const Boolean r40 = s2.f1.e1
+	const UInt32 r41 = s2.f1.e2
+	
+	// not supported: references to array and map elements
+}

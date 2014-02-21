@@ -191,7 +191,7 @@ FEnumerationTypeBody returns FEnumerationType:
 FEnumerator returns FEnumerator:
 	{FEnumerator}
 	(comment=FAnnotationBlock)?
-	name=ID ('=' value=STRING)?
+	name=ID ('=' value=AdditiveExpression)?
     ;
     
 FMapType returns FMapType:

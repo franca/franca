@@ -117,8 +117,8 @@
       <error name="org.reference.MyInterface61.Error.ERR1" id="0"/>
       <error name="org.reference.MyInterface61.Error.ERR2" id="2"/>
       <error name="org.reference.MyInterface61.Error.ERR3" id="3"/>
-      <error name="org.reference.MyInterface61.Error.ERR7" id="7"/>
-      <error name="org.reference.MyInterface61.Error.ERR8" id="8"/>
+      <error name="org.reference.MyInterface61.Error.ERR7" id="167"/>
+      <error name="org.reference.MyInterface61.Error.ERR8" id="200"/>
     </method>
     <method name="m4">
       <doc>
