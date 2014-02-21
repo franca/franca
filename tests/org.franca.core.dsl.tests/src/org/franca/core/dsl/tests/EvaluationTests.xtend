@@ -36,59 +36,116 @@ class EvaluationTests extends XtextTest {
 	
 	@Before
 	def void init() {
-    	val root = URI::createURI("classpath:/")
-    	val loc = URI::createFileURI("testcases/evaluation/IntegerExpressions.fidl")
-    	val fmodel = fidlLoader.loadModel(loc, root)
-    	
-    	assertEquals(1, fmodel.typeCollections.size)
-    	val tc = fmodel.typeCollections.get(0)
+		val root = URI::createURI("classpath:/")
+		val loc = URI::createFileURI("testcases/evaluation/IntegerExpressions.fidl")
+		val fmodel = fidlLoader.loadModel(loc, root)
+		
+		assertEquals(1, fmodel.typeCollections.size)
+		val tc = fmodel.typeCollections.get(0)
 		defs = tc.constants.toMap[name]
 	}
 
 
 	@Test
-	def testBasicOperations() {
-    	check("i01", 1)
-    	check("i02", 3)
-    	check("i03", 56)
-    	check("i04", 77)
-    	check("i05", 20) 
-    	check("i06", 2)
+	def testBasicBooleanOperations() {
+		check("b01", true)
+		check("b02", false)
+		check("b03", true)
+		check("b04", false)
+		check("b05", true)
+		check("b06", true)
 	}
 
 	@Test
-	def testComplexOperations() {
-    	check("i10", 15) 
-    	check("i11", 717) 
-    	check("i12", 156) 
-    	check("i13", 0) 
+	def testComparisonOperations() {
+		check("b20", false)
+		check("b21", true)
+		check("b22", true)
+		check("b23", true)
+		check("b24", true)
+		check("b25", false)
+		check("b26", true)
+		check("b27", true)
+		check("b28", true)
+	}
+
+	@Test
+	def testBasicIntegerOperations() {
+		check("i01", 1)
+		check("i02", 3)
+		check("i03", 56)
+		check("i04", 77)
+		check("i05", 20)
+		check("i06", 2)
+	}
+
+	@Test
+	def testComplexIntegerOperations() {
+		check("i10", 15)
+		check("i11", 717)
+		check("i12", 156)
+		check("i13", 0)
 	}
 		
 	@Test
-	def testHugeNumbers() {
-    	checkBig("h10", new BigInteger("1000000000000")) 
+	def testHugeIntegers() {
+		checkBig("h10", new BigInteger("1000000000000"))
+		checkBig("h11", new BigInteger("2000000000001"))
+	}
+
+	@Test
+	def testBasicStringOperations() {
+		check("s10", "foo")
 	}
 
 	@Test
 	def testConstantDefRefs() {
-    	check("r10", 6) 
-    	check("r11", 8) 
+		check("r10", false)
+		check("r20", 6)
+		check("r21", 8)
+		check("r25", "foo")
 	}
 
+	@Test
+	def testStructRefs() {
+		check("r30", true)
+		check("r31", 7)
+		check("r40", true)
+		check("r31", 7)
+	}
+
+	// helpers for checking the expected results
+
+	def private check (String constant, boolean expected) {
+		val rhs = constant.checkedConstantDef
+		val result = ExpressionEvaluator::evaluateBoolean(rhs)
+		assertNotNull(result)
+		assertEquals(expected, result)
+	}
 
 	def private check (String constant, long expected) {
 		checkBig(constant, BigInteger.valueOf(expected))
 	}
 
 	def private checkBig (String constant, BigInteger expected) {
+		val rhs = constant.checkedConstantDef
+		val result = ExpressionEvaluator::evaluateInteger(rhs)
+		assertNotNull(result)
+		assertEquals(expected, result)
+	}
+	
+	def private check (String constant, String expected) {
+		val rhs = constant.checkedConstantDef
+		val result = ExpressionEvaluator::evaluateString(rhs)
+		assertNotNull(result)
+		assertEquals(expected, result)
+	}
+
+	def private getCheckedConstantDef (String constant) {
 		assertTrue(defs.containsKey(constant))
 		val c = defs.get(constant)
 
 		assertTrue(c.rhs instanceof FExpression)
-		val result = ExpressionEvaluator::evaluateInteger(c.rhs as FExpression)
-
-		assertEquals(expected, result)
+		c.rhs as FExpression 
 	}
-	
-	
 }

@@ -273,19 +273,22 @@ class Franca2DBusTransformation {
     	if (e.value==null) {
     		null
     	} else {
-    		try {
-    			val v = e.value.evaluateInteger
-	    		if (v.intValue<0)
-	    			null
-	    		else
-	    			new Integer(v.intValue)
-    		}
-    		catch (NumberFormatException ex) {
+			val v = e.value.evaluateIntegerOrParseString
+			if (v==null) {
 				addIssue(IMPORT_WARNING, e,
 					FrancaPackage::FENUMERATOR__VALUE,
 					"Invalid value for enumerator '" + e.name + "', must be integer.")
-    			null
-    		}
+				null
+			} else {
+	    		if (v.intValue<0) {
+					addIssue(IMPORT_WARNING, e,
+						FrancaPackage::FENUMERATOR__VALUE,
+						"Invalid negative value for enumerator '" + e.name + "'.")
+	    			null
+	    		}
+	    		else
+	    			new Integer(v.intValue)
+			}
     	}
     }
 
