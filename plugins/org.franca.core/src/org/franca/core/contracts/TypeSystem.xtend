@@ -7,6 +7,7 @@
  *******************************************************************************/
 package org.franca.core.contracts
 
+import java.math.BigInteger
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EStructuralFeature
 import org.franca.core.framework.FrancaHelpers
@@ -40,14 +41,57 @@ import static org.franca.core.contracts.ComparisonResult.*
 class TypeSystem {
 	
 	val FrancaModelCreator francaModelCreator = new FrancaModelCreator
+	var IssueCollector collector // is set by checkType
 	
 	public static val BOOLEAN_TYPE = FrancaFactory::eINSTANCE.createFTypeRef => [predefined = FBasicTypeId::BOOLEAN]
-	public static val ANY_INTEGER_TYPE = FrancaFactory::eINSTANCE.createFTypeRef => [interval = FrancaFactory::eINSTANCE.createFIntegerInterval]
+	//public static val ANY_INTEGER_TYPE = FrancaFactory::eINSTANCE.createFTypeRef => [interval = FrancaFactory::eINSTANCE.createFIntegerInterval]
 	public static val FLOAT_TYPE = FrancaFactory::eINSTANCE.createFTypeRef => [predefined = FBasicTypeId::FLOAT]
 	public static val DOUBLE_TYPE = FrancaFactory::eINSTANCE.createFTypeRef => [predefined = FBasicTypeId::DOUBLE]
 	public static val STRING_TYPE = FrancaFactory::eINSTANCE.createFTypeRef => [predefined = FBasicTypeId::STRING]
 	
-	var IssueCollector collector
+	static val integerMapping = #{
+		FBasicTypeId::INT8 -> (FrancaFactory::eINSTANCE.createFIntegerInterval => [
+							lowerBound = -BigInteger::valueOf(2).pow(7)
+							upperBound = BigInteger::valueOf(2).pow(7).subtract(BigInteger::ONE)
+					]),
+		FBasicTypeId::UINT8 -> (FrancaFactory::eINSTANCE.createFIntegerInterval => [
+							lowerBound = BigInteger::ZERO
+							upperBound = BigInteger::valueOf(2).pow(8).subtract(BigInteger::ONE)
+					]),
+		FBasicTypeId::INT16 -> (FrancaFactory::eINSTANCE.createFIntegerInterval => [
+							lowerBound = -BigInteger::valueOf(2).pow(15)
+							upperBound = BigInteger::valueOf(2).pow(15).subtract(BigInteger::ONE)
+					]),
+		FBasicTypeId::UINT16 -> (FrancaFactory::eINSTANCE.createFIntegerInterval => [
+							lowerBound = BigInteger::ZERO
+							upperBound = BigInteger::valueOf(2).pow(16).subtract(BigInteger::ONE)
+					]),
+		FBasicTypeId::INT32 -> (FrancaFactory::eINSTANCE.createFIntegerInterval => [
+							lowerBound = -BigInteger::valueOf(2).pow(31)
+							upperBound = BigInteger::valueOf(2).pow(31).subtract(BigInteger::ONE)
+					]),
+		FBasicTypeId::UINT32 -> (FrancaFactory::eINSTANCE.createFIntegerInterval => [
+							lowerBound = BigInteger::ZERO
+							upperBound = BigInteger::valueOf(2).pow(32).subtract(BigInteger::ONE)
+					]),
+		FBasicTypeId::INT64 -> (FrancaFactory::eINSTANCE.createFIntegerInterval => [
+							lowerBound = -BigInteger::valueOf(2).pow(63)
+							upperBound = BigInteger::valueOf(2).pow(63).subtract(BigInteger::ONE)
+					]),
+		FBasicTypeId::UINT64 -> (FrancaFactory::eINSTANCE.createFIntegerInterval => [
+							lowerBound = BigInteger::ZERO
+							upperBound = BigInteger::valueOf(2).pow(64).subtract(BigInteger::ONE)
+					])
+	}
+	
+	def private toInterval(FTypeRef ref) {
+		val interval = ref.actualInterval
+		if (interval != null) return interval
+		val predef = ref.actualPredefined
+		if (predef != null) return integerMapping.get(predef)
+		
+		return null
+	}
 	
 	/**
 	 * Checks type of 'expr' against expected. 
@@ -60,7 +104,28 @@ class TypeSystem {
 	def private dispatch FTypeRef checkType (FConstant expr, FTypeRef expected, EObject loc, EStructuralFeature feat) {
 		switch (expr) {
 			FBooleanConstant: if (expected.checkIsBoolean(loc, feat)) BOOLEAN_TYPE else null
-			FIntegerConstant: if (expected.checkIsInteger(loc, feat)) ANY_INTEGER_TYPE else null
+			FIntegerConstant: {
+				if (expected.checkIsInteger(loc, feat)) {
+					val value = (expr as FIntegerConstant).^val
+					val type = FrancaFactory::eINSTANCE.createFTypeRef => [
+						interval = FrancaFactory::eINSTANCE.createFIntegerInterval => [
+							lowerBound = value
+							upperBound = value
+						]
+					]
+					val comp = compareCardinality(type, expected)
+					if (comp == SMALLER || comp == EQUAL) {
+						return type
+					} else {
+						val tempInterval = expected.toInterval
+						addIssue("constant value out of range (expected to be between " +
+							tempInterval.lowerBound + " and " + tempInterval.upperBound + ")",
+							loc, feat
+						)
+					}
+				}
+				return null
+			}
 			FFloatConstant: if (expected.checkIsFloat(loc, feat)) FLOAT_TYPE else null
 			FDoubleConstant: if (expected.checkIsDouble(loc, feat)) DOUBLE_TYPE else null
 			FStringConstant:  if (expected.checkIsString(loc, feat)) STRING_TYPE else null
@@ -353,64 +418,11 @@ class TypeSystem {
 			if (tr2.isFloat) return EQUAL
 			return ComparisonResult::INCOMPATIBLE
 		}
-		if (tr1.isBasicType(FBasicTypeId::INT8)) {
-			if (tr2.isBasicType(FBasicTypeId::INT8)) return EQUAL
-			if (tr2.isBasicType(FBasicTypeId::UINT8)) return ComparisonResult::INCOMPATIBLE
-			if (tr2.isInteger) return SMALLER
-			return ComparisonResult::INCOMPATIBLE
-		}
-		if (tr1.isBasicType(FBasicTypeId::UINT8)) {
-			if (tr2.isBasicType(FBasicTypeId::UINT8)) return EQUAL
-			if (tr2.isBasicType(FBasicTypeId::INT8)) return ComparisonResult::INCOMPATIBLE
-			if (tr2.isInteger) return SMALLER
-			return ComparisonResult::INCOMPATIBLE
-		}
-		if (tr1.isBasicType(FBasicTypeId::INT16)) {
-			if (tr2.isBasicType(FBasicTypeId::INT8) || tr2.isBasicType(FBasicTypeId::UINT8)) return GREATER
-			if (tr2.isBasicType(FBasicTypeId::INT16)) return EQUAL
-			if (tr2.isBasicType(FBasicTypeId::UINT16)) return ComparisonResult::INCOMPATIBLE
-			if (tr2.isInteger) return SMALLER
-			return ComparisonResult::INCOMPATIBLE
-		}
-		if (tr1.isBasicType(FBasicTypeId::UINT16)) {
-			if (tr2.isBasicType(FBasicTypeId::UINT8)) return GREATER
-			if (tr2.isBasicType(FBasicTypeId::UINT16)) return EQUAL
-			if (tr2.isBasicType(FBasicTypeId::INT8) || tr2.isBasicType(FBasicTypeId::INT16)) return ComparisonResult::INCOMPATIBLE
-			if (tr2.isInteger) return SMALLER
-			return ComparisonResult::INCOMPATIBLE
-		}
-		if (tr1.isBasicType(FBasicTypeId::INT32)) {
-			if (tr2.isBasicType(FBasicTypeId::INT8) || tr2.isBasicType(FBasicTypeId::UINT8) ||
-			    tr2.isBasicType(FBasicTypeId::INT16) || tr2.isBasicType(FBasicTypeId::UINT16)) return GREATER
-			if (tr2.isBasicType(FBasicTypeId::INT32)) return EQUAL
-			if (tr2.isBasicType(FBasicTypeId::UINT32)) return ComparisonResult::INCOMPATIBLE
-			if (tr2.isInteger) return SMALLER
-			return ComparisonResult::INCOMPATIBLE
-		}
-		if (tr1.isBasicType(FBasicTypeId::UINT32)) {
-			if (tr2.isBasicType(FBasicTypeId::UINT8) || tr2.isBasicType(FBasicTypeId::UINT16)) return GREATER
-			if (tr2.isBasicType(FBasicTypeId::UINT32)) return EQUAL
-			if (tr2.isBasicType(FBasicTypeId::INT8) || tr2.isBasicType(FBasicTypeId::INT16) ||
-				tr2.isBasicType(FBasicTypeId::INT32)) return ComparisonResult::INCOMPATIBLE
-			if (tr2.isInteger) return SMALLER
-			return ComparisonResult::INCOMPATIBLE
-		}
-		if (tr1.isBasicType(FBasicTypeId::INT64)) {
-			if (tr2.isBasicType(FBasicTypeId::INT64)) return EQUAL
-			if (tr2.isBasicType(FBasicTypeId::UINT64)) return ComparisonResult::INCOMPATIBLE
-			if (tr2.isInteger) return GREATER
-			return ComparisonResult::INCOMPATIBLE
-		}
-		if (tr1.isBasicType(FBasicTypeId::UINT64)) {
-			if (tr2.isBasicType(FBasicTypeId::UINT64)) return EQUAL
-			if (tr2.isBasicType(FBasicTypeId::INT8) || tr2.isBasicType(FBasicTypeId::INT16) ||
-				tr2.isBasicType(FBasicTypeId::INT32) || tr2.isBasicType(FBasicTypeId::INT64)) return ComparisonResult::INCOMPATIBLE
-			if (tr2.isInteger) return GREATER
-			return ComparisonResult::INCOMPATIBLE
-		}
 		
-		val interval1 = tr1.interval
-		val interval2 = tr2.interval
+		val predef1 = tr1.actualPredefined
+		val predef2 = tr2.actualPredefined
+		val interval1 = if (predef1.basicIntegerId) integerMapping.get(predef1) else tr1.interval
+		val interval2 = if (predef2.basicIntegerId) integerMapping.get(predef2) else tr2.interval
 		
 		if (interval1 !=null && interval2 != null) {
 			val lowerBound1 = interval1.lowerBound

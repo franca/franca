@@ -246,20 +246,25 @@ public class FrancaHelpers {
 	public static boolean isInteger (FTypeRef typeRef) {
 		if (typeRef == null) return false;
 		FBasicTypeId bt = getActualPredefined(typeRef);
-		if (bt != null) {
-			int id = bt.getValue();
-			if (id==FBasicTypeId.INT8_VALUE  || id==FBasicTypeId.UINT8_VALUE  ||
-				id==FBasicTypeId.INT16_VALUE || id==FBasicTypeId.UINT16_VALUE ||
-				id==FBasicTypeId.INT32_VALUE || id==FBasicTypeId.UINT32_VALUE ||
-				id==FBasicTypeId.INT64_VALUE || id==FBasicTypeId.UINT64_VALUE ||
-				typeRef.getInterval() != null
-			) {
-				return true;
-			}
-		}
-		return false;
+		return isBasicIntegerId(bt) || typeRef.getInterval() != null;
 	}
-
+	
+	/** Returns true if the referenced type is any kind of integer. */
+	public static boolean isBasicInteger (FTypeRef typeRef) {
+		if (typeRef == null) return false;
+		FBasicTypeId bt = getActualPredefined(typeRef);
+		return isBasicIntegerId(bt);
+	}
+	
+	public static boolean isBasicIntegerId(FBasicTypeId id) {
+		return id != null && (
+		       id==FBasicTypeId.INT8  || id==FBasicTypeId.UINT8  ||
+		       id==FBasicTypeId.INT16 || id==FBasicTypeId.UINT16 ||
+		       id==FBasicTypeId.INT32 || id==FBasicTypeId.UINT32 ||
+		       id==FBasicTypeId.INT64 || id==FBasicTypeId.UINT64
+		);
+	}
+	
 	/** Returns true if the referenced type is a float number. */
 	public static boolean isFloat (FTypeRef typeRef) {
 		return isBasicType(typeRef, FBasicTypeId.FLOAT);
