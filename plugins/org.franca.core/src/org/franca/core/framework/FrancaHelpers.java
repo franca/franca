@@ -356,19 +356,20 @@ public class FrancaHelpers {
 	public static String getTypeString (@NonNull FTypeRef typeRef) {
 		FType derived = getActualDerived(typeRef);
 		if (derived == null) {
+			FIntegerInterval interval = getActualInterval(typeRef);
+			if (interval != null) {
+				BigInteger lowerBound = interval.getLowerBound();
+				BigInteger upperBound = interval.getUpperBound();
+				return "Integer (" +
+						(lowerBound == null ? "minInt" : lowerBound.toString(Character.MAX_RADIX)) +
+						"," +
+						(upperBound == null ? "maxInt" : upperBound.toString(Character.MAX_RADIX)) +
+						")";
+			}
 			return getActualPredefined(typeRef).getName();
 		} else {
 			FType type = getActualDerived(typeRef);
-			if (type instanceof FIntegerInterval) {
-				FIntegerInterval interval = (FIntegerInterval) type;
-				BigInteger lowerBound = interval.getLowerBound();
-				BigInteger upperBound = interval.getLowerBound();
-				return "integer interval (" +
-						(lowerBound == null ? "minInt" : lowerBound.toString()) +
-						"," +
-						(upperBound == null ? "maxInt" : upperBound.toString()) +
-						")";
-			} else if (type instanceof FEnumerationType) {
+			if (type instanceof FEnumerationType) {
 				return "enumeration '" + type.getName() + "'";
 			} else if (type instanceof FStructType) {
 				return "struct '" + type.getName() + "'";

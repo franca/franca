@@ -167,17 +167,12 @@ class TypeSystem {
 				if (isAssignableTo(result, expected)) {
 					result
 				} else {
-					// default: check type compatibility
-					if (isAssignableTo(result, expected)) {
-						result
-					} else {
-						addIssue("invalid type (is " +
-							FrancaHelpers::getTypeString(result) + ", expected " +
-							FrancaHelpers::getTypeString(expected) + ")",
-							loc, feat
-						)
-						null
-					}
+					addIssue("invalid type (is " +
+						FrancaHelpers::getTypeString(result) + ", expected " +
+						FrancaHelpers::getTypeString(expected) + ")",
+						loc, feat
+					)
+					null
 				}
 			}
 		}
