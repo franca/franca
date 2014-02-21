@@ -70,7 +70,7 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 	}
 	
 		
-	def scope_FDSpecification_base(FDSpecification ctxt, EReference ref){
+	def scope_FDSpecification_base(EObject ctxt, EReference ref){
 		return delegateGetScope(ctxt,ref).joinImportedDeploySpecs(ctxt);
 	}
 	
