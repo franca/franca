@@ -49,6 +49,7 @@
     		<!-- test modules -->
             <module>../../tests/org.franca.core.dsl.tests</module>
             <module>../../tests/org.franca.deploymodel.dsl.tests</module>
+            <module>../../examples/org.franca.examples.reference</module>
             <module>../../tests/org.franca.connectors.dbus.tests</module>
     		<!-- documentation/help modules -->
             <module>../../docs/org.franca.help</module>
