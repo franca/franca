@@ -396,7 +396,7 @@ FFloatConstant:
 ;
 
 FIntegerConstant:
-	val=E_INT;
+	val=E_BigInteger;
 
 FBooleanConstant:
 	val=EBoolean;
@@ -443,7 +443,7 @@ EBoolean returns ecore::EBoolean:
 	'false' | 'true';
 
 E_BigInteger returns ecore::EBigInteger:
-	E_INT
+	NEGATIVE_INT | INT
 ;
 
 terminal E_DOUBLE_OBJECT returns ecore::EDoubleObject :
@@ -453,10 +453,7 @@ terminal E_FLOAT_OBJECT returns ecore::EFloatObject :
 	 '-'? INT '.' INT ('e' '-'? INT)? 'f'
 ;
 
-E_INT returns ecore::EInt:
-	NEGATIVE_INT | INT
-;
-terminal NEGATIVE_INT returns ecore::EInt:
+terminal NEGATIVE_INT returns ecore::EBigInteger:
 	'-'INT;
 
 //terminal HEX:
