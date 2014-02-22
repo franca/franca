@@ -18,6 +18,12 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.xtext.ui.preferences.StatusInfo;
 
+/**
+ * Wizard page for the Franca fidl specific properties.
+ * 
+ * @author Tamas Szabo (itemis AG)
+ *
+ */
 @SuppressWarnings("restriction")
 public class FrancaIDLFileWizardConfigurationPage extends StatusWizardPage {
 
@@ -43,26 +49,8 @@ public class FrancaIDLFileWizardConfigurationPage extends StatusWizardPage {
         GridLayout layout = new GridLayout();
         layout.numColumns = nColumns;
         composite.setLayout(layout);
-
+        
         Label label = new Label(composite, SWT.NULL);
-        label.setText("&Franca model package name:");
-        modelNameText = new Text(composite, SWT.BORDER | SWT.SINGLE);
-        modelNameText.setText("");
-        GridData gd_0 = new GridData(GridData.FILL_HORIZONTAL);
-        gd_0.horizontalSpan = nColumns-1;
-        modelNameText.setLayoutData(gd_0);
-        modelNameText.addModifyListener(new ModifyListener() {
-            public void modifyText(ModifyEvent e) {
-                validatePage();
-            }
-        });
-        
-        label = new Label(composite, SWT.SEPARATOR | SWT.HORIZONTAL);
-        GridData gd_1 = new GridData(GridData.FILL_HORIZONTAL);
-        gd_1.horizontalSpan = nColumns;
-        label.setLayoutData(gd_1);
-        
-        label = new Label(composite, SWT.NULL);
         label.setText("&Interface name:");
         interfaceNameText = new Text(composite, SWT.BORDER | SWT.SINGLE);
         interfaceNameText.setText("");

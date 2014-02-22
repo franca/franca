@@ -17,7 +17,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 /**
  * Implementation of the Franca FDEPL file wizard.
  * 
- * @author Tamas Szabo
+ * @author Tamas Szabo (itemis AG)
  *
  */
 public class FrancaFDEPLFileWizard extends FrancaFileWizard {

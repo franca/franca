@@ -18,6 +18,12 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.xtext.ui.preferences.StatusInfo;
 
+/**
+ * Wizard page for the Franca fdepl specific properties.
+ * 
+ * @author Tamas Szabo (itemis AG)
+ *
+ */
 @SuppressWarnings("restriction")
 public class FrancaFDEPLFileWizardConfigurationPage extends StatusWizardPage {
 

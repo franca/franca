@@ -7,229 +7,280 @@
  *******************************************************************************/
 package org.franca.core.ui.addons.wizard;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.IPackageFragment;
-import org.eclipse.jdt.core.IPackageFragmentRoot;
-import org.eclipse.jdt.core.JavaConventions;
-import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jdt.internal.corext.util.JavaConventionsUtil;
-import org.eclipse.jdt.ui.wizards.NewTypeWizardPage;
+import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.xtext.ui.preferences.StatusInfo;
+import org.eclipse.ui.internal.ide.misc.ContainerSelectionGroup;
 import org.franca.core.ui.addons.Activator;
 
+/**
+ * Common wizard page for configuring the container of a new Franca fdepl/fidl file.
+ * 
+ * @author Tamas Szabo (itemis AG)
+ *
+ */
 @SuppressWarnings("restriction")
-public class FrancaFileWizardContainerConfigurationPage extends NewTypeWizardPage {
+public class FrancaFileWizardContainerConfigurationPage extends StatusWizardPage implements Listener {
 
-    private Text fileText;
-    private static final String THE_GIVEN_FILE_ALREADY_EXISTS = "The given file already exists!";
-    private static final String DEFAULT_FILE_NAME = "";
-    private static final String SOURCE_FOLDER_ERROR = "You must specify a valid source folder!";
-    private static final String FILE_NAME_ERROR = "File name must be specified!";
-    private static final String FILE_NAME_NOT_VALID = "File name must be valid!";
-    private String FILE_EXTENSION_ERROR;
-    private static final String DEFAULT_PACKAGE_WARNING = "The use of default package is discouraged.";
-    private static final String PACKAGE_NAME_WARNING = "Only lower case package names supported.";
-    private String extension;
+	private Text packageNameText;
+	private Text fileNameText;
 
-    public FrancaFileWizardContainerConfigurationPage(String extension) {
-        super(false, extension);
-        this.extension = extension;
-        this.FILE_EXTENSION_ERROR = "File extension must be \""+extension+"\"!";
-        setTitle(extension.matches("fidl") ? FrancaFileWizard.FIDL_TITLE : FrancaFileWizard.FDEPL_TITLE);
-    }
+	private static final String THE_GIVEN_FILE_ALREADY_EXISTS = "The given file already exists!";
+	private static final String DEFAULT_FILE_NAME = "";
+	private static final String FILE_NAME_ERROR = "File name must be specified!";
+	private static final String FILE_NAME_NOT_VALID = "File name must be valid!";
+	private String FILE_EXTENSION_ERROR;
 
-    /**
-     * Initialization based on the current selection.
-     * 
-     * @param selection
-     *            the current selection in the workspace
-     */
-    public void init(IStructuredSelection selection) {
-        IJavaElement jElement = getInitialJavaElement(selection);
-        initContainerPage(jElement);
+	private static final String SOURCE_FOLDER_ERROR = "You must specify a valid source folder!";
 
-        if (jElement != null) {
-            IPackageFragment pack = (IPackageFragment) jElement.getAncestor(IJavaElement.PACKAGE_FRAGMENT);
-            setPackageFragment(pack, true);
-        }
+	private String extension;
+	private IContainer initialSelection;
+	private ContainerContentProvider containerContentProvider;
+	private ContainerSelectionGroup sourceFolderSelector;
 
-        packageChanged();
-    }
+	public FrancaFileWizardContainerConfigurationPage(String extension) {
+		super(extension.matches("fidl") ? FrancaFileWizard.FIDL_TITLE : FrancaFileWizard.FDEPL_TITLE);
+		this.extension = extension;
+		this.FILE_EXTENSION_ERROR = "File extension must be \"" + extension + "\"!";
+		setTitle(extension.matches("fidl") ? FrancaFileWizard.FIDL_TITLE : FrancaFileWizard.FDEPL_TITLE);
+	}
 
-    @Override
-    public void createControl(Composite parent) {
-        initializeDialogUnits(parent);
+	/**
+	 * Initialization based on the current selection.
+	 * 
+	 * @param selection
+	 *            the current selection in the workspace
+	 */
+	public void init(IStructuredSelection selection) {
+		if (selection instanceof StructuredSelection) {
+			Object obj = ((StructuredSelection) selection).getFirstElement();
 
-        Composite composite = new Composite(parent, SWT.NONE);
-        composite.setFont(parent.getFont());
+			if (obj instanceof IContainer) {
+				initialSelection = (IContainer) obj;
+			}
+			// REFLECTION based checks for JDT containers - try to invoke
+			// getResource from IJavaElement
+			else {
+				initialSelection = (IContainer) FrancaWizardUtil.tryInvoke(obj, "getResource");
+			}
 
-        int nColumns = 4;
+			if (containerContentProvider != null) {
+				containerContentProvider.setInitialSeletion(initialSelection);
+			}
+		}
+	}
 
-        GridLayout layout = new GridLayout();
-        layout.numColumns = nColumns;
-        composite.setLayout(layout);
+	@Override
+	public void createControl(Composite parent) {
+		initializeDialogUnits(parent);
+		Composite composite = new Composite(parent, SWT.NONE);
 
-        createContainerControls(composite, nColumns);
-        createPackageControls(composite, nColumns);
+		GridLayout layout = new GridLayout();
+		layout.numColumns = 5;
+		composite.setLayout(layout);
 
-        Label label = new Label(composite, SWT.NULL);
-        label.setText("&File name:");
-        fileText = new Text(composite, SWT.BORDER | SWT.SINGLE);
-        fileText.setText(DEFAULT_FILE_NAME);
-        GridData gd_1 = new GridData(GridData.FILL_HORIZONTAL);
-        gd_1.horizontalSpan = 3;
-        fileText.setLayoutData(gd_1);
-        fileText.addModifyListener(new ModifyListener() {
-            public void modifyText(ModifyEvent e) {
-                validatePage();
-            }
-        });
+		// Source folder selection
+		sourceFolderSelector = new ContainerSelectionGroup(composite, this, false,
+				"Source folder for the new Franca " + extension + " file:", false);
+		Object treeViewer = FrancaWizardUtil.tryGet(sourceFolderSelector, "treeViewer");
+		// try to set a custom content provider
+		if (treeViewer != null) {
+			containerContentProvider = new ContainerContentProvider();
+			containerContentProvider.setInitialSeletion(initialSelection);
+			FrancaWizardUtil.tryInvoke(treeViewer, "setContentProvider", new Class<?>[] { IContentProvider.class },
+					new Object[] { containerContentProvider });
+		}
+		// set the initial selection anyway (if any)
+		if (initialSelection != null) {
+			sourceFolderSelector.setSelectedContainer(initialSelection);
+		}
 
-        setControl(composite);
+		GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
+		gridData.horizontalSpan = 5;
+		sourceFolderSelector.setLayoutData(gridData);
 
-        validatePage();
-    }
+		// Package selection
+		Label packageNameLabel = new Label(composite, SWT.NULL);
+		packageNameLabel.setText("&Package:");
+		gridData = new GridData();
+		gridData.horizontalSpan = 1;
+		packageNameLabel.setLayoutData(gridData);
 
-    @Override
-    protected void handleFieldChanged(String fieldName) {
-        super.handleFieldChanged(fieldName);
-        validatePage();
-    }
+		packageNameText = new Text(composite, SWT.BORDER | SWT.SINGLE);
+		packageNameText.setEditable(false);
+		packageNameText.setText(inferPackageName());
+		gridData = new GridData(GridData.FILL_HORIZONTAL);
+		gridData.horizontalSpan = 3;
+		packageNameText.setLayoutData(gridData);
 
-    /**
-     * Used to validate the page.
-     * 
-     * Note that because of policy restrictions, a wizard must not come up with an error.
-     * 
-     */
-    private void validatePage() {
-        IStatus packageStatus = validatePackageName(getPackageText());
-        StatusInfo si = new StatusInfo(packageStatus.getSeverity(), packageStatus.getMessage());
-        String containerPath = getPackageFragmentRootText();
-        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-        IResource containerResource = root.findMember(new Path(containerPath));
+		Label packageNameStatus = new Label(composite, SWT.NULL);
+		packageNameStatus.setText("(inferred)");
+		gridData = new GridData(GridData.HORIZONTAL_ALIGN_END);
+		gridData.horizontalSpan = 1;
+		packageNameStatus.setLayoutData(gridData);
 
-        if (containerPath.matches("") || containerResource == null) {
-            si.setError(SOURCE_FOLDER_ERROR);
-        }
+		packageNameText.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				validatePage();
+			}
+		});
 
-        if (fileText != null) {
+		// File name editing
+		Label fileNameLabel = new Label(composite, SWT.NULL);
+		fileNameLabel.setText("&File name:");
+		gridData = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
+		gridData.horizontalSpan = 1;
+		fileNameLabel.setLayoutData(gridData);
 
-            String fileName = fileText.getText();
-            String packageName = getPackageText().replaceAll("\\.", "/");
+		fileNameText = new Text(composite, SWT.BORDER | SWT.SINGLE);
+		fileNameText.setText(DEFAULT_FILE_NAME);
+		gridData = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
+		gridData.horizontalSpan = 4;
+		fileNameText.setLayoutData(gridData);
 
-            if (root.findMember(new Path(containerPath + "/" + packageName + "/" + fileText.getText())) != null) {
-                si.setError(THE_GIVEN_FILE_ALREADY_EXISTS);
-            }
+		fileNameText.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				validatePage();
+			}
+		});
 
-            if (fileName.length() == 0) {
-                si.setError(FILE_NAME_ERROR);
-            }
+		setControl(composite);
 
-            if (fileName.replace('\\', '/').indexOf('/', 1) > 0) {
-                si.setError(FILE_NAME_NOT_VALID);
-            }
+		validatePage();
+	}
+	
+	private static final IStatus OK_STATUS = new Status(IStatus.OK, Activator.PLUGIN_ID, "");
 
-            boolean wrongExtension = false;
+	private void validatePage() {
+		IStatus status = validateContainerName();
+		if (status.getSeverity() != IStatus.ERROR) {
+			status = validateFileName();			
+		}
+		setStatus(status);
+	}
+	
+	private void setStatus(IStatus status) {
+		applyStatus(status);
+		if (status.getSeverity() == IStatus.ERROR) {
+			this.setPageComplete(false);
+		}
+		else {
+			this.setPageComplete(true);
+		}
+	}
 
-            if (!fileName.contains(".")) {
-                wrongExtension = true;
-            } else {
-                int dotLoc = fileName.lastIndexOf('.');
-                String ext = fileName.substring(dotLoc + 1);
-                wrongExtension = !ext.equalsIgnoreCase(extension);
-            }
+	private IStatus validateContainerName() {
+		if (sourceFolderSelector.getContainerFullPath() == null) {
+			return new Status(IStatus.ERROR, Activator.PLUGIN_ID, SOURCE_FOLDER_ERROR);
+		}
+		return OK_STATUS;
+	}
 
-            if (wrongExtension) {
-                si.setError(FILE_EXTENSION_ERROR);
-            }
-        }
+	private IStatus validateFileName() {
+		if (getFileName() == null || getFileName().length() == 0) {
+			return new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+					FILE_NAME_ERROR);
+		}
 
-        if (si.getSeverity() == IStatus.OK) {
-            si.setInfo("");
-        }
+		if (ResourcesPlugin.getWorkspace().getRoot()
+				.findMember(sourceFolderSelector.getContainerFullPath().append(getFileName())) != null) {
+			return new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+					THE_GIVEN_FILE_ALREADY_EXISTS);
+		}
 
-        if (si.isError()) {
-            setErrorMessage(si.getMessage());
-        }
+		boolean wrongExtension = false;
 
-        updateStatus(si);
-    }
+		if (!getFileName().contains(".")) {
+			wrongExtension = true;
+		}
+		else {
+			int dotLoc = getFileName().lastIndexOf('.');
+			String ext = getFileName().substring(dotLoc + 1);
+			wrongExtension = !ext.equalsIgnoreCase(extension);
+		}
 
-    private IStatus validatePackageName(String text) {
-        if (text == null || text.isEmpty()) {
-            return new Status(IStatus.WARNING, Activator.PLUGIN_ID, DEFAULT_PACKAGE_WARNING);
-        }
-        IJavaProject project = getJavaProject();
-        if (project == null || !project.exists()) {
-            return JavaConventions.validatePackageName(text, JavaCore.VERSION_1_6, JavaCore.VERSION_1_6);
-        }
-        IStatus status = JavaConventionsUtil.validatePackageName(text, project);
-        if (!text.equalsIgnoreCase(text)) {
-            return new Status(IStatus.ERROR, Activator.PLUGIN_ID, PACKAGE_NAME_WARNING);
-        }
-        return status;
-    }
+		if (wrongExtension) {
+			return new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+					FILE_EXTENSION_ERROR);
+		}
 
-    /**
-     * Returns the name of the new Franca IDL file set in the wizard.
-     * 
-     * @return the name of the file
-     */
-    public String getFileName() {
-        return fileText.getText();
-    }
+		if (getFileName().replace('\\', '/').indexOf('/', 1) > 0) {
+			return new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+					FILE_NAME_NOT_VALID);
+		}
 
-    /**
-     * Returns the name of the container set in the wizard.
-     * 
-     * @return the name of the container (folder)
-     */
-    public String getContainerName() {
-        return getPackageFragmentRootText();
-    }
+		return OK_STATUS;
+	}
 
-    /**
-     * Returns the name of the package set in the wizard.
-     * 
-     * @return the name of the package
-     */
-    public String getPackageName() {
-        IPackageFragmentRoot root = getPackageFragmentRoot();
+	private String inferPackageName() {
+		IPath path = sourceFolderSelector.getContainerFullPath();
+		IResource act = ResourcesPlugin.getWorkspace().getRoot().findMember(path);
 
-        IPackageFragment fragment = root.getPackageFragment(getPackageText());
+		if (act != null && !(act instanceof IProject)) {
+			StringBuilder sb = new StringBuilder();
 
-        if (!fragment.exists()) {
-            try {
-                root.createPackageFragment(getPackageText(), true, new NullProgressMonitor());
-            } catch (JavaModelException e) {
-                e.printStackTrace();
-            }
-        }
+			// here we can only apply a simple method which just traverses up in
+			// the hierarchy until the current IResource's parent is an IProject
+			List<IResource> segments = new ArrayList<IResource>();
+			while (!(act.getParent() == null || act.getParent() instanceof IProject)) {
+				segments.add(act);
+				act = act.getParent();
+			}
 
-        return getPackageText();
-    }
+			if (segments.size() >= 1) {
+				sb.append(segments.get(segments.size() - 1).getName());
+				for (int i = segments.size() - 2; i >= 0; i--) {
+					sb.append("." + segments.get(i).getName());
+				}
+			}
 
-    public IProject getProject() {
-        return this.getPackageFragmentRoot().getJavaProject().getProject();
-    }
+			return sb.toString();
+		}
+		else {
+			return "";
+		}
+	}
+
+	public String getFileName() {
+		return fileNameText.getText();
+	}
+
+	public String getContainerName() {
+		return sourceFolderSelector.getContainerFullPath().toString();
+	}
+
+	public String getPackageName() {
+		return packageNameText.getText();
+	}
+
+	public IProject getProject() {
+		return this.getProject();
+	}
+
+	@Override
+	public void handleEvent(Event event) {
+		if (this.packageNameText != null) {
+			this.packageNameText.setText(inferPackageName());
+		}
+	}
 }
