@@ -10,9 +10,13 @@ package org.franca.core.ui.addons.wizard;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -58,7 +62,7 @@ public class FrancaWizardUtil {
 		IResource containerResource = root.findMember(new Path(parameters.get("containerName")));
 		ResourceSet resourceSet = resourceSetProvider.get(containerResource.getProject());
 
-		IPath filePath = containerResource.getFullPath().append(parameters.get("fileName"));
+		IPath filePath = containerResource.getFullPath().append(parameters.get("packageName").replaceAll("\\.", "/")).append(parameters.get("fileName"));
 		String fullPath = filePath.toString();
 
 		URI fileURI = URI.createPlatformResourceURI(fullPath, false);
@@ -118,7 +122,7 @@ public class FrancaWizardUtil {
 		IResource containerResource = root.findMember(new Path(parameters.get("containerName")));
 		ResourceSet resourceSet = resourceSetProvider.get(containerResource.getProject());
 
-		IPath filePath = containerResource.getFullPath().append(parameters.get("fileName"));
+		IPath filePath = containerResource.getFullPath().append(parameters.get("packageName").replaceAll("\\.", "/")).append(parameters.get("fileName"));
 		String fullPath = filePath.toString();
 
 		URI fileURI = URI.createPlatformResourceURI(fullPath, false);
@@ -191,5 +195,28 @@ public class FrancaWizardUtil {
 		catch (ClassNotFoundException e) {
 			return false;
 		}
+	}
+	
+	public static String getPackageName(IContainer folder) {
+		List<String> segments = new ArrayList<String>();
+		IContainer act = folder;
+
+		while (!(act.getParent() instanceof IProject)) {
+			segments.add(act.getName());
+			act = act.getParent();
+		}
+
+		if (segments.isEmpty()) {
+			return "(default package)";
+		}
+		else {
+			StringBuilder builder = new StringBuilder();
+			builder.append(segments.get(segments.size() - 1));
+			for (int i = segments.size() - 2; i >= 0; i--) {
+				builder.append("." + segments.get(i));
+			}
+			return builder.toString();
+		}
+
 	}
 }

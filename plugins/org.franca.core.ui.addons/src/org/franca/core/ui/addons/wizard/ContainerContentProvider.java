@@ -21,11 +21,14 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.ui.internal.ide.misc.ContainerSelectionGroup;
 
 /**
- * A {@link ITreeContentProvider} implementation for the {@link ContainerSelectionGroup} 
- * in the {@link FrancaFileWizardContainerConfigurationPage}.
+ * A {@link ITreeContentProvider} implementation for the
+ * {@link ContainerSelectionGroup} in the
+ * {@link FrancaFileWizardContainerConfigurationPage}. JDT aware setting will
+ * enable to control the depth of displayed folder levels inside the given
+ * {@link IProject}.
  * 
  * @author Tamas Szabo (itemis AG)
- *
+ * 
  */
 @SuppressWarnings("restriction")
 public class ContainerContentProvider implements ITreeContentProvider {
@@ -59,7 +62,11 @@ public class ContainerContentProvider implements ITreeContentProvider {
 				return projects.toArray();
 			}
 		}
-		else if (element instanceof IContainer) {
+		// if the context is JDT aware, then only display the first folder level
+		// under the project
+		// this may cause problems if source folders are nested inside one
+		// another - eg. there are multiple levels
+		else if (element instanceof IProject) {
 			IContainer container = (IContainer) element;
 			if (container.isAccessible()) {
 				try {

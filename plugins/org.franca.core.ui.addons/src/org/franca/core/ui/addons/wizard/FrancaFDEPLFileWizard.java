@@ -32,7 +32,7 @@ public class FrancaFDEPLFileWizard extends FrancaFileWizard {
 		parameters.put("containerName", page1.getContainerName());
 		parameters.put("fileName", page1.getFileName());
         // replace dots with slash in the path
-		parameters.put("packageName", page1.getPackageName().replaceAll("\\.", "/"));
+		parameters.put("packageName", page1.getPackageName());
 		parameters.put("definitionName", page2.getDefinitionName());
 		parameters.put("specificationName", page2.getSpecificationName());
 		return parameters;
