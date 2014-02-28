@@ -366,9 +366,9 @@ public class FrancaHelpers {
 				BigInteger lowerBound = interval.getLowerBound();
 				BigInteger upperBound = interval.getUpperBound();
 				return "Integer (" +
-						(lowerBound == null ? "minInt" : lowerBound.toString(Character.MAX_RADIX)) +
+						(lowerBound == null ? "minInt" : lowerBound.toString()) +
 						"," +
-						(upperBound == null ? "maxInt" : upperBound.toString(Character.MAX_RADIX)) +
+						(upperBound == null ? "maxInt" : upperBound.toString()) +
 						")";
 			}
 			return getActualPredefined(typeRef).getName();
