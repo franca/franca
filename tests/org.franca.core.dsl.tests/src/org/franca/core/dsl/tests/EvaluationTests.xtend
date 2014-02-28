@@ -8,6 +8,7 @@
 package org.franca.core.dsl.tests
 
 import java.util.Map
+import java.math.BigInteger
 import org.junit.Test
 import org.junit.Before
 import org.junit.runner.RunWith
@@ -23,7 +24,6 @@ import org.franca.core.franca.FConstantDef
 import org.franca.core.franca.FExpression
 
 import static extension org.junit.Assert.*
-import java.math.BigInteger
 
 @RunWith(typeof(XtextRunner2))
 @InjectWith(typeof(FrancaIDLTestsInjectorProvider))
@@ -124,7 +124,7 @@ class EvaluationTests extends XtextTest {
 	}
 
 	def private check (String constant, long expected) {
-		checkBig(constant, BigInteger.valueOf(expected))
+		checkBig(constant, BigInteger::valueOf(expected))
 	}
 
 	def private checkBig (String constant, BigInteger expected) {
