@@ -395,16 +395,20 @@ class TypeSystem {
 	}
 	
 	def static boolean isAssignableTo(FTypeRef source, FTypeRef target) {
-		val sourceDerived = source.derived
-		val targetDerived = target.derived
+		val sourceDerived = getActualDerived(source)
+		val targetDerived = getActualDerived(target)
 		
 		if (sourceDerived != null || targetDerived != null) {
 			val possibleTypes = getInheritationSet(targetDerived)
 			return possibleTypes.contains(sourceDerived)
 		}
+		
+	    if (source.isNumber) {
+			val comp = compareCardinality(source, target)
+			return comp == EQUAL || comp == SMALLER
+	    }
 	    
-		val comp = compareCardinality(source, target)
-		return comp == EQUAL || comp == SMALLER
+	    return isBasicType(source, target.predefined)
 	}
 	
 	def static ComparisonResult compareCardinality(FTypeRef tr1, FTypeRef tr2) {
