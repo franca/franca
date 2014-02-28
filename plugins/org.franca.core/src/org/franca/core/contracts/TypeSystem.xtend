@@ -44,7 +44,7 @@ class TypeSystem {
 	var IssueCollector collector // is set by checkType
 	
 	public static val BOOLEAN_TYPE = FrancaFactory::eINSTANCE.createFTypeRef => [predefined = FBasicTypeId::BOOLEAN]
-	//public static val ANY_INTEGER_TYPE = FrancaFactory::eINSTANCE.createFTypeRef => [interval = FrancaFactory::eINSTANCE.createFIntegerInterval]
+	public static val ANY_INTEGER_TYPE = FrancaFactory::eINSTANCE.createFTypeRef => [interval = FrancaFactory::eINSTANCE.createFIntegerInterval]
 	public static val FLOAT_TYPE = FrancaFactory::eINSTANCE.createFTypeRef => [predefined = FBasicTypeId::FLOAT]
 	public static val DOUBLE_TYPE = FrancaFactory::eINSTANCE.createFTypeRef => [predefined = FBasicTypeId::DOUBLE]
 	public static val STRING_TYPE = FrancaFactory::eINSTANCE.createFTypeRef => [predefined = FBasicTypeId::STRING]

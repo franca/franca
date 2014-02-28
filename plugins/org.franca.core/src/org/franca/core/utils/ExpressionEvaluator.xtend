@@ -49,11 +49,11 @@ class ExpressionEvaluator {
 				var s = obj.toLowerCase
 				val v =
 					if (s.startsWith("0x")) {
-						Long.parseLong(s.substring(2), 16)
+						Long::parseLong(s.substring(2), 16)
 					} else {
-						Long.parseLong(s, 10)
+						Long::parseLong(s, 10)
 					}
-				BigInteger.valueOf(v)
+				BigInteger::valueOf(v)
 			}
 			default: null
 		}
@@ -77,7 +77,7 @@ class ExpressionEvaluator {
 	}
 
 	def static private dispatch Object eval (FIntegerConstant expr) {
-		BigInteger.valueOf(expr.^val)
+		expr.^val
 	}
 
 	def static private dispatch Object eval (FStringConstant expr) {

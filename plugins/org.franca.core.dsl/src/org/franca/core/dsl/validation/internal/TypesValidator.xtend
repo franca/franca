@@ -28,6 +28,7 @@ import static org.franca.core.franca.FrancaPackage$Literals.*
 import static extension org.franca.core.FrancaModelExtensions.*
 import static extension org.franca.core.framework.FrancaHelpers.*
 import org.franca.core.franca.FEnumerator
+import org.franca.core.franca.FBasicTypeId
 
 class TypesValidator {
 
@@ -43,7 +44,7 @@ class TypesValidator {
 		val type = getCheckedExpressionType(reporter, enumerator.value, null,
 			enumerator, FENUMERATOR__VALUE, -1
 		)
-		if (TypeSystem.isSameType(type, TypeSystem::STRING_TYPE)) {
+		if (FrancaHelpers::isBasicType(type, FBasicTypeId::STRING)) {
 			// String values for enumerators are deprecated
 			reporter.reportWarning(
 				"Deprecated: String value for enumerator (use integer expression instead).",
@@ -52,7 +53,7 @@ class TypesValidator {
 		}
 
 		// this is the "real" check, value must be integer
-		checkExpression(reporter, enumerator.value, TypeSystem.INTEGER_TYPE,
+		checkExpression(reporter, enumerator.value, TypeSystem::ANY_INTEGER_TYPE,
 			enumerator, FENUMERATOR__VALUE, -1
 		)
 	}
