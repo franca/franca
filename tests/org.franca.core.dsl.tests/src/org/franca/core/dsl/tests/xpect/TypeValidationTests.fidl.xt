@@ -29,3 +29,7 @@ typeCollection MyVariousTypes {
 	typedef MyType is Float
 }
 
+typeCollection EnumTypes {
+	// XPECT errors --> "Enumeration must not be empty" at "EmptyEnum"
+	enumeration EmptyEnum { }
+}

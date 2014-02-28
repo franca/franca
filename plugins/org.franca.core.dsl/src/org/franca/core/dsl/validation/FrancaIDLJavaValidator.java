@@ -15,6 +15,7 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.xtext.naming.IQualifiedNameProvider;
 import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.validation.Check;
+import org.eclipse.xtext.validation.CheckMode;
 import org.eclipse.xtext.validation.ValidationMessageAcceptor;
 import org.franca.core.FrancaModelExtensions;
 import org.franca.core.ImportedModelInfo;
@@ -105,7 +106,8 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 	
 	@Check
 	public void checkExtensionValidators(FModel model) {
-		for (IFrancaExternalValidator validator : ValidatorRegistry.getValidatorMap().get(getCheckMode())) {
+		CheckMode mode = getCheckMode();
+		for (IFrancaExternalValidator validator : ValidatorRegistry.getValidatorMap().get(mode)) {
 			validator.validateModel(model, getMessageAcceptor());
 		}
 	}
@@ -233,6 +235,15 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 	@Check
 	public void checkEnumeratorsUnique(FEnumerationType type) {
 		auxValidator.checkEnumeratorsUnique(type);
+	}
+
+	@Check
+	public void checkEnumerationHasEnumerators(FEnumerationType type) {
+		if (type.getEnumerators().isEmpty()) {
+			error("Enumeration must not be empty",
+					type,
+					FrancaPackage.Literals.FMODEL_ELEMENT__NAME, -1);
+		}
 	}
 
 	@Check

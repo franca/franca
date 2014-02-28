@@ -1,0 +1,36 @@
+// XPECT_SETUP org.franca.connectors.dbus.tests.XpectTests END_SETUP
+package org.franca.connectors.dbus.tests
+
+interface InterfacesNotSupportedByPlainDBus {
+	
+	// XPECT warnings --> "D-Bus compatibility: Attribute subscription cannot be discarded in D-Bus." at "noSubscriptions"
+	attribute UInt8 MyAttribute noSubscriptions
+
+	method MyMethod1 {
+		in {
+			// XPECT warnings --> "D-Bus compatibility: Int8 type is not supported by D-Bus." at "Int8"
+			Int8 a
+			// XPECT warnings --> "D-Bus compatibility: Float type is not supported by D-Bus." at "Float"
+			Float b
+		}
+		out {
+			// XPECT warnings --> "D-Bus compatibility: Int8 type is not supported by D-Bus." at "Int8"
+			Int8 c
+			// XPECT warnings --> "D-Bus compatibility: Float type is not supported by D-Bus." at "Float"
+			Float d
+		}
+	}
+	
+	// XPECT warnings --> "D-Bus compatibility: One-way methods are not supported in plain D-Bus." at "fireAndForget"
+	method MyMethod2 fireAndForget { }
+	
+	// XPECT warnings --> "D-Bus compatibility: Selective broadcasts are not supported in plain D-Bus." at "selective"
+	broadcast MyBroadcast selective { }
+
+}
+
+// XPECT warnings --> "D-Bus compatibility: Inheritance for interfaces is not supported in D-Bus." at "InterfacesNotSupportedByPlainDBus"
+interface DerivedInterface extends InterfacesNotSupportedByPlainDBus { }
+
+// XPECT warnings --> "D-Bus compatibility: Managed interfaces are not supported in D-Bus." at "InterfacesNotSupportedByPlainDBus"
+interface Manager manages InterfacesNotSupportedByPlainDBus { } 

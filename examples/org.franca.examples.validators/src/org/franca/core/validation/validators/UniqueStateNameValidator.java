@@ -29,21 +29,23 @@ public class UniqueStateNameValidator implements IFrancaExternalValidator {
 
 		for (FInterface _interface : model.getInterfaces()) {
 			FContract contract = _interface.getContract();
-			Multimap<String, FState> stateNameMap = ArrayListMultimap.create();
-
-			for (FState state : contract.getStateGraph().getStates()) {
-				stateNameMap.put(state.getName(), state);
-			}
-
-			for (String name : stateNameMap.keySet()) {
-				Collection<FState> states = stateNameMap.get(name);
-				if (states.size() > 1) {
-					for (FState state : states) {
-						messageAcceptor.acceptError(
-								"The name of the state is not unique!", state,
-								FrancaPackage.Literals.FMODEL_ELEMENT__NAME,
-								ValidationMessageAcceptor.INSIGNIFICANT_INDEX, 
-								null);
+			if (contract!=null) {
+				Multimap<String, FState> stateNameMap = ArrayListMultimap.create();
+	
+				for (FState state : contract.getStateGraph().getStates()) {
+					stateNameMap.put(state.getName(), state);
+				}
+	
+				for (String name : stateNameMap.keySet()) {
+					Collection<FState> states = stateNameMap.get(name);
+					if (states.size() > 1) {
+						for (FState state : states) {
+							messageAcceptor.acceptError(
+									"The name of the state is not unique!", state,
+									FrancaPackage.Literals.FMODEL_ELEMENT__NAME,
+									ValidationMessageAcceptor.INSIGNIFICANT_INDEX, 
+									null);
+						}
 					}
 				}
 			}

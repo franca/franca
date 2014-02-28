@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.franca</groupId>
+		<artifactId>org.franca.parent</artifactId>
+		<version>0.9.0-SNAPSHOT</version>
+		<relativePath>../../releng/org.franca.parent/pom.xml</relativePath>
+	</parent>
+
+	<artifactId>org.franca.examples.reference</artifactId>
+	<packaging>eclipse-test-plugin</packaging>
+	<dependencies>
+		<!-- It is important to have JUnit >= 4.7 as dependency to select the right JUnit Provider see http://maven.apache.org/plugins/maven-surefire-plugin/examples/junit.html -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.1</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<sourceDirectory>src</sourceDirectory>
+		<plugins>
+            <!-- Got severe problems running plain unit tests with tycho-surefire-plugin, so disabled and using maven surefire plugin -->
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-surefire-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+					<!--
+					<testSuite>org.franca.examples.reference</testSuite>
+					<testClass>org.franca.examples.reference.tests.ReferenceModelTests</testClass>
+					-->
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>test</id>
+						<phase>test</phase>
+						<configuration>
+							<testClassesDirectory>${project.build.outputDirectory}</testClassesDirectory>
+							<includes>
+							<include>**/*Test*.java</include>
+							</includes>
+						</configuration>
+						<goals>
+							<goal>test</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>		
+</project>
