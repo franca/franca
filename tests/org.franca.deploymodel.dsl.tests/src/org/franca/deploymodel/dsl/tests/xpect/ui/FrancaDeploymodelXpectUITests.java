@@ -41,10 +41,9 @@ import com.google.inject.Injector;
 import com.google.inject.Provider;
 
 @SuppressWarnings("restriction")
-@XpectSuiteClasses({ FrancaDeploymodelXpectTests.class, //
-})
+@XpectSuiteClasses({ FrancaDeploymodelXpectTests.class})
 @RunWith(XpectRunner.class)
-@XpectTestFiles(fileExtensions = "xt")
+@XpectTestFiles(baseDir=".",  fileExtensions = "xt")
 @XpectSetup({ XtextWorkspaceSetup.class })
 public class FrancaDeploymodelXpectUITests extends AbstractContentAssistProcessorTest {
 

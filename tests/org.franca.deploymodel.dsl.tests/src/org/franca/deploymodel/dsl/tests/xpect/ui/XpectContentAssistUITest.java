@@ -39,7 +39,7 @@ import com.google.inject.Provider;
 @SuppressWarnings("restriction")
 @RunWith(XpectRunner.class)
 @XpectSetup({ XtextWorkspaceSetup.class })
-public class XpectContentAssistTest extends AbstractContentAssistProcessorTest {
+public class XpectContentAssistUITest extends AbstractContentAssistProcessorTest {
 	@Inject
 	protected Provider<XtextResourceSet> resourceSetProvider;
 
@@ -91,7 +91,7 @@ public class XpectContentAssistTest extends AbstractContentAssistProcessorTest {
 				try {
 					XtextResource _xblockexpression = null;
 					{
-						final XtextResourceSet set = XpectContentAssistTest.this.resourceSetProvider.get();
+						final XtextResourceSet set = XpectContentAssistUITest.this.resourceSetProvider.get();
 						final Resource result = set.createResource(uri);
 						result.load(stream, null);
 						_xblockexpression = (((XtextResource) result));
