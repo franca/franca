@@ -37,7 +37,7 @@ public class GenerateDBusXMLHandler extends AbstractHandler {
 	@Inject FrancaPersistenceManager loader;
 	@Inject FrancaRecursiveValidator validator;
 
-	@SuppressWarnings({ "deprecation", "incomplete-switch" })
+	@SuppressWarnings({ "incomplete-switch" })
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		ISelection selection = HandlerUtil.getCurrentSelection(event);
