@@ -1,0 +1,33 @@
+// XPECT_SETUP org.franca.connectors.dbus.tests.XpectTests END_SETUP
+package org.franca.connectors.dbus.tests
+
+interface TypesNotSupportedByPlainDBus {
+	
+	enumeration MyEnumeration {
+		// XPECT warnings --> "D-Bus compatibility: Enumerator values must not be negative." at "ENUM2"
+		ENUM2 = -3
+	}
+
+	// XPECT warnings --> "D-Bus compatibility: Int8 type is not supported by D-Bus." at "Int8"
+	typedef MyInt8 is Int8
+
+	// XPECT warnings --> "D-Bus compatibility: Float type is not supported by D-Bus." at "Float"
+	typedef MyFloat is Float
+	
+	// XPECT infos --> "D-Bus compatibility: Polymorphic struct types have to be emulated in D-Bus." at "polymorphic"
+	struct MyStruct1 polymorphic { }
+
+	// XPECT infos --> "D-Bus compatibility: Inheritance for struct types has to be emulated in D-Bus." at "MyStruct1"
+	struct MyStruct2 extends MyStruct1 { }
+
+	union MyUnion1 { UInt8 x }
+	// XPECT warnings --> "D-Bus compatibility: Inheritance for unions is not supported by D-Bus." at "MyUnion1"
+	union MyUnion2 extends MyUnion1 { }
+
+	// XPECT warnings --> "D-Bus compatibility: D-Bus dictionaries support only primitive key types." at "MyEnumeration"
+	map Map1 { MyEnumeration to String }
+	// XPECT warnings --> "D-Bus compatibility: D-Bus dictionaries support only primitive key types." at "MyStruct1"
+	map Map2 { MyStruct1 to String }
+	// XPECT warnings --> "D-Bus compatibility: D-Bus dictionaries support only primitive key types." at "Map1"
+	map Map3 { Map1 to String }
+}
