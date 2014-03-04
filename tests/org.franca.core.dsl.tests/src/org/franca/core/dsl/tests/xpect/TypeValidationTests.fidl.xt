@@ -8,6 +8,9 @@ typeCollection MyPrimitiveTypes {
 } 
 
 typeCollection MyStructTypes {
+	// XPECT errors --> "Non-polymorphic structs must have own or inherited elements" at "EmptyStruct"
+	struct EmptyStruct { }
+
 	// XPECT errors --> "Name conflict for type name 'MyStruct'" at "MyStruct"
 	struct MyStruct { Int16 i }
 	// XPECT errors --> "Name conflict for type name 'MyStruct'" at "MyStruct"
