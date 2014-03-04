@@ -10,6 +10,7 @@ package org.franca.core.framework;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -181,17 +182,27 @@ public class FrancaHelpers {
 	 * This function hides typedefs properly.
 	 */
 	public static FBasicTypeId getActualPredefined (FTypeRef typeRef) {
-		if (typeRef.getDerived() == null) {
-			return typeRef.getPredefined();
-		} else {
-			FType type = typeRef.getDerived();
+		Set<FTypeRef> visited = new HashSet<FTypeRef>();
+		FTypeRef tr = typeRef;
+		while (tr.getDerived() != null) {
+			if (visited.contains(tr)) {
+				// found a cycle, abort
+				return null;
+			}
+			visited.add(tr);
+			
+			FType type = tr.getDerived();
 			if (type instanceof FTypeDef) {
+				// progress in chain according to typedef
 				FTypeDef typedef = (FTypeDef)type;
-				return getActualPredefined(typedef.getActualType());
+				tr = typedef.getActualType();
 			} else {
+				// this is an actualDerived type
 				return null;
 			}
 		}
+		
+		return tr.getPredefined();
 	}
 
 	/**
@@ -200,19 +211,29 @@ public class FrancaHelpers {
 	 * This function hides typedefs properly.
 	 */
 	public static FType getActualDerived (FTypeRef typeRef) {
-		if (typeRef.getDerived() == null) {
-			return null;
-		} else {
-			FType type = typeRef.getDerived();
+		Set<FTypeRef> visited = new HashSet<FTypeRef>();
+		FTypeRef tr = typeRef;
+		while (tr.getDerived() != null) {
+			FType type = tr.getDerived();
 			if (type instanceof FTypeDef) {
 				FTypeDef typedef = (FTypeDef)type;
-				return getActualDerived(typedef.getActualType());
+				tr = typedef.getActualType();
 			} else {
+				// we found the actualDerived
 				return type;
 			}
+
+			if (visited.contains(tr)) {
+				// found a cycle, abort
+				return null;
+			}
 		}
+
+		// this is an actualPredefined type
+		return null;
 	}
 
+	
 	/** Returns true if the referenced type is any kind of integer. */
 	public static boolean isInteger (FTypeRef typeRef) {
 		if (typeRef == null) return false;
