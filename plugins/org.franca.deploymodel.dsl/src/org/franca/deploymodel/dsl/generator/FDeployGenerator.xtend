@@ -33,19 +33,14 @@ class FDeployGenerator implements IGenerator {
 	// the types of PropertyAccessor classes we can generate
 	static int PA_PROVIDER = 1
 	static int PA_INTERFACE = 2
+	static int PA_TYPE_COLLECTION = 3
 	
 	// the main function for this generator, will be called by Xtend framework
 	override void doGenerate(Resource resource, IFileSystemAccess fsa) {
 		for(m : resource.allContents.toIterable.filter(typeof(FDSpecification))) {
-			val path = m.getPackage().replace(".", "/")
-			
-			// generate PropertyAccessor for providers
-			val ppa = m.generateAll(PA_PROVIDER)
-			fsa.generateFile(path + "/" + m.classnameProvider + ".java", ppa)
-
-			// generate PropertyAccessor for interfaces
-			val ipa = m.generateAll(PA_INTERFACE)
-			fsa.generateFile(path + "/" + m.classnameInterface + ".java", ipa)
+			fsa.generateAll(m,PA_PROVIDER)
+			fsa.generateAll(m,PA_INTERFACE)
+			fsa.generateAll(m,PA_TYPE_COLLECTION)
 		}
 	}
 	
@@ -58,7 +53,7 @@ class FDeployGenerator implements IGenerator {
 	boolean needList
 	boolean needArrayList
 	
-	def generateAll (FDSpecification spec, int pat) {
+	def generateAll (IFileSystemAccess fsa, FDSpecification spec, int pat) {
 		// initialize
 		paType = pat;
 		neededFrancaTypes = new HashSet<String>()
@@ -66,9 +61,11 @@ class FDeployGenerator implements IGenerator {
 		needArrayList = false
 		
 		// generate class code and analyse for needed preliminaries
+		val path = spec.getPackage().replace(".", "/")
 		val code = spec.generateClass.toString
 		var header = spec.generateHeader.toString
-		header + code
+		
+		fsa.generateFile(path + "/" + spec.classname + ".java", header + code)
 	}
 	
 	
@@ -118,7 +115,7 @@ class FDeployGenerator implements IGenerator {
 			}
 			
 			«FOR d : spec.declarations»
-			«d.genProperties»
+				«d.genProperties»
 			«ENDFOR»
 			
 		}
@@ -135,31 +132,54 @@ class FDeployGenerator implements IGenerator {
 	'''
 	
 	def genProperty (FDPropertyDecl it, FDPropertyHost host) {
-		if (paType==PA_PROVIDER) {
-			switch (host) {
-				case FDPropertyHost::PROVIDERS:     genGetter("FDProvider")
-				case FDPropertyHost::INSTANCES:     genGetter("FDInterfaceInstance")
-				default: ""  // ignore all other hosts
+		switch(paType){
+			case PA_PROVIDER:
+				switch (host) {
+					case FDPropertyHost::PROVIDERS:     genGetter("FDProvider")
+					case FDPropertyHost::INSTANCES:     genGetter("FDInterfaceInstance")
+					default: ""  // ignore all other hosts
+				}
+			case PA_INTERFACE:{
+				switch (host) {
+					case FDPropertyHost::PROVIDERS:     ""  // ignore
+					case FDPropertyHost::INSTANCES:     ""  // ignore
+					case FDPropertyHost::TYPE_COLLECTIONS: genGetter("FTypeCollection")
+					case FDPropertyHost::INTERFACES:    genGetter("FInterface")
+					case FDPropertyHost::ATTRIBUTES:    genGetter("FAttribute")
+					case FDPropertyHost::METHODS:       genGetter("FMethod")
+					case FDPropertyHost::BROADCASTS:    genGetter("FBroadcast")
+					case FDPropertyHost::ARGUMENTS:     genGetter("FArgument")
+					//case FDPropertyHost::NUMBERS:       genGetter("FArgument")
+					//case FDPropertyHost::FLOATS:        genGetter("FArgument")
+					//case FDPropertyHost::INTEGERS:      genGetter("FArgument")
+					//case FDPropertyHost::STRINGS:       genGetter("FArgument")
+					case FDPropertyHost::STRUCT_FIELDS: genGetter("FField")
+					case FDPropertyHost::ENUMERATIONS:  genGetter("FEnumerationType")
+					case FDPropertyHost::ENUMERATORS:   genGetter("FEnumerator")
+					//case FDPropertyHost::ARRAYS:        genGetter("FArgument")
+					default: genGetter("EObject")  // reasonable default
+				}	
 			}
-		} else {
-			switch (host) {
-				case FDPropertyHost::PROVIDERS:     ""  // ignore
-				case FDPropertyHost::INSTANCES:     ""  // ignore
-				case FDPropertyHost::TYPE_COLLECTIONS: genGetter("FTypeCollection")
-				case FDPropertyHost::INTERFACES:    genGetter("FInterface")
-				case FDPropertyHost::ATTRIBUTES:    genGetter("FAttribute")
-				case FDPropertyHost::METHODS:       genGetter("FMethod")
-				case FDPropertyHost::BROADCASTS:    genGetter("FBroadcast")
-				case FDPropertyHost::ARGUMENTS:     genGetter("FArgument")
-				//case FDPropertyHost::NUMBERS:       genGetter("FArgument")
-				//case FDPropertyHost::FLOATS:        genGetter("FArgument")
-				//case FDPropertyHost::INTEGERS:      genGetter("FArgument")
-				//case FDPropertyHost::STRINGS:       genGetter("FArgument")
-				case FDPropertyHost::STRUCT_FIELDS: genGetter("FMethod")
-				case FDPropertyHost::ENUMERATIONS:  genGetter("FEnumerationType")
-				case FDPropertyHost::ENUMERATORS:   genGetter("FEnumerator")
-				//case FDPropertyHost::ARRAYS:        genGetter("FArgument")
-				default: genGetter("EObject")  // reasonable default
+			case PA_TYPE_COLLECTION:{
+				switch (host) {
+					case FDPropertyHost::PROVIDERS:     ""  // ignore
+					case FDPropertyHost::INSTANCES:     ""  // ignore
+					case FDPropertyHost::TYPE_COLLECTIONS: genGetter("FTypeCollection")
+					case FDPropertyHost::INTERFACES:    genGetter("FInterface")
+					case FDPropertyHost::ATTRIBUTES:    ""
+					case FDPropertyHost::METHODS:       ""
+					case FDPropertyHost::BROADCASTS:    "" // 
+					case FDPropertyHost::ARGUMENTS:     "" // only broadcasts and methods have arguments
+					//case FDPropertyHost::NUMBERS:       genGetter("FArgument")
+					//case FDPropertyHost::FLOATS:        genGetter("FArgument")
+					//case FDPropertyHost::INTEGERS:      genGetter("FArgument")
+					//case FDPropertyHost::STRINGS:       genGetter("FArgument")
+					case FDPropertyHost::STRUCT_FIELDS: genGetter("FField")
+					case FDPropertyHost::ENUMERATIONS:  genGetter("FEnumerationType")
+					case FDPropertyHost::ENUMERATORS:   genGetter("FEnumerator")
+					//case FDPropertyHost::ARRAYS:        genGetter("FArgument")
+					default: genGetter("EObject")  // reasonable default
+				}	
 			}
 		}
 	}	
@@ -293,22 +313,12 @@ class FDeployGenerator implements IGenerator {
 			""
 	}
 
-	def getClassname (FDSpecification it) {
-		if (paType==PA_PROVIDER)
-			classnameProvider
-		else
-			classnameInterface
-	}
-
-	def getClassnameProvider (FDSpecification it) {
-		getClassnameGeneric("Provider")
-	}
-
-	def getClassnameInterface (FDSpecification it) {
-		getClassnameGeneric("Interface")
-	}
-
-	def getClassnameGeneric (FDSpecification it, String type) {
+	def classname (FDSpecification it) {
+		val type = switch(paType){
+			case PA_INTERFACE: "Interface"
+			case PA_PROVIDER: "Provider"
+			case PA_TYPE_COLLECTION: "TypeCollection"			
+		}
 		val sep = name.lastIndexOf(".")
 		val basename = if (sep>0) name.substring(sep+1) else name
 		basename.toFirstUpper + type + "PropertyAccessor"

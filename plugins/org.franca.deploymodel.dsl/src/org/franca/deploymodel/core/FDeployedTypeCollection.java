@@ -7,9 +7,9 @@
  *******************************************************************************/
 package org.franca.deploymodel.core;
 
-import org.franca.core.franca.FInterface;
+import org.franca.core.franca.FTypeCollection;
 import org.franca.deploymodel.dsl.FDMapper;
-import org.franca.deploymodel.dsl.fDeploy.FDInterface;
+import org.franca.deploymodel.dsl.fDeploy.FDTypes;
 
 /**
  * This class provides type-safe access to deployment properties which are attached to a Franca IDL interface. The get-functions in this class take an EObject
@@ -19,17 +19,16 @@ import org.franca.deploymodel.dsl.fDeploy.FDInterface;
  * @author KBirken
  * @see FDeployedProvider
  */
-public class FDeployedInterface extends MappingGenericPropertyAccessor {
-	// the actual deployment definition of this interface
-	protected FDInterface fdapi;
+public class FDeployedTypeCollection extends MappingGenericPropertyAccessor {
+	protected FDTypes ftypes;
 
-	public FDeployedInterface(FDInterface fdapi) {
-		super(fdapi.getSpec(),new FDMapper(fdapi));
-		this.fdapi = fdapi;
+	public FDeployedTypeCollection(FDTypes ftypes) {
+		super(ftypes.getSpec(),new FDMapper(ftypes));
+		this.ftypes = ftypes;
 	}
 
-	public FInterface getFInterface() {
-		return fdapi.getTarget();
+	public FTypeCollection getTypeCollection() {
+		return ftypes.getTarget();
 	}
 
 }
