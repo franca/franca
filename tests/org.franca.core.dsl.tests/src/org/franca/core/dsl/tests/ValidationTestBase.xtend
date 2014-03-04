@@ -10,7 +10,7 @@ class ValidationTestBase {
 	@Inject ParseHelper<FModel> parser
 	@Inject FrancaValidationTestHelper validationHelper
 	
-	def protected getIssues (CharSequence text) {
+	def protected _getIssues (CharSequence text) {
 		val model = parser.parse(text)
 		return validationHelper.getValidationIssues(model)
 	}	

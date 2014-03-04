@@ -76,17 +76,13 @@ public class FDeployProposalProvider extends AbstractFDeployProposalProvider {
 	@Override
 	public void completeImport_ImportURI(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		List<IContainer> visibleContainers = containerUtil.getVisibleContainers(model.eResource());
-		System.out.println(containerUtil.getResourceDescriptions(model.eResource()).getAllResourceDescriptions());
 		URI fromURI = model.eResource().getURI();
 		List<URI> proposedURIs = new ArrayList<URI>();
 		for (IContainer iContainer : visibleContainers) {
-			System.out.println("FDeployProposalProvider.completeImport_ImportURI(): iContainer " + iContainer);
 			Iterable<IResourceDescription> resourceDescriptions = iContainer.getResourceDescriptions();
-			System.out.println("FDeployProposalProvider.completeImport_ImportURI(): resourceDescriptions " + resourceDescriptions);
 			for (Iterator<IResourceDescription> iterator = resourceDescriptions.iterator(); iterator.hasNext();) {
 				IResourceDescription desc = (IResourceDescription) iterator.next();
 				URI uri = desc.getURI();
-				System.out.println("  FDeployProposalProvider.completeImport_ImportURI(): desc " + desc + "/" + uri);
 				if (!uri.equals(fromURI) && Arrays.binarySearch(extensionsForImportURIScope, uri.fileExtension()) > -1) {
 					proposedURIs.add(desc.getURI());
 				}
