@@ -325,9 +325,11 @@ class FDeployGenerator implements IGenerator {
 	}
 
 	def getSupportingClass() {
-		if (paType==PA_PROVIDER)
-			"FDeployedProvider"
-		else
-			"FDeployedInterface"
+		switch (paType) {
+			case PA_TYPE_COLLECTION: "FDeployedTypeCollection"
+			case PA_INTERFACE: "FDeployedInterface"
+			case PA_PROVIDER: "FDeployedProvider"
+			default: ""
+		}
 	}
 }
