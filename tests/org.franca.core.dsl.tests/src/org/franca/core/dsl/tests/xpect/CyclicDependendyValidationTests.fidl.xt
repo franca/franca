@@ -20,13 +20,13 @@ typeCollection ArrayTypeCycles {
 
 typeCollection EnumerationTypeCycles {
 	//  XPECT lineErrors  --> "Cyclic dependency detected: this->EnumerationTypeCycles.e2->EnumerationTypeCycles.e3->EnumerationTypeCycles.e4->this"
-	enumeration e1 extends e2{A}
+	enumeration e1 extends e2 { A }
 	//  XPECT lineErrors  --> "Cyclic dependency detected: this->EnumerationTypeCycles.e3->EnumerationTypeCycles.e4->EnumerationTypeCycles.e1->this"
-	enumeration e2 extends e3{B}
+	enumeration e2 extends e3 { B }
 	//  XPECT lineErrors  --> "Cyclic dependency detected: this->EnumerationTypeCycles.e4->EnumerationTypeCycles.e1->EnumerationTypeCycles.e2->this"
-	enumeration e3 extends e4{C}
+	enumeration e3 extends e4 { C }
 	//  XPECT lineErrors  --> "Cyclic dependency detected: this->EnumerationTypeCycles.e1->EnumerationTypeCycles.e2->EnumerationTypeCycles.e3->this"
-	enumeration e4 extends e1{D}
+	enumeration e4 extends e1 { D }
 }	
 
 typeCollection UnionTypeCycles {
@@ -68,19 +68,22 @@ typeCollection TypeDefCycles {
 	typedef TD1 is S1 
 }
 
+//interface T1 extends T2 { }
+//interface T2 extends T1 { }
+
 typeCollection ArraySelfReference {
 	//  XPECT lineErrors  --> "Cyclic dependency detected: this->this"
 	array MyArray of MyArray
 }
 
-typeCollection ArrayNoIndirectSelfReference {
-	//  XPECT lineErrors  -->"Cyclic dependency detected: this->ArrayNoIndirectSelfReference.OtherArray->this"
+typeCollection ArrayIndirectSelfReference {
+	//  XPECT lineErrors  -->"Cyclic dependency detected: this->ArrayIndirectSelfReference.OtherArray->this"
 	array MyArray of OtherArray
-	//  XPECT lineErrors  -->"Cyclic dependency detected: this->ArrayNoIndirectSelfReference.MyArray->this"
+	//  XPECT lineErrors  -->"Cyclic dependency detected: this->ArrayIndirectSelfReference.MyArray->this"
 	array OtherArray of MyArray
 }
 
-typeCollection StructNoSelfReference {
+typeCollection StructSelfReference {
 	//  XPECT lineErrors  --> "Cyclic dependency detected: this->this"
 	struct MyStruct {
 		UInt8 a
@@ -89,7 +92,7 @@ typeCollection StructNoSelfReference {
 	}
 }
 
-typeCollection UnionNoSelfReference {
+typeCollection UnionSelfReference {
 	//  XPECT lineErrors  --> "Cyclic dependency detected: this->this"
 	union MyUnion {
 		UInt8 a
@@ -98,7 +101,24 @@ typeCollection UnionNoSelfReference {
 	}
 }
 
-typeCollection TypedefNoSelfReference {
+typeCollection TypedefSelfReference {
 	//  XPECT lineErrors  --> "Cyclic dependency detected: this->this"
 	typedef MyTypedef is MyTypedef
+}
+
+typeCollection ConstantDefSelfReference {
+	//  XPECT lineErrors  --> "Cyclic dependency detected: this->this"
+	const UInt8 a = a
+}
+
+typeCollection ConstantDefIndirectReference {
+	//  XPECT lineErrors  -->"Cyclic dependency detected: this->ConstantDefIndirectReference.b->this"
+	const UInt8 a = b
+	//  XPECT lineErrors  -->"Cyclic dependency detected: this->ConstantDefIndirectReference.a->this"
+	const UInt8 b = a
+}
+
+typeCollection ConstantDefSelfRefViaExpression {
+	//  XPECT lineErrors  --> "Cyclic dependency detected: this->this"
+	const UInt8 a = 3 * a
 }
