@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -18,6 +19,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.jdt.annotation.NonNull;
+import org.franca.core.FrancaModelExtensions;
 import org.franca.core.franca.FArrayType;
 import org.franca.core.franca.FAttribute;
 import org.franca.core.franca.FBasicTypeId;
@@ -124,50 +126,40 @@ public class FrancaHelpers {
 	/** Get all attributes of an interface including the inherited ones */
 	public static List<FAttribute> getAllAttributes (FInterface api) {
 		List<FAttribute> elements = Lists.newArrayList();
-		if (api.getBase()!=null) {
-			elements.addAll(getAllAttributes(api.getBase()));
-		}
-		elements.addAll(api.getAttributes());
+		for(FInterface i : FrancaModelExtensions.getInterfaceInheritationSet(api))
+			elements.addAll(i.getAttributes());
 		return elements;
 	}
 	
 	/** Get all methods of an interface including the inherited ones */
 	public static List<FMethod> getAllMethods (FInterface api) {
 		List<FMethod> elements = Lists.newArrayList();
-		if (api.getBase()!=null) {
-			elements.addAll(getAllMethods(api.getBase()));
-		}
-		elements.addAll(api.getMethods());
+		for(FInterface i : FrancaModelExtensions.getInterfaceInheritationSet(api))
+			elements.addAll(i.getMethods());
 		return elements;
 	}
 	
 	/** Get all broadcasts of an interface including the inherited ones */
 	public static List<FBroadcast> getAllBroadcasts (FInterface api) {
 		List<FBroadcast> elements = Lists.newArrayList();
-		if (api.getBase()!=null) {
-			elements.addAll(getAllBroadcasts(api.getBase()));
-		}
-		elements.addAll(api.getBroadcasts());
+		for(FInterface i : FrancaModelExtensions.getInterfaceInheritationSet(api))
+			elements.addAll(i.getBroadcasts());
 		return elements;
 	}
 	
 	/** Get all types of an interface including the inherited ones */
 	public static List<FType> getAllTypes (FInterface api) {
 		List<FType> elements = Lists.newArrayList();
-		if (api.getBase()!=null) {
-			elements.addAll(getAllTypes(api.getBase()));
-		}
-		elements.addAll(api.getTypes());
+		for(FInterface i : FrancaModelExtensions.getInterfaceInheritationSet(api))
+			elements.addAll(i.getTypes());
 		return elements;
 	}
 	
 	/** Get all constants of an interface including the inherited ones */
 	public static List<FConstantDef> getAllConstants (FInterface api) {
 		List<FConstantDef> elements = Lists.newArrayList();
-		if (api.getBase()!=null) {
-			elements.addAll(getAllConstants(api.getBase()));
-		}
-		elements.addAll(api.getConstants());
+		for(FInterface i : FrancaModelExtensions.getInterfaceInheritationSet(api))
+			elements.addAll(i.getConstants());
 		return elements;
 	}
 	
