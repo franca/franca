@@ -68,8 +68,10 @@ typeCollection TypeDefCycles {
 	typedef TD1 is S1 
 }
 
-//interface T1 extends T2 { }
-//interface T2 extends T1 { }
+//  XPECT lineErrors  -->"Cyclic dependency detected: this->T2->this"
+interface T1 extends T2 { }
+//  XPECT lineErrors  -->"Cyclic dependency detected: this->T1->this"
+interface T2 extends T1 { }
 
 typeCollection ArraySelfReference {
 	//  XPECT lineErrors  --> "Cyclic dependency detected: this->this"
