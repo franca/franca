@@ -1,0 +1,25 @@
+
+// import the deployment specification
+import "../spec/SampleDeploySpec.fdepl"
+
+// import the actual Franca type collection we want to deploy 
+import "classpath:/org/example/idl/CommonTypes.fidl"
+
+define org.example.spec.SampleDeploySpec
+	for typeCollection org.example.idl.CommonTypes as CommonTypesDepl
+{
+	struct Duration {
+		hours {
+			RangeMin = 0
+			RangeMax = 23
+		}
+		minutes {
+			RangeMin = 0
+			RangeMax = 59
+		}
+		seconds {
+			RangeMin = 0
+			RangeMax = 59
+		}
+	}
+}

@@ -32,4 +32,9 @@ specification org.example.spec.SampleDeploySpec
 	for interfaces {
 		Master:        Interface (default: &org.example.idl.Controller);
 	}
+	
+	for integers {
+		RangeMin : Integer;
+		RangeMax : Integer;
+	}
 }
