@@ -1,3 +1,4 @@
+//  XPECT_SETUP org.franca.core.dsl.tests.xpect.FrancaIDLXpectTests END_SETUP 
 package a.b.c
 typeCollection TC {
 	enumeration Errors {
@@ -8,6 +9,7 @@ typeCollection TC {
 	}
 }
 interface InterfaceTest {
+	// XPECT warnings --> "Method is not covered by contract, not needed?" at "forceEnumError"
 	method forceEnumError {
 		error TC.Errors
 	}
@@ -20,9 +22,13 @@ interface InterfaceTest {
 		PSM {
 			initial start
 			state start {
+				// XPECT errors --> "expected typed expression" at "errordef"
 				on error forceEnumError [errordef] -> start
+				// XPECT errors --> "invalid error enumerator (expected Boolean)" at "errorval"
 				on error forceEnumError [errorval] -> start
+				// XPECT errors --> "expected typed expression" at "errordef"
 				on error forceEnumError [! errordef] -> start
+				// XPECT errors --> "invalid error enumerator (expected Boolean)" at "errorval"
 				on error forceEnumError [! errorval] -> start
 			}
 		}
