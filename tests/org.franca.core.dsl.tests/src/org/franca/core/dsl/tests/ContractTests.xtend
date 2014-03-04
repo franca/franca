@@ -12,7 +12,7 @@ import org.junit.runner.RunWith
 @InjectWith(typeof(FrancaIDLTestsInjectorProvider))
 class ContractTests extends XtextTest {//ValidationTestBase {
 
-	val static private basePath = "testcases/contracts"
+	val static private basePath = "testcases/contracts/"
 	
 	@Before
     override void before() {
