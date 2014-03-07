@@ -1,0 +1,5 @@
+// XPECT_SETUP org.franca.deploymodel.dsl.tests.xpect.FrancaDeploymodelXpectTests END_SETUP
+// XPECT lineErrors --> "Duplicate specification name 'MySpec'" 
+specification MySpec { }
+// XPECT lineErrors --> "Duplicate specification name 'MySpec'" 
+specification MySpec { }

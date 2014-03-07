@@ -80,8 +80,8 @@ typeCollection MyTypeCollection10 {
 		UInt32 se09
 	}
 	
-	// empty struct
-	struct MyStruct03 { }
+	// empty struct (only allowed if polymorphic)
+	struct MyStruct03 polymorphic { }
 
 	// struct of arrays
 	struct MyStruct04 {
@@ -143,11 +143,6 @@ typeCollection MyTypeCollection10 {
 	struct MyStruct12 extends MyStruct10 {
 		Boolean se30
 		Boolean se31
-	}
-	
-	// derived struct with empty base (and also non-polymorphic)
-	struct MyStruct13 extends MyStruct03 {
-		UInt16 se10
 	}
 	
 	// derived struct (with polymorphic root)

@@ -42,6 +42,7 @@ import org.franca.core.franca.FGuard;
 import org.franca.core.franca.FInterface;
 import org.franca.core.franca.FMethod;
 import org.franca.core.franca.FModel;
+import org.franca.core.franca.FStructType;
 import org.franca.core.franca.FTrigger;
 import org.franca.core.franca.FType;
 import org.franca.core.franca.FTypeCollection;
@@ -223,6 +224,16 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 		auxValidator.checkUnionElementTypesUnique(type);
 	}
 
+	@Check
+	public void checkStructHasElements(FStructType type) {
+		if (type.getBase()==null && type.getElements().isEmpty() &&
+				! type.isPolymorphic()) {
+			error("Non-polymorphic structs must have own or inherited elements",
+					type,
+					FrancaPackage.Literals.FMODEL_ELEMENT__NAME, -1);
+		}
+	}
+	
 	@Check
 	public void checkUnionHasElements(FUnionType type) {
 		if (type.getBase()==null && type.getElements().isEmpty()) {

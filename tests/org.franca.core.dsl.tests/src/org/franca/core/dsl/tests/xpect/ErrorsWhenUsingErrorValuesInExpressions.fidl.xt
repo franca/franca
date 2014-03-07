@@ -1,3 +1,4 @@
+//  XPECT_SETUP org.franca.core.dsl.tests.xpect.FrancaIDLXpectTests END_SETUP 
 package a.b.c
 typeCollection TC {
 	enumeration Errors {
@@ -8,6 +9,7 @@ typeCollection TC {
 	}
 }
 interface InterfaceTest {
+	// XPECT warnings --> "Method is not covered by contract, not needed?" at "forceEnumError"
 	method forceEnumError {
 		error TC.Errors
 	}
@@ -20,11 +22,16 @@ interface InterfaceTest {
 		PSM {
 			initial start
 			state start {
+				// XPECT errors --> "invalid type (is enumeration 'Errors', expected Boolean)" at "savedError"
 				on error forceEnumError [savedError] -> start
+				// XPECT errors --> "invalid type (is enumeration 'Errors', expected Boolean)" at "savedError"
 				on error forceEnumError [!savedError] -> start
 				
+				// XPECT lineErrors --> "operands must have compatible type"
 				on error forceEnumError [errordef.Error == TC.OtherErrors.OtherError] -> start
+				// XPECT lineErrors --> "operands must have compatible type"
 				on error forceEnumError [errordef.Error == otherError] -> start
+				// XPECT errors --> "operands must have compatible type" at "errorval == otherError"
 				on error forceEnumError [errorval == otherError] -> start				
 			}
 		}

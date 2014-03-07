@@ -7,6 +7,9 @@ import "classpath:/org/example/idl/MediaPlayer.fidl"
 import "classpath:/org/example/idl/Controller.fidl"
 import "classpath:/org/example/idl/CommonTypes.fidl"
 
+// import the deployment definitions this is based upon
+import "../deploy/CommonTypes.fdepl"
+
 
 /**
  * This is an example for defining all required deployment information for
@@ -22,6 +25,10 @@ import "classpath:/org/example/idl/CommonTypes.fidl"
 define org.example.spec.SampleDeploySpec
 	for interface org.example.idl.MediaPlayer
 {
+	// use deployment definitions for CommonTypes type collection
+	use CommonTypesDepl
+
+	// define a property for the interface itself
 	Master = &org.example.idl.Controller
 
 	attribute mode {
@@ -38,7 +45,9 @@ define org.example.spec.SampleDeploySpec
 	
 	attribute currentTrack {
 		Groups = { g2, g4 }
-	}
+		RangeMin = 0
+		RangeMax = 999
+}
 	
 	attribute currentPlaylist {
 		Groups = { g2, g4 }
@@ -52,6 +61,9 @@ define org.example.spec.SampleDeploySpec
 		CallSemantics = synchronous
 		Priority = low
 		IsOptional = true
+		in {
+			trackId { RangeMin = 0, RangeMax = 999 }
+		}
 	}
 
 	method clear {
@@ -60,6 +72,9 @@ define org.example.spec.SampleDeploySpec
 
 	method appendTrack {
 		IsOptional = false
+		in {
+			trackId { RangeMin = 0, RangeMax = 999 }
+		}
 	}
 	
 	method play {
@@ -91,6 +106,7 @@ define org.example.spec.SampleDeploySpec
 		interpret { Encoding = utf16 }
 		composer  { Encoding = utf16 }
 		genre     { Encoding = utf8 }
+		year      { RangeMin = 1960, RangeMax = 2100 }
 	}
 }
 
