@@ -7,7 +7,9 @@
  *******************************************************************************/
 package org.franca.core.ui.addons.wizard;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -17,109 +19,185 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.xtext.ui.preferences.StatusInfo;
+import org.franca.core.franca.FInterface;
+import org.franca.core.franca.FTypeCollection;
+import org.franca.core.franca.FrancaPackage;
+import org.franca.deploymodel.dsl.fDeploy.FDSpecification;
+import org.franca.deploymodel.dsl.fDeploy.FDeployPackage;
+
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 
 /**
  * Wizard page for the Franca fdepl specific properties.
  * 
  * @author Tamas Szabo (itemis AG)
- *
+ * 
  */
 @SuppressWarnings("restriction")
-public class FrancaFDEPLFileWizardConfigurationPage extends StatusWizardPage {
+public class FrancaFDEPLFileWizardConfigurationPage extends StatusWizardPage implements IModelElementSelectorListener {
 
-    private static final String ONE_MUST_BE_SET = "At least either the deployment specification name or the deployment definition name must be set!";
-    private Text specificationNameText;
-    private Text definitionNameText;
+	private static final String SPEC_MUST_BE_SET = "Either you must set a deployment specification name or select an already existing one!";
+	private static final String ROOT_ELEMENT_MUST_BE_SET = "You must set exactly one of Interface / TypeCollection / Provider if you have selected an FDSpecification!";
+	private Text specificationName;
+	private ModelElementSelector typeCollectionSelector;
+	private ModelElementSelector interfaceSelector;
+	private ModelElementSelector specificationSelector;
+	private Text providerName;
 
-    public FrancaFDEPLFileWizardConfigurationPage() {
-        super(FrancaFileWizard.FDEPL_TITLE);
-        setTitle(FrancaFileWizard.FDEPL_TITLE);
-    }
-    
-    @Override
-    public void createControl(Composite parent) {
-        int nColumns = 5;
+	@Inject
+	private Injector injector;
 
-        initializeDialogUnits(parent);
-        Composite composite = new Composite(parent, SWT.NONE);
-        composite.setFont(parent.getFont());
-
-        GridLayout layout = new GridLayout();
-        layout.numColumns = nColumns;
-        composite.setLayout(layout);
-        
-        Label label = new Label(composite, SWT.NULL);
-        label.setText("&Deployment specification name:");
-        specificationNameText = new Text(composite, SWT.BORDER | SWT.SINGLE);
-        specificationNameText.setText("");
-        GridData gd_2 = new GridData(GridData.FILL_HORIZONTAL);
-        gd_2.horizontalSpan = nColumns-1;
-        specificationNameText.setLayoutData(gd_2);
-        specificationNameText.addModifyListener(new ModifyListener() {
-            public void modifyText(ModifyEvent e) {
-                validatePage();
-            }
-        });
-        
-        label = new Label(composite, SWT.NULL);
-        label.setText("&Deployment definition name:");
-        definitionNameText = new Text(composite, SWT.BORDER | SWT.SINGLE);
-        definitionNameText.setText("");
-        GridData gd_3 = new GridData(GridData.FILL_HORIZONTAL);
-        gd_3.horizontalSpan = nColumns-1;
-        definitionNameText.setLayoutData(gd_3);
-        definitionNameText.addModifyListener(new ModifyListener() {
-            public void modifyText(ModifyEvent e) {
-                validatePage();
-            }
-        });
-
-        setControl(composite);
-        validatePage();
-    }
-
-    public void validatePage() {
-        StatusInfo si = new StatusInfo(StatusInfo.OK, "");
-
-        boolean atLeastOneIsSet = false;
-        
-        if (specificationNameText != null) {
-            String interfaceName = specificationNameText.getText();
-            if (interfaceName != null && interfaceName.length() > 0) {
-            	atLeastOneIsSet = true;
-            }
-        }
-        if (definitionNameText != null) {
-            String typeCollectionName = definitionNameText.getText();
-            if (typeCollectionName != null && typeCollectionName.length() > 0) {
-            	atLeastOneIsSet = true;
-            }
-        }
-        if (!atLeastOneIsSet) {
-        	si.setError(ONE_MUST_BE_SET);
-        }
-        
-        if (si.getSeverity() == IStatus.OK) {
-            si.setInfo("");
-        }
-
-        updateStatus(si);
-
-        if (si.isError()) {
-            setErrorMessage(si.getMessage());
-        }
-    }
-
-    protected void updateStatus(IStatus status) {
-        setPageComplete(!status.matches(IStatus.ERROR));
-        applyStatus(status);
-    }
-
-    public String getSpecificationName() {
-        return specificationNameText.getText();
-    }
-    
-    public String getDefinitionName() {
-		return definitionNameText.getText();
+	public FrancaFDEPLFileWizardConfigurationPage() {
+		super(FrancaFileWizard.FDEPL_TITLE);
+		setTitle(FrancaFileWizard.FDEPL_TITLE);
 	}
+
+	@Override
+	public void createControl(final Composite parent) {
+		IProject project = ((FrancaFileWizardContainerConfigurationPage) getPreviousPage()).getProject();
+		int nColumns = 5;
+
+		initializeDialogUnits(parent);
+		Composite composite = new Composite(parent, SWT.NONE);
+		composite.setFont(parent.getFont());
+
+		GridLayout layout = new GridLayout();
+		layout.numColumns = nColumns;
+		layout.marginBottom = 0;
+		layout.marginHeight = 0;
+		layout.marginLeft = 0;
+		layout.marginRight = 0;
+		layout.marginTop = 0;
+		layout.marginWidth = 0;
+
+		composite.setLayout(layout);
+
+		Label label = new Label(composite, SWT.NULL);
+		label.setText("&Deployment specification name:");
+		specificationName = new Text(composite, SWT.BORDER | SWT.SINGLE);
+		specificationName.setText("");
+		GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
+		gridData.horizontalSpan = nColumns - 1;
+		specificationName.setLayoutData(gridData);
+		specificationName.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				validatePage();
+			}
+		});
+
+		label = new Label(composite, SWT.SEPARATOR | SWT.HORIZONTAL);
+		gridData = new GridData(GridData.FILL_HORIZONTAL);
+		gridData.horizontalSpan = nColumns;
+		label.setLayoutData(gridData);
+
+		label = new Label(composite, SWT.NULL);
+		label.setText("&Deployment definition");
+		gridData = new GridData(GridData.FILL_HORIZONTAL);
+		gridData.horizontalSpan = nColumns;
+		label.setLayoutData(gridData);
+
+		label = new Label(composite, SWT.NULL);
+		label.setText("&TypeCollection:");
+		gridData = new GridData(GridData.FILL_HORIZONTAL);
+		gridData.horizontalSpan = nColumns - 1;
+		typeCollectionSelector = new ModelElementSelector(composite, project,
+				FrancaPackage.eINSTANCE.getFTypeCollection(), injector);
+		typeCollectionSelector.setLayoutData(gridData);
+		typeCollectionSelector.addModelElementSelectorListener(this);
+
+		label = new Label(composite, SWT.NULL);
+		label.setText("&Interface:");
+		gridData = new GridData(GridData.FILL_HORIZONTAL);
+		gridData.horizontalSpan = nColumns - 1;
+		interfaceSelector = new ModelElementSelector(composite, project, FrancaPackage.eINSTANCE.getFInterface(),
+				injector);
+		interfaceSelector.setLayoutData(gridData);
+		interfaceSelector.addModelElementSelectorListener(this);
+
+		label = new Label(composite, SWT.NULL);
+		label.setText("&Provider:");
+		providerName = new Text(composite, SWT.BORDER | SWT.SINGLE);
+		providerName.setText("");
+		gridData = new GridData(GridData.FILL_HORIZONTAL);
+		gridData.horizontalSpan = nColumns - 1;
+		providerName.setLayoutData(gridData);
+		providerName.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				validatePage();
+			}
+		});
+
+		label = new Label(composite, SWT.NULL);
+		label.setText("&for Specification:");
+		gridData = new GridData(GridData.FILL_HORIZONTAL);
+		gridData.horizontalSpan = nColumns - 1;
+		specificationSelector = new ModelElementSelector(composite, project,
+				FDeployPackage.eINSTANCE.getFDSpecification(), injector);
+		specificationSelector.setLayoutData(gridData);
+		specificationSelector.addModelElementSelectorListener(this);
+
+		setControl(composite);
+		validatePage();
+	}
+
+	public void validatePage() {
+		StatusInfo si = new StatusInfo(StatusInfo.OK, "");
+		if (specificationName.getText().isEmpty() &&
+				specificationSelector.getValue() == null) {
+			si.setError(SPEC_MUST_BE_SET);
+		}
+
+		if (specificationSelector.getValue() != null) {
+			int set = 0;
+			set += (typeCollectionSelector.getValue() == null ? 0 : 1);
+			set += (interfaceSelector.getValue() == null ? 0 : 1);
+			set += (providerName.getText().isEmpty() ? 0 : 1);
+
+			if (set != 1) {
+				si.setError(ROOT_ELEMENT_MUST_BE_SET);
+			}
+		}
+
+		if (si.getSeverity() == IStatus.OK) {
+			si.setInfo("");
+		}
+
+		updateStatus(si);
+
+		if (si.isError()) {
+			setErrorMessage(si.getMessage());
+		}
+	}
+
+	protected void updateStatus(IStatus status) {
+		setPageComplete(!status.matches(IStatus.ERROR));
+		applyStatus(status);
+	}
+
+	public String getSpecificationName() {
+		return specificationName.getText();
+	}
+
+	public FDSpecification getSpecification() {
+		return (FDSpecification) specificationSelector.getValue();
+	}
+
+	public FTypeCollection getTypeCollection() {
+		return (FTypeCollection) typeCollectionSelector.getValue();
+	}
+
+	public FInterface getInterface() {
+		return (FInterface) interfaceSelector.getValue();
+	}
+
+	public String getProviderName() {
+		return providerName.getText();
+	}
+
+	@Override
+	public void selectionChanged(EObject value) {
+		validatePage();
+	}
+
 }

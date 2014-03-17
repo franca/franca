@@ -194,8 +194,9 @@ public class FrancaFileWizardContainerConfigurationPage extends StatusWizardPage
 					FILE_NAME_ERROR);
 		}
 
+		String packageName = getPackageName().replaceAll("\\.", "/");
 		if (ResourcesPlugin.getWorkspace().getRoot()
-				.findMember(sourceFolderSelector.getContainerFullPath().append(getFileName())) != null) {
+				.findMember(sourceFolderSelector.getContainerFullPath().append(packageName).append(getFileName())) != null) {
 			return new Status(IStatus.ERROR, Activator.PLUGIN_ID,
 					THE_GIVEN_FILE_ALREADY_EXISTS);
 		}
@@ -239,7 +240,8 @@ public class FrancaFileWizardContainerConfigurationPage extends StatusWizardPage
 	}
 
 	public IProject getProject() {
-		return this.getProject();
+		IResource resource = ResourcesPlugin.getWorkspace().getRoot().findMember(sourceFolderSelector.getContainerFullPath());
+		return resource.getProject();
 	}
 
 	@Override

@@ -31,9 +31,11 @@ import org.franca.core.franca.FInterface;
 import org.franca.core.franca.FModel;
 import org.franca.core.franca.FTypeCollection;
 import org.franca.core.franca.FrancaFactory;
+import org.franca.deploymodel.dsl.fDeploy.FDInterface;
 import org.franca.deploymodel.dsl.fDeploy.FDModel;
-import org.franca.deploymodel.dsl.fDeploy.FDRootElement;
+import org.franca.deploymodel.dsl.fDeploy.FDProvider;
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification;
+import org.franca.deploymodel.dsl.fDeploy.FDTypes;
 import org.franca.deploymodel.dsl.fDeploy.FDeployFactory;
 
 /**
@@ -56,23 +58,23 @@ public class FrancaWizardUtil {
 	 * @return the path of the created file
 	 */
 	public static IPath createFrancaIDLFile(
-			IResourceSetProvider resourceSetProvider, Map<String, String> parameters) {
+			IResourceSetProvider resourceSetProvider, Map<String, Object> parameters) {
 
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		IResource containerResource = root.findMember(new Path(parameters.get("containerName")));
+		IResource containerResource = root.findMember(new Path((String) parameters.get("containerName")));
 		ResourceSet resourceSet = resourceSetProvider.get(containerResource.getProject());
 
-		IPath filePath = containerResource.getFullPath().append(parameters.get("packageName").replaceAll("\\.", "/")).append(parameters.get("fileName"));
+		IPath filePath = containerResource.getFullPath().append(((String) parameters.get("packageName")).replaceAll("\\.", "/")).append((String) parameters.get("fileName"));
 		String fullPath = filePath.toString();
 
 		URI fileURI = URI.createPlatformResourceURI(fullPath, false);
 		Resource resource = resourceSet.createResource(fileURI);
 
 		FModel model = FrancaFactory.eINSTANCE.createFModel();
-		model.setName(parameters.get("packageName"));
+		model.setName((String) parameters.get("packageName"));
 
-		String interfaceName = parameters.get("interfaceName");
-		String typeCollectionName = parameters.get("typeCollectionName");
+		String interfaceName = (String) parameters.get("interfaceName");
+		String typeCollectionName = (String) parameters.get("typeCollectionName");
 
 		if (interfaceName != null && interfaceName.length() > 0) {
 			FInterface _interface = FrancaFactory.eINSTANCE.createFInterface();
@@ -116,13 +118,13 @@ public class FrancaWizardUtil {
 	 * @return the path of the created file
 	 */
 	public static IPath createFrancaFDEPLFile(
-			IResourceSetProvider resourceSetProvider, Map<String, String> parameters) {
+			IResourceSetProvider resourceSetProvider, Map<String, Object> parameters) {
 
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		IResource containerResource = root.findMember(new Path(parameters.get("containerName")));
+		IResource containerResource = root.findMember(new Path((String) parameters.get("containerName")));
 		ResourceSet resourceSet = resourceSetProvider.get(containerResource.getProject());
 
-		IPath filePath = containerResource.getFullPath().append(parameters.get("packageName").replaceAll("\\.", "/")).append(parameters.get("fileName"));
+		IPath filePath = containerResource.getFullPath().append(((String) parameters.get("packageName")).replaceAll("\\.", "/")).append((String) parameters.get("fileName"));
 		String fullPath = filePath.toString();
 
 		URI fileURI = URI.createPlatformResourceURI(fullPath, false);
@@ -130,19 +132,39 @@ public class FrancaWizardUtil {
 
 		FDModel model = FDeployFactory.eINSTANCE.createFDModel();
 
-		String specificationName = parameters.get("specificationName");
-		String definitionName = parameters.get("definitionName");
+		String specificationName = (String) parameters.get("specificationName");
 
-		if (specificationName != null && specificationName.length() > 0) {
-			FDSpecification spec = FDeployFactory.eINSTANCE.createFDSpecification();
-			spec.setName(specificationName);
-			model.getSpecifications().add(spec);
+		FDSpecification specification = null;
+		if (specificationName != null && !specificationName.isEmpty()) {
+			specification = FDeployFactory.eINSTANCE.createFDSpecification();
+			specification.setName(specificationName);
+			model.getSpecifications().add(specification);
 		}
+		
+		if (specification == null) specification = (FDSpecification) parameters.get("specification");
+		FInterface fInterface = (FInterface) parameters.get("interface");
+		String providerName = (String) parameters.get("providerName");
+		FTypeCollection typeCollection = (FTypeCollection) parameters.get("typeCollection");
 
-		if (definitionName != null && definitionName.length() > 0) {
-			FDRootElement def = FDeployFactory.eINSTANCE.createFDRootElement();
-			def.setName(definitionName);
-			model.getDeployments().add(def);
+		if (fInterface != null) {
+			FDInterface fDInterface = FDeployFactory.eINSTANCE.createFDInterface();
+			fDInterface.setTarget(fInterface);
+			fDInterface.setSpec(specification);
+			model.getDeployments().add(fDInterface);
+		}
+		
+		if (typeCollection != null) {
+			FDTypes fDTypes = FDeployFactory.eINSTANCE.createFDTypes();
+			fDTypes.setTarget(typeCollection);
+			fDTypes.setSpec(specification);
+			model.getDeployments().add(fDTypes);
+		}
+		
+		if (providerName != null && !providerName.isEmpty()) {
+			FDProvider provider = FDeployFactory.eINSTANCE.createFDProvider();
+			provider.setName(providerName);
+			provider.setSpec(specification);
+			model.getDeployments().add(provider);
 		}
 
 		resource.getContents().add(model);

@@ -27,13 +27,13 @@ public class FrancaIDLFileWizard extends FrancaFileWizard {
 	private FrancaIDLFileWizardConfigurationPage page2;
 	
 	@Override
-	protected IPath performFileCreation(IProgressMonitor monitor, Map<String, String> parameters) {
+	protected IPath performFileCreation(IProgressMonitor monitor, Map<String, Object> parameters) {
         return FrancaWizardUtil.createFrancaIDLFile(resourceSetProvider, parameters);
 	}
 	
 	@Override
-	protected Map<String, String> collectParameters() {
-		Map<String, String> parameters = new HashMap<String, String>();
+	protected Map<String, Object> collectParameters() {
+		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("containerName", page1.getContainerName());
 		parameters.put("fileName", page1.getFileName());
         // replace dots with slash in the path
