@@ -8,8 +8,10 @@
 package org.franca.core.dsl.ui;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.xtext.ui.editor.syntaxcoloring.AbstractAntlrTokenToAttributeIdMapper;
 import org.eclipse.xtext.ui.editor.syntaxcoloring.IHighlightingConfiguration;
 import org.eclipse.xtext.ui.editor.syntaxcoloring.ISemanticHighlightingCalculator;
+import org.franca.core.dsl.ui.highlighting.FrancaAntlrTokenToAttributeIdMapper;
 import org.franca.core.dsl.ui.highlighting.FrancaHighlightingConfiguration;
 import org.franca.core.dsl.ui.highlighting.FrancaSemanticHighlightingCalculator;
 
@@ -37,4 +39,9 @@ public class FrancaIDLUiModule extends
 	public Class<? extends ISemanticHighlightingCalculator> bindSemanticHighlightingCalculator() {
 		return FrancaSemanticHighlightingCalculator.class;
 	}
+	
+	public Class<? extends AbstractAntlrTokenToAttributeIdMapper> bindAbstractAntlrTokenToAttributeIdMapper() {
+		return FrancaAntlrTokenToAttributeIdMapper.class;
+	}
+
 }

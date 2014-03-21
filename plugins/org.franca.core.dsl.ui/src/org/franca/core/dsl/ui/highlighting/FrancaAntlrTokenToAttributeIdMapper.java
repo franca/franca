@@ -1,4 +1,4 @@
-package org.franca.core.dsl.highlighting;
+package org.franca.core.dsl.ui.highlighting;
 
 import org.eclipse.xtext.ui.editor.syntaxcoloring.DefaultAntlrTokenToAttributeIdMapper;
 import org.eclipse.xtext.ui.editor.syntaxcoloring.DefaultHighlightingConfiguration;
