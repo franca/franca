@@ -177,14 +177,14 @@ FEnumerationType returns FEnumerationType:
 	'enumeration' name=ID
 	('extends' base=[FEnumerationType|FQN])?
 	'{'
-		(enumerators+=FEnumerator)*
+		(enumerators+=FEnumerator (','? enumerators+=FEnumerator)*)?
     '}';
 
 FEnumerationTypeBody returns FEnumerationType:
 	{FEnumerationType}
 	('extends' base=[FEnumerationType|FQN])?
 	'{'
-		(enumerators+=FEnumerator)*
+		(enumerators+=FEnumerator (','? enumerators+=FEnumerator)*)?
     '}';
 
 FEnumerator returns FEnumerator:
