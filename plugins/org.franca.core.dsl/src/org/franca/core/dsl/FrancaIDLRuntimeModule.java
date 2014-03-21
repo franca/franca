@@ -5,6 +5,8 @@ package org.franca.core.dsl;
 
 import org.eclipse.xtext.conversion.IValueConverterService;
 import org.eclipse.xtext.resource.IDefaultResourceDescriptionStrategy;
+import org.eclipse.xtext.ui.editor.syntaxcoloring.AbstractAntlrTokenToAttributeIdMapper;
+import org.franca.core.dsl.highlighting.FrancaAntlrTokenToAttributeIdMapper;
 import org.franca.core.dsl.resource.FrancaCoreResourceDescriptionStrategy;
 import org.franca.core.dsl.valueconverter.FrancaValueConverters;
 
@@ -24,6 +26,10 @@ public class FrancaIDLRuntimeModule extends org.franca.core.dsl.AbstractFrancaID
 				com.google.inject.name.Names.named(org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider.NAMED_DELEGATE)).to(
 						org.eclipse.xtext.scoping.impl.ImportedNamespaceAwareLocalScopeProvider.class);
 		
+	}
+
+	public Class<? extends AbstractAntlrTokenToAttributeIdMapper> bindAbstractAntlrTokenToAttributeIdMapper() {
+		return FrancaAntlrTokenToAttributeIdMapper.class;
 	}
 
 	@Override
