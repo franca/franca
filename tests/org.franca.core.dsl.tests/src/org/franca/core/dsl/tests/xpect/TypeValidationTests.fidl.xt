@@ -1,5 +1,5 @@
 // XPECT_SETUP org.franca.core.dsl.tests.xpect.FrancaIDLXpectTests END_SETUP
-package a.b.c
+package org.franca.core.dsl.tests.xpect
 typeCollection MyPrimitiveTypes {
 	// XPECT errors --> "Name conflict for type name 'MyArray'" at "MyArray"
 	array MyArray of Int8

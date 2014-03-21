@@ -1,5 +1,5 @@
 //  XPECT_SETUP org.franca.core.dsl.tests.xpect.FrancaIDLXpectTests END_SETUP 
-package a.b.c
+package org.franca.core.dsl.tests.xpect
 typeCollection FStructTypeCycles {
 	//  XPECT lineErrors  --> "Cyclic dependency detected: this->FStructTypeCycles.T->this"
 	struct S {

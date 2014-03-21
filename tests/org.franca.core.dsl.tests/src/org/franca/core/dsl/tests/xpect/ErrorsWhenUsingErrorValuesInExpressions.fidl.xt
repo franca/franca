@@ -1,5 +1,5 @@
 //  XPECT_SETUP org.franca.core.dsl.tests.xpect.FrancaIDLXpectTests END_SETUP 
-package a.b.c
+package org.franca.core.dsl.tests.xpect
 typeCollection TC {
 	enumeration Errors {
 		Error
@@ -27,12 +27,12 @@ interface InterfaceTest {
 				// XPECT errors --> "invalid type (is enumeration 'Errors', expected Boolean)" at "savedError"
 				on error forceEnumError [!savedError] -> start
 				
-				// XPECT lineErrors --> "operands must have compatible type"
+				// XPECT lineErrors --> "enumeration 'Errors' and enumeration 'OtherErrors' are not comparable"
 				on error forceEnumError [errordef.Error == TC.OtherErrors.OtherError] -> start
-				// XPECT lineErrors --> "operands must have compatible type"
+				// XPECT lineErrors --> "enumeration 'Errors' and enumeration 'OtherErrors' are not comparable"
 				on error forceEnumError [errordef.Error == otherError] -> start
-				// XPECT errors --> "operands must have compatible type" at "errorval == otherError"
-				on error forceEnumError [errorval == otherError] -> start				
+				// XPECT errors --> "enumeration 'Errors' and enumeration 'OtherErrors' are not comparable" at "errorval == otherError"
+				on error forceEnumError [errorval == otherError] -> start	
 			}
 		}
 	}
