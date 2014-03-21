@@ -24,7 +24,6 @@ FModel returns FModel:
 	(imports+=Import)*
 	( typeCollections+=FTypeCollection | interfaces+=FInterface	)*;
 
-
 // **************************************************************
 // type collection and interface
 
@@ -443,7 +442,7 @@ EBoolean returns ecore::EBoolean:
 	'false' | 'true';
 
 E_BigInteger returns ecore::EBigInteger:
-	NEGATIVE_INT | INT
+	NEGATIVE_INT | INT | HEX
 ;
 
 terminal E_DOUBLE_OBJECT returns ecore::EDoubleObject :
@@ -456,8 +455,8 @@ terminal E_FLOAT_OBJECT returns ecore::EFloatObject :
 terminal NEGATIVE_INT returns ecore::EBigInteger:
 	'-'INT;
 
-//terminal HEX:
-//	'0' ('x'|'X')(('0'..'9')|('a'..'f')|('A'..'F'))+;
+terminal HEX :
+	 ('0x'|'0X')(('0'..'9')|('a'..'f')|('A'..'F'))+;
 	
 terminal ANNOTATION_STRING returns ecore::EString:
 	'@' (('a'..'z')|'-')+ (' '|'\t')* ':'
