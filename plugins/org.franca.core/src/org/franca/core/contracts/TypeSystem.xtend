@@ -37,6 +37,7 @@ import static org.franca.core.franca.FrancaPackage$Literals.*
 import static extension org.franca.core.framework.FrancaHelpers.*
 
 import static org.franca.core.contracts.ComparisonResult.*
+import org.franca.core.franca.FEnumerationType
 
 class TypeSystem {
 	
@@ -365,14 +366,19 @@ class TypeSystem {
 		if (t1==null || t2==null) {
 			return false
 		} else {
+//			if (isAssignableTo(t1, t2) || isAssignableTo(t2, t1)
 			if ((t1.isBoolean && t2.isBoolean) || (t1.isString && t2.isString) ||
-				(t1.isNumber && t2.isNumber) || (t1.isEnumeration && t2.isEnumeration)
-				//if we would like to have complex types comparable:
-			    //getInheritationSet(t1.derived).contains(t2.derived) || getInheritationSet(t2.derived).contains(t1.derived)
+				(t1.isNumber && t2.isNumber) ||
+				{
+					val t1Derived = t1.actualDerived;
+					val t2Derived = t2.actualDerived;
+					t1Derived instanceof FEnumerationType && t1Derived instanceof FEnumerationType && 
+			    	getInheritationSet(t1Derived).contains(t2Derived) || getInheritationSet(t2Derived).contains(t1Derived)
+			    }
 			) {
 				return true
 			}
-			addIssue("types are not comparable", loc, feat)				
+			addIssue(t1.typeString + " and " + t2.typeString + " are not comparable", loc, feat)				
 			return false
 		} 
 	}
