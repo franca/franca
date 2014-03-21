@@ -12,8 +12,7 @@ Require-Bundle: org.eclipse.xtext.generator;resolution:=optional,
  org.eclipse.xtext.xbase.lib;bundle-version="2.4.0",
  org.antlr.runtime,
  org.franca.core;bundle-version="0.9.0";visibility:=reexport,
- org.eclipse.core.runtime;bundle-version="3.7.0",
- org.eclipse.xtext.ui
+ org.eclipse.core.runtime;bundle-version="3.7.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.franca.core.dsl,org.franca.core.dsl.formatting,org
  .franca.core.dsl.parseTreeConstruction,org.franca.core.dsl.parser.ant
