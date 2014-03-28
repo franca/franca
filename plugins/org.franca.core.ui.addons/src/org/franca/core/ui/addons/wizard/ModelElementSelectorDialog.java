@@ -26,11 +26,12 @@ import org.eclipse.xtext.ui.resource.IResourceSetProvider;
 import com.google.inject.Inject;
 
 /**
- * An {@link ElementListSelectionDialog} implementation to select a given type of Franca element 
- * from the Xtext index.
+ * An {@link ElementListSelectionDialog} implementation to display the
+ * {@link EObject} instances of a given {@link EClass} type from the Xtext
+ * index.
  * 
  * @author Tamas Szabo (itemis AG)
- *
+ * 
  */
 public class ModelElementSelectorDialog extends ElementListSelectionDialog {
 
@@ -52,9 +53,15 @@ public class ModelElementSelectorDialog extends ElementListSelectionDialog {
 
 	public void initializeElements(IProject project, EClass clazz) {
 		ResourceSet resourceSet = resourceSetProvider.get(project);
+
 		List<Object> elements = new ArrayList<Object>();
 		for (IEObjectDescription resourceDescription : resourceDescriptions.getExportedObjectsByType(clazz)) {
-			elements.add(EcoreUtil.resolve(resourceDescription.getEObjectOrProxy(), resourceSet));
+			EObject obj = EcoreUtil.resolve(resourceDescription.getEObjectOrProxy(), resourceSet);
+			// this additional check is needed, because we only want to allow
+			// the exact types to be present (not subtypes)
+			if (obj.eClass().equals(clazz)) {
+				elements.add(obj);
+			}
 		}
 		this.setElements(elements.toArray());
 	}

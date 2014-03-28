@@ -31,12 +31,14 @@ import org.franca.core.franca.FInterface;
 import org.franca.core.franca.FModel;
 import org.franca.core.franca.FTypeCollection;
 import org.franca.core.franca.FrancaFactory;
+import org.franca.core.utils.FrancaIDLUtils;
 import org.franca.deploymodel.dsl.fDeploy.FDInterface;
 import org.franca.deploymodel.dsl.fDeploy.FDModel;
 import org.franca.deploymodel.dsl.fDeploy.FDProvider;
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification;
 import org.franca.deploymodel.dsl.fDeploy.FDTypes;
 import org.franca.deploymodel.dsl.fDeploy.FDeployFactory;
+import org.franca.deploymodel.dsl.fDeploy.Import;
 
 /**
  * Utility class which contains some helper methods related to the Franca
@@ -72,7 +74,7 @@ public class FrancaWizardUtil {
 
 		FModel model = FrancaFactory.eINSTANCE.createFModel();
 		model.setName((String) parameters.get("packageName"));
-
+		
 		String interfaceName = (String) parameters.get("interfaceName");
 		String typeCollectionName = (String) parameters.get("typeCollectionName");
 
@@ -141,7 +143,13 @@ public class FrancaWizardUtil {
 			model.getSpecifications().add(specification);
 		}
 		
-		if (specification == null) specification = (FDSpecification) parameters.get("specification");
+		if (specification == null) {
+			specification = (FDSpecification) parameters.get("specification");
+			Import _import = FDeployFactory.eINSTANCE.createImport();
+			_import.setImportURI(FrancaIDLUtils.relativeURIString(fileURI, specification.eResource().getURI()));
+			model.getImports().add(_import);
+		}
+		
 		FInterface fInterface = (FInterface) parameters.get("interface");
 		String providerName = (String) parameters.get("providerName");
 		FTypeCollection typeCollection = (FTypeCollection) parameters.get("typeCollection");
@@ -151,6 +159,10 @@ public class FrancaWizardUtil {
 			fDInterface.setTarget(fInterface);
 			fDInterface.setSpec(specification);
 			model.getDeployments().add(fDInterface);
+			
+			Import _import = FDeployFactory.eINSTANCE.createImport();
+			_import.setImportURI(FrancaIDLUtils.relativeURIString(fileURI, fInterface.eResource().getURI()));
+			model.getImports().add(_import);
 		}
 		
 		if (typeCollection != null) {
@@ -158,6 +170,10 @@ public class FrancaWizardUtil {
 			fDTypes.setTarget(typeCollection);
 			fDTypes.setSpec(specification);
 			model.getDeployments().add(fDTypes);
+			
+			Import _import = FDeployFactory.eINSTANCE.createImport();
+			_import.setImportURI(FrancaIDLUtils.relativeURIString(fileURI, typeCollection.eResource().getURI()));
+			model.getImports().add(_import);
 		}
 		
 		if (providerName != null && !providerName.isEmpty()) {

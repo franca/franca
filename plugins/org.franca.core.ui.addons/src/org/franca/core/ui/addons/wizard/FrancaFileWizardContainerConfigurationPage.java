@@ -50,7 +50,8 @@ public class FrancaFileWizardContainerConfigurationPage extends StatusWizardPage
 	private static final String FILE_NAME_ERROR = "File name must be specified!";
 	private static final String FILE_NAME_NOT_VALID = "File name must be valid!";
 	private String FILE_EXTENSION_ERROR;
-
+	private IProject selectedProject;
+	
 	private static final String SOURCE_FOLDER_ERROR = "You must specify a valid source folder!";
 
 	private String extension;
@@ -84,6 +85,8 @@ public class FrancaFileWizardContainerConfigurationPage extends StatusWizardPage
 				initialSelection = (IContainer) FrancaWizardUtil.tryInvoke(obj, "getResource");
 			}
 
+			selectedProject = initialSelection.getProject();
+			
 			if (containerContentProvider != null) {
 				containerContentProvider.setInitialSeletion(initialSelection);
 			}
@@ -240,8 +243,7 @@ public class FrancaFileWizardContainerConfigurationPage extends StatusWizardPage
 	}
 
 	public IProject getProject() {
-		IResource resource = ResourcesPlugin.getWorkspace().getRoot().findMember(sourceFolderSelector.getContainerFullPath());
-		return resource.getProject();
+		return selectedProject;
 	}
 
 	@Override
