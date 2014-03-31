@@ -95,6 +95,15 @@
 							<classifier>franca-${platform-version-name}</classifier>
 						</artifact>
 					</target>
+					<filters>
+					<!--
+						<filter>
+							<type>eclipse-plugin</type>
+							<id>some.plugin.id</id>
+							<removeAll />
+						</filter>
+					 -->
+					</filters>
 					<environments>
 						<environment>
 							<os>win32</os>
