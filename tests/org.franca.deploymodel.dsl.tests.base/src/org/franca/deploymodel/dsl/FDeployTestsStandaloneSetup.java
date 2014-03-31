@@ -1,7 +1,5 @@
 package org.franca.deploymodel.dsl;
 
-import org.eclipse.emf.codegen.ecore.genmodel.GenModelPackage;
-import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.xtext.util.Modules2;
 import org.franca.core.dsl.FrancaIDLRuntimeModule;
 
@@ -15,11 +13,5 @@ public class FDeployTestsStandaloneSetup extends FDeployStandaloneSetup {
         		new FrancaIDLRuntimeModule(),
         		new FDeployRuntimeModule(),
         		new FDeployTestsModule()));
-    }
-
-    @Override
-    public Injector createInjectorAndDoEMFRegistration() {
-        EPackage.Registry.INSTANCE.put(GenModelPackage.eNS_URI, GenModelPackage.eINSTANCE);
-        return super.createInjectorAndDoEMFRegistration();
     }
 }
