@@ -40,6 +40,7 @@
             <module>../../plugins/org.franca.deploymodel.dsl</module>
             <module>../../plugins/org.franca.deploymodel.dsl.ui</module>
 			<module>../../plugins/org.franca.generators</module>
+			<module>../../plugins/org.franca.tools.contracts.tracevalidator</module>
             <module>../../plugins/org.franca.connectors.dbus</module>
             <module>../../plugins/org.franca.connectors.dbus.ui</module>
             <module>../../plugins/org.franca.product.ui</module>
