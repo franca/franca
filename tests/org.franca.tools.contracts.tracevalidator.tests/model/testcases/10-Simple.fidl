@@ -1,0 +1,18 @@
+
+package testcases
+
+interface Interface10 {
+	method m { }
+	
+	contract {
+		PSM {
+			initial A
+			state A {
+				on call m -> B
+			}
+			state B {
+				on respond m -> A
+			}
+		}
+	}
+}
