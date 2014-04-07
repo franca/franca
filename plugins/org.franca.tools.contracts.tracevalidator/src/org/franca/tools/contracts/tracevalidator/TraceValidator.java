@@ -32,7 +32,7 @@ import com.google.common.collect.Sets;
 public class TraceValidator {
 
 	/**
-	 * Checks whether the given trace can be matched for the given Franca
+	 * Checks whether the given trace can be matched against the given Franca
 	 * {@link FContract}. It is not necessary for the trace to start at the
 	 * initial state of the {@link FContract}.
 	 * 
@@ -48,7 +48,7 @@ public class TraceValidator {
 	}
 
 	/**
-	 * Checks whether the given trace element can be matched for the given
+	 * Checks whether the given trace element can be matched against the given
 	 * Franca {@link FContract}. The validity of a single trace element can be
 	 * defined in respect to to the initial trace group as follows: <br/>
 	 * - if the initial trace group is null, then the trace element is valid if
@@ -73,7 +73,7 @@ public class TraceValidator {
 	}
 
 	/**
-	 * Checks whether the given trace can be matched for the given Franca
+	 * Checks whether the given trace can be matched against the given Franca
 	 * {@link FContract}. It is not necessary for the trace to start at the
 	 * initial state of the {@link FContract}.
 	 * 
@@ -89,7 +89,7 @@ public class TraceValidator {
 	}
 
 	/**
-	 * Checks whether the given trace can be matched for the given Franca
+	 * Checks whether the given trace can be matched against the given Franca
 	 * {@link FContract} where the initial set of trace groups (for the first
 	 * trace element) is also provided. It is not necessary for the trace to
 	 * start at the initial state of the {@link FContract}.
@@ -112,7 +112,7 @@ public class TraceValidator {
 		if (trace.length == 0) {
 			return new TraceValidationResult(false, null);
 		} else {
-			Map<FEventOnIf, Set<FTransition>> guessMap = constructGuessMap(contract);
+			Map<EventWrapper, Set<FTransition>> guessMap = constructGuessMap(contract);
 
 			// one set inside the set corresponds to a given execution path
 			// (possible transition along one path)
@@ -128,9 +128,9 @@ public class TraceValidator {
 			Set<FTransition> expected = new HashSet<FTransition>();
 
 			if (trace.length == 1) {
-				Set<FEventOnIf> events = normalizeEvents(trace[0]);
+				Set<EventWrapper> events = wrap(trace[0]);
 				if (initialTraceGroup == null) {
-					for (FEventOnIf event : events) {
+					for (EventWrapper event : events) {
 						traceGroups.add(guessMap.get(event));
 					}
 					// if the trace contains only one element and 
@@ -139,7 +139,7 @@ public class TraceValidator {
 					// contract)
 					return new TraceValidationResult(true, traceGroups);
 				} else {
-					for (FEventOnIf event : events) {
+					for (EventWrapper event : events) {
 						fun0(event, guessMap, expected,
 								initialTraceGroup, temporaryTraceGroups);
 					}
@@ -155,7 +155,7 @@ public class TraceValidator {
 
 			// initialize trace groups
 			if (initialTraceGroup == null) {
-				for (FEventOnIf event : normalizeEvents(trace[0])) {
+				for (EventWrapper event : wrap(trace[0])) {
 					traceGroups.add(guessMap.get(event));
 				}
 			} else {
@@ -164,7 +164,7 @@ public class TraceValidator {
 
 			for (int i = 1; i < trace.length; i++) {
 				expected.clear();
-				for (FEventOnIf event : normalizeEvents(trace[i])) {
+				for (EventWrapper event : wrap(trace[i])) {
 					fun0(event, guessMap, expected, traceGroups,
 							temporaryTraceGroups);
 				}
@@ -187,8 +187,8 @@ public class TraceValidator {
 		}
 	}
 
-	private static void fun0(FEventOnIf event,
-			Map<FEventOnIf, Set<FTransition>> guessMap,
+	private static void fun0(EventWrapper event,
+			Map<EventWrapper, Set<FTransition>> guessMap,
 			Set<FTransition> expected, Set<Set<FTransition>> traceGroups,
 			Set<Set<FTransition>> temporaryTraceGroups) {
 		Set<FTransition> guess = guessMap.get(event);
@@ -209,13 +209,21 @@ public class TraceValidator {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static Set<FEventOnIf> normalizeEvents(Object obj) {
+	private static Set<EventWrapper> wrap(Object obj) {
+		Set<EventWrapper> events = Sets.newHashSet();
 		if (obj instanceof FEventOnIf) {
-			return Sets.newHashSet((FEventOnIf) obj);
+			events.add(wrap((FEventOnIf) obj));
 		} else {
 			// it is guaranteed that in this case the type is Set<FEventOnIf>
-			return (Set<FEventOnIf>) obj;
+			for (FEventOnIf event : (Set<FEventOnIf>) obj) {
+				events.add(wrap(event));
+			}	
 		}
+		return events;
+	}
+	
+	private static EventWrapper wrap(FEventOnIf event) {
+		return new EventWrapper(event);
 	}
 
 	private static Set<FTransition> intersection(Collection<FTransition> left,
@@ -225,7 +233,7 @@ public class TraceValidator {
 		return result;
 	}
 
-	private static Map<FContract, Map<FEventOnIf, Set<FTransition>>> guessMapCache = new HashMap<FContract, Map<FEventOnIf, Set<FTransition>>>();
+	private static Map<FContract, Map<EventWrapper, Set<FTransition>>> guessMapCache = new HashMap<FContract, Map<EventWrapper, Set<FTransition>>>();
 
 	/**
 	 * Returns a map where the keys will be the events and the values are those
@@ -233,16 +241,17 @@ public class TraceValidator {
 	 * 
 	 * @param contract
 	 *            the interface definition
-	 * @return the a map projecting the events to the triggered transitions
+	 * @return a map projecting the events to the triggered transitions
 	 */
-	private static Map<FEventOnIf, Set<FTransition>> constructGuessMap(
+	private static Map<EventWrapper, Set<FTransition>> constructGuessMap(
 			FContract contract) {
 		if (!guessMapCache.containsKey(contract)) {
-			Map<FEventOnIf, Set<FTransition>> guessMap = new WeakHashMap<FEventOnIf, Set<FTransition>>();
+			Map<EventWrapper, Set<FTransition>> guessMap = new WeakHashMap<EventWrapper, Set<FTransition>>();
 
 			for (FState state : contract.getStateGraph().getStates()) {
 				for (FTransition transition : state.getTransitions()) {
-					FEventOnIf key = transition.getTrigger().getEvent();
+					EventWrapper key = wrap(transition.getTrigger().getEvent());
+					
 					// String key = getCallName(transition);
 					if (guessMap.get(key) == null) {
 						Set<FTransition> transitions = new HashSet<FTransition>();
@@ -256,5 +265,50 @@ public class TraceValidator {
 			guessMapCache.put(contract, guessMap);
 		}
 		return guessMapCache.get(contract);
+	}
+	
+	/**
+	 * The wrapper is used to specify a custom equals and hashCode implementation for the {@link FEventOnIf} instances.
+	 * 
+	 * @author Tamas Szabo (itemis AG)
+	 */
+	private static class EventWrapper {
+		
+		private FEventOnIf event;
+		
+		public EventWrapper(FEventOnIf event) {
+			this.event = event;
+		}
+		
+		@Override
+		public boolean equals(Object obj) {
+			if (obj == null || obj.getClass() != this.getClass()) {
+				return false;
+			}
+			else if (obj == this) {
+				return true;
+			}
+			else {
+				EventWrapper that = (EventWrapper) obj;
+				return 
+				(this.event.getCall() != null && that.event.getCall() != null) ? this.event.getCall().equals(that.event.getCall()) : true &&
+				(this.event.getRespond() != null && that.event.getRespond() != null) ? this.event.getRespond().equals(that.event.getRespond()) : true &&
+				(this.event.getSignal() != null && that.event.getSignal() != null) ? this.event.getSignal().equals(that.event.getSignal()) : true &&
+				(this.event.getSet() != null && that.event.getSet() != null) ? this.event.getSet().equals(that.event.getSet()) : true &&
+				(this.event.getUpdate() != null && that.event.getUpdate() != null) ? this.event.getUpdate().equals(that.event.getUpdate()) : true;
+			}
+		}
+		
+		@Override
+		public int hashCode() {
+			int hash = 1;
+	        hash = hash * 17 + ((event.getCall() != null) ? event.getCall().hashCode() : 1);
+	        hash = hash * 31 + ((event.getRespond() != null) ? event.getRespond().hashCode() : 1);
+	        hash = hash * 13 + ((event.getSignal() != null) ? event.getSignal().hashCode() : 1);
+	        hash = hash * 17 + ((event.getSet() != null) ? event.getSet().hashCode() : 1);
+	        hash = hash * 31 + ((event.getUpdate() != null) ? event.getUpdate().hashCode() : 1);
+	        return hash;
+		}
+		
 	}
 }
