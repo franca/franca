@@ -27,7 +27,7 @@ class TraceBuilder {
 		trace.add(ev)
 	}
 	
-	def static call(List<FEventOnIf> trace, FBroadcast b) {
+	def static signal(List<FEventOnIf> trace, FBroadcast b) {
 		val ev = FrancaFactory::eINSTANCE.createFEventOnIf
 		ev.signal = b
 		trace.add(ev)
