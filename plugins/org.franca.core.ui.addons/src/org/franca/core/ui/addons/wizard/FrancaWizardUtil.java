@@ -8,12 +8,19 @@
 package org.franca.core.ui.addons.wizard;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.URI;
@@ -24,49 +31,53 @@ import org.franca.core.franca.FInterface;
 import org.franca.core.franca.FModel;
 import org.franca.core.franca.FTypeCollection;
 import org.franca.core.franca.FrancaFactory;
+import org.franca.core.utils.FrancaIDLUtils;
+import org.franca.deploymodel.dsl.fDeploy.FDInterface;
 import org.franca.deploymodel.dsl.fDeploy.FDModel;
-import org.franca.deploymodel.dsl.fDeploy.FDRootElement;
+import org.franca.deploymodel.dsl.fDeploy.FDProvider;
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification;
+import org.franca.deploymodel.dsl.fDeploy.FDTypes;
 import org.franca.deploymodel.dsl.fDeploy.FDeployFactory;
+import org.franca.deploymodel.dsl.fDeploy.Import;
 
 /**
- * Franca wizard related utility class.
+ * Utility class which contains some helper methods related to the Franca
+ * wizards.
  * 
- * @author Tamas Szabo
+ * @author Tamas Szabo (itemis AG)
  * 
  */
 public class FrancaWizardUtil {
-	
+
 	/**
 	 * Creates a new Franca IDL file based on the given parameters.
 	 * 
 	 * @param resourceSetProvider
 	 *            used to obtain the corresponding {@link ResourceSet} for the
 	 *            project
-	 * @param parameters the parameters used during the file creation
+	 * @param parameters
+	 *            the parameters used during the file creation
 	 * @return the path of the created file
 	 */
 	public static IPath createFrancaIDLFile(
-			IResourceSetProvider resourceSetProvider, Map<String, String> parameters) {	
-		
-		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		IResource containerResource = root.findMember(new Path(parameters.get("containerName")));
-		ResourceSet resourceSet = resourceSetProvider.get(containerResource
-				.getProject());
+			IResourceSetProvider resourceSetProvider, Map<String, Object> parameters) {
 
-		IPath filePath = containerResource.getFullPath().append(
-				parameters.get("packageName") + "/" + parameters.get("fileName"));
+		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+		IResource containerResource = root.findMember(new Path((String) parameters.get("containerName")));
+		ResourceSet resourceSet = resourceSetProvider.get(containerResource.getProject());
+
+		IPath filePath = containerResource.getFullPath().append(((String) parameters.get("packageName")).replaceAll("\\.", "/")).append((String) parameters.get("fileName"));
 		String fullPath = filePath.toString();
 
 		URI fileURI = URI.createPlatformResourceURI(fullPath, false);
 		Resource resource = resourceSet.createResource(fileURI);
 
 		FModel model = FrancaFactory.eINSTANCE.createFModel();
-		model.setName(parameters.get("modelName"));
+		model.setName((String) parameters.get("packageName"));
 		
-		String interfaceName = parameters.get("interfaceName");
-		String typeCollectionName = parameters.get("typeCollectionName");
-		
+		String interfaceName = (String) parameters.get("interfaceName");
+		String typeCollectionName = (String) parameters.get("typeCollectionName");
+
 		if (interfaceName != null && interfaceName.length() > 0) {
 			FInterface _interface = FrancaFactory.eINSTANCE.createFInterface();
 			_interface.setName(interfaceName);
@@ -84,13 +95,19 @@ public class FrancaWizardUtil {
 
 		try {
 			resource.save(Collections.EMPTY_MAP);
+			containerResource.getProject().refreshLocal(IResource.DEPTH_INFINITE, null);
 			return filePath;
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+		catch (CoreException e) {
 			e.printStackTrace();
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Creates a new Franca FDEPL (deployment) file based on the given
 	 * parameters.
@@ -98,19 +115,18 @@ public class FrancaWizardUtil {
 	 * @param resourceSetProvider
 	 *            used to obtain the corresponding {@link ResourceSet} for the
 	 *            project
-	 * @param parameters the parameters used during the file creation
+	 * @param parameters
+	 *            the parameters used during the file creation
 	 * @return the path of the created file
 	 */
-	public static  IPath createFrancaFDEPLFile(
-			IResourceSetProvider resourceSetProvider, Map<String, String> parameters) {
-		
-		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		IResource containerResource = root.findMember(new Path(parameters.get("containerName")));
-		ResourceSet resourceSet = resourceSetProvider.get(containerResource
-				.getProject());
+	public static IPath createFrancaFDEPLFile(
+			IResourceSetProvider resourceSetProvider, Map<String, Object> parameters) {
 
-		IPath filePath = containerResource.getFullPath().append(
-				parameters.get("packageName") + "/" + parameters.get("fileName"));
+		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+		IResource containerResource = root.findMember(new Path((String) parameters.get("containerName")));
+		ResourceSet resourceSet = resourceSetProvider.get(containerResource.getProject());
+
+		IPath filePath = containerResource.getFullPath().append(((String) parameters.get("packageName")).replaceAll("\\.", "/")).append((String) parameters.get("fileName"));
 		String fullPath = filePath.toString();
 
 		URI fileURI = URI.createPlatformResourceURI(fullPath, false);
@@ -118,29 +134,127 @@ public class FrancaWizardUtil {
 
 		FDModel model = FDeployFactory.eINSTANCE.createFDModel();
 
-		String specificationName = parameters.get("specificationName");
-		String definitionName = parameters.get("definitionName");
-		
-		if (specificationName != null && specificationName.length() > 0) {
-			FDSpecification spec = FDeployFactory.eINSTANCE.createFDSpecification();
-			spec.setName(specificationName);
-			model.getSpecifications().add(spec);
-		}
+		String specificationName = (String) parameters.get("specificationName");
 
-		if (definitionName != null && definitionName.length() > 0) {
-			FDRootElement def = FDeployFactory.eINSTANCE.createFDRootElement();
-			def.setName(definitionName);
-			model.getDeployments().add(def);
+		FDSpecification specification = null;
+		if (specificationName != null && !specificationName.isEmpty()) {
+			specification = FDeployFactory.eINSTANCE.createFDSpecification();
+			specification.setName(specificationName);
+			model.getSpecifications().add(specification);
+		}
+		
+		if (specification == null) {
+			specification = (FDSpecification) parameters.get("specification");
+			Import _import = FDeployFactory.eINSTANCE.createImport();
+			_import.setImportURI(FrancaIDLUtils.relativeURIString(fileURI, specification.eResource().getURI()));
+			model.getImports().add(_import);
+		}
+		
+		FInterface fInterface = (FInterface) parameters.get("interface");
+		String providerName = (String) parameters.get("providerName");
+		FTypeCollection typeCollection = (FTypeCollection) parameters.get("typeCollection");
+
+		if (fInterface != null) {
+			FDInterface fDInterface = FDeployFactory.eINSTANCE.createFDInterface();
+			fDInterface.setTarget(fInterface);
+			fDInterface.setSpec(specification);
+			model.getDeployments().add(fDInterface);
+			
+			Import _import = FDeployFactory.eINSTANCE.createImport();
+			_import.setImportURI(FrancaIDLUtils.relativeURIString(fileURI, fInterface.eResource().getURI()));
+			model.getImports().add(_import);
+		}
+		
+		if (typeCollection != null) {
+			FDTypes fDTypes = FDeployFactory.eINSTANCE.createFDTypes();
+			fDTypes.setTarget(typeCollection);
+			fDTypes.setSpec(specification);
+			model.getDeployments().add(fDTypes);
+			
+			Import _import = FDeployFactory.eINSTANCE.createImport();
+			_import.setImportURI(FrancaIDLUtils.relativeURIString(fileURI, typeCollection.eResource().getURI()));
+			model.getImports().add(_import);
+		}
+		
+		if (providerName != null && !providerName.isEmpty()) {
+			FDProvider provider = FDeployFactory.eINSTANCE.createFDProvider();
+			provider.setName(providerName);
+			provider.setSpec(specification);
+			model.getDeployments().add(provider);
 		}
 
 		resource.getContents().add(model);
 
 		try {
 			resource.save(Collections.EMPTY_MAP);
+			containerResource.getProject().refreshLocal(IResource.DEPTH_INFINITE, null);
 			return filePath;
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			e.printStackTrace();
 			return null;
 		}
+		catch (CoreException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public static Object tryGet(Object obj, String field) {
+		try {
+			Field f = obj.getClass().getDeclaredField(field);
+			f.setAccessible(true);
+			return f.get(obj);
+		}
+		catch (Exception e) {
+			return null;
+		}
+	}
+
+	public static Object tryInvoke(Object obj, String method) {
+		return tryInvoke(obj, method, new Class<?>[0], new Object[0]);
+	}
+
+	public static Object tryInvoke(Object obj, String method, Class<?>[] paramTypes, Object[] params) {
+		try {
+			Method m = obj.getClass().getMethod(method, paramTypes);
+			return m.invoke(obj, params);
+		}
+		catch (Exception e) {
+			return null;
+		}
+	}
+
+	public static boolean isJDTAvailable() {
+		try {
+			Class.forName("org.eclipse.jdt.core.IJavaProject");
+			return true;
+		}
+		catch (ClassNotFoundException e) {
+			return false;
+		}
+	}
+	
+	public static String getPackageName(IContainer folder) {
+		List<String> segments = new ArrayList<String>();
+		IContainer act = folder;
+
+		while (!(act.getParent() instanceof IProject)) {
+			segments.add(act.getName());
+			act = act.getParent();
+		}
+
+		if (segments.isEmpty()) {
+			return "(default package)";
+		}
+		else {
+			StringBuilder builder = new StringBuilder();
+			builder.append(segments.get(segments.size() - 1));
+			for (int i = segments.size() - 2; i >= 0; i--) {
+				builder.append("." + segments.get(i));
+			}
+			return builder.toString();
+		}
+
 	}
 }

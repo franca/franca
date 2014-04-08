@@ -7,17 +7,16 @@
  *******************************************************************************/
 package org.franca.core.ui.addons;
 
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
 public class Activator extends AbstractUIPlugin {
 
 	public static final String PLUGIN_ID = "org.franca.core.ui.addons";
 	private static Activator plugin;
-	
-	public Activator() {
-		
-	}
 	
 	@Override
 	public void start(BundleContext context) throws Exception {
@@ -33,5 +32,14 @@ public class Activator extends AbstractUIPlugin {
 	
 	public static Activator getDefault() {
 		return plugin;
+	}
+	
+	@Override
+	protected void initializeImageRegistry(ImageRegistry reg) {
+		super.initializeImageRegistry(reg);
+        @SuppressWarnings("unused")
+        Bundle bundle = Platform.getBundle(PLUGIN_ID);
+        reg.put("package", imageDescriptorFromPlugin(PLUGIN_ID, "icons/package.gif"));
+        reg.put("package_empty", imageDescriptorFromPlugin(PLUGIN_ID, "icons/package_empty.gif"));
 	}
 }

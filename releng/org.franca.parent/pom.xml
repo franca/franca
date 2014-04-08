@@ -40,6 +40,7 @@
             <module>../../plugins/org.franca.deploymodel.dsl</module>
             <module>../../plugins/org.franca.deploymodel.dsl.ui</module>
 			<module>../../plugins/org.franca.generators</module>
+			<module>../../plugins/org.franca.tools.contracts.tracevalidator</module>
             <module>../../plugins/org.franca.connectors.dbus</module>
             <module>../../plugins/org.franca.connectors.dbus.ui</module>
             <module>../../plugins/org.franca.product.ui</module>
@@ -50,6 +51,7 @@
             <module>../../tests/org.franca.core.dsl.tests</module>
             <module>../../tests/org.franca.deploymodel.dsl.tests</module>
             <module>../../examples/org.franca.examples.reference</module>
+            <module>../../tests/org.franca.tools.contracts.tracevalidator.tests</module>
             <module>../../tests/org.franca.connectors.dbus.tests</module>
     		<!-- documentation/help modules -->
             <module>../../docs/org.franca.help</module>
@@ -95,6 +97,15 @@
 							<classifier>franca-${platform-version-name}</classifier>
 						</artifact>
 					</target>
+					<filters>
+					<!--
+						<filter>
+							<type>eclipse-plugin</type>
+							<id>some.plugin.id</id>
+							<removeAll />
+						</filter>
+					 -->
+					</filters>
 					<environments>
 						<environment>
 							<os>win32</os>

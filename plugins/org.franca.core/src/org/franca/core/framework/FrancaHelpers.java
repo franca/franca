@@ -20,7 +20,6 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.jdt.annotation.NonNull;
 import org.franca.core.FrancaModelExtensions;
 import org.franca.core.franca.FArrayType;
 import org.franca.core.franca.FAttribute;
@@ -371,7 +370,7 @@ public class FrancaHelpers {
 	}
 	
 	/** Get a human-readable name for a Franca type. */
-	public static String getTypeString (@NonNull FTypeRef typeRef) {
+	public static String getTypeString (/*@NonNull*/ FTypeRef typeRef) {
 		FType derived = getActualDerived(typeRef);
 		if (derived == null) {
 			FIntegerInterval interval = getActualInterval(typeRef);
