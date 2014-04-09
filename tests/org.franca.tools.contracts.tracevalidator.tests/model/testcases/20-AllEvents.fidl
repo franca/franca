@@ -5,7 +5,11 @@ interface Interface10 {
 
 	attribute UInt16 a
 	
-	method m { }
+	method m {
+		error {
+			TIMEOUT
+		}
+	}
 
 	broadcast b { }
 	
@@ -18,10 +22,14 @@ interface Interface10 {
 			}
 			state waitingForWriting {
 				on respond m -> writing
+				on error m -> stopped
 			}
 			state writing {
 				on signal b -> reading
 				on set a -> writing
+			}
+			state stopped {
+				on call m -> waitingForWriting
 			}
 		}
 	}

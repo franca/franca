@@ -81,6 +81,19 @@ class AllEventsTests extends ValidatorTestBase {
 		assertTrue(result.valid)
 	}
 
+	@Test
+	def testValidTrace6() {
+		val result = check [
+			update(a)
+			call(m) error(m)
+			call(m) respond(m)
+			set(a)			
+			signal(b)			
+			update(a)
+		]
+		assertTrue(result.valid)
+	}
+
 	// -------------------------------------------------
 
 	@Test
