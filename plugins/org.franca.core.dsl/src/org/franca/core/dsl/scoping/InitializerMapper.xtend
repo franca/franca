@@ -18,6 +18,7 @@ import org.franca.core.franca.FElementInitializer
 
 import static extension org.franca.core.framework.FrancaHelpers.*
 import org.franca.core.franca.FMapType
+import org.franca.core.franca.FDeclaration
 
 /**
  * This class computes the expected type for nested initializer expressions. 
@@ -36,6 +37,10 @@ class InitializerMapper {
 			// we reached a FConstantDef, which is the root for the initializer expression
 			val cdef = e.eContainer as FConstantDef
 			cdef.type
+		} else if (e.eContainer instanceof FDeclaration) {
+			// we reached a FDeclaration, which is the root for the initializer expression
+			val decl = e.eContainer as FDeclaration
+			decl.type
 		} else {
 			// we are somewhere below root, try to resolve expected parent type 
 			val parentInitializer = e.parentInitializer

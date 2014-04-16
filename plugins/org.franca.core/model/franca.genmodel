@@ -214,7 +214,9 @@
           propertyDescription="the declarations of all state variables used by the protocol state machine of this contract"
           ecoreFeature="ecore:EReference franca.ecore#//FContract/variables"/>
     </genClasses>
-    <genClasses ecoreClass="franca.ecore#//FDeclaration"/>
+    <genClasses ecoreClass="franca.ecore#//FDeclaration">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FDeclaration/rhs"/>
+    </genClasses>
     <genClasses ecoreClass="franca.ecore#//FStateGraph">
       <genFeatures notify="false" createChild="false" propertyDescription="this property references the initial state for the protocol state machine."
           propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FStateGraph/initial"/>

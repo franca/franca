@@ -207,7 +207,8 @@ FField:
 
 
 FDeclaration:
-	type=FTypeRef (array?='[' ']')? name=ID;
+	type=FTypeRef (array?='[' ']')? name=ID
+		('=' rhs=FInitializerExpression)?;
 
 FTypedElement:
 	FField |
@@ -264,7 +265,7 @@ FElementInitializer:
 FContract:
 	{FContract}
 	'contract' '{'
-		('vars' '{' (variables+=FDeclaration ';')* '}')?
+		('vars' '{' (variables+=FDeclaration (';')?)* '}')?
 		'PSM' stateGraph=FStateGraph
 	'}';
 
