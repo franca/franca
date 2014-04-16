@@ -1,0 +1,83 @@
+package org.reference
+
+interface MyInterface80 {
+
+	attribute UInt16 a
+	
+	method m {
+		error {
+			ERR1
+		}
+	}
+
+	broadcast b {
+		out {
+			String s
+		}
+	}
+	
+	contract {
+		vars {
+			// define state variable for storing last attribute value
+			UInt16 lastA = 0
+			
+			// define state variable for storing last broadcasted value
+			String lastS
+			
+			// counter for method calls
+			UInt16 aSetCount = 0
+		}
+		PSM {
+			// define initial state
+			initial init
+			
+			state init {
+				// attribute-update event from server side
+				on update a -> init {
+					// access value of attribute and store it in lastA
+					// TODO: introduce implicit variable here (e.g., "val")
+					lastA = MyInterface80.a
+				}
+
+				// attribute-set event from client side
+				on set a -> init {
+					aSetCount = aSetCount + 1
+				}
+				
+				// method-call event from client side
+				// use guards to dispatch this event to different states
+				on call m [lastA==0] -> waitingForM1
+				on call m [lastA!=0] -> waitingForM2
+				
+				// broadcast-signal event from server side
+				on signal b -> init {
+					// if-statement, check for argument value
+					if (s!="foo") {
+						lastS = s
+					}
+					lastS = lastS
+				}
+			}
+			
+			state waitingForM1 {
+				// method-respond event from server side
+				on respond m -> init
+				
+				// method-error event from server side
+				// the guard condition checks for a certain error code
+				on error m [errorval==errordef.ERR1] -> stopped
+			}
+
+			state waitingForM2 {
+				// method-respond event from server side
+				on respond m -> init
+			}
+
+			state stopped {
+				// another method-call event from server side
+				on call m -> waitingForM1
+			}
+		}
+	}
+}
+

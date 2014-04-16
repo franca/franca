@@ -72,6 +72,11 @@ public class ReferenceModelTests extends XtextTest {
     	testFile("71-Overloading.fidl");
     }
 
+    @Test
+    public void test_80_Contract() {
+    	testFile("80-Contract.fidl");
+    }
+
 
     private void handleEnumValueDeprecated(int n) {
     	// check that there _are_ a given number of "Deprecated" warnings.
