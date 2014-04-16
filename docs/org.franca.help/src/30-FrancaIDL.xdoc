@@ -478,19 +478,21 @@ table:InheritanceSemantics[
 	tr[
 		td[methods]
 		td[All methods of the base interface are inherited by the derived interface.
-		   Overloading of methods is not allowed (i.e., method with same name in 
-		   base and derived interface). This might change in a future release of Franca.
-		   It is not possible for a derived interface to add a parameter to a method
-		   of its base interface. 
+		   Methods can be overloaded, either in the same interface or via inheritance.
+		   I.e., methods with the same name can be defined as long as the signature
+		   of those methods is different. Both out- and in-arguments are taken into
+		   account to determine the method's signature. 
+		   In versions prior to Franca 0.7.4, overloading of methods was not allowed.
 		]
 	]
 	tr[
 		td[broadcasts]
 		td[All broadcasts of the base interface are inherited by the derived interface.
-		   Overloading of broadcasts is not allowed (i.e., broadcast with same name in 
-		   base and derived interface). This might change in a future release of Franca.
-		   It is not possible for a derived interface to add a parameter to a broadcast
-		   of its base interface. 
+		   Broadcasts can be overloaded, either in the same interface or via inheritance.
+		   I.e., broadcasts with the same name can be defined as long as the signature
+		   of those methods is different. The broadcast's out-arguments are taken into
+		   account to determine its signature. 
+		   In versions prior to Franca 0.7.4, overloading of broadcasts was not allowed.
 		]
 	]
 	tr[
