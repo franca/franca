@@ -1,0 +1,56 @@
+// an struct definition containing ranged integer types
+// (this is used for testing the automatic conversion to built-in number types)
+package testcases
+
+typeCollection MyTypes {
+
+	struct MyStruct {
+		// *** signed types
+
+		// mapped to Int8
+		Integer(-1,1) s8_1
+		Integer(-128,127) s8_2
+
+		// mapped to Int16
+		Integer(-129,127) s16_1
+		Integer(-128,128) s16_2
+		Integer(-32768,32767) s16_3
+
+		// mapped to Int32
+		Integer(-32769,32767) s32_1
+		Integer(-32768,32768) s32_2
+		Integer(-2147483648,2147483647) s32_3
+		
+		// mapped to Int64
+		Integer(-2147483649,2147483647) s64_1
+		Integer(-2147483648,2147483648) s64_2
+		Integer(-1,maxInt) s64_3
+		Integer(minInt,maxInt) s64_4
+		Integer(minInt,42) s64_5
+		Integer s64_6
+
+
+		// *** unsigned types
+		
+		// NOTE: if the target language doesn't support unsigned
+		// types (e.g., Java), some of the ranged types will be converted
+		// to the next higher signed type. 
+		
+		// mapped to UInt8 (or Int8/Int16, if unsigned is not available)
+		Integer(0,1) u8_s8_1
+		Integer(0,255) u8_s16_2
+
+		// mapped to UInt16 (or Int16/Int32, if unsigned is not available)
+		Integer(0,256) u16_s16_1
+		Integer(0,65535) u16_s32_2
+
+		// mapped to UInt32 (or Int32/Int64, if unsigned is not available)
+		Integer(0,65536) u32_s32_1
+		Integer(0,4294967295) u32_s64_2
+		
+		// mapped to UInt64 (or Int64, if unsigned is not available)
+		Integer(0,4294967296) u64_s64_1
+		Integer(0,maxInt) u64_s64_2
+
+	}
+}
