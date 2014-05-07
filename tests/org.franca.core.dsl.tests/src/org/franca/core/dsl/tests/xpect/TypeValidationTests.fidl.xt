@@ -1,4 +1,4 @@
-// XPECT_SETUP org.franca.core.dsl.tests.xpect.FrancaIDLXtextTests END_SETUP
+// XPECT_SETUP org.franca.core.dsl.tests.xpect.FrancaIDLXpectTests END_SETUP
 package a.b.c
 typeCollection MyPrimitiveTypes {
 	// XPECT errors --> "Name conflict for type name 'MyArray'" at "MyArray"
@@ -8,10 +8,51 @@ typeCollection MyPrimitiveTypes {
 } 
 
 typeCollection MyStructTypes {
+	// XPECT errors --> "Non-polymorphic structs must have own or inherited elements" at "EmptyStruct"
+	struct EmptyStruct { }
+
 	// XPECT errors --> "Name conflict for type name 'MyStruct'" at "MyStruct"
 	struct MyStruct { Int16 i }
 	// XPECT errors --> "Name conflict for type name 'MyStruct'" at "MyStruct"
 	struct MyStruct { Int32 k }
+	
+	struct MyStruct1 { Int16 x }
+	// XPECT errors --> "Element name collision with base element 'MyStruct1.x'" at "x"
+	struct MyStruct2 extends MyStruct1 { Int16 x }
+}
+
+typeCollection MyUnionTypes {
+	// XPECT errors --> "Union must have own or inherited elements" at "EmptyUnion"
+	union EmptyUnion { }
+
+	// XPECT errors --> "Name conflict for type name 'MyUnion'" at "MyUnion"
+	union MyUnion { Int16 i }
+	// XPECT errors --> "Name conflict for type name 'MyUnion'" at "MyUnion"
+	union MyUnion { Int32 k }
+	
+	union MyUnion1 { Int16 x }
+	union MyUnion2 extends MyUnion1 {
+		// XPECT errors --> "Element type collision with base element 'MyUnion1.x'" at "Int16"
+		Int16 y
+		// XPECT errors --> "Element name collision with base element 'MyUnion1.x'" at "x"
+		String x
+	}
+}
+
+typeCollection EnumTypes {
+	// XPECT errors --> "Enumeration must not be empty" at "EmptyEnum"
+	enumeration EmptyEnum { }
+
+	// XPECT errors --> "Name conflict for type name 'MyEnum'" at "MyEnum"
+	enumeration MyEnum { E }
+	// XPECT errors --> "Name conflict for type name 'MyEnum'" at "MyEnum"
+	enumeration MyEnum { F }
+	
+	enumeration MyEnum1 { F }
+	enumeration MyEnum2 extends MyEnum1 {
+		// XPECT errors --> "Enumerator name collision with base element 'MyEnum1.F'" at "F"
+		F
+	}
 }
 
 typeCollection MyVariousTypes {
@@ -27,9 +68,4 @@ typeCollection MyVariousTypes {
 	enumeration MyType { A B C }
 	// XPECT errors --> "Name conflict for type name 'MyType'" at "MyType"
 	typedef MyType is Float
-}
-
-typeCollection EnumTypes {
-	// XPECT errors --> "Enumeration must not be empty" at "EmptyEnum"
-	enumeration EmptyEnum { }
 }

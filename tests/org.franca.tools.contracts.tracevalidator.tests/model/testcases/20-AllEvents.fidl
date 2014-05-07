@@ -1,0 +1,36 @@
+
+package testcases
+
+interface Interface10 {
+
+	attribute UInt16 a
+	
+	method m {
+		error {
+			TIMEOUT
+		}
+	}
+
+	broadcast b { }
+	
+	contract {
+		PSM {
+			initial reading
+			state reading {
+				on call m -> waitingForWriting
+				on update a -> reading
+			}
+			state waitingForWriting {
+				on respond m -> writing
+				on error m -> stopped
+			}
+			state writing {
+				on signal b -> reading
+				on set a -> writing
+			}
+			state stopped {
+				on call m -> waitingForWriting
+			}
+		}
+	}
+}

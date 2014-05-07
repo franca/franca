@@ -1,4 +1,4 @@
-// XPECT_SETUP org.franca.core.dsl.tests.xpect.FrancaIDLXtextTests END_SETUP
+// XPECT_SETUP org.franca.core.dsl.tests.xpect.FrancaIDLXpectTests END_SETUP
 package a.b.c
 interface DuplicateArgumentNames {
 	method MyMethod {

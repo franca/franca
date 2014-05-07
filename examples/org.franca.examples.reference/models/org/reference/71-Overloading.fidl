@@ -1,0 +1,323 @@
+package org.reference
+
+interface MyInterface71a {
+    version { major 1 minor 0 }
+
+	// *** overloading of methods (in-arguments, without inheritance)
+	
+	// no in-argument vs. in-argument
+    method method10 {}
+
+	// different in-argument type
+    method method11 {
+    	in {
+    		UInt8 arg1
+    	}
+    }
+
+	// add/remove an in-argument
+    method method12 {
+    	in {
+    		UInt8 arg1
+    	}
+    }
+
+	// exchanged order of in-arguments
+    method method13 {
+    	in {
+    		String arg1
+    		UInt8 arg2
+    	}
+    }
+    
+	// typedef in-arguments, check will not resolve typedefs
+    method method14 {
+    	in {
+    		MyString arg1
+    	}
+    }
+
+    
+	// *** overloading of methods (out-arguments, without inheritance)
+
+	// no out-argument vs. out-argument
+    method method20 {}
+
+	// different out-argument type
+    method method21 {
+    	out {
+    		UInt8 arg1
+    	}
+    }
+
+	// add/remove an out-argument
+    method method22 {
+    	out {
+    		UInt8 arg1
+    	}
+    }
+
+	// exchanged order of out-arguments
+    method method23 {
+    	out {
+    		String arg1
+    		UInt8 arg2
+    	}
+    }
+
+
+	// *** overloading of methods (in/out-arguments, without inheritance)
+
+	// replaced in-argument by out-argument
+    method method30 {
+    	in {
+    		UInt8 arg1
+    	}
+    }
+
+	// replaced in-argument by out-argument
+    method method31 {
+    	in {
+    		UInt8 arg1
+    	}
+    }
+
+
+	// *** overloading of broadcasts (without inheritance)
+
+	// no out-argument vs. out-argument
+    broadcast broadcast50 {}
+
+	// different out-argument type
+    broadcast broadcast51 {
+    	out {
+    		UInt8 arg1
+    	}
+    }
+
+	// add/remove an out-argument
+    broadcast broadcast52 {
+    	out {
+    		UInt8 arg1
+    	}
+    }
+
+	// exchanged order of out-arguments
+    broadcast broadcast53 {
+    	out {
+    		String arg1
+    		UInt8 arg2
+    	}
+    }
+
+
+	// auxiliary type
+	typedef MyString is String
+
+}
+
+
+interface MyInterface71b extends MyInterface71a {
+    version { major 1 minor 0 }
+
+	// *** overloading of methods (in-arguments, without inheritance)
+	
+	// no in-argument vs. in-argument
+    method method10 {
+    	in {
+    		String arg1
+    	}
+    }
+
+	// different in-argument type
+    method method11 {
+    	in {
+    		String arg1
+    	}
+    }
+
+	// add/remove an in-argument
+    method method12 {
+    	in {
+    		UInt8 arg1
+    		UInt8 arg2
+    	}
+    }
+
+	// exchanged order of in-arguments
+    method method13 {
+    	in {
+    		UInt8 arg1
+    		String arg2
+    	}
+    }
+    
+    
+	// *** overloading of methods (out-arguments, without inheritance)
+
+	// no out-argument vs. out-argument
+    method method20 {
+    	out {
+    		String arg1
+    	}
+    }
+
+	// different out-argument type
+    method method21 {
+    	out {
+    		String arg1
+    	}
+    }
+
+	// add/remove an out-argument
+    method method22 {
+    	out {
+    		UInt8 arg1
+    		UInt8 arg2
+    	}
+    }
+
+	// exchanged order of out-arguments
+    method method23 {
+    	out {
+    		UInt8 arg1
+    		String arg2
+    	}
+    }
+
+
+	// *** overloading of methods (in/out-arguments, without inheritance)
+
+	// replaced in-argument by out-argument
+    method method30 {
+    	out {
+    		UInt8 arg1
+    	}
+    }
+
+
+	// *** overloading of broadcasts (without inheritance)
+
+	// no out-argument vs. out-argument
+    broadcast broadcast50 {
+    	out {
+    		String arg1
+    	}
+    }
+
+	// different out-argument type
+    broadcast broadcast51 {
+    	out {
+    		String arg1
+    	}
+    }
+
+	// add/remove an out-argument
+    broadcast broadcast52 {
+    	out {
+    		UInt8 arg1
+    		UInt8 arg2
+    	}
+    }
+
+	// exchanged order of out-arguments
+    broadcast broadcast53 {
+    	out {
+    		UInt8 arg1
+    		String arg2
+    	}
+    }
+}
+
+
+interface MyInterface71c extends MyInterface71b {
+    version { major 1 minor 0 }
+
+	// *** overloading of methods (in-arguments, without inheritance)
+	
+	// no in-argument vs. in-argument
+    method method10 {
+    	in {
+    		UInt8 arg1
+    	}
+    }
+
+	// different in-argument type
+    method method11 {
+    	in {
+    		Double arg1
+    	}
+    }
+
+	// add/remove an in-argument
+    method method12 {
+    	in {
+    		UInt8 arg1
+    		UInt8 arg2
+    		UInt8 arg3
+    	}
+    }
+
+	// typedef in-arguments, check will not resolve typedefs
+    method method14 {
+    	in {
+    		String arg1
+    	}
+    }
+
+    
+	// *** overloading of methods (out-arguments, without inheritance)
+
+	// no out-argument vs. out-argument
+    method method20 {
+    	out {
+    		UInt8 arg1
+    	}
+    }
+
+	// different out-argument type
+    method method21 {
+    	out {
+    		Double arg1
+    	}
+    }
+
+	// add/remove an out-argument
+    method method22 {
+    	out {
+    		UInt8 arg1
+    		UInt8 arg2
+    		UInt8 arg3
+    	}
+    }
+
+
+	// *** overloading of methods (in/out-arguments, without inheritance)
+
+	// replaced in-argument by out-argument
+    method method31 {
+    	out {
+    		UInt8 arg1
+    	}
+    }
+
+
+	// *** overloading of broadcasts (without inheritance)
+
+	// different out-argument type
+    broadcast broadcast51 {
+    	out {
+    		Double arg1
+    	}
+    }
+
+	// add/remove an out-argument
+    broadcast broadcast52 {
+    	out {
+    		UInt8 arg1
+    		UInt8 arg2
+    		UInt8 arg3
+    	}
+    }
+
+}

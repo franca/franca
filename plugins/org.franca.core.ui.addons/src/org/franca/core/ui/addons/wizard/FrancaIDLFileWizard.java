@@ -17,7 +17,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 /**
  * Implementation of the Franca IDL file wizard.
  * 
- * @author Tamas Szabo
+ * @author Tamas Szabo (itemis AG)
  *
  */
 public class FrancaIDLFileWizard extends FrancaFileWizard {
@@ -27,20 +27,19 @@ public class FrancaIDLFileWizard extends FrancaFileWizard {
 	private FrancaIDLFileWizardConfigurationPage page2;
 	
 	@Override
-	protected IPath performFileCreation(IProgressMonitor monitor, Map<String, String> parameters) {
+	protected IPath performFileCreation(IProgressMonitor monitor, Map<String, Object> parameters) {
         return FrancaWizardUtil.createFrancaIDLFile(resourceSetProvider, parameters);
 	}
 	
 	@Override
-	protected Map<String, String> collectParameters() {
-		Map<String, String> parameters = new HashMap<String, String>();
+	protected Map<String, Object> collectParameters() {
+		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("containerName", page1.getContainerName());
 		parameters.put("fileName", page1.getFileName());
         // replace dots with slash in the path
-		parameters.put("packageName", page1.getPackageName().replaceAll("\\.", "/"));
+		parameters.put("packageName", page1.getPackageName());
 		parameters.put("interfaceName", page2.getInterfaceName());
 		parameters.put("typeCollectionName", page2.getTypeCollectionName());
-		parameters.put("modelName", page2.getModelName());
 		return parameters;
 	}
 

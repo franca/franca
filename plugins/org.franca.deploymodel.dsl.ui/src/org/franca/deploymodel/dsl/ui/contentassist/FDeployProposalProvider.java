@@ -8,12 +8,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.xtext.Assignment;
 import org.eclipse.xtext.GrammarUtil;
 import org.eclipse.xtext.RuleCall;
@@ -23,8 +20,8 @@ import org.eclipse.xtext.resource.IResourceDescription;
 import org.eclipse.xtext.scoping.IScope;
 import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext;
 import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor;
-import org.eclipse.xtext.util.Strings;
 import org.franca.core.franca.FTypeCollection;
+import org.franca.core.utils.FrancaIDLUtils;
 import org.franca.deploymodel.dsl.fDeploy.FDeployPackage;
 import org.franca.deploymodel.dsl.scoping.DeploySpecProvider;
 import org.franca.deploymodel.dsl.scoping.DeploySpecProvider.DeploySpecEntry;
@@ -76,24 +73,20 @@ public class FDeployProposalProvider extends AbstractFDeployProposalProvider {
 	@Override
 	public void completeImport_ImportURI(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		List<IContainer> visibleContainers = containerUtil.getVisibleContainers(model.eResource());
-		System.out.println(containerUtil.getResourceDescriptions(model.eResource()).getAllResourceDescriptions());
 		URI fromURI = model.eResource().getURI();
 		List<URI> proposedURIs = new ArrayList<URI>();
 		for (IContainer iContainer : visibleContainers) {
-			System.out.println("FDeployProposalProvider.completeImport_ImportURI(): iContainer " + iContainer);
 			Iterable<IResourceDescription> resourceDescriptions = iContainer.getResourceDescriptions();
-			System.out.println("FDeployProposalProvider.completeImport_ImportURI(): resourceDescriptions " + resourceDescriptions);
 			for (Iterator<IResourceDescription> iterator = resourceDescriptions.iterator(); iterator.hasNext();) {
 				IResourceDescription desc = (IResourceDescription) iterator.next();
 				URI uri = desc.getURI();
-				System.out.println("  FDeployProposalProvider.completeImport_ImportURI(): desc " + desc + "/" + uri);
 				if (!uri.equals(fromURI) && Arrays.binarySearch(extensionsForImportURIScope, uri.fileExtension()) > -1) {
 					proposedURIs.add(desc.getURI());
 				}
 			}
 		}
 		for (URI uri : proposedURIs) {
-			String result = relativeURIString(fromURI, uri);
+			String result = FrancaIDLUtils.relativeURIString(fromURI, uri);
 			String displayString = uri.lastSegment() + " - " + result;
 			acceptor.accept(createCompletionProposal("\"" + result + "\"", displayString, null, context));
 		}
@@ -107,34 +100,6 @@ public class FDeployProposalProvider extends AbstractFDeployProposalProvider {
 			DeploySpecEntry dse = iterator.next();
 			acceptor.accept(createCompletionProposal(dse.alias, dse.alias + " - " + dse.resourceId, null, context));
 		}
-	}
-
-	/**
-	 * Computes the relative-URI from <code>from </code> to <code>to</code>. If the schemes or the first two segments (i.e. quasi-autority, e.g. the 'resource'
-	 * of 'platform:/resource', and the project/plugin name) the aren't equal, this method returns <code>to.toString()</code>.
-	 */
-	protected static String relativeURIString(URI from, URI to) {
-		String retVal = to.toString();
-		if (ObjectUtils.equals(from.scheme(), to.scheme())) {
-			int noOfEqualSegments = 0;
-			while (from.segmentCount() > noOfEqualSegments && to.segmentCount() > noOfEqualSegments && from.segment(noOfEqualSegments).equals(to.segment(noOfEqualSegments))) {
-				noOfEqualSegments++;
-			}
-			final boolean urisBelongToSameProject = noOfEqualSegments >= 2; 
-			if (urisBelongToSameProject) {
-				int noOfIndividualSegments = to.segments().length - noOfEqualSegments;
-				if (noOfIndividualSegments > 0) {
-					int goUp = from.segmentCount() - noOfEqualSegments - 1;
-					String[] relativeSegments = new String[noOfIndividualSegments + goUp];
-					for (int i = 0; i < goUp; i++) {
-						relativeSegments[i] = "..";
-					}
-					System.arraycopy(to.segments(), noOfEqualSegments, relativeSegments, goUp, noOfIndividualSegments);
-					retVal = URI.createHierarchicalURI(relativeSegments, null, null).toString();
-				}
-			}
-		}
-		return retVal;
 	}
 
 }

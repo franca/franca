@@ -28,12 +28,19 @@ import static org.franca.core.franca.FrancaPackage$Literals.*
 import static extension org.franca.core.FrancaModelExtensions.*
 import static extension org.franca.core.framework.FrancaHelpers.*
 import org.franca.core.franca.FEnumerator
+import org.franca.core.franca.FDeclaration
 
 class TypesValidator {
 
 	def static checkConstantType (ValidationMessageReporter reporter, FConstantDef constantDef) {
 		checkConstantRHS(constantDef.rhs, constantDef.type,
 			reporter, constantDef, FCONSTANT_DEF__RHS, -1
+		)
+	}
+
+	def static checkConstantType (ValidationMessageReporter reporter, FDeclaration declaration) {
+		checkConstantRHS(declaration.rhs, declaration.type,
+			reporter, declaration, FDECLARATION__RHS, -1
 		)
 	}
 

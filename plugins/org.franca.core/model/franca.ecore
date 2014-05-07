@@ -282,6 +282,8 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="This class represents the definition of a state variable&#xD;&#xA;as part of a Franca interface contract. Note that the &#xD;&#xA;types available for the state variable definition are &#xD;&#xA;all types which are accessible from this interface."/>
     </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="rhs" eType="#//FInitializerExpression"
+        containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FStateGraph">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">

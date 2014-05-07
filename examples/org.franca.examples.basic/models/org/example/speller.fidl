@@ -236,7 +236,7 @@ interface Speller {
 	}
 	
 	struct TLocationDescription {
-		// dummy
+		UInt8 dummy
 	}
 	
 	<** @description : location input state **>
@@ -253,7 +253,7 @@ interface Speller {
 	array TCriterionList of ECriterion 
 	
 	struct TValueList {
-		// dummy
+		UInt8 dummy
 	}
 	
 	<** @description : speller input state structure **>

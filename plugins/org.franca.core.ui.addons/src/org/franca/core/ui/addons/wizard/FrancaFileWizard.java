@@ -27,6 +27,7 @@ import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
 import org.eclipse.xtext.ui.resource.IResourceSetProvider;
 
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 
 /**
  * An abstract base class for the Franca file creation wizards. 
@@ -47,6 +48,9 @@ public abstract class FrancaFileWizard extends Wizard implements INewWizard {
 
     @Inject
     protected IResourceSetProvider resourceSetProvider;
+    
+    @Inject 
+    protected Injector injector;
 
     public FrancaFileWizard() {
         super();
@@ -59,7 +63,7 @@ public abstract class FrancaFileWizard extends Wizard implements INewWizard {
     @Override
     public boolean performFinish() {
     	//The data from the SWT Widgets must be collected outside of the Runnable, otherwise Invalid Thread Access will occur
-    	final Map<String, String> parameters = collectParameters();
+    	final Map<String, Object> parameters = collectParameters();
     	
         IRunnableWithProgress op = new IRunnableWithProgress() {
             @Override
@@ -95,9 +99,9 @@ public abstract class FrancaFileWizard extends Wizard implements INewWizard {
         return true;
     }
     
-    protected abstract IPath performFileCreation(IProgressMonitor progressMonitor, Map<String, String> parameters);
+    protected abstract IPath performFileCreation(IProgressMonitor progressMonitor, Map<String, Object> parameters);
 
-    protected abstract Map<String, String> collectParameters();
+    protected abstract Map<String, Object> collectParameters();
     
     @Override
     public void init(IWorkbench workbench, IStructuredSelection selection) {

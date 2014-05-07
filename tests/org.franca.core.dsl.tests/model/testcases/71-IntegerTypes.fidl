@@ -1,0 +1,55 @@
+// an interface containing predefined integer types in various locations
+// (this is used for testing the automatic conversion to ranged integer types)
+package testcases
+
+interface MyInterface {
+
+	attribute UInt8 u8_s8_1
+	
+	method m {
+		in {
+			Int16 s16_1
+		}
+		out {
+			Int8 s8_1
+		}
+	}
+	
+	broadcast b {
+		out {
+			UInt32 u32_s32_1
+		}
+	}
+	
+	
+	contract {
+		vars {
+			UInt8 u8_s8_1
+		}
+		PSM {
+			initial init
+			state init {
+				on set u8_s8_1 -> init
+				on call m -> init
+				on signal b -> init
+			}
+		}
+	}
+	
+	array MyArray of Int16
+
+	struct MyStruct {
+		Int8 s8_1
+	}
+	
+	struct MyUnion {
+		UInt32 u32_s32_1
+	}
+	
+	map MyMap {
+		UInt16 to UInt16
+	}
+
+	typedef MyAlias is UInt8
+
+}

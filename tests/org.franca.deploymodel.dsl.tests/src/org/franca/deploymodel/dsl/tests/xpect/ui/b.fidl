@@ -1,0 +1,6 @@
+/*
+ * Xpect's workspace setup mechanism requires the physical existence of each file specified in the setup.
+ * This holds true even for empty files - such a this one.
+ * It is specfied in the workspace setup of ContentAssistUITest.fdepl.xt
+ */
+package org.franca.deploymodel.dsl.tests.xpect.ui

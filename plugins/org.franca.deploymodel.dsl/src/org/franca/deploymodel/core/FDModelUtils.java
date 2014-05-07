@@ -15,28 +15,28 @@ import org.franca.deploymodel.dsl.fDeploy.FDRootElement;
 /**
  * Helper functions for navigation in deployment models.
  * 
- * @author kbirken
+ * @author Klaus Birken (itemis AG)
  *
  */
 public class FDModelUtils {
 
 	public static FDModel getModel(EObject obj) {
 		EObject x = obj;
-		do {
+		while (x != null) {
 			if (x instanceof FDModel)
 				return (FDModel) x;
 			x = x.eContainer();
-		} while (x != null);
+		};
 		return null;
 	}
 
 	public static FDRootElement getRootElement(FDElement obj) {
 		EObject x = obj;
-		do {
+		while (x != null) {
 			if (x instanceof FDRootElement)
 				return (FDRootElement) x;
 			x = x.eContainer();
-		} while (x != null);
+		};
 		return null;
 	}
 

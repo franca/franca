@@ -24,6 +24,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.mwe2.lib;resolution:=optional,
  org.eclipse.xtend.lib,
  com.google.guava,
- org.eclipse.xtext.xbase.lib
+ org.eclipse.xtext.xbase.lib,
+ org.apache.commons.lang,
+ org.eclipse.xtend.typesystem.emf
 Bundle-ActivationPolicy: lazy
 Import-Package: org.apache.commons.logging

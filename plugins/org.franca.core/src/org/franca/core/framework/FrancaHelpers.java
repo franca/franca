@@ -10,14 +10,16 @@ package org.franca.core.framework;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.jdt.annotation.NonNull;
+import org.franca.core.FrancaModelExtensions;
 import org.franca.core.franca.FArrayType;
 import org.franca.core.franca.FAttribute;
 import org.franca.core.franca.FBasicTypeId;
@@ -124,50 +126,40 @@ public class FrancaHelpers {
 	/** Get all attributes of an interface including the inherited ones */
 	public static List<FAttribute> getAllAttributes (FInterface api) {
 		List<FAttribute> elements = Lists.newArrayList();
-		if (api.getBase()!=null) {
-			elements.addAll(getAllAttributes(api.getBase()));
-		}
-		elements.addAll(api.getAttributes());
+		for(FInterface i : FrancaModelExtensions.getInterfaceInheritationSet(api))
+			elements.addAll(i.getAttributes());
 		return elements;
 	}
 	
 	/** Get all methods of an interface including the inherited ones */
 	public static List<FMethod> getAllMethods (FInterface api) {
 		List<FMethod> elements = Lists.newArrayList();
-		if (api.getBase()!=null) {
-			elements.addAll(getAllMethods(api.getBase()));
-		}
-		elements.addAll(api.getMethods());
+		for(FInterface i : FrancaModelExtensions.getInterfaceInheritationSet(api))
+			elements.addAll(i.getMethods());
 		return elements;
 	}
 	
 	/** Get all broadcasts of an interface including the inherited ones */
 	public static List<FBroadcast> getAllBroadcasts (FInterface api) {
 		List<FBroadcast> elements = Lists.newArrayList();
-		if (api.getBase()!=null) {
-			elements.addAll(getAllBroadcasts(api.getBase()));
-		}
-		elements.addAll(api.getBroadcasts());
+		for(FInterface i : FrancaModelExtensions.getInterfaceInheritationSet(api))
+			elements.addAll(i.getBroadcasts());
 		return elements;
 	}
 	
 	/** Get all types of an interface including the inherited ones */
 	public static List<FType> getAllTypes (FInterface api) {
 		List<FType> elements = Lists.newArrayList();
-		if (api.getBase()!=null) {
-			elements.addAll(getAllTypes(api.getBase()));
-		}
-		elements.addAll(api.getTypes());
+		for(FInterface i : FrancaModelExtensions.getInterfaceInheritationSet(api))
+			elements.addAll(i.getTypes());
 		return elements;
 	}
 	
 	/** Get all constants of an interface including the inherited ones */
 	public static List<FConstantDef> getAllConstants (FInterface api) {
 		List<FConstantDef> elements = Lists.newArrayList();
-		if (api.getBase()!=null) {
-			elements.addAll(getAllConstants(api.getBase()));
-		}
-		elements.addAll(api.getConstants());
+		for(FInterface i : FrancaModelExtensions.getInterfaceInheritationSet(api))
+			elements.addAll(i.getConstants());
 		return elements;
 	}
 	
@@ -189,17 +181,27 @@ public class FrancaHelpers {
 	 * This function hides typedefs properly.
 	 */
 	public static FBasicTypeId getActualPredefined (FTypeRef typeRef) {
-		if (typeRef.getDerived() == null) {
-			return typeRef.getPredefined();
-		} else {
-			FType type = typeRef.getDerived();
+		Set<FTypeRef> visited = new HashSet<FTypeRef>();
+		FTypeRef tr = typeRef;
+		while (tr.getDerived() != null) {
+			if (visited.contains(tr)) {
+				// found a cycle, abort
+				return null;
+			}
+			visited.add(tr);
+			
+			FType type = tr.getDerived();
 			if (type instanceof FTypeDef) {
+				// progress in chain according to typedef
 				FTypeDef typedef = (FTypeDef)type;
-				return getActualPredefined(typedef.getActualType());
+				tr = typedef.getActualType();
 			} else {
+				// this is an actualDerived type
 				return null;
 			}
 		}
+		
+		return tr.getPredefined();
 	}
 
 	/**
@@ -208,19 +210,29 @@ public class FrancaHelpers {
 	 * This function hides typedefs properly.
 	 */
 	public static FType getActualDerived (FTypeRef typeRef) {
-		if (typeRef.getDerived() == null) {
-			return null;
-		} else {
-			FType type = typeRef.getDerived();
+		Set<FTypeRef> visited = new HashSet<FTypeRef>();
+		FTypeRef tr = typeRef;
+		while (tr.getDerived() != null) {
+			FType type = tr.getDerived();
 			if (type instanceof FTypeDef) {
 				FTypeDef typedef = (FTypeDef)type;
-				return getActualDerived(typedef.getActualType());
+				tr = typedef.getActualType();
 			} else {
+				// we found the actualDerived
 				return type;
 			}
+
+			if (visited.contains(tr)) {
+				// found a cycle, abort
+				return null;
+			}
 		}
+
+		// this is an actualPredefined type
+		return null;
 	}
 
+	
 	/** Returns true if the referenced type is any kind of integer. */
 	public static boolean isInteger (FTypeRef typeRef) {
 		if (typeRef == null) return false;
@@ -332,7 +344,7 @@ public class FrancaHelpers {
 	}
 	
 	/** Get a human-readable name for a Franca type. */
-	public static String getTypeString (@NonNull FTypeRef typeRef) {
+	public static String getTypeString (/*@NonNull*/ FTypeRef typeRef) {
 		FType derived = getActualDerived(typeRef);
 		if (derived == null) {
 			return getActualPredefined(typeRef).getName();

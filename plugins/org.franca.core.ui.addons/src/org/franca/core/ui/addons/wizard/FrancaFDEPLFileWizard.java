@@ -17,7 +17,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 /**
  * Implementation of the Franca FDEPL file wizard.
  * 
- * @author Tamas Szabo
+ * @author Tamas Szabo (itemis AG)
  *
  */
 public class FrancaFDEPLFileWizard extends FrancaFileWizard {
@@ -27,19 +27,21 @@ public class FrancaFDEPLFileWizard extends FrancaFileWizard {
 	private FrancaFDEPLFileWizardConfigurationPage page2;
 	
 	@Override
-	protected Map<String, String> collectParameters() {
-		Map<String, String> parameters = new HashMap<String, String>();
+	protected Map<String, Object> collectParameters() {
+		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("containerName", page1.getContainerName());
 		parameters.put("fileName", page1.getFileName());
-        // replace dots with slash in the path
-		parameters.put("packageName", page1.getPackageName().replaceAll("\\.", "/"));
-		parameters.put("definitionName", page2.getDefinitionName());
+		parameters.put("packageName", page1.getPackageName());
+		parameters.put("specification", page2.getSpecification());
+		parameters.put("typeCollection", page2.getTypeCollection());
+		parameters.put("interface", page2.getInterface());
+		parameters.put("providerName", page2.getProviderName());
 		parameters.put("specificationName", page2.getSpecificationName());
 		return parameters;
 	}
 	
 	@Override
-	protected IPath performFileCreation(IProgressMonitor monitor, Map<String, String> parameters) {        
+	protected IPath performFileCreation(IProgressMonitor monitor, Map<String, Object> parameters) {        
         return FrancaWizardUtil.createFrancaFDEPLFile(resourceSetProvider, parameters);
 	}
 
@@ -49,6 +51,7 @@ public class FrancaFDEPLFileWizard extends FrancaFileWizard {
         page1.init((IStructuredSelection) selection);
         page1.setDescription(NEW_FRANCA_FDEPL_FILE);
         page2 = new FrancaFDEPLFileWizardConfigurationPage();
+        injector.injectMembers(page2);
         page2.setDescription(NEW_FRANCA_FDEPL_FILE);
         addPage(page1);
         addPage(page2);

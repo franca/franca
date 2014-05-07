@@ -67,7 +67,7 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 	}
 	
 		
-	def scope_FDSpecification_base(FDSpecification ctxt, EReference ref){
+	def scope_FDSpecification_base(EObject ctxt, EReference ref){
 		return delegateGetScope(ctxt,ref).joinImportedDeploySpecs(ctxt);
 	}
 	
@@ -80,7 +80,7 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 		try { 
 			for(a:importedAliases){
 				val entry = deploySpecProvider.getEntry(a)
-				if(entry.FDSpecification != null){
+				if(entry?.FDSpecification != null){
 					fdSpecsScopeImports.add(new EObjectDescription(qnConverter.toQualifiedName(a),entry.FDSpecification,null));
 				}
 			}
