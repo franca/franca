@@ -1,0 +1,25 @@
+// an struct definition containing all predefined int types
+// (this is used for testing the automatic conversion to ranged integer types)
+package testcases
+
+typeCollection MyTypes {
+
+	struct MyStruct {
+		// these should be converted to ranged integers
+		Int8 s8
+		Int16 s16
+		Int32 s32
+		Int64 s64
+		UInt8 u8
+		UInt16 u16
+		UInt32 u32
+		UInt64 u64
+
+		// these shouldn't be converted
+		Boolean n1
+		String n2
+		Float n3
+		Double n4
+		ByteBuffer n5
+	}
+}

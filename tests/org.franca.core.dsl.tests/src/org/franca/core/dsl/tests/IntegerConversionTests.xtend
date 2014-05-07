@@ -15,6 +15,7 @@ import org.eclipselabs.xtext.utils.unittesting.XtextRunner2
 import org.eclipselabs.xtext.utils.unittesting.XtextTest
 import org.franca.core.dsl.FrancaIDLTestsInjectorProvider
 import org.franca.core.dsl.FrancaPersistenceManager
+import org.franca.core.franca.FBasicTypeId
 import org.franca.core.franca.FModel
 import org.franca.core.franca.FStructType
 import org.franca.core.franca.FTypeRef
@@ -78,6 +79,52 @@ class IntegerConversionTests extends XtextTest {
 		assertEquals(11, nPredefinedTypes)
 	}
 
+
+	@Test
+	def void testAllBasicTypes() {
+		val fmodel = loadAndTransform("testcases/23-IntegerTypes.fidl")
+		assertEquals(1, fmodel.typeCollections.size)
+
+		val tc = fmodel.typeCollections.get(0)
+		assertEquals(1, tc.types.size)
+
+		val struct = tc.types.get(0) as FStructType
+		var nPredefined = 0
+		var nInterval = 0
+		for(f : struct.elements) {
+			if (f.type.predefined!=null && f.type.predefined!=FBasicTypeId::UNDEFINED)
+				nPredefined = nPredefined + 1
+			if (f.type.interval!=null)
+				nInterval = nInterval + 1
+		}
+		assertEquals(8, nInterval)    // these should have been converted
+		assertEquals(5, nPredefined)  // these are non-int types and must not be converted
+	}
+
+
+	@Test
+	def void testAllLocationsForBasicTypes() {
+		val fmodel = loadAndTransform("testcases/71-IntegerTypes.fidl")
+
+		// check if all FTypeRefs have been converted
+		val all = EcoreUtil2::allContents(fmodel)
+		val typerefs = all.filter(typeof(FTypeRef))
+		var nPredefined = 0
+		var nInterval = 0
+		for(tref : typerefs) {
+			if (tref.predefined!=null && tref.predefined!=FBasicTypeId::UNDEFINED)
+				nPredefined = nPredefined + 1
+			if (tref.interval!=null)
+				nInterval = nInterval + 1
+		}
+		assertEquals(11, nInterval)   // these should have been converted
+		assertEquals(0, nPredefined)  // these are non-int types and must not be converted
+	}
+
+
+	/**
+	 * Load Franca model and transform all ranged integers to predefined int types.
+	 */
 	def private FModel loadAndTransform(String filename, boolean haveUnsigned) {
 		// load input model
 		val root = URI::createURI("classpath:/")
@@ -86,6 +133,31 @@ class IntegerConversionTests extends XtextTest {
 		
 		// transform typerefs in this model
 		IntegerTypeConverter::removeRangedIntegers(fmodel, haveUnsigned)
+		
+		// save resulting model
+		val outdir = "model-gen/from_ranged/" +
+					(if (haveUnsigned) "with" else "without") + "_unsigned"
+		fidlLoader.saveModel(fmodel, outdir + "/" + filename)
+
+		return fmodel
+	}
+	
+	/**
+	 * Load Franca model and transform all predefined int types to ranged integers.
+	 */
+	def private FModel loadAndTransform(String filename) {
+		// load input model
+		val root = URI::createURI("classpath:/")
+		val loc = URI::createFileURI(filename)
+		val fmodel = fidlLoader.loadModel(loc, root)
+		
+		// transform typerefs in this model
+		IntegerTypeConverter::removePredefinedIntegers(fmodel)
+		
+		// save resulting model
+		val outdir = "model-gen/to_ranged"
+		fidlLoader.saveModel(fmodel, outdir + "/" + filename)
+
 		return fmodel
 	}
 	

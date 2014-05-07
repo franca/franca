@@ -1,11 +1,12 @@
 package org.franca.core.utils
 
-import org.franca.core.franca.FModel
-import org.franca.core.franca.FTypeRef
+import java.math.BigInteger
 import org.eclipse.xtend.typesystem.emf.EcoreUtil2
 import org.franca.core.franca.FBasicTypeId
 import org.franca.core.franca.FIntegerInterval
-import java.math.BigInteger
+import org.franca.core.franca.FModel
+import org.franca.core.franca.FTypeRef
+import org.franca.core.franca.FrancaFactory
 
 /**
  * Converter for all integer type references of a model. 
@@ -49,7 +50,7 @@ class IntegerTypeConverter {
 				}
 				//println("   result: basicType=" + basicType.toString)
 				
-				// actually manipulate FTypeRef and exchange interval by basic type
+				// actually manipulate FTypeRef and convert interval to basic type
 				tref.interval = null
 				tref.predefined = basicType
 			}
@@ -62,7 +63,18 @@ class IntegerTypeConverter {
 	 * @param model the model which should be converted
 	 */
 	def static void removePredefinedIntegers (FModel model) {
-		// TODO
+		val all = EcoreUtil2::allContents(model)
+		val typerefs = all.filter(typeof(FTypeRef))
+		for(tref : typerefs) {
+			if (tref.predefined!=null) {
+				val interval = createInterval(tref.predefined)
+				if (interval!=null) {
+					// actually manipulate FTypeRef and convert basic type to interval
+					tref.predefined = null
+					tref.interval = interval
+				}
+			}
+		}
 	}
 
 	
@@ -140,5 +152,36 @@ class IntegerTypeConverter {
 			case 64: FBasicTypeId::UINT64
 			default: throw new RuntimeException("No unsigned integer type with " + bits + " bits")
 		}
+	}
+
+
+	def private static FIntegerInterval createInterval(FBasicTypeId basicType) {
+		switch (basicType) {
+			case FBasicTypeId::INT8:    createSigned(8)
+			case FBasicTypeId::UINT8:   createUnsigned(8)
+			case FBasicTypeId::INT16:   createSigned(16)
+			case FBasicTypeId::UINT16:  createUnsigned(16)
+			case FBasicTypeId::INT32:   createSigned(32)
+			case FBasicTypeId::UINT32:  createUnsigned(32)
+			case FBasicTypeId::INT64:   createSigned(64)
+			case FBasicTypeId::UINT64:  createUnsigned(64)
+			default: null
+		}
+	}
+	
+	def private static createSigned(int bits) {
+		val interval = FrancaFactory::eINSTANCE.createFIntegerInterval
+		val p = BigInteger.ONE.shiftLeft(bits-1)
+		interval.lowerBound = -p 
+		interval.upperBound = p.subtract(BigInteger.ONE)
+		interval 
+	}
+
+	def private static createUnsigned(int bits) {
+		val interval = FrancaFactory::eINSTANCE.createFIntegerInterval
+		val p = BigInteger.ONE.shiftLeft(bits)
+		interval.lowerBound = BigInteger.ZERO
+		interval.upperBound = p.subtract(BigInteger.ONE)
+		interval 
 	}
 }
