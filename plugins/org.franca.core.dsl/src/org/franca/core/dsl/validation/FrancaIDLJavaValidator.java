@@ -40,6 +40,7 @@ import org.franca.core.franca.FDeclaration;
 import org.franca.core.franca.FEnumerationType;
 import org.franca.core.franca.FEnumerator;
 import org.franca.core.franca.FGuard;
+import org.franca.core.franca.FIntegerInterval;
 import org.franca.core.franca.FInterface;
 import org.franca.core.franca.FMethod;
 import org.franca.core.franca.FModel;
@@ -362,6 +363,19 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 	public void checkEnumValue (FEnumerator enumerator) {
 		if (enumerator.getValue() != null)
 			TypesValidator.checkEnumValueType(this, enumerator);
+	}
+
+	@Check
+	public void checkIntegerInterval (FTypeRef intervalType) {
+		if (intervalType.getInterval()!=null) {
+			FIntegerInterval interval = intervalType.getInterval();
+			if (interval.getLowerBound()!=null && interval.getUpperBound()!=null) {
+				if (interval.getLowerBound().compareTo(interval.getUpperBound()) > 0) {
+					error("Invalid interval specification", intervalType,
+							FrancaPackage.Literals.FTYPE_REF__INTERVAL, -1);
+				}
+			}
+		}
 	}
 
 	
