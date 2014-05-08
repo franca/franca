@@ -1,0 +1,66 @@
+package org.franca.examples
+
+interface RobotArm {
+	
+	method move {
+		in {
+			Position pos
+		}
+		out {
+			Boolean ok
+		}
+	}
+
+	method grab {
+		in {
+			Double gripAngle
+		}
+		out {
+			Boolean ok
+		}
+		error {
+			TIMEOUT
+		}
+	}
+
+	method release {
+		out {
+			Boolean ok
+		}
+	}
+	
+	contract {
+		PSM {
+			initial initialState
+			state initialState {
+				on call move -> handleMoveEmpty
+				on call grab -> handleGrab
+			}
+			state handleMoveEmpty {
+				on respond move -> initialState
+			}
+			state handleGrab {
+				on respond grab -> grabbed
+				on error grab [errorval==errordef.TIMEOUT] -> initialState
+			}
+			state grabbed {
+				on call move -> handleMoveFull
+				on call release -> handleRelease
+			}
+			state handleMoveFull {
+				on respond move -> grabbed
+			}
+			state handleRelease {
+				on respond release -> initialState
+			}
+		}
+	}
+	
+	struct Position {
+		UInt16 x
+		UInt16 y
+		UInt16 z
+	}
+	
+}
+
