@@ -77,7 +77,7 @@ class ExpressionEvaluator {
 	}
 
 	def static private dispatch Object eval (FIntegerConstant expr) {
-		BigInteger.valueOf(expr.^val)
+		expr.^val
 	}
 
 	def static private dispatch Object eval (FStringConstant expr) {
