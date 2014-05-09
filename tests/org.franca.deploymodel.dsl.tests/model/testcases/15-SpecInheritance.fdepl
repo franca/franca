@@ -1,14 +1,14 @@
 
 // deployment specification inheritqnce
 
-specification a.b.c.MyBaseSpec {
+specification a.b.c.MySpec15_Base {
 	for methods {
 		PropBase1 : String;
 		PropBase2 : String;
 	}
 }
 
-specification a.b.c.MyDerivedSpec extends a.b.c.MyBaseSpec {
+specification a.b.c.MySpec15_Derived extends a.b.c.MySpec15_Base {
 	for attributes {
 		PropDerived1 : String;
 		PropDerived2 : String;

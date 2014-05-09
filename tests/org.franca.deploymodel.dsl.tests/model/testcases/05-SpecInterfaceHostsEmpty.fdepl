@@ -1,7 +1,7 @@
 
 // deployment specification with empty host declarations
 
-specification a.b.c.MySpec {
+specification a.b.c.MySpec05 {
 
 	// related to IDL interface elements
 	for attributes {

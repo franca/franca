@@ -4,7 +4,7 @@ import "40-SpecSimple.fdepl"
 import "../fidl/20-InterfaceUsingTC.fidl"
 import "42-DefTypeCollection.fdepl"
 
-define SpecSimple for interface fidl.InterfaceUsingTC {
+define SpecSimple40 for interface fidl.InterfaceUsingTC {
 
 	// this use-statement is based on the following chain of imports:
 	// 1. 42-DefTypeCollection.fdepl

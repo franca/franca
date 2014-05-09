@@ -3,7 +3,7 @@
 import "40-SpecSimple.fdepl"
 import "../fidl/10-TypeCollection.fidl"
 
-define SpecSimple for typeCollection fidl.MyTypeCollection as DeployedTypes {
+define SpecSimple40 for typeCollection fidl.MyTypeCollection as DeployedTypes {
 	struct MyStruct {
 		aString {
 			StringPropMandatory = ""

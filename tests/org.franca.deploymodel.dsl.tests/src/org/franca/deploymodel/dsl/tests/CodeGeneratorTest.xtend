@@ -44,7 +44,7 @@ class CodeGeneratorTest extends XtextTest {
 	def void test_40_DefTypeCollection() {
 		val root = loadModel("testcases/40-SpecSimple.fdepl", "fidl/10-TypeCollection.fidl");
 		/*  This is 40-SpecSimple.fdepl: 
-		specification SpecSimple {
+		specification SpecSimple40 {
 			for strings {
 				StringPropMandatory : String;
 			}
@@ -54,7 +54,7 @@ class CodeGeneratorTest extends XtextTest {
 			}
 		} 
 		*/
-		val nameOfTheClassUnderTest = "SpecSimpleTypeCollectionPropertyAccessor"
+		val nameOfTheClassUnderTest = "SpecSimple40TypeCollectionPropertyAccessor"
 		val fsa = new InMemoryFileSystemAccess
 		generator.doGenerate(root.eResource, fsa)
 		val compiler = new InMemoryFileSystemAccessCompiler(fsa);
