@@ -1,7 +1,7 @@
 
 // simple deployment specification as a basis for use-statement test
 
-specification SpecSimple {
+specification SpecSimple40 {
 	for strings {
 		StringPropMandatory : String;
 	}

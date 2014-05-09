@@ -27,6 +27,7 @@ import org.franca.core.franca.FBroadcast;
 import org.franca.core.franca.FConstantDef;
 import org.franca.core.franca.FContract;
 import org.franca.core.franca.FEnumerationType;
+import org.franca.core.franca.FIntegerInterval;
 import org.franca.core.franca.FInterface;
 import org.franca.core.franca.FMapType;
 import org.franca.core.franca.FMethod;
@@ -230,6 +231,25 @@ public class FrancaHelpers {
 
 		// this is an actualPredefined type
 		return null;
+	}
+	
+	/**
+	 * Returns actual interval type for a FTypeRef.
+	 * 
+	 * This function hides typedefs properly.
+	 */
+	public static FIntegerInterval getActualInterval (FTypeRef typeRef) {
+		if (typeRef.getDerived() == null) {
+			return typeRef.getInterval();
+		} else {
+			FType type = typeRef.getDerived();
+			if (type instanceof FTypeDef) {
+				FTypeDef typedef = (FTypeDef)type;
+				return getActualInterval(typedef.getActualType());
+			} else {
+				return null;
+			}
+		}
 	}
 
 	
