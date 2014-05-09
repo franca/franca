@@ -3,9 +3,9 @@
 <repository name='Franca update site (releases)'
     type='org.eclipse.equinox.internal.p2.metadata.repository.CompositeMetadataRepository' version='1.0.0'>
   <properties size='1'>
-    <property name='p2.timestamp' value='1247702431'/>
+    <property name='p2.timestamp' value='1247702440'/>
   </properties>
-  <children size='7'>
+  <children size='8'>
       <child location='0.8.5'/>
       <child location='0.8.6'/>
       <child location='0.8.7'/>
@@ -13,5 +13,6 @@
       <child location='0.8.9'/>
       <child location='0.8.10'/>
       <child location='0.8.11'/>
+      <child location='0.9.0'/>
   </children>
 </repository>
