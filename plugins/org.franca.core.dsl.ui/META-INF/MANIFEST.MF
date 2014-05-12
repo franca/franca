@@ -11,11 +11,12 @@ Require-Bundle: org.franca.core.dsl;visibility:=reexport,
  org.eclipse.compare,
  org.eclipse.xtext.builder,
  org.eclipse.ui.console;bundle-version="3.5.100",
- org.eclipse.core.expressions
+ org.eclipse.core.expressions,
+ org.eclipse.jdt.core;resolution:=optional
 Import-Package: org.apache.log4j,
  org.franca.core.franca
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.franca.core.dsl.ui,org.franca.core.dsl.ui.contenta
  ssist,org.franca.core.dsl.ui.contentassist.antlr,org.franca.core.dsl.
  ui.internal,org.franca.core.dsl.ui.util
-Bundle-Activator: org.franca.core.dsl.ui.internal.FrancaIDLActivator
+Bundle-Activator: org.franca.core.dsl.ui.internal.FrancaIDLAdaptiveActivator

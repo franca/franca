@@ -38,7 +38,7 @@
 <repository location="http://download.eclipse.org/releases/juno"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="com.mountainminds.eclemma.feature.feature.group" version="2.3.0.201403192240"/>
+<unit id="com.mountainminds.eclemma.feature.feature.group" version="2.3.1.201405111647"/>
 <repository location="http://update.eclemma.org/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
