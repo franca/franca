@@ -305,16 +305,13 @@ FGuard:
 	'[' condition=LogicalOrExpression ']';
 
 FStatement returns FStatement:
-	FAssignment | FIfClause
+	FAssignment | FIfStatement | FBlock
 ;
 
-FIfClause returns FIfClause:
-	'if' '(' condition=LogicalOrExpression')' '{'
-		statements+=FStatement*
-	'}'
-	(
-		'else' elseClause=FIfClause
-	)?
+FIfStatement returns FIfStatement:
+	'if' '(' condition=LogicalOrExpression ')'
+		then=FStatement
+	(=>'else' else=FStatement)?
 ;
 	
 FAssignment returns FAssignment:

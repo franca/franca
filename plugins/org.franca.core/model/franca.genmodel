@@ -311,10 +311,10 @@
     <genClasses ecoreClass="franca.ecore#//FUnaryOperation">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FUnaryOperation/operand"/>
     </genClasses>
-    <genClasses ecoreClass="franca.ecore#//FIfClause">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FIfClause/condition"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FIfClause/statements"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FIfClause/elseClause"/>
+    <genClasses ecoreClass="franca.ecore#//FIfStatement">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FIfStatement/condition"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FIfStatement/then"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FIfStatement/else"/>
     </genClasses>
     <genClasses ecoreClass="franca.ecore#//FIntegerInterval">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute franca.ecore#//FIntegerInterval/lowerBound"/>
