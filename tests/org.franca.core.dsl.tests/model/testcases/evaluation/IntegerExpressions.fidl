@@ -1,5 +1,5 @@
 // a type collection with many integer expressions
-package testcases
+package testcases.evaluation
 
 typeCollection MyTypes {
 

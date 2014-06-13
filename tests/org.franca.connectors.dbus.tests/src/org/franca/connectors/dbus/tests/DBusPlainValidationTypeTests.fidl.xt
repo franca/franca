@@ -24,10 +24,10 @@ interface TypesNotSupportedByPlainDBus {
 	// XPECT warnings --> "D-Bus compatibility: Inheritance for unions is not supported by D-Bus." at "MyUnion1"
 	union MyUnion2 extends MyUnion1 { }
 
-	// XPECT warnings --> "D-Bus compatibility: D-Bus dictionaries support only primitive key types." at "MyEnumeration"
+	// XP ECT warnings --> "D-Bus compatibility: D-Bus dictionaries support only primitive key types." at "MyEnumeration"
 	map Map1 { MyEnumeration to String }
-	// XPECT warnings --> "D-Bus compatibility: D-Bus dictionaries support only primitive key types." at "MyStruct1"
+	// XPE CT warnings --> "D-Bus compatibility: D-Bus dictionaries support only primitive key types." at "MyStruct1"
 	map Map2 { MyStruct1 to String }
-	// XPECT warnings --> "D-Bus compatibility: D-Bus dictionaries support only primitive key types." at "Map1"
+	// XP ECT warnings --> "D-Bus compatibility: D-Bus dictionaries support only primitive key types." at "Map1"
 	map Map3 { Map1 to String }
 }

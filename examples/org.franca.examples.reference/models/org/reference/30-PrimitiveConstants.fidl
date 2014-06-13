@@ -9,21 +9,44 @@ package org.reference
 
 typeCollection MyTypeCollection30 {
 	
-	const UInt8  i01 = 147
-	const Int8   i02 = -127
-	const UInt16 i11 = 1
-	const UInt16 i12 = 1+1+2+3+5+8+13
-	const UInt16 i13 = 17*23
-//	const UInt16 i14 = 0xabcd
-//	const UInt16 i15 = 0xD0C0
-	const UInt32 i21 = 100000
-	const Int32  i22 = -100000
-	const UInt64 i31 = 10000000
-	const Int64  i32 = -10000000
+	const UInt8  uint8_upperLimit = 255
+	const UInt8  uint8_lowerLimit = 0
+	
+	const Int8  int8_upperLimit = 127
+	const Int8  int8_lowerLimit = -128
+	
+	const UInt16  uint16_upperLimit = 65535
+	const UInt16  uint16_lowerLimit = 0
+	
+	const Int16  int16_upperLimit = 32767
+	const Int16  int16_lowerLimit = -32768
+	
+	const UInt32  uint32_upperLimit = 4294967295
+	const UInt32  uint32_lowerLimit = 0
+	
+	const Int32  int32_upperLimit = 2147483647
+	const Int32  int32_lowerLimit = -2147483648
+	
+	const UInt64  uint64_upperLimit = 18446744073709551615
+	const UInt64  uint64_lowerLimit = 0
+	
+	const Int64  int64_upperLimit = 9223372036854775807
+	const Int64  int64_lowerLimit = -9223372036854775808
+	
+	const UInt8  uint8_upperLimitHex = 0xFF
+	const UInt8  uint8_lowerLimitHex = 0x0
+	
+	const UInt8  uint8_upperLimit_calculated = (uint8_upperLimit - 1 + 1) * 2 / 2 
+	const UInt8  uint8_lowerLimit_calculated = (uint8_lowerLimit - 1 + 1) * 2 / 2
+	
+	const Integer(1,1) i1 = 1
+	const Integer(1,10) i2 = 1
+	const Integer(1,10) i3 = 10
+	const Integer(minInt, maxInt) i4 = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+	const Integer(minInt, maxInt) i5 = -1 * 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
 
-//	const Integer(1,10) i40 = 5
-
-	const String s1 = "abc"
+	const String s1 = ""
+	const String s2 = "abc"
 	
 	const Boolean b1 = true
 	const Boolean b2 = false
@@ -31,8 +54,10 @@ typeCollection MyTypeCollection30 {
 	const Boolean b4 = b3 || b1
 	const Boolean b5 = !b4
 	const Boolean b6 = 47 < 11
-	const Boolean b7 = i01 != 0
-	const Boolean b8 = s1=="foo" || (i21>10 && i21<20)
+	const Boolean b7 = uint8_upperLimit == uint8_lowerLimit
+	const Boolean b8 = s1=="foo" || (uint8_upperLimit > 10 && uint8_upperLimit < 20)
+	const Boolean b9 = ! (uint8_lowerLimit != -0 + 1 * (3 - 1) / 2)
+	const Boolean b10 = ! ((-0 + 1) != 12345)
 
 	const Float f1 = 1.0f
 	const Float f2 = -1.0f
@@ -40,7 +65,7 @@ typeCollection MyTypeCollection30 {
 	const Float f4 = 1.0e-3f
 	const Float f5 = -1.0e-3f
 	const Float f6 = f1
-	const Float f7 = d1
+	const Float f7 = <Float> d1
 
 	const Double d1 = 1.0d
 	const Double d2 = -1.0d

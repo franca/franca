@@ -22,55 +22,55 @@ interface InterfaceTest {
 		PSM {
 			initial start
 			state start {
-				// XPECT errors --> "invalid type (is enumeration 'Errors', expected Boolean)" at "TC.Errors.Error"
+				// XPECT errors --> "invalid type (is enumeration 'Errors', expected boolean)" at "TC.Errors.Error"
 				on error forceEnumError [TC.Errors.Error] -> start
-				// XPECT errors --> "expected typed expression" at "TC.Errors"
+				// XPECT errors --> "references to types are not allowed here (referencing type Errors)" at "TC.Errors"
 				on error forceEnumError [TC.Errors] -> start
-				// XPECT errors --> "expected typed expression" at "TC"
+				// XPECT errors --> "TC is not a typed element" at "TC"
 				on error forceEnumError [TC] -> start
-				// XPECT errors --> "expected typed expression" at "errordef"
+				// XPECT errors --> "references to types are not allowed here (referencing type Errors)" at "errordef"
 				on error forceEnumError [errordef] -> start
 
-				// XPECT errors --> "invalid type (is enumeration 'Errors', expected Boolean)" at "TC.Errors.Error"
+				// XPECT errors --> "invalid type (is enumeration 'Errors', expected boolean)" at "!TC.Errors.Error"
 				on error forceEnumError [!TC.Errors.Error] -> start
-				// XPECT errors --> "expected typed expression" at "TC.Errors"
+				// XPECT errors --> "references to types are not allowed here (referencing type Errors)" at "TC.Errors"
 				on error forceEnumError [!TC.Errors] -> start
-				// XPECT errors --> "expected typed expression" at "TC"
+				// XPECT errors --> "TC is not a typed element" at "TC"
 				on error forceEnumError [!TC] -> start
-				// XPECT errors --> "expected typed expression" at "errordef"
+				// XPECT errors --> "references to types are not allowed here (referencing type Errors)" at "errordef"
 				on error forceEnumError [!errordef] -> start
 								
-				// XPECT errors --> "expected typed expression" at "TC"
+				// XPECT errors --> "TC is not a typed element" at "TC"
 				on error forceEnumError [errorval == TC] -> start
 				/* XPECT errors ---
-					"expected typed expression" at "TC"
-					"expected typed expression" at "errordef"
+					"TC is not a typed element" at "TC"
+					"references to types are not allowed here (referencing type Errors)" at "errordef"
 				--- */
 				on error forceEnumError [errordef == TC] -> start
-				// XPECT errors --> "expected typed expression" at "TC"
+				// XPECT errors --> "TC is not a typed element" at "TC"
 				on error forceEnumError [errordef.Error == TC] -> start
-				// XPECT errors --> "expected typed expression" at "TC.Errors"
+				// XPECT errors --> "references to types are not allowed here (referencing type Errors)" at "TC.Errors"
 				on error forceEnumError [errorval == TC.Errors] -> start
-				// XPECT errors --> "expected typed expression" at "TC.Errors"
+				// XPECT errors --> "references to types are not allowed here (referencing type Errors)" at "TC.Errors"
 				on error forceEnumError [errordef.Error == TC.Errors] -> start
-				// XPECT errors --> "expected typed expression" at "TC.OtherErrors"
+				// XPECT errors --> "references to types are not allowed here (referencing type OtherErrors)" at "TC.OtherErrors"
 				on error forceEnumError [errorval == TC.OtherErrors] -> start
-				// XPECT errors --> "expected typed expression" at "TC.OtherErrors"
+				// XPECT errors --> "references to types are not allowed here (referencing type OtherErrors)" at "TC.OtherErrors"
 				on error forceEnumError [errordef.Error == TC.OtherErrors] -> start
-				// XPECT errors --> "expected typed expression" at "errordef"
+				// XPECT errors --> "references to types are not allowed here (referencing type Errors)" at "errordef"
 				on error forceEnumError [errordef == otherError] -> start
-				// XPECT errors --> "expected typed expression" at "errordef"
+				// XPECT errors --> "references to types are not allowed here (referencing type Errors)" at "errordef"
 				on error forceEnumError [errordef == savedError] -> start
 				
 				// this would be valid if some sort of reflection would be valid:
 				/* XPECT errors ---
-					"expected typed expression" at "TC.Errors"
-					"expected typed expression" at "errordef"
+					"references to types are not allowed here (referencing type Errors)" at "TC.Errors"
+					"references to types are not allowed here (referencing type Errors)" at "errordef"
 				--- */
 				on error forceEnumError [errordef == TC.Errors] -> start
 				/* XPECT errors ---
-					"expected typed expression" at "TC.OtherErrors"
-					"expected typed expression" at "errordef"
+					"references to types are not allowed here (referencing type OtherErrors)" at "TC.OtherErrors"
+					"references to types are not allowed here (referencing type Errors)" at "errordef"
 				--- */
 				on error forceEnumError [errordef == TC.OtherErrors] -> start
 

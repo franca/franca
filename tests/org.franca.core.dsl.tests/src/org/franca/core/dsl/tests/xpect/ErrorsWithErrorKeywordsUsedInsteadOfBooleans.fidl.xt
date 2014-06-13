@@ -8,7 +8,7 @@ typeCollection TC {
 		OtherError
 	}
 }
-interface InterfaceTest {
+interface  InterfaceTest {
 	// XPECT warnings --> "Method is not covered by contract, not needed?" at "forceEnumError"
 	method forceEnumError {
 		error TC.Errors
@@ -22,13 +22,13 @@ interface InterfaceTest {
 		PSM {
 			initial start
 			state start {
-				// XPECT errors --> "expected typed expression" at "errordef"
+				// XPECT errors --> "references to types are not allowed here (referencing type Errors)" at "errordef"
 				on error forceEnumError [errordef] -> start
-				// XPECT errors --> "invalid error enumerator (expected Boolean)" at "errorval"
+				// XPECT errors --> "invalid type (is enumeration 'Errors', expected boolean)" at "errorval"
 				on error forceEnumError [errorval] -> start
-				// XPECT errors --> "expected typed expression" at "errordef"
+				// XPECT errors --> "references to types are not allowed here (referencing type Errors)" at "errordef"
 				on error forceEnumError [! errordef] -> start
-				// XPECT errors --> "invalid error enumerator (expected Boolean)" at "errorval"
+				// XPECT errors --> "invalid type (is enumeration 'Errors', expected boolean)" at "! errorval"
 				on error forceEnumError [! errorval] -> start
 			}
 		}

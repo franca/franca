@@ -22,16 +22,16 @@ interface InterfaceTest {
 		PSM {
 			initial start
 			state start {
-				// XPECT errors --> "invalid type (is enumeration 'Errors', expected Boolean)" at "savedError"
+				// XPECT errors --> "invalid type (is enumeration 'Errors', expected boolean)" at "savedError"
 				on error forceEnumError [savedError] -> start
-				// XPECT errors --> "invalid type (is enumeration 'Errors', expected Boolean)" at "savedError"
+				// XPECT errors --> "invalid type (is enumeration 'Errors', expected boolean)" at "!savedError"
 				on error forceEnumError [!savedError] -> start
 				
-				// XPECT lineErrors --> "enumeration 'Errors' and enumeration 'OtherErrors' are not comparable"
+				// XPECT errors --> "the types enumeration 'Errors' and enumeration 'OtherErrors' are not comparable" at "errordef.Error == TC.OtherErrors.OtherError"
 				on error forceEnumError [errordef.Error == TC.OtherErrors.OtherError] -> start
-				// XPECT lineErrors --> "enumeration 'Errors' and enumeration 'OtherErrors' are not comparable"
+				// XPECT errors --> "the types enumeration 'Errors' and enumeration 'OtherErrors' are not comparable" at "errordef.Error == otherError"
 				on error forceEnumError [errordef.Error == otherError] -> start
-				// XPECT errors --> "enumeration 'Errors' and enumeration 'OtherErrors' are not comparable" at "errorval == otherError"
+				// XPECT errors --> "the types enumeration 'Errors' and enumeration 'OtherErrors' are not comparable" at "errorval == otherError"
 				on error forceEnumError [errorval == otherError] -> start	
 			}
 		}

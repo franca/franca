@@ -41,6 +41,7 @@ typeCollection MyTypeCollection32 {
 
 	struct S3 extends S2 {
 		String e5
+		S2 internal
 	}
 
 	struct S4 extends S3 {
@@ -109,10 +110,11 @@ typeCollection MyTypeCollection32 {
 		e3 : false,
 		e4 : str1,
 		e5 : "bar",
-		e6 : E1.Enum2
+		e6 : E1.Enum2,
+		internal : str2
 	}
-	const S3 str4 = str3 // initialize from sub-struct instance 
-	const S2 str5 = str3 // initialize from sub-sub-struct instance 
+	const S3 str4 = <S3> str3 // initialize from sub-struct instance
+	const S2 str5 = <S2> str3 // initialize from sub-sub-struct instance 
 	const S5 str6 = {
 		e1 : [ 1 => "foo", 2 => "bar" ],
 		e2 : [ 1, 2, 3 ]
