@@ -34,6 +34,7 @@ import org.franca.core.franca.FType
 import org.franca.core.franca.FTypedElement
 import org.franca.core.utils.digraph.Digraph
 import org.franca.core.franca.FElementInitializer
+import org.franca.core.franca.FTypeCast
 
 class CyclicDependenciesValidator {
 	@Inject IQualifiedNameProvider qnProvider;
@@ -177,6 +178,12 @@ class CyclicDependenciesValidator {
 	def dispatch dependencies(FCompoundInitializer si) {
 		val result = newArrayList
 		result.addAll(si.elements.map[value])
+		result
+	}
+		
+	def dispatch dependencies(FTypeCast tc) {
+		val result = newArrayList
+		result.add(tc.type.derived)
 		result
 	}
 		
