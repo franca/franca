@@ -123,39 +123,6 @@ class TypeSystem {
 				null
 			}
 		}
-//		switch (expr) {
-//			FBooleanConstant: if (expected.checkIsBoolean(loc, feat)) BOOLEAN_TYPE else null
-//			FIntegerConstant: {
-//				if (expected.checkIsInteger(loc, feat)) {
-//					val value = (expr as FIntegerConstant).^val
-//					val type = createInterval(value, value)
-//					if (expected == null) {
-//						return type
-//					}
-//					val comp = compareCardinality(type, expected)
-//					if (comp == SMALLER || comp == EQUAL) {
-//						return type
-//					} else {
-//						val tempInterval = expected.toInterval
-//						addIssue("constant value out of range (expected to be between " +
-//							tempInterval.lowerBound + " and " + tempInterval.upperBound + ")",
-//							loc, feat
-//						)
-//					}
-//				}
-//				return null
-//			}
-//			FFloatConstant: if (expected.checkIsFloat(loc, feat)) FLOAT_TYPE else null
-//			FDoubleConstant: if (expected.checkIsDouble(loc, feat)) DOUBLE_TYPE else null
-//			FStringConstant:  if (expected.checkIsString(loc, feat)) STRING_TYPE else null
-//			default: {
-//				addIssue("invalid type of constant value (expected " +
-//					FrancaHelpers::getTypeString(expected) + ")",
-//					loc, feat
-//				)
-//				null				
-//			}
-//		}
 	}
 	
 	def dispatch FTypeRef checkType (FTypeCast it, EObject loc, EStructuralFeature feat) {
@@ -214,7 +181,6 @@ class TypeSystem {
 					addIssue("the types " + t1.typeString + " and " + t2.typeString + " are not comparable",
 						loc, feat
 					)
-					//TODO vermutlich kann ich auf loc und feat verzichten, beides kommt jetzt wohl aus it
 				}
 				null
 			}
@@ -254,10 +220,6 @@ class TypeSystem {
 								lhsInterval.lowerBound.min(rhsInterval.lowerBound),
 								lhsInterval.upperBound.max(rhsInterval.upperBound)
 							)
-//								} else if (lhsType.isAssignableTo(rhsType)) {
-//									rhsType
-//								} else if (rhsType.isAssignableTo(lhsType)) {
-//									lhsType
 						} else {
 							if (lhsType != null && rhsType != null) {
 								addIssue("incompatible types " + lhsType.typeString + " and " + rhsType.typeString, loc, feat)
@@ -306,33 +268,13 @@ class TypeSystem {
 		switch (elem) {
 			FTypedElement: elem.type
 			FEnumerator: francaModelCreator.createTypeRef(elem)
-			default: null // FModelElement without a type (maybe itself is a type)
+			default: null // FModelElement without a type (maybe it is a type itself)
 		}
 	}
 	
 	def dispatch FTypeRef checkType (FCurrentError expr, EObject loc, EStructuralFeature feat) {
 		if (expr != null)
 			francaModelCreator.createTypeRef(expr)
-//		else {
-//			if (expected.isEnumeration) {
-//				val type = francaModelCreator.createTypeRef(expr)
-//				if (isAssignableTo(type, expected)) {
-//					type
-//				} else {
-//					addIssue("invalid type (is error enumerator, expected " +
-//						FrancaHelpers::getTypeString(expected) + ")",
-//						loc, feat
-//					)
-//					null
-//				}
-//			} else {
-//				addIssue("invalid error enumerator (expected " +
-//					FrancaHelpers::getTypeString(expected) + ")",
-//					loc, feat
-//				)
-//				null
-//			}
-//		}
 	}
 	
 	def dispatch FTypeRef checkType (FExpression expr, EObject loc, EStructuralFeature feat) {
@@ -340,76 +282,6 @@ class TypeSystem {
 		null
 	}
 	
-//	def private checkIsBoolean (FTypeRef expected, EObject loc, EStructuralFeature feat) {
-//		if (expected==null)
-//			return true
-//
-//		val ok = expected.isBoolean
-//		if (!ok) {
-//			addIssue("invalid type (is Boolean, expected " +
-//				FrancaHelpers::getTypeString(expected) + ")",
-//				loc, feat
-//			)
-//		}
-//		ok
-//	}	
-//
-//	def private checkIsInteger (FTypeRef expected, EObject loc, EStructuralFeature feat) {
-//		if (expected==null)
-//			return true
-//
-//		val ok = expected.isInteger
-//		if (!ok) {
-//			addIssue("invalid type (is Integer, expected " +
-//				FrancaHelpers::getTypeString(expected) + ")",
-//				loc, feat
-//			)
-//		}
-//		ok
-//	}	
-//
-//	def private checkIsFloat (FTypeRef expected, EObject loc, EStructuralFeature feat) {
-//		if (expected==null)
-//			return true
-//
-//		val ok = expected.isFloat
-//		if (!ok) {
-//			addIssue("invalid type (is Float, expected " +
-//				FrancaHelpers::getTypeString(expected) + ")",
-//				loc, feat
-//			)
-//		}
-//		ok
-//	}
-//
-//	def private checkIsDouble (FTypeRef expected, EObject loc, EStructuralFeature feat) {
-//		if (expected==null)
-//			return true
-//
-//		val ok = expected.isDouble
-//		if (!ok) {
-//			addIssue("invalid type (is Double, expected " +
-//				FrancaHelpers::getTypeString(expected) + ")",
-//				loc, feat
-//			)
-//		}
-//		ok
-//	}
-//	
-//	def private checkIsString (FTypeRef expected, EObject loc, EStructuralFeature feat) {
-//		if (expected==null)
-//			return true
-//
-//		val ok = expected.isString
-//		if (!ok) {
-//			addIssue("invalid type (is String, expected " +
-//				FrancaHelpers::getTypeString(expected) + ")",
-//				loc, feat
-//			)
-//		}
-//		ok
-//	}	
-
 	def private boolean isComparable(FTypeRef t1, FTypeRef t2, EObject loc, EStructuralFeature feat) {
 		if (t1==null || t2==null) {
 			return false
@@ -426,7 +298,6 @@ class TypeSystem {
 			) {
 				return true
 			}
-//			addIssue(t1.typeString + " and " + t2.typeString + " are not comparable", loc, feat)				
 			return false
 		} 
 	}
@@ -441,7 +312,6 @@ class TypeSystem {
 			if (t1.isNumber && t2.isNumber) {
 				return true
 			}
-//			addIssue("types are not ordered", loc, feat)				
 			return false
 		}
 	}
@@ -542,7 +412,6 @@ class TypeSystem {
 					}
 				}
 			}
-			// return ComparisonResult::INCOMPATIBLE
 		}
 		
 		return ComparisonResult::INCOMPATIBLE
