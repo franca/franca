@@ -10,7 +10,6 @@ package org.franca.core.dsl.validation.internal;
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EStructuralFeature
 import org.franca.core.contracts.IssueCollector
-import org.franca.core.contracts.TypeIssue
 import org.franca.core.contracts.TypeSystem
 import org.franca.core.framework.FrancaHelpers
 import org.franca.core.franca.FConstantDef
@@ -22,7 +21,6 @@ import org.franca.core.franca.FStructType
 import org.franca.core.franca.FBracketInitializer
 import org.franca.core.franca.FArrayType
 import org.franca.core.franca.FMapType
-import org.franca.core.franca.FInitializerExpression
 
 import static org.franca.core.franca.FrancaPackage$Literals.*
 import static extension org.franca.core.FrancaModelExtensions.*
@@ -33,34 +31,33 @@ import org.franca.core.franca.FBasicTypeId
 class TypesValidator {
 
 	def static checkConstantType (ValidationMessageReporter reporter, FConstantDef constantDef) {
-		checkConstantRHS(constantDef.rhs, constantDef.type,
+		val typeLHS= constantDef.type
+		val type = checkConstantRHS(constantDef.rhs, typeLHS,
 			reporter, constantDef, FCONSTANT_DEF__RHS, -1
 		)
+		if (type != null && !TypeSystem::isAssignableTo(type, typeLHS)) {
+			reporter.reportError("'" + type.typeString + "' is not assignable to '" + typeLHS.typeString + "'", constantDef, FCONSTANT_DEF__RHS)
+		}
 	}
 
 	def static void checkEnumValueType (ValidationMessageReporter reporter, FEnumerator enumerator) {
+		val type = checkExpression(reporter, enumerator.value, enumerator, FENUMERATOR__VALUE, -1);
+		
 		// for backward compatibility, we allow Strings as enum values
-		// TODO: remove this section when the deprecated feature is removed
-		val type = getCheckedExpressionType(reporter, enumerator.value, null,
-			enumerator, FENUMERATOR__VALUE, -1
-		)
+		// TODO: remove this case when the deprecated feature is removed
 		if (FrancaHelpers::isBasicType(type, FBasicTypeId::STRING)) {
 			// String values for enumerators are deprecated
 			reporter.reportWarning(
 				"Deprecated: String value for enumerator (use integer expression instead).",
 				enumerator, FENUMERATOR__VALUE)
-			return
+			
+		} else if (! type.isInteger) {
+			reporter.reportError("expected integer, but was '" + type.typeString + "'", enumerator, FENUMERATOR__VALUE)
 		}
-
-		// this is the "real" check, value must be integer
-		checkExpression(reporter, enumerator.value, TypeSystem::ANY_INTEGER_TYPE,
-			enumerator, FENUMERATOR__VALUE, -1
-		)
 	}
 
-
-	def private static void checkConstantRHS (
-		FInitializerExpression rhs,
+	def private static FTypeRef checkConstantRHS (
+		FExpression rhs,
 		FTypeRef typeLHS,
 		ValidationMessageReporter reporter,
 		EObject ctxt,
@@ -68,16 +65,16 @@ class TypesValidator {
 		int index
 	) {
 		switch (rhs) {
-			FExpression: {
-				checkExpression(reporter, rhs, typeLHS, ctxt, feature, index)
-			}
 			FInitializer: {
 				checkInitializer(rhs, typeLHS, reporter, ctxt, feature, index)
+			}
+			FExpression: {
+				checkExpression(reporter, rhs, ctxt, feature, index)
 			}
 		}
 	}
 
-	def private static dispatch checkInitializer (
+	def private static dispatch FTypeRef checkInitializer (
 		FBracketInitializer rhs,
 		FTypeRef type,
 		ValidationMessageReporter reporter,
@@ -90,7 +87,7 @@ class TypesValidator {
 					"invalid initializer in constant definition (expected " +
 						FrancaHelpers::getTypeString(type) + ")",
 					ctxt, feature);
-			return;
+			return null;
 		}
 		
 		if (type.isArray) {
@@ -128,9 +125,10 @@ class TypesValidator {
 				}
 			}
 		}
+		return type
 	}
 	
-	def private static dispatch checkInitializer (
+	def private static dispatch FTypeRef checkInitializer (
 		FCompoundInitializer rhs,
 		FTypeRef type,
 		ValidationMessageReporter reporter,
@@ -143,7 +141,7 @@ class TypesValidator {
 					"invalid compound initializer in constant definition (expected " +
 						FrancaHelpers::getTypeString(type) + ")",
 					ctxt, feature, index);
-			return;
+			return null;
 		}
 		
 		if (type.isStruct) {
@@ -179,9 +177,11 @@ class TypesValidator {
 				reporter, e, FFIELD_INITIALIZER__VALUE, 0
 			)
 		}
+		
+		return type
 	}
 
-	def private static dispatch checkInitializer (
+	def private static dispatch FTypeRef checkInitializer (
 		FInitializer rhs,
 		FTypeRef type,
 		ValidationMessageReporter reporter,
@@ -192,67 +192,32 @@ class TypesValidator {
 		throw new RuntimeException("Unknown FInitializer type '" + rhs.class.toString + "'")
 	}
 	
-
-	def static boolean checkExpression (
-			ValidationMessageReporter reporter,
-			FExpression expr,
-			FTypeRef expected,
-			EObject loc, EStructuralFeature feat)
-	{
-		checkExpression(reporter, expr, expected, loc, feat, -1)
-	}
-
 	/**
-	 * Check if an expression has the expected type.
-	 * 
-	 * If any issues occur while checking the expression, these will be reported.
-	 * 
-	 * @param expr  the expression which should be checked
-	 * @param expected  the expected type, must not be null
-	 */
-	def private static boolean checkExpression (
-			ValidationMessageReporter reporter,
-			FExpression expr,
-			FTypeRef expected,
-			EObject loc, EStructuralFeature feat, int index)
-	{
-		val type = getCheckedExpressionType(reporter, expr, expected, loc, feat, index)
-		type!=null
-	}
-	
-	/**
-	 * Get the type of an expression.
-	 * 
-	 * If param expected is null, the type of the expression will be returned.
-	 * If the expression is inconsistent and no type can be determined, the 
-	 * relevant issues will be reported (via reporter) and null will be returned.
-	 * 
-	 * If param expected is not null, the above functionality will be done, 
-	 * including an additional check that the overall expression type is as expected.
+	 * Check the validity of an expression. The expression gets processed according to the abstract syntax tree. Any
+	 * error contained in independent branches of that tree will be reported.
+	 * <p>
+	 * No error in any part of the tree implies that the resulting type of the tree could be evaluated, too. In that
+	 * case this type will be returned. Otherwise this function will return {@code null}
 	 *  
-	 * @param expr  the expression which should be checked
-	 * @param expected  the expected type, may be null
+	 * @param reporter The reporter that shall get used to report any issues contained in {@code expr}
+	 * @param expr the expression which should be checked
+	 * @param loc The EObject that contains the expression. This should be the root to mark any top level error within
+	 *            the expression.
+	 * @param feat The feature of the meta class of {@code loc} which defines the reference to the expression
+	 * @param index The index of the expression indicating its position within a list of expressions, if {@code feat}
+	 *              is a list of expressions. Will be ignored if the expression is not part of a list.  
 	 */
-	def private static FTypeRef getCheckedExpressionType (
+	def public static FTypeRef checkExpression (
 			ValidationMessageReporter reporter,
 			FExpression expr,
-			FTypeRef expected,
 			EObject loc, EStructuralFeature feat, int index)
 	{
-		val ts = new TypeSystem
 		val issues = new IssueCollector
-		val type = ts.checkType(expr, expected, issues, loc, feat)
-		if (type==null) {
-			if (issues.issues.empty) {
-				// no issues, report a generic error message
-				reporter.reportError("invalid expression", loc, feat)
-			} else {
-				for(TypeIssue ti : issues.issues) {
-					reporter.reportError(ti.message, ti.location, ti.feature)
-				}
-			}
-		}
+		val ts = new TypeSystem(issues)
+		val type = ts.checkType(expr, loc, feat)
+		
+		ValidationHelpers::reportExpressionIssues(issues, reporter, loc, feat, type==null);
+
 		type
 	}
 }
-

@@ -10,7 +10,6 @@ package org.franca.core.contracts
 import java.math.BigInteger
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EStructuralFeature
-import org.franca.core.framework.FrancaHelpers
 import org.franca.core.franca.FBasicTypeId
 import org.franca.core.franca.FBinaryOperation
 import org.franca.core.franca.FBooleanConstant
@@ -38,6 +37,8 @@ import static extension org.franca.core.framework.FrancaHelpers.*
 
 import static org.franca.core.contracts.ComparisonResult.*
 import org.franca.core.franca.FEnumerationType
+import org.franca.core.franca.FTypeCast
+import org.franca.core.franca.FType
 
 class TypeSystem {
 	
@@ -94,273 +95,320 @@ class TypeSystem {
 		return null
 	}
 	
-	/**
-	 * Checks type of 'expr' against expected. 
-	 */
-	def FTypeRef checkType (FExpression expr, FTypeRef expected, IssueCollector collector, EObject loc, EStructuralFeature feat) {
-		this.collector = collector
-		expr.checkType(expected, loc, feat)
+	def private createInterval(BigInteger lower, BigInteger upper) {
+		FrancaFactory::eINSTANCE.createFTypeRef => [
+			interval = FrancaFactory::eINSTANCE.createFIntegerInterval => [
+				lowerBound = lower
+				upperBound = upper
+			]
+		]
 	}
 	
-	def private dispatch FTypeRef checkType (FConstant expr, FTypeRef expected, EObject loc, EStructuralFeature feat) {
+	new (IssueCollector collector) {
+		this.collector = collector
+	}
+	
+	def dispatch FTypeRef checkType (FConstant expr, EObject loc, EStructuralFeature feat) {
 		switch (expr) {
-			FBooleanConstant: if (expected.checkIsBoolean(loc, feat)) BOOLEAN_TYPE else null
+			FBooleanConstant: BOOLEAN_TYPE
 			FIntegerConstant: {
-				if (expected.checkIsInteger(loc, feat)) {
-					val value = (expr as FIntegerConstant).^val
-					val type = FrancaFactory::eINSTANCE.createFTypeRef => [
-						interval = FrancaFactory::eINSTANCE.createFIntegerInterval => [
-							lowerBound = value
-							upperBound = value
-						]
-					]
-					val comp = compareCardinality(type, expected)
-					if (comp == SMALLER || comp == EQUAL) {
-						return type
-					} else {
-						val tempInterval = expected.toInterval
-						addIssue("constant value out of range (expected to be between " +
-							tempInterval.lowerBound + " and " + tempInterval.upperBound + ")",
-							loc, feat
-						)
-					}
-				}
-				return null
+				val value = (expr as FIntegerConstant).^val;
+				createInterval(value, value)
 			}
-			FFloatConstant: if (expected.checkIsFloat(loc, feat)) FLOAT_TYPE else null
-			FDoubleConstant: if (expected.checkIsDouble(loc, feat)) DOUBLE_TYPE else null
-			FStringConstant:  if (expected.checkIsString(loc, feat)) STRING_TYPE else null
+			FFloatConstant: FLOAT_TYPE
+			FDoubleConstant: DOUBLE_TYPE
+			FStringConstant:  STRING_TYPE
 			default: {
-				addIssue("invalid type of constant value (expected " +
-					FrancaHelpers::getTypeString(expected) + ")",
-					loc, feat
-				)
-				null				
+				addIssue("unknown meta type " + expr.eClass.name + " for constant ", loc, feat);
+				null
 			}
 		}
+//		switch (expr) {
+//			FBooleanConstant: if (expected.checkIsBoolean(loc, feat)) BOOLEAN_TYPE else null
+//			FIntegerConstant: {
+//				if (expected.checkIsInteger(loc, feat)) {
+//					val value = (expr as FIntegerConstant).^val
+//					val type = createInterval(value, value)
+//					if (expected == null) {
+//						return type
+//					}
+//					val comp = compareCardinality(type, expected)
+//					if (comp == SMALLER || comp == EQUAL) {
+//						return type
+//					} else {
+//						val tempInterval = expected.toInterval
+//						addIssue("constant value out of range (expected to be between " +
+//							tempInterval.lowerBound + " and " + tempInterval.upperBound + ")",
+//							loc, feat
+//						)
+//					}
+//				}
+//				return null
+//			}
+//			FFloatConstant: if (expected.checkIsFloat(loc, feat)) FLOAT_TYPE else null
+//			FDoubleConstant: if (expected.checkIsDouble(loc, feat)) DOUBLE_TYPE else null
+//			FStringConstant:  if (expected.checkIsString(loc, feat)) STRING_TYPE else null
+//			default: {
+//				addIssue("invalid type of constant value (expected " +
+//					FrancaHelpers::getTypeString(expected) + ")",
+//					loc, feat
+//				)
+//				null				
+//			}
+//		}
+	}
+	
+	def dispatch FTypeRef checkType (FTypeCast it, EObject loc, EStructuralFeature feat) {
+		val actualType = it.expression.checkType(it, FTYPE_CAST__EXPRESSION);
+		
+			if (actualType == null) {
+				null
+			} else if (!it.type.isAssignableTo(actualType)) {
+				if (it.type != null) addIssue(actualType.typeString + " can not be cast to " + type.typeString, loc, feat);
+				null
+			} else {		
+				type
+			}
 	}
 
-	def private dispatch FTypeRef checkType (FUnaryOperation it, FTypeRef expected, EObject loc, EStructuralFeature feat) {
+	def dispatch FTypeRef checkType (FUnaryOperation it, EObject loc, EStructuralFeature feat) {
 		if (FOperator::NEGATION.equals(op)) {
-			val ok = expected.checkIsBoolean(loc, feat)
-			val type = operand.checkType(BOOLEAN_TYPE, it, FUNARY_OPERATION__OPERAND)
-			if (ok) type else null
+			val type = operand.checkType(it, FUNARY_OPERATION__OPERAND)
+			if (! type.isBoolean) {
+				if (type != null) {
+					addIssue("invalid type (is " + type.typeString + ", expected boolean)", loc, feat)					
+				}
+				null
+			} else {
+				type
+			}
 		} else {
 			addIssue("unknown unary operator", loc, feat)
 			null
 		}
 	}
 
-	def private dispatch FTypeRef checkType (FBinaryOperation it, FTypeRef expected, EObject loc, EStructuralFeature feat) {
+	def dispatch FTypeRef checkType (FBinaryOperation it, EObject loc, EStructuralFeature feat) {
 		if (FOperator::AND.equals(op) || FOperator::OR.equals(op)) {
-			val t1 = left.checkType(BOOLEAN_TYPE, it, FBINARY_OPERATION__LEFT)
-			val t2 = right.checkType(BOOLEAN_TYPE, it, FBINARY_OPERATION__RIGHT)
-			val ok = expected.checkIsBoolean(loc, feat)
-			if (t1!=null && t2!=null && ok) BOOLEAN_TYPE else null	
+			val t1 = left.checkType(it, FBINARY_OPERATION__LEFT)
+			val t2 = right.checkType(it, FBINARY_OPERATION__RIGHT)
+			if (! (t1.isBoolean && t2.isBoolean)) {
+				if (t1 != null) {
+					addIssue("invalid type (is " + t1.typeString + ", expected boolean)", it, FBINARY_OPERATION__LEFT)
+				}
+				if (t2 != null) {
+					addIssue("invalid type (is " + t1.typeString + ", expected boolean)", it, FBINARY_OPERATION__RIGHT)
+				}
+				null
+			} else {
+				BOOLEAN_TYPE
+			}
 		} else if (FOperator::EQUAL.equals(op) || FOperator::UNEQUAL.equals(op)) {
 			// check that both operands have compatible type
-			val t1 = left.checkType(null, it, FBINARY_OPERATION__LEFT)
-			val t2 = right.checkType(null, it, FBINARY_OPERATION__RIGHT)
+			val t1 = left.checkType(it, FBINARY_OPERATION__LEFT)
+			val t2 = right.checkType(it, FBINARY_OPERATION__RIGHT)
 			if (isComparable(t1, t2, loc, feat)) {
-				val ok = expected.checkIsBoolean(loc, feat)
-				if (ok) BOOLEAN_TYPE else null	
+				BOOLEAN_TYPE
 			} else {
+				if (! (t1 == null || t2 == null)) {
+					addIssue("the types " + t1.typeString + " and " + t2.typeString + " are not comparable",
+						loc, feat
+					)
+					//TODO vermutlich kann ich auf loc und feat verzichten, beides kommt jetzt wohl aus it
+				}
 				null
 			}
 		} else if (FOperator::SMALLER.equals(op) || FOperator::SMALLER_OR_EQUAL.equals(op) ||
 			FOperator::GREATER_OR_EQUAL.equals(op) || FOperator::GREATER.equals(op)
 		) {
-			val t1 = left.checkType(null, it, FBINARY_OPERATION__LEFT)
-			val t2 = right.checkType(null, it, FBINARY_OPERATION__RIGHT)
-			if (isOrdered(t1, t2, loc, feat)) {
-				val ok = expected.checkIsBoolean(loc, feat)
-				if (ok) BOOLEAN_TYPE else null	
+			val t1 = left.checkType(it, FBINARY_OPERATION__LEFT)
+			val t2 = right.checkType(it, FBINARY_OPERATION__RIGHT)
+			if (isOrderDefined(t1, t2, loc, feat)) {
+				BOOLEAN_TYPE
 			} else {
+				if (t1 != null && t2 != null) {
+					addIssue("there is no order defined between elements of type " + t1.typeString +
+					         " and those of type " + t2.typeString, loc, feat
+					)
+				}
 				null
 			}
 		} else if (FOperator::ADDITION.equals(op) || FOperator::SUBTRACTION.equals(op) ||
 			FOperator::MULTIPLICATION.equals(op) || FOperator::DIVISION.equals(op)
 		) {		
-			val FTypeRef lhsType = left.checkType(null, it, FBINARY_OPERATION__LEFT)
-			val FTypeRef rhsType = right.checkType(null, it, FBINARY_OPERATION__RIGHT)
-			val ComparisonResult typesCompared = compareCardinality(lhsType, rhsType)
+			val FTypeRef lhsType = left.checkType(it, FBINARY_OPERATION__LEFT)
+			val FTypeRef rhsType = right.checkType(it, FBINARY_OPERATION__RIGHT)
 			
-			val resultingType =
-					if (lhsType.isNumber && rhsType.isNumber)
-						switch typesCompared {
-							case GREATER : {lhsType}
-							case EQUAL : {lhsType}
-							case SMALLER : {rhsType}
-							default : null
+			if (lhsType.isNumber && rhsType.isNumber) {
+				val ComparisonResult typesCompared = compareCardinality(lhsType, rhsType)
+				switch typesCompared {
+					case GREATER : {lhsType}
+					case EQUAL : {lhsType}
+					case SMALLER : {rhsType}
+					default : { // in case of two different constants, for example
+						//TODO think about the assignable cases. what if compare cardinality says incompatible but assignable says something else?
+						if (lhsType.isInteger && rhsType.isInteger) {
+							val lhsInterval = toInterval(lhsType)
+							val rhsInterval = toInterval(rhsType)
+							createInterval(
+								lhsInterval.lowerBound.min(rhsInterval.lowerBound),
+								lhsInterval.upperBound.max(rhsInterval.upperBound)
+							)
+//								} else if (lhsType.isAssignableTo(rhsType)) {
+//									rhsType
+//								} else if (rhsType.isAssignableTo(lhsType)) {
+//									lhsType
+						} else {
+							if (lhsType != null && rhsType != null) {
+								addIssue("incompatible types " + lhsType.typeString + " and " + rhsType.typeString, loc, feat)
+							}
+							null
 						}
-					else null;
-					
-			if (resultingType == null) {
-				addIssue("Types are incompatible for operation '" + op + "'.", loc, feat)
-				return null;
-			} 
-			
-			val resultCompared = compareCardinality(resultingType, expected)
-			
-			switch resultCompared {
-				case SMALLER : {return resultingType}
-				case EQUAL : {return resultingType}
-				case GREATER : {
-					addIssue("Cardinality of type '" + resultingType.typeString +
-						"' is too large for expected type '" + expected.typeString + "'.", loc, feat)
-					return null
+					}
 				}
-				default: {
-					addIssue("Types are incompatible for operation '" + op + "'.", loc, feat)
-					return null
-				}
-			}
-		} else {
-			addIssue("unknown binary operator '" + op + "'", loc, feat)
-			null
-		}
-	}
-
-	def private dispatch FTypeRef checkType (FQualifiedElementRef expr, FTypeRef expected, EObject loc, EStructuralFeature feat) {
-		val result = expr.typeOf
-		if (result==null) {
-			addIssue("expected typed expression", loc, feat)
-			null
-		} else {
-			if (expected==null) {
-				result
 			} else {
-				if (isAssignableTo(result, expected)) {
-					result
-				} else {
-					addIssue("invalid type (is " +
-						FrancaHelpers::getTypeString(result) + ", expected " +
-						FrancaHelpers::getTypeString(expected) + ")",
-						loc, feat
-					)
-					null
-				}
+				null
 			}
+					
+		} else {
+			addIssue("unknown binary operator " + op, loc, feat)
+			null
 		}
 	}
 
-	def FTypeRef getTypeOf (FQualifiedElementRef expr) {
-		if (expr?.qualifier==null) {
-			val te = expr?.element
-			// TODO: support array types
-			te.typeRef
+	def dispatch FTypeRef checkType (FQualifiedElementRef expr, EObject loc, EStructuralFeature feat) {
+		getActualTypeOf(expr, loc, feat)
+	}
+
+	def public FTypeRef getActualTypeOf (FQualifiedElementRef expr, EObject loc, EStructuralFeature feat) {
+		if (expr == null) {
+			null
 		} else {
-			expr?.field.typeRef;
+			val element = (if (expr.qualifier == null) {
+				expr.element
+			} else {
+				expr.field
+			});
+			if (element instanceof FType) {
+				addIssue("references to types are not allowed here (referencing type " + element.name + ")", loc, feat);
+				null
+			} else {
+				val result = element.typeRef.actualFTypeRef
+				if (result == null) {
+					addIssue(element.name + " is not a typed element", loc, feat);
+				};
+				result
+			}
 		}
 	}
 	
 	def private FTypeRef getTypeRef (FModelElement elem) {
 		switch (elem) {
 			FTypedElement: elem.type
-			FEnumerator: francaModelCreator.createTypeRef(elem)	
+			FEnumerator: francaModelCreator.createTypeRef(elem)
 			default: null // FModelElement without a type (maybe itself is a type)
 		}
 	}
 	
-	def private dispatch FTypeRef checkType (FCurrentError expr, FTypeRef expected, EObject loc, EStructuralFeature feat) {
-		if (expected==null)
+	def dispatch FTypeRef checkType (FCurrentError expr, EObject loc, EStructuralFeature feat) {
+		if (expr != null)
 			francaModelCreator.createTypeRef(expr)
-		else {
-			if (expected.isEnumeration) {
-				val type = francaModelCreator.createTypeRef(expr)
-				if (isAssignableTo(type, expected)) {
-					type
-				} else {
-					addIssue("invalid type (is error enumerator, expected " +
-						FrancaHelpers::getTypeString(expected) + ")",
-						loc, feat
-					)
-					null
-				}
-			} else {
-				addIssue("invalid error enumerator (expected " +
-					FrancaHelpers::getTypeString(expected) + ")",
-					loc, feat
-				)
-				null
-			}
-		}
+//		else {
+//			if (expected.isEnumeration) {
+//				val type = francaModelCreator.createTypeRef(expr)
+//				if (isAssignableTo(type, expected)) {
+//					type
+//				} else {
+//					addIssue("invalid type (is error enumerator, expected " +
+//						FrancaHelpers::getTypeString(expected) + ")",
+//						loc, feat
+//					)
+//					null
+//				}
+//			} else {
+//				addIssue("invalid error enumerator (expected " +
+//					FrancaHelpers::getTypeString(expected) + ")",
+//					loc, feat
+//				)
+//				null
+//			}
+//		}
 	}
 	
-	def private dispatch FTypeRef checkType (FExpression expr, FTypeRef expected, EObject loc, EStructuralFeature feat) {
-		addIssue("unknown expression type '" + expr.eClass.name + "'", loc, feat)
+	def dispatch FTypeRef checkType (FExpression expr, EObject loc, EStructuralFeature feat) {
+		addIssue("unknown expression type " + expr.eClass.name, loc, feat)
 		null
 	}
 	
-	def private checkIsBoolean (FTypeRef expected, EObject loc, EStructuralFeature feat) {
-		if (expected==null)
-			return true
-
-		val ok = expected.isBoolean
-		if (!ok) {
-			addIssue("invalid type (is Boolean, expected " +
-				FrancaHelpers::getTypeString(expected) + ")",
-				loc, feat
-			)
-		}
-		ok
-	}	
-
-	def private checkIsInteger (FTypeRef expected, EObject loc, EStructuralFeature feat) {
-		if (expected==null)
-			return true
-
-		val ok = expected.isInteger
-		if (!ok) {
-			addIssue("invalid type (is Integer, expected " +
-				FrancaHelpers::getTypeString(expected) + ")",
-				loc, feat
-			)
-		}
-		ok
-	}	
-
-	def private checkIsFloat (FTypeRef expected, EObject loc, EStructuralFeature feat) {
-		if (expected==null)
-			return true
-
-		val ok = expected.isFloat
-		if (!ok) {
-			addIssue("invalid type (is Float, expected " +
-				FrancaHelpers::getTypeString(expected) + ")",
-				loc, feat
-			)
-		}
-		ok
-	}
-
-	def private checkIsDouble (FTypeRef expected, EObject loc, EStructuralFeature feat) {
-		if (expected==null)
-			return true
-
-		val ok = expected.isDouble
-		if (!ok) {
-			addIssue("invalid type (is Double, expected " +
-				FrancaHelpers::getTypeString(expected) + ")",
-				loc, feat
-			)
-		}
-		ok
-	}
-	
-	def private checkIsString (FTypeRef expected, EObject loc, EStructuralFeature feat) {
-		if (expected==null)
-			return true
-
-		val ok = expected.isString
-		if (!ok) {
-			addIssue("invalid type (is String, expected " +
-				FrancaHelpers::getTypeString(expected) + ")",
-				loc, feat
-			)
-		}
-		ok
-	}	
+//	def private checkIsBoolean (FTypeRef expected, EObject loc, EStructuralFeature feat) {
+//		if (expected==null)
+//			return true
+//
+//		val ok = expected.isBoolean
+//		if (!ok) {
+//			addIssue("invalid type (is Boolean, expected " +
+//				FrancaHelpers::getTypeString(expected) + ")",
+//				loc, feat
+//			)
+//		}
+//		ok
+//	}	
+//
+//	def private checkIsInteger (FTypeRef expected, EObject loc, EStructuralFeature feat) {
+//		if (expected==null)
+//			return true
+//
+//		val ok = expected.isInteger
+//		if (!ok) {
+//			addIssue("invalid type (is Integer, expected " +
+//				FrancaHelpers::getTypeString(expected) + ")",
+//				loc, feat
+//			)
+//		}
+//		ok
+//	}	
+//
+//	def private checkIsFloat (FTypeRef expected, EObject loc, EStructuralFeature feat) {
+//		if (expected==null)
+//			return true
+//
+//		val ok = expected.isFloat
+//		if (!ok) {
+//			addIssue("invalid type (is Float, expected " +
+//				FrancaHelpers::getTypeString(expected) + ")",
+//				loc, feat
+//			)
+//		}
+//		ok
+//	}
+//
+//	def private checkIsDouble (FTypeRef expected, EObject loc, EStructuralFeature feat) {
+//		if (expected==null)
+//			return true
+//
+//		val ok = expected.isDouble
+//		if (!ok) {
+//			addIssue("invalid type (is Double, expected " +
+//				FrancaHelpers::getTypeString(expected) + ")",
+//				loc, feat
+//			)
+//		}
+//		ok
+//	}
+//	
+//	def private checkIsString (FTypeRef expected, EObject loc, EStructuralFeature feat) {
+//		if (expected==null)
+//			return true
+//
+//		val ok = expected.isString
+//		if (!ok) {
+//			addIssue("invalid type (is String, expected " +
+//				FrancaHelpers::getTypeString(expected) + ")",
+//				loc, feat
+//			)
+//		}
+//		ok
+//	}	
 
 	def private boolean isComparable(FTypeRef t1, FTypeRef t2, EObject loc, EStructuralFeature feat) {
 		if (t1==null || t2==null) {
@@ -378,19 +426,22 @@ class TypeSystem {
 			) {
 				return true
 			}
-			addIssue(t1.typeString + " and " + t2.typeString + " are not comparable", loc, feat)				
+//			addIssue(t1.typeString + " and " + t2.typeString + " are not comparable", loc, feat)				
 			return false
 		} 
 	}
 	
-	def private boolean isOrdered(FTypeRef t1, FTypeRef t2, EObject loc, EStructuralFeature feat) {
+	/**
+	 * @returns <code>True</code> if an order is defined between elements of t1 and elements of t2.
+	 */
+	def private boolean isOrderDefined(FTypeRef t1, FTypeRef t2, EObject loc, EStructuralFeature feat) {
 		if (t1==null || t2==null) {
 			return false
 		} else {
 			if (t1.isNumber && t2.isNumber) {
 				return true
 			}
-			addIssue("types are not ordered", loc, feat)				
+//			addIssue("types are not ordered", loc, feat)				
 			return false
 		}
 	}

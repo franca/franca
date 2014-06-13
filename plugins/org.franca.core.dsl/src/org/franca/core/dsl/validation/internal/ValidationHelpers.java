@@ -8,6 +8,7 @@
 package org.franca.core.dsl.validation.internal;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -16,9 +17,40 @@ import java.util.Set;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.franca.core.contracts.IssueCollector;
+import org.franca.core.contracts.TypeIssue;
 
 //TODO: this class is not depending on a particular DSL, should be factored to a common helper package
 public class ValidationHelpers {
+	
+	public static void reportExpressionIssues(
+			IssueCollector collector,
+			ValidationMessageReporter reporter,
+			EObject topLevelLocation,
+			EStructuralFeature topLevelFeature,
+			boolean isErrorPresent
+	) {
+		Collection<TypeIssue> issues = collector.getIssues();
+		if (isErrorPresent && issues.isEmpty()) {
+			// no issues present, but presence of an error is known -> report a generic error message
+			reporter.reportError("invalid expression", topLevelLocation, topLevelFeature);
+		} else {
+			for(TypeIssue ti : issues) {
+				reporter.reportError(ti.getMessage(), ti.getLocation(), ti.getFeature());
+			}
+		}
+	}
+	//TODO delete one of the reportExpressionIssues functions
+	public static void reportExpressionIssues(
+			IssueCollector collector,
+			ValidationMessageReporter reporter
+	) {
+		Collection<TypeIssue> issues = collector.getIssues();
+		for(TypeIssue ti : issues) {
+			reporter.reportError(ti.getMessage(), ti.getLocation(), ti.getFeature());
+		}
+	}
+	
 
    // simple helper for finding duplicates in ELists
    public static <T extends EObject> int checkDuplicates(ValidationMessageReporter reporter, Iterable<T> items,

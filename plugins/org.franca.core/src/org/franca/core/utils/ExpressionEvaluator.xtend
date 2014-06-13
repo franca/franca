@@ -15,7 +15,6 @@ import org.franca.core.franca.FOperator
 import org.franca.core.franca.FQualifiedElementRef
 import org.franca.core.franca.FConstantDef
 
-import static extension org.franca.core.contracts.TypeSystem.*
 import org.franca.core.franca.FBooleanConstant
 import org.franca.core.franca.FUnaryOperation
 import org.franca.core.franca.FField
@@ -141,11 +140,11 @@ class ExpressionEvaluator {
 		}
 	}
 
-	def static private evalAux (FInitializerExpression expr) {
-		if (expr instanceof FExpression)
-			(expr as FExpression).eval
-		else 
+	def static private evalAux (FExpression expr) {
+		if (expr instanceof FInitializerExpression)
 			expr
+		else 
+			expr.eval
 	}
 
 	def static private foo (FQualifiedElementRef it) {

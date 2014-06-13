@@ -12,10 +12,12 @@ import java.util.List;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.franca.core.FrancaModelExtensions;
+import org.franca.core.contracts.IssueCollector;
 import org.franca.core.contracts.TypeSystem;
 import org.franca.core.dsl.validation.internal.util.FrancaContractDirectedGraphDataSource;
 import org.franca.core.dsl.validation.internal.util.FrancaContractUndirectedGraphDataSource;
 import org.franca.core.dsl.validation.internal.util.GraphUtil;
+import org.franca.core.framework.FrancaHelpers;
 import org.franca.core.franca.FAssignment;
 import org.franca.core.franca.FAttribute;
 import org.franca.core.franca.FBroadcast;
@@ -110,21 +112,33 @@ public class ContractValidator {
 	
 	
 	public static void checkAssignment (ValidationMessageReporter reporter, FAssignment assignment) {
-		TypeSystem ts = new TypeSystem();
-		FTypeRef typeLHS = ts.getTypeOf(assignment.getLhs());
-		if (typeLHS==null) {
-			reporter.reportError("invalid left-hand side in assignment", assignment, FrancaPackage.Literals.FASSIGNMENT__LHS);
-		} else {
-			TypesValidator.checkExpression(reporter,
-				assignment.getRhs(), typeLHS,
-				assignment, FrancaPackage.Literals.FASSIGNMENT__RHS);
-		}
+		TypeSystem ts = new TypeSystem(new IssueCollector());
+		FTypeRef typeLHS = ts.getActualTypeOf(assignment.getLhs(), assignment, FrancaPackage.Literals.FASSIGNMENT__LHS);
+//		if (typeLHS==null) {
+//			reporter.reportError("invalid left-hand side in assignment", assignment, FrancaPackage.Literals.FASSIGNMENT__LHS);
+//		} else {
+			FTypeRef type = TypesValidator.checkExpression(reporter, assignment.getRhs(), assignment, FrancaPackage.Literals.FASSIGNMENT__RHS, -1);
+			if (type != null && ! TypeSystem.isAssignableTo(type, typeLHS)) {
+				reporter.reportError(
+						FrancaHelpers.getTypeString(type) + " is not assignable to " + 
+								FrancaHelpers.getTypeString(typeLHS),
+						assignment, null, -1
+				);
+			}
+//		}
 	}
 	
 	public static void checkGuard (ValidationMessageReporter reporter, FGuard guard) {
-		TypesValidator.checkExpression(reporter,
-			guard.getCondition(), TypeSystem.BOOLEAN_TYPE,
-			guard, FrancaPackage.Literals.FGUARD__CONDITION);
+		FTypeRef type = TypesValidator.checkExpression(reporter, 
+			guard.getCondition(),
+			guard, FrancaPackage.Literals.FGUARD__CONDITION, -1);
+		
+		if (type != null && ! FrancaHelpers.isBoolean(type)) {
+			reporter.reportError(
+					"invalid type (is " + FrancaHelpers.getTypeString(type) + ", expected boolean)",
+					guard, FrancaPackage.Literals.FGUARD__CONDITION, -1
+			);
+		}
 	}
 
 }

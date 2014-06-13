@@ -33,11 +33,13 @@ import org.franca.core.franca.FInterface;
 import org.franca.core.franca.FMapType;
 import org.franca.core.franca.FMethod;
 import org.franca.core.franca.FModel;
+import org.franca.core.franca.FModelElement;
 import org.franca.core.franca.FStateGraph;
 import org.franca.core.franca.FStructType;
 import org.franca.core.franca.FType;
 import org.franca.core.franca.FTypeDef;
 import org.franca.core.franca.FTypeRef;
+import org.franca.core.franca.FTypedElement;
 import org.franca.core.franca.FUnionType;
 import org.franca.core.franca.FrancaPackage;
 
@@ -183,55 +185,13 @@ public class FrancaHelpers {
 	 * This function hides typedefs properly.
 	 */
 	public static FBasicTypeId getActualPredefined (FTypeRef typeRef) {
-		Set<FTypeRef> visited = new HashSet<FTypeRef>();
-		FTypeRef tr = typeRef;
-		while (tr.getDerived() != null) {
-			if (visited.contains(tr)) {
-				// found a cycle, abort
-				return null;
-			}
-			visited.add(tr);
-			
-			FType type = tr.getDerived();
-			if (type instanceof FTypeDef) {
-				// progress in chain according to typedef
-				FTypeDef typedef = (FTypeDef)type;
-				tr = typedef.getActualType();
-			} else {
-				// this is an actualDerived type
-				return null;
-			}
+		FTypeRef actualTypeRef = getActualFTypeRef(typeRef);
+		
+		if (actualTypeRef == null) {
+			return null;
 		}
 		
-		return tr.getPredefined();
-	}
-
-	/**
-	 * Returns actual derived type for a FTypeRef.
-	 * 
-	 * This function hides typedefs properly.
-	 */
-	public static FType getActualDerived (FTypeRef typeRef) {
-		Set<FTypeRef> visited = new HashSet<FTypeRef>();
-		FTypeRef tr = typeRef;
-		while (tr.getDerived() != null) {
-			FType type = tr.getDerived();
-			if (type instanceof FTypeDef) {
-				FTypeDef typedef = (FTypeDef)type;
-				tr = typedef.getActualType();
-			} else {
-				// we found the actualDerived
-				return type;
-			}
-
-			if (visited.contains(tr)) {
-				// found a cycle, abort
-				return null;
-			}
-		}
-
-		// this is an actualPredefined type
-		return null;
+		return actualTypeRef.getPredefined();
 	}
 	
 	/**
@@ -240,19 +200,80 @@ public class FrancaHelpers {
 	 * This function hides typedefs properly.
 	 */
 	public static FIntegerInterval getActualInterval (FTypeRef typeRef) {
-		if (typeRef.getDerived() == null) {
-			return typeRef.getInterval();
-		} else {
-			FType type = typeRef.getDerived();
-			if (type instanceof FTypeDef) {
-				FTypeDef typedef = (FTypeDef)type;
-				return getActualInterval(typedef.getActualType());
-			} else {
-				return null;
-			}
+		FTypeRef actualTypeRef = getActualFTypeRef(typeRef);
+		
+		if (actualTypeRef == null) {
+			return null;
 		}
+		
+		return actualTypeRef.getInterval();
 	}
 
+	/**
+	 * Returns actual derived type for a FTypeRef.
+	 * 
+	 * This function hides typedefs properly.
+	 */
+	public static FType getActualDerived (FTypeRef typeRef) {
+		FTypeRef actualTypeRef = getActualFTypeRef(typeRef);
+		
+		if (actualTypeRef == null) {
+			return null;
+		}
+		
+		return actualTypeRef.getDerived();
+	}
+	
+	/**
+	 * Returns actual derived type or interval for a FTypeRef.
+	 * 
+	 * This function hides typedefs properly.
+	 */
+	public static FTypeRef getActualFTypeRef (FTypeRef typeRef) {
+		if (typeRef == null) return null;
+		
+		Set<FTypeRef> visited = new HashSet<FTypeRef>();
+		FTypeRef tr = typeRef;
+		while (tr.getDerived() != null) {
+			visited.add(tr);
+			FType type = tr.getDerived();
+			if (type instanceof FTypeDef) {
+				FTypeDef typedef = (FTypeDef)type;
+				tr = typedef.getActualType();
+				if (visited.contains(tr)) {
+					// found a cycle, abort
+					return null;
+				}
+			} else {
+				break;
+			}
+		}
+		
+		return tr;
+	}
+	
+	public static FType getActualFType(FModelElement modelElement) {
+		FTypeRef typeRef = null;
+		if (modelElement instanceof FTypeRef) {
+			typeRef = (FTypeRef) modelElement;
+		} else if (modelElement instanceof FTypedElement) {
+			FTypedElement typedElement = (FTypedElement) modelElement;
+			typeRef = typedElement.getType();
+		} else if (modelElement instanceof FTypeDef) {
+			typeRef = ((FTypeDef) modelElement).getActualType();
+		} else if (modelElement instanceof FType) {
+			return (FType) modelElement; ////
+		}
+		
+		FTypeRef actualFTypeRef = getActualFTypeRef(typeRef);
+		
+		FType result = actualFTypeRef.getDerived();
+		if (result == null) {
+			result = actualFTypeRef.getInterval();
+		}
+		
+		return result;
+	}
 	
 	/** Returns true if the referenced type is any kind of integer. */
 	public static boolean isInteger (FTypeRef typeRef) {
