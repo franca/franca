@@ -345,8 +345,13 @@ AdditiveExpression returns FExpression:
   ({FBinaryOperation.left=current} op=OperatorAdditive right=MultiplicativeExpression)*;
 
 MultiplicativeExpression returns FExpression:
-  PrimaryExpression
+  TypeCast
   ({FBinaryOperation.left=current} op=OperatorMultiplicative right=PrimaryExpression)*;
+  
+TypeCast returns FExpression:
+	PrimaryExpression |
+	('<' {FTypeCast} type=FTypeRef '>' expression=PrimaryExpression)
+;
 
 PrimaryExpression returns FExpression:
   FUnaryOperation | SimplePrimaryExpression;
