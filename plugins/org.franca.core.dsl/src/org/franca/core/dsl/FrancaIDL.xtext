@@ -221,10 +221,10 @@ FTypedElement:
 
 FConstantDef:
 	'const' type=FTypeRef (array?='[' ']')? name=ID '='
-		rhs=FInitializerExpression
+		rhs=FExpression
 	;
 
-FInitializerExpression:
+FExpression:
 	LogicalOrExpression |
 	FInitializer;
 
@@ -241,7 +241,7 @@ FCompoundInitializer:
 	)? '}';
 
 FFieldInitializer:
-	element=[FField|ID] ':' value=FInitializerExpression;
+	element=[FField|ID] ':' value=FExpression;
 
 // this is used for array and map types
 FBracketInitializer:
@@ -254,7 +254,7 @@ FBracketInitializer:
 // for array type initializers, the second element is omitted
 FElementInitializer:
 	{FElementInitializer}
-	first=FInitializerExpression ('=>' second=FInitializerExpression)?;
+	first=FExpression ('=>' second=FExpression)?;
 
 
 // **************************************************************
