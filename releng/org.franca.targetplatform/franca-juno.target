@@ -16,8 +16,8 @@
 <unit id="org.eclipse.xtend.sdk.feature.group" version="2.4.1.v201304180855"/>
 <unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.4.0.v201306110940"/>
 <unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="2.4.0.v201306110341"/>
-<unit id="org.eclipse.emf.common" version="2.9.1.v20130827-0309"/>
-<unit id="org.eclipse.emf.sdk.feature.group" version="2.9.1.v20130902-0605"/>
+<unit id="org.eclipse.emf.common" version="2.10.0.v20140514-1158"/>
+<unit id="org.eclipse.emf.sdk.feature.group" version="2.10.0.v20140519-0339"/>
 <repository location="http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
