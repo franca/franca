@@ -17,6 +17,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
 /**
  * Base class to deal with Eclipse mechanisms to load/save models.
@@ -125,7 +126,7 @@ public class ModelPersistenceHandler {
 		URI fileURI = normalizeURI(URI.createURI(filename));
 		URI cwdURI = normalizeURI(URI.createURI(cwd));
 		URI existingURI = null;
-		URI toSaveURI = URI.createURI(cwdURI.toString() + "/" + fileURI.toString());
+		URI toSaveURI = URI.createURI(cwdURI.toString() + fileURI.toString());
 		Resource resource = model.eResource();
 		
 		if (model.eResource() != null) {
@@ -138,20 +139,33 @@ public class ModelPersistenceHandler {
 			resourceSet.getURIConverter().getURIMap().put(existingURI, toSaveURI);
 		} else {
 			// create a resource containing the model
+			/**
+			 * added the file extension to the factory map so that it registers the extension to the resource factory
+			 */
+			resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("fidl", new XMIResourceFactoryImpl());
 			resource = resourceSet.createResource(toSaveURI);
 			resource.getContents().add(model);
+	
 		}
 
 		//save the root model
 		try {
-			model.eResource().save(Collections.EMPTY_MAP);
+			
+			resource.save(null);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		//and all its imports recursively
 		for (Iterator<String> it = fileHandlerRegistry.get(fileURI.fileExtension()).importsIterator(model); it.hasNext();) {
 			String importURI = it.next();
-			saveModel(resourceSet.getResource(URI.createURI(importURI), false).getContents().get(0), importURI, getCWDForImport(fileURI, cwdURI).toString());
+			URI createFileURI = URI.createFileURI(importURI);
+			/**
+			 * 
+			 * resolve the relative path of the imports so that the correct path is obtained for loading the model
+			 */
+			URI resolve = createFileURI.resolve(cwdURI);
+			Resource resource2 = resourceSet.getResource(resolve,true);
+			saveModel(resource2.getContents().get(0), importURI, getCWDForImport(fileURI, cwdURI).toString());
 		}
 
 		return true;
