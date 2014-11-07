@@ -11,6 +11,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.franca.core.dsl.FrancaIDLStandaloneSetup;
 import org.franca.core.dsl.FrancaImportsProvider;
+import org.franca.core.utils.FileHelper;
 import org.franca.core.utils.ModelPersistenceHandler;
 import org.franca.deploymodel.dsl.fDeploy.FDModel;
 
@@ -107,7 +108,7 @@ public class FDeployPersistenceManager {
 	 * @return true if save could be completed successfully
 	 */
 	public boolean saveModel(FDModel model, String filename) {
-		URI uri = URI.createURI(filename);
+		URI uri = FileHelper.createURI(filename);
 		
 		if (uri.segmentCount() > 1) {
 			return saveModel(model, uri.lastSegment(), uri.trimSegments(1).toString() + "/");
