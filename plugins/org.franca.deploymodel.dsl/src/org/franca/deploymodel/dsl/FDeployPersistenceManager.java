@@ -51,7 +51,7 @@ public class FDeployPersistenceManager {
 	 * @return the root entity of the FDeploy model
 	 */
 	public FDModel loadModel(String filename) {
-		URI uri = URI.createURI(filename);
+		URI uri =FileHelper.createURI(filename);
 		
 		if (uri.segmentCount() > 1) {
 			return loadModel(uri.lastSegment(), uri.trimSegments(1).toString() + "/");
