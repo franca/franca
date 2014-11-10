@@ -20,9 +20,6 @@ public class FrancaValueConverters extends Ecore2XtextTerminalConverters {
 			@Override
 			protected Float internalToValue(String string, INode node) {
 				Float value = Float.parseFloat(string);
-				
-				
-				
 				return value;
 			}
 
@@ -38,13 +35,9 @@ public class FrancaValueConverters extends Ecore2XtextTerminalConverters {
 			@Override
 			protected Double internalToValue(String string, INode node) {
 				Double value = Double.parseDouble(string);
-				
-				
-				
 				return value;
 			}
-
-			@Override
+             @Override
 			protected String internalToString(Double value) {
 				return value.toString();
 			}
