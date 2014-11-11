@@ -164,8 +164,8 @@ public class ModelPersistenceHandler {
 			 * resolve the relative path of the imports so that the correct path is obtained for loading the model
 			 */
 			URI resolve = createFileURI.resolve(cwdURI);
-			Resource resource2 = resourceSet.getResource(resolve,true);
-			saveModel(resource2.getContents().get(0), importURI, getCWDForImport(fileURI, cwdURI).toString());
+			Resource actualResource = resourceSet.getResource(resolve,true);
+			saveModel(actualResource.getContents().get(0), importURI, getCWDForImport(fileURI, cwdURI).toString());
 		}
 
 		return true;
