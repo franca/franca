@@ -438,7 +438,7 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 	}
 
 	/**
-	 * Checks the argument list of {@link FDMethod}s.
+	 * Checks the argument list of {@link FDMethod}s and {@link FDBroadcast}s.
 	 * 
 	 * @return true if an error is present, false otherwise
 	 */
@@ -452,8 +452,18 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 			FDArgument c = (FDArgument) mapper.getFDElement(tc);
 			if (c==null) {
 				if (checker.mustBeDefined(tc)) {
-					error("Mandatory argument '" + tc.getName() + "' is missing for method '" + ((FDMethod) parent).getTarget().getName() + "'",
-						parent, feature, -1, METHOD_ARGUMENT_QUICKFIX, ((FDMethod) parent).getTarget().getName(), tc.getName());
+					String opName = "";
+					String opType = "";
+					if (parent instanceof FDMethod) {
+						opName = ((FDMethod) parent).getTarget().getName();
+						opType = "method";
+					}
+					if (parent instanceof FDBroadcast) {
+						opName = ((FDBroadcast) parent).getTarget().getName();
+						opType = "broadcast";
+					}
+					error("Mandatory argument '" + tc.getName() + "' is missing for " + opType + " '" + opName + "'",
+						parent, feature, -1, METHOD_ARGUMENT_QUICKFIX, opName, tc.getName());
 					hasError |= true;
 				}
 			} 
