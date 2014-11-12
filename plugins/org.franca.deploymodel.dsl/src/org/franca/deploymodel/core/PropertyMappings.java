@@ -56,6 +56,8 @@ public class PropertyMappings {
 				hosts.add(FDPropertyHost.FLOATS);
 			else if (FrancaHelpers.isString(typeRef))
 				hosts.add(FDPropertyHost.STRINGS);
+			else if (FrancaHelpers.isByteBuffer(typeRef))
+				hosts.add(FDPropertyHost.BYTE_BUFFERS);
 		}
 
 		// if looking for INTEGERS or FLOATS, we also look for NUMBERS
