@@ -7,15 +7,19 @@
  *******************************************************************************/
 package org.franca.connectors.dbus
 
+import com.google.inject.Inject
 import java.util.List
 import java.util.Map
-import com.google.inject.Inject
-
 import model.emf.dbusxml.AccessType
 import model.emf.dbusxml.DbusxmlFactory
 import model.emf.dbusxml.DirectionType
 import model.emf.dbusxml.DocType
-
+import org.eclipse.emf.common.util.BasicEList.FastCompare
+import org.eclipse.emf.common.util.EList
+import org.eclipse.emf.ecore.util.EObjectEList
+import org.eclipse.emf.ecore.util.EcoreEList
+import org.eclipse.emf.ecore.util.EcoreUtil
+import org.eclipse.emf.ecore.util.EcoreUtil.Copier
 import org.franca.core.framework.TransformationLogger
 import org.franca.core.franca.FAnnotation
 import org.franca.core.franca.FAnnotationType
@@ -35,14 +39,15 @@ import org.franca.core.franca.FModel
 import org.franca.core.franca.FModelElement
 import org.franca.core.franca.FStructType
 import org.franca.core.franca.FType
+import org.franca.core.franca.FTypeCollection
 import org.franca.core.franca.FTypeDef
 import org.franca.core.franca.FTypeRef
 import org.franca.core.franca.FUnionType
 import org.franca.core.franca.FrancaPackage
-import org.franca.core.franca.FTypeCollection
 
-import static org.franca.core.framework.TransformationIssue.*
 import static org.franca.core.framework.FrancaModelMapper.*
+import static org.franca.core.framework.TransformationIssue.*
+
 import static extension org.franca.core.utils.ExpressionEvaluator.*
 
 class Franca2DBusTransformation {
@@ -64,24 +69,66 @@ class Franca2DBusTransformation {
 	}
 
 	def create DbusxmlFactory::eINSTANCE.createInterfaceType transformInterface (FInterface src) {
-		//println("transformInterface: " + src.name)
+		//println("transformInterface: " + src.name
+			
+		val parentInterfaces = newHashSet
+		parentInterfaces.add(src)
+		var source = src
+		while(source.base!=null && !parentInterfaces.contains(source.base)){
+		var base = source.base
+		if(!parentInterfaces.contains(base))	{
+			parentInterfaces.add(base)
+			}
+			 source =base;
+		}
 
-		// map metadata of interface
 		name = mInterfaceName = src.model.name + "." + src.name
 		if (src.version!=null)
 			version = "" + src.version.major + "." + src.version.minor
 		//doc = src.comment
 		
 		// map attributes
-		property.addAll(src.attributes.map [transformAttribute])
-		
+		val propertyReference = property
+		parentInterfaces.forEach[propertyReference.addAll(it.attributes.copyAttributes.map[transformAttribute])]
 		// map methods (request/reponse and broadcast)
-		method.addAll(src.methods.map [transformMethod])		
-		signal.addAll(src.broadcasts.map [transformBroadcast])		
-
-		addBacklink(it, src)
-	}
+		val methodReference = method
+		//method.addAll(src.methods.map [transformMethod])	
+		parentInterfaces.forEach[methodReference.addAll(it.methods.copyMethods.map[ transformMethod])]	
+		//signal.addAll(src.broadcasts.map [transformBroadcast])
+		val signalReference = signal
 			
+		parentInterfaces.forEach[signalReference.addAll(it.broadcasts.copyBroadcasts.map[transformBroadcast])]	
+	addBacklink(it, src)
+	}
+		
+	
+	/**
+	 * This method is to copy all attributes and add them to child attribute list
+	 */
+	def copyAttributes(EList<FAttribute> original){
+	val copy = newArrayList
+	original.forEach[copy.add(EcoreUtil.copy(it) as FAttribute)]
+    copy
+}
+	/**
+	 * This method is to copy all methods and add them to child method list
+	 */
+	def copyMethods(EList<FMethod> original){
+	val copy = newArrayList
+	original.forEach[copy.add(EcoreUtil.copy(it) as FMethod)]
+    copy
+}
+	/**
+	 * This method is to copy all broadCasts and add them to child broadcast list
+	 */
+	def copyBroadcasts(EList<FBroadcast> original){
+	val copy = newArrayList
+	original.forEach[copy.add(EcoreUtil.copy(it) as FBroadcast)]
+    copy
+}
+		
+		
+		
 	def create DbusxmlFactory::eINSTANCE.createPropertyType transformAttribute (FAttribute src) {
 		name = src.name
 		type = transformType2TypeString(src.type, src.array)
@@ -99,7 +146,7 @@ class Franca2DBusTransformation {
 		arg.addAll(src.outArgs.map [transformArgument(DirectionType::OUT)])
 		if(src.errors != null) error.addAll(src.errors.createErrors)
 		addBacklink(it, src)
-	}
+    }	   
 
 	def create DbusxmlFactory::eINSTANCE.createSignalType transformBroadcast (FBroadcast src) {
 		name = src.name
@@ -125,7 +172,7 @@ class Franca2DBusTransformation {
 		else {
 			line.addLines(src.name, src.description)			
 		}
-	}
+	}			 
 	
 	def private DocType createDoc (FModelElement src) {
 		if(src.comment != null) {
