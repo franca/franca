@@ -9,7 +9,6 @@ package org.franca.deploymodel.core
 
 import org.franca.deploymodel.dsl.fDeploy.FDBoolean
 import org.franca.deploymodel.dsl.fDeploy.FDElement
-import org.franca.deploymodel.dsl.fDeploy.FDEnum
 import org.franca.deploymodel.dsl.fDeploy.FDEnumType
 import org.franca.deploymodel.dsl.fDeploy.FDEnumerator
 import org.franca.deploymodel.dsl.fDeploy.FDInteger
@@ -18,6 +17,8 @@ import org.franca.deploymodel.dsl.fDeploy.FDSpecification
 import org.franca.deploymodel.dsl.fDeploy.FDString
 import org.franca.deploymodel.dsl.fDeploy.FDValue
 import org.franca.deploymodel.dsl.fDeploy.FDeployFactory
+
+import static extension org.franca.deploymodel.core.FDModelUtils.*
 
 /**
  * Helper functions to build deploy models.
@@ -114,7 +115,7 @@ class DeployModelBuilder {
 			val evalue = enumtype.enumerators.findFirst(e | e.name == value)
 			if (evalue!=null) {
 				setPropertyGeneric(decl, elem,
-					[dflt | (dflt as FDEnum).value != evalue],
+					[dflt | dflt.enumerator != evalue],
 					[ | createFDValue(evalue) ]
 				)						
 			}
@@ -219,7 +220,7 @@ class DeployModelBuilder {
 	}
 
 	def private static createFDValue (FDEnumerator value) {
-		val v = FDeployFactory::eINSTANCE.createFDEnum
+		val v = FDeployFactory::eINSTANCE.createFDGeneric
 		v.value = value
 		v
 	}

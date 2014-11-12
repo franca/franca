@@ -38,7 +38,6 @@ import org.franca.deploymodel.dsl.fDeploy.FDBroadcast;
 import org.franca.deploymodel.dsl.fDeploy.FDComplexValue;
 import org.franca.deploymodel.dsl.fDeploy.FDDeclaration;
 import org.franca.deploymodel.dsl.fDeploy.FDElement;
-import org.franca.deploymodel.dsl.fDeploy.FDEnum;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumType;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumValue;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumeration;
@@ -645,11 +644,17 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 							src, literal, index);
 				}
 				break;
+			case FDPredefinedTypeId.INSTANCE_VALUE:
+				if (! (FDModelUtils.isInstanceRef(value))) {
+					error("Invalid type, expected reference to interface instance",
+							src, literal, index);
+				}
+				break;
 			}
 		} else {
 			FDType type = typeRef.getComplex();
 			if (type instanceof FDEnumType) {
-				if (! (value instanceof FDEnum)) {
+				if (! (FDModelUtils.isEnumerator(value))) {
 					error("Invalid type, expected enumerator",
 							src, literal, index);
 				}

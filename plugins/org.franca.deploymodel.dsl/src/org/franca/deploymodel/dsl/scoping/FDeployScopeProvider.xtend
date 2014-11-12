@@ -17,6 +17,7 @@ import org.eclipse.xtext.naming.IQualifiedNameProvider
 import org.eclipse.xtext.resource.EObjectDescription
 import org.eclipse.xtext.resource.IEObjectDescription
 import org.eclipse.xtext.scoping.IScope
+import org.eclipse.xtext.scoping.Scopes
 import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
 import org.eclipse.xtext.scoping.impl.ImportUriGlobalScopeProvider
 import org.eclipse.xtext.scoping.impl.SimpleScope
@@ -40,14 +41,15 @@ import org.franca.deploymodel.dsl.fDeploy.FDInterface
 import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance
 import org.franca.deploymodel.dsl.fDeploy.FDMethod
 import org.franca.deploymodel.dsl.fDeploy.FDModel
+import org.franca.deploymodel.dsl.fDeploy.FDPredefinedTypeId
 import org.franca.deploymodel.dsl.fDeploy.FDProperty
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyFlag
 import org.franca.deploymodel.dsl.fDeploy.FDProvider
-import org.franca.deploymodel.dsl.fDeploy.FDSpecification
 import org.franca.deploymodel.dsl.fDeploy.FDStruct
 import org.franca.deploymodel.dsl.fDeploy.FDTypes
 import org.franca.deploymodel.dsl.fDeploy.FDUnion
+import org.franca.deploymodel.dsl.fDeploy.FDeployPackage
 
 import static extension org.eclipse.xtext.scoping.Scopes.*
 
@@ -242,25 +244,33 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 
 	// *****************************************************************************
 	// simple type system
-	def scope_FDEnum_value(FDPropertyFlag elem, EReference ref) {
-		if (elem.getDefault == null) {
-			IScope::NULLSCOPE
-		} else {
-			val decl = elem.eContainer as FDPropertyDecl
-			decl.getPropertyDeclEnumScopes
-		}
+
+	def scope_FDGeneric_value(FDPropertyFlag elem, EReference ref) {
+		val decl = elem.eContainer as FDPropertyDecl
+		decl.getPropertyDeclGenericScopes(decl, ref)
 	}
 
-	def scope_FDEnum_value(FDProperty elem, EReference ref) {
-		elem.getDecl.getPropertyDeclEnumScopes
+	def scope_FDGeneric_value(FDProperty elem, EReference ref) {
+		elem.getDecl.getPropertyDeclGenericScopes(elem, ref)
 	}
 
-	def private IScope getPropertyDeclEnumScopes(FDPropertyDecl decl) {
+	def private IScope getPropertyDeclGenericScopes(
+		FDPropertyDecl decl,
+		EObject ctxt,
+		EReference ref
+	) {
 		val typeRef = decl.getType
 		if (typeRef.getComplex != null) {
 			val type = typeRef.getComplex
 			if (type instanceof FDEnumType) {
 				return (type as FDEnumType).getEnumerators.scopeFor
+			}
+		} else {
+			if (typeRef.predefined==FDPredefinedTypeId::INSTANCE) {
+				return new SimpleScope(Scopes::selectCompatible(
+					delegateGetScope(ctxt, ref).allElements,
+					FDeployPackage::eINSTANCE.FDInterfaceInstance
+				))
 			}
 		}
 		IScope::NULLSCOPE
