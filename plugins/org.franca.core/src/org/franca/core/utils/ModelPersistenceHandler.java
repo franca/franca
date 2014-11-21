@@ -139,10 +139,7 @@ public class ModelPersistenceHandler {
 			resourceSet.getURIConverter().getURIMap().put(existingURI, toSaveURI);
 		} else {
 			// create a resource containing the model
-			/**
-			 * added the file extension to the factory map so that it registers the extension to the resource factory
-			 */
-			resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("fidl", new XMIResourceFactoryImpl());
+		
 			resource = resourceSet.createResource(toSaveURI);
 			resource.getContents().add(model);
 	
@@ -150,8 +147,7 @@ public class ModelPersistenceHandler {
 
 		//save the root model
 		try {
-			
-			resource.save(null);
+		model.eResource().save(Collections.EMPTY_MAP);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
