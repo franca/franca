@@ -279,7 +279,7 @@ public class FrancaHelpers {
 	public static boolean isInteger (FTypeRef typeRef) {
 		if (typeRef == null) return false;
 		FBasicTypeId bt = getActualPredefined(typeRef);
-		return isBasicIntegerId(bt) || typeRef.getInterval() != null;
+		return isBasicIntegerId(bt) || getActualInterval(typeRef) != null;
 	}
 	
 	/** Returns true if the referenced type is any kind of integer. */
@@ -390,36 +390,44 @@ public class FrancaHelpers {
 		return false;
 	}
 	
+	public static String getTypeString(FType type) {
+		if (type instanceof FIntegerInterval) {
+			FIntegerInterval interval = (FIntegerInterval) type;
+			BigInteger lowerBound = interval.getLowerBound();
+			BigInteger upperBound = interval.getUpperBound();
+			return "Integer(" +
+					(lowerBound == null ? "minInt" : lowerBound.toString()) +
+					"," +
+					(upperBound == null ? "maxInt" : upperBound.toString()) +
+					")";
+		} else if (type instanceof FEnumerationType) {
+			return "enumeration<" + type.getName() + ">";
+		} else if (type instanceof FStructType) {
+			return "struct<" + type.getName() + ">";
+		} else if (type instanceof FUnionType) {
+			return "union<" + type.getName() + ">";
+		} else if (type instanceof FMapType) {
+			return "map<" + type.getName() + ">";
+		} else {
+			return type.getName();
+		}
+	}
+	
 	/** Get a human-readable name for a Franca type. */
 	public static String getTypeString (/*@NonNull*/ FTypeRef typeRef) {
 		FType derived = getActualDerived(typeRef);
 		if (derived == null) {
 			FIntegerInterval interval = getActualInterval(typeRef);
 			if (interval != null) {
-				BigInteger lowerBound = interval.getLowerBound();
-				BigInteger upperBound = interval.getUpperBound();
-				return "Integer (" +
-						(lowerBound == null ? "minInt" : lowerBound.toString()) +
-						"," +
-						(upperBound == null ? "maxInt" : upperBound.toString()) +
-						")";
+				return getTypeString(interval);
 			}
 			return getActualPredefined(typeRef).getName();
 		} else {
 			FType type = getActualDerived(typeRef);
-			if (type instanceof FEnumerationType) {
-				return "enumeration '" + type.getName() + "'";
-			} else if (type instanceof FStructType) {
-				return "struct '" + type.getName() + "'";
-			} else if (type instanceof FUnionType) {
-				return "union '" + type.getName() + "'";
-			} else if (type instanceof FMapType) {
-				return "map '" + type.getName() + "'";
-			} else {
-				return "'" + type.getName() + "'";
-			}
+			return getTypeString(type);
 		}
 	}
+	
 
 
 	// *****************************************************************************

@@ -21,11 +21,13 @@ import org.franca.core.framework.FrancaHelpers;
 import org.franca.core.franca.FAssignment;
 import org.franca.core.franca.FAttribute;
 import org.franca.core.franca.FBroadcast;
+import org.franca.core.franca.FConstantDef;
 import org.franca.core.franca.FContract;
 import org.franca.core.franca.FEventOnIf;
 import org.franca.core.franca.FGuard;
 import org.franca.core.franca.FInterface;
 import org.franca.core.franca.FMethod;
+import org.franca.core.franca.FQualifiedElementRef;
 import org.franca.core.franca.FState;
 import org.franca.core.franca.FTransition;
 import org.franca.core.franca.FTrigger;
@@ -110,22 +112,22 @@ public class ContractValidator {
 	   }
 	}
 	
-	
 	public static void checkAssignment (ValidationMessageReporter reporter, FAssignment assignment) {
-		TypeSystem ts = new TypeSystem(new IssueCollector());
-		FTypeRef typeLHS = ts.getActualTypeOf(assignment.getLhs(), assignment, FrancaPackage.Literals.FASSIGNMENT__LHS);
-//		if (typeLHS==null) {
-//			reporter.reportError("invalid left-hand side in assignment", assignment, FrancaPackage.Literals.FASSIGNMENT__LHS);
-//		} else {
-			FTypeRef type = TypesValidator.checkExpression(reporter, assignment.getRhs(), assignment, FrancaPackage.Literals.FASSIGNMENT__RHS, -1);
-			if (type != null && ! TypeSystem.isAssignableTo(type, typeLHS)) {
+		TypeSystem ts = new TypeSystem(new IssueCollector()); //TODO perhaps remeber the collector and report all found issues here, too
+		FQualifiedElementRef lhs = assignment.getLhs();
+		FTypeRef typeLHS = ts.getActualTypeOf(lhs, assignment, FrancaPackage.Literals.FASSIGNMENT__LHS);
+		FTypeRef valueType = TypesValidator.checkExpression(reporter, assignment.getRhs(), assignment, FrancaPackage.Literals.FASSIGNMENT__RHS, -1);
+		if (typeLHS==null) {
+			reporter.reportError("invalid left-hand side in assignment", assignment, FrancaPackage.Literals.FASSIGNMENT__LHS);
+		} else {
+			if (valueType != null && ! TypeSystem.isAssignableTo(valueType, typeLHS)) {
 				reporter.reportError(
-						FrancaHelpers.getTypeString(type) + " is not assignable to " + 
+						FrancaHelpers.getTypeString(valueType) + " is not assignable to " + 
 								FrancaHelpers.getTypeString(typeLHS),
 						assignment, null, -1
 				);
 			}
-//		}
+		}
 	}
 	
 	public static void checkGuard (ValidationMessageReporter reporter, FGuard guard) {
@@ -135,7 +137,7 @@ public class ContractValidator {
 		
 		if (type != null && ! FrancaHelpers.isBoolean(type)) {
 			reporter.reportError(
-					"invalid type (is " + FrancaHelpers.getTypeString(type) + ", expected boolean)",
+					"invalid type (is " + FrancaHelpers.getTypeString(type) + ", expected Boolean)",
 					guard, FrancaPackage.Literals.FGUARD__CONDITION, -1
 			);
 		}

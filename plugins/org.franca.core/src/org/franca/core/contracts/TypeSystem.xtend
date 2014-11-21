@@ -7,6 +7,7 @@
  *******************************************************************************/
 package org.franca.core.contracts
 
+import java.math.BigDecimal
 import java.math.BigInteger
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EStructuralFeature
@@ -15,30 +16,31 @@ import org.franca.core.franca.FBinaryOperation
 import org.franca.core.franca.FBooleanConstant
 import org.franca.core.franca.FConstant
 import org.franca.core.franca.FCurrentError
+import org.franca.core.franca.FDoubleConstant
+import org.franca.core.franca.FEnumerationType
 import org.franca.core.franca.FEnumerator
 import org.franca.core.franca.FExpression
+import org.franca.core.franca.FFloatConstant
 import org.franca.core.franca.FIntegerConstant
+import org.franca.core.franca.FIntegerInterval
 import org.franca.core.franca.FModelElement
 import org.franca.core.franca.FOperator
 import org.franca.core.franca.FQualifiedElementRef
 import org.franca.core.franca.FStringConstant
+import org.franca.core.franca.FType
+import org.franca.core.franca.FTypeCast
 import org.franca.core.franca.FTypeRef
 import org.franca.core.franca.FTypedElement
 import org.franca.core.franca.FUnaryOperation
 import org.franca.core.franca.FrancaFactory
-import org.franca.core.franca.FDoubleConstant
-import org.franca.core.franca.FFloatConstant
 import org.franca.core.utils.FrancaModelCreator
 
 import static org.franca.core.FrancaModelExtensions.*
-import static org.franca.core.franca.FrancaPackage$Literals.*
+import static org.franca.core.contracts.ComparisonResult.*
+import static org.franca.core.franca.FrancaPackage.Literals.*
 
 import static extension org.franca.core.framework.FrancaHelpers.*
-
-import static org.franca.core.contracts.ComparisonResult.*
-import org.franca.core.franca.FEnumerationType
-import org.franca.core.franca.FTypeCast
-import org.franca.core.franca.FType
+import static extension org.franca.core.utils.JavaTypeSystemHelpers.*
 
 class TypeSystem {
 	
@@ -51,7 +53,7 @@ class TypeSystem {
 	public static val DOUBLE_TYPE = FrancaFactory::eINSTANCE.createFTypeRef => [predefined = FBasicTypeId::DOUBLE]
 	public static val STRING_TYPE = FrancaFactory::eINSTANCE.createFTypeRef => [predefined = FBasicTypeId::STRING]
 	
-	static val integerMapping = #{
+	static public val integerMapping = #{
 		FBasicTypeId::INT8 -> (FrancaFactory::eINSTANCE.createFIntegerInterval => [
 							lowerBound = -BigInteger::valueOf(2).pow(7)
 							upperBound = BigInteger::valueOf(2).pow(7).subtract(BigInteger::ONE)
@@ -119,7 +121,7 @@ class TypeSystem {
 			FDoubleConstant: DOUBLE_TYPE
 			FStringConstant:  STRING_TYPE
 			default: {
-				addIssue("unknown meta type " + expr.eClass.name + " for constant ", loc, feat);
+				addIssue("unknown meta type " + expr.eClass.name + " for constant", loc, feat);
 				null
 			}
 		}
@@ -130,7 +132,10 @@ class TypeSystem {
 		
 			if (actualType == null) {
 				null
-			} else if (!it.type.isAssignableTo(actualType)) {
+//			} else if (it.type.isNumber) {
+//				// In this case it's the users responsibility to decide whether the possible loss of precision is acceptable or not.
+//				type
+			} else if (!actualType.isAssignableTo(it.type)) {
 				if (it.type != null) addIssue(actualType.typeString + " can not be cast to " + type.typeString, loc, feat);
 				null
 			} else {		
@@ -143,7 +148,7 @@ class TypeSystem {
 			val type = operand.checkType(it, FUNARY_OPERATION__OPERAND)
 			if (! type.isBoolean) {
 				if (type != null) {
-					addIssue("invalid type (is " + type.typeString + ", expected boolean)", loc, feat)					
+					addIssue("invalid type (is " + type.typeString + ", expected Boolean)", loc, feat)					
 				}
 				null
 			} else {
@@ -161,10 +166,10 @@ class TypeSystem {
 			val t2 = right.checkType(it, FBINARY_OPERATION__RIGHT)
 			if (! (t1.isBoolean && t2.isBoolean)) {
 				if (t1 != null) {
-					addIssue("invalid type (is " + t1.typeString + ", expected boolean)", it, FBINARY_OPERATION__LEFT)
+					addIssue("invalid type (is " + t1.typeString + ", expected Boolean)", it, FBINARY_OPERATION__LEFT)
 				}
 				if (t2 != null) {
-					addIssue("invalid type (is " + t1.typeString + ", expected boolean)", it, FBINARY_OPERATION__RIGHT)
+					addIssue("invalid type (is " + t2.typeString + ", expected Boolean)", it, FBINARY_OPERATION__RIGHT)
 				}
 				null
 			} else {
@@ -212,14 +217,11 @@ class TypeSystem {
 					case EQUAL : {lhsType}
 					case SMALLER : {rhsType}
 					default : { // in case of two different constants, for example
-						//TODO think about the assignable cases. what if compare cardinality says incompatible but assignable says something else?
 						if (lhsType.isInteger && rhsType.isInteger) {
 							val lhsInterval = toInterval(lhsType)
 							val rhsInterval = toInterval(rhsType)
-							createInterval(
-								lhsInterval.lowerBound.min(rhsInterval.lowerBound),
-								lhsInterval.upperBound.max(rhsInterval.upperBound)
-							)
+							
+							determineInterval(op, lhsInterval, rhsInterval, loc, feat)
 						} else {
 							if (lhsType != null && rhsType != null) {
 								addIssue("incompatible types " + lhsType.typeString + " and " + rhsType.typeString, loc, feat)
@@ -229,12 +231,123 @@ class TypeSystem {
 					}
 				}
 			} else {
+				if (! rhsType.isNumber) {
+					addIssue(rhsType.typeString + " is not allowed with operator " + op.literal, it, FBINARY_OPERATION__RIGHT)
+				}
+				if (! lhsType.isNumber) {
+					addIssue(lhsType.typeString + " is not allowed with operator " + op.literal, it, FBINARY_OPERATION__LEFT)
+				}
 				null
 			}
 					
 		} else {
 			addIssue("unknown binary operator " + op, loc, feat)
 			null
+		}
+	}
+	
+	/*package private*/ protected def determineInterval(FOperator op, FIntegerInterval lhsInterval, FIntegerInterval rhsInterval, EObject loc, EStructuralFeature feat) {
+		if (FOperator::ADDITION.equals(op)) {
+			createInterval(
+				lhsInterval.lowerBound.add(rhsInterval.lowerBound),
+				lhsInterval.upperBound.add(rhsInterval.upperBound)
+			)
+		} else if (FOperator::SUBTRACTION.equals(op)) {
+			createInterval(
+				lhsInterval.lowerBound.subtract(rhsInterval.upperBound),
+				lhsInterval.upperBound.subtract(rhsInterval.lowerBound)
+			)
+		} else if (FOperator::MULTIPLICATION.equals(op)) {
+			createInterval(
+				if (lhsInterval.upperBound.signum != 1 && rhsInterval.upperBound.signum != 1) {
+					lhsInterval.upperBound.multiply(rhsInterval.upperBound)
+				} else if (lhsInterval.upperBound.signum != 1 && rhsInterval.upperBound.signum != -1) {
+					lhsInterval.lowerBound.multiply(rhsInterval.upperBound)
+				} else if (lhsInterval.upperBound.signum != -1 && rhsInterval.upperBound. signum != 1) {
+					lhsInterval.upperBound.multiply(rhsInterval.lowerBound)
+				} else if (lhsInterval.upperBound.signum != -1 && rhsInterval.upperBound.signum != -1) {
+					lhsInterval.lowerBound.multiply(rhsInterval.lowerBound)
+				},
+				if (lhsInterval.upperBound.signum != -1 && rhsInterval.upperBound.signum != -1) {
+					lhsInterval.upperBound.multiply(rhsInterval.upperBound)
+				} else if (lhsInterval.upperBound.signum != -1 && rhsInterval.upperBound.signum != 1) {
+					lhsInterval.lowerBound.multiply(rhsInterval.upperBound)
+				} else if (lhsInterval.upperBound.signum != 1 && rhsInterval.upperBound. signum != -1) {
+					lhsInterval.upperBound.multiply(rhsInterval.lowerBound)
+				} else if (lhsInterval.upperBound.signum != 1 && rhsInterval.upperBound.signum != 1) {
+					lhsInterval.lowerBound.multiply(rhsInterval.lowerBound)
+				}
+			)								
+		} else if (FOperator::DIVISION.equals(op)) {
+			if (rhsInterval.lowerBound.signum == 0 && rhsInterval.upperBound.signum == 0) {
+				addIssue("division by zero", loc, feat);
+				null //return necessary to force return here
+			} else {
+				//TODO add warning, if division by zero is possible (if user defined interval)
+				
+				val rhsUpperBound = if (rhsInterval.upperBound.signum != 0) {rhsInterval.upperBound} else {- BigInteger::ONE}
+				val rhsLowerBound = if (rhsInterval.lowerBound.signum != 0) {rhsInterval.lowerBound} else {BigInteger::ONE}
+				//... correct that copy from multiplication:
+				//TODO: it should be configurable how values get rounded when dividing (target systems might potentially do this differently!) 
+				createInterval(
+					// lower bound
+					// lhsInterval negative
+					if (lhsInterval.upperBound.signum != 1) {
+						if (rhsUpperBound.signum != 1) {
+							lhsInterval.upperBound.divide(rhsLowerBound)
+						} else if (rhsLowerBound.signum != -1) {
+							lhsInterval.lowerBound.divide(rhsLowerBound)
+						} else {
+							lhsInterval.lowerBound
+						}
+					// lhsInterval positive
+					} else if (lhsInterval.lowerBound.signum != -1) {
+						if (rhsLowerBound.signum != -1) {
+							lhsInterval.lowerBound.divide(rhsUpperBound)
+						} else if (rhsUpperBound.signum != 1) {
+							lhsInterval.upperBound.divide(rhsLowerBound)
+						} else {
+							lhsInterval.upperBound.negate
+						}
+					// lhsInterval is crossing 0 now
+					} else if (rhsLowerBound.signum != -1) {
+						lhsInterval.lowerBound.divide(rhsLowerBound)
+					} else if (rhsUpperBound.signum != 1) {
+						lhsInterval.upperBound.divide(rhsUpperBound)
+					// rhsInterval is crossing 0 now, too
+					} else {
+						lhsInterval.lowerBound //(divided by 1)
+					},
+					//upper bound
+					// lhsInterval negative
+					if (lhsInterval.upperBound.signum != 1) {
+						if (rhsUpperBound.signum != 1) {
+							lhsInterval.lowerBound.divide(rhsUpperBound)
+						} else if (rhsLowerBound.signum != -1) {
+							lhsInterval.upperBound.divide(rhsLowerBound)
+						} else {
+							lhsInterval.lowerBound.negate
+						}
+					// lhsInterval positive
+					} else if (lhsInterval.lowerBound.signum != -1) {
+						if (rhsLowerBound.signum != -1) {
+							lhsInterval.upperBound.divide(rhsLowerBound)
+						} else if (rhsUpperBound.signum != 1) {
+							lhsInterval.lowerBound.divide(rhsUpperBound)
+						} else {
+							lhsInterval.upperBound
+						}
+					// lhsInterval is crossing 0 now
+					} else if (rhsLowerBound.signum != -1) {
+						lhsInterval.upperBound
+					} else if (rhsUpperBound.signum != 1) {
+						lhsInterval.lowerBound.negate
+					// rhsInterval is crossing 0 now, too
+					} else {
+						lhsInterval.upperBound //(divided by 1)
+					}
+				)
+			}
 		}
 	}
 
@@ -252,7 +365,7 @@ class TypeSystem {
 				expr.field
 			});
 			if (element instanceof FType) {
-				addIssue("references to types are not allowed here (referencing type " + element.name + ")", loc, feat);
+				addIssue("references to types are not allowed here (referencing type " + getTypeString(element as FType) + ")", loc, feat);
 				null
 			} else {
 				val result = element.typeRef.actualFTypeRef
@@ -278,7 +391,7 @@ class TypeSystem {
 	}
 	
 	def dispatch FTypeRef checkType (FExpression expr, EObject loc, EStructuralFeature feat) {
-		addIssue("unknown expression type " + expr.eClass.name, loc, feat)
+		addIssue("unknown expression type '" + expr.eClass.name + "'", loc, feat)
 		null
 	}
 	
@@ -321,6 +434,40 @@ class TypeSystem {
 			collector.addIssue(mesg, loc, feat)
 	}
 	
+	def static boolean isAssignableTo(Number num, FTypeRef target) {
+		if (target.isFloatingPoint && !(num instanceof BigDecimal)) {
+			
+		} else if (target.isInteger && num.isIntegerNumber) {
+			val interval = target.interval
+			if (interval != null) {
+				isNumberInInterval(num, interval)
+			}
+			val predef = target.actualPredefined
+			if (predef != null) {
+				integerMapping.get(predef)
+			}
+			return false
+		}
+		false
+	}
+	
+	def static isNumberInInterval(Number num, FIntegerInterval interval) {
+		val low = interval.lowerBound;
+		val high = interval.upperBound;
+		 (low == null ||
+		        	switch (num) {
+						BigInteger: low.compareTo(num) <= 0
+						default: low.compareTo(BigInteger::valueOf(num.longValue)) <= 0
+					}
+		       ) &&
+		       (high == null ||
+					switch (num) {
+						BigInteger: high.compareTo(num) >= 0
+						default: high.compareTo(BigInteger::valueOf(num.longValue)) >= 0
+					}
+				)
+	}
+	
 	def static boolean isAssignableTo(FTypeRef source, FTypeRef target) {
 		val sourceDerived = getActualDerived(source)
 		val targetDerived = getActualDerived(target)
@@ -342,11 +489,13 @@ class TypeSystem {
 		if (tr1.isDouble) {
 			if (tr2.isDouble) return EQUAL
 			if (tr2.isFloat) return GREATER
+			//TODO accept integers up to the size of the mantissa
 			return ComparisonResult::INCOMPATIBLE
 		}
 		if (tr1.isFloat) {
 			if (tr2.isDouble) return SMALLER
 			if (tr2.isFloat) return EQUAL
+			//TODO accept integers up to the size of the mantissa
 			return ComparisonResult::INCOMPATIBLE
 		}
 		
@@ -355,7 +504,7 @@ class TypeSystem {
 		val interval1 = if (predef1.basicIntegerId) integerMapping.get(predef1) else tr1.interval
 		val interval2 = if (predef2.basicIntegerId) integerMapping.get(predef2) else tr2.interval
 		
-		if (interval1 !=null && interval2 != null) {
+		if (interval1 != null && interval2 != null) {
 			val lowerBound1 = interval1.lowerBound
 			val lowerBound2 = interval2.lowerBound
 			val upperBound1 = interval1.upperBound

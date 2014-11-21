@@ -21,23 +21,61 @@ import org.franca.core.franca.FStructType
 import org.franca.core.franca.FBracketInitializer
 import org.franca.core.franca.FArrayType
 import org.franca.core.franca.FMapType
+import org.franca.core.franca.FEnumerator
+import org.franca.core.franca.FBasicTypeId
 
 import static org.franca.core.franca.FrancaPackage$Literals.*
 import static extension org.franca.core.FrancaModelExtensions.*
 import static extension org.franca.core.framework.FrancaHelpers.*
-import org.franca.core.franca.FEnumerator
-import org.franca.core.franca.FBasicTypeId
+import static extension org.franca.core.utils.ExpressionEvaluator.*
+import java.math.BigInteger
 
 class TypesValidator {
+	
 
-	def static checkConstantType (ValidationMessageReporter reporter, FConstantDef constantDef) {
+	def static boolean checkConstantType (ValidationMessageReporter reporter, FConstantDef constantDef) {
+//		
+//		If the concrete type of the constant should once get necessary to return, then an artificial interval with
+//      borders equal to the constants value should be created and returned.
+//		
 		val typeLHS= constantDef.type
-		val type = checkConstantRHS(constantDef.rhs, typeLHS,
-			reporter, constantDef, FCONSTANT_DEF__RHS, -1
-		)
-		if (type != null && !TypeSystem::isAssignableTo(type, typeLHS)) {
-			reporter.reportError("'" + type.typeString + "' is not assignable to '" + typeLHS.typeString + "'", constantDef, FCONSTANT_DEF__RHS)
+		val typeRHS = checkConstantRHS(constantDef.rhs, typeLHS, reporter, constantDef, FCONSTANT_DEF__RHS, -1)
+						
+		//evaluate actual value for numbers here
+		if (typeRHS != null) {
+			if (typeRHS.isNumber) {
+				val valueRHS = constantDef.rhs.evaluate;
+				val boolean fits =
+						if (typeLHS.isDouble) {
+							typeRHS.isDouble || typeRHS.isFloat
+						} else if (typeLHS.isFloat) {
+							typeRHS.isFloat
+//						} else if (typeRHS.isBigDecimal) {
+//							throw new IllegalArgumentException("BigDecimal is currently not supported.")
+						} else if (typeLHS.isInteger && typeRHS.isInteger) {
+							val biRHS = if (valueRHS instanceof BigInteger) valueRHS as BigInteger else BigInteger.valueOf((valueRHS as Number).longValue)
+							var actualInterval = typeLHS.actualInterval;
+							val actualInteger = typeLHS.actualPredefined;
+							if (actualInterval == null) {
+								actualInterval = TypeSystem::integerMapping.get(actualInteger);
+							};
+							(actualInterval.lowerBound == null || actualInterval.lowerBound.compareTo(biRHS) <= 0) &&
+							(actualInterval.upperBound == null || actualInterval.upperBound.compareTo(biRHS) >= 0) 								
+						} else {
+							false
+						}
+				if (!fits) {
+					reporter.reportError("Value " + valueRHS + " of type " + typeRHS.typeString + " is not assignable to " + typeLHS.typeString, constantDef, FCONSTANT_DEF__RHS)
+					return false
+				} else {
+					return true
+				}
+			} else if (!TypeSystem::isAssignableTo(typeRHS, typeLHS)) {
+				reporter.reportError(typeRHS.typeString + " is not assignable to " + typeLHS.typeString, constantDef, FCONSTANT_DEF__RHS)
+				return false				
+			}
 		}
+		return true
 	}
 
 	def static void checkEnumValueType (ValidationMessageReporter reporter, FEnumerator enumerator) {
@@ -52,7 +90,7 @@ class TypesValidator {
 				enumerator, FENUMERATOR__VALUE)
 			
 		} else if (! type.isInteger) {
-			reporter.reportError("expected integer, but was '" + type.typeString + "'", enumerator, FENUMERATOR__VALUE)
+			reporter.reportError("expected type Integer, but was " + type.typeString, enumerator, FENUMERATOR__VALUE)
 		}
 	}
 
@@ -65,6 +103,7 @@ class TypesValidator {
 		int index
 	) {
 		switch (rhs) {
+			//TODO initializer should also be useable for variable initialization, shouldn't they?
 			FInitializer: {
 				checkInitializer(rhs, typeLHS, reporter, ctxt, feature, index)
 			}
@@ -189,7 +228,7 @@ class TypesValidator {
 		EStructuralFeature feature,
 		int index
 	) {
-		throw new RuntimeException("Unknown FInitializer type '" + rhs.class.toString + "'")
+		throw new RuntimeException("Unknown FInitializer type " + rhs.class.toString)
 	}
 	
 	/**

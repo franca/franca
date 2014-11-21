@@ -2,7 +2,7 @@ package org.franca.tools.contracts.tracegen.examples.reference
 
 typeCollection MyTypes {
 	
-	typedef OneOrTwo is Integer (1 ,  2)
+	typedef OneOrTwo is Integer(1 ,  2)
 	typedef One is Integer
 	
 	enumeration UnusedErrors {
@@ -54,7 +54,7 @@ interface Reference {
 //		out {UInt64 result}
 //	}
 	method addParamComplex {
-		in {MyTypes.OneOrTwo oneOrTwoSummand Integer (minInt, 42) strangeSummand Integer (42 ,42) theAnswer Int32 int32Summand Int64 int64Summand Double doubleSummand Float floatSummand}
+		in {MyTypes.OneOrTwo oneOrTwoSummand Integer(minInt, 42) strangeSummand Integer(42 ,42) theAnswer Int32 int32Summand Int64 int64Summand Double doubleSummand Float floatSummand}
 		out {Int32 int32Result Int64 int64Result Double doubleResult Float floatResult}
 	}
 	method forceEnumError {
@@ -90,9 +90,9 @@ interface Reference {
 	contract {
 		
 		vars {
-			Integer (minInt, maxInt) allIntegers;
-			Integer (1, 5) interval1;
-			Integer (2, 5) interval2;
+			Integer(minInt, maxInt) allIntegers;
+			Integer(1, 5) interval1;
+			Integer(2, 5) interval2;
 			Boolean aBoolean;
 			UInt16 aUInt16;
 			Int32 aInt32;

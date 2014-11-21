@@ -6,7 +6,6 @@ public enum ComparisonResult {
 	public static ComparisonResult fromInt(int i) {
 		if (i < 0) return SMALLER;
 		if (i == 0) return EQUAL;
-		/*if (i > 0)*/ return GREATER;
-		//return INCOMPATIBLE;
+		return GREATER;
 	}
 }

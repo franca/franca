@@ -21,6 +21,13 @@ import org.franca.core.franca.FField
 import org.franca.core.franca.FCompoundInitializer
 import org.franca.core.franca.FInitializerExpression
 import org.franca.core.franca.FStringConstant
+import org.franca.core.franca.FFloatConstant
+import org.franca.core.franca.FDoubleConstant
+import java.math.BigDecimal
+import com.google.common.primitives.UnsignedLong
+import com.google.common.primitives.UnsignedInteger
+import static extension org.franca.core.utils.JavaTypeSystemHelpers.*
+import org.franca.core.franca.FTypeCast
 
 class ExpressionEvaluator {
 	
@@ -66,11 +73,18 @@ class ExpressionEvaluator {
 			null
 	}
 	
-	def static private Object evaluate (FExpression expr) {
+	def static Object evaluate (FExpression expr) {
 		eval(expr)
 	}
 
+	def static private dispatch Object eval (FDoubleConstant expr) {
+	    expr.^val
+	}
 
+	def static private dispatch Object eval (FFloatConstant expr) {
+	    expr.^val
+	}
+	
 	def static private dispatch Object eval (FBooleanConstant expr) {
 		expr.^val
 	}
@@ -101,24 +115,120 @@ class ExpressionEvaluator {
 			return null
 		
 		switch (op) {
-			case FOperator::AND: (e1 as Boolean) && (e2 as Boolean)
-			case FOperator::OR:  (e1 as Boolean) || (e2 as Boolean)
+			case FOperator::AND: {
+			    if (e1 instanceof Boolean && e2 instanceof Boolean)  {
+			        (e1 as Boolean) && (e2 as Boolean)
+			    }
+			    else {
+			        null
+			    }
+			}
+			case FOperator::OR: {
+			    if (e1 instanceof Boolean && e2 instanceof Boolean)  {
+			        (e1 as Boolean) || (e2 as Boolean)
+			    }
+			    else {
+			        null
+			    }
+			}
 			case FOperator::EQUAL: e1 == e2 
 			case FOperator::UNEQUAL: e1 != e2 
-
-			// TODO: this doesn't work for floats and doubles
-			case FOperator::SMALLER: (e1 as BigInteger) < (e2 as BigInteger)
-			case FOperator::SMALLER_OR_EQUAL: (e1 as BigInteger) <= (e2 as BigInteger)
-			case FOperator::GREATER_OR_EQUAL: (e1 as BigInteger) >= (e2 as BigInteger)
-			case FOperator::GREATER: (e1 as BigInteger) > (e2 as BigInteger)
-			case FOperator::ADDITION: (e1 as BigInteger).add(e2 as BigInteger)
-			case FOperator::SUBTRACTION: (e1 as BigInteger).subtract(e2 as BigInteger)
-			case FOperator::MULTIPLICATION: (e1 as BigInteger).multiply(e2 as BigInteger)
-			case FOperator::DIVISION: (e1 as BigInteger).divide(e2 as BigInteger)
+			case FOperator::SMALLER: if (e1 instanceof Comparable<?>) (e1 as Comparable<Object>) < e2 else null
+			case FOperator::SMALLER_OR_EQUAL: if (e1 instanceof Comparable<?>) (e1 as Comparable<Object>) <= e2 else null
+			case FOperator::GREATER_OR_EQUAL: if (e1 instanceof Comparable<?>) (e1 as Comparable<Object>) >= e2 else null
+			case FOperator::GREATER: if (e1 instanceof Comparable<?>) (e1 as Comparable<Object>) > e2 else null
+			case FOperator::ADDITION: {
+			    if (e1 instanceof Number && e2 instanceof Number) {
+			         applyOp( e1 as Number, e2 as Number, [BigDecimal a, BigDecimal b | a.add(b)], [BigInteger a, BigInteger b | a.add(b)], [Double a, Double b | a + b])			        
+			    } else null
+			}
+			case FOperator::SUBTRACTION: {
+			    if (e1 instanceof Number && e2 instanceof Number) {
+			         applyOp( e1 as Number, e2 as Number, [BigDecimal a, BigDecimal b | a.subtract(b)], [BigInteger a, BigInteger b | a.subtract(b)], [Double a, Double b | a - b])
+			    } else null
+			}
+			case FOperator::MULTIPLICATION: {
+			    if (e1 instanceof Number && e2 instanceof Number) {
+			         applyOp( e1 as Number, e2 as Number, [BigDecimal a, BigDecimal b | a.multiply(b)], [BigInteger a, BigInteger b | a.multiply(b)], [Double a, Double b | a * b])
+			    } else null
+			}
+			case FOperator::DIVISION: {
+			    if (e1 instanceof Number && e2 instanceof Number) {
+			         applyOp( e1 as Number, e2 as Number, [BigDecimal a, BigDecimal b | a.divide(b)], [BigInteger a, BigInteger b | a.divide(b)], [Double a, Double b | a / b])
+			    } else null
+			}
 			default: null
 		}
 	}
-
+	
+	def private static applyOp(Number e1, Number e2, (BigDecimal, BigDecimal) => BigDecimal bdOp, (BigInteger, BigInteger) => BigInteger biOp, (Double, Double) => Double dOp) {
+	    if (e1.isIntegerNumber) {
+    	    val BigInteger e1Big =
+    	           if (e1 instanceof BigInteger) {
+    	               e1 as BigInteger
+    	           } else if (e1 instanceof UnsignedInteger) {
+    	               (e1 as UnsignedInteger).bigIntegerValue  
+    	           } else if (e1 instanceof UnsignedLong) {
+    	               (e1 as UnsignedLong).bigIntegerValue
+    	           } else {
+    	               BigInteger::valueOf(e1.longValue)
+    	           }
+            if (e2.isIntegerNumber) {
+                if (e2 instanceof BigInteger) {
+                    biOp.apply(e1Big, (e2 as BigInteger))
+                } else {
+                    if (e2 instanceof UnsignedInteger) {
+                        biOp.apply(e1Big, (e2 as UnsignedInteger).bigIntegerValue)
+                    } else if (e2 instanceof UnsignedLong) {
+                        biOp.apply(e1Big, (e2 as UnsignedLong).bigIntegerValue)
+                    } else {
+                        biOp.apply(e1Big, BigInteger::valueOf((e2 as Number).longValue))
+                    }
+                }
+            } else {
+                if (e2 instanceof BigDecimal) {
+                    bdOp.apply(new BigDecimal(e1 as BigInteger), e2 as BigDecimal)
+                } else {
+                    // this might result in +/- Infinity, if e1 is too large to be converted to double
+                    dOp.apply((e1 as BigDecimal).doubleValue, (e2 as Number).doubleValue)
+                }
+            }
+	    } else {
+	        val BigDecimal e1Big =
+	               if (e1 instanceof BigDecimal) {
+	                   e1 as BigDecimal
+	               } else {
+	                   BigDecimal::valueOf(e1.doubleValue)
+	               }
+	    
+            if (e2.isIntegerNumber) {
+	           if (e2 instanceof BigInteger) {
+	               bdOp.apply(e1Big, new BigDecimal(e2 as BigInteger))
+	           } else {
+	               if (e2 instanceof UnsignedInteger) {
+                        bdOp.apply(e1Big, new BigDecimal((e2 as UnsignedInteger).bigIntegerValue))
+                    } else if (e2 instanceof UnsignedLong) {
+                        bdOp.apply(e1Big, new BigDecimal((e2 as UnsignedLong).bigIntegerValue))
+                    } else {
+                        bdOp.apply(e1Big, new BigDecimal((e2 as Number).longValue))
+                    }
+               }
+           }
+           else {
+    	        if (e2 instanceof BigDecimal) {
+    	            bdOp.apply(e1Big, e2 as BigDecimal)
+                }
+                else {
+    	            bdOp.apply(e1Big, new BigDecimal(e2.doubleValue))
+    	        }
+           }
+       } 
+	}
+	
+	def static private dispatch Object eval (FTypeCast typeCast) {
+		typeCast.expression.eval
+	}
+	
 	def static private dispatch Object eval (FQualifiedElementRef qe) {
 		if (qe.qualifier==null) {
 			val te = qe.element
@@ -146,34 +256,6 @@ class ExpressionEvaluator {
 		else 
 			expr.eval
 	}
-
-	def static private foo (FQualifiedElementRef it) {
-		// qualifier/field must be set
-		val cdef = qualifier.element as FConstantDef
-		val rhs = cdef.rhs as FCompoundInitializer
-		val f = field as FField
-		val fi = rhs.elements.findFirst[element==f] 
-		fi.value
-	}
-
-//	def private getValue (FQualifiedElementRef qe) {
-//		if (qe.qualifier==null) {
-//			val te = qe.element
-//			// TODO: support array types
-//			switch(te) {
-//				FConstantDef: {
-//					if (te.rhs instanceof FExpression)
-//						(te.rhs as FExpression).evaluate
-//					else
-//						null
-//				}
-//				default: null
-//			}
-//			
-//		} else {
-//			
-//		}
-//	}
 
 	// catch-all (shouldn't occur)
 	def static private dispatch Object eval (FExpression expr) {
