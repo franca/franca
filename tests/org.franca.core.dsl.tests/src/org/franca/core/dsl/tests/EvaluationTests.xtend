@@ -90,7 +90,7 @@ class EvaluationTests extends XtextTest {
 	@Test
 	def testHugeIntegers() {
 		checkBig("h10", new BigInteger("1000000000000"))
-		checkBig("h11", new BigInteger("2000000000001"))
+		checkBig("h11", new BigInteger("1311770467294899696"))
 	}
 
 	@Test

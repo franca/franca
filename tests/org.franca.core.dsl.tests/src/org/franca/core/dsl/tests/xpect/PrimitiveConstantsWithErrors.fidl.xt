@@ -1,0 +1,73 @@
+/*******************************************************************************
+ * Copyright (c) 2014 itemis AG (http://www.itemis.de).
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************/
+//XPECT_SETUP org.franca.core.dsl.tests.xpect.FrancaIDLXpectTests END_SETUP 
+package org.franca.core.dsl.tests.xpect
+
+typeCollection PrimitiveConstantsWithErrorsCollection {
+	
+	//XPECT lineErrors  --> "Value 256 of type Integer(256,256) is not assignable to UInt8"
+	const UInt8  uint8_aboveUpperLimit = 256
+	//XPECT lineErrors  --> "Value -1 of type Integer(-1,-1) is not assignable to UInt8"
+	const UInt8  uint8_belowLowerLimit = -1
+	
+	//XPECT lineErrors  --> "Value 128 of type Integer(128,128) is not assignable to Int8"
+	const Int8  int8_aboveUpperLimit = 128
+	//XPECT lineErrors  --> "Value -129 of type Integer(-129,-129) is not assignable to Int8"
+	const Int8  int8_belowLowerLimit = -129
+	
+	//XPECT lineErrors  --> "Value 65536 of type Integer(65536,65536) is not assignable to UInt16"
+	const UInt16  uint16_aboveUpperLimit = 65536
+	//XPECT lineErrors  --> "Value -1 of type Integer(-1,-1) is not assignable to UInt16"
+	const UInt16  uint16_belowLowerLimit = -1
+	
+	//XPECT lineErrors  --> "Value 32768 of type Integer(32768,32768) is not assignable to Int16"
+	const Int16  int16_aboveUpperLimit = 32768
+	//XPECT lineErrors  --> "Value -32769 of type Integer(-32769,-32769) is not assignable to Int16"
+	const Int16  int16_belowLowerLimit = -32769
+	
+	//XPECT lineErrors  --> "Value 4294967296 of type Integer(4294967296,4294967296) is not assignable to UInt32"
+	const UInt32  uint32_aboveUpperLimit = 4294967296
+	//XPECT lineErrors  --> "Value -1 of type Integer(-1,-1) is not assignable to UInt32"
+	const UInt32  uint32_belowLowerLimit = -1
+	
+	//XPECT lineErrors  --> "Value 2147483648 of type Integer(2147483648,2147483648) is not assignable to Int32"
+	const Int32  int32_aboveUpperLimit = 2147483648
+	//XPECT lineErrors  --> "Value -2147483649 of type Integer(-2147483649,-2147483649) is not assignable to Int32"
+	const Int32  int32_belowLowerLimit = -2147483649
+	
+	//XPECT lineErrors  --> "Value 18446744073709551616 of type Integer(18446744073709551616,18446744073709551616) is not assignable to UInt64"
+	const UInt64  uint64_aboveUpperLimit = 18446744073709551616
+	//XPECT lineErrors  --> "Value -1 of type Integer(-1,-1) is not assignable to UInt64"
+	const UInt64  uint64_belowLowerLimit = -1
+	
+	//XPECT lineErrors  --> "Value 9223372036854775808 of type Integer(9223372036854775808,9223372036854775808) is not assignable to Int64"
+	const Int64  int64_aboveUpperLimit = 9223372036854775808
+	//XPECT lineErrors  --> "Value -9223372036854775809 of type Integer(-9223372036854775809,-9223372036854775809) is not assignable to Int64"
+	const Int64  int64_belowLowerLimit = -9223372036854775809
+	
+	//XPECT lineErrors  --> "Value 256 of type Integer(256,256) is not assignable to UInt8"
+	const UInt8  uint8_aboveUpperLimitHex = 0x100
+	
+	//XPECT lineErrors  --> "Value 256 of type Integer(257,257) is not assignable to UInt8"
+	const UInt8  uint8_aboveUpperLimit_calculated = (256 + 1 * 2 / 2) - 1
+	//XPECT lineErrors  --> "Value -1 of type Integer(1,1) is not assignable to UInt8"
+	const UInt8  uint8_belowLowerLimit_calculated = -1 + 1 * 2 / 2 - 1
+	
+	const Integer(1,3) validOne = 1
+	const Integer(-3,-2) validNegativeTwo = -2
+	
+	//XPECT errors --> "Value 3 of type Integer(3,3) is not assignable to Integer(1,2)" at "3"
+	const Integer(1,2) i1 = 3
+	//XPECT errors --> "Value 1 of type Integer(1,3) is not assignable to Integer(2,3)" at "validOne"
+	const Integer(2,3) i2 = validOne
+	//XPECT errors --> "Value 1 of type Integer(1,3) is not assignable to Integer(-3,-1)" at "validOne"
+	const Integer(-3,-1) i3 = validOne
+	//XPECT errors --> "Value -8 of type Integer(-36,-8) is not assignable to Integer(-3,-1)" at "validOne * 4 * validNegativeTwo"
+	const Integer(-3,-1) i4 = validOne * 4 * validNegativeTwo
+	
+}

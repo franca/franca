@@ -1,0 +1,21 @@
+/*******************************************************************************
+ * Copyright (c) 2014 itemis AG (http://www.itemis.de).
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************/
+//XPECT_SETUP org.franca.core.dsl.tests.xpect.FrancaIDLXpectTests END_SETUP 
+package org.franca.core.dsl.tests.xpect
+
+typeCollection InvalidTypeCastsCollection {
+	
+	const Double validDoubleOne = 1.0d
+	
+
+	//XPECT errors --> "Value 1.0 of type Double is not assignable to Float" at "1.0d"
+	const Float validFloatOne__WRONG = 1.0d
+	//XPECT errors --> "Value 1.0 of type Double is not assignable to Float" at "validDoubleOne"
+	const Float f = validDoubleOne
+	
+}

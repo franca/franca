@@ -48,7 +48,7 @@ typeCollection MyTypes {
 	
 	// huge numbers
 	const UInt64 h10 = 1000000 * 1000000
-	const UInt64 h11 = h10 + 1 + h10
+	const UInt64 h11 = h10 + 1 + h10 + 0x1234567890ABCDEF
 
 	// simple string constants
 	const String s10 = "foo"

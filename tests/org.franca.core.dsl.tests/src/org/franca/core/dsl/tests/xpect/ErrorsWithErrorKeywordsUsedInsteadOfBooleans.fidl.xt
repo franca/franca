@@ -22,13 +22,13 @@ interface  InterfaceTest {
 		PSM {
 			initial start
 			state start {
-				// XPECT errors --> "references to types are not allowed here (referencing type Errors)" at "errordef"
+				// XPECT errors --> "references to types are not allowed here (referencing type enumeration<Errors>)" at "errordef"
 				on error forceEnumError [errordef] -> start
-				// XPECT errors --> "invalid type (is enumeration 'Errors', expected boolean)" at "errorval"
+				// XPECT errors --> "invalid type (is enumeration<Errors>, expected Boolean)" at "errorval"
 				on error forceEnumError [errorval] -> start
-				// XPECT errors --> "references to types are not allowed here (referencing type Errors)" at "errordef"
+				// XPECT errors --> "references to types are not allowed here (referencing type enumeration<Errors>)" at "errordef"
 				on error forceEnumError [! errordef] -> start
-				// XPECT errors --> "invalid type (is enumeration 'Errors', expected boolean)" at "! errorval"
+				// XPECT errors --> "invalid type (is enumeration<Errors>, expected Boolean)" at "! errorval"
 				on error forceEnumError [! errorval] -> start
 			}
 		}
