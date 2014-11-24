@@ -143,7 +143,7 @@ public class ModelPersistenceHandler {
 			resourceSet.getURIConverter().getURIMap().put(existingURI, toSaveURI);
 		} else {
 			// create a resource containing the model
-		resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("fidl", new XMIResourceFactoryImpl());
+		
 			resource = resourceSet.createResource(toSaveURI);
 			resource.getContents().add(model);
 	
