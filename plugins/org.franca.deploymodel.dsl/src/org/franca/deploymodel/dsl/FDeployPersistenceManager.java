@@ -146,7 +146,7 @@ public class FDeployPersistenceManager {
 		}
 
 		ModelPersistenceHandler persistenceHandler = createModelPersistenceHandler(resourceSet);
-		return persistenceHandler.saveModel(model, fn, cwd);
+		return persistenceHandler.saveModel( model, fn, cwd);
 	}
 
 	
