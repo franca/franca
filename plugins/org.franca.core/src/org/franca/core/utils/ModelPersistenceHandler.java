@@ -126,6 +126,10 @@ public class ModelPersistenceHandler {
 		URI fileURI = normalizeURI(URI.createURI(filename));
 		URI cwdURI = normalizeURI(URI.createURI(cwd));
 		URI existingURI = null;
+		/**
+		 * Issue 102 FrancaPersistanceManager.savemodel  appends / for the folder path , and one more / was introduced here, which will throw file not 
+		 * found exception ,  so the other / has been removed here and the issue is fixed 
+		 */
 		URI toSaveURI = URI.createURI(cwdURI.toString() + fileURI.toString());
 		Resource resource = model.eResource();
 		
@@ -139,7 +143,7 @@ public class ModelPersistenceHandler {
 			resourceSet.getURIConverter().getURIMap().put(existingURI, toSaveURI);
 		} else {
 			// create a resource containing the model
-		
+		resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("fidl", new XMIResourceFactoryImpl());
 			resource = resourceSet.createResource(toSaveURI);
 			resource.getContents().add(model);
 	
