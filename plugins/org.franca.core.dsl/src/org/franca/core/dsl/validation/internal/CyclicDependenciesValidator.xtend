@@ -34,6 +34,7 @@ import org.franca.core.franca.FType
 import org.franca.core.franca.FTypedElement
 import org.franca.core.utils.digraph.Digraph
 import org.franca.core.franca.FElementInitializer
+import org.eclipse.xtext.xbase.lib.Procedures.Procedure1
 
 class CyclicDependenciesValidator {
 	@Inject IQualifiedNameProvider qnProvider;
@@ -205,7 +206,8 @@ class CyclicDependenciesValidator {
 	def protected Digraph<EObject> addEdgesForSubtree(Digraph<EObject> d, EObject from, List<? extends EObject> to,
 		Set<EObject> analyzedElements) {
 		if (analyzedElements.add(from)) {
-			to.forEach[d.doAddEdgesForSubtree(from, it, analyzedElements)]
+			val Procedure1<? super EObject> con = [d.doAddEdgesForSubtree(from, it, analyzedElements)]
+			to.forEach(con)
 		}
 		d
 	}
