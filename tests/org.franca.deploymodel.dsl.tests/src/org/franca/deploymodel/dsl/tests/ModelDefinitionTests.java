@@ -38,6 +38,13 @@ public class ModelDefinitionTests extends XtextTest {
     }
 
     @Test
+    public void test_28_DefDataPropertiesCoverage() {
+    	testFile("testcases/28-DefDataPropertiesCoverage.fdepl",
+    			"testcases/03-SpecDataHostsSimple.fdepl",
+    			"fidl/05-CoverageInterface.fidl");
+    }
+
+    @Test
     public void test_30_DefDataPropertiesInterfaceRef() {
     	testFile("testcases/30-DefDataPropertiesInterfaceRef.fdepl",
     			"testcases/12-SpecPropertyInterfaceRef.fdepl",

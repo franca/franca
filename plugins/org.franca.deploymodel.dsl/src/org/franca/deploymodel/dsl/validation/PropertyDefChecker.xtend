@@ -100,6 +100,9 @@ class PropertyDefChecker {
 		} else if (isFloatingPoint) {
 			if (specHelper.isMandatory(FLOATS) || specHelper.isMandatory(NUMBERS))
 				return true
+		} else if (isBoolean) {
+			if (specHelper.isMandatory(BOOLEANS))
+				return true
 		} else if (isByteBuffer) {
 			if (specHelper.isMandatory(BYTE_BUFFERS))
 				return true

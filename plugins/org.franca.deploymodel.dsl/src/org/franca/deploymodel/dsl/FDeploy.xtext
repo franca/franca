@@ -61,7 +61,7 @@ enum FDPropertyHost:
 	arguments |
 	struct_fields | union_fields | arrays | structs | unions |
 	enumerations | enumerators |
-	strings | numbers | integers | floats | byte_buffers;
+	strings | numbers | integers | floats | booleans | byte_buffers;
 
 
 // **************************************************************
