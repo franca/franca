@@ -77,6 +77,9 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 	public static final String METHOD_ARGUMENT_QUICKFIX = "METHOD_ARGUMENT_QUICKFIX";
 	public static final String METHOD_ARGUMENT_QUICKFIX_MESSAGE = "Method argument is missing for method ";
 	
+	public static final String BROADCAST_ARGUMENT_QUICKFIX = "BROADCAST_ARGUMENT_QUICKFIX";
+	public static final String BROADCAST_ARGUMENT_QUICKFIX_MESSAGE = "Broadcast argument is missing for broadcast ";
+	
 	public static final String COMPOUND_FIELD_QUICKFIX = "COMPOUND_FIELD_QUICKFIX";
 	public static final String COMPOUND_FIELD_QUICKFIX_MESSAGE = "Field is missing for compound ";
 	
@@ -129,6 +132,18 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 		if (method.getOutArguments()!=null) {
 			for(FDArgument arg : method.getOutArguments().getArguments()) {
 				if (! method.getTarget().getOutArgs().contains(arg.getTarget())) {
+					error("Invalid output argument '" + arg.getTarget().getName() + "'",
+							arg, FDeployPackage.Literals.FD_ARGUMENT__TARGET, -1);
+				}
+			}
+		}
+	}
+
+	@Check
+	public void checkBroadcastArgs (FDBroadcast broadcast) {
+		if (broadcast.getOutArguments()!=null) {
+			for(FDArgument arg : broadcast.getOutArguments().getArguments()) {
+				if (! broadcast.getTarget().getOutArgs().contains(arg.getTarget())) {
 					error("Invalid output argument '" + arg.getTarget().getName() + "'",
 							arg, FDeployPackage.Literals.FD_ARGUMENT__TARGET, -1);
 				}
@@ -454,16 +469,19 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 				if (checker.mustBeDefined(tc)) {
 					String opName = "";
 					String opType = "";
+					String quickfix = "";
 					if (parent instanceof FDMethod) {
 						opName = ((FDMethod) parent).getTarget().getName();
 						opType = "method";
+						quickfix = METHOD_ARGUMENT_QUICKFIX;
 					}
 					if (parent instanceof FDBroadcast) {
 						opName = ((FDBroadcast) parent).getTarget().getName();
 						opType = "broadcast";
+						quickfix = BROADCAST_ARGUMENT_QUICKFIX;
 					}
 					error("Mandatory argument '" + tc.getName() + "' is missing for " + opType + " '" + opName + "'",
-						parent, feature, -1, METHOD_ARGUMENT_QUICKFIX, opName, tc.getName());
+						parent, feature, -1, quickfix, opName, tc.getName());
 					hasError |= true;
 				}
 			} 

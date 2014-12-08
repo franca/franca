@@ -91,7 +91,7 @@ FDRootElement:
 
 FDElement:
 	FDRootElement | FDInterfaceInstance |
-	FDAttribute | FDMethod | FDBroadcast | FDArgument |
+	FDAttribute | FDOperation | FDArgument |
 	FDTypeDef | FDField | FDEnumeration | FDEnumValue;
 
 FDProvider:
@@ -147,6 +147,9 @@ FDAttribute:
 	'attribute' target=[fidl::FAttribute|FQN] '{'
 		(properties+=FDProperty ((',')? properties+=FDProperty)*)?
 	'}';
+
+FDOperation:
+	FDMethod | FDBroadcast;
 
 FDMethod:
 	'method' target=[fidl::FMethod|FQN] '{'
