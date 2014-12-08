@@ -222,6 +222,7 @@ FTypedElement:
 // constant definitions and initializers
 
 FConstantDef:
+	(comment=FAnnotationBlock)?
 	'const' type=FTypeRef (array?='[' ']')? name=ID '='
 		rhs=FInitializerExpression
 	;
