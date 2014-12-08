@@ -1,0 +1,104 @@
+/*******************************************************************************
+ * Copyright (c) 2014 itemis AG (http://www.itemis.de).
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************/
+package com.mypackage
+
+
+/**
+ * The MQTT V3.1 protocol specification as a Franca interface.
+ * 
+ * This is just an example, hence it defines only part of the standard.
+ * See file MQTT3.fdepl, which uses the BinaryProtocol deployment model
+ * to specify the binary layout of the protocol's messages.
+ * 
+ * See also the ExampleBinaryProtocolGenerator, which creates C structs
+ * with bitfields from this definition. Use testcase ExampleBinaryProtocolGeneratorTest
+ * to run the generator on this fidl file.
+ * 
+ * @see: http://public.dhe.ibm.com/software/dw/webservices/ws-mqtt/MQTT_V3.1_Protocol_Specific.pdf
+ */
+
+interface MQTT3 {
+	
+	attribute Boolean boolu 
+	
+	method CONNECT_CONNACK { 
+		
+		in { boolu req  }
+		out { CONNACK resp }
+	} 
+
+
+	<** @description: The MQTT message type **>
+	enumeration MessageType {
+		CONNECT = 1
+		CONNACK = 2
+		PUBLISH = 3
+		PUBACK = 4
+		PUBREC = 5
+		PUBREL = 6
+		
+		// to be continued ...		
+	}
+	typedef boolu is Boolean
+	<** @description: A "flag" datatype **>
+	typedef Flag is Integer(0,1)
+	
+	<** @description: The MQTT FixedHeader **>
+	struct FixedHeader {
+		
+		// first byte
+		Flag            RETAIN
+		Integer(0,3)     QoS_level
+		Flag             DUP_flag
+		MessageType      Message_Type
+		
+		// second byte
+		Integer(0,127)   Remaining_Length
+		Flag             Continuation_Bit
+	}
+		<** @description: The MQTT String (always UTF8) **>
+	struct UTF8String {
+		UInt8            String_Length_MSB
+		UInt8            String_Length_LSB
+		ByteBuffer       Encoded_Character_Data
+	}
+
+	<** @description: The MQTT CONNECT message **>
+	// NOTE: this is just an example, it is not complete
+	struct CONNECT extends FixedHeader {
+		UTF8String        Protocol_name
+		UInt8             Protocol_Version_Number
+		
+		// connect flags
+		Flag              _Reserved
+		Flag              Clean_Session		
+		Flag              Will_Flag		
+		Integer(0,3)      Will_QoS
+		Flag              Will_Retain		
+		Flag              Password_Flag		
+		Flag              User_Name_Flag
+		
+		UTF8String        Client_Identifier
+		// TODO ...		
+	}
+
+	<** @description: The MQTT CONNACK message **>
+	// NOTE: this is just an example, it is not complete
+	struct CONNACK extends FixedHeader {
+		UInt8              _Reserved
+		UInt8              Return_Code
+	}
+
+	// TODO: add more protocol message definitions here
+	
+
+	// TODO: add contract representing the actual protocol sequences
+	 
+}
+interface extension extends MQTT3{
+}
