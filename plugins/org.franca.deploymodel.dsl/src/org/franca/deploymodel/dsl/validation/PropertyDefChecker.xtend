@@ -16,7 +16,16 @@ import org.franca.deploymodel.dsl.fDeploy.FDPropertyHost
 import static org.franca.deploymodel.dsl.fDeploy.FDPropertyHost.*
 
 import static extension org.franca.core.framework.FrancaHelpers.*
+import org.franca.core.franca.FTypedElement
 
+/**
+ * Compute if a given Franca IDL element has to be defined in
+ * a deployment definition because of mandatory deployment properties.
+ * 
+ * This is a helper class for Franca deployment validation. It uses a
+ * specification extender in order to get information about which 
+ * property hosts are mandatory according to a deployment specification.
+ */
 class PropertyDefChecker {
 	
 	FDSpecificationExtender specHelper
