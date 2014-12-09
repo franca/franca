@@ -70,7 +70,7 @@ class PropertyDefChecker {
 	def mustBeDefined (List<FField> it, FDPropertyHost host) {
 		if (empty) return false
 		if (specHelper.isMandatory(host)) return true
-		if (findFirst[mustBeDefined()]!=null) return true
+		if (findFirst[mustBeDefined]!=null) return true
 		false
 	}
 	
@@ -83,21 +83,30 @@ class PropertyDefChecker {
 	
 
 	def mustBeDefined (FAttribute it) {
-		specHelper.isMandatory(ATTRIBUTES) || type.mustBeDefined
+		specHelper.isMandatory(ATTRIBUTES) || type.mustBeDefined(array)
 	}
 
 	def mustBeDefined (FArgument it) {
-		specHelper.isMandatory(ARGUMENTS) || type.mustBeDefined
+		specHelper.isMandatory(ARGUMENTS) || type.mustBeDefined(array)
 	}
 
 	def mustBeDefined (FField it) {
 		val isStruct = eContainer instanceof FStructType
 		val host = if (isStruct) STRUCT_FIELDS else UNION_FIELDS
-		specHelper.isMandatory(host) || type.mustBeDefined
+		specHelper.isMandatory(host) || type.mustBeDefined(array)
 	}
 
 
 	// *****************************************************************************
+
+	def private mustBeDefined (FTypeRef it, boolean isInlineArray) {
+		// check if the type reference is an implicit array
+		if (isInlineArray) {
+			if (specHelper.isMandatory(ARRAYS))
+				return true
+		}
+		mustBeDefined
+	}
 
 	def private mustBeDefined (FTypeRef it) {
 		if (isString) {
@@ -116,6 +125,8 @@ class PropertyDefChecker {
 			if (specHelper.isMandatory(BYTE_BUFFERS))
 				return true
 		}
+
 		false
 	}
 }
+

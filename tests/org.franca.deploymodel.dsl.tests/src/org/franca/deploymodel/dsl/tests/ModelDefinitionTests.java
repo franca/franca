@@ -45,6 +45,13 @@ public class ModelDefinitionTests extends XtextTest {
     }
 
     @Test
+    public void test_29_DefDataPropertiesInlineArray() {
+    	testFile("testcases/29-DefDataPropertiesInlineArray.fdepl",
+    			"testcases/03-SpecDataHostsSimple.fdepl",
+    			"fidl/07-InlineArrayInterface.fidl");
+    }
+
+    @Test
     public void test_30_DefDataPropertiesInterfaceRef() {
     	testFile("testcases/30-DefDataPropertiesInterfaceRef.fdepl",
     			"testcases/12-SpecPropertyInterfaceRef.fdepl",

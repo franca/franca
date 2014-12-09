@@ -12,6 +12,7 @@ import java.util.Set;
 
 import org.franca.core.framework.FrancaHelpers;
 import org.franca.core.franca.FTypeRef;
+import org.franca.core.franca.FTypedElement;
 import org.franca.deploymodel.dsl.fDeploy.FDArgument;
 import org.franca.deploymodel.dsl.fDeploy.FDArray;
 import org.franca.deploymodel.dsl.fDeploy.FDAttribute;
@@ -67,12 +68,22 @@ public class PropertyMappings {
 		Set<FDPropertyHost> hosts = Sets.newHashSet(getMainHost(elem));
 
 		FTypeRef typeRef = null;
+		boolean isInlineArray = false;
 		if (elem instanceof FDAttribute) {
-			typeRef = ((FDAttribute) elem).getTarget().getType();
+			FTypedElement te = ((FDAttribute) elem).getTarget();
+			typeRef = te.getType();
+			if (te.isArray())
+				isInlineArray = true;
 		} else if (elem instanceof FDArgument) {
-			typeRef = ((FDArgument) elem).getTarget().getType();
+			FTypedElement te = ((FDArgument) elem).getTarget();
+			typeRef = te.getType();
+			if (te.isArray())
+				isInlineArray = true;
 		} else if (elem instanceof FDField) {
-			typeRef = ((FDField) elem).getTarget().getType();
+			FTypedElement te = ((FDField) elem).getTarget();
+			typeRef = te.getType();
+			if (te.isArray())
+				isInlineArray = true;
 		}
 		if (typeRef != null) {
 			if (FrancaHelpers.isInteger(typeRef))
@@ -85,6 +96,9 @@ public class PropertyMappings {
 				hosts.add(FDPropertyHost.BOOLEANS);
 			else if (FrancaHelpers.isByteBuffer(typeRef))
 				hosts.add(FDPropertyHost.BYTE_BUFFERS);
+		}
+		if (isInlineArray) {
+			hosts.add(FDPropertyHost.ARRAYS);
 		}
 
 		// if looking for INTEGERS or FLOATS, we also look for NUMBERS
