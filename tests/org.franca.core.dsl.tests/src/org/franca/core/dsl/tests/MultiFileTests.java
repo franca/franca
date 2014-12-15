@@ -175,7 +175,23 @@ public class MultiFileTests extends XtextTest {
     	assertInterfaceExtendsChain(fmodel, "Model1_2", "Model0");
     }
 
-    
+    @Test
+    public void test_121() {
+    	URI root = URI.createURI("classpath:/");
+    	URI loc = URI.createFileURI("testcases/121-TestUnion.fidl");
+    	FModel fmodel = fidlLoader.loadModel(loc, root);
+		Resource res = fmodel.eResource();
+		IResourceServiceProvider provider = serviceProviderRegistry
+				.getResourceServiceProvider(res.getURI());
+		List<Issue> result = provider.getResourceValidator().validate(res,
+				CheckMode.ALL, null);
+		for(Issue issue : result) {
+			String line = issue.getLineNumber()==null ? "" : " (line " + issue.getLineNumber() + ")";
+			String text = issue.getSeverity() + line + ": " + issue.getMessage();
+			System.out.println("Validation issue: " + text);
+		}
+    	assertEquals(4, result.size());
+    }
     @Test
     public void test_2_5() {
     	testFile("multifile/first2/second1/model2_5.fidl");
