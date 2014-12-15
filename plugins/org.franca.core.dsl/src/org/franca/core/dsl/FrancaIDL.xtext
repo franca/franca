@@ -34,8 +34,10 @@ FTypeCollection returns FTypeCollection:
 	'typeCollection' (name=ID)?
 	'{'
 		('version' version=FVersion)?
-		(types+=FType)*
-		(constants+=FConstantDef)*
+		(
+			constants+=FConstantDef |
+			types+=FType
+		)*
 	'}';
 
 FInterface returns FInterface:
@@ -49,12 +51,21 @@ FInterface returns FInterface:
 		)?
 	'{'
 		('version' version=FVersion)?
-		(attributes+=FAttribute)*
-		(methods+=FMethod)*
-		(broadcasts+=FBroadcast)*
-		(contract=FContract)?
-		(types+=FType)*
-		(constants+=FConstantDef)*
+		(
+			attributes+=FAttribute |
+			methods+=FMethod |
+			broadcasts+=FBroadcast |
+			constants+=FConstantDef |
+			types+=FType
+		)*
+		(
+			contract=FContract
+			
+			// we allow constant and type definitions after the contract.
+			// this is for backward compatibility (0.9.0 or earlier)
+			// this will be marked as deprecated in 0.9.1 or later 
+			(constants+=FConstantDef | types+=FType)*
+		)?
     '}';
 
 FVersion returns FVersion:
