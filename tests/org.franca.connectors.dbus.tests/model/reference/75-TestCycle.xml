@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="introspect.xsl"?>
+<node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="introspect.xsd" name="testcases">
+  <interface name="testcases.MyInterfaceparent">
+    <property access="readwrite" name="child" type="i"/>
+    <property access="readwrite" name="parent" type="i"/>
+  </interface>
+  <interface name="testcases.MyInterfaceChild">
+    <property access="readwrite" name="parent" type="i"/>
+    <property access="readwrite" name="child" type="i"/>
+  </interface>
+  <interface name="testcases.MyInterfaceGrandChild">
+    <property access="readwrite" name="parent" type="i"/>
+    <property access="readwrite" name="child" type="i"/>
+  </interface>
+</node>

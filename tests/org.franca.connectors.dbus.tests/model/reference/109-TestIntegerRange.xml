@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="introspect.xsl"?>
+<node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="introspect.xsd" name="org.example.idl">
+  <interface name="org.example.idl.MQTT3">
+    <property access="readwrite" name="boolu" type="b"/>
+    <method name="CONNECT_CONNACK">
+      <arg direction="in" name="req" type="y">
+        <doc>
+          <line>req = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="resp" type="(yyyyy)">
+        <doc>
+          <line>resp = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+  </interface>
+</node>

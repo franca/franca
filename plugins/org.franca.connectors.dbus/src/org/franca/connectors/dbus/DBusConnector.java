@@ -31,6 +31,7 @@ import org.franca.core.framework.IssueReporter;
 import org.franca.core.framework.TransformationIssue;
 import org.franca.core.franca.FModel;
 import org.franca.core.utils.FileHelper;
+import org.franca.core.utils.IntegerTypeConverter;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -90,6 +91,7 @@ public class DBusConnector implements IFrancaConnector {
 		DBus2FrancaTransformation trafo = injector.getInstance(DBus2FrancaTransformation.class);
 		DBusModelContainer dbus = (DBusModelContainer)model;
 		FModel fmodel = trafo.transform(dbus.model());
+		
 		lastTransformationIssues = trafo.getTransformationIssues();
 		System.out.println(IssueReporter.getReportString(lastTransformationIssues));
 
@@ -98,6 +100,10 @@ public class DBusConnector implements IFrancaConnector {
 
 	@Override
 	public IModelContainer fromFranca (FModel fmodel) {
+		/**
+		 * Range integer convertion from Franca to D-BUS
+		 */
+		IntegerTypeConverter.removeRangedIntegers(fmodel, true);
 		Franca2DBusTransformation trafo = injector.getInstance(Franca2DBusTransformation.class);
 		NodeType dbus = trafo.transform(fmodel);
 		lastTransformationIssues = trafo.getTransformationIssues();

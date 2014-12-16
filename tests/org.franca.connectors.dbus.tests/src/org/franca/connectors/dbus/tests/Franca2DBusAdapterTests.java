@@ -50,6 +50,8 @@ public class Franca2DBusAdapterTests {
 		doTransformTest("75-TestCycle");
 		
 	}
+	
+	
 	@Test
 	public void test_75() {
 		
@@ -59,7 +61,23 @@ public class Franca2DBusAdapterTests {
 	public void test_40() {
 		doTransformTest("40-PolymorphicStructs");
 	}
-
+	@Test
+	public void testIntegerRange_109() {
+		doTransformTest("109-TestIntegerRange");
+		
+	}
+	
+	@Test
+	public void TestUnion() {
+		doTransformTest("TestUnion");
+		
+	}
+	
+	@Test
+	public void TestEnum() {
+		doTransformTest("TestEnum");
+		
+	}
 
 	@SuppressWarnings("restriction")
 	private void doTransformTest (String fileBasename) {

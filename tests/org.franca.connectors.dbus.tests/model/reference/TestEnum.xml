@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="introspect.xsl"?>
+<node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="introspect.xsd" name="com.mypackage">
+  <interface name="com.mypackage.Connection">
+    <property access="readwrite" name="high" type="b"/>
+    <method name="method1">
+      <arg direction="in" name="value" type="u">
+        <doc>
+          <line>value = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+  </interface>
+</node>

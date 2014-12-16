@@ -1,0 +1,9 @@
+package some
+
+interface TestInteger{
+	
+	attribute Integer(1,9) integerRange
+	attribute Integer(255,65535) large
+	
+	
+}

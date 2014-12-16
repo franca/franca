@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="introspect.xsl"?>
+<node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="introspect.xsd" name="com.mypackage">
+  <interface name="com.mypackage.Connection">
+    <property access="readwrite" name="high" type="b"/>
+    <method name="method1">
+      <arg direction="in" name="input" type="n">
+        <doc>
+          <line>input = signature of arg1 should be 'nn'.</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="low" type="an">
+        <doc>
+          <line>low = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="in" name="value" type="u">
+        <doc>
+          <line>value = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="output" type="(uv)">
+        <doc>
+          <line>output = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+    <method name="CONNECT_CONNACK">
+      <arg direction="in" name="req" type="b">
+        <doc>
+          <line>req = Description missing</line>
+        </doc>
+      </arg>
+      <arg direction="out" name="resp" type="b">
+        <doc>
+          <line>resp = Description missing</line>
+        </doc>
+      </arg>
+    </method>
+  </interface>
+</node>

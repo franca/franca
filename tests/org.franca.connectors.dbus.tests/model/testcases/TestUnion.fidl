@@ -1,0 +1,28 @@
+package com.mypackage
+
+
+
+interface Connection {
+	
+	  attribute Boolean high
+		method method1 {
+		in {
+			
+			 Integer(2,4) input
+		     
+		     
+			}
+			out {
+				setunion output
+			}
+			}
+	
+		
+		
+		
+		union setunion {
+			Integer(6,7) pin 
+			Boolean high
+		}
+		}
+		
