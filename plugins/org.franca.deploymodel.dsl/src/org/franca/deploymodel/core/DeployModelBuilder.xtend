@@ -115,7 +115,7 @@ class DeployModelBuilder {
 			val evalue = enumtype.enumerators.findFirst(e | e.name == value)
 			if (evalue!=null) {
 				setPropertyGeneric(decl, elem,
-					[dflt | dflt.enumerator != evalue],
+					[dflt | dflt.getEnumerator != evalue],
 					[ | createFDValue(evalue) ]
 				)						
 			}
