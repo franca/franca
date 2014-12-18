@@ -63,7 +63,7 @@ public class DBusConnector implements IFrancaConnector {
 		} else {
 			System.out.println("Loaded DBus interface " + model.getName());
 		}
-		return new DBusModelContainer(model); 
+		return new DBusModelContainer(model);
 	}
 
 	@Override
@@ -100,12 +100,14 @@ public class DBusConnector implements IFrancaConnector {
 
 	@Override
 	public IModelContainer fromFranca (FModel fmodel) {
-		/**
-		 * Range integer convertion from Franca to D-BUS
-		 */
+		// ranged integer conversion from Franca to D-Bus as a preprocessing step
 		IntegerTypeConverter.removeRangedIntegers(fmodel, true);
+
+		// do the actual transformation
 		Franca2DBusTransformation trafo = injector.getInstance(Franca2DBusTransformation.class);
 		NodeType dbus = trafo.transform(fmodel);
+		
+		// report issues
 		lastTransformationIssues = trafo.getTransformationIssues();
 		System.out.println(IssueReporter.getReportString(lastTransformationIssues));
 
@@ -195,17 +197,16 @@ public class DBusConnector implements IFrancaConnector {
 	}
 	
 	private static void addStyleSheet(File inFile) throws IOException {
-	     String content = contents(inFile);
-	     content = content.replaceAll(
-	    		 "(<\\?xml version.*\\?>)",
-	    		 "$1\n<?xml-stylesheet type=\"text/xsl\" href=\"introspect.xsl\"?>");
+		String content = contents(inFile);
+		content = content.replaceAll("(<\\?xml version.*\\?>)",
+				"$1\n<?xml-stylesheet type=\"text/xsl\" href=\"introspect.xsl\"?>");
 
-	     FileOutputStream fos = new FileOutputStream(inFile);
-	     PrintWriter out = new PrintWriter(fos);
-	     out.print(content);
-	     out.flush();
-	     out.close();
-	}		
+		FileOutputStream fos = new FileOutputStream(inFile);
+		PrintWriter out = new PrintWriter(fos);
+		out.print(content);
+		out.flush();
+		out.close();
+	}
 
 	private static String contents (File file) throws IOException {
 		InputStream in = new FileInputStream(file);
