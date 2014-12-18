@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/mbarbero/fr.obeo.releng.targetplatform -->
-<target name="Franca Target Platform - Eclipse 4.4" sequenceNumber="1418834670">
+<target name="Franca Target Platform - Eclipse 4.4" sequenceNumber="1418904437">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.sdk.feature.group" version="4.4.0.v20140925-0400"/>
       <unit id="org.eclipse.pde.feature.group" version="3.10.0.v20140925-0400"/>
+      <unit id="org.eclipse.emf.transaction.sdk.feature.group" version="1.8.0.201405281451"/>
+      <unit id="org.eclipse.emf.eef.sdk-feature.feature.group" version="1.3.0.201311221533"/>
       <unit id="org.eclipse.gef.sdk.feature.group" version="3.9.101.201408150207"/>
       <unit id="org.eclipse.zest.sdk.feature.group" version="1.5.101.201408150207"/>
+      <unit id="org.eclipse.swt" version="3.103.1.v20140903-1938"/>
       <unit id="org.eclipse.equinox.executable.feature.group" version="3.6.100.v20140819-1617"/>
       <unit id="org.eclipse.emf.compare.feature.group" version="3.0.1.201408191310"/>
       <repository id="luna" location="http://download.eclipse.org/releases/luna"/>
