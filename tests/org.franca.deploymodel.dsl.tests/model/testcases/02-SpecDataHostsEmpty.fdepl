@@ -8,12 +8,15 @@ specification a.b.c.MySpec02 {
 	for integers { }
 	for numbers { }
 	for strings { }
+	for booleans { }
+	for byte_buffers { }
 	
 	// related to user-defined types
 	for enumerations { }
 	for enumerators { }
 	for structs { }
 	for unions { }
+	for arrays { }
 	for struct_fields { }
 	for union_fields { }
 }

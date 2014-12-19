@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
+   <description name="Franca Update Site">
+      Franca is a framework for definition and transformation of software interfaces.
+It is used for integrating software components from different suppliers, which are built based on various runtime frameworks, platforms and IPC mechanisms. The core of it is Franca IDL (Interface Definition Language), which is a textual language for specification of APIs. For more information, please visit https://code.google.com/a/eclipselabs.org/p/franca/.
+   </description>
    <feature url="features/org.franca.core_0.0.0.jar" id="org.franca.core" version="0.0.0">
       <category name="franca"/>
    </feature>
@@ -30,5 +34,13 @@
    <feature url="features/org.franca.dbus.ui.sdk_0.0.0.jar" id="org.franca.dbus.ui.sdk" version="0.0.0">
       <category name="franca"/>
    </feature>
-   <category-def name="franca" label="Franca"/>
+   <category-def name="franca" label="Franca">
+      <description>
+         Franca is a framework for definition and transformation of software interfaces. 
+
+It is used for integrating software components from different suppliers, which are built based on various runtime frameworks, platforms and IPC mechanisms.
+
+The core of it is Franca IDL (Interface Definition Language), which is a textual language for specification of APIs. For more information, please visit https://code.google.com/a/eclipselabs.org/p/franca/.
+      </description>
+   </category-def>
 </site>

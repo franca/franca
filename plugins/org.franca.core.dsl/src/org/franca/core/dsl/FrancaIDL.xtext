@@ -34,8 +34,10 @@ FTypeCollection returns FTypeCollection:
 	'typeCollection' (name=ID)?
 	'{'
 		('version' version=FVersion)?
-		(types+=FType)*
-		(constants+=FConstantDef)*
+		(
+			constants+=FConstantDef |
+			types+=FType
+		)*
 	'}';
 
 FInterface returns FInterface:
@@ -49,12 +51,21 @@ FInterface returns FInterface:
 		)?
 	'{'
 		('version' version=FVersion)?
-		(attributes+=FAttribute)*
-		(methods+=FMethod)*
-		(broadcasts+=FBroadcast)*
-		(contract=FContract)?
-		(types+=FType)*
-		(constants+=FConstantDef)*
+		(
+			attributes+=FAttribute |
+			methods+=FMethod |
+			broadcasts+=FBroadcast |
+			constants+=FConstantDef |
+			types+=FType
+		)*
+		(
+			contract=FContract
+			
+			// we allow constant and type definitions after the contract.
+			// this is for backward compatibility (0.9.0 or earlier)
+			// this will be marked as deprecated in 0.9.1 or later 
+			(constants+=FConstantDef | types+=FType)*
+		)?
     '}';
 
 FVersion returns FVersion:
@@ -222,6 +233,7 @@ FTypedElement:
 // constant definitions and initializers
 
 FConstantDef:
+	(comment=FAnnotationBlock)?
 	'const' type=FTypeRef (array?='[' ']')? name=ID '='
 		rhs=FInitializerExpression
 	;
@@ -305,16 +317,13 @@ FGuard:
 	'[' condition=LogicalOrExpression ']';
 
 FStatement returns FStatement:
-	FAssignment | FIfClause
+	FAssignment | FIfStatement | FBlock
 ;
 
-FIfClause returns FIfClause:
-	'if' '(' condition=LogicalOrExpression')' '{'
-		statements+=FStatement*
-	'}'
-	(
-		'else' elseClause=FIfClause
-	)?
+FIfStatement returns FIfStatement:
+	'if' '(' condition=LogicalOrExpression ')'
+		then=FStatement
+	(=>'else' else=FStatement)?
 ;
 	
 FAssignment returns FAssignment:

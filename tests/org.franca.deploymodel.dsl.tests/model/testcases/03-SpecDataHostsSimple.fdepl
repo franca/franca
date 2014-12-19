@@ -16,6 +16,12 @@ specification a.b.c.MySpec03 {
 	for strings {
 		PropString : Integer;
 	}
+	for booleans {
+		PropBoolean : Integer;
+	}
+	for byte_buffers {
+		PropByteBuffer : Integer;
+	}
 	
 	// related to user-defined types
 	for enumerations {
@@ -23,6 +29,9 @@ specification a.b.c.MySpec03 {
 	}
 	for enumerators {
 		PropEnumerator : Integer;
+	}
+	for arrays {
+		PropArray : Integer;
 	}
 	for structs {
 		PropStruct : Integer;

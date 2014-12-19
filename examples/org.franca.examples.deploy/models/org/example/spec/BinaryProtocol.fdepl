@@ -1,0 +1,15 @@
+
+/**
+ * This is a deployment specification for the definition of binary protocols.
+ *
+ * We assume that the messages of the protocol are specified by Franca struct types.
+ * Inheritance and aggregation can be used for defining common parts of the messages.
+ */
+specification org.example.spec.BinaryProtocol {
+
+	// specify the number of bits for each struct field
+	// the code generator will take this into account
+	for struct_fields {
+		NumberOfBits : Integer (optional);
+	}
+}

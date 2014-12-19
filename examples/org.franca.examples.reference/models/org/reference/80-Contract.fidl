@@ -52,10 +52,10 @@ interface MyInterface80 {
 				// broadcast-signal event from server side
 				on signal b -> init {
 					// if-statement, check for argument value
-					if (s!="foo") {
+					if (s!="foo") 
 						lastS = s
-					}
-					lastS = lastS
+					else
+						lastS = "bar"
 				}
 			}
 			

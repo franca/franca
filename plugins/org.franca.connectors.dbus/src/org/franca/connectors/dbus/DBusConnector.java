@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 itemis AG (http://www.itemis.de).
+ * Copyright (c) 2014 itemis AG (http://www.itemis.de).
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.emf.common.util.URI;
@@ -31,7 +32,9 @@ import org.franca.core.framework.IssueReporter;
 import org.franca.core.framework.TransformationIssue;
 import org.franca.core.franca.FModel;
 import org.franca.core.utils.FileHelper;
+import org.franca.core.utils.IntegerTypeConverter;
 
+import com.google.common.collect.Lists;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
@@ -62,7 +65,7 @@ public class DBusConnector implements IFrancaConnector {
 		} else {
 			System.out.println("Loaded DBus interface " + model.getName());
 		}
-		return new DBusModelContainer(model); 
+		return new DBusModelContainer(model);
 	}
 
 	@Override
@@ -77,7 +80,7 @@ public class DBusConnector implements IFrancaConnector {
 		}
 		
 		DBusModelContainer mc = (DBusModelContainer) model;
-		return saveDBusModel(createConfiguredResourceSet(), mc.model(), fn);
+		return saveDBusModel(createConfiguredResourceSet(), mc.model(), mc.getComments(), fn);
 	}
 
 	
@@ -90,6 +93,7 @@ public class DBusConnector implements IFrancaConnector {
 		DBus2FrancaTransformation trafo = injector.getInstance(DBus2FrancaTransformation.class);
 		DBusModelContainer dbus = (DBusModelContainer)model;
 		FModel fmodel = trafo.transform(dbus.model());
+		
 		lastTransformationIssues = trafo.getTransformationIssues();
 		System.out.println(IssueReporter.getReportString(lastTransformationIssues));
 
@@ -98,12 +102,25 @@ public class DBusConnector implements IFrancaConnector {
 
 	@Override
 	public IModelContainer fromFranca (FModel fmodel) {
+		// ranged integer conversion from Franca to D-Bus as a preprocessing step
+		IntegerTypeConverter.removeRangedIntegers(fmodel, true);
+
+		// do the actual transformation
 		Franca2DBusTransformation trafo = injector.getInstance(Franca2DBusTransformation.class);
 		NodeType dbus = trafo.transform(fmodel);
+		
+		// report issues
 		lastTransformationIssues = trafo.getTransformationIssues();
 		System.out.println(IssueReporter.getReportString(lastTransformationIssues));
 
-		return new DBusModelContainer(dbus);
+		// create the model container and add some comments to the model
+		DBusModelContainer mc = new DBusModelContainer(dbus);
+		mc.addComment("<!-- This D-Bus Introspection model has been created from a Franca IDL file. -->");
+		Resource res = fmodel.eResource();
+		if (res!=null && res.getURI()!=null)
+			mc.addComment("<!-- Input file: '" + res.getURI().lastSegment() + "' -->");
+
+		return mc;
 	}
 	
 	public Set<TransformationIssue> getLastTransformationIssues() {
@@ -167,7 +184,7 @@ public class DBusConnector implements IFrancaConnector {
 	}
 
 
-	private static boolean saveDBusModel (ResourceSet resourceSet, NodeType model, String fileName) {
+	private static boolean saveDBusModel (ResourceSet resourceSet, NodeType model, Iterable<String> comments, String fileName) {
 		URI fileUri = URI.createFileURI(new File(fileName).getAbsolutePath());
 		DbusxmlResourceImpl res = (DbusxmlResourceImpl) resourceSet.createResource(fileUri);
 		res.setEncoding("UTF-8");
@@ -177,8 +194,16 @@ public class DBusConnector implements IFrancaConnector {
 			res.save(Collections.EMPTY_MAP);
 	        System.out.println("Created DBus Introspection file " + fileName);
 	        
-	        // add "xml-stylesheet" tag to output xml file 
-	        addStyleSheet(new File(fileName));
+	        List<String> additionalLines = Lists.newArrayList();
+	        
+	        // add "xml-stylesheet" tag to output xml file
+	        additionalLines.add("<?xml-stylesheet type=\"text/xsl\" href=\"introspect.xsl\"?>");
+
+	        // add comment lines
+	        for(String c : comments)
+	        	additionalLines.add(c);
+
+	        addLinesToXML(new File(fileName), additionalLines);
 	        
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -188,18 +213,35 @@ public class DBusConnector implements IFrancaConnector {
 		return true;
 	}
 	
-	private static void addStyleSheet(File inFile) throws IOException {
-	     String content = contents(inFile);
-	     content = content.replaceAll(
-	    		 "(<\\?xml version.*\\?>)",
-	    		 "$1\n<?xml-stylesheet type=\"text/xsl\" href=\"introspect.xsl\"?>");
+	/**
+	 * Add some lines to a given XML file. 
+	 * 
+	 * The lines will be inserted directly below the first line in the XML.
+	 * The first line has to be a "xml version" tag.
+	 *  
+	 * @param inFile the XML file which should be changed
+	 * @param lines the set of lines which should be inserted into the file
+	 * @throws IOException
+	 */
+	private static void addLinesToXML(File inFile, Iterable<String> lines) throws IOException {
+		// compile string which is to be inserted
+		StringBuilder sb = new StringBuilder();
+		sb.append("$1");
+		for(String l : lines) {
+			sb.append("\n" + l);
+		}
+		
+		// read the file and insert the string which we have built before
+		String content = contents(inFile);
+		content = content.replaceAll("(<\\?xml version.*\\?>)", sb.toString());
 
-	     FileOutputStream fos = new FileOutputStream(inFile);
-	     PrintWriter out = new PrintWriter(fos);
-	     out.print(content);
-	     out.flush();
-	     out.close();
-	}		
+		// write the file again
+		FileOutputStream fos = new FileOutputStream(inFile);
+		PrintWriter out = new PrintWriter(fos);
+		out.print(content);
+		out.flush();
+		out.close();
+	}
 
 	private static String contents (File file) throws IOException {
 		InputStream in = new FileInputStream(file);

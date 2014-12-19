@@ -22,13 +22,14 @@ import org.franca.deploymodel.dsl.fDeploy.FDBoolean;
 import org.franca.deploymodel.dsl.fDeploy.FDBroadcast;
 import org.franca.deploymodel.dsl.fDeploy.FDComplexValue;
 import org.franca.deploymodel.dsl.fDeploy.FDElement;
-import org.franca.deploymodel.dsl.fDeploy.FDEnum;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumType;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumValue;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumeration;
 import org.franca.deploymodel.dsl.fDeploy.FDField;
+import org.franca.deploymodel.dsl.fDeploy.FDGeneric;
 import org.franca.deploymodel.dsl.fDeploy.FDInteger;
 import org.franca.deploymodel.dsl.fDeploy.FDInterface;
+import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance;
 import org.franca.deploymodel.dsl.fDeploy.FDInterfaceRef;
 import org.franca.deploymodel.dsl.fDeploy.FDMethod;
 import org.franca.deploymodel.dsl.fDeploy.FDPredefinedTypeId;
@@ -117,11 +118,16 @@ public class FDeployQuickfixProviderUtil {
 					ifaceVal.setValue(((FDInterface) element).getTarget());
 					simple = ifaceVal;
 					break;
+				case FDPredefinedTypeId.INSTANCE_VALUE:
+					FDGeneric instVal = FDeployFactory.eINSTANCE.createFDGeneric();
+					instVal.setValue(((FDInterfaceInstance) element).getTarget());
+					simple = instVal;
+					break;
 			}
 		} else {
 			if (typeRef.getComplex() instanceof FDEnumType) {
 				FDEnumType enumeration = (FDEnumType) typeRef.getComplex();
-				FDEnum enumVal = FDeployFactory.eINSTANCE.createFDEnum();
+				FDGeneric enumVal = FDeployFactory.eINSTANCE.createFDGeneric();
 				enumVal.setValue(enumeration.getEnumerators().get(0));
 				simple = enumVal;
 			}

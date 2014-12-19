@@ -1,0 +1,241 @@
+// deployment definition
+
+import "03-SpecDataHostsSimple.fdepl"
+import "../fidl/07-InlineArrayInterface.fidl"
+
+define a.b.c.MySpec03 for interface fidl.InlineArrayInterface {
+
+	attribute someInt8Array {
+		PropInteger = 0
+		PropNumber = 0
+		PropArray = 0
+	}
+
+	attribute someUInt32Array {
+		PropInteger = 0
+		PropNumber = 0
+		PropArray = 0
+	}
+
+	attribute someBooleanArray {
+		PropBoolean = 0
+		PropArray = 0
+	}
+
+	attribute someFloatArray {
+		PropFloat = 0
+		PropNumber = 0
+		PropArray = 0
+	}
+
+	attribute someDoubleArray {
+		PropFloat = 0
+		PropNumber = 0
+		PropArray = 0
+	}
+
+	attribute someStringArray {
+		PropString = 0
+		PropArray = 0
+	}
+
+	attribute someBufferArray {
+		PropByteBuffer = 0
+		PropArray = 0
+	}
+
+	method aMethod {
+		in {
+			someInt8Array {
+				PropInteger = 0
+				PropNumber = 0
+				PropArray = 0
+			}
+			someUInt32Array {
+				PropInteger = 0
+				PropNumber = 0
+				PropArray = 0
+			}
+			someBooleanArray {
+				PropBoolean = 0
+				PropArray = 0
+			}
+			someFloatArray {
+				PropFloat = 0
+				PropNumber = 0
+				PropArray = 0
+			}
+			someDoubleArray {
+				PropFloat = 0
+				PropNumber = 0
+				PropArray = 0
+			}
+			someStringArray {
+				PropString = 0
+				PropArray = 0
+			}
+			someBufferArray {
+				PropByteBuffer = 0
+				PropArray = 0
+			}
+		}
+		out {
+			outInt8Array {
+				PropInteger = 0
+				PropNumber = 0
+				PropArray = 0
+			}
+			outUInt32Array {
+				PropInteger = 0
+				PropNumber = 0
+				PropArray = 0
+			}
+			outBooleanArray {
+				PropBoolean = 0
+				PropArray = 0
+			}
+			outFloatArray {
+				PropFloat = 0
+				PropNumber = 0
+				PropArray = 0
+			}
+			outDoubleArray {
+				PropFloat = 0
+				PropNumber = 0
+				PropArray = 0
+			}
+			outStringArray {
+				PropString = 0
+				PropArray = 0
+			}
+			outBufferArray {
+				PropByteBuffer = 0
+				PropArray = 0
+			}
+		}
+	}
+
+	broadcast aBroadcast {
+		out {
+			someInt8Array {
+				PropInteger = 0
+				PropNumber = 0
+				PropArray = 0
+			}
+			someUInt32Array {
+				PropInteger = 0
+				PropNumber = 0
+				PropArray = 0
+			}
+			someBooleanArray {
+				PropBoolean = 0
+				PropArray = 0
+			}
+			someFloatArray {
+				PropFloat = 0
+				PropNumber = 0
+				PropArray = 0
+			}
+			someDoubleArray {
+				PropFloat = 0
+				PropNumber = 0
+				PropArray = 0
+			}
+			someStringArray {
+				PropString = 0
+				PropArray = 0
+			}
+			someBufferArray {
+				PropByteBuffer = 0
+				PropArray = 0
+			}
+		}
+	}
+
+	struct aStruct {
+		PropStruct = 0
+		someInt8Array {
+			PropInteger = 0
+			PropNumber = 0
+			PropStructField = 0
+			PropArray = 0
+		}
+		someUInt32Array {
+			PropInteger = 0
+			PropNumber = 0
+			PropStructField = 0
+			PropArray = 0
+		}
+		someBooleanArray {
+			PropBoolean = 0
+			PropStructField = 0
+			PropArray = 0
+		}
+		someFloatArray {
+			PropFloat = 0
+			PropNumber = 0
+			PropStructField = 0
+			PropArray = 0
+		}
+		someDoubleArray {
+			PropFloat = 0
+			PropNumber = 0
+			PropStructField = 0
+			PropArray = 0
+		}
+		someStringArray {
+			PropString = 0
+			PropStructField = 0
+			PropArray = 0
+		}
+		someBufferArray {
+			PropByteBuffer = 0
+			PropStructField = 0
+			PropArray = 0
+		}
+	}
+
+	union aUnion {
+		PropUnion = 0
+		someInt8Array {
+			PropInteger = 0
+			PropNumber = 0
+			PropUnionField = 0
+			PropArray = 0
+		}
+		someUInt32Array {
+			PropInteger = 0
+			PropNumber = 0
+			PropUnionField = 0
+			PropArray = 0
+		}
+		someBooleanArray {
+			PropBoolean = 0
+			PropUnionField = 0
+			PropArray = 0
+		}
+		someFloatArray {
+			PropFloat = 0
+			PropNumber = 0
+			PropUnionField = 0
+			PropArray = 0
+		}
+		someDoubleArray {
+			PropFloat = 0
+			PropNumber = 0
+			PropUnionField = 0
+			PropArray = 0
+		}
+		someStringArray {
+			PropString = 0
+			PropUnionField = 0
+			PropArray = 0
+		}
+		someBufferArray {
+			PropByteBuffer = 0
+			PropUnionField = 0
+			PropArray = 0
+		}
+	}
+
+}

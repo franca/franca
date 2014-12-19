@@ -38,7 +38,6 @@ import org.franca.deploymodel.dsl.fDeploy.FDBroadcast;
 import org.franca.deploymodel.dsl.fDeploy.FDComplexValue;
 import org.franca.deploymodel.dsl.fDeploy.FDDeclaration;
 import org.franca.deploymodel.dsl.fDeploy.FDElement;
-import org.franca.deploymodel.dsl.fDeploy.FDEnum;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumType;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumValue;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumeration;
@@ -77,6 +76,9 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 	
 	public static final String METHOD_ARGUMENT_QUICKFIX = "METHOD_ARGUMENT_QUICKFIX";
 	public static final String METHOD_ARGUMENT_QUICKFIX_MESSAGE = "Method argument is missing for method ";
+	
+	public static final String BROADCAST_ARGUMENT_QUICKFIX = "BROADCAST_ARGUMENT_QUICKFIX";
+	public static final String BROADCAST_ARGUMENT_QUICKFIX_MESSAGE = "Broadcast argument is missing for broadcast ";
 	
 	public static final String COMPOUND_FIELD_QUICKFIX = "COMPOUND_FIELD_QUICKFIX";
 	public static final String COMPOUND_FIELD_QUICKFIX_MESSAGE = "Field is missing for compound ";
@@ -130,6 +132,18 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 		if (method.getOutArguments()!=null) {
 			for(FDArgument arg : method.getOutArguments().getArguments()) {
 				if (! method.getTarget().getOutArgs().contains(arg.getTarget())) {
+					error("Invalid output argument '" + arg.getTarget().getName() + "'",
+							arg, FDeployPackage.Literals.FD_ARGUMENT__TARGET, -1);
+				}
+			}
+		}
+	}
+
+	@Check
+	public void checkBroadcastArgs (FDBroadcast broadcast) {
+		if (broadcast.getOutArguments()!=null) {
+			for(FDArgument arg : broadcast.getOutArguments().getArguments()) {
+				if (! broadcast.getTarget().getOutArgs().contains(arg.getTarget())) {
 					error("Invalid output argument '" + arg.getTarget().getName() + "'",
 							arg, FDeployPackage.Literals.FD_ARGUMENT__TARGET, -1);
 				}
@@ -439,7 +453,7 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 	}
 
 	/**
-	 * Checks the argument list of {@link FDMethod}s.
+	 * Checks the argument list of {@link FDMethod}s and {@link FDBroadcast}s.
 	 * 
 	 * @return true if an error is present, false otherwise
 	 */
@@ -453,8 +467,21 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 			FDArgument c = (FDArgument) mapper.getFDElement(tc);
 			if (c==null) {
 				if (checker.mustBeDefined(tc)) {
-					error("Mandatory argument '" + tc.getName() + "' is missing for method '" + ((FDMethod) parent).getTarget().getName() + "'",
-						parent, feature, -1, METHOD_ARGUMENT_QUICKFIX, ((FDMethod) parent).getTarget().getName(), tc.getName());
+					String opName = "";
+					String opType = "";
+					String quickfix = "";
+					if (parent instanceof FDMethod) {
+						opName = ((FDMethod) parent).getTarget().getName();
+						opType = "method";
+						quickfix = METHOD_ARGUMENT_QUICKFIX;
+					}
+					if (parent instanceof FDBroadcast) {
+						opName = ((FDBroadcast) parent).getTarget().getName();
+						opType = "broadcast";
+						quickfix = BROADCAST_ARGUMENT_QUICKFIX;
+					}
+					error("Mandatory argument '" + tc.getName() + "' is missing for " + opType + " '" + opName + "'",
+						parent, feature, -1, quickfix, opName, tc.getName());
 					hasError |= true;
 				}
 			} 
@@ -645,11 +672,17 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 							src, literal, index);
 				}
 				break;
+			case FDPredefinedTypeId.INSTANCE_VALUE:
+				if (! (FDModelUtils.isInstanceRef(value))) {
+					error("Invalid type, expected reference to interface instance",
+							src, literal, index);
+				}
+				break;
 			}
 		} else {
 			FDType type = typeRef.getComplex();
 			if (type instanceof FDEnumType) {
-				if (! (value instanceof FDEnum)) {
+				if (! (FDModelUtils.isEnumerator(value))) {
 					error("Invalid type, expected enumerator",
 							src, literal, index);
 				}

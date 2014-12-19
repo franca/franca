@@ -61,7 +61,7 @@ class ClientJSStubGenerator {
 	// call this method to invoke «method.name» on the server side
 	«getFileName(api)».prototype.«method.name» = function(«method.inArgs.genArgList("", ", ")») {
 		var cid = this.getNextCallID();
-		this.socket.send('[2, "invoke:«method.name»:' + cid + '", "invoke:«method.name»"«IF !method.inArgs.empty», ' + JSON.stringify({«FOR arg : method.inArgs SEPARATOR ", "»"«arg.name»" : «arg.name»«ENDFOR»})«ENDIF» + ']');
+		this.socket.send('[2, "invoke:«method.name»:' + cid + '", "invoke:«method.name»"«IF !method.inArgs.empty», ' + JSON.stringify({«FOR arg : method.inArgs SEPARATOR ", "»"«arg.name»" : «arg.name»«ENDFOR»})«ELSE»'«ENDIF» + ']');
 		return cid;
 	};
 	«ENDFOR»

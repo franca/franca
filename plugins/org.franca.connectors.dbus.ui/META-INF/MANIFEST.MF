@@ -2,17 +2,17 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Franca D-Bus Connector UI
 Bundle-SymbolicName: org.franca.connectors.dbus.ui; singleton:=true
-Bundle-Version: 0.9.0.qualifier
+Bundle-Version: 0.9.1.qualifier
 Bundle-Activator: org.franca.connectors.dbus.ui.Activator
 Bundle-Vendor: itemis AG
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.core.resources;bundle-version="3.7.100",
  org.eclipse.ui.console;bundle-version="3.5.100",
- org.franca.core;bundle-version="0.8.1",
- org.franca.connectors.dbus;bundle-version="0.8.1",
- org.franca.core.dsl;bundle-version="0.8.1",
- org.franca.core.dsl.ui;bundle-version="0.8.1",
- org.eclipse.xtext.ui;bundle-version="2.4.0"
+ org.franca.core;bundle-version="0.9.1",
+ org.franca.connectors.dbus;bundle-version="0.9.1",
+ org.franca.core.dsl;bundle-version="0.9.1",
+ org.franca.core.dsl.ui;bundle-version="0.9.1",
+ org.eclipse.xtext.ui;bundle-version="2.5.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy

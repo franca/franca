@@ -7,6 +7,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 import org.eclipse.xtext.ui.label.DefaultEObjectLabelProvider;
 import org.franca.core.franca.FType;
+import org.franca.deploymodel.core.FDModelUtils;
 import org.franca.deploymodel.core.GenericPropertyAccessor;
 import org.franca.deploymodel.core.PropertyMappings;
 import org.franca.deploymodel.dsl.fDeploy.FDArgument;
@@ -15,9 +16,9 @@ import org.franca.deploymodel.dsl.fDeploy.FDAttribute;
 import org.franca.deploymodel.dsl.fDeploy.FDBoolean;
 import org.franca.deploymodel.dsl.fDeploy.FDBroadcast;
 import org.franca.deploymodel.dsl.fDeploy.FDDeclaration;
-import org.franca.deploymodel.dsl.fDeploy.FDEnum;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumerator;
 import org.franca.deploymodel.dsl.fDeploy.FDField;
+import org.franca.deploymodel.dsl.fDeploy.FDGeneric;
 import org.franca.deploymodel.dsl.fDeploy.FDInteger;
 import org.franca.deploymodel.dsl.fDeploy.FDInterface;
 import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance;
@@ -102,8 +103,15 @@ public class FDeployLabelProvider extends DefaultEObjectLabelProvider {
       return getDefaultMarker(element) + element.getValue();
    }
 
-   public String text(FDEnum element) {
-      return getDefaultMarker(element) + element.getValue().getName();
+   public String text(FDGeneric element) {
+	   String dm = getDefaultMarker(element);
+	   if (FDModelUtils.isEnumerator(element)) {
+		   return dm + FDModelUtils.getEnumerator(element).getName();
+	   }
+	   if (FDModelUtils.isInstanceRef(element)) {
+		   return dm + FDModelUtils.getInstanceRef(element).getName();
+	   }
+	   return dm + "UNKNOWN"; // shouldn't happen
    }
 
    public String text(FDEnumerator element) {
@@ -151,8 +159,14 @@ public class FDeployLabelProvider extends DefaultEObjectLabelProvider {
       return "field.gif";
    }
 
-   public String image(FDEnum element) {
-      return "enum.gif";
+   public String image(FDGeneric element) {
+	   if (FDModelUtils.isEnumerator(element)) {
+		   return "enum.gif";
+	   }
+	   if (FDModelUtils.isInstanceRef(element)) {
+		   return "interface.png"; // TODO: replace by specific icon
+	   }
+      return null; // shouldn't happen
    }
 
    public String image(FDEnumerator element) {

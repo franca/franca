@@ -14,8 +14,9 @@ import org.franca.core.franca.FInterface;
 import org.franca.deploymodel.dsl.fDeploy.FDBoolean;
 import org.franca.deploymodel.dsl.fDeploy.FDComplexValue;
 import org.franca.deploymodel.dsl.fDeploy.FDElement;
-import org.franca.deploymodel.dsl.fDeploy.FDEnum;
+import org.franca.deploymodel.dsl.fDeploy.FDEnumerator;
 import org.franca.deploymodel.dsl.fDeploy.FDInteger;
+import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance;
 import org.franca.deploymodel.dsl.fDeploy.FDInterfaceRef;
 import org.franca.deploymodel.dsl.fDeploy.FDProperty;
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl;
@@ -145,10 +146,35 @@ public class GenericPropertyAccessor {
 	}
 
 
+	public FDInterfaceInstance getInterfaceInstance (FDElement elem, String property) {
+		FDValue val = getSingleValue(elem, property);
+		if (val!=null && FDModelUtils.isInstanceRef(val)) {
+			return FDModelUtils.getInstanceRef(val);
+		}
+		return null;
+	}
+	
+	public List<FDInterfaceInstance> getInterfaceInstanceArray (FDElement elem, String property) {
+		FDValueArray valarray = getValueArray(elem, property);
+		if (valarray==null)
+			return null;
+		
+		List<FDInterfaceInstance> vals = Lists.newArrayList();
+		for(FDValue v : valarray.getValues()) {
+			if (FDModelUtils.isInstanceRef(v)) {
+				vals.add(FDModelUtils.getInstanceRef(v));
+			} else {
+				return null;
+			}
+		}
+		return vals;
+	}
+
+
 	public String getEnum (FDElement elem, String property) {
 		FDValue val = getSingleValue(elem, property);
-		if (val!=null && val instanceof FDEnum) {
-			return ((FDEnum) val).getValue().getName();
+		if (val!=null && FDModelUtils.isEnumerator(val)) {
+			return FDModelUtils.getEnumerator(val).getName();
 		}
 		return null;
 	}
@@ -160,8 +186,9 @@ public class GenericPropertyAccessor {
 		
 		List<String> vals = Lists.newArrayList();
 		for(FDValue v : valarray.getValues()) {
-			if (v instanceof FDEnum) {
-				vals.add(((FDEnum) v).getValue().getName());
+			if (FDModelUtils.isEnumerator(v)) {
+				FDEnumerator e = FDModelUtils.getEnumerator(v);
+				vals.add(e.getName());
 			} else {
 				return null;
 			}
@@ -278,10 +305,11 @@ public class GenericPropertyAccessor {
       FDComplexValue value = getDefault(decl);
 
       if (value != null && value.getSingle() != null) {
-         if (value.getSingle() instanceof FDEnum)
-            return ((FDEnum) value.getSingle()).getValue() == element;
+    	  FDValue single = value.getSingle();
+         if (FDModelUtils.isEnumerator(single))
+            return FDModelUtils.getEnumerator(single) == element;
          else
-            return value.getSingle() == element;
+            return single == element;
       }
       return false;
    }

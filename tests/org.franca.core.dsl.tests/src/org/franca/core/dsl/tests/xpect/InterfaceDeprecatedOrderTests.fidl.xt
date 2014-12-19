@@ -1,0 +1,32 @@
+// XPECT_SETUP org.franca.core.dsl.tests.xpect.FrancaIDLXpectTests END_SETUP
+package a.b.c
+interface DeprecatedOrder {
+
+	const UInt32 c1 = 47
+	array A1 of Int16
+
+	method MyMethod {
+		in {
+			UInt8 a
+		}
+	}
+	
+	array A2 of Int16
+	const UInt32 c2 = 47
+
+	contract {
+		PSM {
+			initial S1
+			state S1 { on call MyMethod -> S2 }
+			state S2 { on respond MyMethod -> S1 }
+		}
+	}
+	
+	// XPECT warnings --> "Deprecated order of interface elements (contract should be at the end)" at "const UInt32 c3 = 47"
+	const UInt32 c3 = 47
+
+	// XPECT warnings --> "Deprecated order of interface elements (contract should be at the end)" at "array A3 of Int16"
+	array A3 of Int16
+	
+}
+

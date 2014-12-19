@@ -1,0 +1,68 @@
+package fidl
+
+interface InlineArrayInterface {
+	
+	attribute Int8[] someInt8Array
+	
+	attribute UInt32[] someUInt32Array
+	attribute Boolean[] someBooleanArray
+	attribute Float[] someFloatArray
+	attribute Double[] someDoubleArray
+	attribute String[] someStringArray
+	attribute ByteBuffer[] someBufferArray
+	
+	method aMethod {
+		in {
+			Int8[] someInt8Array
+			UInt32[] someUInt32Array
+			Boolean[] someBooleanArray		
+			Float[] someFloatArray
+			Double[] someDoubleArray
+			String[] someStringArray
+			ByteBuffer[] someBufferArray
+		}
+		out {
+			Int8[] outInt8Array
+			UInt32[] outUInt32Array
+			Boolean[] outBooleanArray
+			Float[] outFloatArray
+			Double[] outDoubleArray
+			String[] outStringArray
+			ByteBuffer[] outBufferArray
+		}
+	}
+
+	broadcast aBroadcast {
+		out {
+			Int8[] someInt8Array
+			UInt32[] someUInt32Array
+			Boolean[] someBooleanArray
+			Float[] someFloatArray
+			Double[] someDoubleArray
+			String[] someStringArray
+			ByteBuffer[] someBufferArray
+		}
+	}
+
+
+	struct aStruct {
+		Int8[] someInt8Array
+		UInt32[] someUInt32Array
+		Boolean[] someBooleanArray			
+		Float[] someFloatArray
+		Double[] someDoubleArray
+		String[] someStringArray
+		ByteBuffer[] someBufferArray
+	}
+
+	union aUnion {
+		Int8[] someInt8Array
+		UInt32[] someUInt32Array
+		Boolean[] someBooleanArray
+		Float[] someFloatArray
+		Double[] someDoubleArray
+		String[] someStringArray
+		ByteBuffer[] someBufferArray
+	}
+	
+}
