@@ -6,15 +6,15 @@ Bundle-Version: 0.9.1.qualifier
 Bundle-Activator: org.franca.connectors.dbus.Activator
 Bundle-Vendor: itemis AG
 Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.xtend.lib;bundle-version="2.4.0",
+ org.eclipse.xtend.lib;bundle-version="2.5.0",
  com.google.guava,
  com.google.inject;bundle-version="3.0.0",
  org.eclipse.xtext,
  org.eclipse.xtext.xbase.lib,
  org.eclipse.xtend.typesystem.emf;visibility:=reexport,
- model.emf.dbusxml;bundle-version="0.7.7";visibility:=reexport,
- org.franca.core;bundle-version="0.9.0",
- org.franca.core.dsl;bundle-version="0.9.0"
+ model.emf.dbusxml;bundle-version="0.7.8";visibility:=reexport,
+ org.franca.core;bundle-version="0.9.1",
+ org.franca.core.dsl;bundle-version="0.9.1"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: org.franca.connectors.dbus,
