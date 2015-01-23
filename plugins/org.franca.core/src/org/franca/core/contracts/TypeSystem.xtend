@@ -132,11 +132,8 @@ class TypeSystem {
 		
 			if (actualType == null) {
 				null
-//			} else if (it.type.isNumber) {
-//				// In this case it's the users responsibility to decide whether the possible loss of precision is acceptable or not.
-//				type
-			} else if (!actualType.isAssignableTo(it.type)) {
-				if (it.type != null) addIssue(actualType.typeString + " can not be cast to " + type.typeString, loc, feat);
+			} else if (!actualType.isAssignableTo(type) && !(type.isAssignableTo(actualType))) {
+				if (it.type != null) addIssue(actualType.typeString + " cannot be cast to " + type.typeString, loc, feat);
 				null
 			} else {		
 				type
