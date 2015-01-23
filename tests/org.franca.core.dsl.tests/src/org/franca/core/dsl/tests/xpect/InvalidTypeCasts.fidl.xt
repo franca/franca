@@ -8,14 +8,275 @@
 //XPECT_SETUP org.franca.core.dsl.tests.xpect.FrancaIDLXpectTests END_SETUP 
 package org.franca.core.dsl.tests.xpect
 
+import org.franca.core.dsl.tests.xpect.TypesForTestsCollection.* from "./TypesForTests.fidl"
+
 typeCollection InvalidTypeCastsCollection {
 	
-	const Double validDoubleOne = 1.0d
+	const ArrayTypeInt8 Int8Array2 = [] //TODO: should this be an error?
+	const ArrayTypeInt8 Int8Array = [1]
+	const ArrayTypeUInt8 UInt8Array = [0xA] //TODO: this should be an error
+	const ArrayTypeInt16 Int16Array = [1.0d] //TODO: this should be an error
+	const ArrayTypeUInt16 UInt16Array = [1.0f] //TODO: this should be an error
+	const ArrayTypeInt32 Int32Array = ["1"] //TODO: this should be an error
+	const ArrayTypeUInt32 UInt32Array = [""] //TODO: this should be an error
+	const ArrayTypeInt64 Int64Array = ["0xA"] //TODO: this should be an error
+	const ArrayTypeUInt64 UInt64Array = ["ABC;-."] //TODO: this should be an error
 	
+	const Double validDoubleOne = 1.0d
+	const Float validFloatOne = 1.0f
+	const Boolean validBooleanFalse = false
+	//TODO const ByteBuffer validByteBuffer =
+	
+	
+	//----------------
+	// implicit casts
+	//----------------
 
 	//XPECT errors --> "Value 1.0 of type Double is not assignable to Float" at "1.0d"
-	const Float validFloatOne__WRONG = 1.0d
-	//XPECT errors --> "Value 1.0 of type Double is not assignable to Float" at "validDoubleOne"
-	const Float f = validDoubleOne
+	const Float invalidFloatOne = 1.0d
+	
+	//XPECT errors --> "Value 1.0 of type Double is not assignable to Int8" at "validDoubleOne"
+	const Int8 implicitDouble2Int8 = validDoubleOne
+	//XPECT errors --> "Value 1.0 of type Double is not assignable to UInt8" at "validDoubleOne"
+	const UInt8 implicitDouble2UInt8 = validDoubleOne
+	//XPECT errors --> "Value 1.0 of type Double is not assignable to Int16" at "validDoubleOne"
+	const Int16 implicitDouble2Int16 = validDoubleOne
+	//XPECT errors --> "Value 1.0 of type Double is not assignable to UInt16" at "validDoubleOne"
+	const UInt16 implicitDouble2UInt16 = validDoubleOne
+	//XPECT errors --> "Value 1.0 of type Double is not assignable to Int32" at "validDoubleOne"
+	const Int32 implicitDouble2Int32 = validDoubleOne
+	//XPECT errors --> "Value 1.0 of type Double is not assignable to UInt32" at "validDoubleOne"
+	const UInt32 implicitDouble2UInt32 = validDoubleOne
+	//XPECT errors --> "Value 1.0 of type Double is not assignable to Int64" at "validDoubleOne"
+	const Int64 implicitDouble2Int64 = validDoubleOne
+	//XPECT errors --> "Value 1.0 of type Double is not assignable to UInt64" at "validDoubleOne"
+	const UInt64 implicitDouble2UInt64 = validDoubleOne
+	
+	//XPECT errors --> "Value 1.0 of type Float is not assignable to Int8" at "validFloatOne"
+	const Int8 implicitFloat2Int8 = validFloatOne
+	//XPECT errors --> "Value 1.0 of type Float is not assignable to UInt8" at "validFloatOne"
+	const UInt8 implicitFloat2UInt8 = validFloatOne
+	//XPECT errors --> "Value 1.0 of type Float is not assignable to Int16" at "validFloatOne"
+	const Int16 implicitFloat2Int16 = validFloatOne
+	//XPECT errors --> "Value 1.0 of type Float is not assignable to UInt16" at "validFloatOne"
+	const UInt16 implicitFloat2UInt16 = validFloatOne
+	//XPECT errors --> "Value 1.0 of type Float is not assignable to Int32" at "validFloatOne"
+	const Int32 implicitFloat2Int32 = validFloatOne
+	//XPECT errors --> "Value 1.0 of type Float is not assignable to UInt32" at "validFloatOne"
+	const UInt32 implicitFloat2UInt32 = validFloatOne
+	//XPECT errors --> "Value 1.0 of type Float is not assignable to Int64" at "validFloatOne"
+	const Int64 implicitFloat2Int64 = validFloatOne
+	//XPECT errors --> "Value 1.0 of type Float is not assignable to UInt64" at "validFloatOne"
+	const UInt64 implicitFloat2UInt64 = validFloatOne
+	
+	//XPECT errors --> "Boolean is not assignable to Int8" at "validBooleanFalse"
+	const Int8 implicitBoolean2Int8 = validBooleanFalse
+	//XPECT errors --> "Boolean is not assignable to UInt8" at "validBooleanFalse"
+	const UInt8 implicitBoolean2UInt8 = validBooleanFalse
+	//XPECT errors --> "Boolean is not assignable to Int16" at "validBooleanFalse"
+	const Int16 implicitBoolean2Int16 = validBooleanFalse
+	//XPECT errors --> "Boolean is not assignable to UInt16" at "validBooleanFalse"
+	const UInt16 implicitBoolean2UInt16 = validBooleanFalse
+	//XPECT errors --> "Boolean is not assignable to Int32" at "validBooleanFalse"
+	const Int32 implicitBoolean2Int32 = validBooleanFalse
+	//XPECT errors --> "Boolean is not assignable to UInt32" at "validBooleanFalse"
+	const UInt32 implicitBoolean2UInt32 = validBooleanFalse
+	//XPECT errors --> "Boolean is not assignable to Int64" at "validBooleanFalse"
+	const Int64 implicitBoolean2Int64 = validBooleanFalse
+	//XPECT errors --> "Boolean is not assignable to UInt64" at "validBooleanFalse"
+	const UInt64 implicitBoolean2UInt64 = validBooleanFalse
+	
+	//XPECT errors --> "ArrayTypeInt8 is not assignable to Int8" at "Int8Array"
+	const Int8 implicitArray2Int8 = Int8Array
+	//XPECT errors --> "ArrayTypeUInt8 is not assignable to UInt8" at "UInt8Array"
+	const UInt8 implicitArray2UInt8 = UInt8Array
+	//XPECT errors --> "ArrayTypeInt16 is not assignable to Int16" at "Int16Array"
+	const Int16 implicitArray2Int16 = Int16Array
+	//XPECT errors --> "ArrayTypeUInt16 is not assignable to UInt16" at "UInt16Array"
+	const UInt16 implicitArray2UInt16 = UInt16Array
+	//XPECT errors --> "ArrayTypeInt32 is not assignable to Int32" at "Int32Array"
+	const Int32 implicitArray2Int32 = Int32Array
+	//XPECT errors --> "ArrayTypeUInt32 is not assignable to UInt32" at "UInt32Array"
+	const UInt32 implicitArray2UInt32 = UInt32Array
+	//XPECT errors --> "ArrayTypeInt64 is not assignable to Int64" at "Int64Array"
+	const Int64 implicitArray2Int64 = Int64Array
+	//XPECT errors --> "ArrayTypeUInt64 is not assignable to UInt64" at "UInt64Array"
+	const UInt64 implicitArray2UInt64 = UInt64Array
+	
+	//XPECT errors --> "ArrayTypeInt8 is not assignable to ArrayTypeInt16" at "Int8Array"
+	const ArrayTypeInt16 implicitFromSmallerTypeArrayInt16 = Int8Array 
+	//XPECT errors --> "ArrayTypeUInt8 is not assignable to ArrayTypeUInt16" at "UInt8Array"
+	const ArrayTypeUInt16 implicitFromSmallerTypeArrayUInt16 = UInt8Array 
+	//XPECT errors --> "ArrayTypeInt8 is not assignable to ArrayTypeInt32" at "Int8Array"
+	const ArrayTypeInt32 implicitFromSmallerTypeArrayInt32a = Int8Array 
+	//XPECT errors --> "ArrayTypeUInt8 is not assignable to ArrayTypeUInt32" at "UInt8Array"
+	const ArrayTypeUInt32 implicitFromSmallerTypeArrayUInt32a = UInt8Array 
+	//XPECT errors --> "ArrayTypeInt16 is not assignable to ArrayTypeInt32" at "Int16Array"
+	const ArrayTypeInt32 implicitFromSmallerTypeArrayInt32b = Int16Array 
+	//XPECT errors --> "ArrayTypeUInt16 is not assignable to ArrayTypeUInt32" at "UInt16Array"
+	const ArrayTypeUInt32 implicitFromSmallerTypeArrayUInt32b = UInt16Array 
+	//XPECT errors --> "ArrayTypeInt8 is not assignable to ArrayTypeInt64" at "Int8Array"
+	const ArrayTypeInt64 implicitFromSmallerTypeArrayInt64a = Int8Array
+	//XPECT errors --> "ArrayTypeUInt8 is not assignable to ArrayTypeUInt64" at "UInt8Array"
+	const ArrayTypeUInt64 implicitFromSmallerTypeArrayUInt64a = UInt8Array
+	//XPECT errors --> "ArrayTypeInt16 is not assignable to ArrayTypeInt64" at "Int16Array"
+	const ArrayTypeInt64 implicitFromSmallerTypeArrayInt64b = Int16Array
+	//XPECT errors --> "ArrayTypeUInt16 is not assignable to ArrayTypeUInt64" at "UInt16Array"
+	const ArrayTypeUInt64 implicitFromSmallerTypeArrayUInt64b = UInt16Array
+	//XPECT errors --> "ArrayTypeInt32 is not assignable to ArrayTypeInt64" at "Int32Array"
+	const ArrayTypeInt64 implicitFromSmallerTypeArrayInt64c = Int32Array
+	//XPECT errors --> "ArrayTypeUInt32 is not assignable to ArrayTypeUInt64" at "UInt32Array"
+	const ArrayTypeUInt64 implicitFromSmallerTypeArrayUInt64c = UInt32Array
+
+	//XPECT errors --> "ArrayTypeInt16 is not assignable to ArrayTypeInt8" at "Int16Array"
+	const ArrayTypeInt8 implicitFromLargerTypeArrayInt8a = Int16Array 
+	//XPECT errors --> "ArrayTypeUInt16 is not assignable to ArrayTypeUInt8" at "UInt16Array"
+	const ArrayTypeUInt8 implicitFromLargerTypeArrayUInt8a = UInt16Array 
+	//XPECT errors --> "ArrayTypeInt32 is not assignable to ArrayTypeInt8" at "Int32Array"
+	const ArrayTypeInt8 implicitFromLargerTypeArrayInt8b = Int32Array 
+	//XPECT errors --> "ArrayTypeUInt32 is not assignable to ArrayTypeUInt8" at "UInt32Array"
+	const ArrayTypeUInt8 implicitFromLargerTypeArrayUInt8b = UInt32Array 
+	//XPECT errors --> "ArrayTypeInt64 is not assignable to ArrayTypeInt8" at "Int64Array"
+	const ArrayTypeInt8 implicitFromLargerTypeArrayInt8c = Int64Array 
+	//XPECT errors --> "ArrayTypeUInt64 is not assignable to ArrayTypeUInt8" at "UInt64Array"
+	const ArrayTypeUInt8 implicitFromLargerTypeArrayUInt8c = UInt64Array 
+	//XPECT errors --> "ArrayTypeInt32 is not assignable to ArrayTypeInt16" at "Int32Array"
+	const ArrayTypeInt16 implicitFromLargerTypeArrayInt16a = Int32Array 
+	//XPECT errors --> "ArrayTypeUInt32 is not assignable to ArrayTypeUInt16" at "UInt32Array"
+	const ArrayTypeUInt16 implicitFromLargerTypeArrayUInt16a = UInt32Array 
+	//XPECT errors --> "ArrayTypeInt64 is not assignable to ArrayTypeInt16" at "Int64Array"
+	const ArrayTypeInt16 implicitFromLargerTypeArrayInt16b = Int64Array 
+	//XPECT errors --> "ArrayTypeUInt64 is not assignable to ArrayTypeUInt16" at "UInt64Array"
+	const ArrayTypeUInt16 implicitFromLargerTypeArrayUInt16b = UInt64Array 
+	//XPECT errors --> "ArrayTypeInt64 is not assignable to ArrayTypeInt32" at "Int64Array"
+	const ArrayTypeInt32 implicitFromLargerTypeArrayInt32 = Int64Array 
+	//XPECT errors --> "ArrayTypeUInt64 is not assignable to ArrayTypeUInt32" at "UInt64Array"
+	const ArrayTypeUInt32 implicitFromLargerTypeArrayUInt32 = UInt64Array 
+	
+	//----------------
+	// explicit casts
+	//----------------
+	//XPECT errors --> "Double cannot be cast to Int8" at "<Int8> validDoubleOne"
+	const Int8 explicitDouble2Int8 = <Int8> validDoubleOne
+	//XPECT errors --> "Double cannot be cast to UInt8" at "<UInt8> validDoubleOne"
+	const UInt8 explicitDouble2UInt8 = <UInt8> validDoubleOne
+	//XPECT errors --> "Double cannot be cast to Int16" at "<Int16> validDoubleOne"
+	const Int16 explicitDouble2Int16 = <Int16> validDoubleOne
+	//XPECT errors --> "Double cannot be cast to UInt16" at "<UInt16> validDoubleOne"
+	const UInt16 explicitDouble2UInt16 = <UInt16> validDoubleOne
+	//XPECT errors --> "Double cannot be cast to Int32" at "<Int32> validDoubleOne"
+	const Int32 explicitDouble2Int32 = <Int32> validDoubleOne
+	//XPECT errors --> "Double cannot be cast to UInt32" at "<UInt32> validDoubleOne"
+	const UInt32 explicitDouble2UInt32 = <UInt32> validDoubleOne
+	//XPECT errors --> "Double cannot be cast to Int64" at "<Int64> validDoubleOne"
+	const Int64 explicitDouble2Int64 = <Int64> validDoubleOne
+	//XPECT errors --> "Double cannot be cast to UInt64" at "<UInt64> validDoubleOne"
+	const UInt64 explicitDouble2UInt64 = <UInt64> validDoubleOne
+	
+	//XPECT errors --> "Float cannot be cast to Int8" at "<Int8> validFloatOne"
+	const Int8 explicitFloat2Int8 = <Int8> validFloatOne
+	//XPECT errors --> "Float cannot be cast to UInt8" at "<UInt8> validFloatOne"
+	const UInt8 explicitFloat2UInt8 = <UInt8> validFloatOne
+	//XPECT errors --> "Float cannot be cast to Int16" at "<Int16> validFloatOne"
+	const Int16 explicitFloat2Int16 = <Int16> validFloatOne
+	//XPECT errors --> "Float cannot be cast to UInt16" at "<UInt16> validFloatOne"
+	const UInt16 explicitFloat2UInt16 = <UInt16> validFloatOne
+	//XPECT errors --> "Float cannot be cast to Int32" at "<Int32> validFloatOne"
+	const Int32 explicitFloat2Int32 = <Int32> validFloatOne
+	//XPECT errors --> "Float cannot be cast to UInt32" at "<UInt32> validFloatOne"
+	const UInt32 explicitFloat2UInt32 = <UInt32> validFloatOne
+	//XPECT errors --> "Float cannot be cast to Int64" at "<Int64> validFloatOne"
+	const Int64 explicitFloat2Int64 = <Int64> validFloatOne
+	//XPECT errors --> "Float cannot be cast to UInt64" at "<UInt64> validFloatOne"
+	const UInt64 explicitFloat2UInt64 = <UInt64> validFloatOne
+	
+	//XPECT errors --> "Boolean cannot be cast to Int8" at "<Int8> validBooleanFalse"
+	const Int8 explicitBoolean2Int8 = <Int8> validBooleanFalse
+	//XPECT errors --> "Boolean cannot be cast to UInt8" at "<UInt8> validBooleanFalse"
+	const UInt8 explicitBoolean2UInt8 = <UInt8> validBooleanFalse
+	//XPECT errors --> "Boolean cannot be cast to Int16" at "<Int16> validBooleanFalse"
+	const Int16 explicitBoolean2Int16 = <Int16> validBooleanFalse
+	//XPECT errors --> "Boolean cannot be cast to UInt16" at "<UInt16> validBooleanFalse"
+	const UInt16 explicitBoolean2UInt16 = <UInt16> validBooleanFalse
+	//XPECT errors --> "Boolean cannot be cast to Int32" at "<Int32> validBooleanFalse"
+	const Int32 explicitBoolean2Int32 = <Int32> validBooleanFalse
+	//XPECT errors --> "Boolean cannot be cast to UInt32" at "<UInt32> validBooleanFalse"
+	const UInt32 explicitBoolean2UInt32 = <UInt32> validBooleanFalse
+	//XPECT errors --> "Boolean cannot be cast to Int64" at "<Int64> validBooleanFalse"
+	const Int64 explicitBoolean2Int64 = <Int64> validBooleanFalse
+	//XPECT errors --> "Boolean cannot be cast to UInt64" at "<UInt64> validBooleanFalse"
+	const UInt64 explicitBoolean2UInt64 = <UInt64> validBooleanFalse
+	
+	//XPECT errors --> "ArrayTypeInt8 cannot be cast to Int8" at "<Int8> Int8Array"
+	const Int8 explicitArray2Int8 = <Int8> Int8Array
+	//XPECT errors --> "ArrayTypeUInt8 cannot be cast to UInt8" at "<UInt8> UInt8Array"
+	const UInt8 explicitArray2UInt8 = <UInt8> UInt8Array
+	//XPECT errors --> "ArrayTypeInt16 cannot be cast to Int16" at "<Int16> Int16Array"
+	const Int16 explicitArray2Int16 = <Int16> Int16Array
+	//XPECT errors --> "ArrayTypeUInt16 cannot be cast to UInt16" at "<UInt16> UInt16Array"
+	const UInt16 explicitArray2UInt16 = <UInt16> UInt16Array
+	//XPECT errors --> "ArrayTypeInt32 cannot be cast to Int32" at "<Int32> Int32Array"
+	const Int32 explicitArray2Int32 = <Int32> Int32Array
+	//XPECT errors --> "ArrayTypeUInt32 cannot be cast to UInt32" at "<UInt32> UInt32Array"
+	const UInt32 explicitArray2UInt32 = <UInt32> UInt32Array
+	//XPECT errors --> "ArrayTypeInt64 cannot be cast to Int64" at "<Int64> Int64Array"
+	const Int64 explicitArray2Int64 = <Int64> Int64Array
+	//XPECT errors --> "ArrayTypeUInt64 cannot be cast to UInt64" at "<UInt64> UInt64Array"
+	const UInt64 explicitArray2UInt64 = <UInt64> UInt64Array
+	
+	//XPECT errors --> "ArrayTypeInt8 cannot be cast to ArrayTypeInt16" at "<ArrayTypeInt16> Int8Array"
+	const ArrayTypeInt16 fromSmallerTypeArrayInt16 = <ArrayTypeInt16> Int8Array 
+	//XPECT errors --> "ArrayTypeUInt8 cannot be cast to ArrayTypeUInt16" at "<ArrayTypeUInt16> UInt8Array"
+	const ArrayTypeUInt16 fromSmallerTypeArrayUInt16 = <ArrayTypeUInt16> UInt8Array 
+	//XPECT errors --> "ArrayTypeInt8 cannot be cast to ArrayTypeInt32" at "<ArrayTypeInt32> Int8Array"
+	const ArrayTypeInt32 fromSmallerTypeArrayInt32a = <ArrayTypeInt32> Int8Array 
+	//XPECT errors --> "ArrayTypeUInt8 cannot be cast to ArrayTypeUInt32" at "<ArrayTypeUInt32> UInt8Array"
+	const ArrayTypeUInt32 fromSmallerTypeArrayUInt32a = <ArrayTypeUInt32> UInt8Array 
+	//XPECT errors --> "ArrayTypeInt16 cannot be cast to ArrayTypeInt32" at "<ArrayTypeInt32> Int16Array"
+	const ArrayTypeInt32 fromSmallerTypeArrayInt32b = <ArrayTypeInt32> Int16Array 
+	//XPECT errors --> "ArrayTypeUInt16 cannot be cast to ArrayTypeUInt32" at "<ArrayTypeUInt32> UInt16Array"
+	const ArrayTypeUInt32 fromSmallerTypeArrayUInt32b = <ArrayTypeUInt32> UInt16Array 
+	//XPECT errors --> "ArrayTypeInt8 cannot be cast to ArrayTypeInt64" at "<ArrayTypeInt64> Int8Array"
+	const ArrayTypeInt64 fromSmallerTypeArrayInt64a = <ArrayTypeInt64> Int8Array
+	//XPECT errors --> "ArrayTypeUInt8 cannot be cast to ArrayTypeUInt64" at "<ArrayTypeUInt64> UInt8Array"
+	const ArrayTypeUInt64 fromSmallerTypeArrayUInt64a = <ArrayTypeUInt64> UInt8Array
+	//XPECT errors --> "ArrayTypeInt16 cannot be cast to ArrayTypeInt64" at "<ArrayTypeInt64> Int16Array"
+	const ArrayTypeInt64 fromSmallerTypeArrayInt64b = <ArrayTypeInt64> Int16Array
+	//XPECT errors --> "ArrayTypeUInt16 cannot be cast to ArrayTypeUInt64" at "<ArrayTypeUInt64> UInt16Array"
+	const ArrayTypeUInt64 fromSmallerTypeArrayUInt64b = <ArrayTypeUInt64> UInt16Array
+	//XPECT errors --> "ArrayTypeInt32 cannot be cast to ArrayTypeInt64" at "<ArrayTypeInt64> Int32Array"
+	const ArrayTypeInt64 fromSmallerTypeArrayInt64c = <ArrayTypeInt64> Int32Array
+	//XPECT errors --> "ArrayTypeUInt32 cannot be cast to ArrayTypeUInt64" at "<ArrayTypeUInt64> UInt32Array"
+	const ArrayTypeUInt64 fromSmallerTypeArrayUInt64c = <ArrayTypeUInt64> UInt32Array
+
+	//XPECT errors --> "ArrayTypeInt16 cannot be cast to ArrayTypeInt8" at "<ArrayTypeInt8> Int16Array"
+	const ArrayTypeInt8 fromLargerTypeArrayInt8a = <ArrayTypeInt8> Int16Array 
+	//XPECT errors --> "ArrayTypeUInt16 cannot be cast to ArrayTypeUInt8" at "<ArrayTypeUInt8> UInt16Array"
+	const ArrayTypeUInt8 fromLargerTypeArrayUInt8a = <ArrayTypeUInt8> UInt16Array 
+	//XPECT errors --> "ArrayTypeInt32 cannot be cast to ArrayTypeInt8" at "<ArrayTypeInt8> Int32Array"
+	const ArrayTypeInt8 fromLargerTypeArrayInt8b = <ArrayTypeInt8> Int32Array 
+	//XPECT errors --> "ArrayTypeUInt32 cannot be cast to ArrayTypeUInt8" at "<ArrayTypeUInt8> UInt32Array"
+	const ArrayTypeUInt8 fromLargerTypeArrayUInt8b = <ArrayTypeUInt8> UInt32Array 
+	//XPECT errors --> "ArrayTypeInt64 cannot be cast to ArrayTypeInt8" at "<ArrayTypeInt8> Int64Array"
+	const ArrayTypeInt8 fromLargerTypeArrayInt8c = <ArrayTypeInt8> Int64Array 
+	//XPECT errors --> "ArrayTypeUInt64 cannot be cast to ArrayTypeUInt8" at "<ArrayTypeUInt8> UInt64Array"
+	const ArrayTypeUInt8 fromLargerTypeArrayUInt8c = <ArrayTypeUInt8> UInt64Array 
+	//XPECT errors --> "ArrayTypeInt32 cannot be cast to ArrayTypeInt16" at "<ArrayTypeInt16> Int32Array"
+	const ArrayTypeInt16 fromLargerTypeArrayInt16a = <ArrayTypeInt16> Int32Array 
+	//XPECT errors --> "ArrayTypeUInt32 cannot be cast to ArrayTypeUInt16" at "<ArrayTypeUInt16> UInt32Array"
+	const ArrayTypeUInt16 fromLargerTypeArrayUInt16a = <ArrayTypeUInt16> UInt32Array 
+	//XPECT errors --> "ArrayTypeInt64 cannot be cast to ArrayTypeInt16" at "<ArrayTypeInt16> Int64Array"
+	const ArrayTypeInt16 fromLargerTypeArrayInt16b = <ArrayTypeInt16> Int64Array 
+	//XPECT errors --> "ArrayTypeUInt64 cannot be cast to ArrayTypeUInt16" at "<ArrayTypeUInt16> UInt64Array"
+	const ArrayTypeUInt16 fromLargerTypeArrayUInt16b = <ArrayTypeUInt16> UInt64Array 
+	//XPECT errors --> "ArrayTypeInt64 cannot be cast to ArrayTypeInt32" at "<ArrayTypeInt32> Int64Array"
+	const ArrayTypeInt32 fromLargerTypeArrayInt32 = <ArrayTypeInt32> Int64Array 
+	//XPECT errors --> "ArrayTypeUInt64 cannot be cast to ArrayTypeUInt32" at "<ArrayTypeUInt32> UInt64Array"
+	const ArrayTypeUInt32 fromLargerTypeArrayUInt32 = <ArrayTypeUInt32> UInt64Array 
+	 
+	const ArrayTypeInt8 a = <ArrayTypeInt8> Int8Array
+	
+	const Int32 x = 1 //TODO: error?
+	const Int8 y = <Int16> x //TODO error?
 	
 }

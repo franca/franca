@@ -1,0 +1,126 @@
+/*******************************************************************************
+ * Copyright (c) 2014 itemis AG (http://www.itemis.de).
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************/
+//XPECT_SETUP org.franca.core.dsl.tests.xpect.FrancaIDLXpectTests END_SETUP 
+package org.franca.core.dsl.tests.xpect
+
+typeCollection ConstDefinitions_InvalidUsageOfOperators_ComparisonOperators {
+	
+	//This file not only contains test cases directly derived from the semantics of franca,
+	//but also some that show differences to other common languages.
+	
+	//The operators == and != are valid for Booleans and have a Boolean result type	
+	//The operators == and != are valid for Strings and have a Boolean result type
+	
+	const Boolean validFalse = false
+	const Boolean validTrue = true
+	const Int8 validOne = 1
+	const Float validFloatOne = 1.0f
+	const Double validDoubleOne = 1.0d
+	const Integer(1, 1) validIntervalOne = 1
+	const String validEmptyString = ""
+	const String validStringOne = "1"
+	const String validStringFloatOne = "1.0f"
+	const String validStringFalse = "false"
+	
+	//--------------------------------------------------------------------------------------------
+	// miscellaneous usages of valid constants, some of them known to be valid in other languages
+	//--------------------------------------------------------------------------------------------
+	const Boolean bif1 = validOne < validFloatOne
+	const Boolean bdf1 = validDoubleOne < validFloatOne
+	
+	//XPECT errors --> "the types Int8 and String are not comparable" at "validOne == validStringOne"
+	const Boolean a = validOne == validStringOne
+	//XPECT errors --> "the types Int8 and String are not comparable" at "validOne == validStringFloatOne"
+	const Boolean b = validOne == validStringFloatOne
+	//XPECT errors --> "the types Integer(0,0) and String are not comparable" at "0 == validStringFalse"
+	const Boolean c = 0 == validStringFalse
+	//XPECT errors --> "the types Int8 and Boolean are not comparable" at "validOne == true"
+	const Boolean d = validOne == true
+	//XPECT errors --> "the types Integer(-1,-1) and Boolean are not comparable" at "-validOne == true"
+	const Boolean e = -validOne == true
+	//XPECT errors --> "the types Boolean and String are not comparable" at "validFalse == validStringFalse"
+	const Boolean f = validFalse == validStringFalse
+	//XPECT errors --> "the types String and Boolean are not comparable" at "validEmptyString == validFalse"
+	const Boolean g = validEmptyString == validFalse
+	
+	const Boolean ba = validFloatOne == validFloatOne  //TODO: show warning because of this might never become true because of rounding errors
+	const Boolean bb = validDoubleOne == validFloatOne  //TODO: show warning because of this might never become true because of rounding errors
+	const Boolean bc = validDoubleOne == validDoubleOne  //TODO: show warning because of this might never become true because of rounding errors
+	const Boolean bd = validOne == validFloatOne  //TODO: show warning because of this might never become true because of rounding errors
+	const Boolean be = validIntervalOne == validFloatOne  //TODO: show warning because of this might never become true because of rounding errors
+	
+	const Boolean aa = validFloatOne != validFloatOne  //TODO: show warning because of this might always be true because of rounding errors
+	const Boolean ab = validDoubleOne != validFloatOne  //TODO: show warning because of this might always be true because of rounding errors
+	const Boolean ac = validDoubleOne != validDoubleOne  //TODO: show warning because of this might always be true because of rounding errors
+	const Boolean ad = validOne != validFloatOne  //TODO: show warning because of this might always be true because of rounding errors
+	const Boolean ae = validIntervalOne != validFloatOne  //TODO: show warning because of this might always be true because of rounding errors
+	
+
+	//---------------
+	// Booleans only
+	//---------------		
+	//XPECT errors --> "there is no order defined between elements of type Boolean and those of type Boolean" at "validFalse < true"
+	const Boolean b1 = validFalse < true
+	//XPECT errors --> "there is no order defined between elements of type Boolean and those of type Boolean" at "false <= validFalse"
+	const Boolean b2 = false <= validFalse
+	//XPECT errors --> "there is no order defined between elements of type Boolean and those of type Boolean" at "true >= false"
+	const Boolean b3 = true >= false
+	//XPECT errors --> "there is no order defined between elements of type Boolean and those of type Boolean" at "validFalse > b3"
+	const Boolean b4 = validFalse > b3
+	
+	//--------------
+	// Strings only
+	//--------------
+	//XPECT lineErrors  --> "there is no order defined between elements of type String and those of type String"
+	const Boolean bs1 = "" < "1234567890"
+	//XPECT lineErrors  --> "there is no order defined between elements of type String and those of type String"
+	const Boolean bs2 = "123" > "1234567890"
+	//XPECT lineErrors  --> "there is no order defined between elements of type String and those of type String"
+	const Boolean bs3 = "" <= ""
+	//XPECT lineErrors  --> "there is no order defined between elements of type String and those of type String"
+	const Boolean bs4 = "1234567890" >= "1234567890"
+	
+	//---------------------
+	// Strings and Numbers
+	//---------------------
+	//XPECT errors --> "there is no order defined between elements of type String and those of type Integer(8,8)" at ""test" < 8"
+	const Boolean bsn8 = "test" < 8
+	//XPECT errors --> "there is no order defined between elements of type String and those of type Double" at ""1.3f" <= 9.0d"
+	const Boolean bsn9 = "1.3f" <= 9.0d 
+	//XPECT errors --> "there is no order defined between elements of type Integer (10,10) and those of type String" at "10 > """
+	const Boolean bsn10 = 10 > ""
+	//XPECT errors --> "there is no order defined between elements of type Integer (11,11) and those of type String" at "11 >= "11""
+	const Boolean bsn11 = 11 >= "11"
+	
+	//---------------------
+	// Booleans and Numbers
+	//---------------------
+	//XPECT errors --> "there is no order defined between elements of type Boolean and those of type Integer(8,8)" at "true < 8"
+	const Boolean xbsn8 = true < 8
+	//XPECT errors --> "there is no order defined between elements of type Boolean and those of type Double" at "false <= 9.0d"
+	const Boolean xbsn9 = false <= 9.0d 
+	//XPECT errors --> "there is no order defined between elements of type Integer (1,1) and those of type Boolean" at "1 > false"
+	const Boolean xbsn1 = 1 > false
+	//XPECT errors --> "there is no order defined between elements of type Integer (1,1) and those of type Boolean" at "1 >= true"
+	const Boolean xbsn2 = 1 >= true
+	
+	//----------------------
+	// Strings and Booleans
+	//----------------------
+	//XPECT lineErrors  --> "there is no order defined between elements of type Boolean and those of type String"
+	const Boolean bbs1 = true < "1234567890"
+	//XPECT lineErrors  --> "there is no order defined between elements of type Boolean and those of type String"
+	const Boolean bbs2 = false > "true"
+	//XPECT lineErrors  --> "there is no order defined between elements of type String and those of type Boolean"
+	const Boolean bbs3 = "" <= true
+	//XPECT lineErrors  --> "there is no order defined between elements of type String and those of type Boolean"
+	const Boolean bbs4 = "1234567890" >= false
+	
+	//TODO add complex types like arrays, maps, enums, ...
+
+}

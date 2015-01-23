@@ -3,7 +3,6 @@
 
 <product name="Franca IDE" uid="org.franca.product" id="org.franca.product.ui.FrancaIDE" application="org.eclipse.ui.ide.workbench" version="0.9.0.qualifier" useFeatures="true" includeLaunchers="true">
 
-
    <configIni use="default">
    </configIni>
 
@@ -21,7 +20,6 @@
          <bmp/>
       </win>
    </launcher>
-
 
    <vm>
    </vm>
@@ -42,6 +40,9 @@
       <feature id="org.eclipse.help"/>
       <feature id="org.eclipse.rcp"/>
       <feature id="org.eclipse.e4.rcp"/>
+      <feature id="org.eclipse.emf.ecore" version="2.9.1.v20130827-0309"/>
+      <feature id="org.eclipse.emf.common" version="2.9.1.v20130827-0309"/>
+      <feature id="org.eclipse.emf.edit" version="2.9.0.v20130902-0605"/>
    </features>
 
    <configurations>

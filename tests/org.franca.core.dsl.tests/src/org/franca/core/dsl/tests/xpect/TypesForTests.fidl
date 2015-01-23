@@ -1,0 +1,632 @@
+/*******************************************************************************
+ * Copyright (c) 2014 itemis AG (http://www.itemis.de).
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************/
+//XPECT_SETUP org.franca.core.dsl.tests.xpect.FrancaIDLXpectTests END_SETUP 
+package org.franca.core.dsl.tests.xpect
+
+typeCollection TypesForTestsCollection {
+	
+	//-----------------
+	// simple typedefs
+	//-----------------
+	typedef MyInt8 is Int8
+	typedef MyUInt8 is UInt8
+	typedef MyInt16 is Int16
+	typedef MyUInt16 is UInt16
+	typedef MyInt32 is Int32
+	typedef MyUInt32 is UInt32
+	typedef MyInt64 is Int64
+	typedef MyUInt64 is UInt64
+	typedef MyNegativeOneInterval is Integer(-1,-1)
+	typedef MyZeroInterval is Integer(0,0)
+	typedef MyPositiveOneInterval is Integer(1,1)
+	typedef MyCrossingZeroInterval is Integer(-1,1)
+	typedef MyAllNegativeIntegersInterval is Integer(minInt,-1)
+	typedef MyAllPositiveIntegersInterval is Integer(1,maxInt)
+	typedef MyAllNegativeIntegersAndZeroInterval is Integer(minInt,0)
+	typedef MyAllPositiveIntegersAndZeroInterval is Integer(0,maxInt)
+	typedef MyNegativeIntegersCrossingZeroInterval is Integer(minInt,1)
+	typedef MyPositiveIntegersCrossingZeroInterval is Integer(-1,maxInt)
+	typedef MyAllIntegersInterval is Integer(minInt,maxInt)
+	typedef MyBoolean is Boolean
+	typedef MyString is String
+	typedef MyFloat is Float
+	typedef MyDouble is Double
+	typedef MyUndefined is undefined
+	typedef MyByteBuffer is ByteBuffer
+	
+	struct SuperStruct_SimpleValues {
+		Int8 int8Value //= 1 // TODO add possibility to initialize structs with default values
+	 	UInt8 uInt8Value
+	 	Int16 int16Value
+	 	UInt16 uInt16Value
+	 	Int32 int32Value
+	 	UInt32 uInt32Value
+	 	Int64 int64Value
+	 	UInt64 uInt64Value
+	 	Integer(-1,-1) negativeOneIntervalValue
+	 	Integer(0,0) zeroIntervalValue
+	 	Integer(1,1) positiveOneIntervalValue
+	 	Integer(-1,1) crossingZeroIntervalValue
+	 	Integer(minInt,-1) allNegativeIntegersIntervalValue
+	 	Integer(1,maxInt) allPositiveIntegersIntervalValue
+	 	Integer(minInt,0) allNegativeIntegersAndZeroIntervalValue
+	 	Integer(0,maxInt) allPositiveIntegersAndZeroIntervalValue
+	 	Integer(minInt,1) negativeIntegersCrossingZeroIntervalValue
+	 	Integer(-1,maxInt) positiveIntegersCrossingZeroIntervalValue
+	 	Integer(minInt,maxInt) allIntegersIntervalValue
+	 	Boolean booleanValue
+	 	String stringValue
+	 	Float floatValue
+	 	Double doubleValue
+	 	undefined undefinedValue
+	 	ByteBuffer byteBufferValue
+	}
+	struct SubStruct_SimpleValuesUsingTypeDefs extends SuperStruct_SimpleValues {
+		MyInt8 myInt8Value
+	 	MyUInt8 myUInt8Value
+	 	MyInt16 myInt16Value
+	 	MyUInt16 myUInt16Value
+	 	MyInt32 myInt32Value
+	 	MyUInt32 myUInt32Value
+	 	MyInt64 myInt64Value
+	 	MyUInt64 myUInt64Value
+	 	MyNegativeOneInterval myNegativeOneIntervalValue
+	 	MyZeroInterval myZeroIntervalValue
+	 	MyPositiveOneInterval myPositiveOneIntervalValue
+	 	MyCrossingZeroInterval myCrossingZeroIntervalValue
+	 	MyAllNegativeIntegersInterval myAllNegativeIntegersIntervalValue
+	 	MyAllPositiveIntegersInterval myAllPositiveIntegersIntervalValue
+	 	MyAllNegativeIntegersAndZeroInterval myAllNegativeIntegersAndZeroIntervalValue
+	 	MyAllPositiveIntegersAndZeroInterval myAllPositiveIntegersAndZeroIntervalValue
+	 	MyNegativeIntegersCrossingZeroInterval myNegativeIntegersCrossingZeroIntervalValue
+	 	MyPositiveIntegersCrossingZeroInterval myPositiveIntegersCrossingZeroIntervalValue
+	 	MyAllIntegersInterval myAllIntegersIntervalValue
+	 	MyBoolean myBooleanValue
+	 	MyString myStringValue
+	 	MyFloat myFloatValue
+	 	MyDouble myDoubleValue
+	 	MyUndefined myUndefinedValue
+	 	MyByteBuffer myByteBufferValue
+	}
+	struct SubSubStruct_Empty extends SubStruct_SimpleValuesUsingTypeDefs {
+		
+	}
+	
+	union SuperUnion_SimpleFormats {
+		Int8 int8Format
+	 	UInt8 uInt8Format
+	 	Int16 int16Format
+	 	UInt16 uInt16Format
+	 	Int32 int32Format
+	 	UInt32 uInt32Format
+	 	Int64 int64Format
+	 	UInt64 uInt64Format
+	 	Integer(-1,-1) negativeOneIntervalFormat
+//	 	Integer(0,0) zeroIntervalFormat
+//	 	Integer(1,1) positiveOneIntervalFormat
+//	 	Integer(-1,1) crossingZeroIntervalFormat
+//	 	Integer(minInt,-1) allNegativeIntegersIntervalFormat
+//	 	Integer(1,maxInt) allPositiveIntegersIntervalFormat
+//	 	Integer(minInt,0) allNegativeIntegersAndZeroIntervalFormat
+//	 	Integer(0,maxInt) allPositiveIntegersAndZeroIntervalFormat
+//	 	Integer(minInt,1) negativeIntegersCrossingZeroIntervalFormat
+//	 	Integer(-1,maxInt) positiveIntegersCrossingZeroIntervalFormat
+//	 	Integer(minInt,maxInt) allIntegersIntervalFormat
+	 	Boolean booleanFormat
+	 	String stringFormat
+	 	Float floatFormat
+	 	Double doubleFormat
+//	 	undefined undefinedFormat
+	 	ByteBuffer byteBufferFormat
+	}
+	union SubUnion_SimpleFormatsUsingTypeDefs extends SuperUnion_SimpleFormats {
+		MyInt8 myInt8Format
+	 	MyUInt8 myUInt8Format
+	 	MyInt16 myInt16Format
+	 	MyUInt16 myUInt16Format
+	 	MyInt32 myInt32Format
+	 	MyUInt32 myUInt32Format
+	 	MyInt64 myInt64Format
+	 	MyUInt64 myUInt64Format
+	 	MyNegativeOneInterval myNegativeOneIntervalFormat
+	 	MyZeroInterval myZeroIntervalFormat
+	 	MyPositiveOneInterval myPositiveOneIntervalFormat
+	 	MyCrossingZeroInterval myCrossingZeroIntervalFormat
+	 	MyAllNegativeIntegersInterval myAllNegativeIntegersIntervalFormat
+	 	MyAllPositiveIntegersInterval myAllPositiveIntegersIntervalFormat
+	 	MyAllNegativeIntegersAndZeroInterval myAllNegativeIntegersAndZeroIntervalFormat
+	 	MyAllPositiveIntegersAndZeroInterval myAllPositiveIntegersAndZeroIntervalFormat
+	 	MyNegativeIntegersCrossingZeroInterval myNegativeIntegersCrossingZeroIntervalFormat
+	 	MyPositiveIntegersCrossingZeroInterval myPositiveIntegersCrossingZeroIntervalFormat
+	 	MyAllIntegersInterval myAllIntegersIntervalFormat
+	 	MyBoolean myBooleanFormat
+	 	MyString myStringFormat
+	 	MyFloat myFloatFormat
+	 	MyDouble myDoubleFormat
+	 	MyUndefined myUndefinedFormat
+	 	MyByteBuffer myByteBufferFormat
+	}
+	union SubSubUnion_Empty extends SubUnion_SimpleFormatsUsingTypeDefs {
+		
+	}
+	
+	enumeration SuperEnum {
+		Literal
+	}
+	enumeration SubEnum extends SuperEnum {
+		subLiteral
+	}
+	enumeration SubSubEnum extends SubEnum {
+		subSubLiteral //TODO should an empty sub enumeration be allowed, similar structs and unions?
+	}
+	
+	//Arrays of simple types
+	array ArrayTypeInt8 of Int8
+	array ArrayTypeUInt8 of UInt8
+	array ArrayTypeInt16 of Int16
+	array ArrayTypeUInt16 of UInt16
+	array ArrayTypeInt32 of Int32
+	array ArrayTypeUInt32 of UInt32
+	array ArrayTypeInt64 of Int64
+	array ArrayTypeUInt64 of UInt64
+	array ArrayTypeNegativeOneInterval of Integer(-1,-1)
+	array ArrayTypeZeroInterval of Integer(0,0)
+	array ArrayTypePositiveOneInterval of Integer(1,1)
+	array ArrayTypeCrossingZeroInterval of Integer(-1,1)
+	array ArrayTypeAllNegativeIntegersInterval of Integer(minInt,-1)
+	array ArrayTypeAllPositiveIntegersInterval of Integer(1,maxInt)
+	array ArrayTypeAllNegativeIntegersAndZeroInterval of Integer(minInt,0)
+	array ArrayTypeAllPositiveIntegersAndZeroInterval of Integer(0,maxInt)
+	array ArrayTypeNegativeIntegersCrossingZeroInterval of Integer(minInt,1)
+	array ArrayTypePositiveIntegersCrossingZeroInterval of Integer(-1,maxInt)
+	array ArrayTypeAllIntegersInterval of Integer(minInt,maxInt)
+	array ArrayTypeBoolean of Boolean
+	array ArrayTypeString of String
+	array ArrayTypeFloat of Float
+	array ArrayTypeDouble of Double
+	array ArrayTypeUndefined of undefined
+	array ArrayTypeByteBuffer of ByteBuffer
+
+	//Arrays of typedefs of simple types
+	array ArrayTypeMyInt8 of MyInt8
+	array ArrayTypeMyUInt8 of MyUInt8
+	array ArrayTypeMyInt16 of MyInt16
+	array ArrayTypeMyUInt16 of MyUInt16
+	array ArrayTypeMyInt32 of MyInt32
+	array ArrayTypeMyUInt32 of MyUInt32
+	array ArrayTypeMyInt64 of MyInt64
+	array ArrayTypeMyUInt64 of MyUInt64
+	array ArrayTypeMyNegativeOneInterval of MyNegativeOneInterval
+	array ArrayTypeMyZeroInterval of MyZeroInterval
+	array ArrayTypeMyPositiveOneInterval of MyPositiveOneInterval
+	array ArrayTypeMyCrossingZeroInterval of MyCrossingZeroInterval
+	array ArrayTypeMyAllNegativeIntegersInterval of MyAllNegativeIntegersInterval
+	array ArrayTypeMyAllPositiveIntegersInterval of MyAllPositiveIntegersInterval
+	array ArrayTypeMyAllNegativeIntegersAndZeroInterval of MyAllNegativeIntegersAndZeroInterval
+	array ArrayTypeMyAllPositiveIntegersAndZeroInterval of MyAllPositiveIntegersAndZeroInterval
+	array ArrayTypeMyNegativeIntegersCrossingZeroInterval of MyNegativeIntegersCrossingZeroInterval
+	array ArrayTypeMyPositiveIntegersCrossingZeroInterval of MyPositiveIntegersCrossingZeroInterval
+	array ArrayTypeMyAllIntegersInterval of MyAllIntegersInterval
+	array ArrayTypeMyBoolean of MyBoolean
+	array ArrayTypeMyString of MyString
+	array ArrayTypeMyFloat of MyFloat
+	array ArrayTypeMyDouble of MyDouble
+	array ArrayTypeMyUndefined of MyUndefined
+	array ArrayTypeMyByteBuffer of MyByteBuffer
+
+	map MapMyInt8_to_Int8 {		
+		MyInt8 to Int8
+	}
+	map MapMyUInt8_to_UInt8 {
+		MyUInt8 to UInt8
+	}
+	map MapMyInt16_to_Int16 {
+		MyInt16 to Int16
+	}
+	map MapMyUInt16_to_UInt16 {
+		MyUInt16 to UInt16
+	}
+	map MapMyInt32_to_Int32 {
+		MyInt32 to Int32
+	}
+	map MapMyUInt32_to_UInt32 {
+		MyUInt32 to UInt32
+	}
+	map MapMyInt64_to_Int64 {
+		MyInt64 to Int64
+	}
+	map MapMyUInt64_to_UInt64 {
+		MyUInt64 to UInt64
+	}
+	map MapMyNegativeOneInterval_to_NegativeOneInterval {
+		MyNegativeOneInterval to Integer(-1,-1)
+	}
+	map MapMyZeroInterval_to_ZeroInterval {
+		MyZeroInterval to Integer(0,0)
+	}
+	map MapMyPositiveOneInterval_to_PositiveOneInterval {
+		MyPositiveOneInterval to Integer(1,1)
+	}
+	map MapMyCrossingZeroInterval_to_CrossingZeroInterval {
+		MyCrossingZeroInterval to Integer(-1,1)
+	}
+	map MapMyAllNegativeIntegersInterval_to_AllNegativeIntegersInterval {
+		MyAllNegativeIntegersInterval to Integer(minInt,-1)
+	}
+	map MapMyAllPositiveIntegersInterval_to_AllPositiveIntegersInterval {
+		MyAllPositiveIntegersInterval to Integer(1,maxInt)
+	}
+	map MapMyAllNegativeIntegersAndZeroInterval_to_AllNegativeIntegersAndZeroInterval {
+		MyAllNegativeIntegersAndZeroInterval to Integer(minInt,0)
+	}
+	map MapMyAllPositiveIntegersAndZeroInterval_to_AllPositiveIntegersAndZeroInterval {
+		MyAllPositiveIntegersAndZeroInterval to Integer(0,maxInt)
+	}
+	map MapMyNegativeIntegersCrossingZeroInterval_to_NegativeIntegersCrossingZeroInterval {
+		MyNegativeIntegersCrossingZeroInterval to Integer(minInt,1)
+	}
+	map MapMyPositiveIntegersCrossingZeroInterval_to_PositiveIntegersCrossingZeroInterval {
+		MyPositiveIntegersCrossingZeroInterval to Integer(-1,maxInt)
+	}
+	map MapMyAllIntegersInterval_to_AllIntegersInterval {
+		MyAllIntegersInterval to Integer(minInt,maxInt)
+	}
+	map MapMyBoolean_to_Boolean {
+		MyBoolean to Boolean
+	}
+	map MapMyString_to_String {
+		MyString to String
+	}
+	map MapMyFloat_to_Float {
+		MyFloat to Float
+	}
+	map MapMyDouble_to_Double {
+		MyDouble to Double
+	}
+	map MapMyUndefined_to_Undefined {
+		MyUndefined to undefined
+	}
+	map MapMyByteBuffer_to_ByteBuffer {
+		MyByteBuffer to ByteBuffer //TODO: ByteBuffer used for indexing should be an error
+	}
+	
+	// Complex Arrays
+	
+	// Arrays of arrays
+	array ArrayTypeOfArrayTypeMyInt8 of ArrayTypeMyInt8 
+	array ArrayTypeOfArrayTypeMyUInt8 of ArrayTypeMyUInt8
+	array ArrayTypeOfArrayTypeMyInt16 of ArrayTypeMyInt16
+	array ArrayTypeOfArrayTypeMyUInt16 of ArrayTypeMyUInt16
+	array ArrayTypeOfArrayTypeMyInt32 of ArrayTypeMyUInt16
+	array ArrayTypeOfArrayTypeMyUInt32 of ArrayTypeMyUInt32
+	array ArrayTypeOfArrayTypeMyInt64 of ArrayTypeMyUInt32
+	array ArrayTypeOfArrayTypeMyUInt64 of ArrayTypeMyUInt64
+	array ArrayTypeOfArrayTypeMyNegativeOneInterval of ArrayTypeMyNegativeOneInterval
+	array ArrayTypeOfArrayTypeMyZeroInterval of ArrayTypeMyZeroInterval
+	array ArrayTypeOfArrayTypeMyPositiveOneInterval of ArrayTypeMyPositiveOneInterval
+	array ArrayTypeOfArrayTypeMyCrossingZeroInterval of ArrayTypeMyCrossingZeroInterval
+	array ArrayTypeOfArrayTypeMyAllNegativeIntegersInterval of ArrayTypeMyAllNegativeIntegersInterval
+	array ArrayTypeOfArrayTypeMyAllPositiveIntegersInterval of ArrayTypeMyAllPositiveIntegersInterval
+	array ArrayTypeOfArrayTypeMyAllNegativeIntegersAndZeroInterval of ArrayTypeMyAllNegativeIntegersAndZeroInterval
+	array ArrayTypeOfArrayTypeMyAllPositiveIntegersAndZeroInterval of ArrayTypeMyAllPositiveIntegersAndZeroInterval
+	array ArrayTypeOfArrayTypeMyNegativeIntegersCrossingZeroInterval of ArrayTypeMyNegativeIntegersCrossingZeroInterval
+	array ArrayTypeOfArrayTypeMyPositiveIntegersCrossingZeroInterval of ArrayTypeMyPositiveIntegersCrossingZeroInterval
+	array ArrayTypeOfArrayTypeMyAllIntegersInterval of ArrayTypeMyAllIntegersInterval
+	array ArrayTypeOfArrayTypeMyBoolean of ArrayTypeMyBoolean
+	array ArrayTypeOfArrayTypeMyString of ArrayTypeMyString
+	array ArrayTypeOfArrayTypeMyFloat of ArrayTypeMyFloat
+	array ArrayTypeOfArrayTypeMyDouble of ArrayTypeMyDouble
+	array ArrayTypeOfArrayTypeMyUndefined of ArrayTypeMyUndefined
+	array ArrayTypeOfArrayTypeMyByteBuffer of ArrayTypeMyByteBuffer
+	
+	// Arrays of arrays of arrays
+	array ArrayTypeOfArrayTypeOfArrayTypeMyInt8 of ArrayTypeOfArrayTypeMyInt8
+	array ArrayTypeOfArrayTypeOfArrayTypeMyUInt8 of ArrayTypeOfArrayTypeMyUInt8
+	array ArrayTypeOfArrayTypeOfArrayTypeMyInt16 of ArrayTypeOfArrayTypeMyInt16
+	array ArrayTypeOfArrayTypeOfArrayTypeMyUInt16 of ArrayTypeOfArrayTypeMyUInt16
+	array ArrayTypeOfArrayTypeOfArrayTypeMyInt32 of ArrayTypeOfArrayTypeMyUInt16
+	array ArrayTypeOfArrayTypeOfArrayTypeMyUInt32 of ArrayTypeOfArrayTypeMyUInt32
+	array ArrayTypeOfArrayTypeOfArrayTypeMyInt64 of ArrayTypeOfArrayTypeMyUInt32
+	array ArrayTypeOfArrayTypeOfArrayTypeMyUInt64 of ArrayTypeOfArrayTypeMyUInt64
+	array ArrayTypeOfArrayTypeOfArrayTypeMyNegativeOneInterval of ArrayTypeOfArrayTypeMyNegativeOneInterval
+	array ArrayTypeOfArrayTypeOfArrayTypeMyZeroInterval of ArrayTypeOfArrayTypeMyZeroInterval
+	array ArrayTypeOfArrayTypeOfArrayTypeMyPositiveOneInterval of ArrayTypeOfArrayTypeMyPositiveOneInterval
+	array ArrayTypeOfArrayTypeOfArrayTypeMyCrossingZeroInterval of ArrayTypeOfArrayTypeMyCrossingZeroInterval
+	array ArrayTypeOfArrayTypeOfArrayTypeMyAllNegativeIntegersInterval of ArrayTypeOfArrayTypeMyAllNegativeIntegersInterval
+	array ArrayTypeOfArrayTypeOfArrayTypeMyAllPositiveIntegersInterval of ArrayTypeOfArrayTypeMyAllPositiveIntegersInterval
+	array ArrayTypeOfArrayTypeOfArrayTypeMyAllNegativeIntegersAndZeroInterval of ArrayTypeOfArrayTypeMyAllNegativeIntegersAndZeroInterval
+	array ArrayTypeOfArrayTypeOfArrayTypeMyAllPositiveIntegersAndZeroInterval of ArrayTypeOfArrayTypeMyAllPositiveIntegersAndZeroInterval
+	array ArrayTypeOfArrayTypeOfArrayTypeMyNegativeIntegersCrossingZeroInterval of ArrayTypeOfArrayTypeMyNegativeIntegersCrossingZeroInterval
+	array ArrayTypeOfArrayTypeOfArrayTypeMyPositiveIntegersCrossingZeroInterval of ArrayTypeOfArrayTypeMyPositiveIntegersCrossingZeroInterval
+	array ArrayTypeOfArrayTypeOfArrayTypeMyAllIntegersInterval of ArrayTypeOfArrayTypeMyAllIntegersInterval
+	array ArrayTypeOfArrayTypeOfArrayTypeMyBoolean of ArrayTypeOfArrayTypeMyBoolean
+	array ArrayTypeOfArrayTypeOfArrayTypeMyString of ArrayTypeOfArrayTypeMyString
+	array ArrayTypeOfArrayTypeOfArrayTypeMyFloat of ArrayTypeOfArrayTypeMyFloat
+	array ArrayTypeOfArrayTypeOfArrayTypeMyDouble of ArrayTypeOfArrayTypeMyDouble
+	array ArrayTypeOfArrayTypeOfArrayTypeMyUndefined of ArrayTypeOfArrayTypeMyUndefined
+	array ArrayTypeOfArrayTypeOfArrayTypeMyByteBuffer of ArrayTypeOfArrayTypeMyByteBuffer
+	
+	// arrays of enums
+	array ArrayTypeSuperEnum of SuperEnum
+	array ArrayTypeSubEnum of SubEnum
+	array ArrayTypeSubSubEnum of SubSubEnum
+	
+	//arrays of arrays of enums
+	array ArrayTypeOfArrayTypeSuperEnum of ArrayTypeSuperEnum
+	array ArrayTypeOfArrayTypeSubEnum of ArrayTypeSubEnum
+	array ArrayTypeOfArrayTypeSubSubEnum of ArrayTypeSubSubEnum
+	
+	//arrays of arrays of arrays of enums
+	array ArrayTypeOfArrayTypeOfArrayTypeSuperEnum of ArrayTypeOfArrayTypeSuperEnum
+	array ArrayTypeOfArrayTypeOfArrayTypeSubEnum of ArrayTypeOfArrayTypeSubEnum
+	array ArrayTypeOfArrayTypeOfArrayTypeSubSubEnum of ArrayTypeOfArrayTypeSubSubEnum
+	
+	//arrays of simple structs
+	array ArrayTypeSuperStruct_SimpleValues of SuperStruct_SimpleValues
+	array ArrayTypeSubStruct_SimpleValuesUsingTypeDefs of SubStruct_SimpleValuesUsingTypeDefs
+	array ArrayTypeSubSubStruct_Empty of SubSubStruct_Empty
+	
+	//arrays of arrays of simple structs
+	array ArrayTypeOfArrayTypeSuperStruct_SimpleValues of ArrayTypeSuperStruct_SimpleValues
+	array ArrayTypeOfArrayTypeSubStruct_SimpleValuesUsingTypeDefs of ArrayTypeSubStruct_SimpleValuesUsingTypeDefs
+	array ArrayTypeOfArrayTypeSubSubStruct_Empty of ArrayTypeSubSubStruct_Empty
+	
+	//arrays of arrays of arrays of simple structs
+	array ArrayTypeOfArrayTypeOfArrayTypeSuperStruct_SimpleValues of ArrayTypeOfArrayTypeSuperStruct_SimpleValues
+	array ArrayTypeOfArrayTypeOfArrayTypeSubStruct_SimpleValuesUsingTypeDefs of ArrayTypeOfArrayTypeSubStruct_SimpleValuesUsingTypeDefs
+	array ArrayTypeOfArrayTypeOfArrayTypeSubSubStruct_Empty of ArrayTypeOfArrayTypeSubSubStruct_Empty
+	
+	//arrays of simple unions
+	array ArrayTypeSuperUnion_SimpleFormats of SuperUnion_SimpleFormats
+	array ArrayTypeSubUnion_SimpleFormatsUsingTypeDefs of SubUnion_SimpleFormatsUsingTypeDefs
+	array ArrayTypeSubSubUnion_Empty of SubSubUnion_Empty
+	
+	//arrays of arrays of simple unions
+	array ArrayTypeOfArrayTypeSuperUnion_SimpleFormats of ArrayTypeSuperUnion_SimpleFormats
+	array ArrayTypeOfArrayTypeSubUnion_SimpleFormatsUsingTypeDefs of ArrayTypeSubUnion_SimpleFormatsUsingTypeDefs
+	array ArrayTypeOfArrayTypeSubSubUnion_Empty of ArrayTypeSubSubUnion_Empty
+	
+	//arrays of arrays of arrays of simple unions
+	array ArrayTypeOfArrayTypeOfArrayTypeSuperUnion_SimpleFormats of ArrayTypeOfArrayTypeSuperUnion_SimpleFormats
+	array ArrayTypeOfArrayTypeOfArrayTypeSubUnion_SimpleFormatsUsingTypeDefs of ArrayTypeOfArrayTypeSubUnion_SimpleFormatsUsingTypeDefs
+	array ArrayTypeOfArrayTypeOfArrayTypeSubSubUnion_Empty of ArrayTypeOfArrayTypeSubSubUnion_Empty
+	
+	//arrays of maps
+	array ArrayTypeMapMyInt8_to_Int8 of MapMyInt8_to_Int8
+	array ArrayTypeMapMyUInt8_to_UInt8 of MapMyUInt8_to_UInt8
+	array ArrayTypeMapMyInt16_to_Int16 of MapMyInt16_to_Int16
+	array ArrayTypeMapMyUInt16_to_UInt16 of MapMyUInt16_to_UInt16
+	array ArrayTypeMapMyInt32_to_Int32 of MapMyInt32_to_Int32
+	array ArrayTypeMapMyUInt32_to_UInt32 of MapMyUInt32_to_UInt32
+	array ArrayTypeMapMyInt64_to_Int64 of MapMyInt64_to_Int64
+	array ArrayTypeMapMyUInt64_to_UInt64 of MapMyUInt64_to_UInt64
+	array ArrayTypeMapMyNegativeOneInterval_to_NegativeOneInterval of MapMyNegativeOneInterval_to_NegativeOneInterval
+	array ArrayTypeMapMyZeroInterval_to_ZeroInterval of MapMyZeroInterval_to_ZeroInterval
+	array ArrayTypeMapMyPositiveOneInterval_to_PositiveOneInterval of MapMyPositiveOneInterval_to_PositiveOneInterval
+	array ArrayTypeMapMyCrossingZeroInterval_to_CrossingZeroInterval of MapMyCrossingZeroInterval_to_CrossingZeroInterval
+	array ArrayTypeMapMyAllNegativeIntegersInterval_to_AllNegativeIntegersInterval of MapMyAllNegativeIntegersInterval_to_AllNegativeIntegersInterval
+	array ArrayTypeMapMyAllPositiveIntegersInterval_to_AllPositiveIntegersInterval of MapMyAllPositiveIntegersInterval_to_AllPositiveIntegersInterval
+	array ArrayTypeMapMyAllNegativeIntegersAndZeroInterval_to_AllNegativeIntegersAndZeroInterval of MapMyAllNegativeIntegersAndZeroInterval_to_AllNegativeIntegersAndZeroInterval
+	array ArrayTypeMapMyAllPositiveIntegersAndZeroInterval_to_AllPositiveIntegersAndZeroInterval of MapMyAllPositiveIntegersAndZeroInterval_to_AllPositiveIntegersAndZeroInterval
+	array ArrayTypeMapMyNegativeIntegersCrossingZeroInterval_to_NegativeIntegersCrossingZeroInterval of MapMyNegativeIntegersCrossingZeroInterval_to_NegativeIntegersCrossingZeroInterval
+	array ArrayTypeMapMyPositiveIntegersCrossingZeroInterval_to_PositiveIntegersCrossingZeroInterval of MapMyPositiveIntegersCrossingZeroInterval_to_PositiveIntegersCrossingZeroInterval
+	array ArrayTypeMapMyAllIntegersInterval_to_AllIntegersInterval of MapMyAllIntegersInterval_to_AllIntegersInterval
+	array ArrayTypeMapMyBoolean_to_Boolean of MapMyBoolean_to_Boolean
+	array ArrayTypeMapMyString_to_String of MapMyString_to_String
+	array ArrayTypeMapMyFloat_to_Float of MapMyFloat_to_Float
+	array ArrayTypeMapMyDouble_to_Double of MapMyDouble_to_Double
+	array ArrayTypeMapMyUndefined_to_Undefined of MapMyUndefined_to_Undefined
+	array ArrayTypeMapMyByteBuffer_to_ByteBuffer of MapMyByteBuffer_to_ByteBuffer
+
+	//arrays of arrays of maps
+	array ArrayTypeOfArrayTypeMapMyInt8_to_Int8 of ArrayTypeMapMyInt8_to_Int8
+	array ArrayTypeOfArrayTypeMapMyUInt8_to_UInt8 of ArrayTypeMapMyUInt8_to_UInt8
+	array ArrayTypeOfArrayTypeMapMyInt16_to_Int16 of ArrayTypeMapMyInt16_to_Int16
+	array ArrayTypeOfArrayTypeMapMyUInt16_to_UInt16 of ArrayTypeMapMyUInt16_to_UInt16
+	array ArrayTypeOfArrayTypeMapMyInt32_to_Int32 of ArrayTypeMapMyInt32_to_Int32
+	array ArrayTypeOfArrayTypeMapMyUInt32_to_UInt32 of ArrayTypeMapMyUInt32_to_UInt32
+	array ArrayTypeOfArrayTypeMapMyInt64_to_Int64 of ArrayTypeMapMyInt64_to_Int64
+	array ArrayTypeOfArrayTypeMapMyUInt64_to_UInt64 of ArrayTypeMapMyUInt64_to_UInt64
+	array ArrayTypeOfArrayTypeMapMyNegativeOneInterval_to_NegativeOneInterval of ArrayTypeMapMyNegativeOneInterval_to_NegativeOneInterval
+	array ArrayTypeOfArrayTypeMapMyZeroInterval_to_ZeroInterval of ArrayTypeMapMyZeroInterval_to_ZeroInterval
+	array ArrayTypeOfArrayTypeMapMyPositiveOneInterval_to_PositiveOneInterval of ArrayTypeMapMyPositiveOneInterval_to_PositiveOneInterval
+	array ArrayTypeOfArrayTypeMapMyCrossingZeroInterval_to_CrossingZeroInterval of ArrayTypeMapMyCrossingZeroInterval_to_CrossingZeroInterval
+	array ArrayTypeOfArrayTypeMapMyAllNegativeIntegersInterval_to_AllNegativeIntegersInterval of ArrayTypeMapMyAllNegativeIntegersInterval_to_AllNegativeIntegersInterval
+	array ArrayTypeOfArrayTypeMapMyAllPositiveIntegersInterval_to_AllPositiveIntegersInterval of ArrayTypeMapMyAllPositiveIntegersInterval_to_AllPositiveIntegersInterval
+	array ArrayTypeOfArrayTypeMapMyAllNegativeIntegersAndZeroInterval_to_AllNegativeIntegersAndZeroInterval of ArrayTypeMapMyAllNegativeIntegersAndZeroInterval_to_AllNegativeIntegersAndZeroInterval
+	array ArrayTypeOfArrayTypeMapMyAllPositiveIntegersAndZeroInterval_to_AllPositiveIntegersAndZeroInterval of ArrayTypeMapMyAllPositiveIntegersAndZeroInterval_to_AllPositiveIntegersAndZeroInterval
+	array ArrayTypeOfArrayTypeMapMyNegativeIntegersCrossingZeroInterval_to_NegativeIntegersCrossingZeroInterval of ArrayTypeMapMyNegativeIntegersCrossingZeroInterval_to_NegativeIntegersCrossingZeroInterval
+	array ArrayTypeOfArrayTypeMapMyPositiveIntegersCrossingZeroInterval_to_PositiveIntegersCrossingZeroInterval of ArrayTypeMapMyPositiveIntegersCrossingZeroInterval_to_PositiveIntegersCrossingZeroInterval
+	array ArrayTypeOfArrayTypeMapMyAllIntegersInterval_to_AllIntegersInterval of ArrayTypeMapMyAllIntegersInterval_to_AllIntegersInterval
+	array ArrayTypeOfArrayTypeMapMyBoolean_to_Boolean of ArrayTypeMapMyBoolean_to_Boolean
+	array ArrayTypeOfArrayTypeMapMyString_to_String of ArrayTypeMapMyString_to_String
+	array ArrayTypeOfArrayTypeMapMyFloat_to_Float of ArrayTypeMapMyFloat_to_Float
+	array ArrayTypeOfArrayTypeMapMyDouble_to_Double of ArrayTypeMapMyDouble_to_Double
+	array ArrayTypeOfArrayTypeMapMyUndefined_to_Undefined of ArrayTypeMapMyUndefined_to_Undefined
+	array ArrayTypeOfArrayTypeMapMyByteBuffer_to_ByteBuffer of ArrayTypeMapMyByteBuffer_to_ByteBuffer
+
+	//arrays of arrays of arrays of maps
+	array ArrayTypeOfArrayTypeOfArrayTypeMapMyInt8_to_Int8 of ArrayTypeOfArrayTypeMapMyInt8_to_Int8
+	array ArrayTypeOfArrayTypeOfArrayTypeMapMyUInt8_to_UInt8 of ArrayTypeOfArrayTypeMapMyUInt8_to_UInt8
+	array ArrayTypeOfArrayTypeOfArrayTypeMapMyInt16_to_Int16 of ArrayTypeOfArrayTypeMapMyInt16_to_Int16
+	array ArrayTypeOfArrayTypeOfArrayTypeMapMyUInt16_to_UInt16 of ArrayTypeOfArrayTypeMapMyUInt16_to_UInt16
+	array ArrayTypeOfArrayTypeOfArrayTypeMapMyInt32_to_Int32 of ArrayTypeOfArrayTypeMapMyInt32_to_Int32
+	array ArrayTypeOfArrayTypeOfArrayTypeMapMyUInt32_to_UInt32 of ArrayTypeOfArrayTypeMapMyUInt32_to_UInt32
+	array ArrayTypeOfArrayTypeOfArrayTypeMapMyInt64_to_Int64 of ArrayTypeOfArrayTypeMapMyInt64_to_Int64
+	array ArrayTypeOfArrayTypeOfArrayTypeMapMyUInt64_to_UInt64 of ArrayTypeOfArrayTypeMapMyUInt64_to_UInt64
+	array ArrayTypeOfArrayTypeOfArrayTypeMapMyNegativeOneInterval_to_NegativeOneInterval of ArrayTypeOfArrayTypeMapMyNegativeOneInterval_to_NegativeOneInterval
+	array ArrayTypeOfArrayTypeOfArrayTypeMapMyZeroInterval_to_ZeroInterval of ArrayTypeOfArrayTypeMapMyZeroInterval_to_ZeroInterval
+	array ArrayTypeOfArrayTypeOfArrayTypeMapMyPositiveOneInterval_to_PositiveOneInterval of ArrayTypeOfArrayTypeMapMyPositiveOneInterval_to_PositiveOneInterval
+	array ArrayTypeOfArrayTypeOfArrayTypeMapMyCrossingZeroInterval_to_CrossingZeroInterval of ArrayTypeOfArrayTypeMapMyCrossingZeroInterval_to_CrossingZeroInterval
+	array ArrayTypeOfArrayTypeOfArrayTypeMapMyAllNegativeIntegersInterval_to_AllNegativeIntegersInterval of ArrayTypeOfArrayTypeMapMyAllNegativeIntegersInterval_to_AllNegativeIntegersInterval
+	array ArrayTypeOfArrayTypeOfArrayTypeMapMyAllPositiveIntegersInterval_to_AllPositiveIntegersInterval of ArrayTypeOfArrayTypeMapMyAllPositiveIntegersInterval_to_AllPositiveIntegersInterval
+	array ArrayTypeOfArrayTypeOfArrayTypeMapMyAllNegativeIntegersAndZeroInterval_to_AllNegativeIntegersAndZeroInterval of ArrayTypeOfArrayTypeMapMyAllNegativeIntegersAndZeroInterval_to_AllNegativeIntegersAndZeroInterval
+	array ArrayTypeOfArrayTypeOfArrayTypeMapMyAllPositiveIntegersAndZeroInterval_to_AllPositiveIntegersAndZeroInterval of ArrayTypeOfArrayTypeMapMyAllPositiveIntegersAndZeroInterval_to_AllPositiveIntegersAndZeroInterval
+	array ArrayTypeOfArrayTypeOfArrayTypeMapMyNegativeIntegersCrossingZeroInterval_to_NegativeIntegersCrossingZeroInterval of ArrayTypeOfArrayTypeMapMyNegativeIntegersCrossingZeroInterval_to_NegativeIntegersCrossingZeroInterval
+	array ArrayTypeOfArrayTypeOfArrayTypeMapMyPositiveIntegersCrossingZeroInterval_to_PositiveIntegersCrossingZeroInterval of ArrayTypeOfArrayTypeMapMyPositiveIntegersCrossingZeroInterval_to_PositiveIntegersCrossingZeroInterval
+	array ArrayTypeOfArrayTypeOfArrayTypeMapMyAllIntegersInterval_to_AllIntegersInterval of ArrayTypeOfArrayTypeMapMyAllIntegersInterval_to_AllIntegersInterval
+	array ArrayTypeOfArrayTypeOfArrayTypeMapMyBoolean_to_Boolean of ArrayTypeOfArrayTypeMapMyBoolean_to_Boolean
+	array ArrayTypeOfArrayTypeOfArrayTypeMapMyString_to_String of ArrayTypeOfArrayTypeMapMyString_to_String
+	array ArrayTypeOfArrayTypeOfArrayTypeMapMyFloat_to_Float of ArrayTypeOfArrayTypeMapMyFloat_to_Float
+	array ArrayTypeOfArrayTypeOfArrayTypeMapMyDouble_to_Double of ArrayTypeOfArrayTypeMapMyDouble_to_Double
+	array ArrayTypeOfArrayTypeOfArrayTypeMapMyUndefined_to_Undefined of ArrayTypeOfArrayTypeMapMyUndefined_to_Undefined
+	array ArrayTypeOfArrayTypeOfArrayTypeMapMyByteBuffer_to_ByteBuffer of ArrayTypeOfArrayTypeMapMyByteBuffer_to_ByteBuffer
+
+	
+	//-----------------
+	// complex structs
+	//-----------------
+	
+	struct StructOfEnums {
+		SuperEnum valueSuperEnum
+		SubEnum valueSubEnum
+		SubSubEnum valueSubSubEnum
+	}
+	
+	struct StructOfSimpleArrays {
+		ArrayTypeInt8 valueOfArrayTypeInt8
+		ArrayTypeUInt8 valueOfArrayTypeUInt8
+		ArrayTypeInt16 valueOfArrayTypeInt16
+		ArrayTypeUInt16 valueOfArrayTypeUInt16
+		ArrayTypeInt32 valueOfArrayTypeInt32
+		ArrayTypeUInt32 valueOfArrayTypeUInt32
+		ArrayTypeInt64 valueOfArrayTypeInt64
+		ArrayTypeUInt64 valueOfArrayTypeUInt64
+		ArrayTypeNegativeOneInterval valueOfArrayTypeNegativeOneInterval
+		ArrayTypeZeroInterval valueOfArrayTypeZeroInterval
+		ArrayTypePositiveOneInterval valueOfArrayTypePositiveOneInterval
+		ArrayTypeCrossingZeroInterval valueOfArrayTypeCrossingZeroInterval
+		ArrayTypeAllNegativeIntegersInterval valueOfArrayTypeAllNegativeIntegersInterval
+		ArrayTypeAllPositiveIntegersInterval valueOfArrayTypeAllPositiveIntegersInterval
+		ArrayTypeAllNegativeIntegersAndZeroInterval valueOfArrayTypeAllNegativeIntegersAndZeroInterval
+		ArrayTypeAllPositiveIntegersAndZeroInterval valueOfArrayTypeAllPositiveIntegersAndZeroInterval
+		ArrayTypeNegativeIntegersCrossingZeroInterval valueOfArrayTypeNegativeIntegersCrossingZeroInterval
+		ArrayTypePositiveIntegersCrossingZeroInterval valueOfArrayTypePositiveIntegersCrossingZeroInterval
+		ArrayTypeAllIntegersInterval valueOfArrayTypeAllIntegersInterval
+		ArrayTypeBoolean valueOfArrayTypeBoolean
+		ArrayTypeString valueOfArrayTypeString
+		ArrayTypeFloat valueOfArrayTypeFloat
+		ArrayTypeDouble valueOfArrayTypeDouble
+		ArrayTypeUndefined valueOfArrayTypeUndefined
+		ArrayTypeByteBuffer valueOfArrayTypeByteBuffer
+	
+		ArrayTypeMyInt8 valueOfArrayTypeMyInt8
+		ArrayTypeMyUInt8 valueOfArrayTypeMyUInt8
+		ArrayTypeMyInt16 valueOfArrayTypeMyInt16
+		ArrayTypeMyUInt16 valueOfArrayTypeMyUInt16
+		ArrayTypeMyInt32 valueOfArrayTypeMyInt32
+		ArrayTypeMyUInt32 valueOfArrayTypeMyUInt32
+		ArrayTypeMyInt64 valueOfArrayTypeMyInt64
+		ArrayTypeMyUInt64 valueOfArrayTypeMyUInt64
+		ArrayTypeMyNegativeOneInterval valueOfArrayTypeMyNegativeOneInterval
+		ArrayTypeMyZeroInterval valueOfArrayTypeMyZeroInterval
+		ArrayTypeMyPositiveOneInterval valueOfArrayTypeMyPositiveOneInterval
+		ArrayTypeMyCrossingZeroInterval valueOfArrayTypeMyCrossingZeroInterval
+		ArrayTypeMyAllNegativeIntegersInterval valueOfArrayTypeMyAllNegativeIntegersInterval
+		ArrayTypeMyAllPositiveIntegersInterval valueOfArrayTypeMyAllPositiveIntegersInterval
+		ArrayTypeMyAllNegativeIntegersAndZeroInterval valueOfArrayTypeMyAllNegativeIntegersAndZeroInterval
+		ArrayTypeMyAllPositiveIntegersAndZeroInterval valueOfArrayTypeMyAllPositiveIntegersAndZeroInterval
+		ArrayTypeMyNegativeIntegersCrossingZeroInterval valueOfArrayTypeMyNegativeIntegersCrossingZeroInterval
+		ArrayTypeMyPositiveIntegersCrossingZeroInterval valueOfArrayTypeMyPositiveIntegersCrossingZeroInterval
+		ArrayTypeMyAllIntegersInterval valueOfArrayTypeMyAllIntegersInterval
+		ArrayTypeMyBoolean valueOfArrayTypeMyBoolean
+		ArrayTypeMyString valueOfArrayTypeMyString
+		ArrayTypeMyFloat valueOfArrayTypeMyFloat
+		ArrayTypeMyDouble valueOfArrayTypeMyDouble
+		ArrayTypeMyUndefined valueOfArrayTypeMyUndefined
+		ArrayTypeMyByteBuffer valueOfArrayTypeMyByteBuffer
+	}
+	
+	struct StructOfSimpleMaps {
+		MapMyInt8_to_Int8 valueOfMapMyInt8_to_Int8
+		MapMyUInt8_to_UInt8 valueOfMapMyUInt8_to_UInt8
+		MapMyInt16_to_Int16 valueOfMapMyInt16_to_Int16
+		MapMyUInt16_to_UInt16 valueOfMapMyUInt16_to_UInt16
+		MapMyInt32_to_Int32 valueOfMapMyInt32_to_Int32
+		MapMyUInt32_to_UInt32 valueOfMapMyUInt32_to_UInt32
+		MapMyInt64_to_Int64 valueOfMapMyInt64_to_Int64
+		MapMyUInt64_to_UInt64 valueOfMapMyUInt64_to_UInt64
+		MapMyNegativeOneInterval_to_NegativeOneInterval valueOfMapMyNegativeOneInterval_to_NegativeOneInterval
+		MapMyZeroInterval_to_ZeroInterval valueOfMapMyZeroInterval_to_ZeroInterval
+		MapMyPositiveOneInterval_to_PositiveOneInterval valueOfMapMyPositiveOneInterval_to_PositiveOneInterval
+		MapMyCrossingZeroInterval_to_CrossingZeroInterval valueOfMapMyCrossingZeroInterval_to_CrossingZeroInterval
+		MapMyAllNegativeIntegersInterval_to_AllNegativeIntegersInterval valueOfMapMyAllNegativeIntegersInterval_to_AllNegativeIntegersInterval
+		MapMyAllPositiveIntegersInterval_to_AllPositiveIntegersInterval valueOfMapMyAllPositiveIntegersInterval_to_AllPositiveIntegersInterval
+		MapMyAllNegativeIntegersAndZeroInterval_to_AllNegativeIntegersAndZeroInterval valueOfMapMyAllNegativeIntegersAndZeroInterval_to_AllNegativeIntegersAndZeroInterval
+		MapMyAllPositiveIntegersAndZeroInterval_to_AllPositiveIntegersAndZeroInterval valueOfMapMyAllPositiveIntegersAndZeroInterval_to_AllPositiveIntegersAndZeroInterval
+		MapMyNegativeIntegersCrossingZeroInterval_to_NegativeIntegersCrossingZeroInterval valueOfMapMyNegativeIntegersCrossingZeroInterval_to_NegativeIntegersCrossingZeroInterval
+		MapMyPositiveIntegersCrossingZeroInterval_to_PositiveIntegersCrossingZeroInterval valueOfMapMyPositiveIntegersCrossingZeroInterval_to_PositiveIntegersCrossingZeroInterval
+		MapMyAllIntegersInterval_to_AllIntegersInterval valueOfMapMyAllIntegersInterval_to_AllIntegersInterval
+		MapMyBoolean_to_Boolean valueOfMapMyBoolean_to_Boolean
+		MapMyString_to_String valueOfMapMyString_to_String
+		MapMyFloat_to_Float valueOfMapMyFloat_to_Float
+		MapMyDouble_to_Double valueOfMapMyDouble_to_Double
+		MapMyUndefined_to_Undefined valueOfMapMyUndefined_to_Undefined
+		MapMyByteBuffer_to_ByteBuffer valueOfMapMyByteBuffer_to_ByteBuffer
+	}
+	
+	struct StructOfSimpleUnions {
+		SuperUnion_SimpleFormats valueSuperUnion_SimpleFormats
+		SubUnion_SimpleFormatsUsingTypeDefs valueSubUnion_SimpleFormatsUsingTypeDefs
+		SubSubUnion_Empty valueSubSubUnion_Empty
+	}
+	
+	struct SuperStructOfStructs {
+		SuperStruct_SimpleValues valueSuperStruct_SimpleValues
+		SubStruct_SimpleValuesUsingTypeDefs valueSubStruct_SimpleValuesUsingTypeDefs
+		SubSubStruct_Empty valueSubSubStruct_Empty
+//		SuperStructOfStructs valueSuperStructOfStructs //TODO this is not allowed
+	}
+	struct SubStructOfStructs extends SuperStructOfStructs {
+		StructOfEnums valueStructOfEnums
+		StructOfSimpleArrays valueStructOfSimpleArrays
+		StructOfSimpleMaps valueStructOfSimpleMaps
+		StructOfSimpleUnions valueStructOfSimpleUnions
+		SuperStructOfStructs valueSuperStructOfStructsInSubStructOfStructs
+//		SubStructOfStructs valueSubStructOfStructs //TODO this is not allowed!!
+//		SubSubStructOfStructs test //TODO this is not allowed!!
+	}
+	struct SubSubStructOfStructs extends SubStructOfStructs {
+		SuperStructOfStructs valueSuperStructOfStructsInSubSubStructOfStructs
+		SubStructOfStructs valueSubStructOfStructsInSubSubStructOfStructs
+//		SubSubStructOfStructs valueSubSubStructOfStructs //TODO this is not allowed!!
+	}
+
+	array SuperStructArrayType of SuperStruct_SimpleValues
+	array SubStructArrayType of SubStruct_SimpleValuesUsingTypeDefs
+	array SubSubStructArrayType of SubSubStruct_Empty
+	array EnumArrayType of SuperEnum
+	array SubEnumArrayType of SubEnum
+	array SubSubEnumArrayType of SubSubEnum
+
+	//---------------
+	// miscellaneous
+	//---------------
+	struct StructUsingTheSameTypeMultipleTimes {
+		// In difference to unions, it is no problem to use the same type multiple times in structs
+		String x String y String z
+		MyInt8 m1 MyInt8 m2
+		SuperStruct_SimpleValues struct1
+		SuperStruct_SimpleValues struct2
+		SubStruct_SimpleValuesUsingTypeDefs struct3
+		SubStruct_SimpleValuesUsingTypeDefs struct4
+		SubSubStruct_Empty struct5
+		SubSubStruct_Empty struct6
+		SuperEnum enum1
+		SuperEnum enum2
+		SubEnum enum3
+		SubEnum enum4
+		SubSubEnum enum5
+		SubSubEnum enum6
+		ArrayTypeAllIntegersInterval allIntegers
+		ArrayTypeAllIntegersInterval allIntegersAgain
+		undefined undefinedValue1
+		undefined undefinedValue2
+		Integer i1 Integer i2
+	}
+}
