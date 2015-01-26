@@ -71,6 +71,10 @@
 			<!-- 
 			   <module>../../docs/org.franca.help</module>
 			-->
+			<module>../../plugins/org.franca.connectors.idl</module>
+
+
+			<module>../../tests/org.franca.connectors.idl.tests</module>
     </modules>
 
 	<build>
