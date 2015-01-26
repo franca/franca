@@ -7,9 +7,8 @@
   		<relativePath>../../releng/org.franca.parent/pom.xml</relativePath>
   	</parent>
   
-  <groupId>org.franca.connectors.idl.tests</groupId>
-  <artifactId>franca-idl-connecter-test</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  	<artifactId>org.franca.connectors.idl.tests</artifactId>
+	<version>0.9.1-SNAPSHOT</version>
 	<packaging>eclipse-plugin</packaging>
 		<dependencies>
 		<!-- It is important to have JUnit >= 4.7 as dependency to select the right JUnit Provider see http://maven.apache.org/plugins/maven-surefire-plugin/examples/junit.html -->
