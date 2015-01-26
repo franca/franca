@@ -1,17 +1,9 @@
 package org.franca.connectors.idl.tests;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
-
 import org.franca.connectors.idl.Franca2IdlConverter;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.junit.runners.model.TestClass;
-
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 

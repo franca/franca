@@ -52,11 +52,10 @@ class Franca2IdlConverter {
 		val typeCollections = franca.typeCollections?.map(function1)
 		
 		'''
-		module «franca.name»
-			{
-			«interfaces.join('\n')»
-			«typeCollections.join('\n')»
-			} ;
+		module «franca.name» {
+			«interfaces.join()»
+			«typeCollections.join()»
+			};
 		'''
 	}
 	
@@ -70,10 +69,10 @@ class Franca2IdlConverter {
 		«IF generateComment!=null && generateComment!=''»
 		/** «generateComment» 
 		*/«ENDIF»
-		interface «typename» {
-			«types»
-			«constants»
-		};
+			interface «typename» {
+				«types»
+				«constants»
+			};
 		'''
 	}
 	
@@ -107,18 +106,17 @@ class Franca2IdlConverter {
 	«IF generateComment!=null && generateComment!=''»
 	/** «generateComment» 
 		*/«ENDIF»
-		interface «fInterface.name»«IF baseInterface!=null»:«baseInterface»«ENDIF»
-			{
-		«fInterface.attributes?.map[transformAttributes].join('\n')»
-	 	«fInterface.methods?.map[transformMethods].join('\n')»
-	 	
-	 	«types»
-	 	«constants»
-			} ;
-			
+		interface «fInterface.name»«IF baseInterface!=null»:«baseInterface»«ENDIF» {
+			«fInterface.attributes?.map[transformAttributes].join('\n')»
+	 		«fInterface.methods?.map[transformMethods].join('\n')»
+	 		«types»
+	 		«constants»
+		};
+		«IF broadcasts!=null && broadcasts!=''»
 		interface «fInterface.name»_client {
 			«broadcasts»
 		};
+		«ENDIF»
 		'''
 	}
 	
@@ -211,7 +209,7 @@ class Franca2IdlConverter {
 		val isArray1 = field.array
 		
 		var isArray = field.type.isArray
-		'''«type»«IF isArray1»[ ]«ENDIF» «name»«isArray»;'''
+		'''«type»«IF isArray1»[ ]«ENDIF» «name»;'''
 	}
 		
 		
@@ -263,15 +261,7 @@ class Franca2IdlConverter {
 			}
 		else {
 			var type = ref.derived
-			switch (type) {
-				FArrayType: type.name
-				FStructType: type.name
-				FUnionType: type.name
-				FEnumerationType: type.name
-				FMapType: type.name
-				FTypeDef: type.actualType.transformType2TypeString
-			
-			}
+			type.name
 		}
 	}
 	
