@@ -1,0 +1,20 @@
+package testcases
+
+typeCollection MyTypes {
+	array MyArray of Int8
+		struct MyStruct {
+		Int8 aMember
+	}
+	union MyUnion {
+		UInt16 aNumber
+		String aString
+	}
+		enumeration MyEnumeration {
+		C1  // without constant value
+		C2 = "100"
+		C3 = "101"
+		C4 = 110
+		C5 = 110 + 2
+	}
+	typedef MyTypedef is Int8
+}

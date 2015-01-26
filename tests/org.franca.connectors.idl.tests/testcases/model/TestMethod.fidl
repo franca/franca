@@ -1,0 +1,15 @@
+package TestMethodPackage
+
+interface TestMethodInterface {
+	
+	method callme {
+		in {
+			Int8 param1
+			Int8 param2
+		}
+		out {
+			Float retcode
+		}
+	
+}
+}

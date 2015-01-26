@@ -279,7 +279,7 @@ class Franca2IdlConverter {
 	def  transformBasicType(FTypeRef src) {
 		switch (src.predefined) {
 			case FBasicTypeId::INT8:
-				'Int8' // not_supported in DBus, use INT16 instead
+				'Int8' 
 			case FBasicTypeId::UINT8:
 				'UInt8'
 			case FBasicTypeId::INT16:

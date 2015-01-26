@@ -1,0 +1,22 @@
+package TestMethodWithTypeRef
+
+interface TestMethodWithTypeRefInterface {
+	
+	method callme {
+		in {
+			Int8 param1
+			isValue param2
+		}
+		out {
+			MyStruct retcode
+		}
+	
+	}
+		typedef isValue is  Int8 
+		array MyArray of Int8
+		struct MyStruct {
+				Int8 field1
+				String field2
+				isValue anIntArray
+		}
+	}

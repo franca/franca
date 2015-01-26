@@ -1,0 +1,7 @@
+module TestBroadcast {
+		interface TestBroadcastInterface {
+		};
+		interface TestBroadcastInterface_client {
+			void broad ( in Float out1,in UInt16 out2 );
+		};
+	};

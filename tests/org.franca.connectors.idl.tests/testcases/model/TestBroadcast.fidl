@@ -1,0 +1,10 @@
+package TestBroadcast	
+
+ interface TestBroadcastInterface {
+ 	
+ 		broadcast broad selective {
+		out {
+			Float out1
+			UInt16 out2			}
+		}
+ }
