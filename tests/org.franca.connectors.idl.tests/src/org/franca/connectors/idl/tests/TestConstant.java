@@ -9,7 +9,7 @@ import org.junit.Test;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 
-public class TestConstant   extends FileContentsComparator{
+public class TestConstant   extends FileContentComparator{
 	@Test
 	public void testAttributes() throws IOException{
 		Franca2IdlConverter converter = new Franca2IdlConverter("testcases/model/TestConstant.fidl");

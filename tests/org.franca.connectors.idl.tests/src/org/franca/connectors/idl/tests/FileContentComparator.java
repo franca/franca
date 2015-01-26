@@ -9,7 +9,7 @@ import java.util.List;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 
-public class FileContentsComparator {
+public class FileContentComparator {
 	private String expectedFilePath = "testcases/expectedResult/";
 	private String generatedFilePath = "testcases/testResult/";
 	public void compare(String TestCaseFileNmae){
