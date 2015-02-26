@@ -185,14 +185,25 @@ public class Digraph<T> {
 					Node<T> node = it.next();
 					// search the nodes with only incoming edges and remove all its edges from the digraph
 					if (node.outEdges.size() == 0) {
+							
 						for (Iterator<Node<T>> inIt = node.inEdges.iterator(); inIt.hasNext();) {
 							try {
-								removeEdge(inIt.next().value, node.value);
+								Node<T> next = inIt.next();
+								//removeEdge(next.value, node.value);
+								//replacement that does not alter the iterated list:
+								if (next.outEdges.contains(node)) {
+									next.outEdges.remove(node);
+									inIt.remove();
+									countEdges--;
+								} else {
+									throw new NotExistingEdge();
+								}
 							} catch (NotExistingEdge e) {
 								e.printStackTrace();
 							}
 							removedEdges = true;
 						}
+						node.inEdges.clear();
 					}
 				}
 			}
