@@ -29,8 +29,11 @@ import static extension org.franca.core.FrancaModelExtensions.*
 import static extension org.franca.core.framework.FrancaHelpers.*
 import static extension org.franca.core.utils.ExpressionEvaluator.*
 import java.math.BigInteger
+import org.franca.core.dsl.validation.internal.CyclicDependenciesDetector
+
 
 class TypesValidator {
+	
 	
 
 	def static boolean checkConstantType (ValidationMessageReporter reporter, FConstantDef constantDef) {
@@ -44,6 +47,12 @@ class TypesValidator {
 		//evaluate actual value for numbers here
 		if (typeRHS != null) {
 			if (typeRHS.isNumber) {
+				
+				// A cycle would cause a stack overflow, so abort the evaluation in that case
+				if (CyclicDependenciesDetector::hasCycle(constantDef)) {
+					return false
+				}
+						
 				val valueRHS = constantDef.rhs.evaluate;
 				val boolean fits =
 						if (typeLHS.isDouble) {
