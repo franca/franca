@@ -95,9 +95,13 @@ public class Digraph<T> {
 		if (!nodesMap.containsKey(toNode)) {
 			addNode(toNode);
 		}
-		if (nodesMap.get(fromNode).outEdges.add(nodesMap.get(toNode))
-				&& nodesMap.get(toNode).inEdges.add(nodesMap.get(fromNode)))
+		boolean outEdgeAdded = nodesMap.get(fromNode).outEdges.add(nodesMap.get(toNode));
+		boolean inEdgeAdded = nodesMap.get(toNode).inEdges.add(nodesMap.get(fromNode));
+		if (outEdgeAdded && inEdgeAdded) {
 			countEdges++;
+		} else if (outEdgeAdded ^ inEdgeAdded) {
+			throw new RuntimeException ("Digraph inconsistent!");
+		}
 	}
 
 	/**
@@ -115,9 +119,13 @@ public class Digraph<T> {
 		if (!nodesMap.containsKey(toNode)) {
 			throw new NotExistingEdge();
 		}
-		if (nodesMap.get(fromNode).outEdges.remove(nodesMap.get(toNode))
-				&& nodesMap.get(toNode).inEdges.remove(nodesMap.get(fromNode)))
-			countEdges--;
+		boolean outEdgeRemoved = nodesMap.get(fromNode).outEdges.remove(nodesMap.get(toNode));
+		boolean inEdgeRemoved = nodesMap.get(toNode).inEdges.remove(nodesMap.get(fromNode));
+		if (outEdgeRemoved && inEdgeRemoved) {
+			countEdges--;			
+		} else if (outEdgeRemoved ^ inEdgeRemoved) {
+			throw new RuntimeException("Digraph inconsistent!");
+		}
 		else
 			throw new NotExistingEdge();
 	}
