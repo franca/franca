@@ -151,6 +151,16 @@ class TypeSystem {
 			} else {
 				type
 			}
+		} else if (FOperator::SUBTRACTION.equals(op)) {
+			val type = operand.checkType(it, FUNARY_OPERATION__OPERAND)
+			if (! type.isNumber) {
+				if (type != null) {
+					addIssue("invalid type (is " + type.typeString + ", expected numeric type)", loc, feat)
+				}
+				null
+			} else {
+				type
+			}
 		} else {
 			addIssue("unknown unary operator", loc, feat)
 			null
@@ -228,10 +238,10 @@ class TypeSystem {
 					}
 				}
 			} else {
-				if (! rhsType.isNumber) {
+				if (rhsType != null && ! rhsType.isNumber) {
 					addIssue(rhsType.typeString + " is not allowed with operator " + op.literal, it, FBINARY_OPERATION__RIGHT)
 				}
-				if (! lhsType.isNumber) {
+				if (lhsType != null && ! lhsType.isNumber) {
 					addIssue(lhsType.typeString + " is not allowed with operator " + op.literal, it, FBINARY_OPERATION__LEFT)
 				}
 				null

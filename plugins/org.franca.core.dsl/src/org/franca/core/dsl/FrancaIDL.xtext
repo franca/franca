@@ -364,7 +364,7 @@ SimplePrimaryExpression returns FExpression:
   
 FUnaryOperation returns FExpression:
 	{FUnaryOperation}
-	op = OperatorUnary operand = SimplePrimaryExpression;
+	op = OperatorUnary operand = PrimaryExpression;
 	
 FCurrentError returns FCurrentError:
 	{FCurrentError}
@@ -427,7 +427,7 @@ enum OperatorMultiplicative returns FOperator:
 	multiplication="*" | division="/"
 ;
 enum OperatorUnary returns FOperator:
-	negation="!"
+	negation="!" | subtraction="-" // subtraction is being used for negative signing of numeric expressions (especially variable references)
 ;
 
 // **************************************************************
