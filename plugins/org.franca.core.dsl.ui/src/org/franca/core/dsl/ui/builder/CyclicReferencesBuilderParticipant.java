@@ -136,7 +136,7 @@ public class CyclicReferencesBuilderParticipant implements IXtextBuilderParticip
 			}
 
 			// Step3: Remove the URIs that are part of cycles
-			// which don't interset with deltas' URIs
+			// which don't intersect with deltas' URIs
 			removeEdgesIntersectingWithDelta(urisFromDeltas, diGraph);
 			try {
 				diGraph.topoSort();
