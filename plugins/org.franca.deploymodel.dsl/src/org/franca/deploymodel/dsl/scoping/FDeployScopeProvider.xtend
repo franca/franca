@@ -22,6 +22,7 @@ import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
 import org.eclipse.xtext.scoping.impl.ImportUriGlobalScopeProvider
 import org.eclipse.xtext.scoping.impl.SimpleScope
 import org.franca.core.franca.FArrayType
+import org.franca.core.franca.FCompoundType
 import org.franca.core.franca.FEnumerationType
 import org.franca.core.franca.FStructType
 import org.franca.core.franca.FUnionType
@@ -32,11 +33,13 @@ import org.franca.deploymodel.dsl.fDeploy.FDArgumentList
 import org.franca.deploymodel.dsl.fDeploy.FDArray
 import org.franca.deploymodel.dsl.fDeploy.FDAttribute
 import org.franca.deploymodel.dsl.fDeploy.FDBroadcast
+import org.franca.deploymodel.dsl.fDeploy.FDCompoundOverwrites
 import org.franca.deploymodel.dsl.fDeploy.FDElement
 import org.franca.deploymodel.dsl.fDeploy.FDEnumType
 import org.franca.deploymodel.dsl.fDeploy.FDEnumValue
 import org.franca.deploymodel.dsl.fDeploy.FDEnumeration
 import org.franca.deploymodel.dsl.fDeploy.FDField
+import org.franca.deploymodel.dsl.fDeploy.FDFieldOverwrite
 import org.franca.deploymodel.dsl.fDeploy.FDInterface
 import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance
 import org.franca.deploymodel.dsl.fDeploy.FDMethod
@@ -52,6 +55,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDUnion
 import org.franca.deploymodel.dsl.fDeploy.FDeployPackage
 
 import static extension org.eclipse.xtext.scoping.Scopes.*
+import static extension org.franca.core.framework.FrancaHelpers.*
 
 class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 
@@ -176,6 +180,28 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 		ctxt.getTarget().getElements.scopeFor
 	}
 
+	def scope_FDFieldOverwrite_target(FDCompoundOverwrites ctxt, EReference ref) {
+		val parent = ctxt.eContainer
+		val typeRef = 
+			switch (parent) {
+				FDAttribute: parent.getTarget().type
+				FDArgument: parent.getTarget().type
+				FDField: parent.getTarget().type
+				FDFieldOverwrite: parent.getTarget().type
+				default: null
+			}
+		if (typeRef!=null) {
+			val type = typeRef.actualDerived
+			if (type!=null) {
+				if (type instanceof FCompoundType) {
+					val compound = type as FCompoundType
+					return compound.elements.scopeFor
+				}
+			}
+		}
+		IScope.NULLSCOPE
+	}
+
 	def scope_FDEnumValue_target(FDEnumeration ctxt, EReference ref) {
 		ctxt.getTarget().getEnumerators.scopeFor
 	}
@@ -226,6 +252,10 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 	}
 
 	def scope_FDProperty_decl(FDField owner, EReference ref) {
+		owner.getPropertyDecls
+	}
+
+	def scope_FDProperty_decl(FDFieldOverwrite owner, EReference ref) {
 		owner.getPropertyDecls
 	}
 

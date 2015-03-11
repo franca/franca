@@ -92,7 +92,8 @@ FDRootElement:
 FDElement:
 	FDRootElement | FDInterfaceInstance |
 	FDAttribute | FDOperation | FDArgument |
-	FDTypeDef | FDField | FDEnumeration | FDEnumValue;
+	FDTypeDef | FDField | FDEnumeration | FDEnumValue |
+	FDFieldOverwrite;
 
 FDProvider:
 	'define' spec=[FDSpecification|FQN]
@@ -146,6 +147,7 @@ FDInterface:
 FDAttribute:
 	'attribute' target=[fidl::FAttribute|FQN] '{'
 		(properties+=FDProperty ((',')? properties+=FDProperty)*)?
+		something=FDCompoundOverwrites
 	'}';
 
 FDOperation:
@@ -171,6 +173,7 @@ FDArgumentList:
 FDArgument:
 	target=[fidl::FArgument|FQN] '{'
 		(properties+=FDProperty ((',')? properties+=FDProperty)*)?
+		something=FDCompoundOverwrites
 	'}';
 
 
@@ -197,6 +200,7 @@ FDUnion:
 FDField:
 	target=[fidl::FField|FQN] '{'
 		(properties+=FDProperty ((',')? properties+=FDProperty)*)?
+		something=FDCompoundOverwrites
 	'}';
 
 FDEnumeration:
@@ -208,6 +212,16 @@ FDEnumeration:
 FDEnumValue:
 	target=[fidl::FEnumerator|FQN] '{'
 		(properties+=FDProperty ((',')? properties+=FDProperty)*)?
+	'}';
+
+FDCompoundOverwrites:
+	{FDTypedSomething}
+	('/' fields+=FDFieldOverwrite)*;
+
+FDFieldOverwrite:
+	target=[fidl::FField|FQN] '{'
+		(properties+=FDProperty ((',')? properties+=FDProperty)*)?
+		something=FDCompoundOverwrites
 	'}';
 
 

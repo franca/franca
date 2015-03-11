@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.franca.core.framework.FrancaHelpers;
+import org.franca.core.franca.FField;
+import org.franca.core.franca.FStructType;
 import org.franca.core.franca.FTypeRef;
 import org.franca.core.franca.FTypedElement;
 import org.franca.deploymodel.dsl.fDeploy.FDArgument;
@@ -22,6 +24,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDElement;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumValue;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumeration;
 import org.franca.deploymodel.dsl.fDeploy.FDField;
+import org.franca.deploymodel.dsl.fDeploy.FDFieldOverwrite;
 import org.franca.deploymodel.dsl.fDeploy.FDInterface;
 import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance;
 import org.franca.deploymodel.dsl.fDeploy.FDMethod;
@@ -81,6 +84,11 @@ public class PropertyMappings {
 				isInlineArray = true;
 		} else if (elem instanceof FDField) {
 			FTypedElement te = ((FDField) elem).getTarget();
+			typeRef = te.getType();
+			if (te.isArray())
+				isInlineArray = true;
+		} else if (elem instanceof FDFieldOverwrite) {
+			FTypedElement te = ((FDFieldOverwrite) elem).getTarget();
 			typeRef = te.getType();
 			if (te.isArray())
 				isInlineArray = true;
@@ -189,6 +197,12 @@ public class PropertyMappings {
 			if (elem.eContainer() instanceof FDStruct)
 				return FDPropertyHost.STRUCT_FIELDS;
 			else // FDUnion
+				return FDPropertyHost.UNION_FIELDS;
+		} else if (elem instanceof FDFieldOverwrite) {
+			FField target = ((FDFieldOverwrite)elem).getTarget();
+			if (target.eContainer() instanceof FStructType)
+				return FDPropertyHost.STRUCT_FIELDS;
+			else // FUnionType
 				return FDPropertyHost.UNION_FIELDS;
 		} else if (elem instanceof FDEnumeration) {
 			return FDPropertyHost.ENUMERATIONS;
