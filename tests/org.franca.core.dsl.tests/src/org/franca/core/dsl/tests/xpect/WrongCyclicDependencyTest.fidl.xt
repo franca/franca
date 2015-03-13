@@ -10,8 +10,8 @@ package org.franca.core.dsl.tests.xpect
 
 typeCollection WrongCyclicDependencyCollection {
 	const Integer a = 1
-	//XPECT line Errors  --> "Cyclic dependency detected: this->WrongCyclicDependencyCollection.d->this" at "c"
+	//XPECT errors  --> "Cyclic dependency detected: this->WrongCyclicDependencyCollection.d->this" at "c"
 	const Integer c = a - d
-	//XPECT line Errors  --> "Cyclic dependency detected: this->WrongCyclicDependencyCollection.c->this" at "d"
+	//XPECT errors  --> "Cyclic dependency detected: this->WrongCyclicDependencyCollection.c->this" at "d"
 	const Integer d = a - c
 }
