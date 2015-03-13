@@ -169,86 +169,101 @@ class TypeSystem {
 
 	def dispatch FTypeRef checkType (FBinaryOperation it, EObject loc, EStructuralFeature feat) {
 		if (FOperator::AND.equals(op) || FOperator::OR.equals(op)) {
-			val t1 = left.checkType(it, FBINARY_OPERATION__LEFT)
-			val t2 = right.checkType(it, FBINARY_OPERATION__RIGHT)
-			if (! (t1.isBoolean && t2.isBoolean)) {
-				if (t1 != null) {
-					addIssue("invalid type (is " + t1.typeString + ", expected Boolean)", it, FBINARY_OPERATION__LEFT)
-				}
-				if (t2 != null) {
-					addIssue("invalid type (is " + t2.typeString + ", expected Boolean)", it, FBINARY_OPERATION__RIGHT)
-				}
-				null
-			} else {
-				BOOLEAN_TYPE
-			}
+			checkTypeForBooleanOperators(it)
 		} else if (FOperator::EQUAL.equals(op) || FOperator::UNEQUAL.equals(op)) {
-			// check that both operands have compatible type
-			val t1 = left.checkType(it, FBINARY_OPERATION__LEFT)
-			val t2 = right.checkType(it, FBINARY_OPERATION__RIGHT)
-			if (isComparable(t1, t2, loc, feat)) {
-				BOOLEAN_TYPE
-			} else {
-				if (! (t1 == null || t2 == null)) {
-					addIssue("the types " + t1.typeString + " and " + t2.typeString + " are not comparable",
-						loc, feat
-					)
-				}
-				null
-			}
+			checkTypeForEqualityOperators(it, loc, feat)
 		} else if (FOperator::SMALLER.equals(op) || FOperator::SMALLER_OR_EQUAL.equals(op) ||
 			FOperator::GREATER_OR_EQUAL.equals(op) || FOperator::GREATER.equals(op)
 		) {
-			val t1 = left.checkType(it, FBINARY_OPERATION__LEFT)
-			val t2 = right.checkType(it, FBINARY_OPERATION__RIGHT)
-			if (isOrderDefined(t1, t2, loc, feat)) {
-				BOOLEAN_TYPE
-			} else {
-				if (t1 != null && t2 != null) {
-					addIssue("there is no order defined between elements of type " + t1.typeString +
-					         " and those of type " + t2.typeString, loc, feat
-					)
-				}
-				null
-			}
+			checkTypeForComparisonOperators(it, loc, feat)
 		} else if (FOperator::ADDITION.equals(op) || FOperator::SUBTRACTION.equals(op) ||
 			FOperator::MULTIPLICATION.equals(op) || FOperator::DIVISION.equals(op)
 		) {		
-			val FTypeRef lhsType = left.checkType(it, FBINARY_OPERATION__LEFT)
-			val FTypeRef rhsType = right.checkType(it, FBINARY_OPERATION__RIGHT)
-			
-			if (lhsType.isNumber && rhsType.isNumber) {
-				val ComparisonResult typesCompared = compareCardinality(lhsType, rhsType)
-				switch typesCompared {
-					case GREATER : {lhsType}
-					case EQUAL : {lhsType}
-					case SMALLER : {rhsType}
-					default : { // in case of two different constants, for example
-						if (lhsType.isInteger && rhsType.isInteger) {
-							val lhsInterval = toInterval(lhsType)
-							val rhsInterval = toInterval(rhsType)
-							
-							determineInterval(op, lhsInterval, rhsInterval, loc, feat)
-						} else {
-							if (lhsType != null && rhsType != null) {
-								addIssue("incompatible types " + lhsType.typeString + " and " + rhsType.typeString, loc, feat)
-							}
-							null
-						}
-					}
-				}
-			} else {
-				if (rhsType != null && ! rhsType.isNumber) {
-					addIssue(rhsType.typeString + " is not allowed with operator " + op.literal, it, FBINARY_OPERATION__RIGHT)
-				}
-				if (lhsType != null && ! lhsType.isNumber) {
-					addIssue(lhsType.typeString + " is not allowed with operator " + op.literal, it, FBINARY_OPERATION__LEFT)
-				}
-				null
-			}
-					
+			checkTypeForASMDOperator(it, loc, feat)
 		} else {
 			addIssue("unknown binary operator " + op, loc, feat)
+			null
+		}
+	}
+	
+	def private checkTypeForBooleanOperators(FBinaryOperation it) {
+		val t1 = left.checkType(it, FBINARY_OPERATION__LEFT)
+		val t2 = right.checkType(it, FBINARY_OPERATION__RIGHT)
+		if (! (t1.isBoolean && t2.isBoolean)) {
+			if (t1 != null) {
+				addIssue("invalid type (is " + t1.typeString + ", expected Boolean)", it, FBINARY_OPERATION__LEFT)
+			}
+			if (t2 != null) {
+				addIssue("invalid type (is " + t2.typeString + ", expected Boolean)", it, FBINARY_OPERATION__RIGHT)
+			}
+			null
+		} else {
+			BOOLEAN_TYPE
+		}
+	}
+	
+	def private checkTypeForEqualityOperators(FBinaryOperation it, EObject loc, EStructuralFeature feat) {
+		// check that both operands have compatible type
+		val t1 = left.checkType(it, FBINARY_OPERATION__LEFT)
+		val t2 = right.checkType(it, FBINARY_OPERATION__RIGHT)
+		if (isComparable(t1, t2, loc, feat)) {
+			BOOLEAN_TYPE
+		} else {
+			if (! (t1 == null || t2 == null)) {
+				addIssue("the types " + t1.typeString + " and " + t2.typeString + " are not comparable",
+					loc, feat
+				)
+			}
+			null
+		}
+	}
+	
+	def private checkTypeForComparisonOperators(FBinaryOperation it, EObject loc, EStructuralFeature feat) {
+		val t1 = left.checkType(it, FBINARY_OPERATION__LEFT)
+		val t2 = right.checkType(it, FBINARY_OPERATION__RIGHT)
+		if (isOrderDefined(t1, t2, loc, feat)) {
+			BOOLEAN_TYPE
+		} else {
+			if (t1 != null && t2 != null) {
+				addIssue("there is no order defined between elements of type " + t1.typeString +
+				         " and those of type " + t2.typeString, loc, feat
+				)
+			}
+			null
+		}
+	}
+	
+	def private checkTypeForASMDOperator(FBinaryOperation it, EObject loc, EStructuralFeature feat) {
+		val FTypeRef lhsType = left.checkType(it, FBINARY_OPERATION__LEFT)
+		val FTypeRef rhsType = right.checkType(it, FBINARY_OPERATION__RIGHT)
+		
+		if (lhsType.isNumber && rhsType.isNumber) {
+			val ComparisonResult typesCompared = compareCardinality(lhsType, rhsType)
+			switch typesCompared {
+				case GREATER : {lhsType}
+				case EQUAL : {lhsType}
+				case SMALLER : {rhsType}
+				default : { // in case of two different constants, for example
+					if (lhsType.isInteger && rhsType.isInteger) {
+						val lhsInterval = toInterval(lhsType)
+						val rhsInterval = toInterval(rhsType)
+						
+						determineInterval(op, lhsInterval, rhsInterval, loc, feat)
+					} else {
+						if (lhsType != null && rhsType != null) {
+							addIssue("incompatible types " + lhsType.typeString + " and " + rhsType.typeString, loc, feat)
+						}
+						null
+					}
+				}
+			}
+		} else {
+			if (rhsType != null && ! rhsType.isNumber) {
+				addIssue(rhsType.typeString + " is not allowed with operator " + op.literal, it, FBINARY_OPERATION__RIGHT)
+			}
+			if (lhsType != null && ! lhsType.isNumber) {
+				addIssue(lhsType.typeString + " is not allowed with operator " + op.literal, it, FBINARY_OPERATION__LEFT)
+			}
 			null
 		}
 	}
