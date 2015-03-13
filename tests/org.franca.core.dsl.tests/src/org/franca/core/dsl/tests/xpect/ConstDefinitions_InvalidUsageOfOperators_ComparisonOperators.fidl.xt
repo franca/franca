@@ -8,7 +8,7 @@
 //XPECT_SETUP org.franca.core.dsl.tests.xpect.FrancaIDLXpectTests END_SETUP 
 package org.franca.core.dsl.tests.xpect
 
-typeCollection ConstDefinitions_InvalidUsageOfOperators_ComparisonOperators {
+typeCollection ConstDefinitions_InvalidUsageOfOperastors_ComparisonOperators {
 	
 	//This file not only contains test cases directly derived from the semantics of franca,
 	//but also some that show differences to other common languages.
@@ -42,7 +42,7 @@ typeCollection ConstDefinitions_InvalidUsageOfOperators_ComparisonOperators {
 	//XPECT errors --> "the types Int8 and Boolean are not comparable" at "validOne == true"
 	const Boolean d = validOne == true
 	//XPECT errors --> "the types Integer(-1,-1) and Boolean are not comparable" at "-validOne == true"
-	const Boolean e = -validOne == true
+	const Boolean e = -validIntervalOne == true
 	//XPECT errors --> "the types Boolean and String are not comparable" at "validFalse == validStringFalse"
 	const Boolean f = validFalse == validStringFalse
 	//XPECT errors --> "the types String and Boolean are not comparable" at "validEmptyString == validFalse"
