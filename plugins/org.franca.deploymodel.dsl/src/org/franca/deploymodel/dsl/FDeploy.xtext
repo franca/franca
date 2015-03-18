@@ -147,7 +147,7 @@ FDInterface:
 FDAttribute:
 	'attribute' target=[fidl::FAttribute|FQN] '{'
 		(properties+=FDProperty ((',')? properties+=FDProperty)*)?
-		something=FDCompoundOverwrites
+		(overwrites=FDCompoundOverwrites)?
 	'}';
 
 FDOperation:
@@ -173,7 +173,7 @@ FDArgumentList:
 FDArgument:
 	target=[fidl::FArgument|FQN] '{'
 		(properties+=FDProperty ((',')? properties+=FDProperty)*)?
-		something=FDCompoundOverwrites
+		(overwrites=FDCompoundOverwrites)?
 	'}';
 
 
@@ -200,7 +200,7 @@ FDUnion:
 FDField:
 	target=[fidl::FField|FQN] '{'
 		(properties+=FDProperty ((',')? properties+=FDProperty)*)?
-		something=FDCompoundOverwrites
+		(overwrites=FDCompoundOverwrites)?
 	'}';
 
 FDEnumeration:
@@ -215,13 +215,13 @@ FDEnumValue:
 	'}';
 
 FDCompoundOverwrites:
-	{FDTypedSomething}
-	('/' fields+=FDFieldOverwrite)*;
+	{FDCompoundOverwrites}
+	('/' fields+=FDFieldOverwrite)+;
 
 FDFieldOverwrite:
 	target=[fidl::FField|FQN] '{'
 		(properties+=FDProperty ((',')? properties+=FDProperty)*)?
-		something=FDCompoundOverwrites
+		(overwrites=FDCompoundOverwrites)?
 	'}';
 
 
