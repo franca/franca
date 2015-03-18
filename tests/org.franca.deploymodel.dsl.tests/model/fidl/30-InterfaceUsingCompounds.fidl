@@ -1,0 +1,70 @@
+package fidl
+
+/**
+ * This interface is used for testing the deployment-overwrite feature
+ * for structs and unions.
+ */
+interface InterfaceUsingCompounds {
+	version {major 1 minor 0}
+	
+	attribute String attr1
+	attribute StructA attr2
+	attribute StructB attr3
+	
+	method method1 {
+		in {
+			String arg1
+			StructA arg2
+		}
+	}
+	
+	method method2 {
+		out {
+			String ret1
+			StructA ret2
+		}
+	}
+	
+	method method3 {
+		in {
+			String arg1
+			StructB arg2
+		}
+	}
+	
+	method method4 {
+		in {
+			UnionA arg1
+		}
+		out {
+			UnionB ret1
+			StructC ret2
+		}
+	}
+	
+	struct StructA {
+		Integer field1
+		String field2
+		String[] field3
+	} 
+	
+	struct StructB {
+		String field1
+		StructA nested1
+		StructA[] nested2
+	}
+
+	union UnionA {
+		String field1
+	}
+	
+	union UnionB {
+		String field1
+		UnionA field2
+	}
+
+	struct StructC {
+		UnionA nested1
+	}
+
+}

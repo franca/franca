@@ -1,0 +1,37 @@
+
+// deployment specification with struct/union-related property hosts
+
+specification SpecCompoundHosts {
+	for strings {
+		StringProp : { u, v, w, x, y, z };
+	}
+	
+	for attributes {
+		AttributeProp : Integer;
+	}
+
+	for arguments {
+		ArgumentProp : Integer;
+	}
+
+	for arrays {
+		ArrayProp : Integer;
+	}
+	
+	for structs {
+		StructProp : Integer;
+	}
+	
+	for struct_fields {
+		SFieldProp : Integer;
+	}
+
+	for unions {
+		UnionProp : Integer;
+	}
+	
+	for union_fields {
+		UFieldProp : Integer;
+	}
+}
+
