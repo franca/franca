@@ -45,24 +45,30 @@ public class PropertyMappings {
 	/**
 	 * Get a list of all property declarations for a given deployment element.
 	 * 
-	 * The deployment element is part of a deployment definition, which in turn
+	 * <p>The deployment element is part of a deployment definition, which in turn
 	 * has to refer to the deployment specification given as first argument.
+	 * </p>
 	 * 
-	 * The task is accomplished by first computing all relevant property hosts for 
+	 * <p>The task is accomplished by first computing all relevant property hosts for 
 	 * the given deployment element. Afterwards, all property declarations are
 	 * collected which are specified for each of these property hosts in the 
 	 * given deployment specification.
+	 * </p>
 	 * 
-	 * E.g., for an FDAttribute element which refers to an Franca IDL FAttribute
+	 * <p>E.g., for an FDAttribute element which refers to an Franca IDL FAttribute
 	 * element of type UInt8, the following property hosts are computed:
-	 * - INTEGERS
-	 * - NUMBERS
-	 * - ATTRIBUTES
+	 * <ul>
+	 * <li>INTEGERS</li>
+	 * <li>NUMBERS</li>
+	 * <li>ATTRIBUTES</li>
+	 * </ul></p>
 	 * 
+	 * <p>
 	 * Afterwards, the deployment specification is scanned for declarations
 	 * of these property hosts and the properties specified there are collected
 	 * and returned.
-	 *  
+	 * </p>
+	 * 
 	 * @param spec the deployment specification
 	 * @param elem the deployment element of some deployment definition
 	 * @return the list of relevant property declarations for this element  
