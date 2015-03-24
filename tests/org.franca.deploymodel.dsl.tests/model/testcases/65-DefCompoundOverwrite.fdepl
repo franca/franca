@@ -3,15 +3,15 @@
 import "60-SpecCompoundHosts.fdepl"
 import "../fidl/30-InterfaceUsingCompounds.fidl"
 
-define SpecCompoundHosts for interface fidl.InterfaceUsingCompounds {
+define org.example.spec.SpecCompoundHosts for interface fidl.InterfaceUsingCompounds {
 
 	attribute attr1 {
 		StringProp = u
-		AttributeProp = 0
+		AttributeProp = 1
 	}
 
 	attribute attr2 {
-		AttributeProp = 0
+		AttributeProp = 1
 		
 		/field1 {
 			SFieldProp = 10
@@ -28,7 +28,7 @@ define SpecCompoundHosts for interface fidl.InterfaceUsingCompounds {
 	}
 
 	attribute attr3 {
-		AttributeProp = 0
+		AttributeProp = 1
 		
 		/field1 {
 			StringProp = v
@@ -44,9 +44,26 @@ define SpecCompoundHosts for interface fidl.InterfaceUsingCompounds {
 				SFieldProp = 21
 			}
 			/field3 {
+				ArrayProp = 88
 				StringProp = w
 				SFieldProp = 31
-				ArrayProp = 88
+			}
+		}
+		/nested2 {
+			// 66 elements of StructA
+			ArrayProp = 66
+			/field1 {
+				SFieldProp = 12
+			}
+			/field2 {
+				StringProp = w
+				SFieldProp = 22
+			}
+			/field3 {
+				// 77 elements of String in StructA.field3
+				ArrayProp = 77
+				StringProp = w
+				SFieldProp = 32
 			}
 		}
 	}

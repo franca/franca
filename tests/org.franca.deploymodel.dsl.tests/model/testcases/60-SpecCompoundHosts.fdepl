@@ -1,7 +1,7 @@
 
 // deployment specification with struct/union-related property hosts
 
-specification SpecCompoundHosts {
+specification org.example.spec.SpecCompoundHosts {
 	for strings {
 		StringProp : { u, v, w, x, y, z };
 	}
