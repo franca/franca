@@ -17,7 +17,7 @@ define org.example.spec.SpecCompoundHosts for interface fidl.InterfaceUsingCompo
 			SFieldProp = 10
 		}
 		/field2 {
-			StringProp = u
+			StringProp = v
 			SFieldProp = 20
 		}
 		/field3 {
@@ -140,15 +140,15 @@ define org.example.spec.SpecCompoundHosts for interface fidl.InterfaceUsingCompo
 	struct StructA {
 		StructProp = 0
 		field1 {
-			SFieldProp = 0
+			SFieldProp = 1
 		}
 		field2 {
 			StringProp = u
-			SFieldProp = 0
+			SFieldProp = 2
 		}
 		field3 {
 			StringProp = u
-			SFieldProp = 0
+			SFieldProp = 3
 			ArrayProp = 0
 		}
 	}
