@@ -7,8 +7,10 @@
  *******************************************************************************/
 package org.franca.deploymodel.core;
 
+import org.eclipse.emf.ecore.EObject;
 import org.franca.core.franca.FInterface;
 import org.franca.deploymodel.dsl.FDMapper;
+import org.franca.deploymodel.dsl.fDeploy.FDElement;
 import org.franca.deploymodel.dsl.fDeploy.FDInterface;
 
 /**
@@ -24,7 +26,7 @@ public class FDeployedInterface extends MappingGenericPropertyAccessor {
 	protected FDInterface fdapi;
 
 	public FDeployedInterface(FDInterface fdapi) {
-		super(fdapi.getSpec(),new FDMapper(fdapi));
+		super(fdapi.getSpec(), new FDMapper(fdapi));
 		this.fdapi = fdapi;
 	}
 
@@ -32,4 +34,7 @@ public class FDeployedInterface extends MappingGenericPropertyAccessor {
 		return fdapi.getTarget();
 	}
 
+	public FDElement getFDElement(EObject obj) {
+		return super.getFDElement(obj);
+	}
 }
