@@ -11,7 +11,7 @@ define org.example.spec.SpecCompoundHosts for interface fidl.InterfaceUsingCompo
 	}
 
 	attribute attr2 {
-		AttributeProp = 1
+		AttributeProp = 2
 		
 		/field1 {
 			SFieldProp = 10
@@ -28,7 +28,7 @@ define org.example.spec.SpecCompoundHosts for interface fidl.InterfaceUsingCompo
 	}
 
 	attribute attr3 {
-		AttributeProp = 1
+		AttributeProp = 3
 		
 		/field1 {
 			StringProp = v
@@ -138,7 +138,7 @@ define org.example.spec.SpecCompoundHosts for interface fidl.InterfaceUsingCompo
 	}
 
 	struct StructA {
-		StructProp = 0
+		StructProp = 111
 		field1 {
 			SFieldProp = 1
 		}
@@ -154,13 +154,13 @@ define org.example.spec.SpecCompoundHosts for interface fidl.InterfaceUsingCompo
 	}
 
 	struct StructB {
-		StructProp = 0
+		StructProp = 222
 		field1 {
 			StringProp = u
-			SFieldProp = 0
+			SFieldProp = 11
 		}
 		nested1 {
-			SFieldProp = 0
+			SFieldProp = 12
 			/field1 {
 				SFieldProp = 15
 			}
@@ -176,7 +176,7 @@ define org.example.spec.SpecCompoundHosts for interface fidl.InterfaceUsingCompo
 		}
 		nested2 {
 			ArrayProp = 0
-			SFieldProp = 0
+			SFieldProp = 12
 			/field1 {
 				SFieldProp = 25
 			}
@@ -193,7 +193,7 @@ define org.example.spec.SpecCompoundHosts for interface fidl.InterfaceUsingCompo
 	}
 
 	union UnionA {
-		UnionProp = 0
+		UnionProp = 111
 		field1 {
 			StringProp = u
 			UFieldProp = 0
@@ -201,7 +201,7 @@ define org.example.spec.SpecCompoundHosts for interface fidl.InterfaceUsingCompo
 	}
 
 	union UnionB {
-		UnionProp = 0
+		UnionProp = 222
 		field1 {
 			StringProp = u
 			UFieldProp = 0
@@ -216,7 +216,7 @@ define org.example.spec.SpecCompoundHosts for interface fidl.InterfaceUsingCompo
 	}
 
 	struct StructC {
-		StructProp = 0
+		StructProp = 333
 		nested1 {
 			SFieldProp = 0
 			/field1 {

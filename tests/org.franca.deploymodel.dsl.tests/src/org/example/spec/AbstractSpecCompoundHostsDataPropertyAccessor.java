@@ -4,10 +4,6 @@
 *******************************************************************************/
 package org.example.spec;
 
-import org.eclipse.emf.ecore.EObject;
-import org.example.spec.ISpecCompoundHostsDataPropertyAccessor.StringProp;
-import org.franca.core.franca.FAttribute;
-import org.franca.core.franca.FField;
 
 /**
  * Interface for data deployment properties for 'org.example.spec.SpecCompoundHosts' specification

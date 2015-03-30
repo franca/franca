@@ -27,5 +27,7 @@ public interface ISpecCompoundHostsDataPropertyAccessor
 
 	// TODO: add other data-related accessor functions here
 	
-	// TODO: add overwrite-aware getter here
+	// overwrite-aware accessors
+	public ISpecCompoundHostsDataPropertyAccessor getOverwriteAccessor (FField obj);
+
 }
