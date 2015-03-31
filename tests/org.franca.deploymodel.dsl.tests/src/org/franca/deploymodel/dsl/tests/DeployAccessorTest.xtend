@@ -125,7 +125,7 @@ class DeployAccessorTest extends XtextTest {
 
 		assertEquals(66, acc.getArrayProp(nested2))
 		assertEquals(12, acc.getSFieldProp(nested2)) // not overwritten
-		// TODO: checkNested2
+		checkNested2(nested2, acc);
 	}
 
 	
@@ -181,6 +181,38 @@ class DeployAccessorTest extends XtextTest {
 			11,
 			21, StringProp.w, 
 			31, StringProp.w, 88
+		)
+		
+	}
+
+	def private checkNested2(FField nested2, ISpecCompoundHostsDataPropertyAccessor acc) {
+		// get struct fields
+		assertTrue(nested2.isArray)
+		val type = nested2.type.actualDerived
+		assertTrue(type instanceof FStructType)
+		val struct = type as FStructType
+		assertEquals("StructA", struct.name)
+		assertEquals(3, struct.elements.size)
+		val field1 = struct.elements.get(0)
+		val field2 = struct.elements.get(1)
+		val field3 = struct.elements.get(2)
+		
+		// local accessor acc1 will access overwritten properties in
+		// deployment definition of StructB (as nested2 is a member of StructB)
+		val acc1 = accessor.getOverwriteAccessor(nested2)
+		checkStructA(field1, field2, field3, acc1,
+			25,
+			26, StringProp.x, 
+			27, StringProp.z, 21
+		)
+		
+		// local accessor acc2 will access overwritten properties in
+		// deployment definition of attr3 (as acc is the overwrite accessor of attr3)
+		val acc2 = acc.getOverwriteAccessor(nested2)
+		checkStructA(field1, field2, field3, acc2,
+			12,
+			22, StringProp.w, 
+			32, StringProp.w, 77
 		)
 		
 	}
