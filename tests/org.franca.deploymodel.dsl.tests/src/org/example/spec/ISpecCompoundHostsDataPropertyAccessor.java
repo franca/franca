@@ -22,6 +22,8 @@ public interface ISpecCompoundHostsDataPropertyAccessor
 	
 	public Integer getSFieldProp (FField obj);
 	
+	public Integer getUFieldProp (FField obj);
+	
 	public Integer getArrayProp (EObject obj);
 
 	// TODO: add other data-related accessor functions here

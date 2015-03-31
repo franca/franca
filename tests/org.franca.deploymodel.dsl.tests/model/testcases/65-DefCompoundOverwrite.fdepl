@@ -179,8 +179,12 @@ define org.example.spec.SpecCompoundHosts for interface fidl.InterfaceUsingCompo
 		out {
 			ret1 {
 				ArgumentProp = 401
+				/field1 {
+					UFieldProp = 4011
+					StringProp = w
+				}
 				/field2 {
-					UFieldProp = 101
+					UFieldProp = 4012
 					/field1 {
 						StringProp = w
 						UFieldProp = 105
@@ -192,7 +196,8 @@ define org.example.spec.SpecCompoundHosts for interface fidl.InterfaceUsingCompo
 				/nested1 {
 					SFieldProp = 123
 					/field1 {
-						UFieldProp = 107
+						StringProp = s
+						UFieldProp = 42
 					}
 				}
 			}
@@ -265,14 +270,14 @@ define org.example.spec.SpecCompoundHosts for interface fidl.InterfaceUsingCompo
 	union UnionB {
 		UnionProp = 222
 		field1 {
-			StringProp = u
-			UFieldProp = 0
+			StringProp = r
+			UFieldProp = 22201
 		}
 		field2 {
-			UFieldProp = 0
+			UFieldProp = 22202
 			/field1 {
 				StringProp = x
-				UFieldProp = 20
+				UFieldProp = 22220
 			}
 		}
 	}
@@ -280,10 +285,10 @@ define org.example.spec.SpecCompoundHosts for interface fidl.InterfaceUsingCompo
 	struct StructC {
 		StructProp = 333
 		nested1 {
-			SFieldProp = 0
+			SFieldProp = 33301
 			/field1 {
 				StringProp = y
-				UFieldProp = 21
+				UFieldProp = 33330
 			}
 		}
 	}

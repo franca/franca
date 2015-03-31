@@ -75,6 +75,18 @@ public class OverwriteAccessor extends AbstractSpecCompoundHostsDataPropertyAcce
 	}
  
 	@Override
+	public Integer getUFieldProp (FField obj) {
+		// check if this field is overwritten
+		if (mapping.containsKey(obj)) {
+			FDFieldOverwrite fo = mapping.get(obj);
+			Integer v = genericAccessor.getInteger(fo, "UFieldProp");
+			if (v!=null)
+				return v;
+		}
+		return delegate.getUFieldProp(obj);
+	}
+ 
+	@Override
 	public ISpecCompoundHostsDataPropertyAccessor getOverwriteAccessor (FField obj) {
 		// check if this field is overwritten
 		if (mapping.containsKey(obj)) {

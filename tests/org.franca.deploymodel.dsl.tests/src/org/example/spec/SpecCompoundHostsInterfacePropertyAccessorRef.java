@@ -64,7 +64,8 @@ public class SpecCompoundHostsInterfacePropertyAccessorRef extends AbstractSpecC
 		return target.getInteger(obj, "UnionProp");
 	}
 	
-	public Integer getUFieldProp (EObject obj) {
+	@Override
+	public Integer getUFieldProp (FField obj) {
 		return target.getInteger(obj, "UFieldProp");
 	}
 	

@@ -6,25 +6,25 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.junit4.InjectWith
 import org.eclipselabs.xtext.utils.unittesting.XtextRunner2
 import org.eclipselabs.xtext.utils.unittesting.XtextTest
+import org.example.spec.ISpecCompoundHostsDataPropertyAccessor
+import org.example.spec.ISpecCompoundHostsDataPropertyAccessor.StringProp
 import org.example.spec.SpecCompoundHostsInterfacePropertyAccessorRef
-import org.example.spec.ISpecCompoundHostsDataPropertyAccessor$StringProp
+import org.franca.core.franca.FField
+import org.franca.core.franca.FInterface
+import org.franca.core.franca.FStructType
+import org.franca.core.franca.FTypeRef
+import org.franca.core.franca.FUnionType
 import org.franca.deploymodel.core.FDeployedInterface
 import org.franca.deploymodel.dsl.FDeployTestsInjectorProvider
+import org.franca.deploymodel.dsl.fDeploy.FDInterface
+import org.franca.deploymodel.dsl.fDeploy.FDModel
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.franca.deploymodel.dsl.fDeploy.FDModel
 
 import static org.junit.Assert.*
-import org.franca.deploymodel.dsl.fDeploy.FDInterface
 
 import static extension org.franca.core.framework.FrancaHelpers.*
-import org.franca.core.franca.FStructType
-import org.junit.Before
-import org.franca.core.franca.FInterface
-import org.franca.core.franca.FField
-import org.example.spec.ISpecCompoundHostsDataPropertyAccessor
-import org.franca.core.franca.FTypeRef
-import org.franca.core.franca.FModelElement
 
 @RunWith(typeof(XtextRunner2))
 @InjectWith(typeof(FDeployTestsInjectorProvider))
@@ -98,7 +98,6 @@ class DeployAccessorTest extends XtextTest {
 		checkStructB(attr3.type, acc)
 	}
 
-	
 	@Test
 	def void test_65DefCompoundOverwrite_method1_arg2() {
 		val method1 = fidl.methods.get(0)
@@ -169,6 +168,124 @@ class DeployAccessorTest extends XtextTest {
 		checkStructB(arg2.type, acc)
 	}
 
+	@Test
+	def void test_65DefCompoundOverwrite_method4_arg1() {
+		val method4 = fidl.methods.get(3)
+		assertEquals("method4", method4.name)
+		assertEquals(1, method4.inArgs.size)
+		val arg1 = method4.inArgs.get(0)
+		assertEquals(401, accessor.getArgumentProp(arg1))
+
+		// get union fields
+		val type = arg1.type.actualDerived
+		assertTrue(type instanceof FUnionType)
+		val union = type as FUnionType
+		assertEquals(1, union.elements.size)
+		val field1 = union.elements.get(0)
+
+		// access property on union level (cannot be overwritten)
+		assertEquals(111, accessor.getUnionProp(type))
+
+		// local accessor is needed for accessing overwritten properties
+		val acc = accessor.getOverwriteAccessor(arg1)
+		checkUnionA(field1, acc, 100, StringProp.v)				
+	}
+
+	@Test
+	def void test_65DefCompoundOverwrite_method4_ret1() {
+		val method4 = fidl.methods.get(3)
+		assertEquals("method4", method4.name)
+		assertEquals(2, method4.outArgs.size)
+		val ret1 = method4.outArgs.get(0)
+		assertEquals(401, accessor.getArgumentProp(ret1))
+
+		// get union fields
+		val type = ret1.type.actualDerived
+		assertTrue(type instanceof FUnionType)
+		val union = type as FUnionType
+		assertEquals("UnionB", union.name)
+		assertEquals(2, union.elements.size)
+		val field1 = union.elements.get(0)
+		val field2 = union.elements.get(1)
+
+		// access property on union level (cannot be overwritten)
+		assertEquals(222, accessor.getUnionProp(type))
+				
+		// access ignoring overwrites
+		assertEquals(StringProp.r, accessor.getStringProp(field1))
+		assertEquals(22201, accessor.getUFieldProp(field1))
+		assertEquals(22202, accessor.getUFieldProp(field2))
+		
+		// access including overwrites (if any)
+		val acc = accessor.getOverwriteAccessor(ret1)
+		assertEquals(StringProp.w, acc.getStringProp(field1))
+		assertEquals(4011, acc.getUFieldProp(field1))
+		assertEquals(4012, acc.getUFieldProp(field2))
+
+		// check nested overwrites
+		val type2 = field2.type.actualDerived
+		assertTrue(type2 instanceof FUnionType)
+		val union2 = type2 as FUnionType
+		assertEquals("UnionA", union2.name)
+		assertEquals(1, union2.elements.size)
+		val fieldA1 = union2.elements.get(0)
+		
+		// local accessor acc1 will access overwritten properties in
+		// deployment definition of UnionB (as field2 is a member of UnionB)
+		val acc1 = accessor.getOverwriteAccessor(field2)
+		checkUnionA(fieldA1, acc1, 22220, StringProp.x) 
+		
+		// local accessor acc2 will access overwritten properties in
+		// deployment definition of ret1 (as acc is the overwrite accessor of method4.ret1)
+		val acc2 = acc.getOverwriteAccessor(field2)
+		checkUnionA(fieldA1, acc2, 105, StringProp.w) 
+	}
+	
+	@Test
+	def void test_65DefCompoundOverwrite_method4_ret2() {
+		val method4 = fidl.methods.get(3)
+		assertEquals("method4", method4.name)
+		assertEquals(2, method4.outArgs.size)
+		val ret2 = method4.outArgs.get(1)
+		assertEquals(402, accessor.getArgumentProp(ret2))
+
+		// get union fields
+		val type = ret2.type.actualDerived
+		assertTrue(type instanceof FStructType)
+		val struct = type as FStructType
+		assertEquals("StructC", struct.name)
+		assertEquals(1, struct.elements.size)
+		val nested1 = struct.elements.get(0)
+
+		// access property on struct level (cannot be overwritten)
+		assertEquals(333, accessor.getStructProp(type))
+				
+		// access ignoring overwrites
+		assertEquals(33301, accessor.getSFieldProp(nested1))
+		
+		// access including overwrites (if any)
+		val acc = accessor.getOverwriteAccessor(ret2)
+		assertEquals(123, acc.getSFieldProp(nested1))
+
+		// check nested overwrites
+		val type2 = nested1.type.actualDerived
+		assertTrue(type2 instanceof FUnionType)
+		val union2 = type2 as FUnionType
+		assertEquals("UnionA", union2.name)
+		assertEquals(1, union2.elements.size)
+		val fieldA1 = union2.elements.get(0)
+		
+		// local accessor acc1 will access overwritten properties in
+		// deployment definition of StructC (as nested1 is a member of StructC)
+		val acc1 = accessor.getOverwriteAccessor(nested1)
+		checkUnionA(fieldA1, acc1, 33330, StringProp.y) 
+		
+		// local accessor acc2 will access overwritten properties in
+		// deployment definition of ret2 (as acc is the overwrite accessor of method4.ret2)
+		val acc2 = acc.getOverwriteAccessor(nested1)
+		checkUnionA(fieldA1, acc2, 42, StringProp.s) 
+	}
+	
 	/**
 	 * Helper for checking the retrieved property values of a StructA
 	 * with and without overwrite.
@@ -277,7 +394,6 @@ class DeployAccessorTest extends XtextTest {
 			21, StringProp.w, 
 			31, StringProp.w, 88
 		)
-		
 	}
 
 	/**
@@ -315,6 +431,28 @@ class DeployAccessorTest extends XtextTest {
 		)
 		
 	}
+
+
+	/**
+	 * Helper for checking the retrieved property values of a UnionA
+	 * with and without overwrite.
+	 * 
+	 * @param acc the accessor for the context where this UnionA instance has been defined 
+	 */
+	def private checkUnionA(
+		FField f1,
+		ISpecCompoundHostsDataPropertyAccessor acc,
+		Integer pSField1, StringProp pString1
+	) {
+		// access ignoring overwrites
+		assertEquals(0, accessor.getUFieldProp(f1))
+		assertEquals(StringProp.u, accessor.getStringProp(f1))
+		
+		// access including overwrites (if any)
+		assertEquals(pSField1, acc.getUFieldProp(f1))
+		assertEquals(pString1, acc.getStringProp(f1))
+	}
+
 
 
 	/**
