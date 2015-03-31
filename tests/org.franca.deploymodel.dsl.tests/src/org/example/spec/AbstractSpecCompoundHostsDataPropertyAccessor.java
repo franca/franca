@@ -14,6 +14,16 @@ abstract class AbstractSpecCompoundHostsDataPropertyAccessor implements ISpecCom
 {
 
 	protected StringProp convertStringProp (String val) {
+		if (val.equals("p"))
+			return StringProp.p; else 
+		if (val.equals("q"))
+			return StringProp.q; else 
+		if (val.equals("r"))
+			return StringProp.r; else 
+		if (val.equals("s"))
+			return StringProp.s; else 
+		if (val.equals("t"))
+			return StringProp.t; else 
 		if (val.equals("u"))
 			return StringProp.u; else 
 		if (val.equals("v"))

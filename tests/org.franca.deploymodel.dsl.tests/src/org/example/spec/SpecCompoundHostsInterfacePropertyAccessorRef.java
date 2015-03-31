@@ -11,6 +11,7 @@ import org.franca.core.franca.FField;
 import org.franca.core.franca.FArgument;
 import org.franca.core.franca.FAttribute;
 import org.franca.deploymodel.core.FDeployedInterface;
+import org.franca.deploymodel.dsl.fDeploy.FDArgument;
 import org.franca.deploymodel.dsl.fDeploy.FDAttribute;
 import org.franca.deploymodel.dsl.fDeploy.FDCompoundOverwrites;
 import org.franca.deploymodel.dsl.fDeploy.FDElement;
@@ -72,6 +73,16 @@ public class SpecCompoundHostsInterfacePropertyAccessorRef extends AbstractSpecC
 	public ISpecCompoundHostsDataPropertyAccessor getOverwriteAccessor (FAttribute obj) {
 		FDElement fd = target.getFDElement(obj);
 		FDAttribute fdAttr = (FDAttribute)fd;
+		FDCompoundOverwrites overwrites = fdAttr.getOverwrites();
+		if (overwrites==null)
+			return this;
+		else
+			return new OverwriteAccessor(overwrites, this, target);
+	}
+
+	public ISpecCompoundHostsDataPropertyAccessor getOverwriteAccessor (FArgument obj) {
+		FDElement fd = target.getFDElement(obj);
+		FDArgument fdAttr = (FDArgument)fd;
 		FDCompoundOverwrites overwrites = fdAttr.getOverwrites();
 		if (overwrites==null)
 			return this;

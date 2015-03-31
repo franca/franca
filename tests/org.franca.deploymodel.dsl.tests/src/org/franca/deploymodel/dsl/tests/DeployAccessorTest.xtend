@@ -23,6 +23,8 @@ import org.junit.Before
 import org.franca.core.franca.FInterface
 import org.franca.core.franca.FField
 import org.example.spec.ISpecCompoundHostsDataPropertyAccessor
+import org.franca.core.franca.FTypeRef
+import org.franca.core.franca.FModelElement
 
 @RunWith(typeof(XtextRunner2))
 @InjectWith(typeof(FDeployTestsInjectorProvider))
@@ -87,48 +89,92 @@ class DeployAccessorTest extends XtextTest {
 		)
 	}
 
-
 	@Test
 	def void test_65DefCompoundOverwrite_attr3() {
 		val attr3 = fidl.attributes.get(2)
 		assertEquals(3, accessor.getAttributeProp(attr3))
 
+		val acc = accessor.getOverwriteAccessor(attr3)
+		checkStructB(attr3.type, acc)
+	}
+
+	
+	@Test
+	def void test_65DefCompoundOverwrite_method1_arg2() {
+		val method1 = fidl.methods.get(0)
+		assertEquals("method1", method1.name)
+		assertEquals(2, method1.inArgs.size)
+		val arg2 = method1.inArgs.get(1)
+		assertEquals(102, accessor.getArgumentProp(arg2))
+
 		// get struct fields
-		val type = attr3.type.actualDerived
+		val type = arg2.type.actualDerived
 		assertTrue(type instanceof FStructType)
 		val struct = type as FStructType
 		assertEquals(3, struct.elements.size)
 		val field1 = struct.elements.get(0)
-		val nested1 = struct.elements.get(1)
-		val nested2 = struct.elements.get(2)
-				
+		val field2 = struct.elements.get(1)
+		val field3 = struct.elements.get(2)
+
 		// access property on struct level (cannot be overwritten)
-		assertEquals(222, accessor.getStructProp(type))
+		assertEquals(111, accessor.getStructProp(type))
 				
-		// access ignoring overwrites
-		assertEquals(StringProp.u, accessor.getStringProp(field1))
-		assertEquals(11, accessor.getSFieldProp(field1))
-
-		assertEquals(12, accessor.getSFieldProp(nested1))
-		
-		assertEquals(0, accessor.getArrayProp(nested2))
-		assertEquals(12, accessor.getSFieldProp(nested2))
-
-		
-		// access including overwrites (if any)
-		val acc = accessor.getOverwriteAccessor(attr3)
-		assertEquals(StringProp.v, acc.getStringProp(field1))
-		assertEquals(10, acc.getSFieldProp(field1))
-
-		assertEquals(20, acc.getSFieldProp(nested1))
-		checkNested1(nested1, acc);
-
-		assertEquals(66, acc.getArrayProp(nested2))
-		assertEquals(12, acc.getSFieldProp(nested2)) // not overwritten
-		checkNested2(nested2, acc);
+		// local accessor is needed for accessing overwritten properties
+		val acc = accessor.getOverwriteAccessor(arg2)
+		checkStructA(field1, field2, field3, acc,
+			110,
+			120, StringProp.p,
+			130, StringProp.q, 107
+		)
 	}
 
-	
+	@Test
+	def void test_65DefCompoundOverwrite_method2_arg2() {
+		val method2 = fidl.methods.get(1)
+		assertEquals("method2", method2.name)
+		assertEquals(2, method2.outArgs.size)
+		val arg2 = method2.outArgs.get(1)
+		assertEquals(202, accessor.getArgumentProp(arg2))
+
+		// get struct fields
+		val type = arg2.type.actualDerived
+		assertTrue(type instanceof FStructType)
+		val struct = type as FStructType
+		assertEquals(3, struct.elements.size)
+		val field1 = struct.elements.get(0)
+		val field2 = struct.elements.get(1)
+		val field3 = struct.elements.get(2)
+
+		// access property on struct level (cannot be overwritten)
+		assertEquals(111, accessor.getStructProp(type))
+				
+		// local accessor is needed for accessing overwritten properties
+		val acc = accessor.getOverwriteAccessor(arg2)
+		checkStructA(field1, field2, field3, acc,
+			210,
+			220, StringProp.q,
+			230, StringProp.r, 207
+		)
+	}
+
+	@Test
+	def void test_65DefCompoundOverwrite_method3_arg2() {
+		val method3 = fidl.methods.get(2)
+		assertEquals("method3", method3.name)
+		assertEquals(2, method3.inArgs.size)
+		val arg2 = method3.inArgs.get(1)
+		assertEquals(302, accessor.getArgumentProp(arg2))
+		
+		val acc = accessor.getOverwriteAccessor(arg2)
+		checkStructB(arg2.type, acc)
+	}
+
+	/**
+	 * Helper for checking the retrieved property values of a StructA
+	 * with and without overwrite.
+	 * 
+	 * @param acc the accessor for the context where this StructA instance has been defined 
+	 */
 	def private checkStructA(
 		FField f1, FField f2, FField f3,
 		ISpecCompoundHostsDataPropertyAccessor acc,
@@ -154,6 +200,55 @@ class DeployAccessorTest extends XtextTest {
 	}
 
 
+	/**
+	 * Helper for checking the retrieved property values of a StructB
+	 * with and without overwrite.
+	 * 
+	 * @param acc the accessor for the context where this StructB instance has been defined 
+	 */
+	def private checkStructB(
+		FTypeRef typeRef,
+		ISpecCompoundHostsDataPropertyAccessor acc
+	) {
+		// get struct fields
+		val type = typeRef.actualDerived
+		assertTrue(type instanceof FStructType)
+		val struct = type as FStructType
+		assertEquals(3, struct.elements.size)
+		val field1 = struct.elements.get(0)
+		val nested1 = struct.elements.get(1)
+		val nested2 = struct.elements.get(2)
+
+		// access property on struct level (cannot be overwritten)
+		assertEquals(222, accessor.getStructProp(type))
+				
+		// access ignoring overwrites
+		assertEquals(StringProp.u, accessor.getStringProp(field1))
+		assertEquals(11, accessor.getSFieldProp(field1))
+
+		assertEquals(12, accessor.getSFieldProp(nested1))
+		
+		assertEquals(0, accessor.getArrayProp(nested2))
+		assertEquals(12, accessor.getSFieldProp(nested2))
+
+		
+		// access including overwrites (if any)
+		assertEquals(StringProp.v, acc.getStringProp(field1))
+		assertEquals(10, acc.getSFieldProp(field1))
+
+		assertEquals(20, acc.getSFieldProp(nested1))
+		checkNested1(nested1, acc);
+
+		assertEquals(66, acc.getArrayProp(nested2))
+		assertEquals(12, acc.getSFieldProp(nested2)) // not overwritten
+		checkNested2(nested2, acc);
+	}
+
+
+	/**
+	 * Helper for checking the property values retrieved from accessors
+	 * for the field StructB.nested1 in various contexts.
+	 */
 	def private checkNested1(FField nested1, ISpecCompoundHostsDataPropertyAccessor acc) {
 		// get struct fields
 		val type = nested1.type.actualDerived
@@ -185,6 +280,10 @@ class DeployAccessorTest extends XtextTest {
 		
 	}
 
+	/**
+	 * Helper for checking the property values retrieved from accessors
+	 * for the field StructB.nested2 in various contexts.
+	 */
 	def private checkNested2(FField nested2, ISpecCompoundHostsDataPropertyAccessor acc) {
 		// get struct fields
 		assertTrue(nested2.isArray)
@@ -217,6 +316,11 @@ class DeployAccessorTest extends XtextTest {
 		
 	}
 
+
+	/**
+	 * Helper method for loading a deployment model from file and some 
+	 * other model files needed for the loaded model. 
+	 */
 	def private loadModel(String fileToTest, String... referencedResources) {
 		val resList = new ArrayList(referencedResources);
 		resList += fileToTest

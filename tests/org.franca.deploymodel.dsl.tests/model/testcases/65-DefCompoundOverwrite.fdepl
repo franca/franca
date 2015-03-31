@@ -72,10 +72,22 @@ define org.example.spec.SpecCompoundHosts for interface fidl.InterfaceUsingCompo
 		in {
 			arg1 {
 				StringProp = u
-				ArgumentProp = 0
+				ArgumentProp = 101
 			}
 			arg2 {
-				ArgumentProp = 0
+				ArgumentProp = 102
+				/field1 {
+					SFieldProp = 110
+				}
+				/field2 {
+					StringProp = p
+					SFieldProp = 120
+				}
+				/field3 {
+					StringProp = q
+					SFieldProp = 130
+					ArrayProp = 107
+				}
 			}
 		}
 	}
@@ -84,10 +96,22 @@ define org.example.spec.SpecCompoundHosts for interface fidl.InterfaceUsingCompo
 		out {
 			ret1 {
 				StringProp = u
-				ArgumentProp = 0
+				ArgumentProp = 201
 			}
 			ret2 {
-				ArgumentProp = 0
+				ArgumentProp = 202
+				/field1 {
+					SFieldProp = 210
+				}
+				/field2 {
+					StringProp = q
+					SFieldProp = 220
+				}
+				/field3 {
+					StringProp = r
+					SFieldProp = 230
+					ArrayProp = 207
+				}
 			}
 		}
 	}
@@ -96,10 +120,48 @@ define org.example.spec.SpecCompoundHosts for interface fidl.InterfaceUsingCompo
 		in {
 			arg1 {
 				StringProp = u
-				ArgumentProp = 0
+				ArgumentProp = 301
 			}
 			arg2 {
-				ArgumentProp = 0
+				ArgumentProp = 302
+
+				// same overwrite data as in attr3
+				/field1 {
+					StringProp = v
+					SFieldProp = 10
+				}
+				/nested1 {
+					SFieldProp = 20
+					/field1 {
+						SFieldProp = 11
+					}
+					/field2 {
+						StringProp = w
+						SFieldProp = 21
+					}
+					/field3 {
+						ArrayProp = 88
+						StringProp = w
+						SFieldProp = 31
+					}
+				}
+				/nested2 {
+					// 66 elements of StructA
+					ArrayProp = 66
+					/field1 {
+						SFieldProp = 12
+					}
+					/field2 {
+						StringProp = w
+						SFieldProp = 22
+					}
+					/field3 {
+						// 77 elements of String in StructA.field3
+						ArrayProp = 77
+						StringProp = w
+						SFieldProp = 32
+					}
+		}
 			}
 		}
 	}
@@ -107,7 +169,7 @@ define org.example.spec.SpecCompoundHosts for interface fidl.InterfaceUsingCompo
 	method method4 {
 		in {
 			arg1 {
-				ArgumentProp = 0
+				ArgumentProp = 401
 				/field1 {
 					StringProp = v
 					UFieldProp = 100
@@ -116,7 +178,7 @@ define org.example.spec.SpecCompoundHosts for interface fidl.InterfaceUsingCompo
 		}
 		out {
 			ret1 {
-				ArgumentProp = 0
+				ArgumentProp = 401
 				/field2 {
 					UFieldProp = 101
 					/field1 {
@@ -126,7 +188,7 @@ define org.example.spec.SpecCompoundHosts for interface fidl.InterfaceUsingCompo
 				}
 			}
 			ret2 {
-				ArgumentProp = 0
+				ArgumentProp = 402
 				/nested1 {
 					SFieldProp = 123
 					/field1 {

@@ -5,7 +5,6 @@
 package org.example.spec;
 
 import org.eclipse.emf.ecore.EObject;
-import org.franca.core.franca.FAttribute;
 import org.franca.core.franca.FField;
 
 /**
@@ -17,7 +16,7 @@ public interface ISpecCompoundHostsDataPropertyAccessor
 {
 	
 	public enum StringProp {
-		u, v, w, x, y, z
+		p, q, r, s, t, u, v, w, x, y, z
 	}
 	public StringProp getStringProp (EObject obj);
 	
