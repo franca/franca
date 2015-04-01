@@ -27,6 +27,11 @@ Workflow {
         directory = "${runtimeProject}.ui/src-gen"
     }
 
+	component = org.eclipse.emf.mwe2.ecore.EcoreGenerator {
+		genModel = "platform:/resource/${projectName}/model/FDeploy.genmodel"
+        srcPath = "platform:/resource/${projectName}/src-gen"			
+	}
+	
     component = Generator {
 		// Don't merge manifest files as they are checked out read-only by default.
 		// Note that this might make manual merges necessary, see MANIFEST.MF_gen
@@ -39,19 +44,13 @@ Workflow {
         projectNameRt = projectName
         projectNameUi = "${projectName}.ui"
         language = {
+        	loadedResource = "platform:/resource/${projectName}/model/FDeploy.ecore"
+        	
             uri = grammarURI
             fileExtensions = file.extensions
 
             // Java API to access grammar elements (required by several other fragments)
             fragment = grammarAccess.GrammarAccessFragment {}
-
-            // generates Java API for the generated EPackages
-            fragment = ecore.EcoreGeneratorFragment {
-//            	referencedGenModels = "
-            //  platform:/resource/org.eclipse.xtext.xbase/model/Xbase.genmodel,
-            //  platform:/resource/org.eclipse.xtext.common.types/model/JavaVMTypes.genmodel
-//            	"
-            }
 
             // Serializer 2.0
 //            fragment = serializer.SerializerFragment {

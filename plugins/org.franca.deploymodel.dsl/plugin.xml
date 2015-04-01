@@ -8,7 +8,7 @@
     <package 
        uri = "http://www.franca.org/deploymodel/dsl/FDeploy" 
        class = "org.franca.deploymodel.dsl.fDeploy.FDeployPackage"
-       genModel = "org/franca/deploymodel/dsl/FDeploy.genmodel" /> 
+       genModel = "model/FDeploy.genmodel" /> 
 	
   </extension>
 

@@ -9,7 +9,8 @@
 *******************************************************************************/
 grammar org.franca.deploymodel.dsl.FDeploy with org.eclipse.xtext.common.Terminals
 
-generate fDeploy "http://www.franca.org/deploymodel/dsl/FDeploy"
+// the fDeploy ecore model (it is not generated from this grammar)
+import "http://www.franca.org/deploymodel/dsl/FDeploy"
 
 // the Franca IDL ecore model
 import "http://core.franca.org" as fidl
