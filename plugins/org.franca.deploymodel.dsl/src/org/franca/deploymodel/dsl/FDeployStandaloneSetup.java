@@ -25,5 +25,13 @@ public class FDeployStandaloneSetup extends FDeployStandaloneSetupGenerated{
 		
 		return super.createInjectorAndDoEMFRegistration();
 	}
+
+    @Override
+    public void register(Injector injector) {
+        if (!EPackage.Registry.INSTANCE.containsKey("http://www.franca.org/deploymodel/dsl/FDeploy")) {
+            EPackage.Registry.INSTANCE.put("http://www.franca.org/deploymodel/dsl/FDeploy", org.franca.deploymodel.dsl.fDeploy.FDeployPackage.eINSTANCE);
+        }
+        super.register(injector);
+    }
 }
 
