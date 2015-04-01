@@ -10,6 +10,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.franca.core.franca.FField;
 import org.franca.core.franca.FArgument;
 import org.franca.core.franca.FAttribute;
+import org.franca.core.franca.FModelElement;
 import org.franca.deploymodel.core.FDeployedInterface;
 import org.franca.deploymodel.dsl.fDeploy.FDArgument;
 import org.franca.deploymodel.dsl.fDeploy.FDAttribute;
@@ -17,6 +18,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDCompoundOverwrites;
 import org.franca.deploymodel.dsl.fDeploy.FDElement;
 import org.franca.deploymodel.dsl.fDeploy.FDField;
 import org.franca.deploymodel.dsl.fDeploy.FDFieldOverwrite;
+import org.franca.deploymodel.dsl.fDeploy.FDOverwriteElement;
 import org.franca.deploymodel.dsl.fDeploy.FDProperty;
 
 /**
@@ -72,34 +74,25 @@ public class SpecCompoundHostsInterfacePropertyAccessorRef extends AbstractSpecC
 
 
 	public ISpecCompoundHostsDataPropertyAccessor getOverwriteAccessor (FAttribute obj) {
-		FDElement fd = target.getFDElement(obj);
-		FDAttribute fdAttr = (FDAttribute)fd;
-		FDCompoundOverwrites overwrites = fdAttr.getOverwrites();
-		if (overwrites==null)
-			return this;
-		else
-			return new OverwriteAccessor(overwrites, this, target);
+		return getOverwriteAccessorAux(obj);
 	}
 
 	public ISpecCompoundHostsDataPropertyAccessor getOverwriteAccessor (FArgument obj) {
-		FDElement fd = target.getFDElement(obj);
-		FDArgument fdAttr = (FDArgument)fd;
-		FDCompoundOverwrites overwrites = fdAttr.getOverwrites();
-		if (overwrites==null)
-			return this;
-		else
-			return new OverwriteAccessor(overwrites, this, target);
+		return getOverwriteAccessorAux(obj);
 	}
 
 	@Override
 	public ISpecCompoundHostsDataPropertyAccessor getOverwriteAccessor (FField obj) {
-		FDElement fd = target.getFDElement(obj);
-		FDField fdField = (FDField)fd;
-		FDCompoundOverwrites overwrites = fdField.getOverwrites();
+		return getOverwriteAccessorAux(obj);
+	}
+	
+	private ISpecCompoundHostsDataPropertyAccessor getOverwriteAccessorAux (FModelElement obj) {
+		FDOverwriteElement fd = (FDOverwriteElement)target.getFDElement(obj);
+		FDCompoundOverwrites overwrites = fd.getOverwrites();
 		if (overwrites==null)
 			return this;
 		else
 			return new OverwriteAccessor(overwrites, this, target);
 	}
-	
+
 }

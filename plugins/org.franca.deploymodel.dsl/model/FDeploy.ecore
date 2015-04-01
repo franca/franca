@@ -91,21 +91,25 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="properties" upperBound="-1"
         eType="#//FDProperty" containment="true"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDOverwriteElement" eSuperTypes="#//FDElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="overwrites" eType="#//FDCompoundOverwrites"
+        containment="true"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FDProvider" eSuperTypes="#//FDRootElement">
     <eStructuralFeatures xsi:type="ecore:EReference" name="instances" upperBound="-1"
         eType="#//FDInterfaceInstance" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FDInterfaceInstance" eSuperTypes="#//FDElement">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass platform:/resource/org.franca.core/model/franca.ecore#//FInterface"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass ../../org.franca.core/model/franca.ecore#//FInterface"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FDTypes" eSuperTypes="#//FDRootElement">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass platform:/resource/org.franca.core/model/franca.ecore#//FTypeCollection"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass ../../org.franca.core/model/franca.ecore#//FTypeCollection"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="types" upperBound="-1"
         eType="#//FDTypeDef" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FDInterface" eSuperTypes="#//FDRootElement">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass platform:/resource/org.franca.core/model/franca.ecore#//FInterface"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass ../../org.franca.core/model/franca.ecore#//FInterface"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="attributes" upperBound="-1"
         eType="#//FDAttribute" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="methods" upperBound="-1"
@@ -115,31 +119,27 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="types" upperBound="-1"
         eType="#//FDTypeDef" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="FDAttribute" eSuperTypes="#//FDElement">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass platform:/resource/org.franca.core/model/franca.ecore#//FAttribute"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="overwrites" eType="#//FDCompoundOverwrites"
-        containment="true"/>
+  <eClassifiers xsi:type="ecore:EClass" name="FDAttribute" eSuperTypes="#//FDOverwriteElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass ../../org.franca.core/model/franca.ecore#//FAttribute"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FDOperation" eSuperTypes="#//FDElement">
     <eStructuralFeatures xsi:type="ecore:EReference" name="outArguments" eType="#//FDArgumentList"
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FDMethod" eSuperTypes="#//FDOperation">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass platform:/resource/org.franca.core/model/franca.ecore#//FMethod"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass ../../org.franca.core/model/franca.ecore#//FMethod"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="inArguments" eType="#//FDArgumentList"
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FDBroadcast" eSuperTypes="#//FDOperation">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass platform:/resource/org.franca.core/model/franca.ecore#//FBroadcast"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass ../../org.franca.core/model/franca.ecore#//FBroadcast"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FDArgumentList">
     <eStructuralFeatures xsi:type="ecore:EReference" name="arguments" upperBound="-1"
         eType="#//FDArgument" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="FDArgument" eSuperTypes="#//FDElement">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass platform:/resource/org.franca.core/model/franca.ecore#//FArgument"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="overwrites" eType="#//FDCompoundOverwrites"
-        containment="true"/>
+  <eClassifiers xsi:type="ecore:EClass" name="FDArgument" eSuperTypes="#//FDOverwriteElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass ../../org.franca.core/model/franca.ecore#//FArgument"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FDTypeDef" eSuperTypes="#//FDElement"/>
   <eClassifiers xsi:type="ecore:EClass" name="FDCompound" eSuperTypes="#//FDTypeDef">
@@ -147,35 +147,31 @@
         eType="#//FDField" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FDArray" eSuperTypes="#//FDTypeDef">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass platform:/resource/org.franca.core/model/franca.ecore#//FArrayType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass ../../org.franca.core/model/franca.ecore#//FArrayType"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FDStruct" eSuperTypes="#//FDCompound">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass platform:/resource/org.franca.core/model/franca.ecore#//FStructType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass ../../org.franca.core/model/franca.ecore#//FStructType"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FDUnion" eSuperTypes="#//FDCompound">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass platform:/resource/org.franca.core/model/franca.ecore#//FUnionType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass ../../org.franca.core/model/franca.ecore#//FUnionType"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="FDField" eSuperTypes="#//FDElement">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass platform:/resource/org.franca.core/model/franca.ecore#//FField"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="overwrites" eType="#//FDCompoundOverwrites"
-        containment="true"/>
+  <eClassifiers xsi:type="ecore:EClass" name="FDField" eSuperTypes="#//FDOverwriteElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass ../../org.franca.core/model/franca.ecore#//FField"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FDEnumeration" eSuperTypes="#//FDElement #//FDTypeDef">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass platform:/resource/org.franca.core/model/franca.ecore#//FEnumerationType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass ../../org.franca.core/model/franca.ecore#//FEnumerationType"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="enumerators" upperBound="-1"
         eType="#//FDEnumValue" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FDEnumValue" eSuperTypes="#//FDElement">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass platform:/resource/org.franca.core/model/franca.ecore#//FEnumerator"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass ../../org.franca.core/model/franca.ecore#//FEnumerator"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FDCompoundOverwrites">
     <eStructuralFeatures xsi:type="ecore:EReference" name="fields" upperBound="-1"
         eType="#//FDFieldOverwrite" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="FDFieldOverwrite" eSuperTypes="#//FDElement">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass platform:/resource/org.franca.core/model/franca.ecore#//FField"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="overwrites" eType="#//FDCompoundOverwrites"
-        containment="true"/>
+  <eClassifiers xsi:type="ecore:EClass" name="FDFieldOverwrite" eSuperTypes="#//FDOverwriteElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass ../../org.franca.core/model/franca.ecore#//FField"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FDProperty">
     <eStructuralFeatures xsi:type="ecore:EReference" name="decl" eType="#//FDPropertyDecl"/>
@@ -203,7 +199,7 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FDInterfaceRef" eSuperTypes="#//FDValue">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="value" eType="ecore:EClass platform:/resource/org.franca.core/model/franca.ecore#//FInterface"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="value" eType="ecore:EClass ../../org.franca.core/model/franca.ecore#//FInterface"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FDGeneric" eSuperTypes="#//FDValue">
     <eStructuralFeatures xsi:type="ecore:EReference" name="value" eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject"/>
