@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Franca IDL UI plugin
 Bundle-Vendor: itemis AG
-Bundle-Version: 0.9.1.qualifier
+Bundle-Version: 0.9.2.qualifier
 Bundle-SymbolicName: org.franca.core.dsl.ui; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.franca.core.dsl;bundle-version="0.9.1";visibility:=reexport,
