@@ -1,4 +1,4 @@
-// deployment definition for typeCollection
+// deployment definition with overwrites for interface
 
 import "60-SpecCompoundHosts.fdepl"
 import "../fidl/30-InterfaceUsingCompounds.fidl"
@@ -161,7 +161,7 @@ define org.example.spec.SpecCompoundHosts for interface fidl.InterfaceUsingCompo
 						StringProp = w
 						SFieldProp = 32
 					}
-		}
+				}
 			}
 		}
 	}
