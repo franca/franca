@@ -7,7 +7,7 @@ import org.eclipselabs.xtext.utils.unittesting.XtextTest
 import org.example.spec.ISpecCompoundHostsDataPropertyAccessor
 import org.example.spec.ISpecCompoundHostsDataPropertyAccessor.StringProp
 import org.example.spec.SpecCompoundHostsInterfacePropertyAccessorRef
-import org.franca.core.franca.FField
+import org.franca.core.franca.FStructType
 
 import static org.junit.Assert.*
 
@@ -38,12 +38,24 @@ class DeployAccessorTestBase extends XtextTest {
 	 * @param acc the accessor for the context where this StructA instance has been defined 
 	 */
 	def protected checkStructA(
-		FField f1, FField f2, FField f3,
+		FStructType structA,
 		ISpecCompoundHostsDataPropertyAccessor acc,
 		Integer pSField1,
 		Integer pSField2, StringProp pString2,
 		Integer pSField3, StringProp pString3, Integer pArray3
 	) {
+		// check struct name
+		assertEquals("StructA", structA.name)
+
+		// get struct fields
+		assertEquals(3, structA.elements.size)
+		val f1 = structA.elements.get(0)
+		assertEquals("field1", f1.name)
+		val f2 = structA.elements.get(1)
+		assertEquals("field2", f2.name)
+		val f3 = structA.elements.get(2)
+		assertEquals("field3", f3.name)
+
 		// access ignoring overwrites
 		assertEquals(1, accessor.getSFieldProp(f1))
 		assertEquals(2, accessor.getSFieldProp(f2))

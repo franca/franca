@@ -67,17 +67,13 @@ class InterfaceDeployAccessorTest extends DeployAccessorTestBase {
 		val type = attr2.type.actualDerived
 		assertTrue(type instanceof FStructType)
 		val struct = type as FStructType
-		assertEquals(3, struct.elements.size)
-		val field1 = struct.elements.get(0)
-		val field2 = struct.elements.get(1)
-		val field3 = struct.elements.get(2)
 
 		// access property on struct level (cannot be overwritten)
 		assertEquals(111, accessor.getStructProp(type))
 				
 		// local accessor is needed for accessing overwritten properties
 		val acc = accessor.getOverwriteAccessor(attr2)
-		checkStructA(field1, field2, field3, acc,
+		checkStructA(struct, acc,
 			10,
 			20, StringProp.v,
 			30, StringProp.v, 7
@@ -105,17 +101,13 @@ class InterfaceDeployAccessorTest extends DeployAccessorTestBase {
 		val type = arg2.type.actualDerived
 		assertTrue(type instanceof FStructType)
 		val struct = type as FStructType
-		assertEquals(3, struct.elements.size)
-		val field1 = struct.elements.get(0)
-		val field2 = struct.elements.get(1)
-		val field3 = struct.elements.get(2)
 
 		// access property on struct level (cannot be overwritten)
 		assertEquals(111, accessor.getStructProp(type))
 				
 		// local accessor is needed for accessing overwritten properties
 		val acc = accessor.getOverwriteAccessor(arg2)
-		checkStructA(field1, field2, field3, acc,
+		checkStructA(struct, acc,
 			110,
 			120, StringProp.p,
 			130, StringProp.q, 107
@@ -134,17 +126,13 @@ class InterfaceDeployAccessorTest extends DeployAccessorTestBase {
 		val type = arg2.type.actualDerived
 		assertTrue(type instanceof FStructType)
 		val struct = type as FStructType
-		assertEquals(3, struct.elements.size)
-		val field1 = struct.elements.get(0)
-		val field2 = struct.elements.get(1)
-		val field3 = struct.elements.get(2)
 
 		// access property on struct level (cannot be overwritten)
 		assertEquals(111, accessor.getStructProp(type))
 				
 		// local accessor is needed for accessing overwritten properties
 		val acc = accessor.getOverwriteAccessor(arg2)
-		checkStructA(field1, field2, field3, acc,
+		checkStructA(struct, acc,
 			210,
 			220, StringProp.q,
 			230, StringProp.r, 207
@@ -296,6 +284,7 @@ class InterfaceDeployAccessorTest extends DeployAccessorTestBase {
 		val type = typeRef.actualDerived
 		assertTrue(type instanceof FStructType)
 		val struct = type as FStructType
+		assertEquals("StructB", struct.name)
 		assertEquals(3, struct.elements.size)
 		val field1 = struct.elements.get(0)
 		val nested1 = struct.elements.get(1)
@@ -336,16 +325,11 @@ class InterfaceDeployAccessorTest extends DeployAccessorTestBase {
 		val type = nested1.type.actualDerived
 		assertTrue(type instanceof FStructType)
 		val struct = type as FStructType
-		assertEquals("StructA", struct.name)
-		assertEquals(3, struct.elements.size)
-		val field1 = struct.elements.get(0)
-		val field2 = struct.elements.get(1)
-		val field3 = struct.elements.get(2)
 		
 		// local accessor acc1 will access overwritten properties in
 		// deployment definition of StructB (as nested1 is a member of StructB)
 		val acc1 = accessor.getOverwriteAccessor(nested1)
-		checkStructA(field1, field2, field3, acc1,
+		checkStructA(struct, acc1,
 			15,
 			16, StringProp.x, 
 			17, StringProp.y, 11
@@ -354,7 +338,7 @@ class InterfaceDeployAccessorTest extends DeployAccessorTestBase {
 		// local accessor acc2 will access overwritten properties in
 		// deployment definition of attr3 (as acc is the overwrite accessor of attr3)
 		val acc2 = acc.getOverwriteAccessor(nested1)
-		checkStructA(field1, field2, field3, acc2,
+		checkStructA(struct, acc2,
 			11,
 			21, StringProp.w, 
 			31, StringProp.w, 88
@@ -371,16 +355,11 @@ class InterfaceDeployAccessorTest extends DeployAccessorTestBase {
 		val type = nested2.type.actualDerived
 		assertTrue(type instanceof FStructType)
 		val struct = type as FStructType
-		assertEquals("StructA", struct.name)
-		assertEquals(3, struct.elements.size)
-		val field1 = struct.elements.get(0)
-		val field2 = struct.elements.get(1)
-		val field3 = struct.elements.get(2)
 		
 		// local accessor acc1 will access overwritten properties in
 		// deployment definition of StructB (as nested2 is a member of StructB)
 		val acc1 = accessor.getOverwriteAccessor(nested2)
-		checkStructA(field1, field2, field3, acc1,
+		checkStructA(struct, acc1,
 			25,
 			26, StringProp.x, 
 			27, StringProp.z, 21
@@ -389,7 +368,7 @@ class InterfaceDeployAccessorTest extends DeployAccessorTestBase {
 		// local accessor acc2 will access overwritten properties in
 		// deployment definition of attr3 (as acc is the overwrite accessor of attr3)
 		val acc2 = acc.getOverwriteAccessor(nested2)
-		checkStructA(field1, field2, field3, acc2,
+		checkStructA(struct, acc2,
 			12,
 			22, StringProp.w, 
 			32, StringProp.w, 77
