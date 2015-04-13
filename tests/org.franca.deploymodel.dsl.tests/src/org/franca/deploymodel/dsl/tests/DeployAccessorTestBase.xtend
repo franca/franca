@@ -6,15 +6,12 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipselabs.xtext.utils.unittesting.XtextTest
 import org.example.spec.ISpecCompoundHostsDataPropertyAccessor
 import org.example.spec.ISpecCompoundHostsDataPropertyAccessor.StringProp
-import org.example.spec.SpecCompoundHostsInterfacePropertyAccessorRef
 import org.franca.core.franca.FStructType
 
 import static org.junit.Assert.*
 
-class DeployAccessorTestBase extends XtextTest {
+abstract class DeployAccessorTestBase extends XtextTest {
 
-	protected SpecCompoundHostsInterfacePropertyAccessorRef accessor
-	
 	/**
 	 * Helper method for loading a deployment model from file and some 
 	 * other model files needed for the loaded model. 
@@ -30,7 +27,6 @@ class DeployAccessorTestBase extends XtextTest {
 		result
 	}
 	
-	
 	/**
 	 * Helper for checking the retrieved property values of a StructA
 	 * with and without overwrite.
@@ -39,6 +35,7 @@ class DeployAccessorTestBase extends XtextTest {
 	 */
 	def protected checkStructA(
 		FStructType structA,
+		ISpecCompoundHostsDataPropertyAccessor accessor,
 		ISpecCompoundHostsDataPropertyAccessor acc,
 		Integer pSField1,
 		Integer pSField2, StringProp pString2,
@@ -64,13 +61,15 @@ class DeployAccessorTestBase extends XtextTest {
 		assertEquals(StringProp.u, accessor.getStringProp(f3))
 		assertEquals(0, accessor.getArrayProp(f3))
 		
-		// access including overwrites (if any)
-		assertEquals(pSField1, acc.getSFieldProp(f1))
-		assertEquals(pSField2, acc.getSFieldProp(f2))
-		assertEquals(pString2, acc.getStringProp(f2))
-		assertEquals(pSField3, acc.getSFieldProp(f3))
-		assertEquals(pString3, acc.getStringProp(f3))
-		assertEquals(pArray3, acc.getArrayProp(f3))
+		if (acc!=null) {
+			// access including overwrites (if any)
+			assertEquals(pSField1, acc.getSFieldProp(f1))
+			assertEquals(pSField2, acc.getSFieldProp(f2))
+			assertEquals(pString2, acc.getStringProp(f2))
+			assertEquals(pSField3, acc.getSFieldProp(f3))
+			assertEquals(pString3, acc.getStringProp(f3))
+			assertEquals(pArray3, acc.getArrayProp(f3))
+		}
 	}
 
 

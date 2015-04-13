@@ -27,7 +27,8 @@ import static extension org.franca.core.framework.FrancaHelpers.*
 class InterfaceDeployAccessorTest extends DeployAccessorTestBase {
 
 	FInterface fidl
-	
+	SpecCompoundHostsInterfacePropertyAccessorRef accessor
+
 	@Before
 	def void setup() {
 		val root = loadModel(
@@ -73,7 +74,7 @@ class InterfaceDeployAccessorTest extends DeployAccessorTestBase {
 				
 		// local accessor is needed for accessing overwritten properties
 		val acc = accessor.getOverwriteAccessor(attr2)
-		checkStructA(struct, acc,
+		checkStructA(struct, accessor, acc,
 			10,
 			20, StringProp.v,
 			30, StringProp.v, 7
@@ -107,7 +108,7 @@ class InterfaceDeployAccessorTest extends DeployAccessorTestBase {
 				
 		// local accessor is needed for accessing overwritten properties
 		val acc = accessor.getOverwriteAccessor(arg2)
-		checkStructA(struct, acc,
+		checkStructA(struct, accessor, acc,
 			110,
 			120, StringProp.p,
 			130, StringProp.q, 107
@@ -132,7 +133,7 @@ class InterfaceDeployAccessorTest extends DeployAccessorTestBase {
 				
 		// local accessor is needed for accessing overwritten properties
 		val acc = accessor.getOverwriteAccessor(arg2)
-		checkStructA(struct, acc,
+		checkStructA(struct, accessor, acc,
 			210,
 			220, StringProp.q,
 			230, StringProp.r, 207
@@ -329,7 +330,7 @@ class InterfaceDeployAccessorTest extends DeployAccessorTestBase {
 		// local accessor acc1 will access overwritten properties in
 		// deployment definition of StructB (as nested1 is a member of StructB)
 		val acc1 = accessor.getOverwriteAccessor(nested1)
-		checkStructA(struct, acc1,
+		checkStructA(struct, accessor, acc1,
 			15,
 			16, StringProp.x, 
 			17, StringProp.y, 11
@@ -338,7 +339,7 @@ class InterfaceDeployAccessorTest extends DeployAccessorTestBase {
 		// local accessor acc2 will access overwritten properties in
 		// deployment definition of attr3 (as acc is the overwrite accessor of attr3)
 		val acc2 = acc.getOverwriteAccessor(nested1)
-		checkStructA(struct, acc2,
+		checkStructA(struct, accessor, acc2,
 			11,
 			21, StringProp.w, 
 			31, StringProp.w, 88
@@ -359,7 +360,7 @@ class InterfaceDeployAccessorTest extends DeployAccessorTestBase {
 		// local accessor acc1 will access overwritten properties in
 		// deployment definition of StructB (as nested2 is a member of StructB)
 		val acc1 = accessor.getOverwriteAccessor(nested2)
-		checkStructA(struct, acc1,
+		checkStructA(struct, accessor, acc1,
 			25,
 			26, StringProp.x, 
 			27, StringProp.z, 21
@@ -368,7 +369,7 @@ class InterfaceDeployAccessorTest extends DeployAccessorTestBase {
 		// local accessor acc2 will access overwritten properties in
 		// deployment definition of attr3 (as acc is the overwrite accessor of attr3)
 		val acc2 = acc.getOverwriteAccessor(nested2)
-		checkStructA(struct, acc2,
+		checkStructA(struct, accessor, acc2,
 			12,
 			22, StringProp.w, 
 			32, StringProp.w, 77

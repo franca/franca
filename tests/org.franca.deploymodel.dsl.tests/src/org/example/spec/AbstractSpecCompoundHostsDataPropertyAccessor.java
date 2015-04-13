@@ -10,7 +10,7 @@ package org.example.spec;
  * 
  * This is the data types related part only.
  */		
-abstract class AbstractSpecCompoundHostsDataPropertyAccessor implements ISpecCompoundHostsDataPropertyAccessor
+abstract public class AbstractSpecCompoundHostsDataPropertyAccessor implements ISpecCompoundHostsDataPropertyAccessor
 {
 
 	protected StringProp convertStringProp (String val) {
