@@ -126,7 +126,13 @@ public class MappingGenericPropertyAccessor extends GenericPropertyAccessor{
 		return el;
 	}
 
-	protected FDElement getFDElement(EObject obj) {
+	/**
+	 * Map an element of a Franca IDL model to the corresponding deployment element (if any).  
+	 * 
+	 * @param obj  the element of the Franca model
+	 * @return the actual mapping or null (if no mapping available) 
+	 */
+	public FDElement getFDElement(EObject obj) {
 		FDElement elem = mapper.getFDElement(obj);
 		if (elem == null)
 			// just to get a default value if any configured
