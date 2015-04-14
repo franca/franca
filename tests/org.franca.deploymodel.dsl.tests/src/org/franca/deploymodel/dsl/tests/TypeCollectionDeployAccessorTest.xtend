@@ -6,6 +6,7 @@ import org.example.spec.ISpecCompoundHostsDataPropertyAccessor.StringProp
 import org.example.spec.SpecCompoundHostsTypeCollectionPropertyAccessorRef
 import org.franca.core.franca.FStructType
 import org.franca.core.franca.FTypeCollection
+import org.franca.core.franca.FUnionType
 import org.franca.deploymodel.core.FDeployedTypeCollection
 import org.franca.deploymodel.dsl.FDeployTestsInjectorProvider
 import org.franca.deploymodel.dsl.fDeploy.FDModel
@@ -94,6 +95,37 @@ class TypeCollectionDeployAccessorTest extends DeployAccessorTestBase {
 			26, StringProp.x,
 			27, StringProp.z, 21
 		)
+	}
+
+	@Test
+	def void test_66DefCompoundOverwrite_StructC() {
+		// get struct fields
+		val type = tc.types.get(4)
+		assertTrue(type instanceof FStructType)
+		val structC = type as FStructType
+		assertEquals("StructC", structC.name)
+		assertEquals(333, accessor.getStructProp(structC))
+		assertEquals(1, structC.elements.size)
+		val nested1 = structC.elements.get(0)
+
+		// check field 'nested1'
+		val typeA = nested1.type.actualDerived
+		assertTrue(typeA instanceof FUnionType)
+		val unionA = typeA as FUnionType
+		assertEquals("UnionA", typeA.name)
+		assertEquals(1, unionA.elements.size)
+		val field1 = unionA.elements.get(0)
+
+		// access ignoring overwrites
+		assertEquals(33301, accessor.getSFieldProp(nested1))
+		assertEquals(StringProp.u, accessor.getStringProp(field1))
+		assertEquals(0, accessor.getUFieldProp(field1))
+
+		// access including overwrites (if any)
+		val acc1 = accessor.getOverwriteAccessor(nested1)
+		assertEquals(33301, acc1.getSFieldProp(nested1))
+		assertEquals(StringProp.y, acc1.getStringProp(field1))
+		assertEquals(33330, acc1.getUFieldProp(field1))
 	}
 	
 }
