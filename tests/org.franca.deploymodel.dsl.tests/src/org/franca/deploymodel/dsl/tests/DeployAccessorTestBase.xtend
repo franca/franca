@@ -4,8 +4,8 @@ import java.util.ArrayList
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipselabs.xtext.utils.unittesting.XtextTest
-import org.example.spec.ISpecCompoundHostsDataPropertyAccessor
-import org.example.spec.ISpecCompoundHostsDataPropertyAccessor.StringProp
+import org.example.spec.SpecCompoundHosts.IDataPropertyAccessor
+import org.example.spec.SpecCompoundHosts.IDataPropertyAccessor.StringProp
 import org.franca.core.franca.FStructType
 
 import static org.junit.Assert.*
@@ -35,8 +35,8 @@ abstract class DeployAccessorTestBase extends XtextTest {
 	 */
 	def protected checkStructA(
 		FStructType structA,
-		ISpecCompoundHostsDataPropertyAccessor accessor,
-		ISpecCompoundHostsDataPropertyAccessor acc,
+		IDataPropertyAccessor accessor,
+		IDataPropertyAccessor acc,
 		Integer pSField1,
 		Integer pSField2, StringProp pString2,
 		Integer pSField3, StringProp pString3, Integer pArray3

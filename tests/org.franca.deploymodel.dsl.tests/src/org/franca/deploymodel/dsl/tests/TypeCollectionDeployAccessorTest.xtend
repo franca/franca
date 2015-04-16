@@ -2,8 +2,8 @@ package org.franca.deploymodel.dsl.tests
 
 import org.eclipse.xtext.junit4.InjectWith
 import org.eclipselabs.xtext.utils.unittesting.XtextRunner2
-import org.example.spec.ISpecCompoundHostsDataPropertyAccessor.StringProp
-import org.example.spec.SpecCompoundHostsTypeCollectionPropertyAccessorRef
+import org.example.spec.SpecCompoundHosts.IDataPropertyAccessor.StringProp
+import org.example.spec.SpecCompoundHosts.TypeCollectionPropertyAccessor
 import org.franca.core.franca.FStructType
 import org.franca.core.franca.FTypeCollection
 import org.franca.core.franca.FUnionType
@@ -24,7 +24,7 @@ import static extension org.franca.core.framework.FrancaHelpers.*
 class TypeCollectionDeployAccessorTest extends DeployAccessorTestBase {
 
 	FTypeCollection tc
-	SpecCompoundHostsTypeCollectionPropertyAccessorRef accessor
+	TypeCollectionPropertyAccessor accessor
 	
 	@Before
 	def void setup() {
@@ -38,7 +38,7 @@ class TypeCollectionDeployAccessorTest extends DeployAccessorTestBase {
 		
 		val first = model.deployments.get(0) as FDTypes
 		val deployed = new FDeployedTypeCollection(first)
-		accessor = new SpecCompoundHostsTypeCollectionPropertyAccessorRef(deployed)
+		accessor = new TypeCollectionPropertyAccessor(deployed)
 		tc = first.target
 	}
 

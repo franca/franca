@@ -2,9 +2,9 @@ package org.franca.deploymodel.dsl.tests
 
 import org.eclipse.xtext.junit4.InjectWith
 import org.eclipselabs.xtext.utils.unittesting.XtextRunner2
-import org.example.spec.ISpecCompoundHostsDataPropertyAccessor
-import org.example.spec.ISpecCompoundHostsDataPropertyAccessor.StringProp
-import org.example.spec.SpecCompoundHostsInterfacePropertyAccessorRef
+import org.example.spec.SpecCompoundHosts.IDataPropertyAccessor
+import org.example.spec.SpecCompoundHosts.IDataPropertyAccessor.StringProp
+import org.example.spec.SpecCompoundHosts.InterfacePropertyAccessor
 import org.franca.core.franca.FField
 import org.franca.core.franca.FInterface
 import org.franca.core.franca.FStructType
@@ -27,7 +27,7 @@ import static extension org.franca.core.framework.FrancaHelpers.*
 class InterfaceDeployAccessorTest extends DeployAccessorTestBase {
 
 	FInterface fidl
-	SpecCompoundHostsInterfacePropertyAccessorRef accessor
+	InterfacePropertyAccessor accessor
 
 	@Before
 	def void setup() {
@@ -41,7 +41,7 @@ class InterfaceDeployAccessorTest extends DeployAccessorTestBase {
 		
 		val first = model.deployments.get(0) as FDInterface
 		val deployed = new FDeployedInterface(first)
-		accessor = new SpecCompoundHostsInterfacePropertyAccessorRef(deployed)
+		accessor = new InterfacePropertyAccessor(deployed)
 		fidl = first.target
 	}
 
@@ -279,7 +279,7 @@ class InterfaceDeployAccessorTest extends DeployAccessorTestBase {
 	 */
 	def private checkStructB(
 		FTypeRef typeRef,
-		ISpecCompoundHostsDataPropertyAccessor acc
+		IDataPropertyAccessor acc
 	) {
 		// get struct fields
 		val type = typeRef.actualDerived
@@ -321,7 +321,7 @@ class InterfaceDeployAccessorTest extends DeployAccessorTestBase {
 	 * Helper for checking the property values retrieved from accessors
 	 * for the field StructB.nested1 in various contexts.
 	 */
-	def private checkNested1(FField nested1, ISpecCompoundHostsDataPropertyAccessor acc) {
+	def private checkNested1(FField nested1, IDataPropertyAccessor acc) {
 		// get struct fields
 		val type = nested1.type.actualDerived
 		assertTrue(type instanceof FStructType)
@@ -350,7 +350,7 @@ class InterfaceDeployAccessorTest extends DeployAccessorTestBase {
 	 * Helper for checking the property values retrieved from accessors
 	 * for the field StructB.nested2 in various contexts.
 	 */
-	def private checkNested2(FField nested2, ISpecCompoundHostsDataPropertyAccessor acc) {
+	def private checkNested2(FField nested2, IDataPropertyAccessor acc) {
 		// get struct fields
 		assertTrue(nested2.isArray)
 		val type = nested2.type.actualDerived
@@ -386,7 +386,7 @@ class InterfaceDeployAccessorTest extends DeployAccessorTestBase {
 	 */
 	def private checkUnionA(
 		FField f1,
-		ISpecCompoundHostsDataPropertyAccessor acc,
+		IDataPropertyAccessor acc,
 		Integer pSField1, StringProp pString1
 	) {
 		// access ignoring overwrites
