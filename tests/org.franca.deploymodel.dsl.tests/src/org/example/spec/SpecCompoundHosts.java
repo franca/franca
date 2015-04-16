@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.emf.ecore.EObject;
+import org.example.spec.SpecCompoundHosts.IDataPropertyAccessor.StringProp;
 import org.franca.core.franca.FArgument;
 import org.franca.core.franca.FAttribute;
 import org.franca.core.franca.FField;
@@ -50,19 +51,22 @@ public class SpecCompoundHosts {
 
 
 	/**
-	 * Abstract base class for data-related property accessors.
-	 * 
-	 * This is the data types related part only.
+	 * Helper class for data-related property accessors.
 	 */		
-	abstract public static class AbstractDataPropertyAccessor implements IDataPropertyAccessor
+	public static class DataPropertyAccessorHelper
 	{
-		final protected MappingGenericPropertyAccessor target;
+		final private MappingGenericPropertyAccessor target;
+		final private IDataPropertyAccessor owner;
 		
-		public AbstractDataPropertyAccessor(MappingGenericPropertyAccessor target) {
+		public DataPropertyAccessorHelper(
+			MappingGenericPropertyAccessor target,
+			IDataPropertyAccessor owner
+		) {
 			this.target = target;
+			this.owner = owner;
 		}
 		
-		protected StringProp convertStringProp (String val) {
+		public StringProp convertStringProp (String val) {
 			if (val.equals("p"))
 				return StringProp.p; else 
 			if (val.equals("q"))
@@ -92,26 +96,29 @@ public class SpecCompoundHosts {
 			FDOverwriteElement fd = (FDOverwriteElement)target.getFDElement(obj);
 			FDCompoundOverwrites overwrites = fd.getOverwrites();
 			if (overwrites==null)
-				return this;
+				return owner;
 			else
-				return new OverwriteAccessor(overwrites, this, target);
+				return new OverwriteAccessor(overwrites, owner, target);
 		}
 	}
 
 	
-	public static class OverwriteAccessor extends AbstractDataPropertyAccessor {
+	public static class OverwriteAccessor implements IDataPropertyAccessor {
 
+		final private MappingGenericPropertyAccessor target;
 		private final IDataPropertyAccessor delegate;
 		
 		private final Map<FField, FDFieldOverwrite> mapping;
+		private final DataPropertyAccessorHelper helper;
 		
 		public OverwriteAccessor(
 				FDCompoundOverwrites overwrites,
 				IDataPropertyAccessor delegate,
 				MappingGenericPropertyAccessor genericAccessor)
 		{
-			super(genericAccessor);
+			this.target = genericAccessor;
 			this.delegate = delegate;
+			this.helper = new DataPropertyAccessorHelper(genericAccessor, this);
 
 			// build mapping
 			this.mapping = Maps.newHashMap();
@@ -130,7 +137,7 @@ public class SpecCompoundHosts {
 				FDFieldOverwrite fo = mapping.get(obj);
 				String e = target.getEnum(fo, "StringProp");
 				if (e!=null)
-					return convertStringProp(e);
+					return helper.convertStringProp(e);
 			}
 			return delegate.getStringProp(obj);
 		}
@@ -192,17 +199,21 @@ public class SpecCompoundHosts {
 	/**
 	 * Accessor for deployment properties for 'org.example.spec.SpecCompoundHosts' specification
 	 */		
-	public static class TypeCollectionPropertyAccessor extends AbstractDataPropertyAccessor
-	{
+	public static class TypeCollectionPropertyAccessor implements IDataPropertyAccessor {
+
+		final private MappingGenericPropertyAccessor target;
+		private final DataPropertyAccessorHelper helper;
+
 		public TypeCollectionPropertyAccessor (FDeployedTypeCollection target) {
-			super(target);
+			this.target = target;
+			this.helper = new DataPropertyAccessorHelper(target, this);
 		}
 		
 		@Override
 		public StringProp getStringProp (EObject obj) {
 			String e = target.getEnum(obj, "StringProp");
 			if (e==null) return null;
-			return convertStringProp(e);
+			return helper.convertStringProp(e);
 		}
 		
 		@Override
@@ -231,7 +242,7 @@ public class SpecCompoundHosts {
 
 		@Override
 		public IDataPropertyAccessor getOverwriteAccessor (FField obj) {
-			return getOverwriteAccessorAux(obj);
+			return helper.getOverwriteAccessorAux(obj);
 		}
 		
 	}
@@ -240,17 +251,21 @@ public class SpecCompoundHosts {
 	/**
 	 * Accessor for deployment properties for 'org.example.spec.SpecCompoundHosts' specification
 	 */		
-	public static class InterfacePropertyAccessor extends AbstractDataPropertyAccessor
-	{
+	public static class InterfacePropertyAccessor implements IDataPropertyAccessor {
+
+		final private MappingGenericPropertyAccessor target;
+		private final DataPropertyAccessorHelper helper;
+
 		public InterfacePropertyAccessor (FDeployedInterface target) {
-			super(target);
+			this.target = target;
+			this.helper = new DataPropertyAccessorHelper(target, this);
 		}
 		
 		@Override
 		public StringProp getStringProp (EObject obj) {
 			String e = target.getEnum(obj, "StringProp");
 			if (e==null) return null;
-			return convertStringProp(e);
+			return helper.convertStringProp(e);
 		}
 		
 		public Integer getAttributeProp (FAttribute obj) {
@@ -286,18 +301,18 @@ public class SpecCompoundHosts {
 		
 
 		public IDataPropertyAccessor getOverwriteAccessor (FAttribute obj) {
-			return getOverwriteAccessorAux(obj);
+			return helper.getOverwriteAccessorAux(obj);
 		}
 
 		public IDataPropertyAccessor getOverwriteAccessor (FArgument obj) {
-			return getOverwriteAccessorAux(obj);
+			return helper.getOverwriteAccessorAux(obj);
 		}
 
 		@Override
 		public IDataPropertyAccessor getOverwriteAccessor (FField obj) {
-			return getOverwriteAccessorAux(obj);
+			return helper.getOverwriteAccessorAux(obj);
 		}
 		
 	}
-
+	
 }
