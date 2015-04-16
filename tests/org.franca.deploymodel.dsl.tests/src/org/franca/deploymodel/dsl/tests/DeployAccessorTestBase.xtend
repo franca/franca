@@ -4,8 +4,8 @@ import java.util.ArrayList
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipselabs.xtext.utils.unittesting.XtextTest
-import org.example.spec.SpecCompoundHosts.IDataPropertyAccessor
-import org.example.spec.SpecCompoundHosts.IDataPropertyAccessor.StringProp
+import org.example.spec.SpecCompoundHostsRef.IDataPropertyAccessor
+import org.example.spec.SpecCompoundHostsRef.IDataPropertyAccessor.StringProp
 import org.franca.core.franca.FStructType
 
 import static org.junit.Assert.*

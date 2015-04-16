@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.emf.ecore.EObject;
-import org.example.spec.SpecCompoundHosts.IDataPropertyAccessor.StringProp;
+import org.example.spec.SpecCompoundHostsRef.IDataPropertyAccessor.StringProp;
 import org.franca.core.franca.FArgument;
 import org.franca.core.franca.FAttribute;
 import org.franca.core.franca.FField;
@@ -22,7 +22,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDOverwriteElement;
 
 import com.google.common.collect.Maps;
 
-public class SpecCompoundHosts {
+public class SpecCompoundHostsRef {
 
 	/**
 	 * Interface for data deployment properties for 'org.example.spec.SpecCompoundHosts' specification
