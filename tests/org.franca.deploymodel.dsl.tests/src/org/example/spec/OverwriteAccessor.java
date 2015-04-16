@@ -6,10 +6,7 @@ import java.util.Map;
 import org.eclipse.emf.ecore.EObject;
 import org.franca.core.franca.FField;
 import org.franca.deploymodel.core.MappingGenericPropertyAccessor;
-import org.franca.deploymodel.dsl.fDeploy.FDAttribute;
 import org.franca.deploymodel.dsl.fDeploy.FDCompoundOverwrites;
-import org.franca.deploymodel.dsl.fDeploy.FDElement;
-import org.franca.deploymodel.dsl.fDeploy.FDField;
 import org.franca.deploymodel.dsl.fDeploy.FDFieldOverwrite;
 
 import com.google.common.collect.Maps;
@@ -17,7 +14,6 @@ import com.google.common.collect.Maps;
 public class OverwriteAccessor extends AbstractSpecCompoundHostsDataPropertyAccessor {
 
 	private final ISpecCompoundHostsDataPropertyAccessor delegate;
-	private final MappingGenericPropertyAccessor genericAccessor;
 	
 	private final Map<FField, FDFieldOverwrite> mapping;
 	
@@ -26,8 +22,8 @@ public class OverwriteAccessor extends AbstractSpecCompoundHostsDataPropertyAcce
 			ISpecCompoundHostsDataPropertyAccessor delegate,
 			MappingGenericPropertyAccessor genericAccessor)
 	{
+		super(genericAccessor);
 		this.delegate = delegate;
-		this.genericAccessor = genericAccessor;
 
 		// build mapping
 		this.mapping = Maps.newHashMap();
@@ -44,7 +40,7 @@ public class OverwriteAccessor extends AbstractSpecCompoundHostsDataPropertyAcce
 		// check if this field is overwritten
 		if (mapping.containsKey(obj)) {
 			FDFieldOverwrite fo = mapping.get(obj);
-			String e = genericAccessor.getEnum(fo, "StringProp");
+			String e = target.getEnum(fo, "StringProp");
 			if (e!=null)
 				return convertStringProp(e);
 		}
@@ -55,7 +51,7 @@ public class OverwriteAccessor extends AbstractSpecCompoundHostsDataPropertyAcce
 	public Integer getArrayProp (EObject obj) {
 		if (mapping.containsKey(obj)) {
 			FDFieldOverwrite fo = mapping.get(obj);
-			Integer v = genericAccessor.getInteger(fo, "ArrayProp");
+			Integer v = target.getInteger(fo, "ArrayProp");
 			if (v!=null)
 				return v;
 		}
@@ -67,7 +63,7 @@ public class OverwriteAccessor extends AbstractSpecCompoundHostsDataPropertyAcce
 		// check if this field is overwritten
 		if (mapping.containsKey(obj)) {
 			FDFieldOverwrite fo = mapping.get(obj);
-			Integer v = genericAccessor.getInteger(fo, "SFieldProp");
+			Integer v = target.getInteger(fo, "SFieldProp");
 			if (v!=null)
 				return v;
 		}
@@ -79,7 +75,7 @@ public class OverwriteAccessor extends AbstractSpecCompoundHostsDataPropertyAcce
 		// check if this field is overwritten
 		if (mapping.containsKey(obj)) {
 			FDFieldOverwrite fo = mapping.get(obj);
-			Integer v = genericAccessor.getInteger(fo, "UFieldProp");
+			Integer v = target.getInteger(fo, "UFieldProp");
 			if (v!=null)
 				return v;
 		}
@@ -96,7 +92,7 @@ public class OverwriteAccessor extends AbstractSpecCompoundHostsDataPropertyAcce
 				return this; // TODO: correct?
 			else
 				// TODO: this or delegate?
-				return new OverwriteAccessor(overwrites, this, genericAccessor);
+				return new OverwriteAccessor(overwrites, this, target);
 			
 		}
 		return delegate.getOverwriteAccessor(obj);

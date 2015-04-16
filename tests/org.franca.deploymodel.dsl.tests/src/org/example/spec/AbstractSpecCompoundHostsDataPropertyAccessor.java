@@ -4,6 +4,11 @@
 *******************************************************************************/
 package org.example.spec;
 
+import org.franca.core.franca.FModelElement;
+import org.franca.deploymodel.core.MappingGenericPropertyAccessor;
+import org.franca.deploymodel.dsl.fDeploy.FDCompoundOverwrites;
+import org.franca.deploymodel.dsl.fDeploy.FDOverwriteElement;
+
 
 /**
  * Interface for data deployment properties for 'org.example.spec.SpecCompoundHosts' specification
@@ -12,7 +17,12 @@ package org.example.spec;
  */		
 abstract public class AbstractSpecCompoundHostsDataPropertyAccessor implements ISpecCompoundHostsDataPropertyAccessor
 {
-
+	final protected MappingGenericPropertyAccessor target;
+	
+	public AbstractSpecCompoundHostsDataPropertyAccessor(MappingGenericPropertyAccessor target) {
+		this.target = target;
+	}
+	
 	protected StringProp convertStringProp (String val) {
 		if (val.equals("p"))
 			return StringProp.p; else 
@@ -38,5 +48,15 @@ abstract public class AbstractSpecCompoundHostsDataPropertyAccessor implements I
 			return StringProp.z;
 		return null;
 	}
+
+	protected ISpecCompoundHostsDataPropertyAccessor getOverwriteAccessorAux (FModelElement obj) {
+		FDOverwriteElement fd = (FDOverwriteElement)target.getFDElement(obj);
+		FDCompoundOverwrites overwrites = fd.getOverwrites();
+		if (overwrites==null)
+			return this;
+		else
+			return new OverwriteAccessor(overwrites, this, target);
+	}
+
 
 }

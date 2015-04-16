@@ -27,11 +27,8 @@ import org.franca.deploymodel.dsl.fDeploy.FDProperty;
  */		
 public class SpecCompoundHostsTypeCollectionPropertyAccessorRef extends AbstractSpecCompoundHostsDataPropertyAccessor
 {
-	
-	private FDeployedTypeCollection target;
-
 	public SpecCompoundHostsTypeCollectionPropertyAccessorRef (FDeployedTypeCollection target) {
-		this.target = target;
+		super(target);
 	}
 	
 	@Override
@@ -71,13 +68,4 @@ public class SpecCompoundHostsTypeCollectionPropertyAccessorRef extends Abstract
 		return getOverwriteAccessorAux(obj);
 	}
 	
-	private ISpecCompoundHostsDataPropertyAccessor getOverwriteAccessorAux (FModelElement obj) {
-		FDOverwriteElement fd = (FDOverwriteElement)target.getFDElement(obj);
-		FDCompoundOverwrites overwrites = fd.getOverwrites();
-		if (overwrites==null)
-			return this;
-		else
-			return new OverwriteAccessor(overwrites, this, target);
-	}
-
 }
