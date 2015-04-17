@@ -428,7 +428,7 @@
 		</pluginRepository>
 		<pluginRepository>
 			<id>xtend</id>
-			<url>http://build.eclipse.org/common/xtend/maven/</url>
+			<url>http://repo.maven.apache.org/maven2</url>
 		</pluginRepository>
 	</pluginRepositories>
 
