@@ -67,4 +67,16 @@ class CodeGeneratorTest extends XtextTest {
 			classInfo.allMethodNames.containsAll(newArrayList("getStringPropMandatory","getFieldPropMandatory"))
 		)
 	}
+	
+	@Test
+	def void test_60_SpecCompoundHosts() {
+		val root = loadModel("testcases/60-SpecCompoundHosts.fdepl");
+
+		val fsa = new InMemoryFileSystemAccess
+		generator.doGenerate(root.eResource, fsa)
+
+		assertEquals(1, fsa.textFiles.size)
+		println("Generated:\n" + fsa.textFiles.values().get(0))		
+	}
+		
 }

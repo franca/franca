@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2012 Harman International (http://www.harman.com).
+* Copyright (c) 2015 itemis AG (http://www.itemis.de).
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -7,18 +7,23 @@
 *******************************************************************************/
 package org.franca.deploymodel.dsl.generator
 
+import com.google.inject.Inject
 import org.eclipse.emf.ecore.resource.Resource
-import org.eclipse.xtext.generator.IGenerator
 import org.eclipse.xtext.generator.IFileSystemAccess
-import org.franca.deploymodel.dsl.fDeploy.FDSpecification
-import org.franca.deploymodel.dsl.fDeploy.FDTypeRef
-import org.franca.deploymodel.dsl.fDeploy.FDPredefinedTypeId
+import org.eclipse.xtext.generator.IGenerator
+import org.franca.deploymodel.dsl.fDeploy.FDDeclaration
 import org.franca.deploymodel.dsl.fDeploy.FDEnumType
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl
-import org.franca.deploymodel.dsl.fDeploy.FDDeclaration
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyHost
-import java.util.Set
-import java.util.HashSet
+import org.franca.deploymodel.dsl.fDeploy.FDSpecification
+import org.franca.deploymodel.dsl.generator.internal.HelperGenerator
+import org.franca.deploymodel.dsl.generator.internal.IDataGenerator
+import org.franca.deploymodel.dsl.generator.internal.ImportManager
+import org.franca.deploymodel.dsl.generator.internal.InterfaceAccessorGenerator
+import org.franca.deploymodel.dsl.generator.internal.OverwriteAccessorGenerator
+import org.franca.deploymodel.dsl.generator.internal.TypeCollectionAccessorGenerator
+
+import static extension org.franca.deploymodel.dsl.generator.internal.GeneratorHelper.*
 
 /**
  * Generator for PropertyAccessor class from deployment specification.
@@ -30,6 +35,14 @@ import java.util.HashSet
  */
 class FDeployGenerator implements IGenerator {
 	
+	@Inject extension ImportManager
+	
+	@Inject IDataGenerator genInterface
+	@Inject HelperGenerator genHelper
+	@Inject TypeCollectionAccessorGenerator genTCAcc
+	@Inject InterfaceAccessorGenerator genInterfaceAcc
+	@Inject OverwriteAccessorGenerator genOverwriteAcc
+	
 	// the types of PropertyAccessor classes we can generate
 	static int PA_PROVIDER = 1
 	static int PA_INTERFACE = 2
@@ -38,9 +51,10 @@ class FDeployGenerator implements IGenerator {
 	// the main function for this generator, will be called by Xtend framework
 	override void doGenerate(Resource resource, IFileSystemAccess fsa) {
 		for(m : resource.allContents.toIterable.filter(typeof(FDSpecification))) {
-			fsa.generateAll(m,PA_PROVIDER)
-			fsa.generateAll(m,PA_INTERFACE)
-			fsa.generateAll(m,PA_TYPE_COLLECTION)
+			fsa.generateAll(m)
+//			fsa.generateAll(m,PA_PROVIDER)
+//			fsa.generateAll(m,PA_INTERFACE)
+//			fsa.generateAll(m,PA_TYPE_COLLECTION)
 		}
 	}
 	
@@ -48,17 +62,38 @@ class FDeployGenerator implements IGenerator {
 	// *****************************************************************************
 	// top-level generation and analysis
 	
-	int paType
-	Set<String> neededFrancaTypes
-	boolean needList
-	boolean needArrayList
+	def generateAll (IFileSystemAccess fsa, FDSpecification spec) {
+		initImportManager
+
+		// generate class code and analyse for needed preliminaries
+		val path = spec.getPackage().replace(".", "/")
+		val code = spec.generateCombinedClass.toString
+		var header = spec.generateHeader.toString
+		
+		fsa.generateFile(path + "/" + spec.classname + ".java", header + code)
+	}
 	
+	def private generateCombinedClass(FDSpecification spec) '''
+		public class SpecCompoundHostsRef {
+
+			«genInterface.generate(spec)»
+
+			«genHelper.generate(spec)»
+
+			«genTCAcc.generate(spec)»
+
+			«genInterfaceAcc.generate(spec)»
+
+			«genOverwriteAcc.generate(spec)»
+
+		}
+	'''
+	
+	int paType
+
 	def generateAll (IFileSystemAccess fsa, FDSpecification spec, int pat) {
 		// initialize
 		paType = pat;
-		neededFrancaTypes = new HashSet<String>()
-		needList = false
-		needArrayList = false
 		
 		// generate class code and analyse for needed preliminaries
 		val path = spec.getPackage().replace(".", "/")
@@ -212,7 +247,7 @@ class FDeployGenerator implements IGenerator {
 			if (type.array==null) {
 				etname
 			} else {
-				needArrayList = true;
+				setNeedArrayList
 				etname.genListType
 			}
 		
@@ -250,60 +285,10 @@ class FDeployGenerator implements IGenerator {
 	}
 
 		
-	// *****************************************************************************
-	// type-related generation
-	
-	def getJavaType (FDTypeRef typeRef) {
-		val single =
-			if (typeRef.complex==null) {
-				switch (typeRef.predefined) {
-					case FDPredefinedTypeId::BOOLEAN:    "Boolean"
-					case FDPredefinedTypeId::INTEGER:    "Integer"
-					case FDPredefinedTypeId::STRING:     "String"
-					case FDPredefinedTypeId::INTERFACE:  {
-						neededFrancaTypes.add("FInterface")
-						"FInterface"
-					}
-				}
-			} else {
-				val ct = typeRef.complex
-				switch (ct) {
-					FDEnumType: "String"
-				}
-			}
-		if (typeRef.array==null)
-			single
-		else {
-			needList = true
-			single.genListType
-		}
-	}
-	
-	def getGetter (FDTypeRef typeRef) {
-		val single =
-			if (typeRef.complex==null) {
-				switch (typeRef.predefined) {
-					case FDPredefinedTypeId::BOOLEAN:   "Boolean"
-					case FDPredefinedTypeId::INTEGER:   "Integer"
-					case FDPredefinedTypeId::STRING:    "String"
-					case FDPredefinedTypeId::INTERFACE: "Interface"
-				}
-			} else {
-				switch (typeRef.complex) {
-					FDEnumType: "Enum"
-				}
-			}
-		if (typeRef.array==null)
-			single
-		else
-			single + "Array"
-	}
-
 
 	// *****************************************************************************
 	// basic helpers
 
-	def genListType (String type) '''List<«type»>'''
 		
 	def getPackage (FDSpecification it) {
 		val sep = name.lastIndexOf(".")
