@@ -103,6 +103,128 @@ public class SpecCompoundHostsRef {
 	}
 
 	
+	/**
+	 * Accessor for deployment properties for 'org.example.spec.SpecCompoundHosts' specification
+	 */		
+	public static class TypeCollectionPropertyAccessor implements IDataPropertyAccessor {
+
+		final private MappingGenericPropertyAccessor target;
+		private final DataPropertyAccessorHelper helper;
+
+		public TypeCollectionPropertyAccessor (FDeployedTypeCollection target) {
+			this.target = target;
+			this.helper = new DataPropertyAccessorHelper(target, this);
+		}
+		
+		@Override
+		public StringProp getStringProp (EObject obj) {
+			String e = target.getEnum(obj, "StringProp");
+			if (e==null) return null;
+			return helper.convertStringProp(e);
+		}
+		
+		@Override
+		public Integer getArrayProp (EObject obj) {
+			return target.getInteger(obj, "ArrayProp");
+		}
+		
+		public Integer getStructProp (EObject obj) {
+			return target.getInteger(obj, "StructProp");
+		}
+		
+		@Override
+		public Integer getSFieldProp (FField obj) {
+			return target.getInteger(obj, "SFieldProp");
+		}
+		
+		public Integer getUnionProp (EObject obj) {
+			return target.getInteger(obj, "UnionProp");
+		}
+		
+		@Override
+		public Integer getUFieldProp (FField obj) {
+			return target.getInteger(obj, "UFieldProp");
+		}
+		
+
+		@Override
+		public IDataPropertyAccessor getOverwriteAccessor (FField obj) {
+			return helper.getOverwriteAccessorAux(obj);
+		}
+	}
+
+	
+	/**
+	 * Accessor for deployment properties for 'org.example.spec.SpecCompoundHosts' specification
+	 */		
+	public static class InterfacePropertyAccessor implements IDataPropertyAccessor {
+
+		final private MappingGenericPropertyAccessor target;
+		private final DataPropertyAccessorHelper helper;
+
+		public InterfacePropertyAccessor (FDeployedInterface target) {
+			this.target = target;
+			this.helper = new DataPropertyAccessorHelper(target, this);
+		}
+		
+		@Override
+		public StringProp getStringProp (EObject obj) {
+			String e = target.getEnum(obj, "StringProp");
+			if (e==null) return null;
+			return helper.convertStringProp(e);
+		}
+		
+		public Integer getAttributeProp (FAttribute obj) {
+			return target.getInteger(obj, "AttributeProp");
+		}
+		
+		public Integer getArgumentProp (FArgument obj) {
+			return target.getInteger(obj, "ArgumentProp");
+		}
+		
+		@Override
+		public Integer getArrayProp (EObject obj) {
+			return target.getInteger(obj, "ArrayProp");
+		}
+		
+		public Integer getStructProp (EObject obj) {
+			return target.getInteger(obj, "StructProp");
+		}
+		
+		@Override
+		public Integer getSFieldProp (FField obj) {
+			return target.getInteger(obj, "SFieldProp");
+		}
+		
+		public Integer getUnionProp (EObject obj) {
+			return target.getInteger(obj, "UnionProp");
+		}
+		
+		@Override
+		public Integer getUFieldProp (FField obj) {
+			return target.getInteger(obj, "UFieldProp");
+		}
+		
+
+		public IDataPropertyAccessor getOverwriteAccessor (FAttribute obj) {
+			return helper.getOverwriteAccessorAux(obj);
+		}
+
+		public IDataPropertyAccessor getOverwriteAccessor (FArgument obj) {
+			return helper.getOverwriteAccessorAux(obj);
+		}
+
+		@Override
+		public IDataPropertyAccessor getOverwriteAccessor (FField obj) {
+			return helper.getOverwriteAccessorAux(obj);
+		}
+		
+	}
+	
+	
+	/**
+	 * Accessor for getting overwritten property values.
+	 */		
 	public static class OverwriteAccessor implements IDataPropertyAccessor {
 
 		final private MappingGenericPropertyAccessor target;
@@ -194,125 +316,4 @@ public class SpecCompoundHostsRef {
 		}
 
 	}
-
-	
-	/**
-	 * Accessor for deployment properties for 'org.example.spec.SpecCompoundHosts' specification
-	 */		
-	public static class TypeCollectionPropertyAccessor implements IDataPropertyAccessor {
-
-		final private MappingGenericPropertyAccessor target;
-		private final DataPropertyAccessorHelper helper;
-
-		public TypeCollectionPropertyAccessor (FDeployedTypeCollection target) {
-			this.target = target;
-			this.helper = new DataPropertyAccessorHelper(target, this);
-		}
-		
-		@Override
-		public StringProp getStringProp (EObject obj) {
-			String e = target.getEnum(obj, "StringProp");
-			if (e==null) return null;
-			return helper.convertStringProp(e);
-		}
-		
-		@Override
-		public Integer getArrayProp (EObject obj) {
-			return target.getInteger(obj, "ArrayProp");
-		}
-		
-		public Integer getStructProp (EObject obj) {
-			return target.getInteger(obj, "StructProp");
-		}
-		
-		@Override
-		public Integer getSFieldProp (FField obj) {
-			return target.getInteger(obj, "SFieldProp");
-		}
-		
-		public Integer getUnionProp (EObject obj) {
-			return target.getInteger(obj, "UnionProp");
-		}
-		
-		@Override
-		public Integer getUFieldProp (FField obj) {
-			return target.getInteger(obj, "UFieldProp");
-		}
-		
-
-		@Override
-		public IDataPropertyAccessor getOverwriteAccessor (FField obj) {
-			return helper.getOverwriteAccessorAux(obj);
-		}
-		
-	}
-
-	
-	/**
-	 * Accessor for deployment properties for 'org.example.spec.SpecCompoundHosts' specification
-	 */		
-	public static class InterfacePropertyAccessor implements IDataPropertyAccessor {
-
-		final private MappingGenericPropertyAccessor target;
-		private final DataPropertyAccessorHelper helper;
-
-		public InterfacePropertyAccessor (FDeployedInterface target) {
-			this.target = target;
-			this.helper = new DataPropertyAccessorHelper(target, this);
-		}
-		
-		@Override
-		public StringProp getStringProp (EObject obj) {
-			String e = target.getEnum(obj, "StringProp");
-			if (e==null) return null;
-			return helper.convertStringProp(e);
-		}
-		
-		public Integer getAttributeProp (FAttribute obj) {
-			return target.getInteger(obj, "AttributeProp");
-		}
-		
-		public Integer getArgumentProp (FArgument obj) {
-			return target.getInteger(obj, "ArgumentProp");
-		}
-		
-		@Override
-		public Integer getArrayProp (EObject obj) {
-			return target.getInteger(obj, "ArrayProp");
-		}
-		
-		public Integer getStructProp (EObject obj) {
-			return target.getInteger(obj, "StructProp");
-		}
-		
-		@Override
-		public Integer getSFieldProp (FField obj) {
-			return target.getInteger(obj, "SFieldProp");
-		}
-		
-		public Integer getUnionProp (EObject obj) {
-			return target.getInteger(obj, "UnionProp");
-		}
-		
-		@Override
-		public Integer getUFieldProp (FField obj) {
-			return target.getInteger(obj, "UFieldProp");
-		}
-		
-
-		public IDataPropertyAccessor getOverwriteAccessor (FAttribute obj) {
-			return helper.getOverwriteAccessorAux(obj);
-		}
-
-		public IDataPropertyAccessor getOverwriteAccessor (FArgument obj) {
-			return helper.getOverwriteAccessorAux(obj);
-		}
-
-		@Override
-		public IDataPropertyAccessor getOverwriteAccessor (FField obj) {
-			return helper.getOverwriteAccessorAux(obj);
-		}
-		
-	}
-	
 }
