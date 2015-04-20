@@ -8,5 +8,5 @@ Require-Bundle: org.eclipse.core.runtime,
  org.franca.connectors.idl;bundle-version="0.9.1",
  org.junit;bundle-version="4.11.0",
  com.google.guava;bundle-version="15.0.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
