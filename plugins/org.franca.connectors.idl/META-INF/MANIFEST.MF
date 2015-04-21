@@ -19,4 +19,5 @@ Require-Bundle: org.eclipse.ui,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: org.franca.connectors.idl
+Import-Package: org.apache.log4j
 

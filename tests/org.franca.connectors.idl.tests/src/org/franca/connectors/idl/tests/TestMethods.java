@@ -4,16 +4,20 @@ import java.io.File;
 import java.io.IOException;
 
 import org.franca.connectors.idl.Franca2IdlConverter;
+import org.franca.core.franca.FModel;
 import org.junit.Test;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 
-public class TestMethods  extends FileContentComparator{
+
+public class TestMethods extends IdlTestBase {
+
 	@Test
-	public void testAttributes() throws IOException{
-		Franca2IdlConverter converter = new Franca2IdlConverter("testcases/model/TestMethod.fidl");
-		CharSequence generateContents = converter.generateContents();
+	public void testMethods() throws IOException{
+		FModel fmodel = loadModel("testcases/model/TestMethod.fidl");
+		Franca2IdlConverter converter = new Franca2IdlConverter();
+		CharSequence generateContents = converter.generateAll(fmodel);
 		try {
 			Files.write(generateContents, new File("testcases/testResult/TestMethod.idl"), Charsets.UTF_8);
 			
@@ -23,9 +27,6 @@ public class TestMethods  extends FileContentComparator{
 		}
 		System.out.println(generateContents);
 		compare("TestMethod.idl");
-
 	}
-
-	
 
 }
