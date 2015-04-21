@@ -1,0 +1,17 @@
+package org.example.idl
+
+<** @description : Simple example interface. **> 
+interface SimpleInterface {
+	
+	method m1 {
+		in {
+			String arg1
+			SomeStruct arg2
+		}
+	}
+	
+	struct SomeStruct {
+		String f1
+		String f2		
+	}
+}

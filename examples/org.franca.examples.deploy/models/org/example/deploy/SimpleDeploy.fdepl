@@ -1,0 +1,28 @@
+// import the deployment specification
+import "../spec/SimpleSpec.fdepl"
+
+// import the actual Franca interfaces we want to deploy 
+import "classpath:/org/example/idl/SimpleInterface.fidl"
+
+
+/**
+ * One example deployment of SimpleInterface according to specification SimpleSpec.
+ * Note that the deployment uses overwrites to get specific deployment of struct
+ * SomeStruct in different use cases.
+ */
+define org.example.spec.SimpleSpec for interface org.example.idl.SimpleInterface
+{
+	method m1 {
+		in {
+			arg1 { Encoding = utf8 }
+			arg2 {
+				/f1 { Encoding = utf16 } // overwrite!
+			}
+		}
+	}
+
+	struct SomeStruct {
+		f1 { Encoding = utf8 }
+		f2 { Encoding = utf8 }
+	}
+}
