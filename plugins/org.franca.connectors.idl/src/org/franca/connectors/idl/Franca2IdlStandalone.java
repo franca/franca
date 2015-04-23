@@ -1,6 +1,7 @@
 package org.franca.connectors.idl;
 
 import java.io.File;
+import java.util.List;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -11,12 +12,19 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.log4j.Logger;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.xtext.diagnostics.Severity;
+import org.eclipse.xtext.validation.CheckMode;
+import org.eclipse.xtext.validation.IResourceValidator;
+import org.eclipse.xtext.validation.Issue;
 import org.franca.core.dsl.FrancaIDLStandaloneSetup;
 import org.franca.core.dsl.FrancaIDLVersion;
 import org.franca.core.dsl.FrancaPersistenceManager;
 import org.franca.core.franca.FModel;
 import org.franca.core.utils.FileHelper;
 
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
@@ -37,6 +45,7 @@ public class Franca2IdlStandalone {
 	private static final String HELP = "h";
 	private static final String FIDLFILE = "f";
 	private static final String OUTDIR = "o";
+	private static final String RECURSIVE_VALIDATION = "r";
 	
 	private static final String VERSIONSTR =
 			"Franca2IdlStandalone " + TOOL_VERSION + " (Franca IDL version " + FIDL_VERSION + ").";
@@ -60,6 +69,7 @@ public class Franca2IdlStandalone {
 	// injected fragments
 	@Inject	FrancaPersistenceManager fidlLoader;
 
+	@Inject IResourceValidator validator;
 	@Inject	Franca2IdlConverter generator;
 
 	public int run(String[] args) throws Exception {
@@ -97,13 +107,40 @@ public class Franca2IdlStandalone {
 		}
 //		logger.info("Franca IDL: package '" + fmodel.getName() + "'");
 
+		// call validator
+		int nErrors = 0;
+		Resource mainResource = fmodel.eResource();
+		List<Resource> toBeValidated = Lists.newArrayList();
+		if (line.hasOption(RECURSIVE_VALIDATION)) {
+			toBeValidated.addAll(mainResource.getResourceSet().getResources());
+		} else {
+			toBeValidated.add(mainResource);
+		}
+		for(Resource res : toBeValidated) {
+			List<Issue> validationErrors = validator.validate(res, CheckMode.ALL, null);
+			for (Issue issue : validationErrors) {
+				String msg = issue.getSeverity() +
+						" at " + res.getURI().path() +
+						" #" + issue.getLineNumber() + ": " +
+						issue.getMessage();
+				System.err.println(msg);
+				if (issue.getSeverity()==Severity.ERROR)
+					nErrors++;
+			}
+		}
+		
+		if (nErrors>0) {
+			System.err.println("Validation of Franca model: " + nErrors + " errors, aborting.");
+			return -1;
+		}
+		
 		// call generator and save files
 		String output = generator.generateAll(fmodel).toString();
 		if (line.hasOption(OUTDIR)) {
 			String outputFolder = line.getOptionValue(OUTDIR);
 			String outPath = outputFolder + "/" + fmodel.getName().replaceAll("[.]", "/");
-			String filename = fmodel.eResource().getURI().lastSegment() + ".idl"; // TODO: strip extension
-			FileHelper.save(outputFolder, filename, output);
+			String filename = getBasename(mainResource.getURI()) + ".idl";
+			FileHelper.save(outPath, filename, output);
 		} else {
 			// no outdir specified, write to stdout
 			System.out.println(output);
@@ -135,10 +172,16 @@ public class Franca2IdlStandalone {
 		//optInputFidl.setType(File.class);
 		options.addOption(optInputFidl);
 
+		// optional
 		Option optOutputDir = OptionBuilder.withArgName("output directory")
 				.withDescription("Directory where the generated files will be stored")
 				.hasArg().withValueSeparator(' ').create(OUTDIR);
 		options.addOption(optOutputDir);
+
+		Option optRecursiveValidation = OptionBuilder.withArgName("recval")
+		.withDescription("Recursive validation").hasArg(false)
+		.isRequired(false).create(RECURSIVE_VALIDATION);
+		options.addOption(optRecursiveValidation);
 
 		return options;
 	}
@@ -157,4 +200,14 @@ public class Franca2IdlStandalone {
 		return false;
 	}
 
+	private String getBasename(URI uri) {
+		String filename = uri.lastSegment();
+		int dot = filename.lastIndexOf('.');
+		if (dot>0) {
+			return filename.substring(0, dot);
+		} else {
+			// didn't find dot as extension separator, return full string
+			return filename;
+		}
+	}
 }
