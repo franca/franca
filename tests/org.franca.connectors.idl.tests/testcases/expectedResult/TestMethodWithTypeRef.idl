@@ -1,12 +1,12 @@
 module TestMethodWithTypeRef {
-		interface TestMethodWithTypeRefInterface {
-	 		void callme ( in Int8 param1,in isValue param2,out MyStruct retcode );
-	 		typedef 	Int8 isValue;
-	 		 typedef Int8[ ] MyArray;
-	 		struct MyStruct {
-	 								Int8 field1;
-	 								String field2;
-	 								isValue anIntArray;
-	 								};
+	interface TestMethodWithTypeRefInterface {
+		void callme (in Int8 param1, in isValue param2, out MyStruct retcode);
+		typedef Int8 isValue;
+		typedef Int8[ ] MyArray;
+		struct MyStruct {
+			Int8 field1;
+			String field2;
+			isValue anIntArray;
 		};
 	};
+};

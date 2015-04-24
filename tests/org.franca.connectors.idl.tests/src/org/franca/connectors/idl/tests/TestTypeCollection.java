@@ -13,7 +13,7 @@ import com.google.common.io.Files;
 public class TestTypeCollection extends IdlTestBase {
 
 	@Test
-	public void testAttributes() throws IOException{
+	public void testTypeCollection() throws IOException{
 		FModel fmodel = loadModel("testcases/model/TestTypeCollection.fidl");
 		Franca2IdlConverter converter = new Franca2IdlConverter();
 		CharSequence generateContents = converter.generateAll(fmodel);

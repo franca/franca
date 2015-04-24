@@ -1,4 +1,4 @@
 module modelss {
-		interface ModelInterface {
-		};
+	interface ModelInterface {
 	};
+};

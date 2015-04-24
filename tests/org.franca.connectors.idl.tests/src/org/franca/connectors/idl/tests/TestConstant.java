@@ -13,7 +13,7 @@ import com.google.common.io.Files;
 public class TestConstant extends IdlTestBase {
 
 	@Test
-	public void testAttributes() throws IOException{
+	public void testConstant() throws IOException{
 		FModel fmodel = loadModel("testcases/model/TestConstant.fidl");
 		Franca2IdlConverter converter = new Franca2IdlConverter();
 		CharSequence generateContents = converter.generateAll(fmodel);
