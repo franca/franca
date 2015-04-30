@@ -10,13 +10,14 @@ package org.franca.core.contracts
 import org.franca.core.franca.FModel
 import org.franca.core.franca.FInterface
 import org.franca.core.franca.FTransition
-import org.franca.core.franca.FEventOnIf
 import org.franca.core.franca.FGuard
 import org.franca.core.franca.FExpression
 import org.franca.core.franca.FBinaryOperation
 import org.franca.core.franca.FQualifiedElementRef
 import org.franca.core.franca.FIntegerConstant
 import org.franca.core.franca.FBooleanConstant
+
+import static extension org.franca.core.contracts.FEventUtils.*
 
 class ContractDotGenerator {
 	
@@ -44,29 +45,13 @@ class ContractDotGenerator {
 	'''
 	
 	def public String genLabel (FTransition it) {
-		trigger.event.genEventLabel + 
+		trigger.event.getEventLabel + 
 		if (guard==null)
 			''
 		else
 			"\n" + guard.genGuard
 	}
 	
-	def private String genEventLabel (FEventOnIf it) {
-		if (call!=null) {
-			"call " + call.name
-		} else if (respond!=null) {
-			"respond " + respond.name
-		} else if (signal!=null) {
-			"signal " + signal.name
-		} else if (set!=null) {
-			"set " + set.name
-		} else if (update!=null) {
-			"update " + update.name
-		} else {
-			"unknown_event"
-		}
-	}
-
 	def private String genGuard (FGuard it) {
 		'[' + condition.gen + ']'
 	}
