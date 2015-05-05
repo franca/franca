@@ -11,6 +11,7 @@ import org.example.spec.SpecCompoundHostsRef.IDataPropertyAccessor.StringProp;
 import org.franca.core.franca.FArgument;
 import org.franca.core.franca.FArrayType;
 import org.franca.core.franca.FAttribute;
+import org.franca.core.franca.FEnumerationType;
 import org.franca.core.franca.FField;
 import org.franca.core.franca.FModelElement;
 import org.franca.deploymodel.core.FDeployedInterface;
@@ -47,6 +48,8 @@ public class SpecCompoundHostsRef {
 		
 		public Integer getArrayProp (FArrayType obj);
 		public Integer getArrayProp (FField obj);
+
+		public Integer getEnumerationProp (FEnumerationType obj);
 
 		// TODO: add other data-related accessor functions here
 		
@@ -139,6 +142,11 @@ public class SpecCompoundHostsRef {
 		}
 		
 		@Override
+		public Integer getEnumerationProp (FEnumerationType obj) {
+			return target.getInteger(obj, "EnumerationProp");
+		}
+		
+		@Override
 		public Integer getStructProp (EObject obj) {
 			return target.getInteger(obj, "StructProp");
 		}
@@ -204,6 +212,11 @@ public class SpecCompoundHostsRef {
 			return target.getInteger(obj, "ArrayProp");
 		}
 		
+		@Override
+		public Integer getEnumerationProp (FEnumerationType obj) {
+			return target.getInteger(obj, "EnumerationProp");
+		}
+
 		@Override
 		public Integer getStructProp (EObject obj) {
 			return target.getInteger(obj, "StructProp");
@@ -327,6 +340,16 @@ public class SpecCompoundHostsRef {
 			return delegate.getArrayProp(obj);
 		}
 		
+		@Override
+		public Integer getEnumerationProp(FEnumerationType obj) {
+			if (overwrites!=null) {
+				Integer v = target.getInteger(overwrites, "EnumerationProp");
+				if (v!=null)
+					return v;
+			}
+			return delegate.getEnumerationProp(obj);
+		}
+
 		@Override
 		public Integer getSFieldProp (FField obj) {
 			// check if this field is overwritten
