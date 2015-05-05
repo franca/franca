@@ -18,6 +18,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDEnumerator;
 import org.franca.deploymodel.dsl.fDeploy.FDInteger;
 import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance;
 import org.franca.deploymodel.dsl.fDeploy.FDInterfaceRef;
+import org.franca.deploymodel.dsl.fDeploy.FDOverwriteElement;
 import org.franca.deploymodel.dsl.fDeploy.FDProperty;
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl;
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyFlag;
@@ -223,6 +224,11 @@ public class GenericPropertyAccessor {
 	 * use the appropriate default. If this hasn't been defined either, return 
 	 * null.
 	 * 
+	 * Note: If the FDElement is an overwrite element, this method will not
+	 * take into account the default given in the deployment specification.
+	 * For overwrite elements, the fallback value is the original property
+	 * definition.
+	 * 
 	 * @param elem the Franca deployment element
 	 * @param property the name of the property
 	 * @return the property's value (might be a single value or an array)
@@ -234,8 +240,14 @@ public class GenericPropertyAccessor {
 				return prop.getValue();
 			}
 		}
-		
-		// didn't find, look for default value for this property
+
+		// check for overwrite case
+		if (elem instanceof FDOverwriteElement) {
+			// this is an overwrite element, ignore defaults
+			return null;
+		}
+
+		// no explicit value, but also no overwrite: look for default value for this property
 		List<FDPropertyDecl> decls = PropertyMappings.getAllPropertyDecls(spec, elem);
 		for(FDPropertyDecl decl : decls) {
 			if (decl.getName().equals(property)) {

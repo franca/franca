@@ -74,6 +74,7 @@ class InterfaceDeployAccessorTest extends DeployAccessorTestBase {
 				
 		// local accessor is needed for accessing overwritten properties
 		val acc = accessor.getOverwriteAccessor(attr2)
+		assertEquals(222, acc.getStructProp(type))
 		checkStructA(struct, accessor, acc,
 			10,
 			20, StringProp.v,
@@ -172,6 +173,7 @@ class InterfaceDeployAccessorTest extends DeployAccessorTestBase {
 
 		// local accessor is needed for accessing overwritten properties
 		val acc = accessor.getOverwriteAccessor(arg1)
+		assertEquals(51413, acc.getUnionProp(type))
 		checkUnionA(field1, acc, 100, StringProp.v)				
 	}
 
@@ -369,6 +371,7 @@ class InterfaceDeployAccessorTest extends DeployAccessorTestBase {
 		// local accessor acc2 will access overwritten properties in
 		// deployment definition of attr3 (as acc is the overwrite accessor of attr3)
 		val acc2 = acc.getOverwriteAccessor(nested2)
+		assertEquals(31415, acc2.getStructProp(struct))
 		checkStructA(struct, accessor, acc2,
 			12,
 			22, StringProp.w, 

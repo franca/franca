@@ -12,8 +12,13 @@ import java.util.Set;
 
 import org.eclipse.emf.ecore.EObject;
 import org.franca.core.framework.FrancaHelpers;
+import org.franca.core.franca.FArrayType;
+import org.franca.core.franca.FEnumerationType;
+import org.franca.core.franca.FStructType;
+import org.franca.core.franca.FType;
 import org.franca.core.franca.FTypeRef;
 import org.franca.core.franca.FTypedElement;
+import org.franca.core.franca.FUnionType;
 import org.franca.deploymodel.dsl.fDeploy.FDArgument;
 import org.franca.deploymodel.dsl.fDeploy.FDArray;
 import org.franca.deploymodel.dsl.fDeploy.FDAttribute;
@@ -93,11 +98,6 @@ public class PropertyMappings {
 			typeRef = te.getType();
 			if (te.isArray())
 				isInlineArray = true;
-//		} else if (elem instanceof FDFieldOverwrite) {
-//			FTypedElement te = ((FDFieldOverwrite) elem).getTarget();
-//			typeRef = te.getType();
-//			if (te.isArray())
-//				isInlineArray = true;
 		}
 		if (typeRef != null) {
 			if (FrancaHelpers.isInteger(typeRef))
@@ -122,6 +122,24 @@ public class PropertyMappings {
 		return getAllPropertyDeclsHelper(spec, hosts);
 	}
 
+	/**
+	 * Get a list of all property declarations for a given Franca type.
+	 * 
+	 * <p>The task is accomplished by first computing the main property hosts for 
+	 * the given Franca type. Afterwards, all property declarations are
+	 * collected which are specified for each of these property hosts in the 
+	 * given deployment specification.
+	 * </p>
+	 * 
+	 * @param spec the deployment specification
+	 * @param type the Franca type
+	 * @return the list of relevant property declarations for this type  
+	 */
+	public static final List<FDPropertyDecl> getAllPropertyDecls(FDSpecification spec, FType type) {
+		Set<FDPropertyHost> hosts = Sets.newHashSet(getMainHost(type));
+		return getAllPropertyDeclsHelper(spec, hosts);
+	}
+	
 	/**
 	 * Get a list of all property declarations for a given property host.
 	 * 
@@ -165,13 +183,8 @@ public class PropertyMappings {
 		return properties;
 	}
 
-	// TODO: rewrite the following function, it only depends on the type of its argument
-	//private static FDPropertyHost getMainHost(Class<T extends FDElement> elem) { ...
 	/**
 	 * Get the main host for a given deployment element.
-	 * 
-	 * Note that this mapping only depends on the type of the element, not
-	 * on the actual instance. 
 	 * 
 	 * @param elem a deployment element
 	 * @return the main host for the type of this deployment element.
@@ -216,7 +229,26 @@ public class PropertyMappings {
 		return null;
 	}
 
+	/**
+	 * Get the main deployment host for a given Franca type.
+	 * 
+	 * @param elem a deployment element
+	 * @return the main host for the type of this deployment element.
+	 */
+	private static FDPropertyHost getMainHost(FType type) {
+		if (type instanceof FArrayType) {
+			return FDPropertyHost.ARRAYS;
+		} else if (type instanceof FStructType) {
+			return FDPropertyHost.STRUCTS;
+		} else if (type instanceof FUnionType) {
+			return FDPropertyHost.UNIONS;
+		} else if (type instanceof FEnumerationType) {
+			return FDPropertyHost.ENUMERATIONS;
+		}
+		return null;
+	}
 
+	
 	// *****************************************************************************
 
 	/**

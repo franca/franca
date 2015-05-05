@@ -31,6 +31,9 @@ public class SpecCompoundHostsRef {
 	 */		
 	public interface IDataPropertyAccessor
 	{
+		public Integer getStructProp(EObject obj);
+		
+		public Integer getUnionProp(EObject obj);
 		
 		public enum StringProp {
 			p, q, r, s, t, u, v, w, x, y, z
@@ -128,6 +131,7 @@ public class SpecCompoundHostsRef {
 			return target.getInteger(obj, "ArrayProp");
 		}
 		
+		@Override
 		public Integer getStructProp (EObject obj) {
 			return target.getInteger(obj, "StructProp");
 		}
@@ -137,6 +141,7 @@ public class SpecCompoundHostsRef {
 			return target.getInteger(obj, "SFieldProp");
 		}
 		
+		@Override
 		public Integer getUnionProp (EObject obj) {
 			return target.getInteger(obj, "UnionProp");
 		}
@@ -187,6 +192,7 @@ public class SpecCompoundHostsRef {
 			return target.getInteger(obj, "ArrayProp");
 		}
 		
+		@Override
 		public Integer getStructProp (EObject obj) {
 			return target.getInteger(obj, "StructProp");
 		}
@@ -196,6 +202,7 @@ public class SpecCompoundHostsRef {
 			return target.getInteger(obj, "SFieldProp");
 		}
 		
+		@Override
 		public Integer getUnionProp (EObject obj) {
 			return target.getInteger(obj, "UnionProp");
 		}
@@ -229,7 +236,8 @@ public class SpecCompoundHostsRef {
 
 		final private MappingGenericPropertyAccessor target;
 		private final IDataPropertyAccessor delegate;
-		
+
+		private final FDTypeOverwrites overwrites;
 		private final Map<FField, FDField> mapping;
 		private final DataPropertyAccessorHelper helper;
 		
@@ -242,6 +250,7 @@ public class SpecCompoundHostsRef {
 			this.delegate = delegate;
 			this.helper = new DataPropertyAccessorHelper(genericAccessor, this);
 
+			this.overwrites = overwrites;
 			this.mapping = Maps.newHashMap();
 			if (overwrites!=null && overwrites instanceof FDCompoundOverwrites) {
 				// build mapping for compound fields
@@ -253,6 +262,26 @@ public class SpecCompoundHostsRef {
 			}
 		}
 		
+		@Override
+		public Integer getStructProp(EObject obj) {
+			if (overwrites!=null) {
+				Integer v = target.getInteger(overwrites, "StructProp");
+				if (v!=null)
+					return v;
+			}
+			return delegate.getStructProp(obj);
+		}
+
+		@Override
+		public Integer getUnionProp(EObject obj) {
+			if (overwrites!=null) {
+				Integer v = target.getInteger(overwrites, "UnionProp");
+				if (v!=null)
+					return v;
+			}
+			return delegate.getUnionProp(obj);
+		}
+
 		@Override
 		public StringProp getStringProp (EObject obj) {
 			// check if this field is overwritten

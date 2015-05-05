@@ -25,6 +25,7 @@ import org.franca.core.franca.FArrayType
 import org.franca.core.franca.FCompoundType
 import org.franca.core.franca.FEnumerationType
 import org.franca.core.franca.FStructType
+import org.franca.core.franca.FType
 import org.franca.core.franca.FUnionType
 import org.franca.deploymodel.core.FDModelUtils
 import org.franca.deploymodel.core.PropertyMappings
@@ -43,18 +44,21 @@ import org.franca.deploymodel.dsl.fDeploy.FDInterface
 import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance
 import org.franca.deploymodel.dsl.fDeploy.FDMethod
 import org.franca.deploymodel.dsl.fDeploy.FDModel
+import org.franca.deploymodel.dsl.fDeploy.FDOverwriteElement
 import org.franca.deploymodel.dsl.fDeploy.FDPredefinedTypeId
 import org.franca.deploymodel.dsl.fDeploy.FDProperty
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyFlag
 import org.franca.deploymodel.dsl.fDeploy.FDProvider
 import org.franca.deploymodel.dsl.fDeploy.FDStruct
+import org.franca.deploymodel.dsl.fDeploy.FDTypeOverwrites
 import org.franca.deploymodel.dsl.fDeploy.FDTypes
 import org.franca.deploymodel.dsl.fDeploy.FDUnion
 import org.franca.deploymodel.dsl.fDeploy.FDeployPackage
 
 import static extension org.eclipse.xtext.scoping.Scopes.*
 import static extension org.franca.core.framework.FrancaHelpers.*
+import static extension org.franca.deploymodel.core.FDModelUtils.*
 
 class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 
@@ -251,8 +255,6 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 	}
 
 	def scope_FDProperty_decl(FDField owner, EReference ref) {
-//		val parent = owner.target.eContainer
-//		println("owner = " + owner.target.name + "   parent = " + parent)
 		owner.getPropertyDecls
 	}
 
@@ -264,8 +266,23 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 		owner.getPropertyDecls
 	}
 
+	def scope_FDProperty_decl(FDTypeOverwrites owner, EReference ref) {
+		val parent = owner.eContainer as FDOverwriteElement
+		val type = parent.getOverwriteTargetType
+		if (type!=null) {
+			parent.getPropertyDecls(type)
+		} else {
+			IScope::NULLSCOPE
+		}
+	}
+
 	def private IScope getPropertyDecls(FDElement elem) {
 		val root = FDModelUtils::getRootElement(elem)
+		PropertyMappings::getAllPropertyDecls(root.getSpec(), elem).scopeFor
+	}
+
+	def private IScope getPropertyDecls(FDElement some, FType elem) {
+		val root = FDModelUtils::getRootElement(some)
 		PropertyMappings::getAllPropertyDecls(root.getSpec(), elem).scopeFor
 	}
 
