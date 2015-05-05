@@ -9,6 +9,7 @@ import java.util.Map;
 import org.eclipse.emf.ecore.EObject;
 import org.example.spec.SpecCompoundHostsRef.IDataPropertyAccessor.StringProp;
 import org.franca.core.franca.FArgument;
+import org.franca.core.franca.FArrayType;
 import org.franca.core.franca.FAttribute;
 import org.franca.core.franca.FField;
 import org.franca.core.franca.FModelElement;
@@ -44,7 +45,8 @@ public class SpecCompoundHostsRef {
 		
 		public Integer getUFieldProp (FField obj);
 		
-		public Integer getArrayProp (EObject obj);
+		public Integer getArrayProp (FArrayType obj);
+		public Integer getArrayProp (FField obj);
 
 		// TODO: add other data-related accessor functions here
 		
@@ -127,7 +129,12 @@ public class SpecCompoundHostsRef {
 		}
 		
 		@Override
-		public Integer getArrayProp (EObject obj) {
+		public Integer getArrayProp (FArrayType obj) {
+			return target.getInteger(obj, "ArrayProp");
+		}
+		
+		@Override
+		public Integer getArrayProp (FField obj) {
 			return target.getInteger(obj, "ArrayProp");
 		}
 		
@@ -188,7 +195,12 @@ public class SpecCompoundHostsRef {
 		}
 		
 		@Override
-		public Integer getArrayProp (EObject obj) {
+		public Integer getArrayProp (FArrayType obj) {
+			return target.getInteger(obj, "ArrayProp");
+		}
+
+		@Override
+		public Integer getArrayProp (FField obj) {
 			return target.getInteger(obj, "ArrayProp");
 		}
 		
@@ -295,7 +307,17 @@ public class SpecCompoundHostsRef {
 		}
 
 		@Override
-		public Integer getArrayProp (EObject obj) {
+		public Integer getArrayProp(FArrayType obj) {
+			if (overwrites!=null) {
+				Integer v = target.getInteger(overwrites, "ArrayProp");
+				if (v!=null)
+					return v;
+			}
+			return delegate.getArrayProp(obj);
+		}
+
+		@Override
+		public Integer getArrayProp (FField obj) {
 			if (mapping.containsKey(obj)) {
 				FDField fo = mapping.get(obj);
 				Integer v = target.getInteger(fo, "ArrayProp");

@@ -1,0 +1,176 @@
+// deployment definition with overwrites for interface
+
+import "60-SpecCompoundHosts.fdepl"
+import "../fidl/35-InterfaceUsingTypes.fidl"
+
+define org.example.spec.SpecCompoundHosts for interface fidl.InterfaceUsingTypes {
+
+	// deployment for the basic types defined in the interface
+	
+	array MyArray {
+		ArrayProp = 20
+	}
+
+	enumeration MyEnumeration {
+		EnumerationProp = 30
+		E1 { EnumeratorProp = 35 }
+		E2 { EnumeratorProp = 36 }
+		E3 { EnumeratorProp = 37 }
+	}
+
+	enumeration OtherEnumeration {
+		EnumerationProp = 1030
+		F1 { EnumeratorProp = 1035 }
+		F2 { EnumeratorProp = 1036 }
+	}
+
+	struct MyStruct {
+		StructProp = 40
+		field1 {
+			SFieldProp = 45
+		}
+		field2 {
+			StringProp = p
+			SFieldProp = 46
+		}
+	}
+
+	union MyUnion {
+		UnionProp = 50
+		field1 {
+			StringProp = q
+			UFieldProp = 55
+		}
+	}
+
+
+	// deployment for all users of the above types (using the overwrite feature)
+
+	attribute attrB {
+		StringProp = v
+		AttributeProp = 110
+	}
+
+	attribute attrA {
+		AttributeProp = 120
+		# {
+			ArrayProp = 125
+		}
+	}
+
+	attribute attrE {
+		AttributeProp = 130
+		#enumeration {
+			EnumerationProp = 135
+			E1 { EnumeratorProp = 136 }
+		}
+	}
+
+	attribute attrS {
+		AttributeProp = 140
+		#struct {
+			StructProp = 145
+			field1 { SFieldProp = 146 }
+		}
+	}
+
+	attribute attrU {
+		AttributeProp = 150
+		#union {
+			UnionProp = 155
+		}
+	}
+
+	method method1 {
+		in {
+			argB {
+				StringProp = r
+				ArgumentProp = 210
+			}
+			argA {
+				ArgumentProp = 220
+				# {
+					ArrayProp = 225
+				}
+			}
+			argE {
+				ArgumentProp = 230
+				#enumeration {
+					EnumerationProp = 235
+				}
+			}
+			argS {
+				ArgumentProp = 240
+				#struct {
+					StructProp = 245
+				}
+			}
+			argU {
+				ArgumentProp = 250
+				#union {
+					UnionProp = 255
+				}
+			}
+		}
+	}
+
+	array OtherArrayA {
+		ArrayProp = 510
+		# {
+			ArrayProp = 515	
+		}
+	}
+
+	array OtherArrayE {
+		ArrayProp = 520
+		#enumeration {
+			EnumerationProp = 525
+		}
+	}
+
+	array OtherArrayS {
+		ArrayProp = 530
+		#struct {
+			StructProp = 535
+		}
+	}
+
+	array OtherArrayU {
+		ArrayProp = 540
+		#union {
+			UnionProp = 545
+		}
+	}
+
+	struct OtherStruct {
+		StructProp = 600
+		fieldB {
+			SFieldProp = 610
+			StringProp = u
+		}
+		fieldA {
+			SFieldProp = 620
+			# {
+				ArrayProp = 625
+			}
+		}
+		fieldE {
+			SFieldProp = 630
+			#enumeration {
+				EnumerationProp = 635
+			}
+		}
+		fieldS {
+			SFieldProp = 640
+			#struct {
+				StructProp = 645
+			}
+		}
+		fieldU {
+			SFieldProp = 650
+			#union {
+				UnionProp = 655
+			}
+		}
+	}
+}
