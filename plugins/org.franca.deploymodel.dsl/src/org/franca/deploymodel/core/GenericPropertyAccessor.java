@@ -229,7 +229,7 @@ public class GenericPropertyAccessor {
 	 */
 	private FDComplexValue getValue (FDElement elem, String property) {
 		// look if there is an explicit value for the property
-		for(FDProperty prop : elem.getProperties()) {
+		for(FDProperty prop : elem.getProperties().getItems()) {
 			if (prop.getDecl().getName().equals(property)) {
 				return prop.getValue();
 			}

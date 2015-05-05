@@ -181,12 +181,12 @@ class DeployModelBuilder {
 
 	/** Create property object for element. */
 	def static getProperty (FDElement element, FDPropertyDecl decl) {
-		var prop = element.properties.findFirst[p|p.decl==decl]
+		var prop = element.properties.items.findFirst[p|p.decl==decl]
 		if (prop==null) {
 			// create on the fly
 			prop = FDeployFactory::eINSTANCE.createFDProperty
 			prop.decl = decl
-			element.properties.add(prop)
+			element.properties.items.add(prop)
 		}
 		
 		if (prop.value==null) {

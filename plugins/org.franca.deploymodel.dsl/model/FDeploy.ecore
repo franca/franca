@@ -88,8 +88,8 @@
         eType="#//FDRootElement"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FDElement">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="properties" upperBound="-1"
-        eType="#//FDProperty" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="properties" lowerBound="1"
+        eType="#//FDPropertySet" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FDOverwriteElement" eSuperTypes="#//FDElement">
     <eStructuralFeatures xsi:type="ecore:EReference" name="overwrites" eType="#//FDCompoundOverwrites"
@@ -172,6 +172,10 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FDFieldOverwrite" eSuperTypes="#//FDOverwriteElement">
     <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass ../../org.franca.core/model/franca.ecore#//FField"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDPropertySet">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="items" upperBound="-1"
+        eType="#//FDProperty" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FDProperty">
     <eStructuralFeatures xsi:type="ecore:EReference" name="decl" eType="#//FDPropertyDecl"/>

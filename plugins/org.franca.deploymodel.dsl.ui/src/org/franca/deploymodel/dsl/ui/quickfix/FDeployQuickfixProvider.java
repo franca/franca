@@ -303,11 +303,12 @@ public class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 		FDRootElement root = FDModelUtils.getRootElement(element);
 		List<FDPropertyDecl> decls = PropertyMappings.getAllPropertyDecls(root.getSpec(), element);
 		for (FDPropertyDecl decl : decls) {
-			if (!FDeployQuickfixProviderUtil.hasPropertyDeclaration(element.getProperties(), decl) && PropertyMappings.isMandatory(decl)) {
+			if (! FDeployQuickfixProviderUtil.hasPropertyDeclaration(
+					element.getProperties().getItems(), decl) && PropertyMappings.isMandatory(decl)) {
 				FDProperty prop = FDeployFactory.eINSTANCE.createFDProperty();
 				prop.setDecl(decl);
 				prop.setValue(FDeployQuickfixProviderUtil.generateDefaultValue(element, decl.getType()));
-				element.getProperties().add(prop);
+				element.getProperties().getItems().add(prop);
 			}
 		}
 		

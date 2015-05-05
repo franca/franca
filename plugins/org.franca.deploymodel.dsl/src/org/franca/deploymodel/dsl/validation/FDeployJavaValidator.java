@@ -578,7 +578,7 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 		List<String> missing = Lists.newArrayList();
 		for(FDPropertyDecl decl : decls) {
 			if (PropertyMappings.isMandatory(decl)) {
-				if (!contains(elem.getProperties(), decl)) {
+				if (!contains(elem.getProperties().getItems(), decl)) {
 					missing.add(decl.getName());
 				}
 			}

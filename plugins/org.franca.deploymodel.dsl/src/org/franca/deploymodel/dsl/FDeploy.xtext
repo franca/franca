@@ -103,7 +103,7 @@ FDProvider:
 		('use' use+=[FDRootElement|FQN])*
 
 		// the own properties of this interface provider
-		(properties+=FDProperty ((',')? properties+=FDProperty)*)?
+		properties=FDPropertySet
 		
 		// instances of interfaces
 		instances+=FDInterfaceInstance*
@@ -111,7 +111,7 @@ FDProvider:
 
 FDInterfaceInstance:
 	'instance' target=[fidl::FInterface|FQN] ('as' name=FQN)? '{'
-		(properties+=FDProperty ((',')? properties+=FDProperty)*)?
+		properties=FDPropertySet
 	'}';
 
 FDTypes:
@@ -122,7 +122,7 @@ FDTypes:
 		('use' use+=[FDRootElement|FQN])*
 		
 		// the own properties of this typeCollection
-		(properties+=FDProperty ((',')? properties+=FDProperty)*)?
+		properties=FDPropertySet
 
 		// properties for all type definitions in the package		
 		types+=FDTypeDef*
@@ -136,7 +136,7 @@ FDInterface:
 		('use' use+=[FDRootElement|FQN])*
 
 		// the own properties of this interface
-		(properties+=FDProperty ((',')? properties+=FDProperty)*)?
+		properties=FDPropertySet
 		
 		// properties for the interface's elements
 		(
@@ -149,7 +149,7 @@ FDInterface:
 
 FDAttribute:
 	'attribute' target=[fidl::FAttribute|FQN] '{'
-		(properties+=FDProperty ((',')? properties+=FDProperty)*)?
+		properties=FDPropertySet
 		(overwrites=FDCompoundOverwrites)?
 	'}';
 
@@ -158,14 +158,14 @@ FDOperation:
 
 FDMethod:
 	'method' target=[fidl::FMethod|FQN] '{'
-		(properties+=FDProperty ((',')? properties+=FDProperty)*)?
+		properties=FDPropertySet
 		('in' inArguments=FDArgumentList)?
 		('out' outArguments=FDArgumentList)?
 	'}';
 
 FDBroadcast:
 	'broadcast' target=[fidl::FBroadcast|FQN] '{'
-		(properties+=FDProperty ((',')? properties+=FDProperty)*)?
+		properties=FDPropertySet
 		('out' outArguments=FDArgumentList)?
 	'}';
 
@@ -175,7 +175,7 @@ FDArgumentList:
 
 FDArgument:
 	target=[fidl::FArgument|FQN] '{'
-		(properties+=FDProperty ((',')? properties+=FDProperty)*)?
+		properties=FDPropertySet
 		(overwrites=FDCompoundOverwrites)?
 	'}';
 
@@ -185,36 +185,36 @@ FDCompound: FDStruct | FDUnion;
 
 FDArray:
 	'array' target=[fidl::FArrayType|FQN] '{'
-		(properties+=FDProperty ((',')? properties+=FDProperty)*)?
+		properties=FDPropertySet
 	'}';
-
+	
 FDStruct:
 	'struct' target=[fidl::FStructType|FQN] '{'
-		(properties+=FDProperty ((',')? properties+=FDProperty)*)?
+		properties=FDPropertySet
 		fields+=FDField*
 	'}';
 
 FDUnion:
 	'union' target=[fidl::FUnionType|FQN] '{'
-		(properties+=FDProperty ((',')? properties+=FDProperty)*)?
+		properties=FDPropertySet
 		fields+=FDField*
 	'}';
 
 FDField:
 	target=[fidl::FField|FQN] '{'
-		(properties+=FDProperty ((',')? properties+=FDProperty)*)?
+		properties=FDPropertySet
 		(overwrites=FDCompoundOverwrites)?
 	'}';
 
 FDEnumeration:
 	'enumeration' target=[fidl::FEnumerationType|FQN] '{'
-		(properties+=FDProperty ((',')? properties+=FDProperty)*)?
+		properties=FDPropertySet
 		enumerators+=FDEnumValue*
 	'}';
 
 FDEnumValue:
 	target=[fidl::FEnumerator|FQN] '{'
-		(properties+=FDProperty ((',')? properties+=FDProperty)*)?
+		properties=FDPropertySet
 	'}';
 
 FDCompoundOverwrites:
@@ -223,13 +223,17 @@ FDCompoundOverwrites:
 
 FDFieldOverwrite:
 	target=[fidl::FField|FQN] '{'
-		(properties+=FDProperty ((',')? properties+=FDProperty)*)?
+		properties=FDPropertySet
 		(overwrites=FDCompoundOverwrites)?
 	'}';
 
 
 // **************************************************************
 // property definition 
+
+FDPropertySet:
+	{FDPropertySet}
+	(items+=FDProperty ((',')? items+=FDProperty)*)?;
 
 FDProperty:
 	decl=[FDPropertyDecl|ID] '=' value=FDComplexValue;
