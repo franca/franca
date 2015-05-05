@@ -29,33 +29,39 @@ define org.example.spec.SpecCompoundHosts for typeCollection fidl.TCUsingCompoun
 		}
 		nested1 {
 			SFieldProp = 12
-			/field1 {
-				SFieldProp = 15
-			}
-			/field2 {
-				StringProp = x
-				SFieldProp = 16
-			}
-			/field3 {
-				StringProp = y
-				SFieldProp = 17
-				ArrayProp = 11
+			
+			#struct {
+				field1 {
+					SFieldProp = 15
+				}
+				field2 {
+					StringProp = x
+					SFieldProp = 16
+				}
+				field3 {
+					StringProp = y
+					SFieldProp = 17
+					ArrayProp = 11
+				}
 			}
 		}
 		nested2 {
 			ArrayProp = 0
 			SFieldProp = 12
-			/field1 {
-				SFieldProp = 25
-			}
-			/field2 {
-				StringProp = x
-				SFieldProp = 26
-			}
-			/field3 {
-				StringProp = z
-				SFieldProp = 27
-				ArrayProp = 21
+			
+			#struct {
+				field1 {
+					SFieldProp = 25
+				}
+				field2 {
+					StringProp = x
+					SFieldProp = 26
+				}
+				field3 {
+					StringProp = z
+					SFieldProp = 27
+					ArrayProp = 21
+				}
 			}
 		}
 	}
@@ -76,9 +82,12 @@ define org.example.spec.SpecCompoundHosts for typeCollection fidl.TCUsingCompoun
 		}
 		field2 {
 			UFieldProp = 22202
-			/field1 {
-				StringProp = x
-				UFieldProp = 22220
+			
+			#union {
+				field1 {
+					StringProp = x
+					UFieldProp = 22220
+				}
 			}
 		}
 	}
@@ -87,9 +96,12 @@ define org.example.spec.SpecCompoundHosts for typeCollection fidl.TCUsingCompoun
 		StructProp = 333
 		nested1 {
 			SFieldProp = 33301
-			/field1 {
-				StringProp = y
-				UFieldProp = 33330
+			
+			#union {
+				field1 {
+					StringProp = y
+					UFieldProp = 33330
+				}
 			}
 		}
 	}

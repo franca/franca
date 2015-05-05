@@ -13,58 +13,68 @@ define org.example.spec.SpecCompoundHosts for interface fidl.InterfaceUsingCompo
 	attribute attr2 {
 		AttributeProp = 2
 		
-		/field1 {
-			SFieldProp = 10
-		}
-		/field2 {
-			StringProp = v
-			SFieldProp = 20
-		}
-		/field3 {
-			StringProp = v
-			SFieldProp = 30
-			ArrayProp = 7
+		#struct {
+			field1 {
+				SFieldProp = 10
+			}
+			field2 {
+				StringProp = v
+				SFieldProp = 20
+			}
+			field3 {
+				StringProp = v
+				SFieldProp = 30
+				ArrayProp = 7
+			}
 		}
 	}
 
 	attribute attr3 {
 		AttributeProp = 3
 		
-		/field1 {
-			StringProp = v
-			SFieldProp = 10
+		#struct {
+			field1 {
+				StringProp = v
+				SFieldProp = 10
+			}
+			nested1 {
+				SFieldProp = 20
+				
+				#struct {
+					field1 {
+						SFieldProp = 11
+					}
+					field2 {
+						StringProp = w
+						SFieldProp = 21
+					}
+					field3 {
+						ArrayProp = 88
+						StringProp = w
+						SFieldProp = 31
+					}
+				}
+			}
+			nested2 {
+				// 66 elements of StructA
+				ArrayProp = 66
+				
+				#struct {
+					field1 {
+						SFieldProp = 12
+					}
+					field2 {
+						StringProp = w
+						SFieldProp = 22
+					}
+					field3 {
+						// 77 elements of String in StructA.field3
+						ArrayProp = 77
+						StringProp = w
+						SFieldProp = 32
+					}
+				}
 		}
-		/nested1 {
-			SFieldProp = 20
-			/field1 {
-				SFieldProp = 11
-			}
-			/field2 {
-				StringProp = w
-				SFieldProp = 21
-			}
-			/field3 {
-				ArrayProp = 88
-				StringProp = w
-				SFieldProp = 31
-			}
-		}
-		/nested2 {
-			// 66 elements of StructA
-			ArrayProp = 66
-			/field1 {
-				SFieldProp = 12
-			}
-			/field2 {
-				StringProp = w
-				SFieldProp = 22
-			}
-			/field3 {
-				// 77 elements of String in StructA.field3
-				ArrayProp = 77
-				StringProp = w
-				SFieldProp = 32
-			}
 		}
 	}
 
@@ -76,17 +86,20 @@ define org.example.spec.SpecCompoundHosts for interface fidl.InterfaceUsingCompo
 			}
 			arg2 {
 				ArgumentProp = 102
-				/field1 {
-					SFieldProp = 110
-				}
-				/field2 {
-					StringProp = p
-					SFieldProp = 120
-				}
-				/field3 {
-					StringProp = q
-					SFieldProp = 130
-					ArrayProp = 107
+				
+				#struct {
+					field1 {
+						SFieldProp = 110
+					}
+					field2 {
+						StringProp = p
+						SFieldProp = 120
+					}
+					field3 {
+						StringProp = q
+						SFieldProp = 130
+						ArrayProp = 107
+					}
 				}
 			}
 		}
@@ -100,17 +113,20 @@ define org.example.spec.SpecCompoundHosts for interface fidl.InterfaceUsingCompo
 			}
 			ret2 {
 				ArgumentProp = 202
-				/field1 {
-					SFieldProp = 210
-				}
-				/field2 {
-					StringProp = q
-					SFieldProp = 220
-				}
-				/field3 {
-					StringProp = r
-					SFieldProp = 230
-					ArrayProp = 207
+				
+				#struct {
+					field1 {
+						SFieldProp = 210
+					}
+					field2 {
+						StringProp = q
+						SFieldProp = 220
+					}
+					field3 {
+						StringProp = r
+						SFieldProp = 230
+						ArrayProp = 207
+					}
 				}
 			}
 		}
@@ -126,40 +142,48 @@ define org.example.spec.SpecCompoundHosts for interface fidl.InterfaceUsingCompo
 				ArgumentProp = 302
 
 				// same overwrite data as in attr3
-				/field1 {
-					StringProp = v
-					SFieldProp = 10
-				}
-				/nested1 {
-					SFieldProp = 20
-					/field1 {
-						SFieldProp = 11
+				#struct {
+					field1 {
+						StringProp = v
+						SFieldProp = 10
 					}
-					/field2 {
-						StringProp = w
-						SFieldProp = 21
+					nested1 {
+						SFieldProp = 20
+						
+						#struct {
+							field1 {
+								SFieldProp = 11
+							}
+							field2 {
+								StringProp = w
+								SFieldProp = 21
+							}
+							field3 {
+								ArrayProp = 88
+								StringProp = w
+								SFieldProp = 31
+							}
+						}
 					}
-					/field3 {
-						ArrayProp = 88
-						StringProp = w
-						SFieldProp = 31
-					}
-				}
-				/nested2 {
-					// 66 elements of StructA
-					ArrayProp = 66
-					/field1 {
-						SFieldProp = 12
-					}
-					/field2 {
-						StringProp = w
-						SFieldProp = 22
-					}
-					/field3 {
-						// 77 elements of String in StructA.field3
-						ArrayProp = 77
-						StringProp = w
-						SFieldProp = 32
+					nested2 {
+						// 66 elements of StructA
+						ArrayProp = 66
+						
+						#struct {
+							field1 {
+								SFieldProp = 12
+							}
+							field2 {
+								StringProp = w
+								SFieldProp = 22
+							}
+							field3 {
+								// 77 elements of String in StructA.field3
+								ArrayProp = 77
+								StringProp = w
+								SFieldProp = 32
+							}
+						}
 					}
 				}
 			}
@@ -170,34 +194,49 @@ define org.example.spec.SpecCompoundHosts for interface fidl.InterfaceUsingCompo
 		in {
 			arg1 {
 				ArgumentProp = 401
-				/field1 {
-					StringProp = v
-					UFieldProp = 100
+				
+				#union {
+					field1 {
+						StringProp = v
+						UFieldProp = 100
+					}
 				}
 			}
 		}
 		out {
 			ret1 {
 				ArgumentProp = 401
-				/field1 {
-					UFieldProp = 4011
-					StringProp = w
-				}
-				/field2 {
-					UFieldProp = 4012
-					/field1 {
+				
+				#union {
+					field1 {
+						UFieldProp = 4011
 						StringProp = w
-						UFieldProp = 105
+					}
+					field2 {
+						UFieldProp = 4012
+						
+						#union {
+							field1 {
+								StringProp = w
+								UFieldProp = 105
+							}
+						}
 					}
 				}
 			}
 			ret2 {
 				ArgumentProp = 402
-				/nested1 {
-					SFieldProp = 123
-					/field1 {
-						StringProp = s
-						UFieldProp = 42
+
+				#struct {
+					nested1 {
+						SFieldProp = 123
+						
+						#union {
+							field1 {
+								StringProp = s
+								UFieldProp = 42
+							}
+						}
 					}
 				}
 			}
@@ -228,33 +267,39 @@ define org.example.spec.SpecCompoundHosts for interface fidl.InterfaceUsingCompo
 		}
 		nested1 {
 			SFieldProp = 12
-			/field1 {
-				SFieldProp = 15
-			}
-			/field2 {
-				StringProp = x
-				SFieldProp = 16
-			}
-			/field3 {
-				StringProp = y
-				SFieldProp = 17
-				ArrayProp = 11
+			
+			#struct {
+				field1 {
+					SFieldProp = 15
+				}
+				field2 {
+					StringProp = x
+					SFieldProp = 16
+				}
+				field3 {
+					StringProp = y
+					SFieldProp = 17
+					ArrayProp = 11
+				}
 			}
 		}
 		nested2 {
 			ArrayProp = 0
 			SFieldProp = 12
-			/field1 {
-				SFieldProp = 25
-			}
-			/field2 {
-				StringProp = x
-				SFieldProp = 26
-			}
-			/field3 {
-				StringProp = z
-				SFieldProp = 27
-				ArrayProp = 21
+			
+			#struct {
+				field1 {
+					SFieldProp = 25
+				}
+				field2 {
+					StringProp = x
+					SFieldProp = 26
+				}
+				field3 {
+					StringProp = z
+					SFieldProp = 27
+					ArrayProp = 21
+				}
 			}
 		}
 	}
@@ -275,9 +320,12 @@ define org.example.spec.SpecCompoundHosts for interface fidl.InterfaceUsingCompo
 		}
 		field2 {
 			UFieldProp = 22202
-			/field1 {
-				StringProp = x
-				UFieldProp = 22220
+			
+			#union {
+				field1 {
+					StringProp = x
+					UFieldProp = 22220
+				}
 			}
 		}
 	}
@@ -286,9 +334,11 @@ define org.example.spec.SpecCompoundHosts for interface fidl.InterfaceUsingCompo
 		StructProp = 333
 		nested1 {
 			SFieldProp = 33301
-			/field1 {
-				StringProp = y
-				UFieldProp = 33330
+			#union {
+				field1 {
+					StringProp = y
+					UFieldProp = 33330
+				}
 			}
 		}
 	}

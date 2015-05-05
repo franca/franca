@@ -10,9 +10,8 @@ package org.franca.deploymodel.core;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.emf.ecore.EObject;
 import org.franca.core.framework.FrancaHelpers;
-import org.franca.core.franca.FField;
-import org.franca.core.franca.FStructType;
 import org.franca.core.franca.FTypeRef;
 import org.franca.core.franca.FTypedElement;
 import org.franca.deploymodel.dsl.fDeploy.FDArgument;
@@ -24,7 +23,6 @@ import org.franca.deploymodel.dsl.fDeploy.FDElement;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumValue;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumeration;
 import org.franca.deploymodel.dsl.fDeploy.FDField;
-import org.franca.deploymodel.dsl.fDeploy.FDFieldOverwrite;
 import org.franca.deploymodel.dsl.fDeploy.FDInterface;
 import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance;
 import org.franca.deploymodel.dsl.fDeploy.FDMethod;
@@ -34,8 +32,10 @@ import org.franca.deploymodel.dsl.fDeploy.FDPropertyHost;
 import org.franca.deploymodel.dsl.fDeploy.FDProvider;
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification;
 import org.franca.deploymodel.dsl.fDeploy.FDStruct;
+import org.franca.deploymodel.dsl.fDeploy.FDStructOverwrites;
 import org.franca.deploymodel.dsl.fDeploy.FDTypes;
 import org.franca.deploymodel.dsl.fDeploy.FDUnion;
+import org.franca.deploymodel.dsl.fDeploy.FDUnionOverwrites;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -93,11 +93,11 @@ public class PropertyMappings {
 			typeRef = te.getType();
 			if (te.isArray())
 				isInlineArray = true;
-		} else if (elem instanceof FDFieldOverwrite) {
-			FTypedElement te = ((FDFieldOverwrite) elem).getTarget();
-			typeRef = te.getType();
-			if (te.isArray())
-				isInlineArray = true;
+//		} else if (elem instanceof FDFieldOverwrite) {
+//			FTypedElement te = ((FDFieldOverwrite) elem).getTarget();
+//			typeRef = te.getType();
+//			if (te.isArray())
+//				isInlineArray = true;
 		}
 		if (typeRef != null) {
 			if (FrancaHelpers.isInteger(typeRef))
@@ -195,21 +195,18 @@ public class PropertyMappings {
 			return FDPropertyHost.ARGUMENTS;
 		} else if (elem instanceof FDArray) {
 			return FDPropertyHost.ARRAYS;
-		} else if (elem instanceof FDStruct) {
+		} else if (elem instanceof FDStruct || elem instanceof FDStructOverwrites) {
 			return FDPropertyHost.STRUCTS;
-		} else if (elem instanceof FDUnion) {
+		} else if (elem instanceof FDUnion || elem instanceof FDUnionOverwrites) {
 			return FDPropertyHost.UNIONS;
 		} else if (elem instanceof FDField) {
-			if (elem.eContainer() instanceof FDStruct)
+			EObject p = elem.eContainer();
+			if (p instanceof FDStruct || p instanceof FDStructOverwrites)
 				return FDPropertyHost.STRUCT_FIELDS;
-			else // FDUnion
+			else if (p instanceof FDUnion || p instanceof FDUnionOverwrites)
 				return FDPropertyHost.UNION_FIELDS;
-		} else if (elem instanceof FDFieldOverwrite) {
-			FField target = ((FDFieldOverwrite)elem).getTarget();
-			if (target.eContainer() instanceof FStructType)
-				return FDPropertyHost.STRUCT_FIELDS;
-			else // FUnionType
-				return FDPropertyHost.UNION_FIELDS;
+			else
+				return null;
 		} else if (elem instanceof FDEnumeration) {
 			return FDPropertyHost.ENUMERATIONS;
 		} else if (elem instanceof FDEnumValue) {

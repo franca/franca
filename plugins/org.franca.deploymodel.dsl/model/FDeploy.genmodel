@@ -149,12 +149,14 @@
     <genClasses ecoreClass="FDeploy.ecore#//FDEnumValue">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDEnumValue/target"/>
     </genClasses>
-    <genClasses ecoreClass="FDeploy.ecore#//FDCompoundOverwrites">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDCompoundOverwrites/fields"/>
+    <genClasses ecoreClass="FDeploy.ecore#//FDTypeOverwrites"/>
+    <genClasses ecoreClass="FDeploy.ecore#//FDPlainTypeOverwrites"/>
+    <genClasses ecoreClass="FDeploy.ecore#//FDEnumerationOverwrites">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDEnumerationOverwrites/enumerators"/>
     </genClasses>
-    <genClasses ecoreClass="FDeploy.ecore#//FDFieldOverwrite">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDFieldOverwrite/target"/>
-    </genClasses>
+    <genClasses ecoreClass="FDeploy.ecore#//FDCompoundOverwrites"/>
+    <genClasses ecoreClass="FDeploy.ecore#//FDStructOverwrites"/>
+    <genClasses ecoreClass="FDeploy.ecore#//FDUnionOverwrites"/>
     <genClasses ecoreClass="FDeploy.ecore#//FDPropertySet">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDPropertySet/items"/>
     </genClasses>

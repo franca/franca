@@ -13,6 +13,10 @@ specification org.example.spec.SpecCompoundHosts {
 	for arguments {
 		ArgumentProp : Integer;
 	}
+	
+	for enumerations {
+		EnumerationProp: Integer;
+	}
 
 	for arrays {
 		ArrayProp : Integer;

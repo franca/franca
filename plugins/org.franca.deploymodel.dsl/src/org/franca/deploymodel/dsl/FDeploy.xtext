@@ -93,8 +93,7 @@ FDRootElement:
 FDElement:
 	FDRootElement | FDInterfaceInstance |
 	FDAttribute | FDOperation | FDArgument |
-	FDTypeDef | FDField | FDEnumeration | FDEnumValue |
-	FDFieldOverwrite;
+	FDTypeDef | FDField | FDEnumeration | FDEnumValue;
 
 FDProvider:
 	'define' spec=[FDSpecification|FQN]
@@ -150,7 +149,7 @@ FDInterface:
 FDAttribute:
 	'attribute' target=[fidl::FAttribute|FQN] '{'
 		properties=FDPropertySet
-		(overwrites=FDCompoundOverwrites)?
+		(overwrites=FDTypeOverwrites)?
 	'}';
 
 FDOperation:
@@ -176,7 +175,7 @@ FDArgumentList:
 FDArgument:
 	target=[fidl::FArgument|FQN] '{'
 		properties=FDPropertySet
-		(overwrites=FDCompoundOverwrites)?
+		(overwrites=FDTypeOverwrites)?
 	'}';
 
 
@@ -186,6 +185,7 @@ FDCompound: FDStruct | FDUnion;
 FDArray:
 	'array' target=[fidl::FArrayType|FQN] '{'
 		properties=FDPropertySet
+		(overwrites=FDTypeOverwrites)?
 	'}';
 	
 FDStruct:
@@ -203,7 +203,7 @@ FDUnion:
 FDField:
 	target=[fidl::FField|FQN] '{'
 		properties=FDPropertySet
-		(overwrites=FDCompoundOverwrites)?
+		(overwrites=FDTypeOverwrites)?
 	'}';
 
 FDEnumeration:
@@ -217,14 +217,35 @@ FDEnumValue:
 		properties=FDPropertySet
 	'}';
 
-FDCompoundOverwrites:
-	{FDCompoundOverwrites}
-	('/' fields+=FDFieldOverwrite)+;
+FDTypeOverwrites:
+	'#'            FDPlainTypeOverwrites |
+	'#struct'      FDStructOverwrites |
+	'#union'       FDUnionOverwrites |
+	'#enumeration' FDEnumerationOverwrites;
 
-FDFieldOverwrite:
-	target=[fidl::FField|FQN] '{'
-		properties=FDPropertySet
-		(overwrites=FDCompoundOverwrites)?
+FDPlainTypeOverwrites:
+	{FDPlainTypeOverwrites}
+	'{'
+		properties=FDPropertySet // the actually overwritten properties
+	'}';
+
+FDStructOverwrites:
+	'{'
+		properties=FDPropertySet // the actually overwritten properties
+		(fields+=FDField)*
+	'}';
+
+FDUnionOverwrites:
+	'{'
+		properties=FDPropertySet // the actually overwritten properties
+		(fields+=FDField)*
+	'}';
+
+FDEnumerationOverwrites:
+	{FDEnumerationOverwrites}
+	'{'
+		properties=FDPropertySet // the actually overwritten properties
+		(enumerators+=FDEnumValue)*
 	'}';
 
 

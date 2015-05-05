@@ -8,11 +8,18 @@
 package org.franca.deploymodel.core;
 
 import org.eclipse.emf.ecore.EObject;
+import org.franca.core.franca.FType;
+import org.franca.core.franca.FTypeRef;
+import org.franca.deploymodel.dsl.fDeploy.FDArgument;
+import org.franca.deploymodel.dsl.fDeploy.FDArray;
+import org.franca.deploymodel.dsl.fDeploy.FDAttribute;
 import org.franca.deploymodel.dsl.fDeploy.FDElement;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumerator;
+import org.franca.deploymodel.dsl.fDeploy.FDField;
 import org.franca.deploymodel.dsl.fDeploy.FDGeneric;
 import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance;
 import org.franca.deploymodel.dsl.fDeploy.FDModel;
+import org.franca.deploymodel.dsl.fDeploy.FDOverwriteElement;
 import org.franca.deploymodel.dsl.fDeploy.FDRootElement;
 import org.franca.deploymodel.dsl.fDeploy.FDValue;
 
@@ -104,5 +111,28 @@ public class FDModelUtils {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * Get the target type of an overwrites element.
+	 */
+	public static FType getOverwriteTargetType(FDOverwriteElement elem) {
+		// get Franca type reference depending on type of elem element 
+		FTypeRef typeref = null;
+		if (elem instanceof FDAttribute) {
+			typeref = ((FDAttribute)elem).getTarget().getType();
+		} else if (elem instanceof FDArgument) {
+			typeref = ((FDArgument)elem).getTarget().getType();
+		} else if (elem instanceof FDField) {
+			typeref = ((FDField)elem).getTarget().getType();
+		} else if (elem instanceof FDArray) {
+			typeref = ((FDArray)elem).getTarget().getElementType();
+		}
+		
+		// get type from type reference
+		if (typeref==null)
+			return null;
+		else
+			return typeref.getDerived();
 	}
 }

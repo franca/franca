@@ -39,7 +39,6 @@ import org.franca.deploymodel.dsl.fDeploy.FDEnumType
 import org.franca.deploymodel.dsl.fDeploy.FDEnumValue
 import org.franca.deploymodel.dsl.fDeploy.FDEnumeration
 import org.franca.deploymodel.dsl.fDeploy.FDField
-import org.franca.deploymodel.dsl.fDeploy.FDFieldOverwrite
 import org.franca.deploymodel.dsl.fDeploy.FDInterface
 import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance
 import org.franca.deploymodel.dsl.fDeploy.FDMethod
@@ -180,14 +179,14 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 		ctxt.getTarget().getElements.scopeFor
 	}
 
-	def scope_FDFieldOverwrite_target(FDCompoundOverwrites ctxt, EReference ref) {
+	def scope_FDField_target(FDCompoundOverwrites ctxt, EReference ref) {
 		val parent = ctxt.eContainer
 		val typeRef = 
 			switch (parent) {
 				FDAttribute: parent.getTarget().type
 				FDArgument: parent.getTarget().type
 				FDField: parent.getTarget().type
-				FDFieldOverwrite: parent.getTarget().type
+				FDArray: parent.getTarget().elementType
 				default: null
 			}
 		if (typeRef!=null) {
@@ -252,10 +251,8 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 	}
 
 	def scope_FDProperty_decl(FDField owner, EReference ref) {
-		owner.getPropertyDecls
-	}
-
-	def scope_FDProperty_decl(FDFieldOverwrite owner, EReference ref) {
+//		val parent = owner.target.eContainer
+//		println("owner = " + owner.target.name + "   parent = " + parent)
 		owner.getPropertyDecls
 	}
 

@@ -8,11 +8,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.Assignment;
 import org.eclipse.xtext.GrammarUtil;
+import org.eclipse.xtext.Keyword;
 import org.eclipse.xtext.RuleCall;
 import org.eclipse.xtext.resource.IContainer;
 import org.eclipse.xtext.resource.IEObjectDescription;
@@ -20,12 +22,24 @@ import org.eclipse.xtext.resource.IResourceDescription;
 import org.eclipse.xtext.scoping.IScope;
 import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext;
 import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor;
+import org.franca.core.franca.FEnumerationType;
+import org.franca.core.franca.FStructType;
+import org.franca.core.franca.FType;
 import org.franca.core.franca.FTypeCollection;
+import org.franca.core.franca.FTypeRef;
+import org.franca.core.franca.FUnionType;
 import org.franca.core.utils.FrancaIDLUtils;
+import org.franca.deploymodel.core.FDModelUtils;
+import org.franca.deploymodel.dsl.fDeploy.FDArgument;
+import org.franca.deploymodel.dsl.fDeploy.FDArray;
+import org.franca.deploymodel.dsl.fDeploy.FDAttribute;
+import org.franca.deploymodel.dsl.fDeploy.FDField;
+import org.franca.deploymodel.dsl.fDeploy.FDOverwriteElement;
 import org.franca.deploymodel.dsl.fDeploy.FDeployPackage;
 import org.franca.deploymodel.dsl.scoping.DeploySpecProvider;
 import org.franca.deploymodel.dsl.scoping.DeploySpecProvider.DeploySpecEntry;
 
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
 /** see http://www.eclipse.org/Xtext/documentation/latest/xtext.html#contentAssist on how to customize content assistant */
@@ -102,4 +116,67 @@ public class FDeployProposalProvider extends AbstractFDeployProposalProvider {
 		}
 	}
 
+	
+	/**
+	 * A set of keywords which will be filtered from the proposals list.
+	 */
+	private Set<String> filteredKeywords = Sets.newHashSet();
+	
+	@Override
+	public void completeKeyword(Keyword keyword, ContentAssistContext contentAssistContext, ICompletionProposalAcceptor acceptor) {
+		if (filteredKeywords.contains(keyword.getValue()))
+			return;
+		
+		super.completeKeyword(keyword, contentAssistContext, acceptor);
+	}
+	
+	@Override
+	public void complete_FDTypeOverwrites(EObject elem, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		FType targetType = null;
+		if (elem instanceof FDOverwriteElement) {
+			targetType = FDModelUtils.getOverwriteTargetType((FDOverwriteElement)elem);
+		}
+
+		if (targetType==null) {
+			showKeywords(false,  false,  false, false);
+		} else {
+			if (targetType instanceof FEnumerationType) {
+				showKeywords(true, true, false, false);
+			} else if (targetType instanceof FStructType) {
+				showKeywords(true, false, true, false);
+			} else if (targetType instanceof FUnionType) {
+				showKeywords(true, false, false, true);
+			} else {
+				showKeywords(true, false,  false, false);
+			}
+		}
+	}
+	
+	private void showKeywords(boolean plain, boolean enumeration, boolean struct, boolean union) {
+		final String p = "#";
+		final String e = "#enumeration";
+		final String s = "#struct";
+		final String u = "#union";
+		
+		if (plain)
+			filteredKeywords.remove(p);
+		else
+			filteredKeywords.add(p);
+
+		if (enumeration)
+			filteredKeywords.remove(e);
+		else
+			filteredKeywords.add(e);
+
+		if (struct)
+			filteredKeywords.remove(s);
+		else
+			filteredKeywords.add(s);
+
+		if (union)
+			filteredKeywords.remove(u);
+		else
+			filteredKeywords.add(u);
+	}
 }
+

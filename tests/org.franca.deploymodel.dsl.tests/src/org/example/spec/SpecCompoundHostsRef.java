@@ -4,7 +4,6 @@
 *******************************************************************************/
 package org.example.spec;
 
-import java.util.List;
 import java.util.Map;
 
 import org.eclipse.emf.ecore.EObject;
@@ -17,8 +16,9 @@ import org.franca.deploymodel.core.FDeployedInterface;
 import org.franca.deploymodel.core.FDeployedTypeCollection;
 import org.franca.deploymodel.core.MappingGenericPropertyAccessor;
 import org.franca.deploymodel.dsl.fDeploy.FDCompoundOverwrites;
-import org.franca.deploymodel.dsl.fDeploy.FDFieldOverwrite;
+import org.franca.deploymodel.dsl.fDeploy.FDField;
 import org.franca.deploymodel.dsl.fDeploy.FDOverwriteElement;
+import org.franca.deploymodel.dsl.fDeploy.FDTypeOverwrites;
 
 import com.google.common.collect.Maps;
 
@@ -94,7 +94,7 @@ public class SpecCompoundHostsRef {
 
 		protected IDataPropertyAccessor getOverwriteAccessorAux (FModelElement obj) {
 			FDOverwriteElement fd = (FDOverwriteElement)target.getFDElement(obj);
-			FDCompoundOverwrites overwrites = fd.getOverwrites();
+			FDTypeOverwrites overwrites = fd.getOverwrites();
 			if (overwrites==null)
 				return owner;
 			else
@@ -230,11 +230,11 @@ public class SpecCompoundHostsRef {
 		final private MappingGenericPropertyAccessor target;
 		private final IDataPropertyAccessor delegate;
 		
-		private final Map<FField, FDFieldOverwrite> mapping;
+		private final Map<FField, FDField> mapping;
 		private final DataPropertyAccessorHelper helper;
 		
 		public OverwriteAccessor(
-				FDCompoundOverwrites overwrites,
+				FDTypeOverwrites overwrites,
 				IDataPropertyAccessor delegate,
 				MappingGenericPropertyAccessor genericAccessor)
 		{
@@ -242,12 +242,13 @@ public class SpecCompoundHostsRef {
 			this.delegate = delegate;
 			this.helper = new DataPropertyAccessorHelper(genericAccessor, this);
 
-			// build mapping
 			this.mapping = Maps.newHashMap();
-			if (overwrites!=null) {
-				List<FDFieldOverwrite> fields = overwrites.getFields();
-				for(FDFieldOverwrite f : fields) {
-					this.mapping.put(f.getTarget(), f);
+			if (overwrites!=null && overwrites instanceof FDCompoundOverwrites) {
+				// build mapping for compound fields
+				if (overwrites!=null) {
+					for(FDField f : ((FDCompoundOverwrites)overwrites).getFields()) {
+						this.mapping.put(f.getTarget(), f);
+					}
 				}
 			}
 		}
@@ -256,7 +257,7 @@ public class SpecCompoundHostsRef {
 		public StringProp getStringProp (EObject obj) {
 			// check if this field is overwritten
 			if (mapping.containsKey(obj)) {
-				FDFieldOverwrite fo = mapping.get(obj);
+				FDField fo = mapping.get(obj);
 				String e = target.getEnum(fo, "StringProp");
 				if (e!=null)
 					return helper.convertStringProp(e);
@@ -267,7 +268,7 @@ public class SpecCompoundHostsRef {
 		@Override
 		public Integer getArrayProp (EObject obj) {
 			if (mapping.containsKey(obj)) {
-				FDFieldOverwrite fo = mapping.get(obj);
+				FDField fo = mapping.get(obj);
 				Integer v = target.getInteger(fo, "ArrayProp");
 				if (v!=null)
 					return v;
@@ -279,7 +280,7 @@ public class SpecCompoundHostsRef {
 		public Integer getSFieldProp (FField obj) {
 			// check if this field is overwritten
 			if (mapping.containsKey(obj)) {
-				FDFieldOverwrite fo = mapping.get(obj);
+				FDField fo = mapping.get(obj);
 				Integer v = target.getInteger(fo, "SFieldProp");
 				if (v!=null)
 					return v;
@@ -291,7 +292,7 @@ public class SpecCompoundHostsRef {
 		public Integer getUFieldProp (FField obj) {
 			// check if this field is overwritten
 			if (mapping.containsKey(obj)) {
-				FDFieldOverwrite fo = mapping.get(obj);
+				FDField fo = mapping.get(obj);
 				Integer v = target.getInteger(fo, "UFieldProp");
 				if (v!=null)
 					return v;
@@ -303,8 +304,8 @@ public class SpecCompoundHostsRef {
 		public IDataPropertyAccessor getOverwriteAccessor (FField obj) {
 			// check if this field is overwritten
 			if (mapping.containsKey(obj)) {
-				FDFieldOverwrite fo = mapping.get(obj);
-				FDCompoundOverwrites overwrites = fo.getOverwrites();
+				FDField fo = mapping.get(obj);
+				FDTypeOverwrites overwrites = fo.getOverwrites();
 				if (overwrites==null)
 					return this; // TODO: correct?
 				else

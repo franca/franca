@@ -41,6 +41,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDElement;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumType;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumValue;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumeration;
+import org.franca.deploymodel.dsl.fDeploy.FDEnumerationOverwrites;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumerator;
 import org.franca.deploymodel.dsl.fDeploy.FDField;
 import org.franca.deploymodel.dsl.fDeploy.FDInteger;
@@ -49,6 +50,8 @@ import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance;
 import org.franca.deploymodel.dsl.fDeploy.FDInterfaceRef;
 import org.franca.deploymodel.dsl.fDeploy.FDMethod;
 import org.franca.deploymodel.dsl.fDeploy.FDModel;
+import org.franca.deploymodel.dsl.fDeploy.FDOverwriteElement;
+import org.franca.deploymodel.dsl.fDeploy.FDPlainTypeOverwrites;
 import org.franca.deploymodel.dsl.fDeploy.FDPredefinedTypeId;
 import org.franca.deploymodel.dsl.fDeploy.FDProperty;
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl;
@@ -59,10 +62,13 @@ import org.franca.deploymodel.dsl.fDeploy.FDRootElement;
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification;
 import org.franca.deploymodel.dsl.fDeploy.FDString;
 import org.franca.deploymodel.dsl.fDeploy.FDStruct;
+import org.franca.deploymodel.dsl.fDeploy.FDStructOverwrites;
 import org.franca.deploymodel.dsl.fDeploy.FDType;
+import org.franca.deploymodel.dsl.fDeploy.FDTypeOverwrites;
 import org.franca.deploymodel.dsl.fDeploy.FDTypeRef;
 import org.franca.deploymodel.dsl.fDeploy.FDTypes;
 import org.franca.deploymodel.dsl.fDeploy.FDUnion;
+import org.franca.deploymodel.dsl.fDeploy.FDUnionOverwrites;
 import org.franca.deploymodel.dsl.fDeploy.FDValue;
 import org.franca.deploymodel.dsl.fDeploy.FDValueArray;
 import org.franca.deploymodel.dsl.fDeploy.FDeployPackage;
@@ -602,6 +608,44 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 		return false;
 	}
 
+	
+	// *****************************************************************************
+	// overwrite sections in deployment definitions 
+
+	@Check
+	public void checkOverwriteSections(FDTypeOverwrites elem) {
+		EObject parent = elem.eContainer();
+		if (parent instanceof FDOverwriteElement) {
+			FType targetType = FDModelUtils.getOverwriteTargetType((FDOverwriteElement)parent);
+			if (targetType==null) {
+				error("Cannot determine target type of overwrite section", parent,
+						FDeployPackage.Literals.FD_OVERWRITE_ELEMENT__OVERWRITES);
+			} else {
+				if (elem instanceof FDPlainTypeOverwrites) {
+					// FDPlainTypeOverwrites is always ok
+				} else {
+					if (targetType instanceof FStructType) {
+						if (! (elem instanceof FDStructOverwrites)) {
+							error("Invalid overwrite tag, use '#struct'", parent,
+									FDeployPackage.Literals.FD_OVERWRITE_ELEMENT__OVERWRITES);
+						}
+					} else if (targetType instanceof FUnionType) {
+						if (! (elem instanceof FDUnionOverwrites)) {
+							error("Invalid overwrite tag, use '#union'", parent,
+									FDeployPackage.Literals.FD_OVERWRITE_ELEMENT__OVERWRITES);
+						}
+					} else if (targetType instanceof FEnumerationType) {
+						if (! (elem instanceof FDEnumerationOverwrites)) {
+							error("Invalid overwrite tag, use '#enumeration'", parent,
+									FDeployPackage.Literals.FD_OVERWRITE_ELEMENT__OVERWRITES);
+						}
+					}
+				}
+			}
+		}
+		
+	}
+	
 	
 	// *****************************************************************************
 	// type system
