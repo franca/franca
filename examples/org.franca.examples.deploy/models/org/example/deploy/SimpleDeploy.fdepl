@@ -16,7 +16,12 @@ define org.example.spec.SimpleSpec for interface org.example.idl.SimpleInterface
 		in {
 			arg1 { Encoding = utf8 }
 			arg2 {
-				/f1 { Encoding = utf16 } // overwrite!
+				// overwrite!
+				#struct {
+					f1 {
+						Encoding = utf16
+					}
+				}
 			}
 		}
 	}
@@ -25,4 +30,31 @@ define org.example.spec.SimpleSpec for interface org.example.idl.SimpleInterface
 		f1 { Encoding = utf8 }
 		f2 { Encoding = utf8 }
 	}
+
+	array StringArray {
+		ArrayProp = 0
+	}
+
+	struct StructA {
+		field {
+			Encoding = utf8
+			
+			// for inline arrays, properties belong to the
+			// location where the array type is introduced.
+			ArrayProp = 0
+		}
+	}
+	
+	struct StructB {
+		field {
+			// for named array types, we have to use the
+			// type-overwrite feature to set the property to
+			// a different value as in the deployment of the
+			// array type itself (see above: "array StringArray"). 
+			# {
+				ArrayProp = 11
+			}
+		}
+	}
+
 }

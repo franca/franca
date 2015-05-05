@@ -14,4 +14,9 @@ interface SimpleInterface {
 		String f1
 		String f2		
 	}
+
+	struct StructA { String[] field }
+
+	array StringArray of String
+	struct StructB { StringArray field }
 }
