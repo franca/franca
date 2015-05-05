@@ -183,23 +183,21 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 		ctxt.getTarget().getElements.scopeFor
 	}
 
+	/**
+	 * Compute the target elements (of type FField) for a given FDField,
+	 * if the FDField is a child of a FDCompoundOverwrites section.</p>
+	 * 
+	 * I.e., ctxt will be either a struct overwrite section or a union
+	 * overwrite section. The actual available fields depend on the 
+	 * Franca type of the target element of the overwrite section's parent.
+	 */
 	def scope_FDField_target(FDCompoundOverwrites ctxt, EReference ref) {
-		val parent = ctxt.eContainer
-		val typeRef = 
-			switch (parent) {
-				FDAttribute: parent.getTarget().type
-				FDArgument: parent.getTarget().type
-				FDField: parent.getTarget().type
-				FDArray: parent.getTarget().elementType
-				default: null
-			}
-		if (typeRef!=null) {
-			val type = typeRef.actualDerived
-			if (type!=null) {
-				if (type instanceof FCompoundType) {
-					val compound = type as FCompoundType
-					return compound.elements.scopeFor
-				}
+		val parent = ctxt.eContainer as FDOverwriteElement
+		val type = parent.getOverwriteTargetType
+		if (type!=null) {
+			if (type instanceof FCompoundType) {
+				val compound = type as FCompoundType
+				return compound.elements.scopeFor
 			}
 		}
 		IScope.NULLSCOPE
@@ -266,6 +264,17 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 		owner.getPropertyDecls
 	}
 
+	/**
+	 * The properties of an overwrite section are determined by the
+	 * Franca type of the parent element (i.e., container element in
+	 * the deployment definition model hierarchy).</p>
+	 * 
+	 * Example: In a FDStructOverwrites section, the parent element
+	 * might be for example a FDAttribute. Validation will ensure that
+	 * the Franca type of the FDAttribute target (which is an FAttribute)
+	 * is an FStructType. Thus, the properties we are looking for here
+	 * are all struct-related properties from the deployment specification.</p>    
+	 */
 	def scope_FDProperty_decl(FDTypeOverwrites owner, EReference ref) {
 		val parent = owner.eContainer as FDOverwriteElement
 		val type = parent.getOverwriteTargetType
