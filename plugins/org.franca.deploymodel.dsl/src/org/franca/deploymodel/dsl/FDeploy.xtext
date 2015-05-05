@@ -139,10 +139,12 @@ FDInterface:
 		(properties+=FDProperty ((',')? properties+=FDProperty)*)?
 		
 		// properties for the interface's elements
-		attributes+=FDAttribute*		
-		methods+=FDMethod*		
-		broadcasts+=FDBroadcast*
-		types+=FDTypeDef*
+		(
+			attributes+=FDAttribute |		
+			methods+=FDMethod |
+			broadcasts+=FDBroadcast |
+			types+=FDTypeDef
+		)*
 	'}';
 
 FDAttribute:
