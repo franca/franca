@@ -39,6 +39,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDElement
 import org.franca.deploymodel.dsl.fDeploy.FDEnumType
 import org.franca.deploymodel.dsl.fDeploy.FDEnumValue
 import org.franca.deploymodel.dsl.fDeploy.FDEnumeration
+import org.franca.deploymodel.dsl.fDeploy.FDEnumerationOverwrites
 import org.franca.deploymodel.dsl.fDeploy.FDField
 import org.franca.deploymodel.dsl.fDeploy.FDInterface
 import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance
@@ -57,7 +58,6 @@ import org.franca.deploymodel.dsl.fDeploy.FDUnion
 import org.franca.deploymodel.dsl.fDeploy.FDeployPackage
 
 import static extension org.eclipse.xtext.scoping.Scopes.*
-import static extension org.franca.core.framework.FrancaHelpers.*
 import static extension org.franca.deploymodel.core.FDModelUtils.*
 
 class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
@@ -205,6 +205,25 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 
 	def scope_FDEnumValue_target(FDEnumeration ctxt, EReference ref) {
 		ctxt.getTarget().getEnumerators.scopeFor
+	}
+
+	/**
+	 * Compute the target elements (of type FEnumValue) for a given FDEnumValue,
+	 * if the FDEnumValue is a child of a FDEnumerationOverwrites section.</p>
+	 * 
+	 * The actual available enumerators depend on the Franca type of the
+	 * target element of the overwrite section's parent.
+	 */
+	def scope_FDEnumValue_target(FDEnumerationOverwrites ctxt, EReference ref) {
+		val parent = ctxt.eContainer as FDOverwriteElement
+		val type = parent.getOverwriteTargetType
+		if (type!=null) {
+			if (type instanceof FEnumerationType) {
+				val enumeration = type as FEnumerationType
+				return enumeration.enumerators.scopeFor
+			}
+		}
+		IScope.NULLSCOPE
 	}
 
 	// *****************************************************************************
