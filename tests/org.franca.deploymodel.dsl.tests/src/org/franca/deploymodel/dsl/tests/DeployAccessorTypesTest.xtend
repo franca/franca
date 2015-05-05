@@ -69,13 +69,22 @@ class DeployAccessorTypesTest extends DeployAccessorTestBase {
 		val type = attrE.type.actualDerived
 		assertTrue(type instanceof FEnumerationType)
 		val enumerationType = type as FEnumerationType
+		val e1 = enumerationType.enumerators.get(0)
+		val e2 = enumerationType.enumerators.get(1)
+		val e3 = enumerationType.enumerators.get(2)
 		
 		// access ignoring overwrites
 		assertEquals(30, accessor.getEnumerationProp(enumerationType))
+		assertEquals(35, accessor.getEnumeratorProp(e1))
+		assertEquals(36, accessor.getEnumeratorProp(e2))
+		assertEquals(37, accessor.getEnumeratorProp(e3))
 		
 		// access including overwrites (there are none)
 		val acc = accessor.getOverwriteAccessor(attrE)
 		assertEquals(135, acc.getEnumerationProp(enumerationType))
+		assertEquals(136, acc.getEnumeratorProp(e1))
+		assertEquals(36, acc.getEnumeratorProp(e2))
+		assertEquals(37, acc.getEnumeratorProp(e3))
 	}
 
 	// TODO: add more tests for other derived elements
