@@ -57,6 +57,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDProperty;
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl;
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyFlag;
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyHost;
+import org.franca.deploymodel.dsl.fDeploy.FDPropertySet;
 import org.franca.deploymodel.dsl.fDeploy.FDProvider;
 import org.franca.deploymodel.dsl.fDeploy.FDRootElement;
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification;
@@ -155,6 +156,17 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 				}
 			}
 		}
+	}
+
+
+	@Check
+	public void checkDuplicateProperties(FDPropertySet properties) {
+		ValidationHelpers.NameList names = ValidationHelpers.createNameList();
+		for(FDProperty p : properties.getItems()) {
+			names.add(p, p.getDecl().getName());
+		}
+		ValidationHelpers.checkDuplicates(this, names,
+				FDeployPackage.Literals.FD_PROPERTY__DECL, "property");
 	}
 
 	
