@@ -65,4 +65,46 @@ class ImportManager {
 	def getNeededFrancaTypes() {
 		this.neededFrancaTypes
 	}
+	
+	def genImports() '''
+		// TODO: actually generate needed imports
+		import java.util.Map;
+		
+		import org.eclipse.emf.ecore.EObject;
+		import org.example.spec.SpecCompoundHosts.IDataPropertyAccessor.StringProp;
+		import org.franca.core.franca.FArgument;
+		import org.franca.core.franca.FArrayType;
+		import org.franca.core.franca.FAttribute;
+		import org.franca.core.franca.FEnumerationType;
+		import org.franca.core.franca.FEnumerator;
+		import org.franca.core.franca.FField;
+		import org.franca.core.franca.FModelElement;
+		import org.franca.deploymodel.core.FDeployedInterface;
+		import org.franca.deploymodel.core.FDeployedTypeCollection;
+		import org.franca.deploymodel.core.MappingGenericPropertyAccessor;
+		import org.franca.deploymodel.dsl.fDeploy.FDCompoundOverwrites;
+		import org.franca.deploymodel.dsl.fDeploy.FDEnumValue;
+		import org.franca.deploymodel.dsl.fDeploy.FDEnumerationOverwrites;
+		import org.franca.deploymodel.dsl.fDeploy.FDField;
+		import org.franca.deploymodel.dsl.fDeploy.FDOverwriteElement;
+		import org.franca.deploymodel.dsl.fDeploy.FDTypeOverwrites;
+		
+		import com.google.common.collect.Maps;
+	'''
+/*
+		«IF needList»
+		import java.util.List;
+		import java.util.ArrayList;
+		«ENDIF»
+		«FOR t : neededFrancaTypes»
+		«IF t.equals("EObject")»
+		import org.eclipse.emf.ecore.EObject;
+		«ELSEIF t.equals("FDProvider") || t.equals("FDInterfaceInstance")»
+		import org.franca.deploymodel.dsl.fDeploy.«t»;
+		«ELSE»
+		import org.franca.core.franca.«t»;
+		«ENDIF»
+		«ENDFOR»
+ */
+
 }

@@ -21,7 +21,6 @@ import org.franca.deploymodel.core.MappingGenericPropertyAccessor;
 import org.franca.deploymodel.dsl.fDeploy.FDCompoundOverwrites;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumValue;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumerationOverwrites;
-import org.franca.deploymodel.dsl.fDeploy.FDEnumerator;
 import org.franca.deploymodel.dsl.fDeploy.FDField;
 import org.franca.deploymodel.dsl.fDeploy.FDOverwriteElement;
 import org.franca.deploymodel.dsl.fDeploy.FDTypeOverwrites;
@@ -34,33 +33,31 @@ public class SpecCompoundHostsRef {
 	 * Interface for data deployment properties for 'org.example.spec.SpecCompoundHosts' specification
 	 * 
 	 * This is the data types related part only.
-	 */		
+	 */
 	public interface IDataPropertyAccessor
 	{
-		public Integer getStructProp(EObject obj);
-		
-		public Integer getUnionProp(EObject obj);
-		
 		public enum StringProp {
 			p, q, r, s, t, u, v, w, x, y, z
 		}
-		public StringProp getStringProp (EObject obj);
+		public StringProp getStringProp(EObject obj);
 		
-		public Integer getSFieldProp (FField obj);
+		public Integer getEnumerationProp(FEnumerationType obj);
+
+		public Integer getEnumeratorProp(FEnumerator obj);
 		
-		public Integer getUFieldProp (FField obj);
+		public Integer getArrayProp(FArrayType obj);
+		public Integer getArrayProp(FField obj);
+
+		public Integer getStructProp(EObject obj);
 		
-		public Integer getArrayProp (FArrayType obj);
-		public Integer getArrayProp (FField obj);
-
-		public Integer getEnumerationProp (FEnumerationType obj);
-
-		public Integer getEnumeratorProp (FEnumerator obj);
-
-		// TODO: add other data-related accessor functions here
+		public Integer getSFieldProp(FField obj);
+		
+		public Integer getUnionProp(EObject obj);
+		
+		public Integer getUFieldProp(FField obj);
 		
 		// overwrite-aware accessors
-		public IDataPropertyAccessor getOverwriteAccessor (FField obj);
+		public IDataPropertyAccessor getOverwriteAccessor(FField obj);
 	}
 
 
@@ -80,7 +77,7 @@ public class SpecCompoundHostsRef {
 			this.owner = owner;
 		}
 		
-		public StringProp convertStringProp (String val) {
+		public StringProp convertStringProp(String val) {
 			if (val.equals("p"))
 				return StringProp.p; else 
 			if (val.equals("q"))
@@ -106,7 +103,7 @@ public class SpecCompoundHostsRef {
 			return null;
 		}
 
-		protected IDataPropertyAccessor getOverwriteAccessorAux (FModelElement obj) {
+		protected IDataPropertyAccessor getOverwriteAccessorAux(FModelElement obj) {
 			FDOverwriteElement fd = (FDOverwriteElement)target.getFDElement(obj);
 			FDTypeOverwrites overwrites = fd.getOverwrites();
 			if (overwrites==null)
@@ -125,61 +122,61 @@ public class SpecCompoundHostsRef {
 		final private MappingGenericPropertyAccessor target;
 		private final DataPropertyAccessorHelper helper;
 
-		public TypeCollectionPropertyAccessor (FDeployedTypeCollection target) {
+		public TypeCollectionPropertyAccessor(FDeployedTypeCollection target) {
 			this.target = target;
 			this.helper = new DataPropertyAccessorHelper(target, this);
 		}
 		
 		@Override
-		public StringProp getStringProp (EObject obj) {
+		public StringProp getStringProp(EObject obj) {
 			String e = target.getEnum(obj, "StringProp");
 			if (e==null) return null;
 			return helper.convertStringProp(e);
 		}
 		
 		@Override
-		public Integer getArrayProp (FArrayType obj) {
-			return target.getInteger(obj, "ArrayProp");
-		}
-		
-		@Override
-		public Integer getArrayProp (FField obj) {
-			return target.getInteger(obj, "ArrayProp");
-		}
-		
-		@Override
-		public Integer getEnumerationProp (FEnumerationType obj) {
+		public Integer getEnumerationProp(FEnumerationType obj) {
 			return target.getInteger(obj, "EnumerationProp");
 		}
 		
 		@Override
-		public Integer getEnumeratorProp (FEnumerator obj) {
+		public Integer getEnumeratorProp(FEnumerator obj) {
 			return target.getInteger(obj, "EnumeratorProp");
 		}
 
 		@Override
-		public Integer getStructProp (EObject obj) {
+		public Integer getArrayProp(FArrayType obj) {
+			return target.getInteger(obj, "ArrayProp");
+		}
+		
+		@Override
+		public Integer getArrayProp(FField obj) {
+			return target.getInteger(obj, "ArrayProp");
+		}
+		
+		@Override
+		public Integer getStructProp(EObject obj) {
 			return target.getInteger(obj, "StructProp");
 		}
 		
 		@Override
-		public Integer getSFieldProp (FField obj) {
+		public Integer getSFieldProp(FField obj) {
 			return target.getInteger(obj, "SFieldProp");
 		}
 		
 		@Override
-		public Integer getUnionProp (EObject obj) {
+		public Integer getUnionProp(EObject obj) {
 			return target.getInteger(obj, "UnionProp");
 		}
 		
 		@Override
-		public Integer getUFieldProp (FField obj) {
+		public Integer getUFieldProp(FField obj) {
 			return target.getInteger(obj, "UFieldProp");
 		}
 		
 
 		@Override
-		public IDataPropertyAccessor getOverwriteAccessor (FField obj) {
+		public IDataPropertyAccessor getOverwriteAccessor(FField obj) {
 			return helper.getOverwriteAccessorAux(obj);
 		}
 	}
@@ -187,83 +184,91 @@ public class SpecCompoundHostsRef {
 	
 	/**
 	 * Accessor for deployment properties for 'org.example.spec.SpecCompoundHosts' specification
-	 */		
+	 */
 	public static class InterfacePropertyAccessor implements IDataPropertyAccessor {
 
 		final private MappingGenericPropertyAccessor target;
 		private final DataPropertyAccessorHelper helper;
 
-		public InterfacePropertyAccessor (FDeployedInterface target) {
+		public InterfacePropertyAccessor(FDeployedInterface target) {
 			this.target = target;
 			this.helper = new DataPropertyAccessorHelper(target, this);
 		}
 		
 		@Override
-		public StringProp getStringProp (EObject obj) {
+		public StringProp getStringProp(EObject obj) {
 			String e = target.getEnum(obj, "StringProp");
 			if (e==null) return null;
 			return helper.convertStringProp(e);
 		}
 		
-		public Integer getAttributeProp (FAttribute obj) {
+		public Integer getAttributeProp(FAttribute obj) {
 			return target.getInteger(obj, "AttributeProp");
 		}
 		
-		public Integer getArgumentProp (FArgument obj) {
+		public Integer getArgumentProp(FArgument obj) {
 			return target.getInteger(obj, "ArgumentProp");
 		}
 		
 		@Override
-		public Integer getArrayProp (FArrayType obj) {
-			return target.getInteger(obj, "ArrayProp");
-		}
-
-		@Override
-		public Integer getArrayProp (FField obj) {
-			return target.getInteger(obj, "ArrayProp");
-		}
-		
-		@Override
-		public Integer getEnumerationProp (FEnumerationType obj) {
+		public Integer getEnumerationProp(FEnumerationType obj) {
 			return target.getInteger(obj, "EnumerationProp");
 		}
 
 		@Override
-		public Integer getEnumeratorProp (FEnumerator obj) {
+		public Integer getEnumeratorProp(FEnumerator obj) {
 			return target.getInteger(obj, "EnumeratorProp");
 		}
 
 		@Override
-		public Integer getStructProp (EObject obj) {
+		public Integer getArrayProp(FArrayType obj) {
+			return target.getInteger(obj, "ArrayProp");
+		}
+
+		@Override
+		public Integer getArrayProp(FField obj) {
+			return target.getInteger(obj, "ArrayProp");
+		}
+		
+		public Integer getArrayProp(FAttribute obj) {
+			return target.getInteger(obj, "ArrayProp");
+		}
+
+		public Integer getArrayProp(FArgument obj) {
+			return target.getInteger(obj, "ArrayProp");
+		}
+
+		@Override
+		public Integer getStructProp(EObject obj) {
 			return target.getInteger(obj, "StructProp");
 		}
 		
 		@Override
-		public Integer getSFieldProp (FField obj) {
+		public Integer getSFieldProp(FField obj) {
 			return target.getInteger(obj, "SFieldProp");
 		}
 		
 		@Override
-		public Integer getUnionProp (EObject obj) {
+		public Integer getUnionProp(EObject obj) {
 			return target.getInteger(obj, "UnionProp");
 		}
 		
 		@Override
-		public Integer getUFieldProp (FField obj) {
+		public Integer getUFieldProp(FField obj) {
 			return target.getInteger(obj, "UFieldProp");
 		}
 		
 
-		public IDataPropertyAccessor getOverwriteAccessor (FAttribute obj) {
+		public IDataPropertyAccessor getOverwriteAccessor(FAttribute obj) {
 			return helper.getOverwriteAccessorAux(obj);
 		}
 
-		public IDataPropertyAccessor getOverwriteAccessor (FArgument obj) {
+		public IDataPropertyAccessor getOverwriteAccessor(FArgument obj) {
 			return helper.getOverwriteAccessorAux(obj);
 		}
 
 		@Override
-		public IDataPropertyAccessor getOverwriteAccessor (FField obj) {
+		public IDataPropertyAccessor getOverwriteAccessor(FField obj) {
 			return helper.getOverwriteAccessorAux(obj);
 		}
 		
@@ -275,7 +280,7 @@ public class SpecCompoundHostsRef {
 	 */		
 	public static class OverwriteAccessor implements IDataPropertyAccessor {
 
-		final private MappingGenericPropertyAccessor target;
+		private final MappingGenericPropertyAccessor target;
 		private final IDataPropertyAccessor delegate;
 
 		private final FDTypeOverwrites overwrites;
@@ -312,6 +317,18 @@ public class SpecCompoundHostsRef {
 		}
 		
 		@Override
+		public StringProp getStringProp(EObject obj) {
+			// check if this field is overwritten
+			if (mappedFields.containsKey(obj)) {
+				FDField fo = mappedFields.get(obj);
+				String e = target.getEnum(fo, "StringProp");
+				if (e!=null)
+					return helper.convertStringProp(e);
+			}
+			return delegate.getStringProp(obj);
+		}
+
+		@Override
 		public Integer getStructProp(EObject obj) {
 			if (overwrites!=null) {
 				Integer v = target.getInteger(overwrites, "StructProp");
@@ -332,18 +349,6 @@ public class SpecCompoundHostsRef {
 		}
 
 		@Override
-		public StringProp getStringProp (EObject obj) {
-			// check if this field is overwritten
-			if (mappedFields.containsKey(obj)) {
-				FDField fo = mappedFields.get(obj);
-				String e = target.getEnum(fo, "StringProp");
-				if (e!=null)
-					return helper.convertStringProp(e);
-			}
-			return delegate.getStringProp(obj);
-		}
-
-		@Override
 		public Integer getArrayProp(FArrayType obj) {
 			if (overwrites!=null) {
 				Integer v = target.getInteger(overwrites, "ArrayProp");
@@ -354,7 +359,7 @@ public class SpecCompoundHostsRef {
 		}
 
 		@Override
-		public Integer getArrayProp (FField obj) {
+		public Integer getArrayProp(FField obj) {
 			if (mappedFields.containsKey(obj)) {
 				FDField fo = mappedFields.get(obj);
 				Integer v = target.getInteger(fo, "ArrayProp");

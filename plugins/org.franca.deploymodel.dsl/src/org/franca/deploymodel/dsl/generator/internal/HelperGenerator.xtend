@@ -36,9 +36,9 @@ class HelperGenerator {
 				«d.genProperties»
 			«ENDFOR»
 			
-			public IDataPropertyAccessor getOverwriteAccessorAux (FModelElement obj) {
+			protected IDataPropertyAccessor getOverwriteAccessorAux(FModelElement obj) {
 				FDOverwriteElement fd = (FDOverwriteElement)target.getFDElement(obj);
-				FDCompoundOverwrites overwrites = fd.getOverwrites();
+				FDTypeOverwrites overwrites = fd.getOverwrites();
 				if (overwrites==null)
 					return owner;
 				else
@@ -64,7 +64,7 @@ class HelperGenerator {
 			val enumerator = type.complex as FDEnumType
 			 
 			'''
-			public «etname» convert«etname» (String val) {
+			public «etname» convert«etname»(String val) {
 				«FOR e : enumerator.enumerators SEPARATOR " else "»
 				if (val.equals("«e.name»"))
 					return «etname».«e.name»;

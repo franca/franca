@@ -7,6 +7,7 @@
 *******************************************************************************/
 package org.franca.deploymodel.dsl.generator.internal
 
+import java.util.List
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyHost
 
 class HostLogic {
@@ -17,7 +18,7 @@ class HostLogic {
 			case INSTANCES:        null  // ignore
 			case TYPE_COLLECTIONS: "FTypeCollection"
 			case INTERFACES:       forInterfaces.use("FInterface")
-			case ATTRIBUTES:       forInterfaces.use("FInterface")
+			case ATTRIBUTES:       forInterfaces.use("FAttribute")
 			case METHODS:          forInterfaces.use("FMethod")
 			case BROADCASTS:       forInterfaces.use("FBroadcast")
 			case ARGUMENTS:        forInterfaces.use("FArgument")
@@ -34,6 +35,10 @@ class HostLogic {
 		}
 	}
 	
+	def static isInterfaceOnly(FDPropertyHost host) {
+		host.getFrancaType(false)==null
+	}
+
 	def static private use(boolean forInterfaces, String type) {
 		if (forInterfaces)
 			type

@@ -7,56 +7,39 @@
 *******************************************************************************/
 package org.franca.deploymodel.dsl.generator.internal
 
-import org.franca.deploymodel.dsl.fDeploy.FDDeclaration
-import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl
-import org.franca.deploymodel.dsl.fDeploy.FDPropertyHost
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification
-import org.franca.deploymodel.dsl.fDeploy.FDEnumType
 
-class InterfaceAccessorGenerator {
+class InterfaceAccessorGenerator extends CommonAccessorMethodGenerator {
 	
 	def generate(FDSpecification spec) '''
 		/**
 		 * Accessor for deployment properties for '«spec.name»' specification
-		 */		
+		 */
 		public static class InterfacePropertyAccessor implements IDataPropertyAccessor {
 	
 			final private MappingGenericPropertyAccessor target;
 			private final DataPropertyAccessorHelper helper;
 	
-			public InterfacePropertyAccessor (FDeployedInterface target) {
+			public InterfacePropertyAccessor(FDeployedInterface target) {
 				this.target = target;
 				this.helper = new DataPropertyAccessorHelper(target, this);
 			}
 			
-				«FOR d : spec.declarations»
-				«d.genProperties»
-			«ENDFOR»
+			«spec.generateAccessMethods(true)»
 			
-			public IDataPropertyAccessor getOverwriteAccessor (FAttribute obj) {
+			public IDataPropertyAccessor getOverwriteAccessor(FAttribute obj) {
 				return helper.getOverwriteAccessorAux(obj);
 			}
 	
-			public IDataPropertyAccessor getOverwriteAccessor (FArgument obj) {
+			public IDataPropertyAccessor getOverwriteAccessor(FArgument obj) {
 				return helper.getOverwriteAccessorAux(obj);
 			}
 	
 			@Override
-			public IDataPropertyAccessor getOverwriteAccessor (FField obj) {
+			public IDataPropertyAccessor getOverwriteAccessor(FField obj) {
 				return helper.getOverwriteAccessorAux(obj);
 			}
 		}
-	'''
-
-
-	def private genProperties (FDDeclaration decl) '''
-		«FOR p : decl.properties»
-		«p.genProperty(decl.host)»
-		«ENDFOR»
-	'''
-	
-	def private genProperty (FDPropertyDecl it, FDPropertyHost host) '''
-		«it.name»
 	'''
 	
 }

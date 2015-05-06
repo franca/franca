@@ -8,12 +8,13 @@
 package org.franca.deploymodel.dsl.generator.internal
 
 import com.google.inject.Inject
-import org.franca.deploymodel.dsl.fDeploy.FDDeclaration
+import org.franca.deploymodel.dsl.fDeploy.FDEnumType
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl
-import org.franca.deploymodel.dsl.fDeploy.FDPropertyHost
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification
 
-class OverwriteAccessorGenerator {
+import static extension org.franca.deploymodel.dsl.generator.internal.GeneratorHelper.*
+
+class OverwriteAccessorGenerator extends AccessMethodGenerator {
 
 	@Inject extension ImportManager
 	
@@ -23,14 +24,16 @@ class OverwriteAccessorGenerator {
 		 */		
 		public static class OverwriteAccessor implements IDataPropertyAccessor {
 		
-			final private MappingGenericPropertyAccessor target;
+			private final MappingGenericPropertyAccessor target;
 			private final IDataPropertyAccessor delegate;
 			
-			private final Map<FField, FDFieldOverwrite> mapping;
+			private final FDTypeOverwrites overwrites;
+			private final Map<FField, FDField> mappedFields;
+			private final Map<FEnumerator, FDEnumValue> mappedEnumerators;
 			private final DataPropertyAccessorHelper helper;
-			
+		
 			public OverwriteAccessor(
-					FDCompoundOverwrites overwrites,
+					FDTypeOverwrites overwrites,
 					IDataPropertyAccessor delegate,
 					MappingGenericPropertyAccessor genericAccessor)
 			{
@@ -38,22 +41,29 @@ class OverwriteAccessorGenerator {
 				this.delegate = delegate;
 				this.helper = new DataPropertyAccessorHelper(genericAccessor, this);
 		
-				// build mapping
-				this.mapping = Maps.newHashMap();
+				this.overwrites = overwrites;
+				this.mappedFields = Maps.newHashMap();
+				this.mappedEnumerators = Maps.newHashMap();
 				if (overwrites!=null) {
-					List<FDFieldOverwrite> fields = overwrites.getFields();
-					for(FDFieldOverwrite f : fields) {
-						this.mapping.put(f.getTarget(), f);
+					if (overwrites instanceof FDCompoundOverwrites) {
+						// build mapping for compound fields
+						for(FDField f : ((FDCompoundOverwrites)overwrites).getFields()) {
+							this.mappedFields.put(f.getTarget(), f);
+						}
+					}
+					if (overwrites instanceof FDEnumerationOverwrites) {
+						// build mapping for enumerators
+						for(FDEnumValue e : ((FDEnumerationOverwrites)overwrites).getEnumerators()) {
+							this.mappedEnumerators.put(e.getTarget(), e);
+						}
 					}
 				}
 			}
-		
-			«FOR d : spec.declarations»
-				«d.genProperties»
-			«ENDFOR»
+			
+			«spec.generateAccessMethods(true)»
 			
 			@Override
-			public IDataPropertyAccessor getOverwriteAccessor (FField obj) {
+			public IDataPropertyAccessor getOverwriteAccessor(FField obj) {
 				// check if this field is overwritten
 				if (mapping.containsKey(obj)) {
 					FDFieldOverwrite fo = mapping.get(obj);
@@ -71,13 +81,48 @@ class OverwriteAccessorGenerator {
 	'''
 
 
-	def private genProperties (FDDeclaration decl) '''
-		«FOR p : decl.properties»
-		«p.genProperty(decl.host)»
-		«ENDFOR»
+	override genMethod(
+		FDPropertyDecl it,
+		String francaType,
+		boolean isData
+	) '''
+		«IF isData»
+		@Override
+		«ENDIF»
+		public «type.javaType» «methodName»(«francaType» obj) {
+			return target.get«type.getter»(obj, "«name»");
+		}
 	'''
-	
-	def private genProperty (FDPropertyDecl it, FDPropertyHost host) '''
+
+	override genEnumMethod(
+		FDPropertyDecl it,
+		String francaType,
+		String enumType,
+		String returnType,
+		FDEnumType enumerator,
+		boolean isData
+	) '''
+		«IF isData»
+		@Override
+		«ENDIF»
+		public «returnType» «methodName»(«francaType» obj) {
+			«type.javaType» e = target.getEnum(obj, "«enumType»");
+			if (e==null) return null;
+			«IF type.array!=null»
+			List<«enumType»> es = new ArrayList<«enumType»>();
+			for(String ev : e) {
+				«enumType» v = helper.convert«enumType»(ev);
+				if (v==null) {
+					return null;
+				} else {
+					es.add(v);
+				}
+			}
+			return es;
+			«ELSE»
+			return helper.convert«enumType»(e);
+			«ENDIF»
+		}
 	'''
 	
 }

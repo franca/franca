@@ -25,4 +25,5 @@ Import-Package: org.apache.commons.logging,
  org.hamcrest;core=split,
  org.hamcrest.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Export-Package: org.franca.core.dsl
+Export-Package: org.franca.core.dsl,
+ org.franca.core.dsl.tests.util

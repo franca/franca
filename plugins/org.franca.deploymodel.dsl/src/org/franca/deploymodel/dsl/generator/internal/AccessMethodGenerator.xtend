@@ -1,0 +1,94 @@
+package org.franca.deploymodel.dsl.generator.internal
+
+import org.franca.deploymodel.dsl.fDeploy.FDDeclaration
+import org.franca.deploymodel.dsl.fDeploy.FDEnumType
+import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl
+import org.franca.deploymodel.dsl.fDeploy.FDPropertyHost
+import org.franca.deploymodel.dsl.fDeploy.FDSpecification
+
+import static extension org.franca.deploymodel.dsl.generator.internal.HostLogic.*
+import static extension org.franca.deploymodel.dsl.generator.internal.GeneratorHelper.*
+
+abstract class AccessMethodGenerator {
+	
+	def generateAccessMethods (FDSpecification spec, boolean forInterfaces) '''
+		«FOR d : spec.declarations»
+			«d.genProperties(forInterfaces)»
+		«ENDFOR»
+	'''
+
+	abstract def protected CharSequence genMethod(
+		FDPropertyDecl it,
+		String francaType,
+		boolean isData
+	)
+	
+	abstract def protected CharSequence genEnumMethod(
+		FDPropertyDecl it,
+		String francaType,
+		String enumType,
+		String returnType,
+		FDEnumType enumerator,
+		boolean isData
+	)
+	
+	def private genProperties(FDDeclaration decl, boolean forInterfaces) '''
+		«IF decl.properties.size > 0 && decl.host.getFrancaType(forInterfaces)!=null»
+			// host '«decl.host.getName»'
+			«FOR p : decl.properties»
+			«p.genProperty(decl.host, forInterfaces)»
+			«ENDFOR»
+			
+		«ENDIF»
+	'''
+	
+	def private genProperty(FDPropertyDecl pd, FDPropertyHost host, boolean forInterfaces) {
+		if (host==FDPropertyHost::ARRAYS) {
+			// special handling for ARRAYS,
+			// might be explicit array types or inline arrays
+			'''
+				«genProperty(pd, host, "FArrayType", false)»
+				«genProperty(pd, host, "FField", false)»
+				«IF forInterfaces»
+				«genProperty(pd, host, "FAttribute", true)»
+				«genProperty(pd, host, "FArgument", true)»
+				«ENDIF»
+			'''
+		} else {
+			val ftype = host.getFrancaType(forInterfaces)
+			genProperty(pd, host, ftype, false)
+		}
+	}
+	
+
+	def private genProperty(
+		FDPropertyDecl it,
+		FDPropertyHost host,
+		String francaType,
+		boolean forceInterfaceOnly
+	) {
+		// TODO: neededFrancaTypes.add(ftype)
+		val isOnlyForInterface = forceInterfaceOnly || host.isInterfaceOnly 
+		if (francaType!=null) {
+			if (isEnum) {
+				val enumType = name.toFirstUpper
+				val retType =
+					if (type.array==null) {
+						enumType
+					} else {
+						// TODO: setNeedArrayList
+						enumType.genListType.toString
+					}
+				val enumerator = type.complex as FDEnumType
+				genEnumMethod(francaType, enumType, retType, enumerator, !isOnlyForInterface)
+			} else {
+				genMethod(francaType, !isOnlyForInterface)
+			}
+		} else
+			""
+	}
+
+	def private isEnum(FDPropertyDecl it) {
+		type.complex!=null && type.complex instanceof FDEnumType
+	}
+}

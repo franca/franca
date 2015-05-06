@@ -74,7 +74,7 @@ class FDeployGenerator implements IGenerator {
 	}
 	
 	def private generateCombinedClass(FDSpecification spec) '''
-		public class SpecCompoundHostsRef {
+		public class «spec.classname» {
 
 			«genInterface.generate(spec)»
 
@@ -113,21 +113,8 @@ class FDeployGenerator implements IGenerator {
 		package «spec.getPackage»;
 		
 		«ENDIF»
-		«IF needList»
-		import java.util.List;
-		import java.util.ArrayList;
-		«ENDIF»
-		«FOR t : neededFrancaTypes»
-		«IF t.equals("EObject")»
-		import org.eclipse.emf.ecore.EObject;
-		«ELSEIF t.equals("FDProvider") || t.equals("FDInterfaceInstance")»
-		import org.franca.deploymodel.dsl.fDeploy.«t»;
-		«ELSE»
-		import org.franca.core.franca.«t»;
-		«ENDIF»
-		«ENDFOR»
-		import org.franca.deploymodel.core.«supportingClass»;
-		
+		«genImports»
+
 	'''
 
 
@@ -135,7 +122,7 @@ class FDeployGenerator implements IGenerator {
 	def generateClass (FDSpecification spec) '''
 		/**
 		 * Accessor for deployment properties for '«spec.name»' specification
-		 */		
+		 */
 		public class «spec.classname»
 			«IF spec.base!=null»extends «spec.base.getPackage».«spec.base.classname»«ENDIF»
 		{
@@ -299,14 +286,9 @@ class FDeployGenerator implements IGenerator {
 	}
 
 	def classname (FDSpecification it) {
-		val type = switch(paType){
-			case PA_INTERFACE: "Interface"
-			case PA_PROVIDER: "Provider"
-			case PA_TYPE_COLLECTION: "TypeCollection"			
-		}
 		val sep = name.lastIndexOf(".")
 		val basename = if (sep>0) name.substring(sep+1) else name
-		basename.toFirstUpper + type + "PropertyAccessor"
+		basename.toFirstUpper
 	}
 
 	def getSupportingClass() {

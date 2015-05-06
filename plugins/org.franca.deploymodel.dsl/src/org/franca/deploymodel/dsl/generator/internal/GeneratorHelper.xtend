@@ -38,4 +38,9 @@ class GeneratorHelper {
 		val t = decl.type.complex
 		t!=null && (t instanceof FDEnumType)
 	}
+	
+	def static genListType(String type) '''List<«type»>'''
+	
+	def static getMethodName(FDPropertyDecl it) '''get«name.toFirstUpper»'''
+
 }

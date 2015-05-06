@@ -15,9 +15,8 @@ import org.franca.deploymodel.dsl.fDeploy.FDPropertyHost
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification
 
 import static extension org.franca.deploymodel.dsl.generator.internal.GeneratorHelper.*
-import static extension org.franca.deploymodel.dsl.generator.internal.HostLogic.*
 
-class IDataGenerator {
+class IDataGenerator extends AccessMethodGenerator {
 
 	@Inject extension ImportManager
 	
@@ -26,63 +25,37 @@ class IDataGenerator {
 		 * Interface for data deployment properties for '«spec.name»' specification
 		 * 
 		 * This is the data types related part only.
-		 */		
+		 */
 		public interface IDataPropertyAccessor
 		{
-			«FOR d : spec.declarations»
-				«d.genProperties»
-			«ENDFOR»
+			«spec.generateAccessMethods(false)»
 			
 			// overwrite-aware accessors
-			public IDataPropertyAccessor getOverwriteAccessor (FField obj);
+			public IDataPropertyAccessor getOverwriteAccessor(FField obj);
 		}
 	'''
 
-
-	def private genProperties (FDDeclaration decl) '''
-		«FOR p : decl.properties»
-		«p.genProperty(decl.host)»
-		«ENDFOR»
+	override genMethod(
+		FDPropertyDecl it,
+		String francaType,
+		boolean isData
+	) '''
+		public «type.javaType» «methodName»(«francaType» obj);
 	'''
-	
-	def private genProperty (FDPropertyDecl it, FDPropertyHost host) {
-		val ftype = host.getFrancaType(false)
-//		val 
-//		neededFrancaTypes.add(ftype)
-		val etname = name.toFirstUpper
-		val lname =
-			if (type.array==null) {
-				etname
-			} else {
-				setNeedArrayList
-				etname.genListType
-			}
 
-		if (ftype!=null)
-			'''
-				// host '«host.getName»'
-				«genEnumDecl»
-				public «type.javaType» get«name.toFirstUpper» («ftype» obj);
-
-			'''
-		else
-			""
-	}
-	
-//	def private getReturnType
-	
-	def private genEnumDecl(FDPropertyDecl it) {
-		if (type.complex!=null && type.complex instanceof FDEnumType) {
-			val etname = name.toFirstUpper
-			val enumerator = type.complex as FDEnumType
-			 
-			'''
-			public enum «etname» {
-				«FOR e : enumerator.enumerators SEPARATOR ", "»«e.name»«ENDFOR»
-			}
-			'''
-		} else {
-			""
+	override genEnumMethod(
+		FDPropertyDecl it,
+		String francaType,
+		String enumType,
+		String returnType,
+		FDEnumType enumerator,
+		boolean isData
+	) '''
+		public enum «enumType» {
+			«FOR e : enumerator.enumerators SEPARATOR ", "»«e.name»«ENDFOR»
 		}
-	}	
+		public «returnType» «methodName»(«francaType» obj);
+	'''
+		
 }
+
