@@ -44,8 +44,8 @@ location "http://download.eclipse.org/tools/gef/gef4/updates/integration" {
 
 
 // dbusxml, needed for D-Bus connector
-location "http://dbus-emf-model.eclipselabs.org.codespot.com/git/update_site/releases/" {
-	model.emf.dbusxml.feature.feature.group [0.7.8,1.0.0)
+location "http://kbirken.github.io/dbus-emf-model/releases/" {
+	model.emf.dbusxml.feature.feature.group [0.8.0,1.0.0)
 }
 
 // etrice, needed for eTrice connector

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/mbarbero/fr.obeo.releng.targetplatform -->
-<target name="Franca Target Platform - Eclipse 4.4" sequenceNumber="1418904437">
+<target name="Franca Target Platform - Eclipse 4.4" sequenceNumber="1430908952">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.sdk.feature.group" version="4.4.0.v20140925-0400"/>
@@ -34,8 +34,8 @@
       <repository location="http://download.eclipse.org/tools/gef/gef4/updates/integration"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="model.emf.dbusxml.feature.feature.group" version="0.7.8.201401151351"/>
-      <repository location="http://dbus-emf-model.eclipselabs.org.codespot.com/git/update_site/releases/"/>
+      <unit id="model.emf.dbusxml.feature.feature.group" version="0.8.0.201505060831"/>
+      <repository location="http://kbirken.github.io/dbus-emf-model/releases/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.jdt.junit.runners.feature.feature.group" version="0.1.0.201411181552"/>
