@@ -12,7 +12,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.xtext,
  org.eclipse.xtext.xbase.lib,
  org.eclipse.xtend.typesystem.emf;visibility:=reexport,
- model.emf.dbusxml;bundle-version="0.7.8";visibility:=reexport,
+ model.emf.dbusxml;bundle-version="0.8.0";visibility:=reexport,
  org.franca.core;bundle-version="0.9.1",
  org.franca.core.dsl;bundle-version="0.9.1"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
