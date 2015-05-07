@@ -18,12 +18,12 @@ import org.franca.deploymodel.dsl.fDeploy.FDEnumerator;
 import org.franca.deploymodel.dsl.fDeploy.FDInteger;
 import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance;
 import org.franca.deploymodel.dsl.fDeploy.FDInterfaceRef;
-import org.franca.deploymodel.dsl.fDeploy.FDOverwriteElement;
 import org.franca.deploymodel.dsl.fDeploy.FDProperty;
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl;
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyFlag;
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification;
 import org.franca.deploymodel.dsl.fDeploy.FDString;
+import org.franca.deploymodel.dsl.fDeploy.FDTypeOverwrites;
 import org.franca.deploymodel.dsl.fDeploy.FDValue;
 import org.franca.deploymodel.dsl.fDeploy.FDValueArray;
 
@@ -242,7 +242,7 @@ public class GenericPropertyAccessor {
 		}
 
 		// check for overwrite case
-		if (elem instanceof FDOverwriteElement) {
+		if (isOverwrite(elem)) {
 			// this is an overwrite element, ignore defaults
 			return null;
 		}
@@ -262,7 +262,16 @@ public class GenericPropertyAccessor {
 		return null;
 	}
 
-	
+	private static boolean isOverwrite (FDElement elem) {
+		EObject e = elem;
+		while (e!=null) {
+			e = e.eContainer();
+			if (e!=null && e instanceof FDTypeOverwrites)
+				return true;
+		}
+		return false;
+	}
+
 	public static FDComplexValue getDefault (FDPropertyDecl decl) {
 		for(FDPropertyFlag flag : decl.getFlags()) {
 			if (flag.getDefault()!=null) {

@@ -1,9 +1,6 @@
 package org.franca.deploymodel.dsl.tests
 
 import com.google.inject.Inject
-import java.io.BufferedReader
-import java.io.FileReader
-import java.io.IOException
 import java.util.ArrayList
 import java.util.Arrays
 import org.eclipse.emf.common.util.URI
@@ -12,8 +9,6 @@ import org.eclipse.xtext.generator.IGenerator
 import org.eclipse.xtext.generator.InMemoryFileSystemAccess
 import org.eclipse.xtext.junit4.InjectWith
 import org.eclipselabs.xtext.utils.unittesting.XtextRunner2
-import org.eclipselabs.xtext.utils.unittesting.XtextTest
-import org.franca.core.dsl.tests.util.JavaFileComparer
 import org.franca.deploymodel.dsl.FDeployTestsInjectorProvider
 import org.franca.deploymodel.dsl.tests.memcompiler.ClassAnalyzer
 import org.franca.deploymodel.dsl.tests.memcompiler.InMemoryFileSystemAccessCompiler

@@ -18,10 +18,15 @@ class CommonAccessorMethodGenerator extends AccessMethodGenerator {
 		«IF isData»
 		@Override
 		«ENDIF»
+		«generateMethod(francaType)»
+	'''
+
+	def generateMethod(FDPropertyDecl it, String francaType) '''
 		public «type.javaType» «methodName»(«francaType» obj) {
 			return target.get«type.getter»(obj, "«name»");
 		}
 	'''
+
 
 	override genEnumMethod(
 		FDPropertyDecl it,
@@ -34,13 +39,24 @@ class CommonAccessorMethodGenerator extends AccessMethodGenerator {
 		«IF isData»
 		@Override
 		«ENDIF»
+		«generateEnumMethod(francaType, enumType, returnType, enumerator)»
+	'''
+	
+	
+	def generateEnumMethod(
+		FDPropertyDecl it,
+		String francaType,
+		String enumType,
+		String returnType,
+		FDEnumType enumerator
+	) '''
 		public «returnType» «methodName»(«francaType» obj) {
-			«type.javaType» e = target.getEnum(obj, "«enumType»");
+			«type.javaType» e = target.get«type.getter»(obj, "«enumType»");
 			if (e==null) return null;
 			«IF type.array!=null»
 			List<«enumType»> es = new ArrayList<«enumType»>();
 			for(String ev : e) {
-				«enumType» v = helper.convert«enumType»(ev);
+				«enumType» v = DataPropertyAccessorHelper.convert«enumType»(ev);
 				if (v==null) {
 					return null;
 				} else {
@@ -49,7 +65,7 @@ class CommonAccessorMethodGenerator extends AccessMethodGenerator {
 			}
 			return es;
 			«ELSE»
-			return helper.convert«enumType»(e);
+			return DataPropertyAccessorHelper.convert«enumType»(e);
 			«ENDIF»
 		}
 	'''

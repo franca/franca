@@ -7,10 +7,13 @@
 *******************************************************************************/
 package org.franca.deploymodel.dsl.generator.internal
 
+import com.google.inject.Inject
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification
 
 class TypeCollectionAccessorGenerator extends CommonAccessorMethodGenerator {
 	
+	@Inject extension ImportManager
+
 	def generate(FDSpecification spec) '''
 		/**
 		 * Accessor for deployment properties for '«spec.name»' specification
@@ -19,11 +22,14 @@ class TypeCollectionAccessorGenerator extends CommonAccessorMethodGenerator {
 			«IF spec.base!=null»extends «spec.base.name».TypeCollectionPropertyAccessor«ENDIF»
 			implements IDataPropertyAccessor
 		{
-
 			final private MappingGenericPropertyAccessor target;
 			private final DataPropertyAccessorHelper helper;
 
+			«addNeededFrancaType("FDeployedTypeCollection")»
 			public TypeCollectionPropertyAccessor(FDeployedTypeCollection target) {
+				«IF spec.base!=null»
+				super(target);
+				«ENDIF»
 				this.target = target;
 				this.helper = new DataPropertyAccessorHelper(target, this);
 			}

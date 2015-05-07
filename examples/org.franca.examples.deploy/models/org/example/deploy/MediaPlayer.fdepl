@@ -36,6 +36,7 @@ define org.example.spec.SampleDeploySpec
 	}
 	
 	attribute remainingTrack {
+		IsMasked = true
 		Groups = { g3 }
 	}
 	

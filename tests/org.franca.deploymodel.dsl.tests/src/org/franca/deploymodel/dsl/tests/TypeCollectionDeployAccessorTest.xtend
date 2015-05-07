@@ -2,7 +2,7 @@ package org.franca.deploymodel.dsl.tests
 
 import org.eclipse.xtext.junit4.InjectWith
 import org.eclipselabs.xtext.utils.unittesting.XtextRunner2
-import org.example.spec.SpecCompoundHostsRef.IDataPropertyAccessor.StringProp
+import org.example.spec.SpecCompoundHostsRef.StringProp
 import org.example.spec.SpecCompoundHostsRef.TypeCollectionPropertyAccessor
 import org.franca.core.franca.FStructType
 import org.franca.core.franca.FTypeCollection

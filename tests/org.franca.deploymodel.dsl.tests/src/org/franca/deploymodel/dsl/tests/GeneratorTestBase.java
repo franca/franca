@@ -65,6 +65,7 @@ public class GeneratorTestBase extends XtextTest {
 		System.out.println(title);
 		for(int i=0; i<lines.length; i++) {
 			System.out.println(String.format("%04d ", i+1) + lines[i]);
+//			System.out.println(lines[i]);
 		}
 	}
 }

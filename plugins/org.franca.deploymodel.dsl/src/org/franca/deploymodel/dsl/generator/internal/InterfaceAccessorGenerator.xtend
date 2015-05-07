@@ -7,9 +7,12 @@
 *******************************************************************************/
 package org.franca.deploymodel.dsl.generator.internal
 
+import com.google.inject.Inject
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification
 
 class InterfaceAccessorGenerator extends CommonAccessorMethodGenerator {
+
+	@Inject extension ImportManager
 	
 	def generate(FDSpecification spec) '''
 		/**
@@ -19,11 +22,14 @@ class InterfaceAccessorGenerator extends CommonAccessorMethodGenerator {
 			«IF spec.base!=null»extends «spec.base.name».InterfacePropertyAccessor«ENDIF»
 			implements IDataPropertyAccessor
 		{
-		
 			final private MappingGenericPropertyAccessor target;
 			private final DataPropertyAccessorHelper helper;
 		
+			«addNeededFrancaType("FDeployedInterface")»
 			public InterfacePropertyAccessor(FDeployedInterface target) {
+				«IF spec.base!=null»
+				super(target);
+				«ENDIF»
 				this.target = target;
 				this.helper = new DataPropertyAccessorHelper(target, this);
 			}
@@ -31,16 +37,19 @@ class InterfaceAccessorGenerator extends CommonAccessorMethodGenerator {
 			«spec.generateAccessMethods(true)»
 			
 			«genHelpForGetOverwriteAccessor("FAttribute", "obj")»
+			«addNeededFrancaType("FAttribute")»
 			public IDataPropertyAccessor getOverwriteAccessor(FAttribute obj) {
 				return helper.getOverwriteAccessorAux(obj);
 			}
 		
 			«genHelpForGetOverwriteAccessor("FArgument", "obj")»
+			«addNeededFrancaType("FArgument")»
 			public IDataPropertyAccessor getOverwriteAccessor(FArgument obj) {
 				return helper.getOverwriteAccessorAux(obj);
 			}
 		
 			@Override
+			«addNeededFrancaType("FField")»
 			public IDataPropertyAccessor getOverwriteAccessor(FField obj) {
 				return helper.getOverwriteAccessorAux(obj);
 			}

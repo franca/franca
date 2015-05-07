@@ -38,7 +38,11 @@ class GeneratorHelper {
 		val t = decl.type.complex
 		t!=null && (t instanceof FDEnumType)
 	}
-	
+
+	def static isEnum(FDPropertyDecl it) {
+		type.complex!=null && type.complex instanceof FDEnumType
+	}
+
 	def static genListType(String type) '''List<«type»>'''
 	
 	def static getMethodName(FDPropertyDecl it) '''get«name.toFirstUpper»'''

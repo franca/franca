@@ -4,6 +4,8 @@
 specification org.example.spec.SpecCompoundHosts {
 	for strings {
 		StringProp : { p, q, r, s, t, u, v, w, x, y, z };
+		StringEnumArrayProp: { a, b, c }[]  (optional);
+		StringIntArrayProp: Integer[]  (optional);
 	}
 	
 	for attributes {

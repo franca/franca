@@ -26,20 +26,26 @@ class OverwriteAccessorGenerator extends AccessMethodGenerator {
 			«IF spec.base!=null»extends «spec.base.name».OverwriteAccessor«ENDIF»
 			implements IDataPropertyAccessor
 		{
-		
+			«addNeededFrancaType("MappingGenericPropertyAccessor")»
 			private final MappingGenericPropertyAccessor target;
 			private final IDataPropertyAccessor delegate;
 			
 			private final FDTypeOverwrites overwrites;
+			«addNeededFrancaType("FField")»
 			private final Map<FField, FDField> mappedFields;
+			«addNeededFrancaType("FEnumerator")»
 			private final Map<FEnumerator, FDEnumValue> mappedEnumerators;
 			private final DataPropertyAccessorHelper helper;
 		
+			«addNeededFrancaType("FDTypeOverwrites")»
 			public OverwriteAccessor(
 					FDTypeOverwrites overwrites,
 					IDataPropertyAccessor delegate,
 					MappingGenericPropertyAccessor genericAccessor)
 			{
+				«IF spec.base!=null»
+				super(overwrites, delegate, genericAccessor);
+				«ENDIF»
 				this.target = genericAccessor;
 				this.delegate = delegate;
 				this.helper = new DataPropertyAccessorHelper(genericAccessor, this);
@@ -50,12 +56,16 @@ class OverwriteAccessorGenerator extends AccessMethodGenerator {
 				if (overwrites!=null) {
 					if (overwrites instanceof FDCompoundOverwrites) {
 						// build mapping for compound fields
+						«addNeededFrancaType("FDField")»
+						«addNeededFrancaType("FDCompoundOverwrites")»
 						for(FDField f : ((FDCompoundOverwrites)overwrites).getFields()) {
 							this.mappedFields.put(f.getTarget(), f);
 						}
 					}
 					if (overwrites instanceof FDEnumerationOverwrites) {
 						// build mapping for enumerators
+						«addNeededFrancaType("FDEnumValue")»
+						«addNeededFrancaType("FDEnumerationOverwrites")»
 						for(FDEnumValue e : ((FDEnumerationOverwrites)overwrites).getEnumerators()) {
 							this.mappedEnumerators.put(e.getTarget(), e);
 						}
@@ -115,7 +125,7 @@ class OverwriteAccessorGenerator extends AccessMethodGenerator {
 	'''
 
 	def private genOverwriteAccess(FDPropertyDecl it, String objname) '''
-		«type.javaType» v = target.get«type.javaType»(«objname», "«name»");
+		«type.javaType» v = target.get«type.getter»(«objname», "«name»");
 		if (v!=null)
 			return v;
 	'''
@@ -136,12 +146,21 @@ class OverwriteAccessorGenerator extends AccessMethodGenerator {
 			// check if this field is overwritten
 			if (mappedFields.containsKey(obj)) {
 				FDField fo = mappedFields.get(obj);
-				String e = target.getEnum(fo, "«enumType»");
-				«IF type.array!=null»
-				// TODO: handling of arrays
-				«ENDIF»
-				if (e!=null)
-					return helper.convert«name»(e);
+				«type.javaType» e = target.get«type.getter»(fo, "«enumType»");
+				if (e!=null) {
+					«IF type.array!=null»
+						List<«enumType»> es = new ArrayList<«enumType»>();
+						for(String ev : e) {
+							«enumType» v = DataPropertyAccessorHelper.convert«name»(ev);
+							if (v!=null) {
+								es.add(v);
+							}
+						}
+						return es;
+					«ELSE»
+						return DataPropertyAccessorHelper.convert«name»(e);
+					«ENDIF»
+				}
 			}
 			return delegate.get«name»(obj);
 		}

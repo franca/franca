@@ -46,6 +46,7 @@ class HostLogic {
 			null
 	}
 
+
 	def static String getFrancaTypeProvider(FDPropertyHost host) {
 		switch (host) {
 			case PROVIDERS:  "FDProvider"
@@ -53,4 +54,9 @@ class HostLogic {
 			default:         null // ignore all other hosts
 		}
 	}
+
+	def static isProviderHost(FDPropertyHost host) {
+		host.getFrancaTypeProvider!=null
+	}
+
 }

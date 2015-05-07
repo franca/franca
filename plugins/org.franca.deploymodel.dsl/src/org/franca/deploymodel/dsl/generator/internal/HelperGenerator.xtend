@@ -7,13 +7,16 @@
 *******************************************************************************/
 package org.franca.deploymodel.dsl.generator.internal
 
+import com.google.inject.Inject
 import org.franca.deploymodel.dsl.fDeploy.FDDeclaration
+import org.franca.deploymodel.dsl.fDeploy.FDEnumType
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyHost
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification
-import org.franca.deploymodel.dsl.fDeploy.FDEnumType
 
 class HelperGenerator {
+
+	@Inject extension ImportManager
 	
 	def generate(FDSpecification spec) '''
 		/**
@@ -36,7 +39,9 @@ class HelperGenerator {
 				«d.genProperties»
 			«ENDFOR»
 			
+			«addNeededFrancaType("FModelElement")»
 			protected IDataPropertyAccessor getOverwriteAccessorAux(FModelElement obj) {
+				«addNeededFrancaType("FDOverwriteElement")»
 				FDOverwriteElement fd = (FDOverwriteElement)target.getFDElement(obj);
 				FDTypeOverwrites overwrites = fd.getOverwrites();
 				if (overwrites==null)
@@ -64,7 +69,7 @@ class HelperGenerator {
 			val enumerator = type.complex as FDEnumType
 			 
 			'''
-			public «etname» convert«etname»(String val) {
+			public static «etname» convert«etname»(String val) {
 				«FOR e : enumerator.enumerators SEPARATOR " else "»
 				if (val.equals("«e.name»"))
 					return «etname».«e.name»;

@@ -32,6 +32,7 @@ class IDataGenerator extends AccessMethodGenerator {
 			«spec.generateAccessMethods(false)»
 			
 			«genHelpForGetOverwriteAccessor("FField", "obj")»
+			«addNeededFrancaType("FField")»
 			public IDataPropertyAccessor getOverwriteAccessor(FField obj);
 		}
 	'''
@@ -52,11 +53,7 @@ class IDataGenerator extends AccessMethodGenerator {
 		FDEnumType enumerator,
 		boolean isData
 	) '''
-		public enum «enumType» {
-			«FOR e : enumerator.enumerators SEPARATOR ", "»«e.name»«ENDFOR»
-		}
 		public «returnType» «methodName»(«francaType» obj);
 	'''
 		
 }
-

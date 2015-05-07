@@ -1,15 +1,18 @@
 package org.franca.deploymodel.dsl.generator.internal
 
+import com.google.inject.Inject
 import org.franca.deploymodel.dsl.fDeploy.FDDeclaration
 import org.franca.deploymodel.dsl.fDeploy.FDEnumType
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyHost
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification
 
-import static extension org.franca.deploymodel.dsl.generator.internal.HostLogic.*
 import static extension org.franca.deploymodel.dsl.generator.internal.GeneratorHelper.*
+import static extension org.franca.deploymodel.dsl.generator.internal.HostLogic.*
 
 abstract class AccessMethodGenerator {
+
+	@Inject extension ImportManager
 	
 	def generateAccessMethods (FDSpecification spec, boolean forInterfaces) '''
 		«FOR d : spec.declarations»
@@ -31,7 +34,8 @@ abstract class AccessMethodGenerator {
 		FDEnumType enumerator,
 		boolean isData
 	)
-	
+
+
 	def private genProperties(FDDeclaration decl, boolean forInterfaces) '''
 		«IF decl.properties.size > 0 && decl.host.getFrancaType(forInterfaces)!=null»
 			// host '«decl.host.getName»'
@@ -67,7 +71,7 @@ abstract class AccessMethodGenerator {
 		String francaType,
 		boolean forceInterfaceOnly
 	) {
-		// TODO: neededFrancaTypes.add(ftype)
+		addNeededFrancaType(francaType)
 		val isOnlyForInterface = forceInterfaceOnly || host.isInterfaceOnly 
 		if (francaType!=null) {
 			if (isEnum) {
@@ -88,10 +92,6 @@ abstract class AccessMethodGenerator {
 			""
 	}
 
-	def private isEnum(FDPropertyDecl it) {
-		type.complex!=null && type.complex instanceof FDEnumType
-	}
-	
 
 	/**
 	 * Generate javadoc helptext for getOverwriteAccessor methods.
