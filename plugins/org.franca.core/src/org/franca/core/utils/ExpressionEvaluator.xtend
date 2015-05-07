@@ -129,7 +129,7 @@ class ExpressionEvaluator {
 				default: null
 			}
 		} else {
-			println("field = " + qe.field.toString)
+//			println("field = " + qe.field.toString)
 			val q = qe.qualifier.eval
 			if (q instanceof FCompoundInitializer) {
 				val ci = q as FCompoundInitializer
