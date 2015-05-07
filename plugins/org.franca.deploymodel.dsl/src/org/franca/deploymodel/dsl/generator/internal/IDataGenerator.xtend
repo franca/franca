@@ -30,7 +30,7 @@ class IDataGenerator extends AccessMethodGenerator {
 		{
 			«spec.generateAccessMethods(false)»
 			
-			// overwrite-aware accessors
+			«genHelpForGetOverwriteAccessor("FField", "obj")»
 			public IDataPropertyAccessor getOverwriteAccessor(FField obj);
 		}
 	'''

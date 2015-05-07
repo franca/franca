@@ -60,14 +60,14 @@ class OverwriteAccessorGenerator extends AccessMethodGenerator {
 				}
 			}
 			
-			«spec.generateAccessMethods(true)»
+			«spec.generateAccessMethods(false)»
 			
 			@Override
 			public IDataPropertyAccessor getOverwriteAccessor(FField obj) {
 				// check if this field is overwritten
-				if (mapping.containsKey(obj)) {
-					FDFieldOverwrite fo = mapping.get(obj);
-					FDCompoundOverwrites overwrites = fo.getOverwrites();
+				if (mappedFields.containsKey(obj)) {
+					FDField fo = mappedFields.get(obj);
+					FDTypeOverwrites overwrites = fo.getOverwrites();
 					if (overwrites==null)
 						return this; // TODO: correct?
 					else
@@ -90,9 +90,33 @@ class OverwriteAccessorGenerator extends AccessMethodGenerator {
 		@Override
 		«ENDIF»
 		public «type.javaType» «methodName»(«francaType» obj) {
-			return target.get«type.getter»(obj, "«name»");
+			«IF francaType=="FEnumerator"»
+				// check if this enumerator is overwritten
+				if (mappedEnumerators.containsKey(obj)) {
+					FDEnumValue fo = mappedEnumerators.get(obj);
+					«genOverwriteAccess("fo")»
+				}
+			«ELSEIF francaType=="FField"»
+				// check if this field is overwritten
+				if (mappedFields.containsKey(obj)) {
+					FDField fo = mappedFields.get(obj);
+					«genOverwriteAccess("fo")»
+				}
+			«ELSE»
+				if (overwrites!=null) {
+					«genOverwriteAccess("overwrites")»
+				}
+			«ENDIF»
+			return delegate.get«name»(obj);
 		}
 	'''
+
+	def private genOverwriteAccess(FDPropertyDecl it, String objname) '''
+		«type.javaType» v = target.get«type.javaType»(«objname», "«name»");
+		if (v!=null)
+			return v;
+	'''
+
 
 	override genEnumMethod(
 		FDPropertyDecl it,
@@ -106,8 +130,21 @@ class OverwriteAccessorGenerator extends AccessMethodGenerator {
 		@Override
 		«ENDIF»
 		public «returnType» «methodName»(«francaType» obj) {
-			«type.javaType» e = target.getEnum(obj, "«enumType»");
-			if (e==null) return null;
+			// check if this field is overwritten
+			if (mappedFields.containsKey(obj)) {
+				FDField fo = mappedFields.get(obj);
+				String e = target.getEnum(fo, "«enumType»");
+				«IF type.array!=null»
+				// TODO: handling of arrays
+				«ENDIF»
+				if (e!=null)
+					return helper.convert«name»(e);
+			}
+			return delegate.get«name»(obj);
+		}
+	'''
+
+/*
 			«IF type.array!=null»
 			List<«enumType»> es = new ArrayList<«enumType»>();
 			for(String ev : e) {
@@ -122,7 +159,6 @@ class OverwriteAccessorGenerator extends AccessMethodGenerator {
 			«ELSE»
 			return helper.convert«enumType»(e);
 			«ENDIF»
-		}
-	'''
+ */
 	
 }

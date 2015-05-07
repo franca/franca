@@ -85,7 +85,7 @@ class CodeGeneratorTest extends GeneratorTestBase {
 
 		assertEquals(1, fsa.textFiles.size)
 		val generated = fsa.textFiles.values().get(0).toString
-		println("Generated:\n" + generated)
+		generated.printMultiLine("Generated:")
 		
 		// load expected result code and patch class name 
 		val expected =

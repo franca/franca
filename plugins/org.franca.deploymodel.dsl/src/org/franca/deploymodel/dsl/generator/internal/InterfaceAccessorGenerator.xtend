@@ -13,13 +13,13 @@ class InterfaceAccessorGenerator extends CommonAccessorMethodGenerator {
 	
 	def generate(FDSpecification spec) '''
 		/**
-		 * Accessor for deployment properties for '«spec.name»' specification
+		 * Accessor for deployment properties for '«spec.name»' specification.
 		 */
 		public static class InterfacePropertyAccessor implements IDataPropertyAccessor {
-	
+		
 			final private MappingGenericPropertyAccessor target;
 			private final DataPropertyAccessorHelper helper;
-	
+		
 			public InterfacePropertyAccessor(FDeployedInterface target) {
 				this.target = target;
 				this.helper = new DataPropertyAccessorHelper(target, this);
@@ -27,14 +27,16 @@ class InterfaceAccessorGenerator extends CommonAccessorMethodGenerator {
 			
 			«spec.generateAccessMethods(true)»
 			
+			«genHelpForGetOverwriteAccessor("FAttribute", "obj")»
 			public IDataPropertyAccessor getOverwriteAccessor(FAttribute obj) {
 				return helper.getOverwriteAccessorAux(obj);
 			}
-	
+		
+			«genHelpForGetOverwriteAccessor("FArgument", "obj")»
 			public IDataPropertyAccessor getOverwriteAccessor(FArgument obj) {
 				return helper.getOverwriteAccessorAux(obj);
 			}
-	
+		
 			@Override
 			public IDataPropertyAccessor getOverwriteAccessor(FField obj) {
 				return helper.getOverwriteAccessorAux(obj);

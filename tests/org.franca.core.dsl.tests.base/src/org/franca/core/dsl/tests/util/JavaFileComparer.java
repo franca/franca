@@ -16,7 +16,7 @@ public class JavaFileComparer extends FileComparer {
 	}
 
 	protected boolean skipRegionStart (String line) {
-		boolean m = line.matches("^\\s*/\\*");
+		boolean m = line.matches("^\\s*/\\*(\\*)?");
 		return m;
 	}
 

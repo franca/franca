@@ -16,10 +16,10 @@ class TypeCollectionAccessorGenerator extends CommonAccessorMethodGenerator {
 		 * Accessor for deployment properties for '«spec.name»' specification
 		 */		
 		public static class TypeCollectionPropertyAccessor implements IDataPropertyAccessor {
-	
+
 			final private MappingGenericPropertyAccessor target;
 			private final DataPropertyAccessorHelper helper;
-	
+
 			public TypeCollectionPropertyAccessor(FDeployedTypeCollection target) {
 				this.target = target;
 				this.helper = new DataPropertyAccessorHelper(target, this);

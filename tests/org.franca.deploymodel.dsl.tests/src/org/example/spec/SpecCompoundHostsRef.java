@@ -56,7 +56,19 @@ public class SpecCompoundHostsRef {
 		
 		public Integer getUFieldProp(FField obj);
 		
-		// overwrite-aware accessors
+		/**
+		 * Get an overwrite-aware accessor for deployment properties.</p>
+		 *
+		 * This accessor will return overwritten property values in the context 
+		 * of a Franca FField object. I.e., the FField obj has a datatype
+		 * which can be overwritten in the deployment definition (e.g., Franca array,
+		 * struct, union or enumeration). The accessor will return the overwritten values.
+		 * If the deployment definition didn't overwrite the value, this accessor will
+		 * delegate to its parent accessor.</p>
+		 *
+		 * @param obj a Franca FField which is the context for the accessor
+		 * @return the overwrite-aware accessor
+ 		 */
 		public IDataPropertyAccessor getOverwriteAccessor(FField obj);
 	}
 
@@ -329,23 +341,25 @@ public class SpecCompoundHostsRef {
 		}
 
 		@Override
-		public Integer getStructProp(EObject obj) {
+		public Integer getEnumerationProp(FEnumerationType obj) {
 			if (overwrites!=null) {
-				Integer v = target.getInteger(overwrites, "StructProp");
+				Integer v = target.getInteger(overwrites, "EnumerationProp");
 				if (v!=null)
 					return v;
 			}
-			return delegate.getStructProp(obj);
+			return delegate.getEnumerationProp(obj);
 		}
 
 		@Override
-		public Integer getUnionProp(EObject obj) {
-			if (overwrites!=null) {
-				Integer v = target.getInteger(overwrites, "UnionProp");
+		public Integer getEnumeratorProp(FEnumerator obj) {
+			// check if this enumerator is overwritten
+			if (mappedEnumerators.containsKey(obj)) {
+				FDEnumValue fo = mappedEnumerators.get(obj);
+				Integer v = target.getInteger(fo, "EnumeratorProp");
 				if (v!=null)
 					return v;
 			}
-			return delegate.getUnionProp(obj);
+			return delegate.getEnumeratorProp(obj);
 		}
 
 		@Override
@@ -370,29 +384,17 @@ public class SpecCompoundHostsRef {
 		}
 		
 		@Override
-		public Integer getEnumerationProp(FEnumerationType obj) {
+		public Integer getStructProp(EObject obj) {
 			if (overwrites!=null) {
-				Integer v = target.getInteger(overwrites, "EnumerationProp");
+				Integer v = target.getInteger(overwrites, "StructProp");
 				if (v!=null)
 					return v;
 			}
-			return delegate.getEnumerationProp(obj);
+			return delegate.getStructProp(obj);
 		}
 
 		@Override
-		public Integer getEnumeratorProp(FEnumerator obj) {
-			// check if this enumerator is overwritten
-			if (mappedEnumerators.containsKey(obj)) {
-				FDEnumValue fo = mappedEnumerators.get(obj);
-				Integer v = target.getInteger(fo, "EnumeratorProp");
-				if (v!=null)
-					return v;
-			}
-			return delegate.getEnumeratorProp(obj);
-		}
-
-		@Override
-		public Integer getSFieldProp (FField obj) {
+		public Integer getSFieldProp(FField obj) {
 			// check if this field is overwritten
 			if (mappedFields.containsKey(obj)) {
 				FDField fo = mappedFields.get(obj);
@@ -404,7 +406,17 @@ public class SpecCompoundHostsRef {
 		}
 	 
 		@Override
-		public Integer getUFieldProp (FField obj) {
+		public Integer getUnionProp(EObject obj) {
+			if (overwrites!=null) {
+				Integer v = target.getInteger(overwrites, "UnionProp");
+				if (v!=null)
+					return v;
+			}
+			return delegate.getUnionProp(obj);
+		}
+
+		@Override
+		public Integer getUFieldProp(FField obj) {
 			// check if this field is overwritten
 			if (mappedFields.containsKey(obj)) {
 				FDField fo = mappedFields.get(obj);
@@ -416,7 +428,7 @@ public class SpecCompoundHostsRef {
 		}
 	 
 		@Override
-		public IDataPropertyAccessor getOverwriteAccessor (FField obj) {
+		public IDataPropertyAccessor getOverwriteAccessor(FField obj) {
 			// check if this field is overwritten
 			if (mappedFields.containsKey(obj)) {
 				FDField fo = mappedFields.get(obj);

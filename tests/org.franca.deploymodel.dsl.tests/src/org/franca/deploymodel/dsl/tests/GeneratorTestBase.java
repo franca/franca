@@ -10,6 +10,8 @@ import org.franca.core.dsl.tests.util.JavaFileComparer;
 
 public class GeneratorTestBase extends XtextTest {
 
+	private static final String LINE_SEPARATOR = System.getProperty("line.separator");
+
 	protected String readFile(String filename) {
 		StringBuilder contents = new StringBuilder();
 
@@ -32,12 +34,12 @@ public class GeneratorTestBase extends XtextTest {
 		return contents.toString();
 	}
 
-	protected boolean isEqualJava (String expected, String actual) {
+	protected boolean isEqualJava(String expected, String actual) {
 		FileComparer fc = new JavaFileComparer();
 		return isEqualAux(expected, actual, fc);
 	}
 
-	private boolean isEqualAux (String expected, String actual, FileComparer fc) {
+	private boolean isEqualAux(String expected, String actual, FileComparer fc) {
 		FileComparer.Conflict conflict = fc.checkEqual(expected, actual);
 		if (conflict!=null) {
 			System.out.println("Files differ:");
@@ -56,5 +58,13 @@ public class GeneratorTestBase extends XtextTest {
 			return false;
 		}
 		return true;
+	}
+	
+	protected static void printMultiLine(String input, String title) {
+		String[] lines = input.split(LINE_SEPARATOR);
+		System.out.println(title);
+		for(int i=0; i<lines.length; i++) {
+			System.out.println(String.format("%04d ", i+1) + lines[i]);
+		}
 	}
 }

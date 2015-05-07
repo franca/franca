@@ -91,4 +91,28 @@ abstract class AccessMethodGenerator {
 	def private isEnum(FDPropertyDecl it) {
 		type.complex!=null && type.complex instanceof FDEnumType
 	}
+	
+
+	/**
+	 * Generate javadoc helptext for getOverwriteAccessor methods.
+	 * 
+	 * @param typename the typename of the method's parameter
+	 * @param objname the name of the method's parameter
+	 */
+	def protected genHelpForGetOverwriteAccessor(String typename, String objname) '''
+		/**
+		 * Get an overwrite-aware accessor for deployment properties.</p>
+		 *
+		 * This accessor will return overwritten property values in the context 
+		 * of a Franca «typename» object. I.e., the «typename» «objname» has a datatype
+		 * which can be overwritten in the deployment definition (e.g., Franca array,
+		 * struct, union or enumeration). The accessor will return the overwritten values.
+		 * If the deployment definition didn't overwrite the value, this accessor will
+		 * delegate to its parent accessor.</p>
+		 *
+		 * @param «objname» a Franca «typename» which is the context for the accessor
+		 * @return the overwrite-aware accessor
+		 */
+	'''
+
 }
