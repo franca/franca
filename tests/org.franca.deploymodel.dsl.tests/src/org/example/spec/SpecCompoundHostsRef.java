@@ -129,7 +129,9 @@ public class SpecCompoundHostsRef {
 	/**
 	 * Accessor for deployment properties for 'org.example.spec.SpecCompoundHosts' specification
 	 */		
-	public static class TypeCollectionPropertyAccessor implements IDataPropertyAccessor {
+	public static class TypeCollectionPropertyAccessor
+		implements IDataPropertyAccessor
+	{
 
 		final private MappingGenericPropertyAccessor target;
 		private final DataPropertyAccessorHelper helper;
@@ -197,7 +199,9 @@ public class SpecCompoundHostsRef {
 	/**
 	 * Accessor for deployment properties for 'org.example.spec.SpecCompoundHosts' specification
 	 */
-	public static class InterfacePropertyAccessor implements IDataPropertyAccessor {
+	public static class InterfacePropertyAccessor
+		implements IDataPropertyAccessor
+	{
 
 		final private MappingGenericPropertyAccessor target;
 		private final DataPropertyAccessorHelper helper;
@@ -290,7 +294,9 @@ public class SpecCompoundHostsRef {
 	/**
 	 * Accessor for getting overwritten property values.
 	 */		
-	public static class OverwriteAccessor implements IDataPropertyAccessor {
+	public static class OverwriteAccessor
+		implements IDataPropertyAccessor
+	{
 
 		private final MappingGenericPropertyAccessor target;
 		private final IDataPropertyAccessor delegate;

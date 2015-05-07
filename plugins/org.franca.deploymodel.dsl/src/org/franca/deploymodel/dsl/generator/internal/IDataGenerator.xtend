@@ -27,6 +27,7 @@ class IDataGenerator extends AccessMethodGenerator {
 		 * This is the data types related part only.
 		 */
 		public interface IDataPropertyAccessor
+			«IF spec.base!=null»extends «spec.base.name».IDataPropertyAccessor«ENDIF»
 		{
 			«spec.generateAccessMethods(false)»
 			

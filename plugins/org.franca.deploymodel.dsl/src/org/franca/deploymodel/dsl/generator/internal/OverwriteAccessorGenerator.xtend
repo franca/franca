@@ -22,7 +22,10 @@ class OverwriteAccessorGenerator extends AccessMethodGenerator {
 		/**
 		 * Accessor for getting overwritten property values.
 		 */		
-		public static class OverwriteAccessor implements IDataPropertyAccessor {
+		public static class OverwriteAccessor
+			«IF spec.base!=null»extends «spec.base.name».OverwriteAccessor«ENDIF»
+			implements IDataPropertyAccessor
+		{
 		
 			private final MappingGenericPropertyAccessor target;
 			private final IDataPropertyAccessor delegate;

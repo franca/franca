@@ -15,7 +15,10 @@ class TypeCollectionAccessorGenerator extends CommonAccessorMethodGenerator {
 		/**
 		 * Accessor for deployment properties for '«spec.name»' specification
 		 */		
-		public static class TypeCollectionPropertyAccessor implements IDataPropertyAccessor {
+		public static class TypeCollectionPropertyAccessor
+			«IF spec.base!=null»extends «spec.base.name».TypeCollectionPropertyAccessor«ENDIF»
+			implements IDataPropertyAccessor
+		{
 
 			final private MappingGenericPropertyAccessor target;
 			private final DataPropertyAccessorHelper helper;

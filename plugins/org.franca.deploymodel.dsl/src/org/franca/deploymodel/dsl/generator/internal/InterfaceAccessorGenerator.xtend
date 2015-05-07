@@ -15,7 +15,10 @@ class InterfaceAccessorGenerator extends CommonAccessorMethodGenerator {
 		/**
 		 * Accessor for deployment properties for '«spec.name»' specification.
 		 */
-		public static class InterfacePropertyAccessor implements IDataPropertyAccessor {
+		public static class InterfacePropertyAccessor
+			«IF spec.base!=null»extends «spec.base.name».InterfacePropertyAccessor«ENDIF»
+			implements IDataPropertyAccessor
+		{
 		
 			final private MappingGenericPropertyAccessor target;
 			private final DataPropertyAccessorHelper helper;
