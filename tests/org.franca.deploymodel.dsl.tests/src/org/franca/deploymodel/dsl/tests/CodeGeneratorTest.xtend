@@ -83,9 +83,13 @@ class CodeGeneratorTest extends GeneratorTestBase {
 		val fsa = new InMemoryFileSystemAccess
 		generator.doGenerate(root.eResource, fsa)
 
-		assertEquals(1, fsa.textFiles.size)
+		assertEquals(4, fsa.textFiles.size)
+		for(f : fsa.textFiles.keySet) {
+			val gen = fsa.textFiles.get(f).toString
+			gen.printMultiLine("Generated:")
+		}
+
 		val generated = fsa.textFiles.values().get(0).toString
-		generated.printMultiLine("Generated:")
 		
 		// load expected result code and patch class name 
 		val expected =
