@@ -31,9 +31,9 @@ class Franca2IdlConverter {
 		val typeCollections = fmodel.typeCollections?.map(function1)
 		
 		'''
-		module Â«fmodel.nameÂ» {
-			Â«interfaces.join()Â»
-			Â«typeCollections.join()Â»
+		module «fmodel.name» {
+			«interfaces.join()»
+			«typeCollections.join()»
 		};
 		'''
 	}
@@ -45,12 +45,12 @@ class Franca2IdlConverter {
 		var constants = typeCollection.constants?.map[transformConstants].join('\n')
 		val generateComment = typeCollection.generateComment
 		'''
-		Â«IF generateComment!=null && generateComment!=''Â»
-		/** Â«generateCommentÂ» 
-		*/Â«ENDIFÂ»
-		interface Â«typenameÂ» {
-			Â«typesÂ»
-			Â«constantsÂ»
+		«IF generateComment!=null && generateComment!=''»
+		/** «generateComment» 
+		*/«ENDIF»
+		interface «typename» {
+			«types»
+			«constants»
 		};
 		'''
 	}
@@ -59,10 +59,10 @@ class Franca2IdlConverter {
 		val generateComment = constant.generateComment
 		
 		'''
-		Â«IF generateComment!=null && generateComment!=''Â»
-		/** Â«generateCommentÂ» 
-		*/Â«ENDIFÂ»
-		const Â«constant.type.transformType2TypeStringÂ» Â«constant.nameÂ» = Â«NodeModelUtils.getTokenText(NodeModelUtils.getNode(constant.rhs))Â»;'''
+		«IF generateComment!=null && generateComment!=''»
+		/** «generateComment» 
+		*/«ENDIF»
+		const «constant.type.transformType2TypeString» «constant.name» = «NodeModelUtils.getTokenText(NodeModelUtils.getNode(constant.rhs))»;'''
 	}
 	
 	def private generateComment(FModelElement element){
@@ -82,20 +82,20 @@ class Franca2IdlConverter {
 		var constants = fInterface.constants?.map[transformConstants].join('\n')
 		var broadcasts = fInterface.broadcasts?.map[transformBroadcasts].join('\n')
 	'''
-		Â«IF generateComment!=null && generateComment!=''Â»
-		/** Â«generateCommentÂ»
-		*/Â«ENDIFÂ»
-		interface Â«fInterface.nameÂ»Â«IF baseInterface!=nullÂ»:Â«baseInterfaceÂ»Â«ENDIFÂ» {
-			Â«fInterface.attributes?.map[transformAttributes].join('\n')Â»
-			Â«fInterface.methods?.map[transformMethods].join('\n')Â»
-			Â«typesÂ»
-			Â«constantsÂ»
+		«IF generateComment!=null && generateComment!=''»
+		/** «generateComment»
+		*/«ENDIF»
+		interface «fInterface.name»«IF baseInterface!=null»:«baseInterface»«ENDIF» {
+			«fInterface.attributes?.map[transformAttributes].join('\n')»
+			«fInterface.methods?.map[transformMethods].join('\n')»
+			«types»
+			«constants»
 		};
-		Â«IF broadcasts!=null && broadcasts!=''Â»
-		interface Â«fInterface.nameÂ»_client {
-			Â«broadcastsÂ»
+		«IF broadcasts!=null && broadcasts!=''»
+		interface «fInterface.name»_client {
+			«broadcasts»
 		};
-		Â«ENDIFÂ»
+		«ENDIF»
 		'''
 	}
 	
@@ -104,11 +104,11 @@ class Franca2IdlConverter {
 		var name = broadcast.name
 		var arguments = broadcast.outArgs?.map[transformArgument("in")].join(', ')
 		'''
-		Â«IF generateComment!=null && generateComment!=''Â»
+		«IF generateComment!=null && generateComment!=''»
 		/**broadcast 
-		*Â«generateCommentÂ» 
-		*/Â«ENDIFÂ»
-		void Â«nameÂ» (Â«argumentsÂ»);
+		*«generateComment» 
+		*/«ENDIF»
+		void «name» («arguments»);
 		'''
 	}
 	
@@ -116,7 +116,7 @@ class Franca2IdlConverter {
 		switch (type) {
 			FArrayType: {
 					val fArrayType = type as FArrayType
-					'''typedef Â«fArrayType.elementType.transformType2TypeStringÂ»[ ] Â«fArrayType.nameÂ»;'''
+					'''typedef «fArrayType.elementType.transformType2TypeString»[ ] «fArrayType.name»;'''
 				}
 
 			FStructType: {
@@ -124,8 +124,8 @@ class Franca2IdlConverter {
 					val fieldContent = struct.elements.map[transformFields].join('\n')
 					var baseStruct = struct.base?.name
 					'''
-					struct Â«struct.nameÂ» Â«IF baseStruct!=nullÂ»:Â«baseStructÂ» Â«ENDIFÂ»{
-						Â«fieldContentÂ»
+					struct «struct.name» «IF baseStruct!=null»:«baseStruct» «ENDIF»{
+						«fieldContent»
 					};
 					''' 
 				}
@@ -136,8 +136,8 @@ class Franca2IdlConverter {
 					val fieldContent = union.elements.map[transformFields].join('\n')
 					
 					'''
-					union Â«union.nameÂ» Â«IF baseUnion!=nullÂ»:Â«baseUnionÂ» Â«ENDIFÂ»{
-						Â«fieldContentÂ»
+					union «union.name» «IF baseUnion!=null»:«baseUnion» «ENDIF»{
+						«fieldContent»
 					};
 					''' 
 				}
@@ -147,18 +147,18 @@ class Franca2IdlConverter {
 					val Content = enumtype.enumerators.map[transformEnumerators].join(',\n')
 					
 					'''
-					enum Â«enumtype.nameÂ» Â«IF baseEnum!=nullÂ»:Â«baseEnumÂ» Â«ENDIFÂ»{
-						Â«ContentÂ»
+					enum «enumtype.name» «IF baseEnum!=null»:«baseEnum» «ENDIF»{
+						«Content»
 					};
 					''' 	
 				}
 			FMapType: {
 					var map = type as FMapType
-					'''map_Â«map.nameÂ» Â«map.keyType.transformType2TypeStringÂ»=>Â«map.valueType.transformType2TypeStringÂ»;'''
+					'''map_«map.name» «map.keyType.transformType2TypeString»=>«map.valueType.transformType2TypeString»;'''
 					}
 			FTypeDef: {
 					var typedef= type as FTypeDef
-					'''typedef Â«typedef.actualType.transformType2TypeStringÂ» Â«type.nameÂ»;'''
+					'''typedef «typedef.actualType.transformType2TypeString» «type.name»;'''
 					
 				}
 			}
@@ -182,7 +182,7 @@ class Franca2IdlConverter {
 	def private transformEnumerators(FEnumerator eumerator) {
 		var name = eumerator.name
 		var value = eumerator.value
-		'''Â«nameÂ»Â«IF value!=nullÂ» = Â«NodeModelUtils.getTokenText(NodeModelUtils.getNode(eumerator.value))Â»Â«ENDIFÂ»'''
+		'''«name»«IF value!=null» = «NodeModelUtils.getTokenText(NodeModelUtils.getNode(eumerator.value))»«ENDIF»'''
 	}
 	
 	def private transformFields(FField field) {
@@ -191,7 +191,7 @@ class Franca2IdlConverter {
 		val isArray1 = field.array
 		
 //		var isArray = field.type.isArray
-		'''Â«typeÂ»Â«IF isArray1Â»[ ]Â«ENDIFÂ» Â«nameÂ»;'''
+		'''«type»«IF isArray1»[ ]«ENDIF» «name»;'''
 	}
 		
 		
@@ -200,10 +200,10 @@ class Franca2IdlConverter {
 		var type = attribute.type?.transformType2TypeString
 		val generateComment = attribute.generateComment
 		'''
-		Â«IF generateComment!=null && generateComment!=''Â»
-		/** Â«generateCommentÂ» 
-		*/Â«ENDIFÂ»
-		Â«IF attribute.isReadonlyÂ»readonlyÂ«ENDIFÂ»Â«nameÂ» Â«typeÂ»;'''
+		«IF generateComment!=null && generateComment!=''»
+		/** «generateComment» 
+		*/«ENDIF»
+		«IF attribute.isReadonly»readonly«ENDIF»«name» «type»;'''
 		
 	}
 
@@ -212,10 +212,10 @@ class Franca2IdlConverter {
 		val generateComment = method.generateComment
 		
 		'''
-		Â«IF generateComment!=null && generateComment!=''Â»
-		/** Â«generateCommentÂ» 
-		*/Â«ENDIFÂ»
-		void Â«method.nameÂ» (Â«transformParameters1Â»);
+		«IF generateComment!=null && generateComment!=''»
+		/** «generateComment» 
+		*/«ENDIF»
+		void «method.name» («transformParameters1»);
 		'''
 
 	}
@@ -232,8 +232,8 @@ class Franca2IdlConverter {
 
 		var name = src.name
 		var type = transformType2TypeString(src.type)
-		if(paramType == "in") return '''in Â«typeÂ» Â«nameÂ»'''
-		return '''out Â«typeÂ» Â«nameÂ»'''
+		if(paramType == "in") return '''in «type» «name»'''
+		return '''out «type» «name»'''
 
 	}
 
