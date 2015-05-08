@@ -234,17 +234,21 @@ public class GenericPropertyAccessor {
 	 * @return the property's value (might be a single value or an array)
 	 */
 	private FDComplexValue getValue (FDElement elem, String property) {
-		// look if there is an explicit value for the property
-		for(FDProperty prop : elem.getProperties().getItems()) {
-			if (prop.getDecl().getName().equals(property)) {
-				return prop.getValue();
+		// if the element doesn't have properties, it is not relevant for deployment
+		// we will then just compute the default for this property.
+		if (elem.getProperties() != null) {
+			// look if there is an explicit value for the property
+			for(FDProperty prop : elem.getProperties().getItems()) {
+				if (prop.getDecl().getName().equals(property)) {
+					return prop.getValue();
+				}
 			}
-		}
 
-		// check for overwrite case
-		if (isOverwrite(elem)) {
-			// this is an overwrite element, ignore defaults
-			return null;
+			// check for overwrite case
+			if (isOverwrite(elem)) {
+				// this is an overwrite element, ignore defaults
+				return null;
+			}
 		}
 
 		// no explicit value, but also no overwrite: look for default value for this property

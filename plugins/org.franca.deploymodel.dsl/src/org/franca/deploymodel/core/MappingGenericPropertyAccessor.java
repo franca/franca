@@ -19,6 +19,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDArgument;
 import org.franca.deploymodel.dsl.fDeploy.FDArray;
 import org.franca.deploymodel.dsl.fDeploy.FDAttribute;
 import org.franca.deploymodel.dsl.fDeploy.FDBroadcast;
+import org.franca.deploymodel.dsl.fDeploy.FDCompound;
 import org.franca.deploymodel.dsl.fDeploy.FDElement;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumValue;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumeration;
@@ -114,8 +115,17 @@ public class MappingGenericPropertyAccessor extends GenericPropertyAccessor{
 			el = FDeployFactory.eINSTANCE.createFDUnion();
 			((FDUnion) el).setTarget((FUnionType) obj);
 		} else if (obj instanceof FField) {
+			FField f = (FField) obj;
 			el = FDeployFactory.eINSTANCE.createFDField();
-			((FDField) el).setTarget((FField) obj);
+			((FDField) el).setTarget(f);
+			
+			// for fields, we have to embed the dummy object into a dummy parent,
+			// this is needed to indicate if it is a struct or union field
+			FDCompound parent =
+					(f.eContainer() instanceof FStructType) ?
+							FDeployFactory.eINSTANCE.createFDStruct() :
+							FDeployFactory.eINSTANCE.createFDUnion();
+			parent.getFields().add((FDField)el);
 		} else if (obj instanceof FEnumerationType) {
 			el = FDeployFactory.eINSTANCE.createFDEnumeration();
 			((FDEnumeration) el).setTarget((FEnumerationType) obj);
