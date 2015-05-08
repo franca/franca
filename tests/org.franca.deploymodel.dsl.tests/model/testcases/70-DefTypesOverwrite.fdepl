@@ -32,14 +32,27 @@ define org.example.spec.SpecCompoundHosts for interface fidl.InterfaceUsingTypes
 		field2 {
 			StringProp = p
 			SFieldProp = 46
+
+			StringIntArrayProp = { 10, 20, 30 }
+			StringEnumArrayProp = { b, a }
+		}
+		field3 {
+			StringProp = q
+			SFieldProp = 47
+			
+			StringIntArrayProp = { 11, 22, 33 }
+			StringEnumArrayProp = { c, a }
 		}
 	}
 
 	union MyUnion {
 		UnionProp = 50
 		field1 {
-			StringProp = q
 			UFieldProp = 55
+		}
+		field2 {
+			StringProp = q
+			UFieldProp = 56
 		}
 	}
 
@@ -47,8 +60,11 @@ define org.example.spec.SpecCompoundHosts for interface fidl.InterfaceUsingTypes
 	// deployment for all users of the above types (using the overwrite feature)
 
 	attribute attrB {
-		StringProp = v
 		AttributeProp = 110
+
+		StringProp = v
+		StringIntArrayProp = { 2, 3, 5, 7 } 
+		StringEnumArrayProp = { b, a, c } 
 	}
 
 	attribute attrA {
@@ -71,13 +87,19 @@ define org.example.spec.SpecCompoundHosts for interface fidl.InterfaceUsingTypes
 		#struct {
 			StructProp = 145
 			field1 { SFieldProp = 146 }
+			field2 {
+				StringIntArrayProp = { 2, 4, 8, 16 }
+				StringEnumArrayProp = { a, b, b, a }
+			}
 		}
 	}
 
 	attribute attrU {
 		AttributeProp = 150
 		#union {
-			UnionProp = 155
+			UnionProp = 151
+			field1 { UFieldProp = 155 }
+			field2 { StringProp = t }
 		}
 	}
 

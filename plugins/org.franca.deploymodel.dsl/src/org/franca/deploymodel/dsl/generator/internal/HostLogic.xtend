@@ -7,7 +7,6 @@
 *******************************************************************************/
 package org.franca.deploymodel.dsl.generator.internal
 
-import java.util.List
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyHost
 
 class HostLogic {
@@ -22,15 +21,17 @@ class HostLogic {
 			case METHODS:          forInterfaces.use("FMethod")
 			case BROADCASTS:       forInterfaces.use("FBroadcast")
 			case ARGUMENTS:        forInterfaces.use("FArgument")
-			//case NUMBERS:          "FArgument"
-			//case FLOATS:           "FArgument"
-			//case INTEGERS:         "FArgument"
-			//case STRINGS:          "FArgument"
+			case STRUCTS:    		"FStructType"
+			case UNIONS:     		"FUnionType"
 			case STRUCT_FIELDS:    "FField"
 			case UNION_FIELDS:     "FField"
 			case ENUMERATIONS:     "FEnumerationType"
 			case ENUMERATORS:      "FEnumerator"
-			//case ARRAYS:           "FArgument"
+			//case NUMBERS:        // generic handling
+			//case FLOATS:         // generic handling
+			//case INTEGERS:       // generic handling
+			//case STRINGS:        // generic handling
+			//case ARRAYS:         // generic handling
 			default:               "EObject"  // reasonable default
 		}
 	}

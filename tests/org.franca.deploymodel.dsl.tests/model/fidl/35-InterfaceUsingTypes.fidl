@@ -18,10 +18,12 @@ interface InterfaceUsingTypes {
 	struct MyStruct {
 		Integer field1
 		String field2
+		String field3
 	} 
 	
 	union MyUnion {
-		String field1
+		Integer field1
+		String field2
 	}
 	
 	

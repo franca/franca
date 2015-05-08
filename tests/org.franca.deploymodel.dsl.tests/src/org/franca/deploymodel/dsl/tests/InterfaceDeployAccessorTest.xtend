@@ -70,11 +70,11 @@ class InterfaceDeployAccessorTest extends DeployAccessorTestBase {
 		val struct = type as FStructType
 
 		// access property on struct level (cannot be overwritten)
-		assertEquals(111, accessor.getStructProp(type))
+		assertEquals(111, accessor.getStructProp(struct))
 				
 		// local accessor is needed for accessing overwritten properties
 		val acc = accessor.getOverwriteAccessor(attr2)
-		assertEquals(222, acc.getStructProp(type))
+		assertEquals(222, acc.getStructProp(struct))
 		checkStructA(struct, accessor, acc,
 			10,
 			20, StringProp.v,
@@ -105,7 +105,7 @@ class InterfaceDeployAccessorTest extends DeployAccessorTestBase {
 		val struct = type as FStructType
 
 		// access property on struct level (cannot be overwritten)
-		assertEquals(111, accessor.getStructProp(type))
+		assertEquals(111, accessor.getStructProp(struct))
 				
 		// local accessor is needed for accessing overwritten properties
 		val acc = accessor.getOverwriteAccessor(arg2)
@@ -130,7 +130,7 @@ class InterfaceDeployAccessorTest extends DeployAccessorTestBase {
 		val struct = type as FStructType
 
 		// access property on struct level (cannot be overwritten)
-		assertEquals(111, accessor.getStructProp(type))
+		assertEquals(111, accessor.getStructProp(struct))
 				
 		// local accessor is needed for accessing overwritten properties
 		val acc = accessor.getOverwriteAccessor(arg2)
@@ -169,11 +169,11 @@ class InterfaceDeployAccessorTest extends DeployAccessorTestBase {
 		val field1 = union.elements.get(0)
 
 		// access property on union level (cannot be overwritten)
-		assertEquals(111, accessor.getUnionProp(type))
+		assertEquals(111, accessor.getUnionProp(union))
 
 		// local accessor is needed for accessing overwritten properties
 		val acc = accessor.getOverwriteAccessor(arg1)
-		assertEquals(51413, acc.getUnionProp(type))
+		assertEquals(51413, acc.getUnionProp(union))
 		checkUnionA(field1, acc, 100, StringProp.v)				
 	}
 
@@ -195,7 +195,7 @@ class InterfaceDeployAccessorTest extends DeployAccessorTestBase {
 		val field2 = union.elements.get(1)
 
 		// access property on union level (cannot be overwritten)
-		assertEquals(222, accessor.getUnionProp(type))
+		assertEquals(222, accessor.getUnionProp(union))
 				
 		// access ignoring overwrites
 		assertEquals(StringProp.r, accessor.getStringProp(field1))
@@ -244,7 +244,7 @@ class InterfaceDeployAccessorTest extends DeployAccessorTestBase {
 		val nested1 = struct.elements.get(0)
 
 		// access property on struct level (cannot be overwritten)
-		assertEquals(333, accessor.getStructProp(type))
+		assertEquals(333, accessor.getStructProp(struct))
 				
 		// access ignoring overwrites
 		assertEquals(33301, accessor.getSFieldProp(nested1))
@@ -294,7 +294,7 @@ class InterfaceDeployAccessorTest extends DeployAccessorTestBase {
 		val nested2 = struct.elements.get(2)
 
 		// access property on struct level (cannot be overwritten)
-		assertEquals(222, accessor.getStructProp(type))
+		assertEquals(222, accessor.getStructProp(struct))
 				
 		// access ignoring overwrites
 		assertEquals(StringProp.u, accessor.getStringProp(field1))

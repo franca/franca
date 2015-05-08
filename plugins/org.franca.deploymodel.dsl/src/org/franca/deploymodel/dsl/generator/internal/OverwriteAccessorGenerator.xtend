@@ -115,6 +115,19 @@ class OverwriteAccessorGenerator extends AccessMethodGenerator {
 					FDField fo = mappedFields.get(obj);
 					«genOverwriteAccess("fo")»
 				}
+			«ELSEIF francaType=="EObject"»
+				if (obj instanceof FField) {
+					// check if this field is overwritten
+					if (mappedFields.containsKey(obj)) {
+						FDField fo = mappedFields.get(obj);
+						«genOverwriteAccess("fo")»
+					}
+				} else {
+					if (overwrites!=null) {
+						// this is some model element which might be overwritten
+						«genOverwriteAccess("obj")»
+					}
+				}
 			«ELSE»
 				if (overwrites!=null) {
 					«genOverwriteAccess("overwrites")»
@@ -143,44 +156,60 @@ class OverwriteAccessorGenerator extends AccessMethodGenerator {
 		@Override
 		«ENDIF»
 		public «returnType» «methodName»(«francaType» obj) {
-			// check if this field is overwritten
-			if (mappedFields.containsKey(obj)) {
-				FDField fo = mappedFields.get(obj);
-				«type.javaType» e = target.get«type.getter»(fo, "«enumType»");
-				if (e!=null) {
-					«IF type.array!=null»
-						List<«enumType»> es = new ArrayList<«enumType»>();
-						for(String ev : e) {
-							«enumType» v = DataPropertyAccessorHelper.convert«name»(ev);
-							if (v!=null) {
-								es.add(v);
-							}
-						}
-						return es;
-					«ELSE»
-						return DataPropertyAccessorHelper.convert«name»(e);
-					«ENDIF»
+			«IF francaType=="FEnumerator"»
+				// check if this enumerator is overwritten
+				if (mappedEnumerators.containsKey(obj)) {
+					FDEnumValue fo = mappedEnumerators.get(obj);
+					«genEnumOverwriteAccess(enumType, "fo")»
 				}
-			}
+			«ELSEIF francaType=="FField"»
+				// check if this field is overwritten
+				if (mappedFields.containsKey(obj)) {
+					FDField fo = mappedFields.get(obj);
+					«genEnumOverwriteAccess(enumType, "fo")»
+				}
+			«ELSEIF francaType=="EObject"»
+				if (obj instanceof FField) {
+					// check if this field is overwritten
+					if (mappedFields.containsKey(obj)) {
+						FDField fo = mappedFields.get(obj);
+						«genEnumOverwriteAccess(enumType, "fo")»
+					}
+				} else {
+					if (overwrites!=null) {
+						// this is some model element which might be overwritten
+						«genEnumOverwriteAccess(enumType, "obj")»
+					}
+				}
+			«ELSE»
+				if (overwrites!=null) {
+					«genEnumOverwriteAccess(enumType, "overwrites")»
+				}
+			«ENDIF»
 			return delegate.get«name»(obj);
 		}
 	'''
 
-/*
+	def private genEnumOverwriteAccess(
+		FDPropertyDecl it,
+		String enumType,
+		String objname
+	) '''
+		«type.javaType» e = target.get«type.getter»(«objname», "«enumType»");
+		if (e!=null) {
 			«IF type.array!=null»
-			List<«enumType»> es = new ArrayList<«enumType»>();
-			for(String ev : e) {
-				«enumType» v = helper.convert«enumType»(ev);
-				if (v==null) {
-					return null;
-				} else {
-					es.add(v);
+				List<«enumType»> es = new ArrayList<«enumType»>();
+				for(String ev : e) {
+					«enumType» v = DataPropertyAccessorHelper.convert«name»(ev);
+					if (v!=null) {
+						es.add(v);
+					}
 				}
-			}
-			return es;
+				return es;
 			«ELSE»
-			return helper.convert«enumType»(e);
+				return DataPropertyAccessorHelper.convert«name»(e);
 			«ENDIF»
- */
+		}
+	'''
 	
 }

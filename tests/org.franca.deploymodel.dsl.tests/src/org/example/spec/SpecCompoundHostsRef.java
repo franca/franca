@@ -16,6 +16,8 @@ import org.franca.core.franca.FEnumerationType;
 import org.franca.core.franca.FEnumerator;
 import org.franca.core.franca.FField;
 import org.franca.core.franca.FModelElement;
+import org.franca.core.franca.FStructType;
+import org.franca.core.franca.FUnionType;
 import org.franca.deploymodel.core.FDeployedInterface;
 import org.franca.deploymodel.core.FDeployedProvider;
 import org.franca.deploymodel.core.FDeployedTypeCollection;
@@ -66,13 +68,13 @@ public class SpecCompoundHostsRef {
 		public Integer getArrayProp(FField obj);
 		
 		// host 'structs'
-		public Integer getStructProp(EObject obj);
+		public Integer getStructProp(FStructType obj);
 		
 		// host 'struct_fields'
 		public Integer getSFieldProp(FField obj);
 		
 		// host 'unions'
-		public Integer getUnionProp(EObject obj);
+		public Integer getUnionProp(FUnionType obj);
 		
 		// host 'union_fields'
 		public Integer getUFieldProp(FField obj);
@@ -222,7 +224,7 @@ public class SpecCompoundHostsRef {
 		
 		// host 'structs'
 		@Override
-		public Integer getStructProp(EObject obj) {
+		public Integer getStructProp(FStructType obj) {
 			return target.getInteger(obj, "StructProp");
 		}
 		
@@ -234,7 +236,7 @@ public class SpecCompoundHostsRef {
 		
 		// host 'unions'
 		@Override
-		public Integer getUnionProp(EObject obj) {
+		public Integer getUnionProp(FUnionType obj) {
 			return target.getInteger(obj, "UnionProp");
 		}
 		
@@ -332,7 +334,7 @@ public class SpecCompoundHostsRef {
 		
 		// host 'structs'
 		@Override
-		public Integer getStructProp(EObject obj) {
+		public Integer getStructProp(FStructType obj) {
 			return target.getInteger(obj, "StructProp");
 		}
 		
@@ -344,7 +346,7 @@ public class SpecCompoundHostsRef {
 		
 		// host 'unions'
 		@Override
-		public Integer getUnionProp(EObject obj) {
+		public Integer getUnionProp(FUnionType obj) {
 			return target.getInteger(obj, "UnionProp");
 		}
 		
@@ -454,40 +456,79 @@ public class SpecCompoundHostsRef {
 		// host 'strings'
 		@Override
 		public StringProp getStringProp(EObject obj) {
-			// check if this field is overwritten
-			if (mappedFields.containsKey(obj)) {
-				FDField fo = mappedFields.get(obj);
-				String e = target.getEnum(fo, "StringProp");
-				if (e!=null)
-					return DataPropertyAccessorHelper.convertStringProp(e);
+			if (obj instanceof FField) {
+				// check if this field is overwritten
+				if (mappedFields.containsKey(obj)) {
+					FDField fo = mappedFields.get(obj);
+					String e = target.getEnum(fo, "StringProp");
+					if (e!=null) {
+						return DataPropertyAccessorHelper.convertStringProp(e);
+					}
+				}
+			} else {
+				if (overwrites!=null) {
+					// this is some model element which might be overwritten
+					String e = target.getEnum(obj, "StringProp");
+					if (e!=null) {
+						return DataPropertyAccessorHelper.convertStringProp(e);
+					}
+				}
 			}
 			return delegate.getStringProp(obj);
 		}
 		@Override
 		public List<StringEnumArrayProp> getStringEnumArrayProp(EObject obj) {
-			// check if this field is overwritten
-			if (mappedFields.containsKey(obj)) {
-				FDField fo = mappedFields.get(obj);
-				List<String> e = target.getEnumArray(fo, "StringEnumArrayProp");
-				if (e!=null) {
-					List<StringEnumArrayProp> es = new ArrayList<StringEnumArrayProp>();
-					for(String ev : e) {
-						StringEnumArrayProp v = DataPropertyAccessorHelper.convertStringEnumArrayProp(ev);
-						if (v!=null) {
-							es.add(v);
+			if (obj instanceof FField) {
+				// check if this field is overwritten
+				if (mappedFields.containsKey(obj)) {
+					FDField fo = mappedFields.get(obj);
+					List<String> e = target.getEnumArray(fo, "StringEnumArrayProp");
+					if (e!=null) {
+						List<StringEnumArrayProp> es = new ArrayList<StringEnumArrayProp>();
+						for(String ev : e) {
+							StringEnumArrayProp v = DataPropertyAccessorHelper.convertStringEnumArrayProp(ev);
+							if (v!=null) {
+								es.add(v);
+							}
 						}
+						return es;
 					}
-					return es;
+				}
+			} else {
+				if (overwrites!=null) {
+					// this is some model element which might be overwritten
+					List<String> e = target.getEnumArray(obj, "StringEnumArrayProp");
+					if (e!=null) {
+						List<StringEnumArrayProp> es = new ArrayList<StringEnumArrayProp>();
+						for(String ev : e) {
+							StringEnumArrayProp v = DataPropertyAccessorHelper.convertStringEnumArrayProp(ev);
+							if (v!=null) {
+								es.add(v);
+							}
+						}
+						return es;
+					}
 				}
 			}
 			return delegate.getStringEnumArrayProp(obj);
 		}
 		@Override
 		public List<Integer> getStringIntArrayProp(EObject obj) {
-			if (overwrites!=null) {
-				List<Integer> v = target.getIntegerArray(overwrites, "StringIntArrayProp");
-				if (v!=null)
-					return v;
+			if (obj instanceof FField) {
+				// check if this field is overwritten
+				if (mappedFields.containsKey(obj)) {
+					FDField fo = mappedFields.get(obj);
+					List<Integer> v = target.getIntegerArray(fo, "StringIntArrayProp");
+					if (v!=null)
+						return v;
+				}
+			} else {
+				if (overwrites!=null) {
+					// this is some model element which might be overwritten
+					List<Integer> v = target.getIntegerArray(obj, "StringIntArrayProp");
+					if (v!=null)
+						return v;
+				}
 			}
 			return delegate.getStringIntArrayProp(obj);
 		}
@@ -540,7 +581,7 @@ public class SpecCompoundHostsRef {
 		
 		// host 'structs'
 		@Override
-		public Integer getStructProp(EObject obj) {
+		public Integer getStructProp(FStructType obj) {
 			if (overwrites!=null) {
 				Integer v = target.getInteger(overwrites, "StructProp");
 				if (v!=null)
@@ -564,7 +605,7 @@ public class SpecCompoundHostsRef {
 		
 		// host 'unions'
 		@Override
-		public Integer getUnionProp(EObject obj) {
+		public Integer getUnionProp(FUnionType obj) {
 			if (overwrites!=null) {
 				Integer v = target.getInteger(overwrites, "UnionProp");
 				if (v!=null)
