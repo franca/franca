@@ -11,6 +11,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.franca.core.dsl.FrancaIDLStandaloneSetup;
 import org.franca.core.dsl.FrancaImportsProvider;
+import org.franca.core.dsl.FrancaPersistenceManager;
 import org.franca.core.utils.FileHelper;
 import org.franca.core.utils.ModelPersistenceHandler;
 import org.franca.deploymodel.dsl.fDeploy.FDModel;
@@ -156,7 +157,7 @@ public class FDeployPersistenceManager {
 				fileExtension,
 				new FDeployImportsProvider());
 		ModelPersistenceHandler.registerFileExtensionHandler(
-				"fidl", // TODO: refer to FrancaPersistenceManager.fileExtension
+				FrancaPersistenceManager.getFileExtension(),
 				new FrancaImportsProvider());
 
 		ModelPersistenceHandler persistenceHandler = new ModelPersistenceHandler(resourceSet);

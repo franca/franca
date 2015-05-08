@@ -26,13 +26,13 @@ import com.google.inject.Provider;
  */
 public class FrancaPersistenceManager {
 
-	private final String fileExtension = "fidl";
+	private static final String FRANCA_FILE_EXTENSION = "fidl";
 
 	@Inject
 	private Provider<ResourceSet> resourceSetProvider;
 	
-	public String getFileExtension() {
-		return fileExtension;
+	public static String getFileExtension() {
+		return FRANCA_FILE_EXTENSION;
 	}
 
 	/**
@@ -88,8 +88,8 @@ public class FrancaPersistenceManager {
 
 		if (fn == null)
 			return null;
-		if (!fn.endsWith("." + fileExtension)) {
-			fn += "." + fileExtension;
+		if (!fn.endsWith("." + FRANCA_FILE_EXTENSION)) {
+			fn += "." + FRANCA_FILE_EXTENSION;
 		}
 
 		ModelPersistenceHandler persistenceHandler = createModelPersistenceHandler(resourceSetProvider.get());
@@ -129,8 +129,8 @@ public class FrancaPersistenceManager {
 		
 		if (fn == null)
 			return false;
-		if (!fn.endsWith("." + fileExtension)) {
-			fn += "." + fileExtension;
+		if (!fn.endsWith("." + FRANCA_FILE_EXTENSION)) {
+			fn += "." + FRANCA_FILE_EXTENSION;
 		}
 		if (model.eResource() == null) {
 			// create a new ResourceSet for this new created model
@@ -146,7 +146,7 @@ public class FrancaPersistenceManager {
 	// TODO: refactor MPH in order to avoid this function
 	private ModelPersistenceHandler createModelPersistenceHandler (ResourceSet resourceSet) {
 		ModelPersistenceHandler.registerFileExtensionHandler(
-				fileExtension,
+				FRANCA_FILE_EXTENSION,
 				new FrancaImportsProvider());
 
 		ModelPersistenceHandler persistenceHandler = new ModelPersistenceHandler(resourceSet);
