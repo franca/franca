@@ -24,6 +24,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDElement;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumValue;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumeration;
 import org.franca.deploymodel.dsl.fDeploy.FDField;
+import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance;
 import org.franca.deploymodel.dsl.fDeploy.FDMethod;
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification;
 import org.franca.deploymodel.dsl.fDeploy.FDStruct;
@@ -78,6 +79,14 @@ public class MappingGenericPropertyAccessor extends GenericPropertyAccessor{
 
 	public List<FInterface> getInterfaceArray(EObject obj, String property) {
 		return super.getInterfaceArray(getFDElement(obj), property);
+	}
+
+	public FDInterfaceInstance getInterfaceInstance(EObject obj, String property) {
+		return super.getInterfaceInstance(getFDElement(obj), property);
+	}
+
+	public List<FDInterfaceInstance> getInterfaceInstanceArray(EObject obj, String property) {
+		return super.getInterfaceInstanceArray(getFDElement(obj), property);
 	}
 
 	public String getEnum(EObject obj, String property) {

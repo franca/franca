@@ -22,6 +22,7 @@ class GeneratorHelper {
 					case FDPredefinedTypeId::INTEGER:   "Integer"
 					case FDPredefinedTypeId::STRING:    "String"
 					case FDPredefinedTypeId::INTERFACE: "Interface"
+					case FDPredefinedTypeId::INSTANCE:  "InterfaceInstance"
 				}
 			} else {
 				switch (typeRef.complex) {

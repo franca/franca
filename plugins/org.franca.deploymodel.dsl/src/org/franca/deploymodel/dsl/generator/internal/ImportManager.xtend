@@ -34,10 +34,13 @@ class ImportManager {
 					case FDPredefinedTypeId::BOOLEAN:    "Boolean"
 					case FDPredefinedTypeId::INTEGER:    "Integer"
 					case FDPredefinedTypeId::STRING:     "String"
-					case FDPredefinedTypeId::INSTANCE:   "Instance" // TODO: correct?
 					case FDPredefinedTypeId::INTERFACE:  {
 						neededFrancaTypes.add("FInterface")
 						"FInterface"
+					}
+					case FDPredefinedTypeId::INSTANCE:  {
+						neededFrancaTypes.add("FDInterfaceInstance")
+						"FDInterfaceInstance"
 					}
 				}
 			} else {
