@@ -30,6 +30,28 @@ typeCollection MyUnionTypes {
 	// XPECT errors --> "Name conflict for type name 'MyUnion'" at "MyUnion"
 	union MyUnion { Int32 k }
 	
+	union UnionWithTypedef1 {
+		// XPECT errors --> "Duplicate element type 'UInt32'" at "UInt32"
+		UInt32 name 
+		// XPECT errors --> "Duplicate element type 'UInt32'" at "AgainUInt32"
+		AgainUInt32 other
+	}
+	typedef AgainUInt32 is UInt32 
+
+	union SomeUnion {
+		// XPECT errors --> "Duplicate element type 'SomeStruct'" at "SomeStruct"
+		SomeStruct original
+		// XPECT errors --> "Duplicate element type 'SomeStruct'" at "Alias1"
+		Alias1 sametype1
+		// XPECT errors --> "Duplicate element type 'SomeStruct'" at "Alias2"
+		Alias2 sametype2
+	}
+	typedef Alias1 is SomeStruct 
+	typedef Alias2 is SomeStruct 
+	struct SomeStruct {
+		Boolean name
+	}
+
 	union MyUnion1 { Int16 x }
 	union MyUnion2 extends MyUnion1 {
 		// XPECT errors --> "Element type collision with base element 'MyUnion1.x'" at "Int16"

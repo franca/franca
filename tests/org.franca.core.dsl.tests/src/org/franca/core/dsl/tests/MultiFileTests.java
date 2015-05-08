@@ -176,13 +176,6 @@ public class MultiFileTests extends XtextTest {
     }
 
     @Test
-    public void test_121() {
-    	URI root = URI.createURI("classpath:/");
-    	URI loc = URI.createFileURI("testcases/121-TestUnion.fidl");
-    	FModel fmodel = fidlLoader.loadModel(loc, root);
-    	validate(fmodel,4);
-    }
-    @Test
     public void test_2_5() {
     	testFile("multifile/first2/second1/model2_5.fidl");
     }
