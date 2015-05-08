@@ -182,6 +182,7 @@ define org.example.spec.SpecCompoundHosts for interface fidl.InterfaceUsingTypes
 			SFieldProp = 630
 			#enumeration {
 				EnumerationProp = 635
+				E1 { EnumeratorProp = 636 }
 			}
 		}
 		fieldS {
@@ -194,6 +195,7 @@ define org.example.spec.SpecCompoundHosts for interface fidl.InterfaceUsingTypes
 			SFieldProp = 650
 			#union {
 				UnionProp = 655
+				field1 { UFieldProp = 656 }
 			}
 		}
 	}

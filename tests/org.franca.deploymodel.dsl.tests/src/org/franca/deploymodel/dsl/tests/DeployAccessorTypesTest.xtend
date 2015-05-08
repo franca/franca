@@ -170,17 +170,10 @@ class DeployAccessorTypesTest extends DeployAccessorTestBase {
 		assertEquals("attrU", attrU.name)
 		assertEquals(150, accessor.getAttributeProp(attrU))
 
-		val type = attrU.type.actualDerived
-		assertTrue(type instanceof FUnionType)
-		val unionType = type as FUnionType
+		// access ignoring overwrites
+		val unionType = attrU.type.checkUnion
 		val f1 = unionType.elements.get(0)
 		val f2 = unionType.elements.get(1)
-		
-		// access ignoring overwrites
-		assertEquals(50, accessor.getUnionProp(unionType))
-		assertEquals(55, accessor.getUFieldProp(f1))
-		assertEquals(56, accessor.getUFieldProp(f2))
-		assertEquals(StringProp.q, accessor.getStringProp(f2))
 		
 		// access including overwrites
 		val acc = accessor.getOverwriteAccessor(attrU)
@@ -300,8 +293,64 @@ class DeployAccessorTypesTest extends DeployAccessorTestBase {
 	}
 
 
-	// TODO: add more tests for other derived elements
+	// structs which overwrite properties of their fields' types 
 
+	@Test
+	def void test_70DefTypes_struct_fieldE() {
+		val struct = fidl.types.findFirst[name=="OtherStruct"]
+		assertNotNull(struct)
+		assertTrue(struct instanceof FStructType)
+
+		val structType = struct as FStructType
+		assertEquals(600, accessor.getStructProp(structType))
+
+		val field = structType.elements.get(2)
+		assertEquals("fieldE", field.name)
+		assertEquals(630, accessor.getSFieldProp(field))
+				
+		// access ignoring overwrites
+		val enumerationType = field.type.checkEnumeration
+		val e1 = enumerationType.enumerators.get(0)
+		val e2 = enumerationType.enumerators.get(1)
+		val e3 = enumerationType.enumerators.get(2)
+
+		// access including overwrites
+		val acc = accessor.getOverwriteAccessor(field)
+		assertEquals(635, acc.getEnumerationProp(enumerationType))
+		assertEquals(636, acc.getEnumeratorProp(e1))
+		assertEquals(36, acc.getEnumeratorProp(e2))
+		assertEquals(37, acc.getEnumeratorProp(e3))
+	}
+
+	@Test
+	def void test_70DefTypes_struct_fieldU() {
+		val struct = fidl.types.findFirst[name=="OtherStruct"]
+		assertNotNull(struct)
+		assertTrue(struct instanceof FStructType)
+
+		val structType = struct as FStructType
+		assertEquals(600, accessor.getStructProp(structType))
+
+		val field = structType.elements.get(4)
+		assertEquals("fieldU", field.name)
+		assertEquals(650, accessor.getSFieldProp(field))
+				
+		// access ignoring overwrites
+		val unionType = field.type.checkUnion
+		val f1 = unionType.elements.get(0)
+		val f2 = unionType.elements.get(1)
+		
+		// access including overwrites
+		val acc = accessor.getOverwriteAccessor(field)
+		assertEquals(655, acc.getUnionProp(unionType))
+		assertEquals(656, acc.getUFieldProp(f1))
+		assertEquals(56, acc.getUFieldProp(f2))
+		assertEquals(StringProp.q, acc.getStringProp(f2))
+	}
+	
+	
+	// some helper functions
+	
 	def private FEnumerationType checkEnumeration(FTypeRef typeRef) {
 		val type = typeRef.actualDerived
 		assertNotNull(type)
@@ -318,6 +367,23 @@ class DeployAccessorTypesTest extends DeployAccessorTestBase {
 		assertEquals(37, accessor.getEnumeratorProp(e3))
 		
 		enumerationType
+	}
+	
+	def private FUnionType checkUnion(FTypeRef typeRef) {
+		val type = typeRef.actualDerived
+		assertNotNull(type)
+		assertTrue(type instanceof FUnionType)
+		val unionType = type as FUnionType
+		val f1 = unionType.elements.get(0)
+		val f2 = unionType.elements.get(1)
+		
+		// access ignoring overwrites
+		assertEquals(50, accessor.getUnionProp(unionType))
+		assertEquals(55, accessor.getUFieldProp(f1))
+		assertEquals(56, accessor.getUFieldProp(f2))
+		assertEquals(StringProp.q, accessor.getStringProp(f2))
+
+		unionType		
 	}
 
 }
