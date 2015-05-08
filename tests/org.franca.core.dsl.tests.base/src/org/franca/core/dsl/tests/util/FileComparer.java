@@ -8,6 +8,8 @@ package org.franca.core.dsl.tests.util;
  */
 public class FileComparer {
 
+	private static final boolean verbose = false;
+			
 	private static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
 	public class Conflict {
@@ -30,8 +32,8 @@ public class FileComparer {
 		
 		int ie=0, ia=0;
 		while (ie<expectedLines.length && ia<actualLines.length) {
-			ie = proceed(expectedLines, ie);
-			ia = proceed(actualLines, ia);
+			ie = proceed(expectedLines, ie, "E");
+			ia = proceed(actualLines, ia, "A");
 			
 			if (ie<expectedLines.length && ia<actualLines.length) {
 				String le = prepare(expectedLines[ie]);
@@ -45,10 +47,10 @@ public class FileComparer {
 		
 		// eat trailing empty lines
 		if (ie<expectedLines.length) {
-			ie = proceed(expectedLines, ie);
+			ie = proceed(expectedLines, ie, "E");
 		}
 		if (ia<actualLines.length) {
-			ia = proceed(actualLines, ia);
+			ia = proceed(actualLines, ia, "A");
 		}
 
 		// check remaining lines in one of the files
@@ -61,7 +63,7 @@ public class FileComparer {
 		return null;
 	}
 
-	private int proceed (final String[] text, final int idx) {
+	private int proceed (final String[] text, final int idx, String which) {
 		int i = idx;
 		int j = i;
 		do {
@@ -71,8 +73,11 @@ public class FileComparer {
 			while (i<text.length && skipLine(text[i])) {
 				i++;
 			}
+			if (verbose && i>j)
+				System.out.println(which + ": skipped empty: " + (j+1) + " -> " + (i+1));
 	
 			// skip over comments etc.
+			int i0 = i;
 			if (i<text.length && skipRegionStart(text[i])) {
 				do {
 					i++;
@@ -80,6 +85,9 @@ public class FileComparer {
 				if (i<text.length)
 					i++;
 			}
+			if (verbose && i>i0)
+				System.out.println(which + ": skipped other: " + (i0+1) + " -> " + (i+1));
+
 		} while (i<text.length && j<i);
 		
 		return i;

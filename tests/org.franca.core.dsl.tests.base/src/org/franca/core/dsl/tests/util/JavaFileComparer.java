@@ -16,12 +16,14 @@ public class JavaFileComparer extends FileComparer {
 	}
 
 	protected boolean skipRegionStart (String line) {
+//		System.out.println("checking start: >>>" + line + "<<<");
 		boolean m = line.matches("^\\s*/\\*(\\*)?");
 		return m;
 	}
 
 	protected boolean skipRegionEnd (String line) {
-		boolean m = line.matches("^\\s*\\*/");
+//		System.out.println("checking end:   >>>" + line + "<<<");
+		boolean m = line.matches("^\\s*\\*/\\s*");
 		return m;
 	}
 
