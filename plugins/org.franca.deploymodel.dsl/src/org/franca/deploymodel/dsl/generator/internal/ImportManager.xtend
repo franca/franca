@@ -58,7 +58,10 @@ class ImportManager {
 		neededFrancaTypes.add(type)
 	}
 	
-	def genListType (String type) '''List<«type»>'''
+	def genListType (String type) {
+		setNeedArrayList
+		'''List<«type»>'''
+	}
 
 	def setNeedArrayList() {
 		this.needArrayList = true

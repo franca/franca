@@ -67,7 +67,6 @@ class ProviderAccessorGenerator {
 					if (type.array==null) {
 						enumType
 					} else {
-						// TODO: setNeedArrayList
 						enumType.genListType.toString
 					}
 				val enumerator = type.complex as FDEnumType
