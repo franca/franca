@@ -14,15 +14,17 @@ import org.franca.core.franca.FTypeRef
 import org.franca.core.franca.FBroadcast
 import static org.franca.core.franca.FrancaPackage$Literals.*
 
+import static extension org.franca.core.framework.FrancaHelpers.*
+
 class FrancaNameProvider {
 	
 	/**
-	 * Helper function that computes the name of a method, broadcast including
+	 * Helper function that computes the name of a method or broadcast including
 	 * its signature. Used to identify uniquely the element in a restricted
 	 * scope.
 	 * 
-	 * @param e   the object to get the name
-	 * @return the name
+	 * @param e  the object to get the name
+	 * @return the name representing the full signature
 	 */
 	def static getName (EObject obj) {
 		val sb = new StringBuilder
@@ -32,20 +34,20 @@ class FrancaNameProvider {
 				sb.append(obj.name)
 				for(arg : obj.inArgs) {
 					sb.append('_')
-					sb.append(arg.typeName)
+					sb.append(arg.typeNameStrict)
 				}
 				if (! obj.outArgs.empty)
 					sb.append('_')
 				for(arg : obj.outArgs) {
 					sb.append('_')
-					sb.append(arg.typeName)
+					sb.append(arg.typeNameStrict)
 				}
 			}
 			FBroadcast: {
 				sb.append(obj.name)
 				for(arg : obj.outArgs) {
 					sb.append('_')
-					sb.append(arg.typeName)
+					sb.append(arg.typeNameStrict)
 				}
 			}
 			FTypeRef: {
@@ -62,20 +64,49 @@ class FrancaNameProvider {
 		sb.toString
 	}
 
-	def private static String getTypeName (FArgument arg) {
+	def private static String getTypeNameStrict (FArgument arg) {
 		val sb = new StringBuilder
-		sb.append(arg.type.name)
+		sb.append(arg.type.nameStrict)
 		if (arg.isArray) {
 			sb.append("[]")
 		}
 		sb.toString
 	}
 
-	def private static String getName (FTypeRef type) {
-		if (type.derived==null) {
-			type.predefined.literal
-		} else {
+	/**
+	 * Get the type name for a given FTypeRef using strict equality rules.
+	 * 
+	 * Note: All integer types are mapped to the same name "Integer".
+	 *       This ensures that different concrete integer types will
+	 *       be regarded as conflicting during method overloading.
+	 */
+	def private static String getNameStrict (FTypeRef type) {
+		if (type.derived!=null) {
 			type.derived.name
+		} else if (type.interval!=null) {
+			"Integer"
+		} else {
+			if (type.isInteger)
+				"Integer"
+			else
+				type.predefined.literal
+		}
+	}
+
+	/**
+	 * Get the type name for a given FTypeRef using relaxed rules.
+	 * 
+	 * Note: All integer types are regarded as pairwise different.
+	 *       This might not be true depending how the ranged "Integer" type
+	 *       will be mapped to an actual implementation type.
+	 */
+	def private static String getName (FTypeRef type) {
+		if (type.derived!=null) {
+			type.derived.name
+		} else if (type.interval!=null) {
+			"Integer"
+		} else {
+			type.predefined.literal
 		}
 	}
 }

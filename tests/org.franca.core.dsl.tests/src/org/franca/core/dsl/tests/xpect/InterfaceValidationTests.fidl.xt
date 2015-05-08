@@ -19,20 +19,20 @@ interface DuplicateArgumentNames {
 }
 
 interface DuplicateMethodeNameBase {
-	// XPECT errors --> "Name conflict for inherited method 'MyMethod'" at "MyMethod"
+	// XPECT errors --> "Name conflict for method 'MyMethod'" at "MyMethod"
 	method MyMethod { }
 }
 interface DuplicateMethodeNameDerived extends DuplicateMethodeNameBase {
-	// XPECT errors --> "Name conflict for inherited method 'MyMethod'" at "MyMethod"
+	// XPECT errors --> "Name conflict for method 'MyMethod'" at "MyMethod"
 	method MyMethod { }
 }
 
 
 interface DuplicateBroadcastNameBase {
-	// XPECT errors --> "Name conflict for inherited broadcast 'MyBroadcast'" at "MyBroadcast"
+	// XPECT errors --> "Name conflict for broadcast 'MyBroadcast'" at "MyBroadcast"
 	broadcast MyBroadcast { }
 }
 interface DuplicateBroadcastNameDerived extends DuplicateBroadcastNameBase {
-	// XPECT errors --> "Name conflict for inherited broadcast 'MyBroadcast'" at "MyBroadcast"
+	// XPECT errors --> "Name conflict for broadcast 'MyBroadcast'" at "MyBroadcast"
 	broadcast MyBroadcast { }
 }			
