@@ -90,6 +90,16 @@ class OverwriteAccessorGenerator extends AccessMethodGenerator {
 				}
 				return delegate.getOverwriteAccessor(obj);
 			}
+
+			@Override
+			public IDataPropertyAccessor getOverwriteAccessor(FArrayType obj) {
+				// check if this array is overwritten
+				if (overwrites!=null) {
+					// TODO: this or delegate?
+					return new OverwriteAccessor(overwrites, this, target);
+				}
+				return delegate.getOverwriteAccessor(obj);
+			}
 		}
 	'''
 

@@ -119,6 +119,7 @@ define org.example.spec.SpecCompoundHosts for interface fidl.InterfaceUsingTypes
 				ArgumentProp = 230
 				#enumeration {
 					EnumerationProp = 235
+					E2 { EnumeratorProp = 236 }
 				}
 			}
 			argS {
@@ -147,6 +148,7 @@ define org.example.spec.SpecCompoundHosts for interface fidl.InterfaceUsingTypes
 		ArrayProp = 520
 		#enumeration {
 			EnumerationProp = 525
+			E3 { EnumeratorProp = 537 }
 		}
 	}
 

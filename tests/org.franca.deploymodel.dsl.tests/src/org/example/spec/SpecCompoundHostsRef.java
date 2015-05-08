@@ -94,6 +94,8 @@ public class SpecCompoundHostsRef {
 		 * @return the overwrite-aware accessor
 		 */
 		public IDataPropertyAccessor getOverwriteAccessor(FField obj);
+
+		public IDataPropertyAccessor getOverwriteAccessor(FArrayType obj);
 	}
 
 	/**
@@ -251,6 +253,11 @@ public class SpecCompoundHostsRef {
 		public IDataPropertyAccessor getOverwriteAccessor(FField obj) {
 			return helper.getOverwriteAccessorAux(obj);
 		}
+
+		@Override
+		public IDataPropertyAccessor getOverwriteAccessor(FArrayType obj) {
+			return helper.getOverwriteAccessorAux(obj);
+		}
 	}
 
 	/**
@@ -393,6 +400,11 @@ public class SpecCompoundHostsRef {
 	
 		@Override
 		public IDataPropertyAccessor getOverwriteAccessor(FField obj) {
+			return helper.getOverwriteAccessorAux(obj);
+		}
+
+		@Override
+		public IDataPropertyAccessor getOverwriteAccessor(FArrayType obj) {
 			return helper.getOverwriteAccessorAux(obj);
 		}
 	}
@@ -640,6 +652,16 @@ public class SpecCompoundHostsRef {
 					// TODO: this or delegate?
 					return new OverwriteAccessor(overwrites, this, target);
 				
+			}
+			return delegate.getOverwriteAccessor(obj);
+		}
+
+		@Override
+		public IDataPropertyAccessor getOverwriteAccessor(FArrayType obj) {
+			// check if this array is overwritten
+			if (overwrites!=null) {
+				// TODO: this or delegate?
+				return new OverwriteAccessor(overwrites, this, target);
 			}
 			return delegate.getOverwriteAccessor(obj);
 		}

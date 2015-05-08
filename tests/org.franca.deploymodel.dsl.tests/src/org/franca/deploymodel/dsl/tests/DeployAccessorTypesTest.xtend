@@ -21,6 +21,7 @@ import org.junit.runner.RunWith
 import static org.junit.Assert.*
 
 import static extension org.franca.core.framework.FrancaHelpers.*
+import org.franca.core.franca.FTypeRef
 
 @RunWith(typeof(XtextRunner2))
 @InjectWith(typeof(FDeployTestsInjectorProvider))
@@ -64,7 +65,6 @@ class DeployAccessorTypesTest extends DeployAccessorTestBase {
 		)
 	}
 	
-
 	@Test
 	def void test_70DefTypesOverwrite_attrA() {
 		val attrA = fidl.attributes.get(1)
@@ -78,7 +78,7 @@ class DeployAccessorTypesTest extends DeployAccessorTestBase {
 		// access ignoring overwrites
 		assertEquals(20, accessor.getArrayProp(arrayType))
 		
-		// access including overwrites (there are none)
+		// access including overwrites
 		val acc = accessor.getOverwriteAccessor(attrA)
 		assertEquals(125, acc.getArrayProp(arrayType))
 	}
@@ -89,20 +89,13 @@ class DeployAccessorTypesTest extends DeployAccessorTestBase {
 		assertEquals("attrE", attrE.name)
 		assertEquals(130, accessor.getAttributeProp(attrE))
 
-		val type = attrE.type.actualDerived
-		assertTrue(type instanceof FEnumerationType)
-		val enumerationType = type as FEnumerationType
+		// access ignoring overwrites
+		val enumerationType = attrE.type.checkEnumeration
 		val e1 = enumerationType.enumerators.get(0)
 		val e2 = enumerationType.enumerators.get(1)
 		val e3 = enumerationType.enumerators.get(2)
 		
-		// access ignoring overwrites
-		assertEquals(30, accessor.getEnumerationProp(enumerationType))
-		assertEquals(35, accessor.getEnumeratorProp(e1))
-		assertEquals(36, accessor.getEnumeratorProp(e2))
-		assertEquals(37, accessor.getEnumeratorProp(e3))
-		
-		// access including overwrites (there are none)
+		// access including overwrites
 		val acc = accessor.getOverwriteAccessor(attrE)
 		assertEquals(135, acc.getEnumerationProp(enumerationType))
 		assertEquals(136, acc.getEnumeratorProp(e1))
@@ -145,7 +138,7 @@ class DeployAccessorTypesTest extends DeployAccessorTestBase {
 			accessor.getStringEnumArrayProp(f3)
 		)
 		
-		// access including overwrites (there are none)
+		// access including overwrites
 		val acc = accessor.getOverwriteAccessor(attrS)
 		assertEquals(145, acc.getStructProp(structType))
 		assertEquals(146, acc.getSFieldProp(f1))
@@ -189,7 +182,7 @@ class DeployAccessorTypesTest extends DeployAccessorTestBase {
 		assertEquals(56, accessor.getUFieldProp(f2))
 		assertEquals(StringProp.q, accessor.getStringProp(f2))
 		
-		// access including overwrites (there are none)
+		// access including overwrites
 		val acc = accessor.getOverwriteAccessor(attrU)
 		assertEquals(151, acc.getUnionProp(unionType))
 		assertEquals(155, acc.getUFieldProp(f1))
@@ -197,5 +190,134 @@ class DeployAccessorTypesTest extends DeployAccessorTestBase {
 		assertEquals(StringProp.t, acc.getStringProp(f2))
 	}
 
+
+	@Test
+	def void test_70DefTypesOverwrite_method1_argB() {
+		val m1 = fidl.methods.get(0)
+		assertEquals("method1", m1.name)
+
+		val arg = m1.inArgs.get(0)
+		assertEquals("argB", arg.name)
+		assertEquals(210, accessor.getArgumentProp(arg))
+
+		// access ignoring overwrites
+		assertEquals(StringProp.r, accessor.getStringProp(arg))
+
+		// access including overwrites (there are none)
+		val acc = accessor.getOverwriteAccessor(arg)
+		assertEquals(StringProp.r, acc.getStringProp(arg))
+	}
+
+	@Test
+	def void test_70DefTypesOverwrite_method1_argA() {
+		val m1 = fidl.methods.get(0)
+		assertEquals("method1", m1.name)
+
+		val arg = m1.inArgs.get(1)
+		assertEquals("argA", arg.name)
+		assertEquals(220, accessor.getArgumentProp(arg))
+
+		val type = arg.type.actualDerived
+		assertTrue(type instanceof FArrayType)
+		val arrayType = type as FArrayType
+
+		// access ignoring overwrites
+		assertEquals(20, accessor.getArrayProp(arrayType))
+
+		// access including overwrites
+		val acc = accessor.getOverwriteAccessor(arg)
+		assertEquals(225, acc.getArrayProp(arrayType))
+	}
+
+	@Test
+	def void test_70DefTypesOverwrite_method1_argE() {
+		val m1 = fidl.methods.get(0)
+		assertEquals("method1", m1.name)
+
+		val arg = m1.inArgs.get(2)
+		assertEquals("argE", arg.name)
+		assertEquals(230, accessor.getArgumentProp(arg))
+
+		// access ignoring overwrites
+		val enumerationType = arg.type.checkEnumeration
+		val e1 = enumerationType.enumerators.get(0)
+		val e2 = enumerationType.enumerators.get(1)
+		val e3 = enumerationType.enumerators.get(2)
+
+		// access including overwrites
+		val acc = accessor.getOverwriteAccessor(arg)
+		assertEquals(235, acc.getEnumerationProp(enumerationType))
+		assertEquals(35, acc.getEnumeratorProp(e1))
+		assertEquals(236, acc.getEnumeratorProp(e2))
+		assertEquals(37, acc.getEnumeratorProp(e3))
+	}
+
+
+	// arrays which overwrite properties of their element type 
+
+	@Test
+	def void test_70DefTypesOverwrite_arrayA() {
+		val array = fidl.types.findFirst[name=="OtherArrayA"]
+		assertNotNull(array)
+		assertTrue(array instanceof FArrayType)
+
+		val arrayType = array as FArrayType
+		assertEquals(510, accessor.getArrayProp(arrayType))
+
+		val elementType = arrayType.elementType.actualDerived
+		assertTrue(elementType instanceof FArrayType)
+		val arrayTypeElem = elementType as FArrayType
+
+		// access ignoring overwrites
+		assertEquals(20, accessor.getArrayProp(arrayTypeElem))
+
+		// access including overwrites
+		val acc = accessor.getOverwriteAccessor(arrayType)
+		assertEquals(515, acc.getArrayProp(arrayTypeElem))
+	}
+
+	@Test
+	def void test_70DefTypesOverwrite_arrayE() {
+		val array = fidl.types.findFirst[name=="OtherArrayE"]
+		assertNotNull(array)
+		assertTrue(array instanceof FArrayType)
+
+		val arrayType = array as FArrayType
+		assertEquals(520, accessor.getArrayProp(arrayType))
+
+		// access ignoring overwrites
+		val enumerationType = arrayType.elementType.checkEnumeration
+		val e1 = enumerationType.enumerators.get(0)
+		val e2 = enumerationType.enumerators.get(1)
+		val e3 = enumerationType.enumerators.get(2)
+
+		// access including overwrites
+		val acc = accessor.getOverwriteAccessor(arrayType)
+		assertEquals(525, acc.getEnumerationProp(enumerationType))
+		assertEquals(35, acc.getEnumeratorProp(e1))
+		assertEquals(36, acc.getEnumeratorProp(e2))
+		assertEquals(537, acc.getEnumeratorProp(e3))
+	}
+
+
 	// TODO: add more tests for other derived elements
+
+	def private FEnumerationType checkEnumeration(FTypeRef typeRef) {
+		val type = typeRef.actualDerived
+		assertNotNull(type)
+		assertTrue(type instanceof FEnumerationType)
+		val enumerationType = type as FEnumerationType
+		val e1 = enumerationType.enumerators.get(0)
+		val e2 = enumerationType.enumerators.get(1)
+		val e3 = enumerationType.enumerators.get(2)
+		
+		// access ignoring overwrites
+		assertEquals(30, accessor.getEnumerationProp(enumerationType))
+		assertEquals(35, accessor.getEnumeratorProp(e1))
+		assertEquals(36, accessor.getEnumeratorProp(e2))
+		assertEquals(37, accessor.getEnumeratorProp(e3))
+		
+		enumerationType
+	}
+
 }

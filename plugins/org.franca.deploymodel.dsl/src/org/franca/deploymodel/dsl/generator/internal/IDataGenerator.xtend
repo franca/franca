@@ -34,6 +34,10 @@ class IDataGenerator extends AccessMethodGenerator {
 			«genHelpForGetOverwriteAccessor("FField", "obj")»
 			«addNeededFrancaType("FField")»
 			public IDataPropertyAccessor getOverwriteAccessor(FField obj);
+
+			«genHelpForGetOverwriteAccessor("FArrayType", "obj")»
+			«addNeededFrancaType("FArrayType")»
+			public IDataPropertyAccessor getOverwriteAccessor(FArrayType obj);
 		}
 	'''
 

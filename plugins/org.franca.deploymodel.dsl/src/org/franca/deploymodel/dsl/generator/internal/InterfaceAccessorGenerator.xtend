@@ -54,6 +54,12 @@ class InterfaceAccessorGenerator extends CommonAccessorMethodGenerator {
 			public IDataPropertyAccessor getOverwriteAccessor(FField obj) {
 				return helper.getOverwriteAccessorAux(obj);
 			}
+		
+			@Override
+			«addNeededFrancaType("FArrayType")»
+			public IDataPropertyAccessor getOverwriteAccessor(FArrayType obj) {
+				return helper.getOverwriteAccessorAux(obj);
+			}
 		}
 	'''
 	
