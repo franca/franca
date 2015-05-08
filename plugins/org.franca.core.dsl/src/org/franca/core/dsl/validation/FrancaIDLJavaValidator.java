@@ -118,24 +118,6 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 	}
 
 	@Check
-	public void checkAttributesUnique(FInterface iface) {
-		ValidationHelpers.checkDuplicates(this, iface.getAttributes(),
-				FrancaPackage.Literals.FMODEL_ELEMENT__NAME, "attribute name");
-	}
-
-	@Check
-	public void checkMethodsUnique(FInterface iface) {
-		ValidationHelpers.checkDuplicates(this, iface.getMethods(),
-				FrancaPackage.Literals.FMODEL_ELEMENT__NAME, "method name");
-	}
-
-	@Check
-	public void checkBroadcastsUnique(FInterface iface) {
-		ValidationHelpers.checkDuplicates(this, iface.getBroadcasts(),
-				FrancaPackage.Literals.FMODEL_ELEMENT__NAME, "broadcast name");
-	}
-
-	@Check
 	public void checkTypeCollectionNamesUnique(FModel model) {
 		if (model.getTypeCollections().isEmpty())
 			return;
@@ -316,17 +298,17 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 		ValidationHelpers.checkDuplicates(this,
 				FrancaHelpers.getAllAttributes(api),
 				FrancaPackage.Literals.FMODEL_ELEMENT__NAME,
-				"inherited attribute");
+				"attribute");
 
 		ValidationHelpers
 				.checkDuplicates(this, FrancaHelpers.getAllMethods(api),
 						FrancaPackage.Literals.FMODEL_ELEMENT__NAME,
-						"inherited method");
+						"method");
 
 		ValidationHelpers.checkDuplicates(this,
 				FrancaHelpers.getAllBroadcasts(api),
 				FrancaPackage.Literals.FMODEL_ELEMENT__NAME,
-				"inherited broadcast");
+				"broadcast");
 
 		ValidationHelpers.checkDuplicates(this, FrancaHelpers.getAllTypes(api),
 				FrancaPackage.Literals.FMODEL_ELEMENT__NAME, "type");
