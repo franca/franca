@@ -79,13 +79,15 @@ class FDeployGenerator implements IGenerator {
 	}
 	
 	def private generateCombinedClass(FDSpecification spec) '''
+		/**
+		 * This is a collection of all interfaces and classes needed for
+		 * accessing deployment properties according to deployment specification
+		 * '«spec.name»'.
+		 */
 		public class «spec.classname» {
 
-			«FOR d : spec.declarations»
-				«FOR p : d.properties»
-					«p.genStaticEnum(d.host)»
-				«ENDFOR»
-			«ENDFOR»
+			«genEnumInterface(spec)»
+
 			«genInterface.generate(spec)»
 
 			«genHelper.generate(spec)»
@@ -99,6 +101,21 @@ class FDeployGenerator implements IGenerator {
 			«genOverwriteAcc.generate(spec)»
 		}
 			
+	'''
+	
+	def private genEnumInterface(FDSpecification spec) '''
+		/**
+		 * Enumerations for deployment specification «spec.name».
+		 */
+		public interface Enums
+			«IF spec.base!=null»extends «spec.base.name».Enums«ENDIF»
+		{
+			«FOR d : spec.declarations»
+				«FOR p : d.properties»
+					«p.genStaticEnum(d.host)»
+				«ENDFOR»
+			«ENDFOR»
+		}
 	'''
 
 	def private genStaticEnum(FDPropertyDecl it, FDPropertyHost host) {
@@ -153,12 +170,10 @@ class FDeployGenerator implements IGenerator {
 		 *
 		 * @deprecated use class «spec.name».«type»PropertyAccessor instead
 		 */
-		public class «spec.getLegacyClassname(type)» extends «spec.name».«type»PropertyAccessor
+		public class «spec.getLegacyClassname(type)»
+			extends «spec.name».«type»PropertyAccessor
+			implements «spec.name».Enums
 		{
-			// NOTE: The enum definitions of this PropertyAccessor are now
-			//       located in class «spec.name».
-			//       Please adapt the import statements in your code.
-			
 			public «spec.getLegacyClassname(type)»(«getSupportingClass(type)» target) {
 				super(target);
 			}

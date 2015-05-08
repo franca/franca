@@ -16,7 +16,8 @@ class TypeCollectionAccessorGenerator extends CommonAccessorMethodGenerator {
 
 	def generate(FDSpecification spec) '''
 		/**
-		 * Accessor for deployment properties for '«spec.name»' specification
+		 * Accessor for deployment properties for Franca type collections according
+		 * to deployment specification '«spec.name»'.
 		 */		
 		public static class TypeCollectionPropertyAccessor
 			«IF spec.base!=null»extends «spec.base.name».TypeCollectionPropertyAccessor«ENDIF»

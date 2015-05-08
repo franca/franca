@@ -5,7 +5,7 @@ import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipselabs.xtext.utils.unittesting.XtextTest
 import org.example.spec.SpecCompoundHostsRef.IDataPropertyAccessor
-import org.example.spec.SpecCompoundHostsRef.StringProp
+import org.example.spec.SpecCompoundHostsRef.Enums.StringProp
 import org.franca.core.franca.FStructType
 
 import static org.junit.Assert.*

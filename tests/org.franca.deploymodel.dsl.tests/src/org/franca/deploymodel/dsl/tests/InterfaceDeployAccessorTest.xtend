@@ -3,7 +3,7 @@ package org.franca.deploymodel.dsl.tests
 import org.eclipse.xtext.junit4.InjectWith
 import org.eclipselabs.xtext.utils.unittesting.XtextRunner2
 import org.example.spec.SpecCompoundHostsRef.IDataPropertyAccessor
-import org.example.spec.SpecCompoundHostsRef.StringProp
+import org.example.spec.SpecCompoundHostsRef.Enums.StringProp
 import org.example.spec.SpecCompoundHostsRef.InterfacePropertyAccessor
 import org.franca.core.franca.FField
 import org.franca.core.franca.FInterface

@@ -16,7 +16,8 @@ class InterfaceAccessorGenerator extends CommonAccessorMethodGenerator {
 	
 	def generate(FDSpecification spec) '''
 		/**
-		 * Accessor for deployment properties for '«spec.name»' specification.
+		 * Accessor for deployment properties for Franca interfaces according to
+		 * deployment specification '«spec.name»'.
 		 */
 		public static class InterfacePropertyAccessor
 			«IF spec.base!=null»extends «spec.base.name».InterfacePropertyAccessor«ENDIF»

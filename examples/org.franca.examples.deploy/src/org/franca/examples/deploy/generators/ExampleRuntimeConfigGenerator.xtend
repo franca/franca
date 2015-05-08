@@ -9,7 +9,7 @@ package org.franca.examples.deploy.generators
 
 import org.franca.deploymodel.core.FDeployedProvider
 import org.example.spec.SampleDeploySpec.ProviderPropertyAccessor
-import org.franca.deploymodel.dsl.fDeploy.FDProviderimport org.example.spec.IPBasedIPC.AccessControl
+import org.franca.deploymodel.dsl.fDeploy.FDProviderimport org.example.spec.SampleDeploySpec.Enums.AccessControl
 
 /**
  * This is an example code generator for the non-interface related part of 

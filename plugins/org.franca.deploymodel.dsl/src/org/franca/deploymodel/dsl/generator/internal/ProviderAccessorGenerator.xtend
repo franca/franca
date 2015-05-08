@@ -24,10 +24,12 @@ class ProviderAccessorGenerator {
 
 	def generate(FDSpecification spec) '''
 		/**
-		 * Accessor for deployment properties for '«spec.name»' specification.
+		 * Accessor for deployment properties for providers and interface instances
+		 * according to the '«spec.name»' specification.
 		 */
 		public static class ProviderPropertyAccessor
 			«IF spec.base!=null»extends «spec.base.name».ProviderPropertyAccessor«ENDIF»
+			implements Enums
 		{
 			final private FDeployedProvider target;
 		

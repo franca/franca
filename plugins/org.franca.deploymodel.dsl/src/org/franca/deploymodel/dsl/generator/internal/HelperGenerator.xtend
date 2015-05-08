@@ -22,7 +22,7 @@ class HelperGenerator {
 		/**
 		 * Helper class for data-related property accessors.
 		 */		
-		public static class DataPropertyAccessorHelper
+		public static class DataPropertyAccessorHelper implements Enums
 		{
 			final private MappingGenericPropertyAccessor target;
 			final private IDataPropertyAccessor owner;

@@ -31,20 +31,24 @@ import com.google.common.collect.Maps;
 
 public class SpecCompoundHostsRef {
 
-	public enum StringProp {
-		p, q, r, s, t, u, v, w, x, y, z
+	public interface Enums
+	{
+		public enum StringProp {
+			p, q, r, s, t, u, v, w, x, y, z
+		}
+		 
+		public enum StringEnumArrayProp {
+			a, b, c
+		}
 	}
-	 
-	public enum StringEnumArrayProp {
-		a, b, c
-	}
-	 
+	
 	/**
 	 * Interface for data deployment properties for 'org.example.spec.SpecCompoundHosts' specification
 	 * 
 	 * This is the data types related part only.
 	 */
 	public interface IDataPropertyAccessor
+		extends Enums
 	{
 		// host 'strings'
 		public StringProp getStringProp(EObject obj);
@@ -93,7 +97,7 @@ public class SpecCompoundHostsRef {
 	/**
 	 * Helper class for data-related property accessors.
 	 */		
-	public static class DataPropertyAccessorHelper
+	public static class DataPropertyAccessorHelper implements Enums
 	{
 		final private MappingGenericPropertyAccessor target;
 		final private IDataPropertyAccessor owner;
@@ -395,6 +399,7 @@ public class SpecCompoundHostsRef {
 	 * Accessor for deployment properties for 'org.example.spec.SpecCompoundHosts' specification.
 	 */
 	public static class ProviderPropertyAccessor
+		implements Enums
 	{
 		final private FDeployedProvider target;
 	
