@@ -18,9 +18,9 @@ import org.franca.core.franca.FBroadcast
 import org.franca.core.franca.FInterface
 import org.franca.core.franca.FMethod
 import org.franca.core.franca.FModelElement
-import org.franca.core.franca.FrancaPackage
 
 import static org.franca.core.dsl.validation.internal.ValidationHelpers.*
+import static org.franca.core.franca.FrancaPackage.Literals.*
 
 class OverloadingValidator {
 	
@@ -29,7 +29,7 @@ class OverloadingValidator {
 	 */
 	def static checkOverloadedMethods(ValidationMessageReporter reporter, FInterface api) {
 		checkOverloaded(reporter, "method",
-			FrancaPackage.Literals.FMETHOD__SELECTOR, api,
+			FMETHOD__SELECTOR, api,
 			[methods],
 			[m | (m as FMethod).selector]
 		)
@@ -40,7 +40,7 @@ class OverloadingValidator {
 	 */
 	def static checkOverloadedBroadcasts(ValidationMessageReporter reporter, FInterface api) {
 		checkOverloaded(reporter, "broadcast",
-			FrancaPackage.Literals.FBROADCAST__SELECTOR, api,
+			FBROADCAST__SELECTOR, api,
 			[broadcasts],
 			[b | (b as FBroadcast).selector]
 		)
@@ -78,7 +78,7 @@ class OverloadingValidator {
 					"The " + type + " '" + i.name + "' " +
 					"is not overloading another " + type + ", " +
 					"using a selector is invalid here",
-					i, selectorFeature);
+					i, selectorFeature)
 			}
 		}
 		
@@ -102,10 +102,7 @@ class OverloadingValidator {
 	) {
 		// check first if group contains identical items (same name and signature)
 		// this will lead to an error message and no more other checks for this group
-		val nErrors = ValidationHelpers.checkDuplicates(reporter, items,
-						FrancaPackage.Literals.FMODEL_ELEMENT__NAME,
-						type);
-		if (nErrors>0)
+		if (checkDuplicates(reporter, items, FMODEL_ELEMENT__NAME, type) > 0)
 			return
 		
 		// issue warnings for all overloaded items without a selector 
@@ -116,7 +113,7 @@ class OverloadingValidator {
 			reporter.reportWarning(
 				"The overloaded " + type + " '" + i.name + "' " +
 				"should have a selector in order to distinguish overloaded " + type + "s",
-				i, FrancaPackage.Literals.FMODEL_ELEMENT__NAME);
+				i, FMODEL_ELEMENT__NAME)
 		}
 		
 		// check duplicate selectors
@@ -126,8 +123,7 @@ class OverloadingValidator {
 			if (sel!=null)
 			names.add(i, sel)
 		}
-		ValidationHelpers.checkDuplicates(reporter, names,
-				selectorFeature, "selector in overloaded " + type);
+		checkDuplicates(reporter, names, selectorFeature, "selector in overloaded " + type)
 	}
 	
 
@@ -142,7 +138,7 @@ class OverloadingValidator {
 		// first collect all items into clusters
 		val Map<String, List<T>> clusters = Maps::newHashMap
 		val Set<FInterface> visited = Sets::newHashSet
-		var fi = api;
+		var fi = api
 		while (fi!=null && !visited.contains(fi)) {
 			visited.add(fi)
 			for(T m : getItems.apply(fi)) {
@@ -160,7 +156,7 @@ class OverloadingValidator {
 		val leafItems = getItems.apply(api).map[name].toSet
 		for(String n : clusters.keySet) {
 			val items = clusters.get(n)
-			if (items.size() > 1) {
+			if (items.size > 1) {
 				// it's a real group of duplicate items,
 				// check that at least one item is from leaf interface
 				val hit = items.findFirst[leafItems.contains(n)]
