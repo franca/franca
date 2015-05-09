@@ -305,16 +305,8 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 				FrancaHelpers.getAllAttributes(api),
 				FrancaPackage.Literals.FMODEL_ELEMENT__NAME,
 				"attribute");
-
-		ValidationHelpers
-				.checkDuplicates(this, FrancaHelpers.getAllMethods(api),
-						FrancaPackage.Literals.FMODEL_ELEMENT__NAME,
-						"method");
-
-		ValidationHelpers.checkDuplicates(this,
-				FrancaHelpers.getAllBroadcasts(api),
-				FrancaPackage.Literals.FMODEL_ELEMENT__NAME,
-				"broadcast");
+		
+		// methods and broadcasts will be checked by the OverloadingValidator
 
 		ValidationHelpers.checkDuplicates(this, FrancaHelpers.getAllTypes(api),
 				FrancaPackage.Literals.FMODEL_ELEMENT__NAME, "type");

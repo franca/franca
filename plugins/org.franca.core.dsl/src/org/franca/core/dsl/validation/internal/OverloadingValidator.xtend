@@ -14,7 +14,6 @@ import java.util.List
 import java.util.Map
 import java.util.Set
 import org.eclipse.emf.ecore.EStructuralFeature
-import org.franca.core.framework.FrancaHelpers
 import org.franca.core.franca.FBroadcast
 import org.franca.core.franca.FInterface
 import org.franca.core.franca.FMethod
@@ -25,6 +24,9 @@ import static org.franca.core.dsl.validation.internal.ValidationHelpers.*
 
 class OverloadingValidator {
 	
+	/**
+	 * Check various properties of overloaded methods, especially regarding selectors.
+	 */
 	def static checkOverloadedMethods(ValidationMessageReporter reporter, FInterface api) {
 		checkOverloaded(reporter, "method",
 			FrancaPackage.Literals.FMETHOD__SELECTOR, api,
@@ -33,6 +35,9 @@ class OverloadingValidator {
 		)
 	}
 	
+	/**
+	 * Check various properties of overloaded broadcasts, especially regarding selectors.
+	 */
 	def static checkOverloadedBroadcasts(ValidationMessageReporter reporter, FInterface api) {
 		checkOverloaded(reporter, "broadcast",
 			FrancaPackage.Literals.FBROADCAST__SELECTOR, api,
@@ -42,6 +47,17 @@ class OverloadingValidator {
 	}
 
 
+	/**
+	 * Generic function for checking properties of overloaded items of some
+	 * specific type, e.g. methods or broadcasts.</p>
+	 * 
+	 * This includes:</p>
+	 * <ol>
+	 * <li>non-overloaded items must not have selectors</li>
+	 * <li>overloaded items should have selectors</li>
+	 * <li>items with same name and signature will not be allowed</li>
+	 * </ol>
+	 */
 	def static private <T extends FModelElement> void checkOverloaded(
 		ValidationMessageReporter reporter,
 		String type,
@@ -84,6 +100,14 @@ class OverloadingValidator {
 		Set<T> local,
 		(FModelElement) => String getSelector
 	) {
+		// check first if group contains identical items (same name and signature)
+		// this will lead to an error message and no more other checks for this group
+		val nErrors = ValidationHelpers.checkDuplicates(reporter, items,
+						FrancaPackage.Literals.FMODEL_ELEMENT__NAME,
+						type);
+		if (nErrors>0)
+			return
+		
 		// issue warnings for all overloaded items without a selector 
 		val withoutSelector = items.filter[getSelector.apply(it) == null].toSet
 		val localItems = items.filter[local.contains(it)].toSet
