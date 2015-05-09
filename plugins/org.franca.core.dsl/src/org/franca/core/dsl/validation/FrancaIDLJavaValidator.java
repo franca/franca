@@ -8,7 +8,9 @@
 package org.franca.core.dsl.validation;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -24,6 +26,7 @@ import org.franca.core.ImportedModelInfo;
 import org.franca.core.dsl.validation.internal.ContractValidator;
 import org.franca.core.dsl.validation.internal.CyclicDependenciesValidator;
 import org.franca.core.dsl.validation.internal.FrancaIDLValidator;
+import org.franca.core.dsl.validation.internal.OverloadingValidator;
 import org.franca.core.dsl.validation.internal.TypesValidator;
 import org.franca.core.dsl.validation.internal.ValidationHelpers;
 import org.franca.core.dsl.validation.internal.ValidationMessageReporter;
@@ -46,6 +49,7 @@ import org.franca.core.franca.FIntegerInterval;
 import org.franca.core.franca.FInterface;
 import org.franca.core.franca.FMethod;
 import org.franca.core.franca.FModel;
+import org.franca.core.franca.FModelElement;
 import org.franca.core.franca.FStructType;
 import org.franca.core.franca.FTrigger;
 import org.franca.core.franca.FType;
@@ -54,6 +58,8 @@ import org.franca.core.franca.FTypeRef;
 import org.franca.core.franca.FUnionType;
 import org.franca.core.franca.FrancaPackage;
 
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
 public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
@@ -323,12 +329,23 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 		}
 	}
 	
+	@Check
+	public void checkOverloadedMethods(FInterface api) {
+		OverloadingValidator.checkOverloadedMethods(this, api);
+	}
+
+	@Check
+	public void checkOverloadedBroadcasts(FInterface api) {
+		OverloadingValidator.checkOverloadedBroadcasts(this, api);
+	}
 	
+
 	@Check
 	public void checkCyclicDependencies(FModel m) {
 		cyclicDependenciesValidator.check(this, m);
 	}
 
+	
 	/**
 	 * Check order of elements in an interface.
 	 * 

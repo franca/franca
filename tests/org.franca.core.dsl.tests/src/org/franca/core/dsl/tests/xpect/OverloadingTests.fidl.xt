@@ -1,0 +1,75 @@
+// XPECT_SETUP org.franca.core.dsl.tests.xpect.FrancaIDLXpectTests END_SETUP
+package a.b.c
+interface Base {
+	method m1 {
+		in  { String a1 }
+		out { Integer r1 }
+	}
+
+	method m2 {
+		in  { String a1 }
+		out { Integer r1 }
+	}
+
+	broadcast b1 {
+		out { Integer r1 }
+	}
+
+	broadcast b2 {
+		out { Integer r1 }
+	}
+}
+
+interface Medium extends Base {
+	// XPECT warnings --> "The overloaded method 'm1' should have a selector in order to distinguish overloaded methods" at "m1"
+	method m1 {
+		in  { Boolean a1 }
+		out { Integer r1 }
+	}
+
+	method m2:sel1 {
+		in  { Boolean a1 }
+		out { Integer r1 }
+	}
+
+	// XPECT warnings --> "The method 'm3' is not overloading another method, using a selector is invalid here" at "sel1"
+	method m3:sel1 {
+		in  { Boolean a1 }
+		out { Integer r1 }
+	}
+
+	// XPECT warnings --> "The overloaded broadcast 'b1' should have a selector in order to distinguish overloaded broadcasts" at "b1"
+	broadcast b1 {
+		out { Boolean r1 }
+	}
+
+	broadcast b2:sel1 {
+		out { Boolean r1 }
+	}
+
+	// XPECT warnings --> "The broadcast 'b3' is not overloading another broadcast, using a selector is invalid here" at "sel1"
+	broadcast b3:sel1 {
+		out { Boolean r1 }
+	}
+}
+
+interface Derived extends Medium {
+	// XPECT warnings --> "The overloaded method 'm1' should have a selector in order to distinguish overloaded methods" at "m1"
+	method m1 {
+		in  { String a1 }
+		out { String r1 }
+	}
+
+	// XPECT errors --> "Duplicate selector in overloaded method 'sel1'" at "sel1"
+	method m4:sel1 {
+		in  { String a1 }
+		out { Boolean r1 }
+	}
+
+	// XPECT errors --> "Duplicate selector in overloaded method 'sel1'" at "sel1"
+	method m4:sel1 {
+		in  { String a1 }
+		out { String r1 }
+	}
+}
+
