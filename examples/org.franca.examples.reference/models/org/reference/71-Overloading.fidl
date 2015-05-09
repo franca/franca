@@ -123,21 +123,21 @@ interface MyInterface71b extends MyInterface71a {
 	// *** overloading of methods (in-arguments, without inheritance)
 	
 	// no in-argument vs. in-argument
-    method method10 {
+    method method10:sel2 {
     	in {
     		String arg1
     	}
     }
 
 	// different in-argument type
-    method method11 {
+    method method11:sel2 {
     	in {
     		String arg1
     	}
     }
 
 	// add/remove an in-argument
-    method method12 {
+    method method12:sel2 {
     	in {
     		UInt8 arg1
     		UInt8 arg2
@@ -145,7 +145,7 @@ interface MyInterface71b extends MyInterface71a {
     }
 
 	// exchanged order of in-arguments
-    method method13 {
+    method method13:sel2 {
     	in {
     		UInt8 arg1
     		String arg2
@@ -156,21 +156,21 @@ interface MyInterface71b extends MyInterface71a {
 	// *** overloading of methods (out-arguments, without inheritance)
 
 	// no out-argument vs. out-argument
-    method method20 {
+    method method20:sel2 {
     	out {
     		String arg1
     	}
     }
 
 	// different out-argument type
-    method method21 {
+    method method21:sel2 {
     	out {
     		String arg1
     	}
     }
 
 	// add/remove an out-argument
-    method method22 {
+    method method22:sel2 {
     	out {
     		UInt8 arg1
     		UInt8 arg2
@@ -178,7 +178,7 @@ interface MyInterface71b extends MyInterface71a {
     }
 
 	// exchanged order of out-arguments
-    method method23 {
+    method method23:sel2 {
     	out {
     		UInt8 arg1
     		String arg2
@@ -189,7 +189,7 @@ interface MyInterface71b extends MyInterface71a {
 	// *** overloading of methods (in/out-arguments, without inheritance)
 
 	// replaced in-argument by out-argument
-    method method30 {
+    method method30:sel2 {
     	out {
     		UInt8 arg1
     	}
@@ -199,21 +199,21 @@ interface MyInterface71b extends MyInterface71a {
 	// *** overloading of broadcasts (without inheritance)
 
 	// no out-argument vs. out-argument
-    broadcast broadcast50 {
+    broadcast broadcast50:sel2 {
     	out {
     		String arg1
     	}
     }
 
 	// different out-argument type
-    broadcast broadcast51 {
+    broadcast broadcast51:sel2 {
     	out {
     		String arg1
     	}
     }
 
 	// add/remove an out-argument
-    broadcast broadcast52 {
+    broadcast broadcast52:sel2 {
     	out {
     		UInt8 arg1
     		UInt8 arg2
@@ -221,7 +221,7 @@ interface MyInterface71b extends MyInterface71a {
     }
 
 	// exchanged order of out-arguments
-    broadcast broadcast53 {
+    broadcast broadcast53:sel2 {
     	out {
     		UInt8 arg1
     		String arg2
@@ -236,21 +236,21 @@ interface MyInterface71c extends MyInterface71b {
 	// *** overloading of methods (in-arguments, without inheritance)
 	
 	// no in-argument vs. in-argument
-    method method10 {
+    method method10:sel {
     	in {
     		UInt8 arg1
     	}
     }
 
 	// different in-argument type
-    method method11 {
+    method method11:sel {
     	in {
     		Double arg1
     	}
     }
 
 	// add/remove an in-argument
-    method method12 {
+    method method12:sel {
     	in {
     		UInt8 arg1
     		UInt8 arg2
@@ -259,7 +259,7 @@ interface MyInterface71c extends MyInterface71b {
     }
 
 	// typedef in-arguments, check will not resolve typedefs
-    method method14 {
+    method method14:sel {
     	in {
     		String arg1
     	}
@@ -269,21 +269,21 @@ interface MyInterface71c extends MyInterface71b {
 	// *** overloading of methods (out-arguments, without inheritance)
 
 	// no out-argument vs. out-argument
-    method method20 {
+    method method20:sel {
     	out {
     		UInt8 arg1
     	}
     }
 
 	// different out-argument type
-    method method21 {
+    method method21:sel {
     	out {
     		Double arg1
     	}
     }
 
 	// add/remove an out-argument
-    method method22 {
+    method method22:sel {
     	out {
     		UInt8 arg1
     		UInt8 arg2
@@ -295,7 +295,7 @@ interface MyInterface71c extends MyInterface71b {
 	// *** overloading of methods (in/out-arguments, without inheritance)
 
 	// replaced in-argument by out-argument
-    method method31 {
+    method method31:sel {
     	out {
     		UInt8 arg1
     	}
@@ -305,14 +305,14 @@ interface MyInterface71c extends MyInterface71b {
 	// *** overloading of broadcasts (without inheritance)
 
 	// different out-argument type
-    broadcast broadcast51 {
+    broadcast broadcast51:sel {
     	out {
     		Double arg1
     	}
     }
 
 	// add/remove an out-argument
-    broadcast broadcast52 {
+    broadcast broadcast52:sel {
     	out {
     		UInt8 arg1
     		UInt8 arg2
