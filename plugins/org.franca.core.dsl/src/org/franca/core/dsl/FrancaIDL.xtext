@@ -305,12 +305,12 @@ FTrigger:
 	event=FEventOnIf;
 
 FEventOnIf:
-	('call'    call=[FMethod|ID]      ) |
-	('respond' respond=[FMethod|ID]   ) |
-	('signal'  signal=[FBroadcast|ID] ) |
+	('call'    call=[FMethod|ID_WITH_SELECTOR]      ) |
+	('respond' respond=[FMethod|ID_WITH_SELECTOR]   ) |
+	('error'   error=[FMethod|ID_WITH_SELECTOR]     ) |
+	('signal'  signal=[FBroadcast|ID_WITH_SELECTOR] ) |
 	('set'     set=[FAttribute|ID]    ) |
-	('update'  update=[FAttribute|ID] ) |
-	('error'   error=[FMethod|ID])
+	('update'  update=[FAttribute|ID] )
 ;
 
 FGuard:
@@ -501,6 +501,10 @@ ImportedFQN:
 
 FQN:
 	ID ('.' ID)*;
+
+// this is used for overloaded FMethod and FBroadcast
+ID_WITH_SELECTOR:
+	ID (':' ID)?;
 
 
 // **************************************************************

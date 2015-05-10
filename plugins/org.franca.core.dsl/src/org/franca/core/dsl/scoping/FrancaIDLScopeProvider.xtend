@@ -25,6 +25,7 @@ import org.eclipse.xtext.scoping.impl.SimpleScope
 import org.franca.core.FrancaModelExtensions
 import org.franca.core.franca.FCompoundInitializer
 import org.franca.core.franca.FContract
+import org.franca.core.franca.FEventOnIf
 import org.franca.core.franca.FInterface
 import org.franca.core.franca.FModel
 import org.franca.core.franca.FModelElement
@@ -32,9 +33,10 @@ import org.franca.core.franca.FQualifiedElementRef
 import org.franca.core.franca.FTransition
 import org.franca.core.franca.FTypedElement
 
-import static org.franca.core.FrancaModelExtensions.*
+import static extension org.franca.core.FrancaModelExtensions.*
 
 import static extension org.eclipse.xtext.scoping.Scopes.*
+import static extension org.franca.core.framework.FrancaHelpers.*
 
 /**
  * This class contains custom scoping description.
@@ -142,5 +144,94 @@ class FrancaIDLScopeProvider extends AbstractDeclarativeScopeProvider {
 	
 
 	// *****************************************************************************
+
+//	def IScope scope_FEventOnIf_role (FContract contract, EReference ref) {
+// 		if (contract instanceof FSystemContract) {
+// 			val syscon = contract as FSystemContract
+//			return Scopes.scopeFor(syscon.roles)
+//		} else {
+//			return IScope.NULLSCOPE
+//		}
+//	}
+	
+	def IScope scope_FEventOnIf_call (FEventOnIf ev, EReference ref) {
+		getScope_FEventOnIf_method(ev)
+	}
+	
+	def IScope scope_FEventOnIf_respond (FEventOnIf ev, EReference ref) {
+		return getScope_FEventOnIf_method(ev);
+	}
+	
+	def IScope scope_FEventOnIf_error (FEventOnIf ev, EReference ref) {
+		return getScope_FEventOnIf_method(ev);
+	}
+	
+	def private IScope getScope_FEventOnIf_method (FEventOnIf ev) {
+		val contract = ev.getContract
+//		if (contract instanceof FSystemContract) {
+//			if (ev.role==null) {
+//				IScope.NULLSCOPE
+//			} else {
+//				ev.role.interface.methods.scopeFor
+//			}
+//		} else {
+			val api = contract.getInterface
+			api.getAllMethods.scopeFor(
+				[ QualifiedName.create(getUniqueName) ],
+				IScope.NULLSCOPE
+			)
+//		}
+	}
+	
+	def IScope scope_FEventOnIf_signal (FEventOnIf ev, EReference ref) {
+		getScope_FEventOnIf_broadcast(ev)
+	}
+	
+	def private IScope getScope_FEventOnIf_broadcast (FEventOnIf ev) {
+		val contract = ev.getContract
+//		if (contract instanceof FSystemContract) {
+//			if (ev.role==null) {
+//				IScope.NULLSCOPE
+//			} else {
+//				ev.role.interface.broadcasts.scopeFor
+// 			}
+// 		} else {
+ 			val api = contract.getInterface
+			api.getAllBroadcasts.scopeFor(
+				[ QualifiedName.create(getUniqueName) ],
+				IScope.NULLSCOPE
+			)
+// 		}
+ 	}
+ 	
+	def IScope scope_FEventOnIf_set (FEventOnIf ev, EReference ref) {
+		getScope_FEventOnIf_attribute(ev)
+	}
+	
+	def IScope scope_FEventOnIf_update (FEventOnIf ev, EReference ref) {
+		getScope_FEventOnIf_attribute(ev)
+	}
+	
+	def private IScope getScope_FEventOnIf_attribute(FEventOnIf ev) {
+		val contract = ev.getContract
+//		if (contract instanceof FSystemContract) {
+//			if (ev.role==null) {
+//				IScope.NULLSCOPE
+//			} else {
+//				ev.role.interface.attributes.scopeFor
+//			}
+//		} else {
+			val api = contract.getInterface
+			api.getAllAttributes.scopeFor
+//		}
+	}
+	
+	def private FContract getContract(EObject obj) {
+		var i = obj
+		while (i!=null && !(i instanceof FContract)) {
+			i = i.eContainer
+		}
+		return i as FContract
+	}
 
 }

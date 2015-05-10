@@ -22,7 +22,17 @@ class ContractTests extends XtextTest {//ValidationTestBase {
 	@Test
 	def void validateValidExpressionsContainingErrorKeywords() {
 		testFile(basePath + "ValidUsageOfErrorKeywords.fidl")
-		ignoreUnassertedWarnings
+		assertConstraints(
+			issues.inLine(11).theOneAndOnlyContains("Method is not covered by contract, not needed?")
+		)
+	}
+	
+	@Test
+	def void validateOverloadedMethodsInContract() {
+		testFile(basePath + "OverloadedMethodsInContract.fidl")
+		assertConstraints(
+			issues.inLine(26).theOneAndOnlyContains("Broadcast is not covered by contract, not needed?")
+		)
 	}
 	
 }
