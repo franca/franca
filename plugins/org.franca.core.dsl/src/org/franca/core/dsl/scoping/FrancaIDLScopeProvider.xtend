@@ -168,19 +168,17 @@ class FrancaIDLScopeProvider extends AbstractDeclarativeScopeProvider {
 	
 	def private IScope getScope_FEventOnIf_method (FEventOnIf ev) {
 		val contract = ev.getContract
-//		if (contract instanceof FSystemContract) {
-//			if (ev.role==null) {
-//				IScope.NULLSCOPE
+		val api = 
+//			if (contract instanceof FSystemContract) {
+//				ev.role?.interface
 //			} else {
-//				ev.role.interface.methods.scopeFor
+				contract.getInterface
 //			}
-//		} else {
-			val api = contract.getInterface
-			api.getAllMethods.scopeFor(
-				[ QualifiedName.create(getUniqueName) ],
-				IScope.NULLSCOPE
-			)
-//		}
+
+		if (api==null)
+			IScope.NULLSCOPE
+		else
+			api.getAllMethods.scopeFor([ QualifiedName.create(getUniqueName) ], IScope.NULLSCOPE)
 	}
 	
 	def IScope scope_FEventOnIf_signal (FEventOnIf ev, EReference ref) {
@@ -189,19 +187,17 @@ class FrancaIDLScopeProvider extends AbstractDeclarativeScopeProvider {
 	
 	def private IScope getScope_FEventOnIf_broadcast (FEventOnIf ev) {
 		val contract = ev.getContract
-//		if (contract instanceof FSystemContract) {
-//			if (ev.role==null) {
-//				IScope.NULLSCOPE
+		val api =
+//			if (contract instanceof FSystemContract) {
+//				ev.role?.interface
 //			} else {
-//				ev.role.interface.broadcasts.scopeFor
-// 			}
-// 		} else {
- 			val api = contract.getInterface
-			api.getAllBroadcasts.scopeFor(
-				[ QualifiedName.create(getUniqueName) ],
-				IScope.NULLSCOPE
-			)
-// 		}
+				contract.getInterface
+//			}
+
+		if (api==null)
+			IScope.NULLSCOPE
+		else
+			api.getAllBroadcasts.scopeFor([ QualifiedName.create(getUniqueName) ], IScope.NULLSCOPE)
  	}
  	
 	def IScope scope_FEventOnIf_set (FEventOnIf ev, EReference ref) {
@@ -214,16 +210,17 @@ class FrancaIDLScopeProvider extends AbstractDeclarativeScopeProvider {
 	
 	def private IScope getScope_FEventOnIf_attribute(FEventOnIf ev) {
 		val contract = ev.getContract
-//		if (contract instanceof FSystemContract) {
-//			if (ev.role==null) {
-//				IScope.NULLSCOPE
+		val api =
+//			if (contract instanceof FSystemContract) {
+//				ev.role?.interface
 //			} else {
-//				ev.role.interface.attributes.scopeFor
+				contract.getInterface
 //			}
-//		} else {
-			val api = contract.getInterface
+
+		if (api==null)
+			IScope.NULLSCOPE
+		else
 			api.getAllAttributes.scopeFor
-//		}
 	}
 	
 	def private FContract getContract(EObject obj) {
