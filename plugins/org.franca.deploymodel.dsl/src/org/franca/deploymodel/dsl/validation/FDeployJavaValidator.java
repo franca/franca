@@ -608,8 +608,9 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 		}
 		
 		if (!missing.isEmpty()) {
-			error(MANDATORY_PROPERTY_QUICKFIX_MESSAGE + "'" + elementName + "'", elem, feature, -1,
-					MANDATORY_PROPERTY_QUICKFIX, elementName);
+//			error(MANDATORY_PROPERTY_QUICKFIX_MESSAGE + "'" + elementName + "'", elem, feature, -1,
+//					MANDATORY_PROPERTY_QUICKFIX, elementName);
+			error(MANDATORY_PROPERTY_QUICKFIX_MESSAGE + "'" + elementName + "'", elem, feature, -1);
 			return true;
 		}
 		
