@@ -156,14 +156,14 @@ FDOperation:
 	FDMethod | FDBroadcast;
 
 FDMethod:
-	'method' target=[fidl::FMethod|FQN] '{'
+	'method' target=[fidl::FMethod|FQN_WITH_SELECTOR] '{'
 		properties=FDPropertySet
 		('in' inArguments=FDArgumentList)?
 		('out' outArguments=FDArgumentList)?
 	'}';
 
 FDBroadcast:
-	'broadcast' target=[fidl::FBroadcast|FQN] '{'
+	'broadcast' target=[fidl::FBroadcast|FQN_WITH_SELECTOR] '{'
 		properties=FDPropertySet
 		('out' outArguments=FDArgumentList)?
 	'}';
@@ -285,6 +285,10 @@ FDGeneric:      value=[ecore::EObject|FQN];
 
 FQN:
 	ID ('.' ID)*;
+
+// this is used for referencing overloaded FMethod and FBroadcast
+FQN_WITH_SELECTOR:
+	FQN (':' ID)?;
 
 
 // **************************************************************

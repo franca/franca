@@ -14,6 +14,7 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.xtext.validation.Check;
 import org.eclipse.xtext.validation.ValidationMessageAcceptor;
+import org.franca.core.FrancaModelExtensions;
 import org.franca.core.franca.FArgument;
 import org.franca.core.franca.FArrayType;
 import org.franca.core.franca.FAttribute;
@@ -266,29 +267,31 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 			FDMethod c = (FDMethod) mapper.getFDElement(tc);
 			if (c==null) {
 				if (checker.mustBeDefined(tc)) {
-					error(DEPLOYMENT_ELEMENT_QUICKFIX_MESSAGE+ "'" + tc.getName() + "'",
+					String name = FrancaModelExtensions.getUniqueName(tc);
+					error(DEPLOYMENT_ELEMENT_QUICKFIX_MESSAGE+ "'" + name + "'",
 							FDeployPackage.Literals.FD_INTERFACE__TARGET, 
 							DEPLOYMENT_ELEMENT_QUICKFIX, 
-							tc.getName(),
+							name,
 							FrancaQuickFixConstants.METHOD.toString());
-					error(DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE+"'" + tc.getName() + "'",
+					error(DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE+"'" + name + "'",
 							FDeployPackage.Literals.FD_INTERFACE__TARGET,
 							DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, 
-							tc.getName(),
+							name,
 							FrancaQuickFixConstants.METHOD.toString());
 					lowerLevelErrors++;
 				}
 			} 
 			else {  
-				if (checkSpecificationElementProperties(spec, c, FDeployPackage.Literals.FD_METHOD__TARGET, tc.getName())) {
+				String name = FrancaModelExtensions.getUniqueName(tc);
+				if (checkSpecificationElementProperties(spec, c, FDeployPackage.Literals.FD_METHOD__TARGET, name)) {
 					lowerLevelErrors++;
 				}
 				if (checkArgumentList(specHelper, checker, mapper, spec, tc.getInArgs(), c,	"Input", FDeployPackage.Literals.FD_METHOD__TARGET) |
 				checkArgumentList(specHelper, checker, mapper, spec, tc.getOutArgs(), c, "Output", FDeployPackage.Literals.FD_METHOD__TARGET)) {
-					error(DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE+"'" + tc.getName() + "'",
+					error(DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE+"'" + name + "'",
 							c, FDeployPackage.Literals.FD_METHOD__TARGET,
 							DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, 
-							tc.getName(),
+							name,
 							FrancaQuickFixConstants.METHOD.toString());
 					lowerLevelErrors++;
 				}
@@ -299,28 +302,30 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 			FDBroadcast c = (FDBroadcast) mapper.getFDElement(tc);
 			if (c==null) {
 				if (checker.mustBeDefined(tc)) {
-					error(DEPLOYMENT_ELEMENT_QUICKFIX_MESSAGE+ "'" + tc.getName() + "'",
+					String name = FrancaModelExtensions.getUniqueName(tc);
+					error(DEPLOYMENT_ELEMENT_QUICKFIX_MESSAGE+ "'" + name + "'",
 							FDeployPackage.Literals.FD_INTERFACE__TARGET, 
 							DEPLOYMENT_ELEMENT_QUICKFIX, 
-							tc.getName(),
+							name,
 							FrancaQuickFixConstants.BROADCAST.toString());
-					error(DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE+"'" + tc.getName() + "'",
+					error(DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE+"'" + name + "'",
 							FDeployPackage.Literals.FD_INTERFACE__TARGET,
 							DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, 
-							tc.getName(),
+							name,
 							FrancaQuickFixConstants.BROADCAST.toString());
 					lowerLevelErrors++;
 				}
 			} 
 			else {
-				if (checkSpecificationElementProperties(spec, c, FDeployPackage.Literals.FD_BROADCAST__TARGET, tc.getName())) {
+				String name = FrancaModelExtensions.getUniqueName(tc);
+				if (checkSpecificationElementProperties(spec, c, FDeployPackage.Literals.FD_BROADCAST__TARGET, name)) {
 					lowerLevelErrors++;
 				}
 				if (checkArgumentList(specHelper, checker, mapper, spec, tc.getOutArgs(), c, "Output", FDeployPackage.Literals.FD_BROADCAST__TARGET)) {
-					error(DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE+"'" + tc.getName() + "'",
+					error(DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE+"'" + name + "'",
 							c, FDeployPackage.Literals.FD_BROADCAST__TARGET,
 							DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, 
-							tc.getName(),
+							name,
 							FrancaQuickFixConstants.BROADCAST.toString());
 					lowerLevelErrors++;
 				}
@@ -489,12 +494,12 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 					String opType = "";
 					String quickfix = "";
 					if (parent instanceof FDMethod) {
-						opName = ((FDMethod) parent).getTarget().getName();
+						opName = FrancaModelExtensions.getUniqueName(((FDMethod) parent).getTarget());
 						opType = "method";
 						quickfix = METHOD_ARGUMENT_QUICKFIX;
 					}
 					if (parent instanceof FDBroadcast) {
-						opName = ((FDBroadcast) parent).getTarget().getName();
+						opName = FrancaModelExtensions.getUniqueName(((FDBroadcast) parent).getTarget());
 						opType = "broadcast";
 						quickfix = BROADCAST_ARGUMENT_QUICKFIX;
 					}

@@ -86,5 +86,12 @@ public class ModelDefinitionTests extends XtextTest {
     			"fidl/25-InterfaceUsingAnonTC.fidl");
     }
 
+    @Test
+    public void test_80_DefInterfaceWithOverload() {
+    	testFile("testcases/80-DefInterfaceWithOverload.fdepl",
+    			"testcases/41-SpecSimple.fdepl",
+    			"fidl/40-InterfaceWithOverloading.fidl");
+    }
+
 }
 

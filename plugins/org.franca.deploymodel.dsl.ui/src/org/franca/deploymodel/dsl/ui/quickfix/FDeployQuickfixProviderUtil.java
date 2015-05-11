@@ -3,6 +3,7 @@ package org.franca.deploymodel.dsl.ui.quickfix;
 import java.util.List;
 
 import org.eclipse.emf.common.util.EList;
+import org.franca.core.FrancaModelExtensions;
 import org.franca.core.franca.FArgument;
 import org.franca.core.franca.FArrayType;
 import org.franca.core.franca.FAttribute;
@@ -179,19 +180,20 @@ public class FDeployQuickfixProviderUtil {
 	public static FDMethod getOrCreateMethod(FDInterface deploymentInterface,
 			String elementName) {
 		for (FDMethod m : deploymentInterface.getMethods()) {
-			if (m.getTarget().getName() == elementName) {
+			if (FrancaModelExtensions.getUniqueName(m.getTarget()).equals(elementName)) {
 				return m;
 			}
 		}
 
 		FMethod methodTarget = null;
 		for (FMethod m : deploymentInterface.getTarget().getMethods()) {
-			if (m.getName() == elementName) {
+			if (FrancaModelExtensions.getUniqueName(m).equals(elementName)) {
 				methodTarget = m;
 			}
 		}
 		if (methodTarget != null) {
 			FDMethod method = FDeployFactory.eINSTANCE.createFDMethod();
+			init(method);
 			method.setTarget(methodTarget);
 			deploymentInterface.getMethods().add(method);
 			return method;
@@ -204,7 +206,7 @@ public class FDeployQuickfixProviderUtil {
 			FDInterface deploymentInterface, String elementName) {
 
 		for (FDBroadcast b : deploymentInterface.getBroadcasts()) {
-			if (b.getTarget().getName() == elementName) {
+			if (FrancaModelExtensions.getUniqueName(b.getTarget()).equals(elementName)) {
 				return b;
 			}
 		}
@@ -213,14 +215,14 @@ public class FDeployQuickfixProviderUtil {
 
 		for (FBroadcast broadcast : deploymentInterface.getTarget()
 				.getBroadcasts()) {
-			if (broadcast.getName() == elementName) {
+			if (FrancaModelExtensions.getUniqueName(broadcast).equals(elementName)) {
 				broadcastTarget = broadcast;
 			}
 		}
 
 		if (broadcastTarget != null) {
-			FDBroadcast broadcast = FDeployFactory.eINSTANCE
-					.createFDBroadcast();
+			FDBroadcast broadcast = FDeployFactory.eINSTANCE.createFDBroadcast();
+			init(broadcast);
 			broadcast.setTarget(broadcastTarget);
 			deploymentInterface.getBroadcasts().add(broadcast);
 			return broadcast;
@@ -242,6 +244,7 @@ public class FDeployQuickfixProviderUtil {
 				elementName, types.getTarget().getTypes());
 		if (arrayTarget != null) {
 			FDArray array = FDeployFactory.eINSTANCE.createFDArray();
+			init(array);
 			array.setTarget(arrayTarget);
 			types.getTypes().add(array);
 			return array;
@@ -264,6 +267,7 @@ public class FDeployQuickfixProviderUtil {
 				elementName, deploymentInterface.getTarget().getTypes());
 		if (arrayTarget != null) {
 			FDArray array = FDeployFactory.eINSTANCE.createFDArray();
+			init(array);
 			array.setTarget(arrayTarget);
 			deploymentInterface.getTypes().add(array);
 			return array;
@@ -285,6 +289,7 @@ public class FDeployQuickfixProviderUtil {
 				elementName, types.getTarget().getTypes());
 		if (structTarget != null) {
 			FDStruct struct = FDeployFactory.eINSTANCE.createFDStruct();
+			init(struct);
 			struct.setTarget(structTarget);
 			types.getTypes().add(struct);
 			return struct;
@@ -306,6 +311,7 @@ public class FDeployQuickfixProviderUtil {
 				elementName, deploymentInterface.getTarget().getTypes());
 		if (structTarget != null) {
 			FDStruct struct = FDeployFactory.eINSTANCE.createFDStruct();
+			init(struct);
 			struct.setTarget(structTarget);
 			deploymentInterface.getTypes().add(struct);
 			return struct;
@@ -327,8 +333,8 @@ public class FDeployQuickfixProviderUtil {
 				FEnumerationType.class, elementName,
 				types.getTarget().getTypes());
 		if (enumerationTarget != null) {
-			FDEnumeration enumeration = FDeployFactory.eINSTANCE
-					.createFDEnumeration();
+			FDEnumeration enumeration = FDeployFactory.eINSTANCE.createFDEnumeration();
+			init(enumeration);
 			enumeration.setTarget(enumerationTarget);
 			types.getTypes().add(enumeration);
 			return enumeration;
@@ -350,8 +356,8 @@ public class FDeployQuickfixProviderUtil {
 				FEnumerationType.class, elementName,
 				deploymentInterface.getTarget().getTypes());
 		if (enumerationTarget != null) {
-			FDEnumeration enumeration = FDeployFactory.eINSTANCE
-					.createFDEnumeration();
+			FDEnumeration enumeration = FDeployFactory.eINSTANCE.createFDEnumeration();
+			init(enumeration);
 			enumeration.setTarget(enumerationTarget);
 			deploymentInterface.getTypes().add(enumeration);
 			return enumeration;
@@ -374,6 +380,7 @@ public class FDeployQuickfixProviderUtil {
 				elementName, types.getTarget().getTypes());
 		if (unionTarget != null) {
 			FDUnion union = FDeployFactory.eINSTANCE.createFDUnion();
+			init(union);
 			union.setTarget(unionTarget);
 			types.getTypes().add(union);
 			return union;
@@ -396,11 +403,16 @@ public class FDeployQuickfixProviderUtil {
 				elementName, deploymentInterface.getTarget().getTypes());
 		if (unionTarget != null) {
 			FDUnion union = FDeployFactory.eINSTANCE.createFDUnion();
+			init(union);
 			union.setTarget(unionTarget);
 			deploymentInterface.getTypes().add(union);
 			return union;
 		}
 		
 		return null;
+	}
+	
+	private static void init(FDElement elem) {
+		elem.setProperties(FDeployFactory.eINSTANCE.createFDPropertySet());
 	}
 }

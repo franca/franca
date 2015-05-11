@@ -14,6 +14,7 @@ import org.eclipse.emf.ecore.EReference
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.naming.IQualifiedNameConverter
 import org.eclipse.xtext.naming.IQualifiedNameProvider
+import org.eclipse.xtext.naming.QualifiedName
 import org.eclipse.xtext.resource.EObjectDescription
 import org.eclipse.xtext.resource.IEObjectDescription
 import org.eclipse.xtext.scoping.IScope
@@ -59,6 +60,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDeployPackage
 
 import static extension org.eclipse.xtext.scoping.Scopes.*
 import static extension org.franca.deploymodel.core.FDModelUtils.*
+import static extension org.franca.core.FrancaModelExtensions.*
 
 class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 
@@ -128,11 +130,17 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 	}
 
 	def scope_FDMethod_target(FDInterface ctxt, EReference ref) {
-		ctxt.getTarget().getMethods().scopeFor
+		ctxt.getTarget().getMethods().scopeFor(
+			[ QualifiedName.create(getUniqueName) ],
+			IScope.NULLSCOPE
+		)
 	}
 
 	def scope_FDBroadcast_target(FDInterface ctxt, EReference ref) {
-		ctxt.getTarget().getBroadcasts().scopeFor
+		ctxt.getTarget().getBroadcasts().scopeFor(
+			[ QualifiedName.create(getUniqueName) ],
+			IScope.NULLSCOPE
+		)
 	}
 
 	def scope_FDArray_target(FDInterface ctxt, EReference ref) {

@@ -15,15 +15,15 @@ interface BaseInterface {
 interface InterfaceWithOverloading extends BaseInterface {
 	
 	method method1:a {
-		in  { String a1 }
-		out { String r1 }
-	}
-	
-	method method1:b {
 		in  { String a1  String a2 }
 		out { Integer r1 }
 	}
 
+	method method1:b {
+		in  { String a1  String a2 }
+		out { Boolean r1 }
+	}
+	
 
 	method method2:a {
 		in  { String a1 }

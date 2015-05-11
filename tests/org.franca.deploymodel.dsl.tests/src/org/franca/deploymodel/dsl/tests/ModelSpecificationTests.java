@@ -69,4 +69,9 @@ public class ModelSpecificationTests extends XtextTest {
     	testFile("testcases/40-SpecSimple.fdepl");
     }
 
+    @Test
+    public void test_41_SpecSimple() {
+    	testFile("testcases/41-SpecSimple.fdepl");
+    }
+
 }
