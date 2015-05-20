@@ -148,34 +148,6 @@ class ExpressionEvaluator {
 			expr
 	}
 
-	def static private foo (FQualifiedElementRef it) {
-		// qualifier/field must be set
-		val cdef = qualifier.element as FConstantDef
-		val rhs = cdef.rhs as FCompoundInitializer
-		val f = field as FField
-		val fi = rhs.elements.findFirst[element==f] 
-		fi.value
-	}
-
-//	def private getValue (FQualifiedElementRef qe) {
-//		if (qe.qualifier==null) {
-//			val te = qe.element
-//			// TODO: support array types
-//			switch(te) {
-//				FConstantDef: {
-//					if (te.rhs instanceof FExpression)
-//						(te.rhs as FExpression).evaluate
-//					else
-//						null
-//				}
-//				default: null
-//			}
-//			
-//		} else {
-//			
-//		}
-//	}
-
 	// catch-all (shouldn't occur)
 	def static private dispatch Object eval (FExpression expr) {
 		throw new RuntimeException("Unknown expression " + expr.class.toString)
