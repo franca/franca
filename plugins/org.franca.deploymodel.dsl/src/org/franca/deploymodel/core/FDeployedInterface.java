@@ -24,12 +24,11 @@ public class FDeployedInterface extends MappingGenericPropertyAccessor {
 	protected FDInterface fdapi;
 
 	public FDeployedInterface(FDInterface fdapi) {
-		super(fdapi.getSpec(),new FDMapper(fdapi));
+		super(fdapi.getSpec(), new FDMapper(fdapi));
 		this.fdapi = fdapi;
 	}
 
 	public FInterface getFInterface() {
 		return fdapi.getTarget();
 	}
-
 }

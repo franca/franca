@@ -99,13 +99,19 @@ class DBusCompatibilityValidator implements IFrancaExternalValidator {
 
 	def private dispatch checkItem (FEnumerator item, ValidationMessageAcceptor issues) {
 		if (item.value!=null) {
-			val v = item.value.evaluateIntegerOrParseString
-			if (v!=null) {
-				if (v.signum == -1) {
-					issues.warning(
-						"Enumerator values must not be negative",
-						item, FMODEL_ELEMENT__NAME)
+			try {
+				val v = item.value.evaluateIntegerOrParseString
+				if (v!=null) {
+					if (v.signum == -1) {
+						issues.warning(
+							"Enumerator values must not be negative",
+							item, FMODEL_ELEMENT__NAME)
+					}
 				}
+			} catch (NumberFormatException e) {
+				issues.warning(
+					"Invalid number format in enumerator value",
+					item, FMODEL_ELEMENT__NAME)
 			}
 		}
 	}

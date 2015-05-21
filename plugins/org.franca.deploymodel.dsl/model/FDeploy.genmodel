@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.franca.deploymodel.dsl/src-gen" editDirectory="/org.franca.deploymodel.dsl.edit/src"
+    editorDirectory="/org.franca.deploymodel.dsl.editor/src" modelPluginID="org.franca.deploymodel.dsl"
+    forceOverwrite="true" modelName="FDeploy" updateClasspath="false" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
+    importerID="org.eclipse.emf.importer.ecore" complianceLevel="5.0" copyrightFields="false"
+    editPluginID="org.franca.deploymodel.dsl.edit" editorPluginID="org.franca.deploymodel.dsl.editor"
+    runtimeVersion="2.10" usedGenPackages="../../org.franca.core/model/franca.genmodel#//franca">
+  <foreignModel>FDeploy.ecore</foreignModel>
+  <genPackages prefix="FDeploy" basePackage="org.franca.deploymodel.dsl" disposableProviderFactory="true"
+      ecorePackage="FDeploy.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="FDeploy.ecore#//FDPropertyHost">
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/providers"/>
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/instances"/>
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/type_collections"/>
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/interfaces"/>
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/attributes"/>
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/methods"/>
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/broadcasts"/>
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/arguments"/>
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/struct_fields"/>
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/union_fields"/>
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/arrays"/>
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/structs"/>
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/unions"/>
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/enumerations"/>
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/enumerators"/>
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/strings"/>
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/numbers"/>
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/integers"/>
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/floats"/>
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/booleans"/>
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/byte_buffers"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="FDeploy.ecore#//FDPredefinedTypeId">
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPredefinedTypeId/Integer"/>
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPredefinedTypeId/String"/>
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPredefinedTypeId/Boolean"/>
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPredefinedTypeId/Interface"/>
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPredefinedTypeId/Instance"/>
+    </genEnums>
+    <genClasses ecoreClass="FDeploy.ecore#//FDModel">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDModel/imports"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDModel/specifications"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDModel/deployments"/>
+    </genClasses>
+    <genClasses ecoreClass="FDeploy.ecore#//Import">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute FDeploy.ecore#//Import/importURI"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute FDeploy.ecore#//Import/importedSpec"/>
+    </genClasses>
+    <genClasses ecoreClass="FDeploy.ecore#//FDSpecification">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute FDeploy.ecore#//FDSpecification/name"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDSpecification/base"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDSpecification/declarations"/>
+    </genClasses>
+    <genClasses ecoreClass="FDeploy.ecore#//FDDeclaration">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute FDeploy.ecore#//FDDeclaration/host"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDDeclaration/properties"/>
+    </genClasses>
+    <genClasses ecoreClass="FDeploy.ecore#//FDPropertyDecl">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute FDeploy.ecore#//FDPropertyDecl/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDPropertyDecl/type"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDPropertyDecl/flags"/>
+    </genClasses>
+    <genClasses ecoreClass="FDeploy.ecore#//FDPropertyFlag">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute FDeploy.ecore#//FDPropertyFlag/optional"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDPropertyFlag/default"/>
+    </genClasses>
+    <genClasses ecoreClass="FDeploy.ecore#//FDTypeRef">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute FDeploy.ecore#//FDTypeRef/predefined"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDTypeRef/complex"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute FDeploy.ecore#//FDTypeRef/array"/>
+    </genClasses>
+    <genClasses ecoreClass="FDeploy.ecore#//FDType"/>
+    <genClasses ecoreClass="FDeploy.ecore#//FDEnumType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDEnumType/enumerators"/>
+    </genClasses>
+    <genClasses ecoreClass="FDeploy.ecore#//FDEnumerator">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute FDeploy.ecore#//FDEnumerator/name"/>
+    </genClasses>
+    <genClasses ecoreClass="FDeploy.ecore#//FDRootElement">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDRootElement/spec"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute FDeploy.ecore#//FDRootElement/name"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDRootElement/use"/>
+    </genClasses>
+    <genClasses ecoreClass="FDeploy.ecore#//FDElement">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDElement/properties"/>
+    </genClasses>
+    <genClasses ecoreClass="FDeploy.ecore#//FDOverwriteElement">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDOverwriteElement/overwrites"/>
+    </genClasses>
+    <genClasses ecoreClass="FDeploy.ecore#//FDProvider">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDProvider/instances"/>
+    </genClasses>
+    <genClasses ecoreClass="FDeploy.ecore#//FDInterfaceInstance">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDInterfaceInstance/target"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute FDeploy.ecore#//FDInterfaceInstance/name"/>
+    </genClasses>
+    <genClasses ecoreClass="FDeploy.ecore#//FDTypes">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDTypes/target"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDTypes/types"/>
+    </genClasses>
+    <genClasses ecoreClass="FDeploy.ecore#//FDInterface">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDInterface/target"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDInterface/attributes"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDInterface/methods"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDInterface/broadcasts"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDInterface/types"/>
+    </genClasses>
+    <genClasses ecoreClass="FDeploy.ecore#//FDAttribute">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDAttribute/target"/>
+    </genClasses>
+    <genClasses ecoreClass="FDeploy.ecore#//FDOperation">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDOperation/outArguments"/>
+    </genClasses>
+    <genClasses ecoreClass="FDeploy.ecore#//FDMethod">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDMethod/target"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDMethod/inArguments"/>
+    </genClasses>
+    <genClasses ecoreClass="FDeploy.ecore#//FDBroadcast">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDBroadcast/target"/>
+    </genClasses>
+    <genClasses ecoreClass="FDeploy.ecore#//FDArgumentList">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDArgumentList/arguments"/>
+    </genClasses>
+    <genClasses ecoreClass="FDeploy.ecore#//FDArgument">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDArgument/target"/>
+    </genClasses>
+    <genClasses ecoreClass="FDeploy.ecore#//FDTypeDef"/>
+    <genClasses ecoreClass="FDeploy.ecore#//FDCompound">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDCompound/fields"/>
+    </genClasses>
+    <genClasses ecoreClass="FDeploy.ecore#//FDArray">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDArray/target"/>
+    </genClasses>
+    <genClasses ecoreClass="FDeploy.ecore#//FDStruct">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDStruct/target"/>
+    </genClasses>
+    <genClasses ecoreClass="FDeploy.ecore#//FDUnion">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDUnion/target"/>
+    </genClasses>
+    <genClasses ecoreClass="FDeploy.ecore#//FDField">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDField/target"/>
+    </genClasses>
+    <genClasses ecoreClass="FDeploy.ecore#//FDEnumeration">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDEnumeration/target"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDEnumeration/enumerators"/>
+    </genClasses>
+    <genClasses ecoreClass="FDeploy.ecore#//FDEnumValue">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDEnumValue/target"/>
+    </genClasses>
+    <genClasses ecoreClass="FDeploy.ecore#//FDTypeOverwrites"/>
+    <genClasses ecoreClass="FDeploy.ecore#//FDPlainTypeOverwrites"/>
+    <genClasses ecoreClass="FDeploy.ecore#//FDEnumerationOverwrites">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDEnumerationOverwrites/enumerators"/>
+    </genClasses>
+    <genClasses ecoreClass="FDeploy.ecore#//FDCompoundOverwrites"/>
+    <genClasses ecoreClass="FDeploy.ecore#//FDStructOverwrites"/>
+    <genClasses ecoreClass="FDeploy.ecore#//FDUnionOverwrites"/>
+    <genClasses ecoreClass="FDeploy.ecore#//FDPropertySet">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDPropertySet/items"/>
+    </genClasses>
+    <genClasses ecoreClass="FDeploy.ecore#//FDProperty">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDProperty/decl"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDProperty/value"/>
+    </genClasses>
+    <genClasses ecoreClass="FDeploy.ecore#//FDComplexValue">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDComplexValue/single"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDComplexValue/array"/>
+    </genClasses>
+    <genClasses ecoreClass="FDeploy.ecore#//FDValueArray">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDValueArray/values"/>
+    </genClasses>
+    <genClasses ecoreClass="FDeploy.ecore#//FDValue"/>
+    <genClasses ecoreClass="FDeploy.ecore#//FDInteger">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute FDeploy.ecore#//FDInteger/value"/>
+    </genClasses>
+    <genClasses ecoreClass="FDeploy.ecore#//FDString">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute FDeploy.ecore#//FDString/value"/>
+    </genClasses>
+    <genClasses ecoreClass="FDeploy.ecore#//FDBoolean">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute FDeploy.ecore#//FDBoolean/value"/>
+    </genClasses>
+    <genClasses ecoreClass="FDeploy.ecore#//FDInterfaceRef">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDInterfaceRef/value"/>
+    </genClasses>
+    <genClasses ecoreClass="FDeploy.ecore#//FDGeneric">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDGeneric/value"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>

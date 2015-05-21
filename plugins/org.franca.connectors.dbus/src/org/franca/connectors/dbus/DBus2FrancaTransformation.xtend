@@ -231,6 +231,9 @@ class DBus2FrancaTransformation {
 			case DBusBasicType::DBUS_TYPE_BOOLEAN: predefined = FBasicTypeId::BOOLEAN
 			case DBusBasicType::DBUS_TYPE_DOUBLE: predefined = FBasicTypeId::DOUBLE
 			case DBusBasicType::DBUS_TYPE_STRING: predefined = FBasicTypeId::STRING
+			case DBusBasicType::DBUS_TYPE_OBJECT_PATH: predefined = FBasicTypeId::STRING
+			case DBusBasicType::DBUS_TYPE_SIGNATURE: predefined = FBasicTypeId::STRING
+			case DBusBasicType::DBUS_TYPE_UNIX_FD: predefined = FBasicTypeId::UINT32
 			case DBusBasicType::DBUS_TYPE_VARIANT: {
 				addIssue(IMPORT_WARNING,
 					tc.location, tc.feature,

@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2012 Harman International (http://www.harman.com).
+* Copyright (c) 2015 itemis AG (http://www.itemis.de).
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -7,18 +7,23 @@
 *******************************************************************************/
 package org.franca.deploymodel.dsl.generator
 
+import com.google.inject.Inject
 import org.eclipse.emf.ecore.resource.Resource
-import org.eclipse.xtext.generator.IGenerator
 import org.eclipse.xtext.generator.IFileSystemAccess
-import org.franca.deploymodel.dsl.fDeploy.FDSpecification
-import org.franca.deploymodel.dsl.fDeploy.FDTypeRef
-import org.franca.deploymodel.dsl.fDeploy.FDPredefinedTypeId
+import org.eclipse.xtext.generator.IGenerator
 import org.franca.deploymodel.dsl.fDeploy.FDEnumType
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl
-import org.franca.deploymodel.dsl.fDeploy.FDDeclaration
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyHost
-import java.util.Set
-import java.util.HashSet
+import org.franca.deploymodel.dsl.fDeploy.FDSpecification
+import org.franca.deploymodel.dsl.generator.internal.HelperGenerator
+import org.franca.deploymodel.dsl.generator.internal.IDataGenerator
+import org.franca.deploymodel.dsl.generator.internal.ImportManager
+import org.franca.deploymodel.dsl.generator.internal.InterfaceAccessorGenerator
+import org.franca.deploymodel.dsl.generator.internal.OverwriteAccessorGenerator
+import org.franca.deploymodel.dsl.generator.internal.ProviderAccessorGenerator
+import org.franca.deploymodel.dsl.generator.internal.TypeCollectionAccessorGenerator
+
+import static extension org.franca.deploymodel.dsl.generator.internal.GeneratorHelper.*
 
 /**
  * Generator for PropertyAccessor class from deployment specification.
@@ -30,17 +35,31 @@ import java.util.HashSet
  */
 class FDeployGenerator implements IGenerator {
 	
+	@Inject extension ImportManager
+	
+	@Inject IDataGenerator genInterface
+	@Inject HelperGenerator genHelper
+	@Inject TypeCollectionAccessorGenerator genTCAcc
+	@Inject InterfaceAccessorGenerator genInterfaceAcc
+	@Inject ProviderAccessorGenerator genProviderAcc
+	@Inject OverwriteAccessorGenerator genOverwriteAcc
+	
 	// the types of PropertyAccessor classes we can generate
-	static int PA_PROVIDER = 1
-	static int PA_INTERFACE = 2
-	static int PA_TYPE_COLLECTION = 3
+	final static String PA_PROVIDER = "Provider"
+	final static String PA_INTERFACE = "Interface"
+	final static String PA_TYPE_COLLECTION = "TypeCollection"
 	
 	// the main function for this generator, will be called by Xtend framework
 	override void doGenerate(Resource resource, IFileSystemAccess fsa) {
 		for(m : resource.allContents.toIterable.filter(typeof(FDSpecification))) {
-			fsa.generateAll(m,PA_PROVIDER)
-			fsa.generateAll(m,PA_INTERFACE)
-			fsa.generateAll(m,PA_TYPE_COLLECTION)
+			// generate compound accessor class with several nested classes
+			fsa.generateAll(m)
+			
+			// generate some legacy classes for backward-compatibility
+			// (this is needed for Franca 0.9.1 and earlier)
+			fsa.generateLegacy(m, PA_PROVIDER)
+			fsa.generateLegacy(m, PA_INTERFACE)
+			fsa.generateLegacy(m, PA_TYPE_COLLECTION)
 		}
 	}
 	
@@ -48,264 +67,126 @@ class FDeployGenerator implements IGenerator {
 	// *****************************************************************************
 	// top-level generation and analysis
 	
-	int paType
-	Set<String> neededFrancaTypes
-	boolean needList
-	boolean needArrayList
-	
-	def generateAll (IFileSystemAccess fsa, FDSpecification spec, int pat) {
-		// initialize
-		paType = pat;
-		neededFrancaTypes = new HashSet<String>()
-		needList = false
-		needArrayList = false
-		
+	def generateAll (IFileSystemAccess fsa, FDSpecification spec) {
+		initImportManager
+
 		// generate class code and analyse for needed preliminaries
 		val path = spec.getPackage().replace(".", "/")
-		val code = spec.generateClass.toString
-		var header = spec.generateHeader.toString
+		val code = spec.generateCombinedClass.toString
+		var header = spec.generateHeader(null).toString
 		
 		fsa.generateFile(path + "/" + spec.classname + ".java", header + code)
 	}
 	
+	def private generateCombinedClass(FDSpecification spec) '''
+		/**
+		 * This is a collection of all interfaces and classes needed for
+		 * accessing deployment properties according to deployment specification
+		 * '«spec.name»'.
+		 */
+		public class «spec.classname» {
+
+			«genEnumInterface(spec)»
+
+			«genInterface.generate(spec)»
+
+			«genHelper.generate(spec)»
+
+			«genTCAcc.generate(spec)»
+
+			«genInterfaceAcc.generate(spec)»
+
+			«genProviderAcc.generate(spec)»
+
+			«genOverwriteAcc.generate(spec)»
+		}
+			
+	'''
 	
-	def generateHeader (FDSpecification spec) '''
+	def private genEnumInterface(FDSpecification spec) '''
+		/**
+		 * Enumerations for deployment specification «spec.name».
+		 */
+		public interface Enums
+			«IF spec.base!=null»extends «spec.base.name».Enums«ENDIF»
+		{
+			«FOR d : spec.declarations»
+				«FOR p : d.properties»
+					«p.genStaticEnum(d.host)»
+				«ENDFOR»
+			«ENDFOR»
+		}
+	'''
+
+	def private genStaticEnum(FDPropertyDecl it, FDPropertyHost host) {
+		if (isEnum) {
+			val enumType = name.toFirstUpper
+			val enumerator = type.complex as FDEnumType
+			'''
+				public enum «enumType» {
+					«FOR e : enumerator.enumerators SEPARATOR ", "»«e.name»«ENDFOR»
+				}
+				 
+			'''
+		} else
+			''
+	}
+	
+
+	/**
+	 * Generate legacy classes needed for users of Franca 0.9.1 and earlier.
+	 */
+	def generateLegacy (IFileSystemAccess fsa, FDSpecification spec, String type) {
+		// generate class code and analyse for needed preliminaries
+		val path = spec.getPackage().replace(".", "/")
+		val code = spec.generateLegacyClass(type).toString
+		var header = spec.generateHeader(type).toString
+		
+		fsa.generateFile(path + "/" + spec.getLegacyClassname(type) + ".java", header + code)
+	}
+	
+	
+	def generateHeader (FDSpecification spec, String type) '''
 		/*******************************************************************************
 		* This file has been generated by Franca's FDeployGenerator.
-		* Source: deployment spec '«spec.name»'
+		* Source: deployment specification '«spec.name»'
 		*******************************************************************************/
 		«IF ! spec.getPackage.empty»
 		package «spec.getPackage»;
 		
 		«ENDIF»
-		«IF needList»
-		import java.util.List;
-		import java.util.ArrayList;
-		«ENDIF»
-		«FOR t : neededFrancaTypes»
-		«IF t.equals("EObject")»
-		import org.eclipse.emf.ecore.EObject;
-		«ELSEIF t.equals("FDProvider") || t.equals("FDInterfaceInstance")»
-		import org.franca.deploymodel.dsl.fDeploy.«t»;
+		«IF type!=null»
+		import org.franca.deploymodel.core.«getSupportingClass(type)»;
 		«ELSE»
-		import org.franca.core.franca.«t»;
+		«genImports»
 		«ENDIF»
-		«ENDFOR»
-		import org.franca.deploymodel.core.«supportingClass»;
-		
+
 	'''
 
 
-	// this function will also collect neededFrancaTypes
-	def generateClass (FDSpecification spec) '''
+	def generateLegacyClass (FDSpecification spec, String type) '''
 		/**
 		 * Accessor for deployment properties for '«spec.name»' specification
-		 */		
-		public class «spec.classname»
-			«IF spec.base!=null»extends «spec.base.getPackage».«spec.base.classname»«ENDIF»
+		 *
+		 * @deprecated use class «spec.name».«type»PropertyAccessor instead
+		 */
+		public class «spec.getLegacyClassname(type)»
+			extends «spec.name».«type»PropertyAccessor
+			implements «spec.name».Enums
 		{
-			
-			private «supportingClass» target;
-		
-			public «spec.classname» («supportingClass» target) {
-				«IF spec.base!=null»
+			public «spec.getLegacyClassname(type)»(«getSupportingClass(type)» target) {
 				super(target);
-				«ENDIF»
-				this.target = target;
 			}
-			
-			«FOR d : spec.declarations»
-				«d.genProperties»
-			«ENDFOR»
-			
 		}
+		   
 	'''
-
-
-	// *****************************************************************************
-	// property generation
-
-	def genProperties (FDDeclaration decl) '''
-		«FOR p : decl.properties»
-		«p.genProperty(decl.host)»
-		«ENDFOR»
-	'''
-	
-	def genProperty (FDPropertyDecl it, FDPropertyHost host) {
-		switch(paType){
-			case PA_PROVIDER:
-				switch (host) {
-					case FDPropertyHost::PROVIDERS:     genGetter("FDProvider")
-					case FDPropertyHost::INSTANCES:     genGetter("FDInterfaceInstance")
-					default: ""  // ignore all other hosts
-				}
-			case PA_INTERFACE:{
-				switch (host) {
-					case FDPropertyHost::PROVIDERS:     ""  // ignore
-					case FDPropertyHost::INSTANCES:     ""  // ignore
-					case FDPropertyHost::TYPE_COLLECTIONS: genGetter("FTypeCollection")
-					case FDPropertyHost::INTERFACES:    genGetter("FInterface")
-					case FDPropertyHost::ATTRIBUTES:    genGetter("FAttribute")
-					case FDPropertyHost::METHODS:       genGetter("FMethod")
-					case FDPropertyHost::BROADCASTS:    genGetter("FBroadcast")
-					case FDPropertyHost::ARGUMENTS:     genGetter("FArgument")
-					//case FDPropertyHost::NUMBERS:       genGetter("FArgument")
-					//case FDPropertyHost::FLOATS:        genGetter("FArgument")
-					//case FDPropertyHost::INTEGERS:      genGetter("FArgument")
-					//case FDPropertyHost::STRINGS:       genGetter("FArgument")
-					case FDPropertyHost::STRUCT_FIELDS: genGetter("FField")
-					case FDPropertyHost::ENUMERATIONS:  genGetter("FEnumerationType")
-					case FDPropertyHost::ENUMERATORS:   genGetter("FEnumerator")
-					//case FDPropertyHost::ARRAYS:        genGetter("FArgument")
-					default: genGetter("EObject")  // reasonable default
-				}	
-			}
-			case PA_TYPE_COLLECTION:{
-				switch (host) {
-					case FDPropertyHost::PROVIDERS:     ""  // ignore
-					case FDPropertyHost::INSTANCES:     ""  // ignore
-					case FDPropertyHost::TYPE_COLLECTIONS: genGetter("FTypeCollection")
-					case FDPropertyHost::INTERFACES:    genGetter("FInterface")
-					case FDPropertyHost::ATTRIBUTES:    ""
-					case FDPropertyHost::METHODS:       ""
-					case FDPropertyHost::BROADCASTS:    "" // 
-					case FDPropertyHost::ARGUMENTS:     "" // only broadcasts and methods have arguments
-					//case FDPropertyHost::NUMBERS:       genGetter("FArgument")
-					//case FDPropertyHost::FLOATS:        genGetter("FArgument")
-					//case FDPropertyHost::INTEGERS:      genGetter("FArgument")
-					//case FDPropertyHost::STRINGS:       genGetter("FArgument")
-					case FDPropertyHost::STRUCT_FIELDS: genGetter("FField")
-					case FDPropertyHost::ENUMERATIONS:  genGetter("FEnumerationType")
-					case FDPropertyHost::ENUMERATORS:   genGetter("FEnumerator")
-					//case FDPropertyHost::ARRAYS:        genGetter("FArgument")
-					default: genGetter("EObject")  // reasonable default
-				}	
-			}
-		}
-	}	
-	
-
-	def genGetter (FDPropertyDecl it, String fType) {
-		neededFrancaTypes.add(fType)
-		if (type.complex!=null) {
-			val ct = type.complex			
-			switch (ct) {
-				FDEnumType: genEnumGetter(ct, fType)
-				default:    genDefaultGetter(fType)
-			}
-		} else {
-			genDefaultGetter(fType)
-		}
-	}
-
-	def genDefaultGetter (FDPropertyDecl it, String fType) '''
-		public «type.javaType» get«name.toFirstUpper» («fType» obj) {
-			return target.get«type.getter»(obj, "«name»");
-		}
-
-	'''
-	
-	def genEnumGetter (FDPropertyDecl it, FDEnumType enumerator, String fType) {
-		neededFrancaTypes.add(fType)
-		val etname = name.toFirstUpper
-		val lname =
-			if (type.array==null) {
-				etname
-			} else {
-				needArrayList = true;
-				etname.genListType
-			}
-		
-		'''
-			public enum «etname» {
-				«FOR e : enumerator.enumerators SEPARATOR ", "»«e.name»«ENDFOR»
-			}
-			public «lname» get«name.toFirstUpper» («fType» obj) {
-				«type.javaType» e = target.get«type.getter»(obj, "«etname»");
-				if (e==null) return null;
-				«IF it.type.array!=null»
-				List<«etname»> es = new ArrayList<«etname»>();
-				for(String ev : e) {
-					«etname» v = convert«etname»(ev);
-					if (v==null) {
-						return null;
-					} else {
-						es.add(v);
-					}
-				}
-				return es;
-				«ELSE»
-				return convert«etname»(e);
-				«ENDIF»
-			}
-			private «etname» convert«etname» (String val) {
-				«FOR e : enumerator.enumerators SEPARATOR " else "»
-				if (val.equals("«e.name»"))
-					return «etname».«e.name»;
-				«ENDFOR»
-				return null;
-			}
-			
-		'''
-	}
-
-		
-	// *****************************************************************************
-	// type-related generation
-	
-	def getJavaType (FDTypeRef typeRef) {
-		val single =
-			if (typeRef.complex==null) {
-				switch (typeRef.predefined) {
-					case FDPredefinedTypeId::BOOLEAN:    "Boolean"
-					case FDPredefinedTypeId::INTEGER:    "Integer"
-					case FDPredefinedTypeId::STRING:     "String"
-					case FDPredefinedTypeId::INTERFACE:  {
-						neededFrancaTypes.add("FInterface")
-						"FInterface"
-					}
-				}
-			} else {
-				val ct = typeRef.complex
-				switch (ct) {
-					FDEnumType: "String"
-				}
-			}
-		if (typeRef.array==null)
-			single
-		else {
-			needList = true
-			single.genListType
-		}
-	}
-	
-	def getGetter (FDTypeRef typeRef) {
-		val single =
-			if (typeRef.complex==null) {
-				switch (typeRef.predefined) {
-					case FDPredefinedTypeId::BOOLEAN:   "Boolean"
-					case FDPredefinedTypeId::INTEGER:   "Integer"
-					case FDPredefinedTypeId::STRING:    "String"
-					case FDPredefinedTypeId::INTERFACE: "Interface"
-				}
-			} else {
-				switch (typeRef.complex) {
-					FDEnumType: "Enum"
-				}
-			}
-		if (typeRef.array==null)
-			single
-		else
-			single + "Array"
-	}
 
 
 	// *****************************************************************************
 	// basic helpers
 
-	def genListType (String type) '''List<«type»>'''
 		
-	def getPackage (FDSpecification it) {
+	def private getPackage (FDSpecification it) {
 		val sep = name.lastIndexOf(".")
 		if (sep>0)
 			name.substring(0, sep)
@@ -313,19 +194,20 @@ class FDeployGenerator implements IGenerator {
 			""
 	}
 
-	def classname (FDSpecification it) {
-		val type = switch(paType){
-			case PA_INTERFACE: "Interface"
-			case PA_PROVIDER: "Provider"
-			case PA_TYPE_COLLECTION: "TypeCollection"			
-		}
+	def private classname (FDSpecification it) {
+		val sep = name.lastIndexOf(".")
+		val basename = if (sep>0) name.substring(sep+1) else name
+		basename.toFirstUpper
+	}
+	
+	def private getLegacyClassname (FDSpecification it, String type) {
 		val sep = name.lastIndexOf(".")
 		val basename = if (sep>0) name.substring(sep+1) else name
 		basename.toFirstUpper + type + "PropertyAccessor"
 	}
 
-	def getSupportingClass() {
-		switch (paType) {
+	def getSupportingClass(String type) {
+		switch (type) {
 			case PA_TYPE_COLLECTION: "FDeployedTypeCollection"
 			case PA_INTERFACE: "FDeployedInterface"
 			case PA_PROVIDER: "FDeployedProvider"

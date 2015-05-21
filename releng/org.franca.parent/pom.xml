@@ -8,7 +8,7 @@
 
 	<groupId>org.franca</groupId>
 	<artifactId>org.franca.parent</artifactId>
-	<version>0.9.1-SNAPSHOT</version>
+	<version>0.9.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<parent>
@@ -43,6 +43,7 @@
 			<module>../../plugins/org.franca.tools.contracts.tracevalidator</module>
             <module>../../plugins/org.franca.connectors.dbus</module>
             <module>../../plugins/org.franca.connectors.dbus.ui</module>
+			<module>../../plugins/org.franca.connectors.idl</module>
             <module>../../plugins/org.franca.product.ui</module>
     		<!-- test base modules -->
             <module>../../tests/org.franca.core.dsl.tests.base</module>
@@ -53,6 +54,7 @@
             <module>../../examples/org.franca.examples.reference</module>
             <module>../../tests/org.franca.tools.contracts.tracevalidator.tests</module>
             <module>../../tests/org.franca.connectors.dbus.tests</module>
+			<module>../../tests/org.franca.connectors.idl.tests</module>
     		<!-- documentation/help modules -->
             <module>../../docs/org.franca.help</module>
 			<!-- release modules -->
@@ -278,9 +280,36 @@
 						<!-- MacOS specific option to run an SWT application from the command line.
 								See http://www.eclipse.org/swt/faq.php#carbonapp
 						-->
-						<argLine>${os-jvm-flags} -XX:PermSize=256m -XX:MaxPermSize=512m ${surefireArgLine}</argLine>
+						<argLine>${os-jvm-flags} -Xmx1024m -XX:PermSize=256m -XX:MaxPermSize=512m ${surefireArgLine}</argLine>
 					</configuration>
 				</plugin>
+
+				<!--This configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.jacoco</groupId>
+										<artifactId>jacoco-maven-plugin</artifactId>
+										<versionRange>[0.1.0,)</versionRange>
+										<goals>
+											<goal>prepare-agent</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+
 				<plugin>
 					<groupId>org.eclipse.tycho</groupId>
 					<artifactId>maven-osgi-test-plugin</artifactId>
@@ -310,7 +339,7 @@
 					<artifactId>maven-surefire-plugin</artifactId>
 					<version>2.15</version>
 					<configuration>
-						<argLine>${surefireArgLine}</argLine>
+						<argLine>-Xmx1024m -XX:PermSize=256m -XX:MaxPermSize=512m ${surefireArgLine}</argLine>
 					</configuration>
 				</plugin>
 				<plugin>
@@ -417,7 +446,7 @@
 		</pluginRepository>
 		<pluginRepository>
 			<id>xtend</id>
-			<url>http://build.eclipse.org/common/xtend/maven/</url>
+			<url>http://repo.maven.apache.org/maven2</url>
 		</pluginRepository>
 	</pluginRepositories>
 

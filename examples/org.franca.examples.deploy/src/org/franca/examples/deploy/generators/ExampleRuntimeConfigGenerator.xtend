@@ -8,8 +8,8 @@
 package org.franca.examples.deploy.generators
 
 import org.franca.deploymodel.core.FDeployedProvider
-import org.example.spec.SampleDeploySpecProviderPropertyAccessor
-import org.franca.deploymodel.dsl.fDeploy.FDProviderimport org.example.spec.IPBasedIPCProviderPropertyAccessor$AccessControl
+import org.example.spec.SampleDeploySpec.ProviderPropertyAccessor
+import org.franca.deploymodel.dsl.fDeploy.FDProviderimport org.example.spec.SampleDeploySpec.Enums.AccessControl
 
 /**
  * This is an example code generator for the non-interface related part of 
@@ -23,7 +23,7 @@ class ExampleRuntimeConfigGenerator {
 	 * An instance of the ProviderPropertyAccessor for SampleDeploySpec-models
 	 * (it has been generated automatically from SampleDeploySpec.fdepl).
 	 */
-	SampleDeploySpecProviderPropertyAccessor deploy
+	ProviderPropertyAccessor deploy
 
 	/**
 	 * This function is called from outside and generates code from a 
@@ -34,7 +34,7 @@ class ExampleRuntimeConfigGenerator {
 	 * information stored for this provider.
 	 */
 	def generateRuntimeConfig (FDeployedProvider deployed) {
-		deploy = new SampleDeploySpecProviderPropertyAccessor(deployed)
+		deploy = new ProviderPropertyAccessor(deployed)
 		generateProvider(deployed.provider)	
 	}
 

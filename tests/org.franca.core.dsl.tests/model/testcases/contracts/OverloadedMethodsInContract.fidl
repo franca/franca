@@ -1,0 +1,44 @@
+package testcases.contracts
+
+interface BaseInterface {
+	
+	method m1 {
+		in { Boolean a }
+	}
+
+	broadcast b1 {
+		out { Boolean a}
+	}
+}
+
+interface SomeInterface extends BaseInterface {
+	
+	method m1:a {
+		in { UInt8 a }
+	}
+	method m1:c {
+		in { String a }
+	}
+	
+	broadcast b1:a {
+		out { UInt8 a}
+	}
+	broadcast b1:b {
+		out { String a}
+	}
+	
+	contract {
+		PSM {
+			initial idle
+			state idle {
+				on call m1 -> sending
+				on call m1:c -> sending
+				on signal b1:a -> idle
+			}
+			state sending {
+				on respond m1:a -> idle
+				on error   m1:a -> idle
+			}
+		}
+	}
+}

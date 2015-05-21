@@ -23,6 +23,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl;
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyFlag;
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification;
 import org.franca.deploymodel.dsl.fDeploy.FDString;
+import org.franca.deploymodel.dsl.fDeploy.FDTypeOverwrites;
 import org.franca.deploymodel.dsl.fDeploy.FDValue;
 import org.franca.deploymodel.dsl.fDeploy.FDValueArray;
 
@@ -223,19 +224,34 @@ public class GenericPropertyAccessor {
 	 * use the appropriate default. If this hasn't been defined either, return 
 	 * null.
 	 * 
+	 * Note: If the FDElement is an overwrite element, this method will not
+	 * take into account the default given in the deployment specification.
+	 * For overwrite elements, the fallback value is the original property
+	 * definition.
+	 * 
 	 * @param elem the Franca deployment element
 	 * @param property the name of the property
 	 * @return the property's value (might be a single value or an array)
 	 */
 	private FDComplexValue getValue (FDElement elem, String property) {
-		// look if there is an explicit value for the property
-		for(FDProperty prop : elem.getProperties()) {
-			if (prop.getDecl().getName().equals(property)) {
-				return prop.getValue();
+		// if the element doesn't have properties, it is not relevant for deployment
+		// we will then just compute the default for this property.
+		if (elem.getProperties() != null) {
+			// look if there is an explicit value for the property
+			for(FDProperty prop : elem.getProperties().getItems()) {
+				if (prop.getDecl().getName().equals(property)) {
+					return prop.getValue();
+				}
+			}
+
+			// check for overwrite case
+			if (isOverwrite(elem)) {
+				// this is an overwrite element, ignore defaults
+				return null;
 			}
 		}
-		
-		// didn't find, look for default value for this property
+
+		// no explicit value, but also no overwrite: look for default value for this property
 		List<FDPropertyDecl> decls = PropertyMappings.getAllPropertyDecls(spec, elem);
 		for(FDPropertyDecl decl : decls) {
 			if (decl.getName().equals(property)) {
@@ -250,7 +266,16 @@ public class GenericPropertyAccessor {
 		return null;
 	}
 
-	
+	private static boolean isOverwrite (FDElement elem) {
+		EObject e = elem;
+		while (e!=null) {
+			e = e.eContainer();
+			if (e!=null && e instanceof FDTypeOverwrites)
+				return true;
+		}
+		return false;
+	}
+
 	public static FDComplexValue getDefault (FDPropertyDecl decl) {
 		for(FDPropertyFlag flag : decl.getFlags()) {
 			if (flag.getDefault()!=null) {

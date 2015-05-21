@@ -59,6 +59,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="errorEnum" eType="#//FEnumerationType"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="errors" eType="#//FEnumerationType"
         containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="selector" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FBroadcast" eSuperTypes="#//FModelElement">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -67,6 +68,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="outArgs" upperBound="-1"
         eType="#//FArgument" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="selective" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="selector" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FAttribute" eSuperTypes="#//FTypedElement">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">

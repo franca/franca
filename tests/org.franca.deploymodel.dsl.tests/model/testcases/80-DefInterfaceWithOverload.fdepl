@@ -1,0 +1,36 @@
+
+import "41-SpecSimple.fdepl"
+import "../fidl/40-InterfaceWithOverloading.fidl"
+
+define SpecSimple41 for interface fidl.InterfaceWithOverloading {
+
+	method method1:a {
+		MethodProp = ""
+	}
+
+	method method1:b {
+		MethodProp = ""
+	}
+
+
+	method method2:a {
+		MethodProp = ""
+	}
+
+	method method2:b {
+		MethodProp = ""
+	}
+
+	method method2:c {
+		MethodProp = ""
+	}
+
+	broadcast broadcast1:a {
+		BroadcastProp = 0
+	}
+
+	broadcast broadcast1:b {
+		BroadcastProp = 0
+	}
+
+}

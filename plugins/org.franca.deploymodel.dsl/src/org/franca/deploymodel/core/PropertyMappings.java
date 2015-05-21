@@ -10,9 +10,15 @@ package org.franca.deploymodel.core;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.emf.ecore.EObject;
 import org.franca.core.framework.FrancaHelpers;
+import org.franca.core.franca.FArrayType;
+import org.franca.core.franca.FEnumerationType;
+import org.franca.core.franca.FStructType;
+import org.franca.core.franca.FType;
 import org.franca.core.franca.FTypeRef;
 import org.franca.core.franca.FTypedElement;
+import org.franca.core.franca.FUnionType;
 import org.franca.deploymodel.dsl.fDeploy.FDArgument;
 import org.franca.deploymodel.dsl.fDeploy.FDArray;
 import org.franca.deploymodel.dsl.fDeploy.FDAttribute;
@@ -31,8 +37,10 @@ import org.franca.deploymodel.dsl.fDeploy.FDPropertyHost;
 import org.franca.deploymodel.dsl.fDeploy.FDProvider;
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification;
 import org.franca.deploymodel.dsl.fDeploy.FDStruct;
+import org.franca.deploymodel.dsl.fDeploy.FDStructOverwrites;
 import org.franca.deploymodel.dsl.fDeploy.FDTypes;
 import org.franca.deploymodel.dsl.fDeploy.FDUnion;
+import org.franca.deploymodel.dsl.fDeploy.FDUnionOverwrites;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -42,24 +50,30 @@ public class PropertyMappings {
 	/**
 	 * Get a list of all property declarations for a given deployment element.
 	 * 
-	 * The deployment element is part of a deployment definition, which in turn
+	 * <p>The deployment element is part of a deployment definition, which in turn
 	 * has to refer to the deployment specification given as first argument.
+	 * </p>
 	 * 
-	 * The task is accomplished by first computing all relevant property hosts for 
+	 * <p>The task is accomplished by first computing all relevant property hosts for 
 	 * the given deployment element. Afterwards, all property declarations are
 	 * collected which are specified for each of these property hosts in the 
 	 * given deployment specification.
+	 * </p>
 	 * 
-	 * E.g., for an FDAttribute element which refers to an Franca IDL FAttribute
+	 * <p>E.g., for an FDAttribute element which refers to an Franca IDL FAttribute
 	 * element of type UInt8, the following property hosts are computed:
-	 * - INTEGERS
-	 * - NUMBERS
-	 * - ATTRIBUTES
+	 * <ul>
+	 * <li>INTEGERS</li>
+	 * <li>NUMBERS</li>
+	 * <li>ATTRIBUTES</li>
+	 * </ul></p>
 	 * 
+	 * <p>
 	 * Afterwards, the deployment specification is scanned for declarations
 	 * of these property hosts and the properties specified there are collected
 	 * and returned.
-	 *  
+	 * </p>
+	 * 
 	 * @param spec the deployment specification
 	 * @param elem the deployment element of some deployment definition
 	 * @return the list of relevant property declarations for this element  
@@ -109,6 +123,24 @@ public class PropertyMappings {
 	}
 
 	/**
+	 * Get a list of all property declarations for a given Franca type.
+	 * 
+	 * <p>The task is accomplished by first computing the main property hosts for 
+	 * the given Franca type. Afterwards, all property declarations are
+	 * collected which are specified for each of these property hosts in the 
+	 * given deployment specification.
+	 * </p>
+	 * 
+	 * @param spec the deployment specification
+	 * @param type the Franca type
+	 * @return the list of relevant property declarations for this type  
+	 */
+	public static final List<FDPropertyDecl> getAllPropertyDecls(FDSpecification spec, FType type) {
+		Set<FDPropertyHost> hosts = Sets.newHashSet(getMainHost(type));
+		return getAllPropertyDeclsHelper(spec, hosts);
+	}
+	
+	/**
 	 * Get a list of all property declarations for a given property host.
 	 * 
 	 * This is done by scanning the given deployment specification and collecting
@@ -151,13 +183,8 @@ public class PropertyMappings {
 		return properties;
 	}
 
-	// TODO: rewrite the following function, it only depends on the type of its argument
-	//private static FDPropertyHost getMainHost(Class<T extends FDElement> elem) { ...
 	/**
 	 * Get the main host for a given deployment element.
-	 * 
-	 * Note that this mapping only depends on the type of the element, not
-	 * on the actual instance. 
 	 * 
 	 * @param elem a deployment element
 	 * @return the main host for the type of this deployment element.
@@ -181,15 +208,18 @@ public class PropertyMappings {
 			return FDPropertyHost.ARGUMENTS;
 		} else if (elem instanceof FDArray) {
 			return FDPropertyHost.ARRAYS;
-		} else if (elem instanceof FDStruct) {
+		} else if (elem instanceof FDStruct || elem instanceof FDStructOverwrites) {
 			return FDPropertyHost.STRUCTS;
-		} else if (elem instanceof FDUnion) {
+		} else if (elem instanceof FDUnion || elem instanceof FDUnionOverwrites) {
 			return FDPropertyHost.UNIONS;
 		} else if (elem instanceof FDField) {
-			if (elem.eContainer() instanceof FDStruct)
+			EObject p = elem.eContainer();
+			if (p instanceof FDStruct || p instanceof FDStructOverwrites)
 				return FDPropertyHost.STRUCT_FIELDS;
-			else // FDUnion
+			else if (p instanceof FDUnion || p instanceof FDUnionOverwrites)
 				return FDPropertyHost.UNION_FIELDS;
+			else
+				return null;
 		} else if (elem instanceof FDEnumeration) {
 			return FDPropertyHost.ENUMERATIONS;
 		} else if (elem instanceof FDEnumValue) {
@@ -199,7 +229,26 @@ public class PropertyMappings {
 		return null;
 	}
 
+	/**
+	 * Get the main deployment host for a given Franca type.
+	 * 
+	 * @param elem a deployment element
+	 * @return the main host for the type of this deployment element.
+	 */
+	private static FDPropertyHost getMainHost(FType type) {
+		if (type instanceof FArrayType) {
+			return FDPropertyHost.ARRAYS;
+		} else if (type instanceof FStructType) {
+			return FDPropertyHost.STRUCTS;
+		} else if (type instanceof FUnionType) {
+			return FDPropertyHost.UNIONS;
+		} else if (type instanceof FEnumerationType) {
+			return FDPropertyHost.ENUMERATIONS;
+		}
+		return null;
+	}
 
+	
 	// *****************************************************************************
 
 	/**

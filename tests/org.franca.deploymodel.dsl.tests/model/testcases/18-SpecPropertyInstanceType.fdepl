@@ -1,0 +1,31 @@
+
+// deployment specification with property declarations for instance types
+
+specification a.b.c.MySpec18 {
+
+	for providers {
+		ProviderInstanceProp : Instance;
+		ProviderInstanceArrayProp : Instance[];
+	}
+
+	for interfaces {
+		InterfaceInstanceProp : Instance;
+		InterfaceInstanceArrayProp : Instance[];
+	}
+
+	for methods {
+		MethodInstanceProp : Instance;
+		MethodInstanceArrayProp : Instance[];
+	}
+
+	for struct_fields {
+		SFieldInstanceProp : Instance;
+		SFieldInstanceArrayProp : Instance[];
+	}
+
+	for numbers {
+		NumberInstanceProp : Instance;
+		NumberInstanceArrayProp : Instance[];
+	}
+	
+}

@@ -1,0 +1,2 @@
+export MAVEN_OPTS="-Xmx512M" 
+mvn org.eclipse.tycho:tycho-versions-plugin:0.22.0:set-version -DnewVersion=0.9.2-SNAPSHOT

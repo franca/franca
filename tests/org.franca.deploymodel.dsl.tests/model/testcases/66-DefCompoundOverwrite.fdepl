@@ -1,0 +1,109 @@
+// deployment definition with overwrites for typeCollection
+
+import "60-SpecCompoundHosts.fdepl"
+import "../fidl/31-TypeCollectionUsingCompounds.fidl"
+
+define org.example.spec.SpecCompoundHosts for typeCollection fidl.TCUsingCompounds {
+
+	struct StructA {
+		StructProp = 111
+		field1 {
+			SFieldProp = 1
+		}
+		field2 {
+			StringProp = u
+			SFieldProp = 2
+		}
+		field3 {
+			StringProp = u
+			SFieldProp = 3
+			ArrayProp = 0
+		}
+	}
+
+	struct StructB {
+		StructProp = 222
+		field1 {
+			StringProp = u
+			SFieldProp = 11
+		}
+		nested1 {
+			SFieldProp = 12
+			
+			#struct {
+				field1 {
+					SFieldProp = 15
+				}
+				field2 {
+					StringProp = x
+					SFieldProp = 16
+				}
+				field3 {
+					StringProp = y
+					SFieldProp = 17
+					ArrayProp = 11
+				}
+			}
+		}
+		nested2 {
+			ArrayProp = 0
+			SFieldProp = 12
+			
+			#struct {
+				field1 {
+					SFieldProp = 25
+				}
+				field2 {
+					StringProp = x
+					SFieldProp = 26
+				}
+				field3 {
+					StringProp = z
+					SFieldProp = 27
+					ArrayProp = 21
+				}
+			}
+		}
+	}
+
+	union UnionA {
+		UnionProp = 111
+		field1 {
+			StringProp = u
+			UFieldProp = 0
+		}
+	}
+
+	union UnionB {
+		UnionProp = 222
+		field1 {
+			StringProp = r
+			UFieldProp = 22201
+		}
+		field2 {
+			UFieldProp = 22202
+			
+			#union {
+				field1 {
+					StringProp = x
+					UFieldProp = 22220
+				}
+			}
+		}
+	}
+
+	struct StructC {
+		StructProp = 333
+		nested1 {
+			SFieldProp = 33301
+			
+			#union {
+				field1 {
+					StringProp = y
+					UFieldProp = 33330
+				}
+			}
+		}
+	}
+
+}

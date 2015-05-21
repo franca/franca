@@ -14,6 +14,7 @@ import org.eclipse.emf.ecore.EReference
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.naming.IQualifiedNameConverter
 import org.eclipse.xtext.naming.IQualifiedNameProvider
+import org.eclipse.xtext.naming.QualifiedName
 import org.eclipse.xtext.resource.EObjectDescription
 import org.eclipse.xtext.resource.IEObjectDescription
 import org.eclipse.xtext.scoping.IScope
@@ -22,8 +23,10 @@ import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
 import org.eclipse.xtext.scoping.impl.ImportUriGlobalScopeProvider
 import org.eclipse.xtext.scoping.impl.SimpleScope
 import org.franca.core.franca.FArrayType
+import org.franca.core.franca.FCompoundType
 import org.franca.core.franca.FEnumerationType
 import org.franca.core.franca.FStructType
+import org.franca.core.franca.FType
 import org.franca.core.franca.FUnionType
 import org.franca.deploymodel.core.FDModelUtils
 import org.franca.deploymodel.core.PropertyMappings
@@ -32,26 +35,32 @@ import org.franca.deploymodel.dsl.fDeploy.FDArgumentList
 import org.franca.deploymodel.dsl.fDeploy.FDArray
 import org.franca.deploymodel.dsl.fDeploy.FDAttribute
 import org.franca.deploymodel.dsl.fDeploy.FDBroadcast
+import org.franca.deploymodel.dsl.fDeploy.FDCompoundOverwrites
 import org.franca.deploymodel.dsl.fDeploy.FDElement
 import org.franca.deploymodel.dsl.fDeploy.FDEnumType
 import org.franca.deploymodel.dsl.fDeploy.FDEnumValue
 import org.franca.deploymodel.dsl.fDeploy.FDEnumeration
+import org.franca.deploymodel.dsl.fDeploy.FDEnumerationOverwrites
 import org.franca.deploymodel.dsl.fDeploy.FDField
 import org.franca.deploymodel.dsl.fDeploy.FDInterface
 import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance
 import org.franca.deploymodel.dsl.fDeploy.FDMethod
 import org.franca.deploymodel.dsl.fDeploy.FDModel
+import org.franca.deploymodel.dsl.fDeploy.FDOverwriteElement
 import org.franca.deploymodel.dsl.fDeploy.FDPredefinedTypeId
 import org.franca.deploymodel.dsl.fDeploy.FDProperty
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyFlag
 import org.franca.deploymodel.dsl.fDeploy.FDProvider
 import org.franca.deploymodel.dsl.fDeploy.FDStruct
+import org.franca.deploymodel.dsl.fDeploy.FDTypeOverwrites
 import org.franca.deploymodel.dsl.fDeploy.FDTypes
 import org.franca.deploymodel.dsl.fDeploy.FDUnion
 import org.franca.deploymodel.dsl.fDeploy.FDeployPackage
 
 import static extension org.eclipse.xtext.scoping.Scopes.*
+import static extension org.franca.deploymodel.core.FDModelUtils.*
+import static extension org.franca.core.FrancaModelExtensions.*
 
 class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 
@@ -121,11 +130,17 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 	}
 
 	def scope_FDMethod_target(FDInterface ctxt, EReference ref) {
-		ctxt.getTarget().getMethods().scopeFor
+		ctxt.getTarget().getMethods().scopeFor(
+			[ QualifiedName.create(getUniqueName) ],
+			IScope.NULLSCOPE
+		)
 	}
 
 	def scope_FDBroadcast_target(FDInterface ctxt, EReference ref) {
-		ctxt.getTarget().getBroadcasts().scopeFor
+		ctxt.getTarget().getBroadcasts().scopeFor(
+			[ QualifiedName.create(getUniqueName) ],
+			IScope.NULLSCOPE
+		)
 	}
 
 	def scope_FDArray_target(FDInterface ctxt, EReference ref) {
@@ -176,8 +191,47 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 		ctxt.getTarget().getElements.scopeFor
 	}
 
+	/**
+	 * Compute the target elements (of type FField) for a given FDField,
+	 * if the FDField is a child of a FDCompoundOverwrites section.</p>
+	 * 
+	 * I.e., ctxt will be either a struct overwrite section or a union
+	 * overwrite section. The actual available fields depend on the 
+	 * Franca type of the target element of the overwrite section's parent.
+	 */
+	def scope_FDField_target(FDCompoundOverwrites ctxt, EReference ref) {
+		val parent = ctxt.eContainer as FDOverwriteElement
+		val type = parent.getOverwriteTargetType
+		if (type!=null) {
+			if (type instanceof FCompoundType) {
+				val compound = type as FCompoundType
+				return compound.elements.scopeFor
+			}
+		}
+		IScope.NULLSCOPE
+	}
+
 	def scope_FDEnumValue_target(FDEnumeration ctxt, EReference ref) {
 		ctxt.getTarget().getEnumerators.scopeFor
+	}
+
+	/**
+	 * Compute the target elements (of type FEnumValue) for a given FDEnumValue,
+	 * if the FDEnumValue is a child of a FDEnumerationOverwrites section.</p>
+	 * 
+	 * The actual available enumerators depend on the Franca type of the
+	 * target element of the overwrite section's parent.
+	 */
+	def scope_FDEnumValue_target(FDEnumerationOverwrites ctxt, EReference ref) {
+		val parent = ctxt.eContainer as FDOverwriteElement
+		val type = parent.getOverwriteTargetType
+		if (type!=null) {
+			if (type instanceof FEnumerationType) {
+				val enumeration = type as FEnumerationType
+				return enumeration.enumerators.scopeFor
+			}
+		}
+		IScope.NULLSCOPE
 	}
 
 	// *****************************************************************************
@@ -237,8 +291,34 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 		owner.getPropertyDecls
 	}
 
+	/**
+	 * The properties of an overwrite section are determined by the
+	 * Franca type of the parent element (i.e., container element in
+	 * the deployment definition model hierarchy).</p>
+	 * 
+	 * Example: In a FDStructOverwrites section, the parent element
+	 * might be for example a FDAttribute. Validation will ensure that
+	 * the Franca type of the FDAttribute target (which is an FAttribute)
+	 * is an FStructType. Thus, the properties we are looking for here
+	 * are all struct-related properties from the deployment specification.</p>    
+	 */
+	def scope_FDProperty_decl(FDTypeOverwrites owner, EReference ref) {
+		val parent = owner.eContainer as FDOverwriteElement
+		val type = parent.getOverwriteTargetType
+		if (type!=null) {
+			parent.getPropertyDecls(type)
+		} else {
+			IScope::NULLSCOPE
+		}
+	}
+
 	def private IScope getPropertyDecls(FDElement elem) {
 		val root = FDModelUtils::getRootElement(elem)
+		PropertyMappings::getAllPropertyDecls(root.getSpec(), elem).scopeFor
+	}
+
+	def private IScope getPropertyDecls(FDElement some, FType elem) {
+		val root = FDModelUtils::getRootElement(some)
 		PropertyMappings::getAllPropertyDecls(root.getSpec(), elem).scopeFor
 	}
 

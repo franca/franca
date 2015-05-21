@@ -1,0 +1,61 @@
+package fidl
+
+/**
+ * This interface is used for testing the deployment-overwrite feature
+ * for various types.
+ */
+interface InterfaceUsingTypes {
+	version {major 1 minor 0}
+	
+	// the types
+	
+	array MyArray of Integer
+	
+	enumeration MyEnumeration { E1 E2 E3 }
+
+	enumeration OtherEnumeration { F1 F2 }
+
+	struct MyStruct {
+		Integer field1
+		String field2
+		String field3
+	} 
+	
+	union MyUnion {
+		Integer field1
+		String field2
+	}
+	
+	
+	// various users of the above types
+	
+	attribute String attrB
+	attribute MyArray attrA
+	attribute MyEnumeration attrE
+	attribute MyStruct attrS
+	attribute MyUnion attrU
+	
+	method method1 {
+		in {
+			String argB
+			MyArray argA
+			MyEnumeration argE
+			MyStruct argS
+			MyUnion argU
+		}
+	}
+
+	array OtherArrayA of MyArray
+	array OtherArrayE of MyEnumeration
+	array OtherArrayS of MyStruct
+	array OtherArrayU of MyUnion
+	 
+	struct OtherStruct {
+		String fieldB
+		MyArray fieldA
+		MyEnumeration fieldE
+		MyStruct fieldS
+		MyUnion fieldU
+	} 
+	
+}

@@ -1,0 +1,23 @@
+module testcases {
+	interface MyTypes {
+		typedef Int8[ ] MyArray;
+		struct MyStruct {
+			Int8 aMember;
+		};
+		
+		union MyUnion {
+			UInt16 aNumber;
+			String aString;
+		};
+		
+		enum MyEnumeration {
+			C1,
+			C2 = "100",
+			C3 = "101",
+			C4 = 110,
+			C5 = 110 + 2
+		};
+		
+		typedef Int8 MyTypedef;
+	};
+};

@@ -1,0 +1,351 @@
+// deployment definition with overwrites for interface
+
+import "60-SpecCompoundHosts.fdepl"
+import "../fidl/30-InterfaceUsingCompounds.fidl"
+
+define org.example.spec.SpecCompoundHosts for interface fidl.InterfaceUsingCompounds {
+
+	attribute attr1 {
+		StringProp = u
+		AttributeProp = 1
+	}
+
+	attribute attr2 {
+		AttributeProp = 2
+		
+		#struct {
+			StructProp = 222
+			
+			field1 {
+				SFieldProp = 10
+			}
+			field2 {
+				StringProp = v
+				SFieldProp = 20
+			}
+			field3 {
+				StringProp = v
+				SFieldProp = 30
+				ArrayProp = 7
+			}
+		}
+	}
+
+	attribute attr3 {
+		AttributeProp = 3
+		
+		#struct {
+			field1 {
+				StringProp = v
+				SFieldProp = 10
+			}
+			nested1 {
+				SFieldProp = 20
+				
+				#struct {
+					field1 {
+						SFieldProp = 11
+					}
+					field2 {
+						StringProp = w
+						SFieldProp = 21
+					}
+					field3 {
+						ArrayProp = 88
+						StringProp = w
+						SFieldProp = 31
+					}
+				}
+			}
+			nested2 {
+				// 66 elements of StructA
+				ArrayProp = 66
+				
+				#struct {
+					StructProp = 31415
+					field1 {
+						SFieldProp = 12
+					}
+					field2 {
+						StringProp = w
+						SFieldProp = 22
+					}
+					field3 {
+						// 77 elements of String in StructA.field3
+						ArrayProp = 77
+						StringProp = w
+						SFieldProp = 32
+					}
+				}
+			}
+		}
+	}
+
+	method method1 {
+		in {
+			arg1 {
+				StringProp = u
+				ArgumentProp = 101
+			}
+			arg2 {
+				ArgumentProp = 102
+				
+				#struct {
+					field1 {
+						SFieldProp = 110
+					}
+					field2 {
+						StringProp = p
+						SFieldProp = 120
+					}
+					field3 {
+						StringProp = q
+						SFieldProp = 130
+						ArrayProp = 107
+					}
+				}
+			}
+		}
+	}
+
+	method method2 {
+		out {
+			ret1 {
+				StringProp = u
+				ArgumentProp = 201
+			}
+			ret2 {
+				ArgumentProp = 202
+				
+				#struct {
+					field1 {
+						SFieldProp = 210
+					}
+					field2 {
+						StringProp = q
+						SFieldProp = 220
+					}
+					field3 {
+						StringProp = r
+						SFieldProp = 230
+						ArrayProp = 207
+					}
+				}
+			}
+		}
+	}
+
+	method method3 {
+		in {
+			arg1 {
+				StringProp = u
+				ArgumentProp = 301
+			}
+			arg2 {
+				ArgumentProp = 302
+
+				// same overwrite data as in attr3
+				#struct {
+					field1 {
+						StringProp = v
+						SFieldProp = 10
+					}
+					nested1 {
+						SFieldProp = 20
+						
+						#struct {
+							field1 {
+								SFieldProp = 11
+							}
+							field2 {
+								StringProp = w
+								SFieldProp = 21
+							}
+							field3 {
+								ArrayProp = 88
+								StringProp = w
+								SFieldProp = 31
+							}
+						}
+					}
+					nested2 {
+						// 66 elements of StructA
+						ArrayProp = 66
+						
+						#struct {
+							StructProp = 31415
+							field1 {
+								SFieldProp = 12
+							}
+							field2 {
+								StringProp = w
+								SFieldProp = 22
+							}
+							field3 {
+								// 77 elements of String in StructA.field3
+								ArrayProp = 77
+								StringProp = w
+								SFieldProp = 32
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	method method4 {
+		in {
+			arg1 {
+				ArgumentProp = 401
+				
+				#union {
+					UnionProp = 51413
+					field1 {
+						StringProp = v
+						UFieldProp = 100
+					}
+				}
+			}
+		}
+		out {
+			ret1 {
+				ArgumentProp = 401
+				
+				#union {
+					field1 {
+						UFieldProp = 4011
+						StringProp = w
+					}
+					field2 {
+						UFieldProp = 4012
+						
+						#union {
+							field1 {
+								StringProp = w
+								UFieldProp = 105
+							}
+						}
+					}
+				}
+			}
+			ret2 {
+				ArgumentProp = 402
+
+				#struct {
+					nested1 {
+						SFieldProp = 123
+						
+						#union {
+							field1 {
+								StringProp = s
+								UFieldProp = 42
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	struct StructA {
+		StructProp = 111
+		field1 {
+			SFieldProp = 1
+		}
+		field2 {
+			StringProp = u
+			SFieldProp = 2
+		}
+		field3 {
+			StringProp = u
+			SFieldProp = 3
+			ArrayProp = 0
+		}
+	}
+
+	struct StructB {
+		StructProp = 222
+		field1 {
+			StringProp = u
+			SFieldProp = 11
+		}
+		nested1 {
+			SFieldProp = 12
+			
+			#struct {
+				field1 {
+					SFieldProp = 15
+				}
+				field2 {
+					StringProp = x
+					SFieldProp = 16
+				}
+				field3 {
+					StringProp = y
+					SFieldProp = 17
+					ArrayProp = 11
+				}
+			}
+		}
+		nested2 {
+			ArrayProp = 0
+			SFieldProp = 12
+			
+			#struct {
+				field1 {
+					SFieldProp = 25
+				}
+				field2 {
+					StringProp = x
+					SFieldProp = 26
+				}
+				field3 {
+					StringProp = z
+					SFieldProp = 27
+					ArrayProp = 21
+				}
+			}
+		}
+	}
+
+	union UnionA {
+		UnionProp = 111
+		field1 {
+			StringProp = u
+			UFieldProp = 0
+		}
+	}
+
+	union UnionB {
+		UnionProp = 222
+		field1 {
+			StringProp = r
+			UFieldProp = 22201
+		}
+		field2 {
+			UFieldProp = 22202
+			
+			#union {
+				field1 {
+					StringProp = x
+					UFieldProp = 22220
+				}
+			}
+		}
+	}
+
+	struct StructC {
+		StructProp = 333
+		nested1 {
+			SFieldProp = 33301
+			#union {
+				field1 {
+					StringProp = y
+					UFieldProp = 33330
+				}
+			}
+		}
+	}
+
+}

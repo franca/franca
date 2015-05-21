@@ -1,0 +1,15 @@
+package TestStruct
+
+interface TestStructInterface {
+	
+	typedef MyArray is UInt8
+		struct structvini {
+			Int8 field1
+			String field2
+			MyArray anIntArray
+	
+	
+	}
+	
+	
+}

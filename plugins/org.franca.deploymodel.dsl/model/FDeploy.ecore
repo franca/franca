@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="fDeploy" nsURI="http://www.franca.org/deploymodel/dsl/FDeploy"
+    nsPrefix="fDeploy">
+  <eClassifiers xsi:type="ecore:EClass" name="FDModel">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="imports" upperBound="-1"
+        eType="#//Import" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="specifications" upperBound="-1"
+        eType="#//FDSpecification" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="deployments" upperBound="-1"
+        eType="#//FDRootElement" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Import">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="importURI" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="importedSpec" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDSpecification">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="base" eType="#//FDSpecification"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="declarations" upperBound="-1"
+        eType="#//FDDeclaration" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDDeclaration">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="host" eType="#//FDPropertyHost"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="properties" upperBound="-1"
+        eType="#//FDPropertyDecl" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDPropertyDecl">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//FDTypeRef"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="flags" upperBound="-1"
+        eType="#//FDPropertyFlag" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDPropertyFlag">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="optional" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="default" eType="#//FDComplexValue"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="FDPropertyHost">
+    <eLiterals name="providers" literal="providers"/>
+    <eLiterals name="instances" value="1" literal="instances"/>
+    <eLiterals name="type_collections" value="2" literal="type_collections"/>
+    <eLiterals name="interfaces" value="3" literal="interfaces"/>
+    <eLiterals name="attributes" value="4" literal="attributes"/>
+    <eLiterals name="methods" value="5" literal="methods"/>
+    <eLiterals name="broadcasts" value="6" literal="broadcasts"/>
+    <eLiterals name="arguments" value="7" literal="arguments"/>
+    <eLiterals name="struct_fields" value="8" literal="struct_fields"/>
+    <eLiterals name="union_fields" value="9" literal="union_fields"/>
+    <eLiterals name="arrays" value="10" literal="arrays"/>
+    <eLiterals name="structs" value="11" literal="structs"/>
+    <eLiterals name="unions" value="12" literal="unions"/>
+    <eLiterals name="enumerations" value="13" literal="enumerations"/>
+    <eLiterals name="enumerators" value="14" literal="enumerators"/>
+    <eLiterals name="strings" value="15" literal="strings"/>
+    <eLiterals name="numbers" value="16" literal="numbers"/>
+    <eLiterals name="integers" value="17" literal="integers"/>
+    <eLiterals name="floats" value="18" literal="floats"/>
+    <eLiterals name="booleans" value="19" literal="booleans"/>
+    <eLiterals name="byte_buffers" value="20" literal="byte_buffers"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDTypeRef">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="predefined" eType="#//FDPredefinedTypeId"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="complex" eType="#//FDType"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="array" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="FDPredefinedTypeId">
+    <eLiterals name="Integer" literal="Integer"/>
+    <eLiterals name="String" value="1" literal="String"/>
+    <eLiterals name="Boolean" value="2" literal="Boolean"/>
+    <eLiterals name="Interface" value="3" literal="Interface"/>
+    <eLiterals name="Instance" value="4" literal="Instance"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDType"/>
+  <eClassifiers xsi:type="ecore:EClass" name="FDEnumType" eSuperTypes="#//FDType">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="enumerators" upperBound="-1"
+        eType="#//FDEnumerator" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDEnumerator">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDRootElement" eSuperTypes="#//FDElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="spec" eType="#//FDSpecification"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="use" unique="false" upperBound="-1"
+        eType="#//FDRootElement"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="properties" lowerBound="1"
+        eType="#//FDPropertySet" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDOverwriteElement" eSuperTypes="#//FDElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="overwrites" eType="#//FDTypeOverwrites"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDProvider" eSuperTypes="#//FDRootElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="instances" upperBound="-1"
+        eType="#//FDInterfaceInstance" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDInterfaceInstance" eSuperTypes="#//FDElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass ../../org.franca.core/model/franca.ecore#//FInterface"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDTypes" eSuperTypes="#//FDRootElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass ../../org.franca.core/model/franca.ecore#//FTypeCollection"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="types" upperBound="-1"
+        eType="#//FDTypeDef" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDInterface" eSuperTypes="#//FDRootElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass ../../org.franca.core/model/franca.ecore#//FInterface"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="attributes" upperBound="-1"
+        eType="#//FDAttribute" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="methods" upperBound="-1"
+        eType="#//FDMethod" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="broadcasts" upperBound="-1"
+        eType="#//FDBroadcast" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="types" upperBound="-1"
+        eType="#//FDTypeDef" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDAttribute" eSuperTypes="#//FDOverwriteElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass ../../org.franca.core/model/franca.ecore#//FAttribute"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDOperation" eSuperTypes="#//FDElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="outArguments" eType="#//FDArgumentList"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDMethod" eSuperTypes="#//FDOperation">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass ../../org.franca.core/model/franca.ecore#//FMethod"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="inArguments" eType="#//FDArgumentList"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDBroadcast" eSuperTypes="#//FDOperation">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass ../../org.franca.core/model/franca.ecore#//FBroadcast"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDArgumentList">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="arguments" upperBound="-1"
+        eType="#//FDArgument" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDArgument" eSuperTypes="#//FDOverwriteElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass ../../org.franca.core/model/franca.ecore#//FArgument"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDTypeDef" eSuperTypes="#//FDElement"/>
+  <eClassifiers xsi:type="ecore:EClass" name="FDCompound" eSuperTypes="#//FDTypeDef">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="fields" upperBound="-1"
+        eType="#//FDField" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDArray" eSuperTypes="#//FDTypeDef #//FDOverwriteElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass ../../org.franca.core/model/franca.ecore#//FArrayType"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDStruct" eSuperTypes="#//FDCompound">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass ../../org.franca.core/model/franca.ecore#//FStructType"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDUnion" eSuperTypes="#//FDCompound">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass ../../org.franca.core/model/franca.ecore#//FUnionType"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDField" eSuperTypes="#//FDOverwriteElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass ../../org.franca.core/model/franca.ecore#//FField"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDEnumeration" eSuperTypes="#//FDElement #//FDTypeDef">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass ../../org.franca.core/model/franca.ecore#//FEnumerationType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="enumerators" upperBound="-1"
+        eType="#//FDEnumValue" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDEnumValue" eSuperTypes="#//FDElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass ../../org.franca.core/model/franca.ecore#//FEnumerator"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDTypeOverwrites" eSuperTypes="#//FDElement"/>
+  <eClassifiers xsi:type="ecore:EClass" name="FDPlainTypeOverwrites" eSuperTypes="#//FDTypeOverwrites"/>
+  <eClassifiers xsi:type="ecore:EClass" name="FDEnumerationOverwrites" eSuperTypes="#//FDTypeOverwrites">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="enumerators" upperBound="-1"
+        eType="#//FDEnumValue" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDCompoundOverwrites" eSuperTypes="#//FDCompound #//FDTypeOverwrites"/>
+  <eClassifiers xsi:type="ecore:EClass" name="FDStructOverwrites" eSuperTypes="#//FDCompoundOverwrites"/>
+  <eClassifiers xsi:type="ecore:EClass" name="FDUnionOverwrites" eSuperTypes="#//FDCompoundOverwrites"/>
+  <eClassifiers xsi:type="ecore:EClass" name="FDPropertySet">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="items" upperBound="-1"
+        eType="#//FDProperty" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDProperty">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="decl" eType="#//FDPropertyDecl"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="value" eType="#//FDComplexValue"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDComplexValue">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="single" eType="#//FDValue"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="array" eType="#//FDValueArray"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDValueArray">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="values" upperBound="-1"
+        eType="#//FDValue" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDValue"/>
+  <eClassifiers xsi:type="ecore:EClass" name="FDInteger" eSuperTypes="#//FDValue">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDString" eSuperTypes="#//FDValue">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDBoolean" eSuperTypes="#//FDValue">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDInterfaceRef" eSuperTypes="#//FDValue">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="value" eType="ecore:EClass ../../org.franca.core/model/franca.ecore#//FInterface"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDGeneric" eSuperTypes="#//FDValue">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="value" eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject"/>
+  </eClassifiers>
+</ecore:EPackage>

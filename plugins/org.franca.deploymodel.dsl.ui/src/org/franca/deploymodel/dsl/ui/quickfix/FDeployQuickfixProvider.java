@@ -12,6 +12,7 @@ import org.eclipse.xtext.ui.editor.quickfix.Fix;
 import org.eclipse.xtext.ui.editor.quickfix.IssueResolutionAcceptor;
 import org.eclipse.xtext.util.Arrays;
 import org.eclipse.xtext.validation.Issue;
+import org.franca.core.FrancaModelExtensions;
 import org.franca.core.franca.FArgument;
 import org.franca.core.franca.FArrayType;
 import org.franca.core.franca.FAttribute;
@@ -226,6 +227,7 @@ public class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 					FDArgument fdArg = FDeployQuickfixProviderUtil.getArgument(fdArglist, arg);
 					if (fdArg == null) {
 						fdArg = FDeployFactory.eINSTANCE.createFDArgument();
+						init(fdArg);
 						fdArg.setTarget(arg);
 						fdArglist.getArguments().add(fdArg);
 					}
@@ -244,6 +246,7 @@ public class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 					FDField fdField = FDeployQuickfixProviderUtil.getField(union.getFields(), field);
 					if (fdField == null) {
 						fdField = FDeployFactory.eINSTANCE.createFDField();
+						init(fdField);
 						fdField.setTarget(field);
 						union.getFields().add(fdField);
 					}
@@ -262,6 +265,7 @@ public class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 					FDField fdField = FDeployQuickfixProviderUtil.getField(struct.getFields(), field);
 					if (fdField == null) {
 						fdField = FDeployFactory.eINSTANCE.createFDField();
+						init(fdField);
 						fdField.setTarget(field);
 						struct.getFields().add(fdField);
 					}
@@ -280,6 +284,7 @@ public class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 					FDEnumValue fdEnum = FDeployQuickfixProviderUtil.getEnumerator(enumeration.getEnumerators(), e);
 					if (fdEnum == null) {
 						fdEnum = FDeployFactory.eINSTANCE.createFDEnumValue();
+						init(fdEnum);
 						fdEnum.setTarget(e);
 						enumeration.getEnumerators().add(fdEnum);
 					}
@@ -301,13 +306,18 @@ public class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 	 */
 	private void applyFixForElementInternal(final FDElement element, final boolean isRecursive) {
 		FDRootElement root = FDModelUtils.getRootElement(element);
+		if (root==null) {
+			throw new RuntimeException("Cannot find root element for element " + element);
+		}
 		List<FDPropertyDecl> decls = PropertyMappings.getAllPropertyDecls(root.getSpec(), element);
 		for (FDPropertyDecl decl : decls) {
-			if (!FDeployQuickfixProviderUtil.hasPropertyDeclaration(element.getProperties(), decl) && PropertyMappings.isMandatory(decl)) {
+			
+			if (! FDeployQuickfixProviderUtil.hasPropertyDeclaration(
+					element.getProperties().getItems(), decl) && PropertyMappings.isMandatory(decl)) {
 				FDProperty prop = FDeployFactory.eINSTANCE.createFDProperty();
 				prop.setDecl(decl);
 				prop.setValue(FDeployQuickfixProviderUtil.generateDefaultValue(element, decl.getType()));
-				element.getProperties().add(prop);
+				element.getProperties().getItems().add(prop);
 			}
 		}
 		
@@ -372,7 +382,8 @@ public class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 		//methods
 		if (elementName == null) {
 			for(FMethod tc : target.getMethods()) {
-				elements.add(FDeployQuickfixProviderUtil.getOrCreateMethod(deploymentInterface, tc.getName()));
+				String name = FrancaModelExtensions.getUniqueName(tc);
+				elements.add(FDeployQuickfixProviderUtil.getOrCreateMethod(deploymentInterface, name));
 			}
 		}
 		else if (type == FrancaQuickFixConstants.METHOD) {
@@ -382,7 +393,8 @@ public class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 		//broadcasts
 		if (elementName == null) {
 			for(FBroadcast tc : target.getBroadcasts()) {
-				elements.add(FDeployQuickfixProviderUtil.getOrCreateBroadcast(deploymentInterface, tc.getName()));
+				String name = FrancaModelExtensions.getUniqueName(tc);
+				elements.add(FDeployQuickfixProviderUtil.getOrCreateBroadcast(deploymentInterface, name));
 			}
 		}
 		else if (type == FrancaQuickFixConstants.BROADCAST) {
@@ -460,5 +472,8 @@ public class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 		}
 
 	}
-	
+
+	private static void init(FDElement elem) {
+		elem.setProperties(FDeployFactory.eINSTANCE.createFDPropertySet());
+	}
 }

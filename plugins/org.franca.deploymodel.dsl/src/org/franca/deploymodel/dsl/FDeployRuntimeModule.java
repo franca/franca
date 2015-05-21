@@ -3,9 +3,20 @@
  */
 package org.franca.deploymodel.dsl;
 
+import org.franca.deploymodel.dsl.generator.internal.ImportManager;
+
+import com.google.inject.Binder;
+import com.google.inject.Singleton;
+
 /**
  * Use this class to register components to be used at runtime / without the Equinox extension registry.
  */
 public class FDeployRuntimeModule extends org.franca.deploymodel.dsl.AbstractFDeployRuntimeModule {
+
+	@Override
+	public void configure(Binder binder) {
+		super.configure(binder);
+		binder.bind(ImportManager.class).in(Singleton.class);
+	}
 
 }

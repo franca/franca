@@ -1,0 +1,52 @@
+package fidl
+
+interface BaseInterface {
+	method method1 {
+		in  { String a1 }
+		out { Integer r1 }
+	}
+	
+	broadcast broadcast1 {
+		out { Integer r1 }
+	}
+}
+
+
+interface InterfaceWithOverloading extends BaseInterface {
+	
+	method method1:a {
+		in  { String a1  String a2 }
+		out { Integer r1 }
+	}
+
+	method method1:b {
+		in  { String a1  String a2 }
+		out { Boolean r1 }
+	}
+	
+
+	method method2:a {
+		in  { String a1 }
+		out { Integer r1 }
+	}
+	
+	method method2:b {
+		in  { String a1  String a2 }
+		out { Integer r1 }
+	}
+
+	method method2:c {
+		in  { String a1  String a2 }
+		out { Boolean r1 }
+	}
+
+
+	broadcast broadcast1:a {
+		out { String r1 }
+	}
+	
+	broadcast broadcast1:b {
+		out { String r1  String r2 }
+	}
+
+}

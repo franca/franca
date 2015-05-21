@@ -46,7 +46,7 @@ public class MultiFileTests extends XtextTest {
     public void test_1_1_loader_deprec() {
     	@SuppressWarnings("deprecation")
 		FModel fmodel = fidlLoader.loadModel("model/multifile/first1/model1_1.fidl");
-    	validate(fmodel);
+    	validate(fmodel,0);
     	assertInterfaceExtendsChain(fmodel, "Model0");
     }
 
@@ -55,7 +55,7 @@ public class MultiFileTests extends XtextTest {
     	URI root = URI.createURI("classpath:/");
     	URI loc = URI.createFileURI("multifile/first1/model1_1.fidl");
     	FModel fmodel = fidlLoader.loadModel(loc, root);
-    	validate(fmodel);
+    	validate(fmodel,0);
     	assertInterfaceExtendsChain(fmodel, "Model0");
     }
 
@@ -69,7 +69,7 @@ public class MultiFileTests extends XtextTest {
     public void test_1_2_loader_deprec() {
     	@SuppressWarnings("deprecation")
 		FModel fmodel = fidlLoader.loadModel("model/multifile/first1/model1_2.fidl");
-    	validate(fmodel);
+    	validate(fmodel,0);
     	assertInterfaceExtendsChain(fmodel, "Model0");
    }
 
@@ -78,7 +78,7 @@ public class MultiFileTests extends XtextTest {
     	URI root = URI.createURI("classpath:/");
     	URI loc = URI.createFileURI("multifile/first1/model1_2.fidl");
     	FModel fmodel = fidlLoader.loadModel(loc, root);
-    	validate(fmodel);
+    	validate(fmodel,0);
     	assertInterfaceExtendsChain(fmodel, "Model0");
     }
 
@@ -93,7 +93,7 @@ public class MultiFileTests extends XtextTest {
     public void test_1_3_loader_deprec() {
     	@SuppressWarnings("deprecation")
 		FModel fmodel = fidlLoader.loadModel("model/multifile/first1/model1_3.fidl");
-    	validate(fmodel);
+    	validate(fmodel,0);
     	assertInterfaceExtendsChain(fmodel, "Model0");
     }
 
@@ -102,7 +102,7 @@ public class MultiFileTests extends XtextTest {
     	URI root = URI.createURI("classpath:/");
     	URI loc = URI.createFileURI("multifile/first1/model1_3.fidl");
     	FModel fmodel = fidlLoader.loadModel(loc, root);
-    	validate(fmodel);
+    	validate(fmodel,0);
     	assertInterfaceExtendsChain(fmodel, "Model0");
     }
 
@@ -116,7 +116,7 @@ public class MultiFileTests extends XtextTest {
     public void test_1_4_loader_deprec() {
     	@SuppressWarnings("deprecation")
 		FModel fmodel = fidlLoader.loadModel("model/multifile/first1/model1_4.fidl");
-    	validate(fmodel);
+    	validate(fmodel,0);
     	assertInterfaceExtendsChain(fmodel, "Model0");
     }
 
@@ -125,7 +125,7 @@ public class MultiFileTests extends XtextTest {
     	URI root = URI.createURI("classpath:/");
     	URI loc = URI.createFileURI("multifile/first1/model1_4.fidl");
     	FModel fmodel = fidlLoader.loadModel(loc, root);
-    	validate(fmodel);
+    	validate(fmodel,0);
     	assertInterfaceExtendsChain(fmodel, "Model0");
     }
 
@@ -139,7 +139,7 @@ public class MultiFileTests extends XtextTest {
     public void test_1_5_loader_deprec() {
     	@SuppressWarnings("deprecation")
 		FModel fmodel = fidlLoader.loadModel("model/multifile/first1/model1_5.fidl");
-    	validate(fmodel);
+    	validate(fmodel,0);
     	assertInterfaceExtendsChain(fmodel, "Model0");
     }
 
@@ -148,7 +148,7 @@ public class MultiFileTests extends XtextTest {
     	URI root = URI.createURI("classpath:/");
     	URI loc = URI.createFileURI("multifile/first1/model1_5.fidl");
     	FModel fmodel = fidlLoader.loadModel(loc, root);
-    	validate(fmodel);
+    	validate(fmodel,0);
     	assertInterfaceExtendsChain(fmodel, "Model0");
     }
 
@@ -162,7 +162,7 @@ public class MultiFileTests extends XtextTest {
     public void test_2_2_loader_deprec() {
     	@SuppressWarnings("deprecation")
 		FModel fmodel = fidlLoader.loadModel("model/multifile/first2/second1/model2_2.fidl");
-    	validate(fmodel);
+    	validate(fmodel,0);
     	assertInterfaceExtendsChain(fmodel, "Model1_2", "Model0");
     }
 
@@ -171,11 +171,10 @@ public class MultiFileTests extends XtextTest {
     	URI root = URI.createURI("classpath:/");
     	URI loc = URI.createFileURI("multifile/first2/second1/model2_2.fidl");
     	FModel fmodel = fidlLoader.loadModel(loc, root);
-    	validate(fmodel);
+    	validate(fmodel,0);
     	assertInterfaceExtendsChain(fmodel, "Model1_2", "Model0");
     }
 
-    
     @Test
     public void test_2_5() {
     	testFile("multifile/first2/second1/model2_5.fidl");
@@ -185,7 +184,7 @@ public class MultiFileTests extends XtextTest {
     public void test_2_5_loader_deprec() {
     	@SuppressWarnings("deprecation")
 		FModel fmodel = fidlLoader.loadModel("model/multifile/first2/second1/model2_5.fidl");
-    	validate(fmodel);
+    	validate(fmodel,0);
     	assertInterfaceExtendsChain(fmodel, "Model1_5", "Model0");
     }
 
@@ -194,7 +193,7 @@ public class MultiFileTests extends XtextTest {
     	URI root = URI.createURI("classpath:/");
     	URI loc = URI.createFileURI("multifile/first2/second1/model2_5.fidl");
     	FModel fmodel = fidlLoader.loadModel(loc, root);
-    	validate(fmodel);
+    	validate(fmodel,0);
     	assertInterfaceExtendsChain(fmodel, "Model1_5", "Model0");
     }
 
@@ -212,7 +211,7 @@ public class MultiFileTests extends XtextTest {
     }
     
     
-    private void validate (FModel fmodel) {
+    private void validate (FModel fmodel, int expectedErrorCount) {
 		Resource res = fmodel.eResource();
 		IResourceServiceProvider provider = serviceProviderRegistry
 				.getResourceServiceProvider(res.getURI());
@@ -223,6 +222,6 @@ public class MultiFileTests extends XtextTest {
 			String text = issue.getSeverity() + line + ": " + issue.getMessage();
 			System.out.println("Validation issue: " + text);
 		}
-    	assertEquals(0, result.size());
+    	assertEquals(expectedErrorCount, result.size());
     }
 }

@@ -2,36 +2,21 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         point="org.eclipse.ui.views">
-      <view
-            allowMultiple="false"
-            category="org.franca.core.ui.addons.contractviewer.category"
-            class="org.franca.core.ui.addons.contractviewer.util.ContractViewerExecutableExtensionFactory:org.franca.core.ui.addons.contractviewer.FrancaContractVisualizerView"
-            icon="icons/franca_logo.png"
-            id="org.franca.core.ui.addons.contractviewer"
-            name="Franca Contract View"
-            restorable="true">
-      </view>
-      <category
-            id="org.franca.core.ui.addons.contractviewer.category"
-            name="Franca">
-      </category>
+         point="de.cau.cs.kieler.klighd.diagramSyntheses">
+   <diagramSynthesis
+         class="de.cau.cs.kieler.klighd.syntheses.GuiceBasedSynthesisFactory:org.franca.core.ui.addons.contractviewer.FrancaPSMDiagramSynthesis"
+         id="org.franca.core.ui.addons.contractviewer.FrancaPSMDiagramSynthesis">
+   </diagramSynthesis>
    </extension>
    <extension
-         point="org.eclipse.ui.menus">
-      <menuContribution
-            allPopups="false"
-            locationURI="toolbar:org.franca.core.ui.addons.contractviewer">
-         <command
-               commandId="org.franca.core.ui.addons.changeTooltipDisplay"
-               icon="icons/editor.gif"
-               label="Connection tooltip on/off"
-               style="push"
-               tooltip="">
-         </command>
-      </menuContribution>
+         point="de.cau.cs.kieler.core.kivi.combinations">
+      <combination
+            active="true"
+            class="org.franca.core.ui.addons.contractviewer.FrancaPSMDiagramCombination"
+            name="Show Franca contract">
+      </combination>
    </extension>
-   
+
    <extension
          point="org.eclipse.ui.newWizards">
       <wizard
@@ -57,6 +42,7 @@
             preferredPerspectives="org.eclipse.pde.ui.PDEPerspective,org.eclipse.jdt.ui.JavaPerspective">
       </wizard>
    </extension>
+
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension
@@ -67,14 +53,6 @@
          <newWizardShortcut
                id="org.franca.core.ui.addons.newfdeplfilewizard">
          </newWizardShortcut>
-         <view
-               closeable="true"
-               id="org.franca.core.ui.addons.contractviewer"
-               minimized="false"
-               relationship="stack"
-               relative="org.eclipse.ui.views.ContentOutline"
-               visible="true">
-         </view>
       </perspectiveExtension>
       <perspectiveExtension
             targetID="org.eclipse.pde.ui.PDEPerspective">
@@ -84,23 +62,7 @@
          <newWizardShortcut
                id="org.franca.core.ui.addons.newfdeplfilewizard">
          </newWizardShortcut>
-         <view
-               closeable="true"
-               id="org.franca.core.ui.addons.contractviewer"
-               minimized="false"
-               relationship="stack"
-               relative="org.eclipse.ui.views.ContentOutline"
-               visible="true">
-         </view>
       </perspectiveExtension>
-   </extension>
-   <extension
-         point="org.eclipse.ui.commands">
-      <command
-            defaultHandler="org.franca.core.ui.addons.contractviewer.handlers.ChangeConnectionTooltipHandler"
-            id="org.franca.core.ui.addons.changeTooltipDisplay"
-            name="Change graph connection tooltip display">
-      </command>
    </extension>
 
 </plugin>

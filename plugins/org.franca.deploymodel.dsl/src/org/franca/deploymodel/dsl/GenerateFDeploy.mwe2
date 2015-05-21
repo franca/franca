@@ -4,14 +4,17 @@ import org.eclipse.emf.mwe.utils.*
 import org.eclipse.xtext.generator.*
 import org.eclipse.xtext.ui.generator.*
 
-var grammarURI = "classpath:/org/franca/deploymodel/dsl/FDeploy.xtext"
 var file.extensions = "fdepl"
 var projectName = "org.franca.deploymodel.dsl"
 var runtimeProject = "../${projectName}"
+var grammarURI = "platform:/resource/${projectName}/src/org/franca/deploymodel/dsl/FDeploy.xtext"
 
 
 Workflow {
     bean = StandaloneSetup {
+		// use an XtextResourceSet throughout the process, which is able to resolve classpath:/ URIs.
+		resourceSet = org.eclipse.xtext.resource.XtextResourceSet:theResourceSet {}
+		    	
         scanClassPath = true
         platformUri = "${runtimeProject}/.."
 
@@ -27,6 +30,14 @@ Workflow {
         directory = "${runtimeProject}.ui/src-gen"
     }
 
+	component = org.eclipse.emf.mwe2.ecore.EcoreGenerator {
+		// make sure we use the resourceSet created during standalone setup.
+		resourceSet = theResourceSet
+		
+		genModel = "platform:/resource/${projectName}/model/FDeploy.genmodel"
+        srcPath = "platform:/resource/${projectName}/src-gen"			
+	}
+	
     component = Generator {
 		// Don't merge manifest files as they are checked out read-only by default.
 		// Note that this might make manual merges necessary, see MANIFEST.MF_gen
@@ -39,19 +50,16 @@ Workflow {
         projectNameRt = projectName
         projectNameUi = "${projectName}.ui"
         language = {
+			// make sure we use the resourceSet created during standalone setup.
+			forcedResourceSet = theResourceSet
+			        	
+        	loadedResource = "platform:/resource/${projectName}/model/FDeploy.ecore"
+        	
             uri = grammarURI
             fileExtensions = file.extensions
 
             // Java API to access grammar elements (required by several other fragments)
             fragment = grammarAccess.GrammarAccessFragment {}
-
-            // generates Java API for the generated EPackages
-            fragment = ecore.EcoreGeneratorFragment {
-//            	referencedGenModels = "
-            //  platform:/resource/org.eclipse.xtext.xbase/model/Xbase.genmodel,
-            //  platform:/resource/org.eclipse.xtext.common.types/model/JavaVMTypes.genmodel
-//            	"
-            }
 
             // Serializer 2.0
 //            fragment = serializer.SerializerFragment {

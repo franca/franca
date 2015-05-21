@@ -8,7 +8,9 @@
 package org.franca.core.dsl.validation;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -24,6 +26,7 @@ import org.franca.core.ImportedModelInfo;
 import org.franca.core.dsl.validation.internal.ContractValidator;
 import org.franca.core.dsl.validation.internal.CyclicDependenciesValidator;
 import org.franca.core.dsl.validation.internal.FrancaIDLValidator;
+import org.franca.core.dsl.validation.internal.OverloadingValidator;
 import org.franca.core.dsl.validation.internal.TypesValidator;
 import org.franca.core.dsl.validation.internal.ValidationHelpers;
 import org.franca.core.dsl.validation.internal.ValidationMessageReporter;
@@ -46,6 +49,7 @@ import org.franca.core.franca.FIntegerInterval;
 import org.franca.core.franca.FInterface;
 import org.franca.core.franca.FMethod;
 import org.franca.core.franca.FModel;
+import org.franca.core.franca.FModelElement;
 import org.franca.core.franca.FStructType;
 import org.franca.core.franca.FTrigger;
 import org.franca.core.franca.FType;
@@ -54,6 +58,8 @@ import org.franca.core.franca.FTypeRef;
 import org.franca.core.franca.FUnionType;
 import org.franca.core.franca.FrancaPackage;
 
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
 public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
@@ -115,24 +121,6 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 		for (IFrancaExternalValidator validator : ValidatorRegistry.getValidatorMap().get(mode)) {
 			validator.validateModel(model, getMessageAcceptor());
 		}
-	}
-
-	@Check
-	public void checkAttributesUnique(FInterface iface) {
-		ValidationHelpers.checkDuplicates(this, iface.getAttributes(),
-				FrancaPackage.Literals.FMODEL_ELEMENT__NAME, "attribute name");
-	}
-
-	@Check
-	public void checkMethodsUnique(FInterface iface) {
-		ValidationHelpers.checkDuplicates(this, iface.getMethods(),
-				FrancaPackage.Literals.FMODEL_ELEMENT__NAME, "method name");
-	}
-
-	@Check
-	public void checkBroadcastsUnique(FInterface iface) {
-		ValidationHelpers.checkDuplicates(this, iface.getBroadcasts(),
-				FrancaPackage.Literals.FMODEL_ELEMENT__NAME, "broadcast name");
 	}
 
 	@Check
@@ -316,17 +304,9 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 		ValidationHelpers.checkDuplicates(this,
 				FrancaHelpers.getAllAttributes(api),
 				FrancaPackage.Literals.FMODEL_ELEMENT__NAME,
-				"inherited attribute");
-
-		ValidationHelpers
-				.checkDuplicates(this, FrancaHelpers.getAllMethods(api),
-						FrancaPackage.Literals.FMODEL_ELEMENT__NAME,
-						"inherited method");
-
-		ValidationHelpers.checkDuplicates(this,
-				FrancaHelpers.getAllBroadcasts(api),
-				FrancaPackage.Literals.FMODEL_ELEMENT__NAME,
-				"inherited broadcast");
+				"attribute");
+		
+		// methods and broadcasts will be checked by the OverloadingValidator
 
 		ValidationHelpers.checkDuplicates(this, FrancaHelpers.getAllTypes(api),
 				FrancaPackage.Literals.FMODEL_ELEMENT__NAME, "type");
@@ -341,12 +321,23 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 		}
 	}
 	
+	@Check
+	public void checkOverloadedMethods(FInterface api) {
+		OverloadingValidator.checkOverloadedMethods(this, api);
+	}
+
+	@Check
+	public void checkOverloadedBroadcasts(FInterface api) {
+		OverloadingValidator.checkOverloadedBroadcasts(this, api);
+	}
 	
+
 	@Check
 	public void checkCyclicDependencies(FModel m) {
 		cyclicDependenciesValidator.check(this, m);
 	}
 
+	
 	/**
 	 * Check order of elements in an interface.
 	 * 

@@ -12,9 +12,9 @@ import org.franca.core.franca.FMethod
 import org.franca.core.franca.FTypeRef
 import org.franca.core.franca.FBasicTypeId
 import org.franca.deploymodel.core.FDeployedInterface
-import org.example.spec.SampleDeploySpecInterfacePropertyAccessor
-import org.example.spec.SampleDeploySpecInterfacePropertyAccessor$CallSemantics
-import org.example.spec.SampleDeploySpecInterfacePropertyAccessor$Encoding
+import org.example.spec.SampleDeploySpec.InterfacePropertyAccessor
+import org.example.spec.SampleDeploySpec.Enums.CallSemantics
+import org.example.spec.SampleDeploySpec.Enums.Encoding
 
 import static extension org.franca.core.framework.FrancaHelpers.*import org.franca.core.franca.FAttribute
 
@@ -30,7 +30,7 @@ class ExampleHppGeneratorWithDeployment {
 	 * An instance of the InterfacePropertyAccessor for SampleDeploySpec-models
 	 * (it has been generated automatically from SampleDeploySpec.fdepl).
 	 */
-	SampleDeploySpecInterfacePropertyAccessor deploy
+	InterfacePropertyAccessor deploy
 	
 	/*
 	 * This function is called from outside and generates code from a 
@@ -41,7 +41,7 @@ class ExampleHppGeneratorWithDeployment {
 	 * deployment information attached to the Franca interface.
 	 */
 	def generateInterface (FDeployedInterface deployed) {
-		deploy = new SampleDeploySpecInterfacePropertyAccessor(deployed)
+		deploy = new InterfacePropertyAccessor(deployed)
 		generateInterface(deployed.FInterface)	
 	} 
 	

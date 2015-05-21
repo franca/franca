@@ -1,0 +1,47 @@
+
+// deployment specification with struct/union-related property hosts
+
+specification org.example.spec.SpecCompoundHosts {
+	for strings {
+		StringProp : { p, q, r, s, t, u, v, w, x, y, z };
+		StringEnumArrayProp: { a, b, c }[]  (optional);
+		StringIntArrayProp: Integer[]  (optional);
+	}
+	
+	for attributes {
+		AttributeProp : Integer;
+	}
+
+	for arguments {
+		ArgumentProp : Integer;
+	}
+	
+	for enumerations {
+		EnumerationProp: Integer;
+	}
+	
+	for enumerators {
+		EnumeratorProp: Integer;
+	}
+
+	for arrays {
+		ArrayProp : Integer;
+	}
+	
+	for structs {
+		StructProp : Integer;
+	}
+	
+	for struct_fields {
+		SFieldProp : Integer;
+	}
+
+	for unions {
+		UnionProp : Integer;
+	}
+	
+	for union_fields {
+		UFieldProp : Integer;
+	}
+}
+

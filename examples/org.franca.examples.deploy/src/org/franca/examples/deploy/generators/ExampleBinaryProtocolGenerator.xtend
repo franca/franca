@@ -7,7 +7,7 @@
  *******************************************************************************/
 package org.franca.examples.deploy.generators
 
-import org.example.spec.BinaryProtocolInterfacePropertyAccessor
+import org.example.spec.BinaryProtocol
 import org.franca.deploymodel.core.FDeployedInterface
 import org.franca.core.franca.FInterface
 import org.franca.core.franca.FStructType
@@ -31,7 +31,7 @@ class ExampleBinaryProtocolGenerator {
 	 * An instance of the ProviderPropertyAccessor for BinaryProtocol-models
 	 * (it has been generated automatically from BinaryProtocol.fdepl).
 	 */
-	BinaryProtocolInterfacePropertyAccessor deploy
+	BinaryProtocol.InterfacePropertyAccessor deploy
 
 	/*
 	 * This function is called from outside and generates code from a 
@@ -42,7 +42,7 @@ class ExampleBinaryProtocolGenerator {
 	 * deployment information attached to the Franca interface.
 	 */
 	def generateProtocol (FDeployedInterface deployed) {
-		deploy = new BinaryProtocolInterfacePropertyAccessor(deployed)
+		deploy = new BinaryProtocol.InterfacePropertyAccessor(deployed)
 		generateProtocol(deployed.FInterface)	
 	} 
 	

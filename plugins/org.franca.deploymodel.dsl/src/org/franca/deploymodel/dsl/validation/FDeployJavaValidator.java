@@ -14,6 +14,7 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.xtext.validation.Check;
 import org.eclipse.xtext.validation.ValidationMessageAcceptor;
+import org.franca.core.FrancaModelExtensions;
 import org.franca.core.franca.FArgument;
 import org.franca.core.franca.FArrayType;
 import org.franca.core.franca.FAttribute;
@@ -41,6 +42,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDElement;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumType;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumValue;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumeration;
+import org.franca.deploymodel.dsl.fDeploy.FDEnumerationOverwrites;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumerator;
 import org.franca.deploymodel.dsl.fDeploy.FDField;
 import org.franca.deploymodel.dsl.fDeploy.FDInteger;
@@ -49,20 +51,26 @@ import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance;
 import org.franca.deploymodel.dsl.fDeploy.FDInterfaceRef;
 import org.franca.deploymodel.dsl.fDeploy.FDMethod;
 import org.franca.deploymodel.dsl.fDeploy.FDModel;
+import org.franca.deploymodel.dsl.fDeploy.FDOverwriteElement;
+import org.franca.deploymodel.dsl.fDeploy.FDPlainTypeOverwrites;
 import org.franca.deploymodel.dsl.fDeploy.FDPredefinedTypeId;
 import org.franca.deploymodel.dsl.fDeploy.FDProperty;
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl;
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyFlag;
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyHost;
+import org.franca.deploymodel.dsl.fDeploy.FDPropertySet;
 import org.franca.deploymodel.dsl.fDeploy.FDProvider;
 import org.franca.deploymodel.dsl.fDeploy.FDRootElement;
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification;
 import org.franca.deploymodel.dsl.fDeploy.FDString;
 import org.franca.deploymodel.dsl.fDeploy.FDStruct;
+import org.franca.deploymodel.dsl.fDeploy.FDStructOverwrites;
 import org.franca.deploymodel.dsl.fDeploy.FDType;
+import org.franca.deploymodel.dsl.fDeploy.FDTypeOverwrites;
 import org.franca.deploymodel.dsl.fDeploy.FDTypeRef;
 import org.franca.deploymodel.dsl.fDeploy.FDTypes;
 import org.franca.deploymodel.dsl.fDeploy.FDUnion;
+import org.franca.deploymodel.dsl.fDeploy.FDUnionOverwrites;
 import org.franca.deploymodel.dsl.fDeploy.FDValue;
 import org.franca.deploymodel.dsl.fDeploy.FDValueArray;
 import org.franca.deploymodel.dsl.fDeploy.FDeployPackage;
@@ -149,6 +157,17 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 				}
 			}
 		}
+	}
+
+
+	@Check
+	public void checkDuplicateProperties(FDPropertySet properties) {
+		ValidationHelpers.NameList names = ValidationHelpers.createNameList();
+		for(FDProperty p : properties.getItems()) {
+			names.add(p, p.getDecl().getName());
+		}
+		ValidationHelpers.checkDuplicates(this, names,
+				FDeployPackage.Literals.FD_PROPERTY__DECL, "property");
 	}
 
 	
@@ -248,29 +267,31 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 			FDMethod c = (FDMethod) mapper.getFDElement(tc);
 			if (c==null) {
 				if (checker.mustBeDefined(tc)) {
-					error(DEPLOYMENT_ELEMENT_QUICKFIX_MESSAGE+ "'" + tc.getName() + "'",
+					String name = FrancaModelExtensions.getUniqueName(tc);
+					error(DEPLOYMENT_ELEMENT_QUICKFIX_MESSAGE+ "'" + name + "'",
 							FDeployPackage.Literals.FD_INTERFACE__TARGET, 
 							DEPLOYMENT_ELEMENT_QUICKFIX, 
-							tc.getName(),
+							name,
 							FrancaQuickFixConstants.METHOD.toString());
-					error(DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE+"'" + tc.getName() + "'",
+					error(DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE+"'" + name + "'",
 							FDeployPackage.Literals.FD_INTERFACE__TARGET,
 							DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, 
-							tc.getName(),
+							name,
 							FrancaQuickFixConstants.METHOD.toString());
 					lowerLevelErrors++;
 				}
 			} 
 			else {  
-				if (checkSpecificationElementProperties(spec, c, FDeployPackage.Literals.FD_METHOD__TARGET, tc.getName())) {
+				String name = FrancaModelExtensions.getUniqueName(tc);
+				if (checkSpecificationElementProperties(spec, c, FDeployPackage.Literals.FD_METHOD__TARGET, name)) {
 					lowerLevelErrors++;
 				}
 				if (checkArgumentList(specHelper, checker, mapper, spec, tc.getInArgs(), c,	"Input", FDeployPackage.Literals.FD_METHOD__TARGET) |
 				checkArgumentList(specHelper, checker, mapper, spec, tc.getOutArgs(), c, "Output", FDeployPackage.Literals.FD_METHOD__TARGET)) {
-					error(DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE+"'" + tc.getName() + "'",
+					error(DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE+"'" + name + "'",
 							c, FDeployPackage.Literals.FD_METHOD__TARGET,
 							DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, 
-							tc.getName(),
+							name,
 							FrancaQuickFixConstants.METHOD.toString());
 					lowerLevelErrors++;
 				}
@@ -281,28 +302,30 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 			FDBroadcast c = (FDBroadcast) mapper.getFDElement(tc);
 			if (c==null) {
 				if (checker.mustBeDefined(tc)) {
-					error(DEPLOYMENT_ELEMENT_QUICKFIX_MESSAGE+ "'" + tc.getName() + "'",
+					String name = FrancaModelExtensions.getUniqueName(tc);
+					error(DEPLOYMENT_ELEMENT_QUICKFIX_MESSAGE+ "'" + name + "'",
 							FDeployPackage.Literals.FD_INTERFACE__TARGET, 
 							DEPLOYMENT_ELEMENT_QUICKFIX, 
-							tc.getName(),
+							name,
 							FrancaQuickFixConstants.BROADCAST.toString());
-					error(DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE+"'" + tc.getName() + "'",
+					error(DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE+"'" + name + "'",
 							FDeployPackage.Literals.FD_INTERFACE__TARGET,
 							DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, 
-							tc.getName(),
+							name,
 							FrancaQuickFixConstants.BROADCAST.toString());
 					lowerLevelErrors++;
 				}
 			} 
 			else {
-				if (checkSpecificationElementProperties(spec, c, FDeployPackage.Literals.FD_BROADCAST__TARGET, tc.getName())) {
+				String name = FrancaModelExtensions.getUniqueName(tc);
+				if (checkSpecificationElementProperties(spec, c, FDeployPackage.Literals.FD_BROADCAST__TARGET, name)) {
 					lowerLevelErrors++;
 				}
 				if (checkArgumentList(specHelper, checker, mapper, spec, tc.getOutArgs(), c, "Output", FDeployPackage.Literals.FD_BROADCAST__TARGET)) {
-					error(DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE+"'" + tc.getName() + "'",
+					error(DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE+"'" + name + "'",
 							c, FDeployPackage.Literals.FD_BROADCAST__TARGET,
 							DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, 
-							tc.getName(),
+							name,
 							FrancaQuickFixConstants.BROADCAST.toString());
 					lowerLevelErrors++;
 				}
@@ -471,12 +494,12 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 					String opType = "";
 					String quickfix = "";
 					if (parent instanceof FDMethod) {
-						opName = ((FDMethod) parent).getTarget().getName();
+						opName = FrancaModelExtensions.getUniqueName(((FDMethod) parent).getTarget());
 						opType = "method";
 						quickfix = METHOD_ARGUMENT_QUICKFIX;
 					}
 					if (parent instanceof FDBroadcast) {
-						opName = ((FDBroadcast) parent).getTarget().getName();
+						opName = FrancaModelExtensions.getUniqueName(((FDBroadcast) parent).getTarget());
 						opType = "broadcast";
 						quickfix = BROADCAST_ARGUMENT_QUICKFIX;
 					}
@@ -578,15 +601,16 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 		List<String> missing = Lists.newArrayList();
 		for(FDPropertyDecl decl : decls) {
 			if (PropertyMappings.isMandatory(decl)) {
-				if (!contains(elem.getProperties(), decl)) {
+				if (!contains(elem.getProperties().getItems(), decl)) {
 					missing.add(decl.getName());
 				}
 			}
 		}
 		
 		if (!missing.isEmpty()) {
-			error(MANDATORY_PROPERTY_QUICKFIX_MESSAGE + "'" + elementName + "'", elem, feature, -1,
-					MANDATORY_PROPERTY_QUICKFIX, elementName);
+//			error(MANDATORY_PROPERTY_QUICKFIX_MESSAGE + "'" + elementName + "'", elem, feature, -1,
+//					MANDATORY_PROPERTY_QUICKFIX, elementName);
+			error(MANDATORY_PROPERTY_QUICKFIX_MESSAGE + "'" + elementName + "'", elem, feature, -1);
 			return true;
 		}
 		
@@ -602,6 +626,44 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 		return false;
 	}
 
+	
+	// *****************************************************************************
+	// overwrite sections in deployment definitions 
+
+	@Check
+	public void checkOverwriteSections(FDTypeOverwrites elem) {
+		EObject parent = elem.eContainer();
+		if (parent instanceof FDOverwriteElement) {
+			FType targetType = FDModelUtils.getOverwriteTargetType((FDOverwriteElement)parent);
+			if (targetType==null) {
+				error("Cannot determine target type of overwrite section", parent,
+						FDeployPackage.Literals.FD_OVERWRITE_ELEMENT__OVERWRITES);
+			} else {
+				if (elem instanceof FDPlainTypeOverwrites) {
+					// FDPlainTypeOverwrites is always ok
+				} else {
+					if (targetType instanceof FStructType) {
+						if (! (elem instanceof FDStructOverwrites)) {
+							error("Invalid overwrite tag, use '#struct'", parent,
+									FDeployPackage.Literals.FD_OVERWRITE_ELEMENT__OVERWRITES);
+						}
+					} else if (targetType instanceof FUnionType) {
+						if (! (elem instanceof FDUnionOverwrites)) {
+							error("Invalid overwrite tag, use '#union'", parent,
+									FDeployPackage.Literals.FD_OVERWRITE_ELEMENT__OVERWRITES);
+						}
+					} else if (targetType instanceof FEnumerationType) {
+						if (! (elem instanceof FDEnumerationOverwrites)) {
+							error("Invalid overwrite tag, use '#enumeration'", parent,
+									FDeployPackage.Literals.FD_OVERWRITE_ELEMENT__OVERWRITES);
+						}
+					}
+				}
+			}
+		}
+		
+	}
+	
 	
 	// *****************************************************************************
 	// type system

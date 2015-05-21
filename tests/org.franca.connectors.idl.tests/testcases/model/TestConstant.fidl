@@ -1,0 +1,7 @@
+ package TestConstant
+ 
+ interface TestConstantInterface {
+ 		const Int8 signalValue = 23
+ 		const Float value = 1.3f
+ 	
+ }

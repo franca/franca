@@ -1,0 +1,60 @@
+// import the deployment specification
+import "../spec/SimpleSpec.fdepl"
+
+// import the actual Franca interfaces we want to deploy 
+import "classpath:/org/example/idl/SimpleInterface.fidl"
+
+
+/**
+ * One example deployment of SimpleInterface according to specification SimpleSpec.
+ * Note that the deployment uses overwrites to get specific deployment of struct
+ * SomeStruct in different use cases.
+ */
+define org.example.spec.SimpleSpec for interface org.example.idl.SimpleInterface
+{
+	method m1 {
+		in {
+			arg1 { Encoding = utf8 }
+			arg2 {
+				// overwrite!
+				#struct {
+					f1 {
+						Encoding = utf16
+					}
+				}
+			}
+		}
+	}
+
+	struct SomeStruct {
+		f1 { Encoding = utf8 }
+		f2 { Encoding = utf8 }
+	}
+
+	array StringArray {
+		ArrayProp = 0
+	}
+
+	struct StructA {
+		field {
+			Encoding = utf8
+			
+			// for inline arrays, properties belong to the
+			// location where the array type is introduced.
+			ArrayProp = 0
+		}
+	}
+	
+	struct StructB {
+		field {
+			// for named array types, we have to use the
+			// type-overwrite feature to set the property to
+			// a different value as in the deployment of the
+			// array type itself (see above: "array StringArray"). 
+			# {
+				ArrayProp = 11
+			}
+		}
+	}
+
+}

@@ -33,6 +33,7 @@ import org.franca.core.franca.Import
 
 import org.franca.core.franca.FField
 import org.franca.core.franca.FCompoundType
+import org.franca.core.franca.FBroadcast
 
 class FrancaModelExtensions {
 	
@@ -67,7 +68,21 @@ class FrancaModelExtensions {
 		
 		return null
 	}
+
+	def static getUniqueName(FMethod elem) {
+		if (elem.selector==null)
+			elem.name
+		else
+			elem.name + ":" + elem.selector
+	}
 	
+	def static getUniqueName(FBroadcast elem) {
+		if (elem.selector==null)
+			elem.name
+		else
+			elem.name + ":" + elem.selector
+	}
+
 	def static getTriggeringMethod(FEventOnIf event) {
 		var FMethod result = null
 		if (event != null) {

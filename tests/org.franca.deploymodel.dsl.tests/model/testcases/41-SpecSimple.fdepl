@@ -1,0 +1,15 @@
+
+// simple deployment specification with methods and broadcasts
+
+specification SpecSimple41 {
+
+	for methods {
+		MethodProp : String;
+	}
+	
+	for broadcasts {
+		BroadcastProp : Integer;
+	}
+	
+}
+

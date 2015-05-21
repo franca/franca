@@ -1,0 +1,24 @@
+// a type collection with many integer expressions
+package testcases
+
+typeCollection MyEnumTypes {
+	
+	// some integer constants
+	const UInt32 i1 = 1
+	const UInt32 i2 = 1 + 2
+	const UInt32 i3 = 11 * 7
+	const UInt32 i4 = i1 + i2
+
+	// usage of constants as enumeration values
+	enumeration Enum1 {
+		E0
+		E1 = i1
+		E2 = i2
+		E3 = i3
+		E4 = i4
+		E5 = 77
+		E6 = 10 + 20
+		E7 = i2 * i4
+	}
+	
+}
