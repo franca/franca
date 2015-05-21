@@ -8,13 +8,24 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.xtext.ui,
  org.franca.core.dsl,
  org.franca.core.dsl.ui,
- org.eclipse.draw2d,
  org.eclipse.ui.ide,
  org.franca.deploymodel.dsl,
- org.eclipse.gef4.zest.core,
- org.eclipse.gef4.layout,
- org.franca.core
+ de.cau.cs.kieler.core.krendering,
+ de.cau.cs.kieler.core.krendering.extensions,
+ de.cau.cs.kieler.kiml,
+ de.cau.cs.kieler.klay.layered,
+ de.cau.cs.kieler.klighd,
+ de.cau.cs.kieler.klighd.ui,
+ de.cau.cs.kieler.klighd.piccolo,
+ de.cau.cs.kieler.core.kivi;bundle-version="0.5.0",
+ de.cau.cs.kieler.klighd.xtext;bundle-version="0.2.1",
+ org.franca.core,
+ com.google.guava,
+ org.eclipse.xtext.xbase.lib,
+ org.eclipse.xtend.lib,
+ org.eclipse.xtend.lib.macro
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Activator: org.franca.core.ui.addons.Activator
 Bundle-Vendor: itemis AG
+
