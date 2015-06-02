@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<!-- Tycho requires Maven 3 -->
 	<prerequisites>
@@ -8,70 +9,69 @@
 
 	<groupId>org.franca</groupId>
 	<artifactId>org.franca.parent</artifactId>
-	<version>0.9.0-SNAPSHOT</version>
+	<version>0.9.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<parent>
-    	<groupId>org.sonatype.oss</groupId>
-    	<artifactId>oss-parent</artifactId>
-    	<version>7</version>
-  	</parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
 
 
 	<properties>
 		<eclipse-site>http://download.eclipse.org/releases/${platform-version-name}</eclipse-site>
-		<platform-version-name>juno</platform-version-name>
+		<platform-version-name>luna</platform-version-name>
 		<project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
-		<tycho-version>0.19.0</tycho-version>
+		<tycho-version>0.22.0</tycho-version>
 		<junit-version>4.8.1</junit-version>
 		<slf4j-version>1.6.1</slf4j-version>
 		<skip.deployment>true</skip.deployment>
 	</properties>
 
-    <modules>
-    		<!-- target platform -->
-            <module>../../releng/org.franca.targetplatform</module>
-    		<!-- actual code modules -->
-            <module>../../plugins/org.franca.core</module>
-            <module>../../plugins/org.franca.core.edit</module>
-            <module>../../plugins/org.franca.core.dsl</module>
-            <module>../../plugins/org.franca.core.dsl.ui</module>
-            <module>../../plugins/org.franca.core.ui.addons</module>
-            <module>../../plugins/org.franca.deploymodel.dsl</module>
-            <module>../../plugins/org.franca.deploymodel.dsl.ui</module>
-			<module>../../plugins/org.franca.generators</module>
-			<module>../../plugins/org.franca.tools.contracts.tracevalidator</module>
-            <module>../../plugins/org.franca.connectors.dbus</module>
-            <module>../../plugins/org.franca.connectors.dbus.ui</module>
-            <module>../../plugins/org.franca.product.ui</module>
-    		<!-- test base modules -->
-            <module>../../tests/org.franca.core.dsl.tests.base</module>
-            <module>../../tests/org.franca.deploymodel.dsl.tests.base</module>
-    		<!-- test modules -->
-            <module>../../tests/org.franca.core.dsl.tests</module>
-            <module>../../tests/org.franca.deploymodel.dsl.tests</module>
-            <module>../../examples/org.franca.examples.reference</module>
-            <module>../../tests/org.franca.tools.contracts.tracevalidator.tests</module>
-            <module>../../tests/org.franca.connectors.dbus.tests</module>
-    		<!-- documentation/help modules -->
-            <module>../../docs/org.franca.help</module>
-			<!-- release modules -->
-            <module>../../features/org.franca.core.feature</module>
-            <module>../../features/org.franca.core.feature.sdk</module>
-            <module>../../features/org.franca.ui.feature</module>
-            <module>../../features/org.franca.ui.feature.sdk</module>
-            <module>../../features/org.franca.ui.addons.feature</module>
-            <module>../../features/org.franca.ui.addons.feature.sdk</module>
-            <module>../../features/org.franca.dbus.feature</module>
-            <module>../../features/org.franca.dbus.feature.sdk</module>
-            <module>../../features/org.franca.dbus.ui.feature</module>
-            <module>../../features/org.franca.dbus.ui.feature.sdk</module>
-			<module>../../releng/org.franca.updatesite</module>
-			<module>../../releng/org.franca.product</module>
-			<!-- 
-			   <module>../../docs/org.franca.help</module>
-			-->
-    </modules>
+	<modules>
+		<!-- target platform -->
+		<module>../../releng/org.franca.targetplatform</module>
+		<!-- actual code modules -->
+		<module>../../plugins/org.franca.core</module>
+		<module>../../plugins/org.franca.core.edit</module>
+		<module>../../plugins/org.franca.core.dsl</module>
+		<module>../../plugins/org.franca.core.dsl.ui</module>
+		<module>../../plugins/org.franca.core.ui.addons</module>
+		<module>../../plugins/org.franca.deploymodel.dsl</module>
+		<module>../../plugins/org.franca.deploymodel.dsl.ui</module>
+		<module>../../plugins/org.franca.generators</module>
+		<module>../../plugins/org.franca.tools.contracts.tracevalidator</module>
+		<module>../../plugins/org.franca.connectors.dbus</module>
+		<module>../../plugins/org.franca.connectors.dbus.ui</module>
+		<module>../../plugins/org.franca.product.ui</module>
+		<!-- test base modules -->
+		<module>../../tests/org.franca.core.dsl.tests.base</module>
+		<module>../../tests/org.franca.deploymodel.dsl.tests.base</module>
+		<!-- test modules -->
+		<module>../../tests/org.franca.core.dsl.tests</module>
+		<module>../../tests/org.franca.deploymodel.dsl.tests</module>
+		<module>../../examples/org.franca.examples.reference</module>
+		<module>../../tests/org.franca.tools.contracts.tracevalidator.tests</module>
+		<module>../../tests/org.franca.connectors.dbus.tests</module>
+		<!-- documentation/help modules -->
+		<module>../../docs/org.franca.help</module>
+		<!-- release modules -->
+		<module>../../features/org.franca.commons.feature</module>
+		<module>../../features/org.franca.core.feature</module>
+		<module>../../features/org.franca.core.feature.sdk</module>
+		<module>../../features/org.franca.ui.feature</module>
+		<module>../../features/org.franca.ui.feature.sdk</module>
+		<module>../../features/org.franca.ui.addons.feature</module>
+		<module>../../features/org.franca.ui.addons.feature.sdk</module>
+		<module>../../features/org.franca.dbus.feature</module>
+		<module>../../features/org.franca.dbus.feature.sdk</module>
+		<module>../../features/org.franca.dbus.ui.feature</module>
+		<module>../../features/org.franca.dbus.ui.feature.sdk</module>
+		<module>../../releng/org.franca.updatesite</module>
+		<module>../../releng/org.franca.product</module>
+		<!-- <module>../../docs/org.franca.help</module> -->
+	</modules>
 
 	<build>
 		<sourceDirectory>src</sourceDirectory>
@@ -98,13 +98,8 @@
 						</artifact>
 					</target>
 					<filters>
-					<!--
-						<filter>
-							<type>eclipse-plugin</type>
-							<id>some.plugin.id</id>
-							<removeAll />
-						</filter>
-					 -->
+						<!-- <filter> <type>eclipse-plugin</type> <id>some.plugin.id</id> <removeAll 
+							/> </filter> -->
 					</filters>
 					<environments>
 						<environment>
@@ -188,9 +183,7 @@
 					<excludes>
 						<exclude>**/*.ecore</exclude>
 					</excludes>
-					<!-- 
-						<append>true</append> 
-					-->
+					<!-- <append>true</append> -->
 				</configuration>
 				<executions>
 					<execution>
@@ -202,10 +195,8 @@
 						<configuration>
 							<!-- Sets the path to the file which contains the execution data. -->
 							<destFile>${project.build.directory}/coverage-data/jacoco-ut.exec</destFile>
-							<!--
-							   Sets the name of the property containing the settings
-							   for JaCoCo runtime agent.
-							-->
+							<!-- Sets the name of the property containing the settings for JaCoCo 
+								runtime agent. -->
 							<propertyName>surefireArgLine</propertyName>
 						</configuration>
 					</execution>
@@ -222,33 +213,43 @@
 							<outputDirectory>${project.build.directory}/coverage-reports/jacoco-ut</outputDirectory>
 						</configuration>
 					</execution>
-					<!--
-					<execution>
-						<id>default-check</id>
-						<goals>
-							<goal>check</goal>
-						</goals>
-						<configuration>
-							<rules>
-								<rule>
-									<element>BUNDLE</element>
-									<limits>
-										<limit>
-											<counter>COMPLEXITY</counter>
-											<value>COVEREDRATIO</value>
-											<minimum>0.60</minimum>
-										</limit>
-									</limits>
-								</rule>
-							</rules>
-						</configuration>
-					</execution>
-					-->
+					<!-- <execution> <id>default-check</id> <goals> <goal>check</goal> </goals> 
+						<configuration> <rules> <rule> <element>BUNDLE</element> <limits> <limit> 
+						<counter>COMPLEXITY</counter> <value>COVEREDRATIO</value> <minimum>0.60</minimum> 
+						</limit> </limits> </rule> </rules> </configuration> </execution> -->
 				</executions>
 			</plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.fornax.toolsupport</groupId>
+										<artifactId>fornax-oaw-m2-plugin</artifactId>
+										<versionRange>[3.5.1,)</versionRange>
+										<goals>
+											<goal>run-workflow</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action> 
+										<!-- <phase>generate-sources</phase> -->
+										<execute>
+										   <runOnIncremental>true</runOnIncremental>
+										   <runOnConfiguration>true</runOnConfiguration>
+										</execute>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
 				<!-- TYCHO -->
 				<plugin>
 					<groupId>org.eclipse.tycho</groupId>
@@ -260,25 +261,25 @@
 						<target>6.0</target>
 					</configuration>
 				</plugin>
-	      		<plugin>
-	      			<groupId>org.eclipse.tycho</groupId>
-	      			<artifactId>tycho-packaging-plugin</artifactId>
-	      			<version>${tycho-version}</version>
-	      			<configuration>
-	        			<archiveSite>true</archiveSite>
-	      			</configuration>
+				<plugin>
+					<groupId>org.eclipse.tycho</groupId>
+					<artifactId>tycho-packaging-plugin</artifactId>
+					<version>${tycho-version}</version>
+					<configuration>
+						<archiveSite>true</archiveSite>
+					</configuration>
 				</plugin>
-	      		
+
 				<!-- enable source bundle generation -->
 				<plugin>
 					<groupId>org.eclipse.tycho</groupId>
 					<artifactId>tycho-surefire-plugin</artifactId>
 					<version>${tycho-version}</version>
 					<configuration>
-						<!-- MacOS specific option to run an SWT application from the command line.
-								See http://www.eclipse.org/swt/faq.php#carbonapp
-						-->
-						<argLine>${os-jvm-flags} -XX:PermSize=256m -XX:MaxPermSize=512m ${surefireArgLine}</argLine>
+						<!-- MacOS specific option to run an SWT application from the command 
+							line. See http://www.eclipse.org/swt/faq.php#carbonapp -->
+						<argLine>${os-jvm-flags} -XX:PermSize=256m -XX:MaxPermSize=512m
+							${surefireArgLine}</argLine>
 					</configuration>
 				</plugin>
 				<plugin>
@@ -318,7 +319,8 @@
 					<artifactId>maven-assembly-plugin</artifactId>
 					<version>2.2-beta-4</version>
 				</plugin>
-				<!--  If you are releasing your artifacts on OSSRH, you need to make one more configuration change  -->
+				<!-- If you are releasing your artifacts on OSSRH, you need to make one 
+					more configuration change -->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-release-plugin</artifactId>
@@ -329,16 +331,16 @@
 						<arguments>${arguments} -Psonatype-oss-release</arguments>
 					</configuration>
 				</plugin>
-				<!--  Establish property to control whether to release an artifact -->
+				<!-- Establish property to control whether to release an artifact -->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-deploy-plugin</artifactId>
 					<configuration>
-					  <!-- default is true, i.e. do skip -->
-					  <skip>${skip.deployment}</skip>
+						<!-- default is true, i.e. do skip -->
+						<skip>${skip.deployment}</skip>
 					</configuration>
 				</plugin>
-				
+
 				<!-- OTHER PLUGINS -->
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
@@ -386,12 +388,12 @@
 				<plugin>
 					<groupId>org.fornax.toolsupport</groupId>
 					<artifactId>fornax-oaw-m2-plugin</artifactId>
-					<version>3.3.0</version>
+					<version>3.5.1</version>
 				</plugin>
 				<plugin>
 					<groupId>org.eclipse.xtend</groupId>
 					<artifactId>xtend-maven-plugin</artifactId>
-					<version>2.4.3</version>
+					<version>2.7.3</version>
 					<configuration>
 						<!-- need to prefix by basedir to generate to currently built module -->
 						<outputDirectory>${basedir}/xtend-gen</outputDirectory>
@@ -400,11 +402,9 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-	<pluginRepositories>	
-		<!--pluginRepository>			
-			<id>tycho-0.14.0-staged</id>
-			<url>https://oss.sonatype.org/content/repositories/orgeclipsetycho-004/</url>
-		</pluginRepository-->		
+	<pluginRepositories>
+		<!--pluginRepository> <id>tycho-0.14.0-staged</id> <url>https://oss.sonatype.org/content/repositories/orgeclipsetycho-004/</url> 
+			</pluginRepository -->
 		<pluginRepository>
 			<id>sonatype</id>
 			<url>http://repository.sonatype.org/content/groups/sonatype-public-grid/</url>
@@ -415,8 +415,8 @@
 				<enabled>true</enabled>
 			</snapshots>
 		</pluginRepository>
-		<!-- Fornax Workflow Runner plugin -->
 		<pluginRepository>
+			<!-- Fornax Workflow Runner plugin -->
 			<id>fornax</id>
 			<url>http://www.fornax-platform.org/m2/repository</url>
 			<releases>
@@ -446,13 +446,15 @@
 			<layout>p2</layout>
 			<url>http://xdoc4franca-release.eclipselabs.org.codespot.com/git/update_site/releases/</url>
 		</repository>
-	</repositories>			
+	</repositories>
 
 	<profiles>
 		<profile>
 			<id>macosx-jvm-flags</id>
 			<activation>
-				<os><family>mac</family></os>
+				<os>
+					<family>mac</family>
+				</os>
 			</activation>
 			<properties>
 				<os-jvm-flags>-XstartOnFirstThread</os-jvm-flags>
@@ -461,132 +463,68 @@
 		<profile>
 			<id>non-macosx-jvm-flags</id>
 			<activation>
-				<os><family>!mac</family></os>
-			</activation>
-			<properties>
-				<os-jvm-flags> </os-jvm-flags>
-			</properties>
-		</profile>
-
-	<!-- 
-        <profile>
-            <id>local-build</id>
-            <activation>
-                <property>
-                    <name>local-build</name>
-                </property>
-            </activation>
-            <repositories>
-                <repository>
-                    <id>franca-dependencies</id>
-                    <layout>p2</layout>
-                    <url>file:../../releng/org.franca.repository/target/repository</url>
-                </repository>
-            </repositories>
-        </profile>
-		<profile>
-			<id>remote-build-release</id>
-			<activation>
-				<property>
-					<name>remote-build-release</name>
-				</property>
-			</activation>			
-			<repositories>
-				<repository>
-					<id>franca-dependencies</id>
-					<layout>p2</layout>
-					<url>http://franca.eclipselabs.org.codespot.com/git.distribution/releases/</url>
-				</repository>
-			</repositories>
-		</profile>
-		<profile>
-			<id>release</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.sonatype.tycho</groupId>
-						<artifactId>maven-osgi-packaging-plugin</artifactId>
-						<configuration>
-							<strictVersions>false</strictVersions>
-						</configuration>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-scm-plugin</artifactId>
-						<configuration>
-							<basedir>${basedir}</basedir>
-							<includes>${basedir}/../feature/feature.xml,${basedir}/../site/site.xml,${basedir}/repository/category.xml</includes>
-							<message>[maven-release-plugin] prepare release of OSGI artifacts</message>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
-			<id>skip-ui-tests</id>
-			<activation>
-				<property>
-					<name>skip-ui-tests</name>
-				</property>
-			</activation>
-			<properties>
-				<tycho.surefire.skipUiTest>true</tycho.surefire.skipUiTest>
-			</properties>
-		</profile>
-		<profile>
-			<id>macosx</id>
-			<activation>
 				<os>
-					<name>mac os x</name>
-					<family>mac</family>
-				</os>
-			</activation>
-			<properties>
-				<ui.test.vmargs>-Xmx512m -XX:MaxPermSize=256m -XstartOnFirstThread</ui.test.vmargs>
-			</properties>
-		</profile>
-		<profile>
-			<id>other-os</id>
-			<activation>
-				<os>
-					<name>not-mac</name>
 					<family>!mac</family>
 				</os>
 			</activation>
 			<properties>
-				<ui.test.vmargs>-Xmx512m -XX:MaxPermSize=256m</ui.test.vmargs>
+				<os-jvm-flags>
+				</os-jvm-flags>
 			</properties>
 		</profile>
-	-->
 
-	  <profile>
-	    <id>release-sign-artifacts</id>
-	    <activation>
-	      <property>
-	        <!-- When you use maven-release-plugin and run mvn release:perform, the property value will be set to true  -->
-	        <name>performRelease</name>
-	        <value>true</value>
-	      </property>
-	    </activation>
-	    <build>
-	      <plugins>
-	        <plugin>
-	          <groupId>org.apache.maven.plugins</groupId>
-	          <artifactId>maven-gpg-plugin</artifactId>
-	          <version>1.1</version>
-	          <executions>
-	            <execution>
-	              <id>sign-artifacts</id>
-	              <phase>verify</phase>
-	              <goals>
-	                <goal>sign</goal>
-	              </goals>
-	            </execution>
-	          </executions>
-	        </plugin>
-	      </plugins>
-	    </build>
-	  </profile>
+		<!-- <profile> <id>local-build</id> <activation> <property> <name>local-build</name> 
+			</property> </activation> <repositories> <repository> <id>franca-dependencies</id> 
+			<layout>p2</layout> <url>file:../../releng/org.franca.repository/target/repository</url> 
+			</repository> </repositories> </profile> <profile> <id>remote-build-release</id> 
+			<activation> <property> <name>remote-build-release</name> </property> </activation> 
+			<repositories> <repository> <id>franca-dependencies</id> <layout>p2</layout> 
+			<url>http://franca.eclipselabs.org.codespot.com/git.distribution/releases/</url> 
+			</repository> </repositories> </profile> <profile> <id>release</id> <build> 
+			<plugins> <plugin> <groupId>org.sonatype.tycho</groupId> <artifactId>maven-osgi-packaging-plugin</artifactId> 
+			<configuration> <strictVersions>false</strictVersions> </configuration> </plugin> 
+			<plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-scm-plugin</artifactId> 
+			<configuration> <basedir>${basedir}</basedir> <includes>${basedir}/../feature/feature.xml,${basedir}/../site/site.xml,${basedir}/repository/category.xml</includes> 
+			<message>[maven-release-plugin] prepare release of OSGI artifacts</message> 
+			</configuration> </plugin> </plugins> </build> </profile> <profile> <id>skip-ui-tests</id> 
+			<activation> <property> <name>skip-ui-tests</name> </property> </activation> 
+			<properties> <tycho.surefire.skipUiTest>true</tycho.surefire.skipUiTest> 
+			</properties> </profile> <profile> <id>macosx</id> <activation> <os> <name>mac 
+			os x</name> <family>mac</family> </os> </activation> <properties> <ui.test.vmargs>-Xmx512m 
+			-XX:MaxPermSize=256m -XstartOnFirstThread</ui.test.vmargs> </properties> 
+			</profile> <profile> <id>other-os</id> <activation> <os> <name>not-mac</name> 
+			<family>!mac</family> </os> </activation> <properties> <ui.test.vmargs>-Xmx512m 
+			-XX:MaxPermSize=256m</ui.test.vmargs> </properties> </profile> -->
+
+		<profile>
+			<id>release-sign-artifacts</id>
+			<activation>
+				<property>
+					<!-- When you use maven-release-plugin and run mvn release:perform, 
+						the property value will be set to true -->
+					<name>performRelease</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>1.1</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 	</profiles>
 
 	<dependencyManagement>
@@ -603,7 +541,8 @@
 				<version>${slf4j-version}</version>
 				<scope>compile</scope>
 			</dependency>
-			<!--Binding for log4j version 1.2.x You also need to place log4j.jar on your class path. -->
+			<!--Binding for log4j version 1.2.x You also need to place log4j.jar on 
+				your class path. -->
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-log4j12</artifactId>
@@ -621,11 +560,11 @@
 				<artifactId>jcl-over-slf4j</artifactId>
 				<version>${slf4j-version}</version>
 				<scope>runtime</scope>
-			</dependency>			
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
-	
+
 	<name>Franca IDL</name>
 	<description>Franca IDL is a textual language which allows to define software interfaces and APIs in a consistent, user-friendly way. Franca includes a framework for IDL transformation and building code generators from API specifications.</description>
 	<url>http://code.google.com/a/eclipselabs.org/p/franca/</url>
@@ -666,7 +605,7 @@
 			<name>Klaus Birken</name>
 			<email>franca@itemis.de</email>
 			<organization>itemis</organization>
-      		<organizationUrl>http://www.itemis.com</organizationUrl>
+			<organizationUrl>http://www.itemis.com</organizationUrl>
 			<roles>
 				<role>project owner</role>
 			</roles>
@@ -677,18 +616,20 @@
 			<url>http://borisdevnotes.wordpress.com/</url>
 			<email>franca@itemis.de</email>
 			<organization>itemis</organization>
-      		<organizationUrl>http://www.itemis.com</organizationUrl>
+			<organizationUrl>http://www.itemis.com</organizationUrl>
 			<roles>
 				<role>team</role>
 			</roles>
 		</developer>
 		<developer>
-	        <id>weik</id>
-	        <name>Steffen Weik</name>
-	        <email>steffenweik77@gmail.com</email>
-	        <organization>itemis</organization>
-	        <organizationUrl>http://www.itemis.com</organizationUrl>
-	        <roles><role>team</role></roles>
+			<id>weik</id>
+			<name>Steffen Weik</name>
+			<email>steffenweik77@gmail.com</email>
+			<organization>itemis</organization>
+			<organizationUrl>http://www.itemis.com</organizationUrl>
+			<roles>
+				<role>team</role>
+			</roles>
 		</developer>
 		<developer>
 			<id>szabta89</id>
@@ -696,7 +637,9 @@
 			<email>tamas.szabo@itemis.de</email>
 			<organization>itemis</organization>
 			<organizationUrl>http://www.itemis.com</organizationUrl>
-			<roles><role>team</role></roles>
+			<roles>
+				<role>team</role>
+			</roles>
 		</developer>
 	</developers>
 </project>

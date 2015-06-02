@@ -7,23 +7,24 @@
 *******************************************************************************/
 package org.franca.generators.html
 
+import java.util.Set
+import org.franca.core.franca.FAnnotationType
 import org.franca.core.franca.FArgument
+import org.franca.core.franca.FArrayType
 import org.franca.core.franca.FBroadcast
+import org.franca.core.franca.FCompoundType
+import org.franca.core.franca.FEnumerationType
+import org.franca.core.franca.FInterface
+import org.franca.core.franca.FMapType
 import org.franca.core.franca.FMethod
 import org.franca.core.franca.FModel
 import org.franca.core.franca.FModelElement
-import org.franca.core.franca.FInterface
-import org.franca.core.franca.FType
-import org.franca.core.franca.FArrayType
-import org.franca.core.franca.FCompoundType
 import org.franca.core.franca.FStructType
-import org.franca.core.franca.FUnionType
+import org.franca.core.franca.FType
 import org.franca.core.franca.FTypeDef
-import org.franca.core.franca.FEnumerationType
-import org.franca.core.franca.FMapType
 import org.franca.core.franca.FTypeRef
-import org.franca.core.franca.FAnnotationType
-import java.util.Set
+import org.franca.core.franca.FUnionType
+import org.franca.core.utils.ExpressionEvaluator
 
 class HTMLGenerator {
 	
@@ -103,7 +104,7 @@ class HTMLGenerator {
 			«ENDIF»
 			«FOR e : api.errors.enumerators»
 				<tr><td>error</td><td></td>
-				<td>«e.name»«IF e.value!=null» = «e.value»«ENDIF»</td>
+				<td>«e.name»«IF e.value!=null» = «ExpressionEvaluator::evaluateIntegerOrParseString(e.value)»«ENDIF»</td>
 				<td>«e.genComment(false)»</td></tr>
 			«ENDFOR»
 		«ENDIF»
@@ -177,7 +178,7 @@ class HTMLGenerator {
 			«FOR e : type.enumerators»
 				<tr>
 					<td>«e.name»</td>
-					<td>«e.value»</td>
+					<td>«IF e.value!=null»«ExpressionEvaluator::evaluateIntegerOrParseString(e.value)»«ENDIF»</td>
 					<td>«e.genComment(false)»</td>
 				</tr>
 			«ENDFOR»

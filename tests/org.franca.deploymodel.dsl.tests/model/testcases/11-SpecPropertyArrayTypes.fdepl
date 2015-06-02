@@ -1,7 +1,7 @@
 
 // deployment specification with property declarations of all possible types
 
-specification a.b.c.MySpec {
+specification a.b.c.MySpec11 {
 
 	for methods {
 		BooleanPropMandatory : Boolean[];

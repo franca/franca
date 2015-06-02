@@ -14,6 +14,8 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.xtext.naming.IQualifiedNameProvider;
 import org.eclipse.xtext.naming.QualifiedName;
+import org.eclipse.xtext.nodemodel.INode;
+import org.eclipse.xtext.nodemodel.util.NodeModelUtils;
 import org.eclipse.xtext.validation.Check;
 import org.eclipse.xtext.validation.CheckMode;
 import org.eclipse.xtext.validation.ValidationMessageAcceptor;
@@ -36,9 +38,11 @@ import org.franca.core.franca.FCompoundInitializer;
 import org.franca.core.franca.FCompoundType;
 import org.franca.core.franca.FConstantDef;
 import org.franca.core.franca.FContract;
+import org.franca.core.franca.FDeclaration;
 import org.franca.core.franca.FEnumerationType;
 import org.franca.core.franca.FEnumerator;
 import org.franca.core.franca.FGuard;
+import org.franca.core.franca.FIntegerInterval;
 import org.franca.core.franca.FInterface;
 import org.franca.core.franca.FMethod;
 import org.franca.core.franca.FModel;
@@ -343,6 +347,53 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 		cyclicDependenciesValidator.check(this, m);
 	}
 
+	/**
+	 * Check order of elements in an interface.
+	 * 
+	 * The contract should be at the end of the interface definition.
+	 * In Franca 0.9.0 and older, there was a fixed order of elements in the
+	 * interface. With 0.9.1 and later, the order can be changed, but the contract
+	 * has to be at the end of the interface.
+	 * 
+	 * For backward compatibility reasons, we still allow constants and type definitions
+	 * after the contract, but will mark these as deprecated.
+	 * 
+	 *  @see https://code.google.com/a/eclipselabs.org/p/franca/issues/detail?id=104#c1
+	 * @param api the Franca interface
+	 */
+	@Check
+	public void checkElementOrder(FInterface api) {
+		if (api.getContract()!=null) {
+			INode contractNode = NodeModelUtils.getNode(api.getContract());
+			if (contractNode==null)
+				return;
+			
+			int contractOffset = contractNode.getOffset();
+			
+			// check against all constant and type definitions
+			String msg = "Deprecated order of interface elements (contract should be at the end)";
+			for(FConstantDef i : api.getConstants()) {
+				INode node = NodeModelUtils.getNode(i);
+				if (node!=null) {
+					int offset = node.getOffset();
+					if (offset > contractOffset) {
+						warning(msg, api, FrancaPackage.Literals.FTYPE_COLLECTION__CONSTANTS, api.getConstants().indexOf(i));
+					}
+				}
+			}
+			for(FType i : api.getTypes()) {
+				INode node = NodeModelUtils.getNode(i);
+				if (node!=null) {
+					int offset = node.getOffset();
+					if (offset > contractOffset) {
+						warning(msg, api, FrancaPackage.Literals.FTYPE_COLLECTION__TYPES, api.getTypes().indexOf(i));
+					}
+				}
+			}
+		}
+	}
+	
+
 	// *****************************************************************************
 
 	// type-related checks
@@ -353,9 +404,27 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 	}
 
 	@Check
+	public void checkDeclaration (FDeclaration declaration) {
+		TypesValidator.checkConstantType(this, declaration);
+	}
+
+	@Check
 	public void checkEnumValue (FEnumerator enumerator) {
 		if (enumerator.getValue() != null)
 			TypesValidator.checkEnumValueType(this, enumerator);
+	}
+
+	@Check
+	public void checkIntegerInterval (FTypeRef intervalType) {
+		if (intervalType.getInterval()!=null) {
+			FIntegerInterval interval = intervalType.getInterval();
+			if (interval.getLowerBound()!=null && interval.getUpperBound()!=null) {
+				if (interval.getLowerBound().compareTo(interval.getUpperBound()) > 0) {
+					error("Invalid interval specification", intervalType,
+							FrancaPackage.Literals.FTYPE_REF__INTERVAL, -1);
+				}
+			}
+		}
 	}
 
 	

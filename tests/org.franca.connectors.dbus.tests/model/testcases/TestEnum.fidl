@@ -1,0 +1,24 @@
+package com.mypackage
+
+
+
+interface Connection {
+	
+	  attribute Boolean high
+		method method1 {
+		in {
+			
+		     IntegerRange value
+			}
+			 out{
+			 	IntegerRange range 
+			 }
+			}
+	
+		array IntegerRange of  Integer(2,5)
+		
+	
+		
+	
+		}
+		

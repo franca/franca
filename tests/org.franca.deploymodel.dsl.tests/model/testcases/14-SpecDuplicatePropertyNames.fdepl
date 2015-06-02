@@ -1,0 +1,14 @@
+
+// deployment specification with duplicate property names
+
+specification a.b.c.MySpec14 {
+
+	for structs {
+		TheProp : Boolean  (default:false);
+	}
+	
+	for arrays {
+		TheProp : Integer  (default:0);
+	}
+
+}

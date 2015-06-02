@@ -328,6 +328,11 @@ public class FrancaHelpers {
 		return isBasicType(typeRef, FBasicTypeId.BOOLEAN);
 	}
 
+	/** Returns true if the referenced type is a byte buffer. */
+	public static boolean isByteBuffer (FTypeRef typeRef) {
+		return isBasicType(typeRef, FBasicTypeId.BYTE_BUFFER);
+	}
+
 	/** Returns true if the referenced type is an array type. */
 	public static boolean isArray (FTypeRef typeRef) {
 		return isUserDefinedType(typeRef, FArrayType.class);

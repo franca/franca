@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Franca IDE" uid="org.franca.product" id="org.franca.product.ui.FrancaIDE" application="org.eclipse.ui.ide.workbench" version="0.9.0.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="Franca IDE" uid="org.franca.product" id="org.franca.product.ui.FrancaIDE" application="org.eclipse.ui.ide.workbench" version="0.9.1.qualifier" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
 
    <launcherArgs>
-      <vmArgs>-Xms128m -Xmx512m -XX:MaxPermSize=128m</vmArgs>
-      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
+      <vmArgs>-Xms128m -Xmx512m -XX:MaxPermSize=128m
+      </vmArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
+      </vmArgsMac>
    </launcherArgs>
 
    <windowImages i16="/org.franca.product/icons/eclipse16.gif" i32="/org.franca.product/icons/eclipse32.gif" i48="/org.franca.product/icons/eclipse48.gif"/>
@@ -40,9 +42,16 @@
       <feature id="org.eclipse.help"/>
       <feature id="org.eclipse.rcp"/>
       <feature id="org.eclipse.e4.rcp"/>
-      <feature id="org.eclipse.emf.ecore" version="2.9.1.v20130827-0309"/>
-      <feature id="org.eclipse.emf.common" version="2.9.1.v20130827-0309"/>
-      <feature id="org.eclipse.emf.edit" version="2.9.0.v20130902-0605"/>
+      <feature id="org.eclipse.emf.ecore" version="2.10.1.v20140901-1043"/>
+      <feature id="org.eclipse.emf.common" version="2.10.1.v20140901-1043"/>
+      <feature id="org.eclipse.ecf.core.feature" version="1.1.0.v20141221-2352"/>
+      <feature id="org.eclipse.ecf.filetransfer.feature" version="3.9.2.v20141221-2352"/>
+      <feature id="org.franca.commons" version="0.9.1.qualifier"/>
+      <feature id="org.eclipse.xtext.xbase.lib" version="2.7.3.v201411190455"/>
+      <feature id="org.eclipse.xtext.runtime" version="2.7.3.v201411190455"/>
+      <feature id="org.eclipse.emf.common.ui" version="2.9.0.v20141013-0308"/>
+      <feature id="model.emf.dbusxml.feature" version="0.7.8.201401151351"/>
+      <feature id="org.eclipse.emf.mwe2.runtime.sdk" version="2.7.0.v201409021027"/>
    </features>
 
    <configurations>

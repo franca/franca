@@ -2,6 +2,6 @@
 
 import "../fidl/01-EmptyInterface.fidl"
 
-specification MySpec { }
+specification MySpec20 { }
 
-define MySpec for interface fidl.EmptyInterface { }
+define MySpec20 for interface fidl.EmptyInterface { }

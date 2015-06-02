@@ -10,6 +10,7 @@ package org.franca.core.dsl.validation.internal;
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EStructuralFeature
 import org.franca.core.contracts.IssueCollector
+import org.franca.core.contracts.TypeIssue
 import org.franca.core.contracts.TypeSystem
 import org.franca.core.framework.FrancaHelpers
 import org.franca.core.franca.FConstantDef
@@ -30,10 +31,18 @@ import static extension org.franca.core.framework.FrancaHelpers.*
 import static extension org.franca.core.utils.ExpressionEvaluator.*
 import java.math.BigInteger
 import org.franca.core.dsl.validation.internal.CyclicDependenciesDetector
-
+import org.franca.core.franca.FDeclaration
 
 class TypesValidator {
 	
+	
+	
+	def static checkConstantType (ValidationMessageReporter reporter, FDeclaration declaration) {
+		//TODO check whether this is needed anymore, I deleted this previously (new)
+		checkConstantRHS(declaration.rhs, declaration.type,
+			reporter, declaration, FDECLARATION__RHS, -1
+		)
+	}
 	
 
 	def static boolean checkConstantType (ValidationMessageReporter reporter, FConstantDef constantDef) {

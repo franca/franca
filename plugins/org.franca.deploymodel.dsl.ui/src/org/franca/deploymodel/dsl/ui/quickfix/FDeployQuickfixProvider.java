@@ -28,6 +28,8 @@ import org.franca.core.franca.FUnionType;
 import org.franca.deploymodel.core.FDModelUtils;
 import org.franca.deploymodel.core.PropertyMappings;
 import org.franca.deploymodel.dsl.fDeploy.FDArgument;
+import org.franca.deploymodel.dsl.fDeploy.FDArgumentList;
+import org.franca.deploymodel.dsl.fDeploy.FDBroadcast;
 import org.franca.deploymodel.dsl.fDeploy.FDElement;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumValue;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumeration;
@@ -36,6 +38,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDInterface;
 import org.franca.deploymodel.dsl.fDeploy.FDMethod;
 import org.franca.deploymodel.dsl.fDeploy.FDProperty;
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl;
+import org.franca.deploymodel.dsl.fDeploy.FDRootElement;
 import org.franca.deploymodel.dsl.fDeploy.FDStruct;
 import org.franca.deploymodel.dsl.fDeploy.FDTypes;
 import org.franca.deploymodel.dsl.fDeploy.FDUnion;
@@ -135,15 +138,31 @@ public class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 	
 	@Fix(FDeployJavaValidator.METHOD_ARGUMENT_QUICKFIX)
 	public void applyFixForMethod(final Issue issue, final IssueResolutionAcceptor acceptor) {
-		final String methodName = issue.getData()[0];
+		final String opName = issue.getData()[0];
 		final String argumentName = issue.getData()[1];
-		final String description = "Add missing argument '"+argumentName + "' for method '"+methodName+"'";
+		final String description = "Add missing argument '"+argumentName + "' for method '"+opName+"'";
 		acceptor.accept(issue, description, description, "",
 				new ISemanticModification() {
 					@Override
 					public void apply(EObject obj, IModificationContext context) {
 						if (obj instanceof FDMethod) {
 							applyFixForMethodInternal((FDMethod) obj, false, argumentName);
+						}
+					}
+				});
+	}
+	
+	@Fix(FDeployJavaValidator.BROADCAST_ARGUMENT_QUICKFIX)
+	public void applyFixForBroadcast(final Issue issue, final IssueResolutionAcceptor acceptor) {
+		final String opName = issue.getData()[0];
+		final String argumentName = issue.getData()[1];
+		final String description = "Add missing argument '"+argumentName + "' for broadcast '"+opName+"'";
+		acceptor.accept(issue, description, description, "",
+				new ISemanticModification() {
+					@Override
+					public void apply(EObject obj, IModificationContext context) {
+						if (obj instanceof FDBroadcast) {
+							applyFixForBroadcastInternal((FDBroadcast) obj, false, argumentName);
 						}
 					}
 				});
@@ -185,35 +204,30 @@ public class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 	}
 	
 	private void applyFixForMethodInternal(final FDMethod method, final boolean isRecursive, String... args) {
-		if (method.getTarget().getInArgs().size() > 0) {
-			for (FArgument arg : method.getTarget().getInArgs()) {
-				if (args.length == 0 || Arrays.contains(args, arg.getName())){
-					if (method.getInArguments() == null) {
-						method.setInArguments(FDeployFactory.eINSTANCE.createFDArgumentList());
-					}
-					FDArgument fdArg = FDeployQuickfixProviderUtil.getArgument(method.getInArguments(), arg);
-					if (fdArg == null) {
-						fdArg = FDeployFactory.eINSTANCE.createFDArgument();
-						fdArg.setTarget(arg);
-						method.getInArguments().getArguments().add(fdArg);
-					}
-					if (isRecursive) {
-						applyFixForElementInternal(fdArg, isRecursive);
-					}
-				}
-			}
-		}
-		if (method.getTarget().getOutArgs().size() > 0) {
-			for (FArgument arg : method.getTarget().getOutArgs()) {
+		if (method.getTarget().getInArgs().size()>0 && method.getInArguments()==null)
+			method.setInArguments(FDeployFactory.eINSTANCE.createFDArgumentList());
+		applyFixForArgList(method.getInArguments(), method.getTarget().getInArgs(), isRecursive, args);
+
+		if (method.getTarget().getOutArgs().size()>0 && method.getOutArguments()==null)
+			method.setOutArguments(FDeployFactory.eINSTANCE.createFDArgumentList());
+		applyFixForArgList(method.getOutArguments(), method.getTarget().getOutArgs(), isRecursive, args);
+	}
+	
+	private void applyFixForBroadcastInternal(final FDBroadcast broadcast, final boolean isRecursive, String... args) {
+		if (broadcast.getTarget().getOutArgs().size()>0 && broadcast.getOutArguments()==null)
+			broadcast.setOutArguments(FDeployFactory.eINSTANCE.createFDArgumentList());
+		applyFixForArgList(broadcast.getOutArguments(), broadcast.getTarget().getOutArgs(), isRecursive, args);
+	}
+
+	private void applyFixForArgList(FDArgumentList fdArglist, List<FArgument> fArglist, final boolean isRecursive, String... args) {
+		if (fArglist.size() > 0) {
+			for (FArgument arg : fArglist) {
 				if (args.length == 0 || Arrays.contains(args, arg.getName())) {
-					if (method.getOutArguments() == null) {
-						method.setOutArguments(FDeployFactory.eINSTANCE.createFDArgumentList());
-					}
-					FDArgument fdArg = FDeployQuickfixProviderUtil.getArgument(method.getOutArguments(), arg);
+					FDArgument fdArg = FDeployQuickfixProviderUtil.getArgument(fdArglist, arg);
 					if (fdArg == null) {
 						fdArg = FDeployFactory.eINSTANCE.createFDArgument();
 						fdArg.setTarget(arg);
-						method.getOutArguments().getArguments().add(fdArg);
+						fdArglist.getArguments().add(fdArg);
 					}
 					if (isRecursive) {
 						applyFixForElementInternal(fdArg, isRecursive);
@@ -222,7 +236,7 @@ public class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 			}
 		}
 	}
-	
+ 	
 	private void applyFixForUnionInternal(final FDUnion union, final boolean isRecursive, String... fields) {
 		if (union.getTarget().getElements().size() > 0) {
 			for (FField field : union.getTarget().getElements()) {
@@ -286,7 +300,8 @@ public class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 	 * @param isRecursive true if the fix should be applied recursively, false otherwise
 	 */
 	private void applyFixForElementInternal(final FDElement element, final boolean isRecursive) {
-		List<FDPropertyDecl> decls = PropertyMappings.getAllPropertyDecls(FDModelUtils.getRootElement(element).getSpec(), element);
+		FDRootElement root = FDModelUtils.getRootElement(element);
+		List<FDPropertyDecl> decls = PropertyMappings.getAllPropertyDecls(root.getSpec(), element);
 		for (FDPropertyDecl decl : decls) {
 			if (!FDeployQuickfixProviderUtil.hasPropertyDeclaration(element.getProperties(), decl) && PropertyMappings.isMandatory(decl)) {
 				FDProperty prop = FDeployFactory.eINSTANCE.createFDProperty();
@@ -299,6 +314,9 @@ public class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 		if (isRecursive) {
 			if (element instanceof FDMethod) {
 				applyFixForMethodInternal((FDMethod) element, isRecursive);
+			}
+			if (element instanceof FDBroadcast) {
+				applyFixForBroadcastInternal((FDBroadcast) element, isRecursive);
 			}
 			else if (element instanceof FDUnion) {
 				applyFixForUnionInternal((FDUnion) element, isRecursive);

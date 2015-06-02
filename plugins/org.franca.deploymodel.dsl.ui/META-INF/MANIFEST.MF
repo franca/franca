@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Franca Deployment Model UI plugin
 Bundle-Vendor: itemis AG
-Bundle-Version: 0.9.0.qualifier
+Bundle-Version: 0.9.1.qualifier
 Bundle-SymbolicName: org.franca.deploymodel.dsl.ui; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.franca.deploymodel.dsl;visibility:=reexport,
@@ -13,7 +13,8 @@ Require-Bundle: org.franca.deploymodel.dsl;visibility:=reexport,
  org.eclipse.compare,
  org.eclipse.ui.editors,
  org.eclipse.ui,
- org.antlr.runtime
+ org.antlr.runtime,
+ org.eclipse.jdt.core;resolution:=optional
 Import-Package: org.apache.log4j
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.franca.deploymodel.dsl.ui,
@@ -21,4 +22,4 @@ Export-Package: org.franca.deploymodel.dsl.ui,
  org.franca.deploymodel.dsl.ui.contentassist.antlr,
  org.franca.deploymodel.dsl.ui.internal,
  org.franca.deploymodel.dsl.ui.quickfix
-Bundle-Activator: org.franca.deploymodel.dsl.ui.internal.FDeployActivator
+Bundle-Activator: org.franca.deploymodel.dsl.ui.internal.FDeployAdaptiveActivator

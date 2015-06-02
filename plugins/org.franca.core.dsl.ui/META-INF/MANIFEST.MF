@@ -2,20 +2,21 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Franca IDL UI plugin
 Bundle-Vendor: itemis AG
-Bundle-Version: 0.9.0.qualifier
+Bundle-Version: 0.9.1.qualifier
 Bundle-SymbolicName: org.franca.core.dsl.ui; singleton:=true
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.franca.core.dsl;visibility:=reexport,
+Require-Bundle: org.franca.core.dsl;bundle-version="0.9.1";visibility:=reexport,
  org.eclipse.xtext.ui,
  org.eclipse.xtext.ui.shared,
  org.eclipse.compare,
  org.eclipse.xtext.builder,
  org.eclipse.ui.console;bundle-version="3.5.100",
- org.eclipse.core.expressions
-Import-Package: org.apache.log4j,
- org.franca.core.franca
+ org.eclipse.core.expressions,
+ org.eclipse.jdt.core;resolution:=optional
+Import-Package: org.apache.log4j
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Export-Package: org.franca.core.dsl.ui,org.franca.core.dsl.ui.contenta
- ssist,org.franca.core.dsl.ui.contentassist.antlr,org.franca.core.dsl.
- ui.internal,org.franca.core.dsl.ui.util
-Bundle-Activator: org.franca.core.dsl.ui.internal.FrancaIDLActivator
+Export-Package: org.franca.core.dsl.ui,
+ org.franca.core.dsl.ui.contentassist,
+ org.franca.core.dsl.ui.internal,
+ org.franca.core.dsl.ui.util
+Bundle-Activator: org.franca.core.dsl.ui.internal.FrancaIDLAdaptiveActivator

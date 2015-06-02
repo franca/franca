@@ -1,7 +1,7 @@
 
 // deployment specification with simple host declarations
 
-specification a.b.c.MySpec {
+specification a.b.c.MySpec03 {
 
 	// related to basic data types
 	for floats {
@@ -16,6 +16,12 @@ specification a.b.c.MySpec {
 	for strings {
 		PropString : Integer;
 	}
+	for booleans {
+		PropBoolean : Integer;
+	}
+	for byte_buffers {
+		PropByteBuffer : Integer;
+	}
 	
 	// related to user-defined types
 	for enumerations {
@@ -23,6 +29,9 @@ specification a.b.c.MySpec {
 	}
 	for enumerators {
 		PropEnumerator : Integer;
+	}
+	for arrays {
+		PropArray : Integer;
 	}
 	for structs {
 		PropStruct : Integer;

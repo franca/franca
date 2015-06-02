@@ -7,23 +7,23 @@
  *******************************************************************************/
 package org.franca.core.dsl.tests
 
-import java.util.Map
-import java.math.BigInteger
-import org.junit.Test
-import org.junit.Before
-import org.junit.runner.RunWith
 import com.google.inject.Inject
-import org.eclipse.emf.common.util.URI;
+import java.math.BigInteger
+import java.util.Map
+import org.eclipse.emf.common.util.URI
 import org.eclipse.xtext.junit4.InjectWith
 import org.eclipselabs.xtext.utils.unittesting.XtextRunner2
 import org.eclipselabs.xtext.utils.unittesting.XtextTest
-import org.franca.core.dsl.FrancaPersistenceManager
 import org.franca.core.dsl.FrancaIDLTestsInjectorProvider
-import org.franca.core.utils.ExpressionEvaluator
+import org.franca.core.dsl.FrancaPersistenceManager
 import org.franca.core.franca.FConstantDef
 import org.franca.core.franca.FExpression
+import org.franca.core.utils.ExpressionEvaluator
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
 
-import static extension org.junit.Assert.*
+import static org.junit.Assert.*
 
 @RunWith(typeof(XtextRunner2))
 @InjectWith(typeof(FrancaIDLTestsInjectorProvider))

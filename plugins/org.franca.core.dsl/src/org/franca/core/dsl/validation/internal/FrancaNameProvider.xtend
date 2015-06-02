@@ -31,15 +31,20 @@ class FrancaNameProvider {
 			FMethod: {
 				sb.append(obj.name)
 				for(arg : obj.inArgs) {
+					sb.append('_')
 					sb.append(arg.typeName)
 				}
+				if (! obj.outArgs.empty)
+					sb.append('_')
 				for(arg : obj.outArgs) {
+					sb.append('_')
 					sb.append(arg.typeName)
 				}
 			}
 			FBroadcast: {
 				sb.append(obj.name)
 				for(arg : obj.outArgs) {
+					sb.append('_')
 					sb.append(arg.typeName)
 				}
 			}

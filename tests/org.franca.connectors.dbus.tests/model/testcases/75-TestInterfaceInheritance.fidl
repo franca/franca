@@ -1,0 +1,15 @@
+// test interface definition with one attribute
+package testcases
+
+
+	interface MyInterfaceparent {
+		attribute Int32 parent
+}
+
+	interface MyInterfaceChild extends MyInterfaceparent{
+ 		attribute Int32 child
+}
+
+	interface MyInterfaceGrandChild extends MyInterfaceChild{
+
+}

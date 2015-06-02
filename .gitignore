@@ -4,3 +4,4 @@
 plugins/org.franca.tools.contracts.tracegen/bin
 plugins/org.franca.tools.contracts.tracegen/traces
 plugins/org.franca.tools.contracts.tracegen/xtend-gen
+features/org.franca.commons.feature/target

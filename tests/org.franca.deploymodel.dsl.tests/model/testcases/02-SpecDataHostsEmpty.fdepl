@@ -1,19 +1,22 @@
 
 // deployment specification with empty host declarations
 
-specification a.b.c.MySpec {
+specification a.b.c.MySpec02 {
 
 	// related to basic data types
 	for floats { }
 	for integers { }
 	for numbers { }
 	for strings { }
+	for booleans { }
+	for byte_buffers { }
 	
 	// related to user-defined types
 	for enumerations { }
 	for enumerators { }
 	for structs { }
 	for unions { }
+	for arrays { }
 	for struct_fields { }
 	for union_fields { }
 }

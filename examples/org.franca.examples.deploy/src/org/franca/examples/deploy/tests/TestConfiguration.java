@@ -11,4 +11,7 @@ public class TestConfiguration {
 	public static String fdeployInterfaceFile =
 			"org/example/deploy/MediaPlayer.fdepl";
 
+	public static String fdeployBinaryProtocolFile =
+			"org/example/deploy/MQTT3.fdepl";
+
 }

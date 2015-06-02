@@ -3,9 +3,8 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-Vendor: itemis AG
 Bundle-Localization: plugin
-Bundle-Version: 0.9.0.qualifier
+Bundle-Version: 0.9.1.qualifier
 Bundle-SymbolicName: org.franca.core.dsl.tests.base;singleton:=true
-Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.xtext,
  org.eclipse.xtext.junit4,

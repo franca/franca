@@ -293,6 +293,7 @@ public class TraceValidator {
 				return 
 				(this.event.getCall() != null && that.event.getCall() != null) ? this.event.getCall().equals(that.event.getCall()) : true &&
 				(this.event.getRespond() != null && that.event.getRespond() != null) ? this.event.getRespond().equals(that.event.getRespond()) : true &&
+				(this.event.getError() != null && that.event.getError() != null) ? this.event.getError().equals(that.event.getError()) : true &&
 				(this.event.getSignal() != null && that.event.getSignal() != null) ? this.event.getSignal().equals(that.event.getSignal()) : true &&
 				(this.event.getSet() != null && that.event.getSet() != null) ? this.event.getSet().equals(that.event.getSet()) : true &&
 				(this.event.getUpdate() != null && that.event.getUpdate() != null) ? this.event.getUpdate().equals(that.event.getUpdate()) : true;
@@ -304,6 +305,7 @@ public class TraceValidator {
 			int hash = 1;
 	        hash = hash * 17 + ((event.getCall() != null) ? event.getCall().hashCode() : 1);
 	        hash = hash * 31 + ((event.getRespond() != null) ? event.getRespond().hashCode() : 1);
+	        hash = hash * 19 + ((event.getError() != null) ? event.getError().hashCode() : 1);
 	        hash = hash * 13 + ((event.getSignal() != null) ? event.getSignal().hashCode() : 1);
 	        hash = hash * 17 + ((event.getSet() != null) ? event.getSet().hashCode() : 1);
 	        hash = hash * 31 + ((event.getUpdate() != null) ? event.getUpdate().hashCode() : 1);

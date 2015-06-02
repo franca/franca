@@ -61,7 +61,7 @@ enum FDPropertyHost:
 	arguments |
 	struct_fields | union_fields | arrays | structs | unions |
 	enumerations | enumerators |
-	strings | numbers | integers | floats;
+	strings | numbers | integers | floats | booleans | byte_buffers;
 
 
 // **************************************************************
@@ -71,7 +71,7 @@ FDTypeRef:
 	(predefined=FDPredefinedTypeId | complex=FDType) (array='[]')?;
 
 enum FDPredefinedTypeId:
-	Integer | String | Boolean | Interface;
+	Integer | String | Boolean | Interface | Instance;
 
 FDType:
 	FDEnumType;
@@ -91,7 +91,7 @@ FDRootElement:
 
 FDElement:
 	FDRootElement | FDInterfaceInstance |
-	FDAttribute | FDMethod | FDBroadcast | FDArgument |
+	FDAttribute | FDOperation | FDArgument |
 	FDTypeDef | FDField | FDEnumeration | FDEnumValue;
 
 FDProvider:
@@ -108,7 +108,7 @@ FDProvider:
 	'}';
 
 FDInterfaceInstance:
-	'instance' target=[fidl::FInterface|FQN] '{'
+	'instance' target=[fidl::FInterface|FQN] ('as' name=FQN)? '{'
 		(properties+=FDProperty ((',')? properties+=FDProperty)*)?
 	'}';
 
@@ -147,6 +147,9 @@ FDAttribute:
 	'attribute' target=[fidl::FAttribute|FQN] '{'
 		(properties+=FDProperty ((',')? properties+=FDProperty)*)?
 	'}';
+
+FDOperation:
+	FDMethod | FDBroadcast;
 
 FDMethod:
 	'method' target=[fidl::FMethod|FQN] '{'
@@ -221,13 +224,18 @@ FDValueArray:
 	'{' values+=FDValue (',' values+=FDValue)* '}';
 	
 FDValue:
-	FDInteger | FDString | FDEnum | FDBoolean | FDInterfaceRef;
+	FDInteger | FDString | FDBoolean | FDInterfaceRef | FDGeneric;
 	
 FDInteger:	    value=INT;
 FDString:	    value=STRING;
-FDEnum:         value=[FDEnumerator|ID];
 FDBoolean:      value=('false'|'true');
 FDInterfaceRef: '&' value=[fidl::FInterface|FQN];
+
+// FDGeneric.value might be one of:
+//   - [FDEnumerator|ID]
+//   - [FDInterfaceInstance|FQN]
+// See FDModelUtils for some helper functions.
+FDGeneric:      value=[ecore::EObject|FQN];
 
 
 // **************************************************************

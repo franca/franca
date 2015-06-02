@@ -1,0 +1,32 @@
+/*******************************************************************************
+ * Copyright (c) 2014 itemis AG (http://www.itemis.de).
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************/
+
+// import the deployment specification
+import "../spec/BinaryProtocol.fdepl"
+
+// import the actual Franca interfaces we want to deploy 
+import "classpath:/org/example/idl/MQTT3.fidl"
+
+
+/**
+ * This specifies the bit layout for a binary protocol representation of
+ * MQTT3. This is just an early example, it is by far not complete.
+ */
+define org.example.spec.BinaryProtocol for interface org.example.idl.MQTT3
+{
+	struct FixedHeader {
+		RETAIN           { NumberOfBits = 1 }
+		QoS_level        { NumberOfBits = 2 }
+		DUP_flag         { NumberOfBits = 1 }
+		Message_Type     { NumberOfBits = 4 }
+		
+		Remaining_Length { NumberOfBits = 7 }
+		Continuation_Bit { NumberOfBits = 1 }
+	}
+	
+}

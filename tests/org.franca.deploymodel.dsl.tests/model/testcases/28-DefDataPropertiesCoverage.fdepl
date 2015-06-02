@@ -1,0 +1,412 @@
+// deployment definition
+
+import "03-SpecDataHostsSimple.fdepl"
+import "../fidl/05-CoverageInterface.fidl"
+
+define a.b.c.MySpec03 for interface fidl.CoverageInterface {
+
+	attribute someInt8 {
+		PropInteger = 0
+		PropNumber = 0
+	}
+
+	attribute someUInt8 {
+		PropInteger = 0
+		PropNumber = 0
+	}
+
+	attribute someInt16 {
+		PropInteger = 0
+		PropNumber = 0
+	}
+
+	attribute someUInt16 {
+		PropInteger = 0
+		PropNumber = 0
+	}
+
+	attribute someInt32 {
+		PropInteger = 0
+		PropNumber = 0
+	}
+
+	attribute someUInt32 {
+		PropInteger = 0
+		PropNumber = 0
+	}
+
+	attribute someInt64 {
+		PropInteger = 0
+		PropNumber = 0
+	}
+
+	attribute someUInt64 {
+		PropInteger = 0
+		PropNumber = 0
+	}
+
+	attribute someBoolean {
+		PropBoolean = 0
+	}
+
+	attribute someFloat {
+		PropFloat = 0
+		PropNumber = 0
+	}
+
+	attribute someDouble {
+		PropFloat = 0
+		PropNumber = 0
+	}
+
+	attribute someString {
+		PropString = 0
+	}
+
+	attribute someBuffer {
+		PropByteBuffer = 0
+	}
+
+	method aMethod {
+		in {
+			someInt8 {
+				PropInteger = 0
+				PropNumber = 0
+			}
+			someUInt8 {
+				PropInteger = 0
+				PropNumber = 0
+			}
+			someInt16 {
+				PropInteger = 0
+				PropNumber = 0
+			}
+			someUInt16 {
+				PropInteger = 0
+				PropNumber = 0
+			}
+			someInt32 {
+				PropInteger = 0
+				PropNumber = 0
+			}
+			someUInt32 {
+				PropInteger = 0
+				PropNumber = 0
+			}
+			someInt64 {
+				PropInteger = 0
+				PropNumber = 0
+			}
+			someUInt64 {
+				PropInteger = 0
+				PropNumber = 0
+			}
+			someBoolean {
+				PropBoolean = 0
+			}
+			someFloat {
+				PropFloat = 0
+				PropNumber = 0
+			}
+			someDouble {
+				PropFloat = 0
+				PropNumber = 0
+			}
+			someString {
+				PropString = 0
+			}
+			someBuffer {
+				PropByteBuffer = 0
+			}
+		}
+		out {
+			outInt8 {
+				PropInteger = 0
+				PropNumber = 0
+			}
+			outUInt8 {
+				PropInteger = 0
+				PropNumber = 0
+			}
+			outInt16 {
+				PropInteger = 0
+				PropNumber = 0
+			}
+			outUInt16 {
+				PropInteger = 0
+				PropNumber = 0
+			}
+			outUInt32 {
+				PropInteger = 0
+				PropNumber = 0
+			}
+			outInt32 {
+				PropInteger = 0
+				PropNumber = 0
+			}
+			outUInt64 {
+				PropInteger = 0
+				PropNumber = 0
+			}
+			outInt64 {
+				PropInteger = 0
+				PropNumber = 0
+			}
+			outBoolean {
+				PropBoolean = 0
+			}
+			outFloat {
+				PropFloat = 0
+				PropNumber = 0
+			}
+			outDouble {
+				PropFloat = 0
+				PropNumber = 0
+			}
+			outString {
+				PropString = 0
+			}
+			outBuffer {
+				PropByteBuffer = 0
+			}
+		}
+	}
+
+	broadcast aBroadcast {
+		out {
+			someInt8 {
+				PropInteger = 0
+				PropNumber = 0
+			}
+			someUInt8 {
+				PropInteger = 0
+				PropNumber = 0
+			}
+			someInt16 {
+				PropInteger = 0
+				PropNumber = 0
+			}
+			someUInt16 {
+				PropInteger = 0
+				PropNumber = 0
+			}
+			someInt32 {
+				PropInteger = 0
+				PropNumber = 0
+			}
+			someUInt32 {
+				PropInteger = 0
+				PropNumber = 0
+			}
+			someInt64 {
+				PropInteger = 0
+				PropNumber = 0
+			}
+			someUInt64 {
+				PropInteger = 0
+				PropNumber = 0
+			}
+			someBoolean {
+				PropBoolean = 0
+			}
+			someFloat {
+				PropFloat = 0
+				PropNumber = 0
+			}
+			someDouble {
+				PropFloat = 0
+				PropNumber = 0
+			}
+			someString {
+				PropString = 0
+			}
+			someBuffer {
+				PropByteBuffer = 0
+			}
+		}
+	}
+
+	enumeration aEnum {
+		PropEnumeration = 0
+		A {
+			PropEnumerator = 0
+		}
+		B {
+			PropEnumerator = 0
+		}
+		C {
+			PropEnumerator = 0
+		}
+		D {
+			PropEnumerator = 0
+		}
+		E {
+			PropEnumerator = 0
+		}
+	}
+
+	array aBoolArray {
+		PropArray = 0
+	}
+
+	array anIntArray {
+		PropArray = 0
+	}
+
+	array aStringArray {
+		PropArray = 0
+	}
+
+	array anEnumArray {
+		PropArray = 0
+	}
+
+	struct aStruct {
+		PropStruct = 0
+		someInt8 {
+			PropInteger = 0
+			PropNumber = 0
+			PropStructField = 0
+		}
+		someUInt8 {
+			PropInteger = 0
+			PropNumber = 0
+			PropStructField = 0
+		}
+		someInt16 {
+			PropInteger = 0
+			PropNumber = 0
+			PropStructField = 0
+		}
+		someUInt16 {
+			PropInteger = 0
+			PropNumber = 0
+			PropStructField = 0
+		}
+		someInt32 {
+			PropInteger = 0
+			PropNumber = 0
+			PropStructField = 0
+		}
+		someUInt32 {
+			PropInteger = 0
+			PropNumber = 0
+			PropStructField = 0
+		}
+		someInt64 {
+			PropInteger = 0
+			PropNumber = 0
+			PropStructField = 0
+		}
+		someUInt64 {
+			PropInteger = 0
+			PropNumber = 0
+			PropStructField = 0
+		}
+		someBoolean {
+			PropBoolean = 0
+			PropStructField = 0
+		}
+		someFloat {
+			PropFloat = 0
+			PropNumber = 0
+			PropStructField = 0
+		}
+		someDouble {
+			PropFloat = 0
+			PropNumber = 0
+			PropStructField = 0
+		}
+		someString {
+			PropString = 0
+			PropStructField = 0
+		}
+		someBuffer {
+			PropByteBuffer = 0
+			PropStructField = 0
+		}
+	}
+
+	union aUnion {
+		PropUnion = 0
+		someInt8 {
+			PropInteger = 0
+			PropNumber = 0
+			PropUnionField = 0
+		}
+		someUInt8 {
+			PropInteger = 0
+			PropNumber = 0
+			PropUnionField = 0
+		}
+		someInt16 {
+			PropInteger = 0
+			PropNumber = 0
+			PropUnionField = 0
+		}
+		someUInt16 {
+			PropInteger = 0
+			PropNumber = 0
+			PropUnionField = 0
+		}
+		someInt32 {
+			PropInteger = 0
+			PropNumber = 0
+			PropUnionField = 0
+		}
+		someUInt32 {
+			PropInteger = 0
+			PropNumber = 0
+			PropUnionField = 0
+		}
+		someInt64 {
+			PropInteger = 0
+			PropNumber = 0
+			PropUnionField = 0
+		}
+		someUInt64 {
+			PropInteger = 0
+			PropNumber = 0
+			PropUnionField = 0
+		}
+		someBoolean {
+			PropBoolean = 0
+			PropUnionField = 0
+		}
+		someFloat {
+			PropFloat = 0
+			PropNumber = 0
+			PropUnionField = 0
+		}
+		someDouble {
+			PropFloat = 0
+			PropNumber = 0
+			PropUnionField = 0
+		}
+		someString {
+			PropString = 0
+			PropUnionField = 0
+		}
+		someBuffer {
+			PropByteBuffer = 0
+			PropUnionField = 0
+		}
+	}
+
+	struct aNestedStruct {
+		PropStruct = 0
+		someEnum {
+			PropStructField = 0
+		}
+		someArray {
+			PropStructField = 0
+		}
+		someStruct {
+			PropStructField = 0
+		}
+		someUnion {
+			PropStructField = 0
+		}
+	}
+
+}
