@@ -8,10 +8,8 @@
 package org.franca.deploymodel.dsl.generator.internal
 
 import com.google.inject.Inject
-import org.franca.deploymodel.dsl.fDeploy.FDDeclaration
 import org.franca.deploymodel.dsl.fDeploy.FDEnumType
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl
-import org.franca.deploymodel.dsl.fDeploy.FDPropertyHost
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification
 
 import static extension org.franca.deploymodel.dsl.generator.internal.GeneratorHelper.*
@@ -27,7 +25,7 @@ class IDataGenerator extends AccessMethodGenerator {
 		 * This is the data types related part only.
 		 */
 		public interface IDataPropertyAccessor
-			extends Enums«IF spec.base!=null», «spec.base.name».IDataPropertyAccessor«ENDIF»
+			extends Enums«IF spec.base!=null», «spec.base.qualifiedClassname».IDataPropertyAccessor«ENDIF»
 		{
 			«spec.generateAccessMethods(false)»
 			

@@ -11,6 +11,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDEnumType
 import org.franca.deploymodel.dsl.fDeploy.FDPredefinedTypeId
 import org.franca.deploymodel.dsl.fDeploy.FDTypeRef
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl
+import org.franca.deploymodel.dsl.fDeploy.FDSpecification
 
 class GeneratorHelper {
 
@@ -47,5 +48,23 @@ class GeneratorHelper {
 	def static genListType(String type) '''List<«type»>'''
 	
 	def static getMethodName(FDPropertyDecl it) '''get«name.toFirstUpper»'''
+
+	def static getPackage (FDSpecification it) {
+		val sep = name.lastIndexOf(".")
+		if (sep>0)
+			name.substring(0, sep)
+		else
+			""
+	}
+
+	def static classname (FDSpecification it) {
+		val sep = name.lastIndexOf(".")
+		val basename = if (sep>0) name.substring(sep+1) else name
+		basename.toFirstUpper
+	}
+
+	def static getQualifiedClassname(FDSpecification it) {
+		package + "." + classname
+	}
 
 }
