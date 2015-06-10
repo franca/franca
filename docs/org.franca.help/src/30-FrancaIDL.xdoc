@@ -322,7 +322,8 @@ map ExampleMap {
 }
 ]
 
-Key types as well as value types might be primitive or user-defined types. 
+Key types as well as value types might be primitive or user-defined types
+which provide an equality-relation. 
 NB: In some target languages, key types might be restricted to primitive types.
 
 
