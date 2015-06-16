@@ -15,7 +15,6 @@ import org.franca.core.franca.FOperator
 import org.franca.core.franca.FQualifiedElementRef
 import org.franca.core.franca.FConstantDef
 
-import static extension org.franca.core.contracts.TypeSystem.*
 import org.franca.core.franca.FBooleanConstant
 import org.franca.core.franca.FUnaryOperation
 import org.franca.core.franca.FField
