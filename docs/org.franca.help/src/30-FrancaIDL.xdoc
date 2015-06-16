@@ -971,6 +971,75 @@ by specifying the proper and allowed behavior of interfaces in a consistent way
 the value and expressiveness of interface definitions can be increased to a large extent.
 
 
+section:FIDL_Expressions[Expressions]
+
+Expressions can be used in Franca IDL in various ways:
+
+ul[
+	item[as default values for ref:FIDL_Types_Enum_Basic[enumerators]]
+	item[as initializer expressions for constant definitions]
+	item[as guard conditions in ref:FIDL_Contracts_PSM[interface contracts]]
+	item[as initializer expressions for ref:FIDL_Contracts_StateVars[state variables] in contracts]
+	item[in the ref:FIDL_Contracts_Actions[action code] of contracts (e.g., in if-conditions)]
+]
+
+Expressions in Franca IDL are e[typed]. The type system supports the
+basic types e[boolean], e[integer], e[float], e[double] and e[string].
+The type system is aware of user-defined types defined in Franca IDL.
+I.e., if a struct type is defined by 
+
+code[Franca][
+struct SomeStruct {
+	UInt8 member1
+	String member2
+}
+]
+
+then the type e[SomeStruct] is also available in expressions.
+E.g., if expression code[s] refers to a Franca constant of type
+e[SomeStruct], the expression code[s.member1] will be of type e[integer].
+
+The Franca validator ensures that all expressions have a proper type
+which also has to be consistent with the usage of the expression.
+E.g., an expression used as a guard condition in a contract must
+be of e[boolean] type.    
+
+section2:FIDL_Expressions_Constants[Constant values]
+
+The basic elements for building expressions are e[constant values].
+
+code[Franca][
+// constant expressions
+true      // boolean
+false     // boolean
+100       // integer (positive)
+-273      // integer (negative)
+1.2f      // float
+6.022e23f // float
+3.1415d   // double
+8.617e-5d // double
+"foobar"  // string
+]
+
+section2:FIDL_Expressions_ComparisonOps[Comparison operators]
+
+Two expressions of equal type may be related to each other using
+comparison operators. The resulting expression is of type e[boolean].
+
+
+section2:FIDL_Expressions_ArithmeticOps[Arithmetic operations]
+
+Expressions may be built from sub-expressions of type e[integer],
+e[float] or e[double] using arithmetic operations.
+
+
+section2:FIDL_Expressions_BooleanOps[Boolean operations]
+
+Expressions may be built from sub-expressions of type e[boolean]
+using boolean operations.
+
+
+
 section:FIDL_Comments[Comments]
 
 Franca supports two kinds of comments: unstructured and structured comments.
