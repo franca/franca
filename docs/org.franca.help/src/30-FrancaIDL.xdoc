@@ -143,9 +143,10 @@ section2:FIDL_Types_Enum[Enumerations]
 
 section3:FIDL_Types_Enum_Basic[Basic enumerations]
 
-Enumerations can be defined by
+An e[enumeration] (also called e[enumerated type]) is a data type consisting of a set
+of named values called e[enumerators]. In Franca IDL, an enumeration is defined by
 code[Franca][
-enumeration ExampleEnumeration {
+enumeration ExampleEnumeration1 {
 	VALUE_1
 	VALUE_2
 	VALUE_3
@@ -153,13 +154,27 @@ enumeration ExampleEnumeration {
 }
 ]
 
-Values for the enumeration identifiers can be defined optionally.
-They are defined as string constants which usually will contain an integer number:
+The enumerators are identifiers which can be used as unique constants.
+Values for the enumerators can be defined optionally.
+Each value is defined using an ref:FIDL_Expressions[expression] of type e[integer]:
 code[Franca][
-enumeration ExampleEnumeration {
-	VALUE_1 = "10"
-	VALUE_2 = "20"
-	VALUE_3 = "30"
+enumeration ExampleEnumeration2 {
+	VALUE_1 = 100
+	VALUE_2 = 100+1
+	VALUE_3 = 30*30
+	// ...
+}
+]
+
+Deprecated:
+It is also possible to use string constants as enumerator value definitions.
+However, this will result in a deprecated-warning by the Franca validator. 
+Note that in this case the string constant should be parsable as integer number:
+code[Franca][
+enumeration ExampleEnumeration3 {
+	E1 = "10"
+	E2 = "20"
+	E3 = "foo"  // invalid, no integer
 	// ...
 }
 ]
