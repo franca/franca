@@ -434,7 +434,7 @@ ul[
 	item[rename a method or broadcast, or one of its arguments]
 	item[rename a user-defined data-type]
 	item[add a contract to an interface which previously didn't have any]
-	item[tighten the constrains for the dynamic behavior of an interface (i.e., its contract)]
+	item[tighten the constraints for the dynamic behavior of an interface (i.e., its contract)]
 ]
 Interface designers should try hard to avoid incompatible changes, or at least provide
 periods during which a feature is marked as deprecated before it is removed completely. 
@@ -952,7 +952,7 @@ In a future release of Franca IDL there will be mandatory extensions
 for defining the value domains of the state variables (e.g., ranges for 
 integer values). This will allow model checking of PSMs. 
 
-section2:FIDL_Contracts_Exploits[Exploiting contract information]
+section2:FIDL_Contracts_Benefits[Exploiting contract information]
 
 The contract information can be used in a variety of ways:
 ul[
