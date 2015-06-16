@@ -406,20 +406,22 @@ code[Franca][
 interface ExampleInterface {
 	version { major 5 minor 0 }
 	
-	// put attributes here
-	// put methods here
-	// put broadcasts here
+	// put type definitions here
+
+	// put attributes, methods and broadcasts here
 	
 	// put optional contract here
-	
-	// put type definitions here
 }
 ]
 
 The name of the interface will be scoped relative to the fully qualified name
 of the package defined at the beginning of the Franca file.
 
-The order of the elements of an interface has been chosen deliberately and cannot be changed.
+The elements of an interface can be arranged freely. This allows to provide
+a logical grouping of interface elements. The interface contract (if any) should be
+the final element of the interface definition.
+In previous Franca versions, the order of the elements of an interface
+was fixed and thus didn't allow a logical grouping.
 
 
 section3:FIDL_Interface_Basic_Versioning[Interface versioning and change compatibility]
@@ -444,7 +446,7 @@ Example use cases for backward e[compatible] changes:
 ul[
 	item[add attribute, method or broadcast]
 	item[add an argument for a method or broadcast (*)]
-	item[add a parameter for a struct or union (*)]
+	item[add a field for a struct or union (*)]
 	item[remove a contract from an interface]
 	item[ease restrictions on the dynamic behavior of an interface (i.e., its contract)]
 ] 
@@ -485,6 +487,13 @@ table:InheritanceSemantics[
 		---
 	]
 	tr[
+		td[type definitions]
+		td[All types of the base interface are inherited by the derived interface.
+		   Redefining of types is not allowed (i.e., type with same name in 
+		   base and derived interface).
+		]
+	]
+	tr[
 		td[attributes]
 		td[All attributes of the base interface are inherited by the derived interface.
 		   Overloading of attributes is not allowed (i.e., attribute with same name in 
@@ -517,13 +526,6 @@ table:InheritanceSemantics[
 		   It is not possible currently to redefine the inherited contract.
 		   This will change in a future release of Franca (this will allow extending
 		   the contract of its base interface by the derived interface).
-		]
-	]
-	tr[
-		td[type definitions]
-		td[All types of the base interface are inherited by the derived interface.
-		   Redefining of types is not allowed (i.e., type with same name in 
-		   base and derived interface).
 		]
 	]
 ]
