@@ -2,11 +2,12 @@ chapter:FrancaIDL[Franca IDL Reference]
 
 The core of Franca IDL is the support for ref:FIDL_Interface[interface definitions], consisting of
 attributes, methods and broadcasts. Those definitions will be based on a ref:FIDL_Types[type system],
-which provides a variety of primitive and user-defined types. 
+which provides a variety of primitive and user-defined types as well as constant definitions. 
 Additionally, the dynamic behavior of interfaces can be specified using ref:FIDL_Contracts[contracts]
 consisting of protocol state machines.
-Types can be defined either on a global scope using ref:FIDL_TypeCollection[type collections],
-or as part of an ref:FIDL_Interface[interface definition].
+Types and constants can be defined either on a global scope using
+ref:FIDL_TypeCollection[type collections], or as part of an
+ref:FIDL_Interface[interface definition].
 Finally, Franca IDL supports Java-doc like tagged comments, called ref:FIDL_Comments[structured comments]
 and language features like e[packages] and e[imports] which can be used for defining interfaces using
 ref:FIDL_MultipleFiles[multiple Franca IDL files].
@@ -351,14 +352,100 @@ typedef ExampleAlias is UInt32
 ]
 
 
+section:FIDL_Constants[Constant definitions]
+
+Franca supports the definition of constants, which are typed values
+identifiable by a unique name. Constants might be used as part
+of any ref:FIDL_Expressions[expression], given that they have a compatible type.
+Tools as code generators should create code which establishes these constants
+on the executable platform.
+
+section2:FIDL_Constants_Primitive[Primitive constants]
+
+Here are some examples of primitive constants: 
+code[Franca][
+const Boolean b1 = true
+const UInt32 MAX_COUNT = 10000
+const String foo = "bar"
+const Double pi = 3.1415d
+]
+
+The initializer expression on the right-hand side of the constant definition
+must evaluate to a proper type which is compatible with the constant's type.
+Note that ref:FIDL_Expressions[complex expressions] might be used as initializer
+expressions. Examples:
+code[Franca][
+const UInt32 twentyfive = 5*5
+const Boolean b2 = MAX_COUNT > 3
+const Boolean b3 = (a && b) || foo=="bar"
+]
+
+section2:FIDL_Constants_Complex[Complex constants]
+
+Constants may also have more complex, user-defined types. This will lead to more
+elaborate initializer expressions. This section will show examples of how to define
+constants which are of array, struct, union and map type.
+
+For array constants, the initializer expression lists the array elements
+in square brackets. Example:
+code[Franca][
+array Array1 of UInt16
+
+const Array1 empty = \[\]
+const Array1 full  = \[ 1, 2, 2+3, 100*100+100 \]
+]
+
+Constants of struct type will have to define an initializer expression for each
+struct element. Example:
+code[Franca][
+struct Struct1 {
+	Boolean e1
+	UInt16 e2
+	String e3
+}
+
+const Struct1 s1 = { e1: true, e2: 1, e3: "foo" }
+]
+
+If struct types get more complex (i.e., with nested struct types or arrays),
+the initializer expression is not easy to understand. Therefore, each struct
+element in the initializer expression has to be uniquely identified by the
+element name (e.g., code[e1] in the example).
+
+The syntax for union type constants is similar to struct types. However,
+as a union represents exactly one of its elements, the initializer expression
+will only refer to one element name. Some examples:
+code[Franca][
+union Union1 {
+	UInt16 e1
+	Boolean e2
+	String e3
+}
+
+const Union1 uni1 = { e1: 1 }
+const Union1 uni2 = { e3: "foo" }
+]
+
+Finally, the initializers for a constant of type e[map] contains a list of
+key/value pairs. Example:
+code[Franca][
+map Map1 { UInt16 to String }
+
+const Map1 m1 = \[ 1 => "one", 2 => "two" \]
+]
+
+The initializer expressions for the keys and values of each pair might be 
+themselves arbitrary complex expression. However, they have to be evaluated
+to the proper type given by the definition of the map type.
+ 
 
 section:FIDL_TypeCollection[TypeCollection definition]
 
-A e[type collection] is a (maybe empty) set of user-defined types.
+A e[type collection] is a (maybe empty) set of user-defined types and constant definitions.
 Previous to Franca-0.8.0, user-defined types could be located on the
 top-level of a Franca model. This has been banned with Franca-0.8.0 in order to 
 provide a consistent scheme of fully qualified names and versioning for
-user-defined types.
+user-defined types. Type collections may also define constants.
 
 Each type collection in Franca has some metadata: a single identifier
 e[name] for the collection and an optional e[version number] (with major/minor scheme).
@@ -370,7 +457,7 @@ code[Franca][
 typeCollection ExampleTypeCollection {
 	version { major 3 minor 1 }
 	
-	// put user-defined types here
+	// put user-defined types and constant definitions here
 }
 ]
 
@@ -387,11 +474,11 @@ section:FIDL_Interface[Interface definition]
 Each interface in Franca consists of some metadata (e.g., interface name and version number),
 the actual interface definition (consisting of attributes, methods and broadcasts), an optional
 ref:FIDL_Contracts[contract] specifying the dynamic behavior of the interface and, last but not least,
-user-defined ref:FIDL_Types[data types]. An interface definition might use the user-defined
-types of another interface definition only if it inherits (directly or indirectly)
-from that interface definition. Thus, the visibility of user-defined types as part of an
-interface definition is restricted. This is different from the global visibility of types
-which are part of a type collection.    
+user-defined ref:FIDL_Types[data types] and ref:FIDL_Constants[constants].
+An interface definition might use the user-defined types of another interface definition
+only if it inherits (directly or indirectly) from that interface definition.
+Thus, the visibility of user-defined types as part of an interface definition is restricted.
+This is different from the global visibility of types which are part of a type collection.    
 
 section2:FIDL_Interface_Basic[Basic interface definition]
 
@@ -406,7 +493,7 @@ code[Franca][
 interface ExampleInterface {
 	version { major 5 minor 0 }
 	
-	// put type definitions here
+	// put type definitions and constant definitions here
 
 	// put attributes, methods and broadcasts here
 	
@@ -490,6 +577,14 @@ table:InheritanceSemantics[
 		td[type definitions]
 		td[All types of the base interface are inherited by the derived interface.
 		   Redefining of types is not allowed (i.e., type with same name in 
+		   base and derived interface).
+		]
+	]
+	tr[
+		td[constant definitions]
+		td[All constant definitions of the base interface are inherited by
+		   the derived interface.
+		   Redefining of constants is not allowed (i.e., constant with same name in 
 		   base and derived interface).
 		]
 	]
