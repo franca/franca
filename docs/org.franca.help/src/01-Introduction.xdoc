@@ -7,53 +7,6 @@ As Franca is based on Eclipse, there are some ref:Intro_FrancaTools[powerful too
 which can be used to work with Franca. E.g., a user-friendly editor for
 Franca IDL files is available.
 
-section:Intro_FrancaLicense[Copyright / License]
-
-table[
-	tf[
-		professional
-		tcol[2] tcol[1]
-	]
-	tr[
-		td[Copyright (c) 2013-2015 itemis AG
-		
-			(link[http://www.itemis.de][http://www.itemis.de]).
-			
-			All rights reserved.]
-		td[Updates and new features.]
-		---
-	]
-	tr[
-		td[Copyright (c) 2012 Harman International
-		
-			(link[http://www.harman.com][http://www.harman.com]).
-			
-			All rights reserved.]
-		td[Initial version.]
-	]
-]
-
-ul[
-	item[This document and the accompanying software/materials
-		are made available under the terms of the Eclipse Public License v1.0
-		which accompanies this distribution, and is available at
-		link[http://www.eclipse.org/legal/epl-v10.html][http://www.eclipse.org/legal/epl-v10.html].
-	]
-
-	item[The information contained herein is subject to change without notice
-		and is not warranted to be error-free. If you find any errors, please report
-		them to us in writing.
-	]
-
-	item[This software is developed for general use in a variety of information management
-		applications. It is not developed or intended for use in any inherently dangerous
-		applications, including applications which may create a risk of personal injury.
-		If you use this software in dangerous applications, then you shall be responsible
-		to take all appropriate fail-safe, backup, redundancy, and other measures to ensure
-		the safe use of this software. Harman International and its affiliates disclaim
-		any liability for any damages caused by use of this software in dangerous applications.
-	]
-]
 
 section:Intro_FrancaArchitecture[Franca framework architecture]
 

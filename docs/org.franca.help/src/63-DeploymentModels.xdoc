@@ -127,7 +127,7 @@ table:DeploymentInterfaceHostsPart1[
 	caption[Franca deployment: Property hosts related to interface elements.]
 	tf[
 		professional
-		tcol[1] tcol[3] tcol[2] tcol[2]
+		tcol[3] tcol[6] tcol[4] tcol[4]
 	]
 	tr[
 		td[e[Host]]

@@ -566,7 +566,7 @@ table:InheritanceSemantics[
 	caption[Franca interface members and their semantics with respect to interface inheritance.]
 	tf[
 		professional
-		tcol[1] tcol[4]
+		tcol[2] tcol[5]
 	]
 	tr[
 		td[e[Interface element]]
