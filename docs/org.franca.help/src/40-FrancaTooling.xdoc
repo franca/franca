@@ -22,7 +22,7 @@ table:KeyboardShortcuts[
 	caption[Most important Eclipse keyboard short-cuts for Franca.]
 	tf[
 		professional
-		tcol[1] tcol[1] tcol[2]
+		tcol[3] tcol[2] tcol[4]
 	]
 	tr[
 		td[e[Shortcut]]
@@ -31,9 +31,9 @@ table:KeyboardShortcuts[
 		---
 	]
 	tr[
-		td[Ctrl-/]
+		td[Ctrl-7]
 		td[Toggle comment]
-		td[Toggle comment for line / selection.]
+		td[Toggle comment for current line or selection.]
 	]
 	tr[
 		td[Ctrl-Space]
@@ -60,13 +60,15 @@ The dynamic behavior of interfaces can be modeled using protocol state machines
 (see section ref:FIDL_Contracts[Contracts]). As contracts must be an integral part
 of a Franca interface, the state machines are modeled in the same textual editor
 as the other parts of a Franca interface (as described in the previous section).
+See also section ref:FIDL_Contracts[Contracts] for more information about how
+contracts are modeled.
 
 In order to understand the structure of the protocol state machine of a contract
 quickly, Franca comes with a e[Contract Viewer]. In order to use it,
-the Franca e[User Interface Extension] feature has to be installed in the IDE.
+the Franca e[User Interface Add-Ons] feature has to be installed in the IDE.
 Then, the contract viewer can be opened by selecting e[Window > Show View... > Franca]. 
 
-The following screenshot shows the contract viewer:
+The following screenshot shows the contract viewer.
 
 img[images/contractviewer_screenshot.png][Screenshot of Franca Contract Viewer.][ ][ ]
 
