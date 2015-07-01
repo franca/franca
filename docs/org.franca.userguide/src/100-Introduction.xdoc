@@ -106,7 +106,7 @@ and can be installed in any Eclipse environment which provides modeling support.
 ref:FrancaEditorScreenshot shows a screenshot of Franca's IDL editor in action.
 
 img:FrancaEditorScreenshot[images/franca_editor_screenshot_1.png]
-	[Screenshot of Franca IDL editor.][ ][ ]
+	[Screenshot of Franca IDL editor.][][][.7]
 
 The editor provides syntax highlighting,
 code completion, folding, online validation, a helpful outline view,

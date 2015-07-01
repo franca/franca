@@ -178,7 +178,7 @@ table:DeploymentInterfaceHostsPart2[
 	caption[Franca deployment: Property hosts related to interface data types.]
 	tf[
 		professional
-		tcol[1] tcol[3] tcol[2] tcol[2]
+		tcol[2] tcol[5] tcol[4] tcol[4]
 	]
 	tr[
 		td[e[Host]]
@@ -694,7 +694,8 @@ FDModel fdmodel = FDModelHelper.instance().loadModel(inputfile);
 FDModelExtender fdmodelExt = new FDModelExtender(fdmodel);
 for(FDInterface fdi : fdmodelExt.getFDInterfaces()) {
 	FDeployedInterface deployed = new FDeployedInterface(fdi);
-	SimpleSpecInterfacePropertyAccessor accessor = new SimpleSpecInterfacePropertyAccessor(deployed);
+	SimpleSpecInterfacePropertyAccessor accessor =
+		new SimpleSpecInterfacePropertyAccessor(deployed);
 	// use accessor, e.g., accessor.getWillChangeOften()
 	
 	FInterface api = fdi.getTarget();

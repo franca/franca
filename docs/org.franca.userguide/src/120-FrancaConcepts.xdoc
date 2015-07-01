@@ -77,8 +77,9 @@ A Franca connector for a specific non-Franca IDL provides functions for loading
 and saving models in that IDL and also for transforming models to/from Franca.
 Each connector should implement Franca's e[IFrancaConnector] interface located in the
 e[org.franca.core.framework] package. Typically, each connector is provided as a
-separate Eclipse plugin, e.g. e[org.franca.connectors.dbus] for handling 
-DBus Introspection XML files. 
+separate Eclipse plug-in. E.g., Franca's e[D-Bus Support] feature contains
+the plug-in e[org.franca.connectors.dbus] (and a corresponding UI plug-in)
+for handling DBus Introspection XML files. 
 
 See chapter ref:BuildingTransformations[Bulding Transformations] for more details 
 on this concept. In chapter ref:FrancaConnectors[Franca Connectors] the currently

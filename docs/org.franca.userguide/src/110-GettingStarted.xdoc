@@ -45,9 +45,12 @@ and also do some changes.
 section:GettingStarted_ExampleProject[Contents of example project]
 
 The example project provides several test cases, which are located in the package
-e[org.franca.examples.basic.tests]. You will find this package in the e[src] folder
-which is part of the e[org.franca.examples.basic] example project.
+ul[
+	item[e[org.franca.examples.basic.tests]]
+]
 
+You will find this package in the e[src] folder
+which is part of the e[org.franca.examples.basic] example project.
 Each of these test cases might be started by selecting e[Run As > JUnit Test] in the
 test's context menu.
 
