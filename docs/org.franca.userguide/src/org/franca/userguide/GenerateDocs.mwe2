@@ -1,4 +1,4 @@
-module org.franca.help.GenerateDocs
+module org.franca.userguide.GenerateDocs
 
 var document = "Franca User Guide"
 var targetDir = "src-gen"
