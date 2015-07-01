@@ -91,25 +91,28 @@ chapter-ref[GettingStarted]
 
 chapter-ref[FrancaConcepts]
 
+chapter-ref[FrancaTooling]
+
 
 part:PartTwo[Part Two]
 
 chapter-ref[FrancaIDL]
-
-chapter-ref[FrancaTooling]
-
-chapter-ref[FrancaModelAPI]
 
 chapter-ref[DeploymentModels]
 
 
 part:PartThree[Part Three]
 
+chapter-ref[FrancaConnectors]
+
+
+part:PartFour[Part Four]
+
+chapter-ref[FrancaModelAPI]
+
 chapter-ref[BuildingGenerators]
 
 chapter-ref[BuildingTransformations]
-
-chapter-ref[FrancaConnectors]
 
 chapter-ref[FrancaExtensions]
 
