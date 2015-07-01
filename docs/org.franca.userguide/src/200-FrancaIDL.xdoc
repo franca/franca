@@ -223,7 +223,23 @@ struct ExampleStruct {
 ]
 Element types might be predefined types or user-defined types. This allows e.g. nested structures or
 arrays of structures. Element types may also be arrays, e.g., e[member4] is an unnamed array of type
-code[Franca][UInt16]. 
+code[Franca][UInt16].
+
+Note that the struct type definition also defines the order of the elements. Thus, the following two
+struct definitions are e[different]: 
+code[Franca][
+struct ExampleStruct1 {
+	UInt8 member1
+	String member2
+}
+
+struct ExampleStruct1 {
+	String member2
+	UInt8 member1
+}
+]
+
+Any communication implementation should respect the element order given by the Franca IDL type definition.
 
 section3:FIDL_Types_Struct_Inheritance[Struct inheritance]
 
