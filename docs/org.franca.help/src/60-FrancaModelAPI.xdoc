@@ -16,7 +16,6 @@ deployment specifications. Thus, we do not include documentation for the EMF
 e[ecore]-model API of deployment models here. See section
 ref:DeploymentModels_DeploymentAccessSupport[Support for accessing deployment properties]
 for more details about this topic.
-  
 
 section:FrancaModelAPIReference[Franca Model API Reference]
 
@@ -54,6 +53,17 @@ code[Java][
 	api.setName("MediaPlayer");
 	// and so on
 ]
+
+section:FrancaModelUtils[Utility classes for Franca model access]
+
+Accessing the Franca EMF model directly may be tedious, depending on the part of
+the model which should be traversed. Franca includes a couple of utility classes
+which simplify extracting data from a Franca model. This section describes those
+utility classes.
+
+section2:FrancaModelUtils_ExpressionEvaluator[Evaluating FExpression objects with the ExpressionEvaluator]
+
+todo[The ExpressionEvaluator will be described here.]
 
 
 
