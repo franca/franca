@@ -66,6 +66,11 @@ section2:FrancaModelUtils_ExpressionEvaluator[Evaluating FExpression objects wit
 todo[The ExpressionEvaluator will be described here.]
 
 
+section2:FrancaModelUtils_IntegerTypeConverter[Converting integer types with the IntegerTypeConverter]
+
+todo[The IntegerTypeConverter will be described here.]
+
+
 
 section:FrancaModelAPIReference_Section_FModel[API for Franca models, interfaces and type collections]
 

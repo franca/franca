@@ -24,9 +24,8 @@ section2:FIDL_PrimitiveTypes[Primitive types]
 The primitive types supported by Franca are listed in ref:PrimitiveTypes[the following table].
 There is a number of very specific signed and unsigned integer types with varying ranges.
 This allows to be very specific about the size of these types on any target platform.
-In a future version of Franca IDL it will be possible to specify integer types by
-their specific range (min/max). The actual representation will then be computed 
-by a configurable type engine.
+Additionally, Franca IDL provides a way to specify generic integer types with optional
+min/max range (since Franca 0.9.0, see next section). 
 
 table:PrimitiveTypes[
 	caption[Primitive types of Franca IDL.]
@@ -72,6 +71,10 @@ table:PrimitiveTypes[
 		td[signed 64-bit integer]
 	]
 	tr[
+		td[code[Franca][Integer]]
+		td[generic integer (with optional range definition, see below)]
+	]
+	tr[
 		td[code[Franca][Boolean]]
 		td[boolean value, which can take one of two values: false or true.]
 	]
@@ -109,7 +112,46 @@ The actual physical encoding of the primitive types depends on the target langua
 A default encoding will be defined as part of Franca's deployment model. 
 Exceptions from this default encoding can be defined in the target-language-specific
 deployment model.
- 
+
+
+section2:FIDL_RangedInteger[Integer with optional range]
+
+The primitive integer types with fixed number of bits as defined above
+(e.g., code[Franca][UInt32]) allow to specify interfaces with the actual 
+implementation in mind. This is typically preferred by embedded systems
+developers, in order to exactly know which data is being transported.
+However, there are some drawbacks of using these integer types for
+interface definitions. The specific implementation platform might
+not support all of these types, e.g., Java doesn't support unsigned integers.
+
+Since Franca 0.9.0, the IDL supports a generic integer type named e[Integer].
+In order to restrict the range of actual values which can be used, Franca IDL
+allows to specify a range of values this type can assume. Examples:
+
+code[Franca][
+Integer
+Integer(1,7)
+Integer(-20,100)
+Integer(0,maxInt)
+Integer(minInt,maxInt)
+] 
+
+The range is given as a minimum and a maximum value.
+The min/max values might be negative, but the minimum value always has to
+be less then or equal to the maximum value.
+If no range is given, the biggest available integer type for the
+specific platform should be used.
+There are special keywords code[Franca][minInt] and code[Franca][maxInt],
+which represent the smallest and biggest integer on the specific platform, respectively.
+
+Note that by using the code[Franca][Integer] type it is possible to emulate all
+primitive integer types as defined above. Similarly, it is possible to replace
+usages of the ranged integer type by the next bigger primitive integer type given
+that all restrictions of the specific implementation platform are known.
+There is a helper model transformation in the Franca framework which supports
+these two type conversions,
+see section ref:FrancaModelUtils_IntegerTypeConverter[IntegerTypeConverter]. 
+
 
 section2:FIDL_Types_Array[Arrays]
 
