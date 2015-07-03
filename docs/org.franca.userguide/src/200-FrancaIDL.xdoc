@@ -579,17 +579,23 @@ section2:FIDL_Expressions_ComparisonOps[Comparison operators]
 Two expressions of equal type may be related to each other using
 comparison operators. The resulting expression is of type e[boolean].
 
+todo[Examples for all comparison operators will be given here.]
+
 
 section2:FIDL_Expressions_ArithmeticOps[Arithmetic operations]
 
 Expressions may be built from sub-expressions of type e[integer],
 e[float] or e[double] using arithmetic operations.
 
+todo[Examples for all arithmetic operators will be given here.]
+
 
 section2:FIDL_Expressions_BooleanOps[Boolean operations]
 
 Expressions may be built from sub-expressions of type e[boolean]
 using boolean operations.
+
+todo[Examples for all boolean operators will be given here.]
 
 
 section:FIDL_TypeCollection[TypeCollection definition]
