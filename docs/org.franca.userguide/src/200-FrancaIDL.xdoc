@@ -509,6 +509,8 @@ ul[
 	item[in the ref:FIDL_Contracts_Actions[action code] of contracts (e.g., in if-conditions)]
 ]
 
+section2:FIDL_Expressions_TypeSystem[Type system]
+
 Expressions in Franca IDL are e[typed]. The type system supports the
 basic types e[boolean], e[integer], e[float], e[double] and e[string].
 The type system is aware of user-defined types defined in Franca IDL.
@@ -529,6 +531,31 @@ The Franca validator ensures that all expressions have a proper type
 which also has to be consistent with the usage of the expression.
 E.g., an expression used as a guard condition in a contract must
 be of e[boolean] type.    
+
+section3:FIDL_Expressions_TypeSystem_Rules[Type system rules]
+
+Note that in order to reduce specification errors the Franca IDL type system
+provides only a minimum of implicit type conversions (aka typecasts).
+In particular, the following rules apply:
+
+ul[
+	item[There is no implicit conversion from integer to float or vice versa.]
+	item[There is no implicit conversion from integer to double or vice versa.]
+	item[There is an implicit conversion from float to double and vice versa.]
+	item[There is no implicit conversion from enumeration types to integer.]
+	item[For struct and union type inheritance:
+		There is an implicit upcast for derived struct (and union) types.
+		There is no downcast for struct and union types.
+	]
+	item[For enumeration types: There is an implicit downcast for enumeration types
+		(i.e., an enumerator from a base enumeration can be used as representant of
+		 any derived enumeration).
+		]
+	item[The code[Franca][typedef] mechanism is transparent for the type system
+		(i.e., types introduced by code[Franca][typedef] will be handled
+		identically to their base types).
+	]
+]  
 
 section2:FIDL_Expressions_Constants[Constant values]
 
