@@ -26,12 +26,17 @@ import com.google.inject.Provider;
  */
 public class FrancaPersistenceManager {
 
-	private static final String FRANCA_FILE_EXTENSION = "fidl";
+	public static final String FRANCA_FILE_EXTENSION = "fidl";
 
 	@Inject
 	private Provider<ResourceSet> resourceSetProvider;
 	
-	public static String getFileExtension() {
+	/**
+	 * Get file extension for Franca IDL files.
+	 * 
+	 * @deprecated Use FrancaPersistenceManager.FRANCA_FILE_EXTENSION instead.
+	 */
+	public String getFileExtension() {
 		return FRANCA_FILE_EXTENSION;
 	}
 

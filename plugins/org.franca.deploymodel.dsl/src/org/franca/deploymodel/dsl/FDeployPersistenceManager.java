@@ -157,7 +157,7 @@ public class FDeployPersistenceManager {
 				fileExtension,
 				new FDeployImportsProvider());
 		ModelPersistenceHandler.registerFileExtensionHandler(
-				FrancaPersistenceManager.getFileExtension(),
+				FrancaPersistenceManager.FRANCA_FILE_EXTENSION,
 				new FrancaImportsProvider());
 
 		ModelPersistenceHandler persistenceHandler = new ModelPersistenceHandler(resourceSet);
