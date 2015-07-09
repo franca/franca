@@ -50,4 +50,9 @@ typeCollection MyTypeCollection30 {
 	const Double d6 = d1
 	const Double d7 = f1
 
+	const ByteBuffer bb1 = [ ]
+	const ByteBuffer bb2 = [ 0, 1, 2, 3, 255 ]
+	const ByteBuffer bb3 = [ 1+1, 100/20, 10*10, 1+2+3+5+8 ]
+	const ByteBuffer bb4 = [ i01, i11, i12, i02-i02 ]
+	
 }

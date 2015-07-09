@@ -13,22 +13,25 @@ import org.franca.core.contracts.IssueCollector
 import org.franca.core.contracts.TypeIssue
 import org.franca.core.contracts.TypeSystem
 import org.franca.core.framework.FrancaHelpers
+import org.franca.core.franca.FArrayType
+import org.franca.core.franca.FBracketInitializer
+import org.franca.core.franca.FCompoundInitializer
 import org.franca.core.franca.FConstantDef
+import org.franca.core.franca.FDeclaration
+import org.franca.core.franca.FEnumerator
 import org.franca.core.franca.FExpression
 import org.franca.core.franca.FInitializer
-import org.franca.core.franca.FTypeRef
-import org.franca.core.franca.FCompoundInitializer
-import org.franca.core.franca.FStructType
-import org.franca.core.franca.FBracketInitializer
-import org.franca.core.franca.FArrayType
-import org.franca.core.franca.FMapType
 import org.franca.core.franca.FInitializerExpression
+import org.franca.core.franca.FMapType
+import org.franca.core.franca.FStructType
+import org.franca.core.franca.FTypeRef
+import org.franca.core.utils.ExpressionEvaluator
 
-import static org.franca.core.franca.FrancaPackage$Literals.*
+import static org.franca.core.franca.FrancaPackage.Literals.*
+
 import static extension org.franca.core.FrancaModelExtensions.*
 import static extension org.franca.core.framework.FrancaHelpers.*
-import org.franca.core.franca.FEnumerator
-import org.franca.core.franca.FDeclaration
+import java.math.BigInteger
 
 class TypesValidator {
 
@@ -91,7 +94,7 @@ class TypesValidator {
 		EStructuralFeature feature,
 		int index
 	) {
-		if (! (type.isArray || type.isMap)) {
+		if (! (type.isByteBuffer || type.isArray || type.isMap)) {
 			reporter.reportError(
 					"invalid initializer in constant definition (expected " +
 						FrancaHelpers::getTypeString(type) + ")",
@@ -99,7 +102,32 @@ class TypesValidator {
 			return;
 		}
 		
-		if (type.isArray) {
+		if (type.isByteBuffer) {
+			for(e : rhs.elements) {
+				val idx = rhs.elements.indexOf(e)
+				if (e.second!=null) {
+					reporter.reportError(
+							"invalid initializer (expected 0..255)",
+							rhs, FBRACKET_INITIALIZER__ELEMENTS, idx);
+				} else {
+					val expr = e.first
+					if (expr instanceof FExpression) {
+						val res = ExpressionEvaluator.evaluateInteger(expr)
+						if (res==null) {
+							reporter.reportError(
+									"invalid byte buffer element",
+									rhs, FBRACKET_INITIALIZER__ELEMENTS, idx);
+						} else {
+							if (res.signum<0 || res.compareTo(BigInteger.valueOf(255))>0) {
+								reporter.reportError(
+										"byte buffer element must be UInt8",
+										rhs, FBRACKET_INITIALIZER__ELEMENTS, idx);
+							}
+						}
+					}
+				}
+			}
+		} else if (type.isArray) {
 			val t = type.actualDerived as FArrayType
 			for(e : rhs.elements) {
 				val idx = rhs.elements.indexOf(e)
