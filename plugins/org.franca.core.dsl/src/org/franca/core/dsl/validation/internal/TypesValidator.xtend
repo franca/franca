@@ -10,9 +10,9 @@ package org.franca.core.dsl.validation.internal;
 import java.math.BigInteger
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EStructuralFeature
-import org.franca.core.contracts.IssueCollector
-import org.franca.core.contracts.TypeIssue
-import org.franca.core.contracts.TypeSystem
+import org.franca.core.typesystem.IssueCollector
+import org.franca.core.typesystem.TypeIssue
+import org.franca.core.typesystem.TypeSystem
 import org.franca.core.franca.FArrayType
 import org.franca.core.franca.FBracketInitializer
 import org.franca.core.franca.FCompoundInitializer

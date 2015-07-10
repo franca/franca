@@ -12,7 +12,7 @@ import java.util.List;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.franca.core.FrancaModelExtensions;
-import org.franca.core.contracts.TypeSystem;
+import org.franca.core.typesystem.TypeSystem;
 import org.franca.core.dsl.validation.internal.util.FrancaContractDirectedGraphDataSource;
 import org.franca.core.dsl.validation.internal.util.FrancaContractUndirectedGraphDataSource;
 import org.franca.core.dsl.validation.internal.util.GraphUtil;
