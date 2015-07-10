@@ -1,0 +1,108 @@
+/*******************************************************************************
+ * Copyright (c) 2015 itemis AG (http://www.itemis.de).
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************/
+package org.reference
+
+typeCollection MyTypeCollection35 {
+	
+	// type definitions
+	
+	enumeration E1 {
+		Enum1 Enum2 Enum3
+	}
+
+	array A1 of UInt16
+
+	struct S1 {
+		UInt16 e1
+		String e2
+	}
+
+	struct S2 {
+		UInt16[] ae1
+		String[] ae2
+		S1[] ae3
+	}
+
+	union U1 {
+		UInt16 e1
+		Boolean e2
+		String e3
+	}
+	
+	union U2 {
+		UInt16[] ae1
+		S1[] ae2
+	}
+
+	map M1 { UInt16 to String }
+
+
+	// implicit array of primitive types
+	const UInt8[]  ai01 = [ 1, 2, 3 ]
+	const Int8[]   ai02 = [ -5, 0, 5 ]
+	const UInt32[] ai21 = [ ]
+//	const Integer(1,10)[] ai40 = 5
+	const String[] as1 = [ "jupiter", "saturn" ]
+	const Boolean[] ab1 = [ true, false, 1!=2 ]
+	const Float[] af1 = [ 1.0f, 2.0f ]
+	const Double[] ad1 = [ 3.1415d ]
+
+	// implicit array of ByteBuffer
+	const ByteBuffer abb1 = [
+		[ ],
+		[ 22, 33, 44 ],
+		[ 1, 2, 3, 4, 5 ]
+	]
+
+	// implicit array of complex types
+	const E1[] ace1 = [ E1.Enum1, E1.Enum2 ]
+	const A1[] aca1 = [ [ 7, 7, 7 ], [ 5, 5 ], [ 3 ], [] ]
+	const S1[] acs1 = [ 
+		{ e1: 1, e2: "one" },
+		{ e1: 7, e2: "seven" },
+		{ e1: 9, e2: "nine" }
+	]
+	const U1[] acu1 = [
+		{ e1 : 1 },
+		{ e3 : "cool" }
+	]
+	const M1[] acm1 = [
+		[ 1 => "foo" ]
+	]
+
+
+	// compound elements which are implicit arrays
+	const S2 s10 = {
+		ae1 : [ 1, 2, 3 ],
+		ae2 : [ "foo" ],
+		ae3 : [ { e1: 1, e2: "one" }, { e1: 7, e2: "seven" } ]
+	}
+	const U2 u10 = {
+		ae1 : [ 5, 7, 9 ]
+	}
+	const U2[] au10 = [
+		{ ae1 : [ 5, 7, 9 ] },
+		{ ae2 : [
+					{ e1: 2, e2: "two" },
+					{ e1: 4, e2: "four" }
+				]
+		}
+	]
+
+
+	// implicit array initializers referencing other constants
+	const UInt32 c1 = 4747
+	
+	const UInt32[] ac1 = [ c1, c1*2, c1*3 ]
+	const S2 s11 = {
+		ae1: ac1,	
+		ae2: as1,	
+		ae3: s10.ae3
+	}
+}
+

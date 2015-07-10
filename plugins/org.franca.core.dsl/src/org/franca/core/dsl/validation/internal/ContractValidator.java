@@ -27,8 +27,8 @@ import org.franca.core.franca.FMethod;
 import org.franca.core.franca.FState;
 import org.franca.core.franca.FTransition;
 import org.franca.core.franca.FTrigger;
-import org.franca.core.franca.FTypeRef;
 import org.franca.core.franca.FrancaPackage;
+import org.franca.core.typesystem.ActualType;
 
 import com.google.common.collect.Lists;
 
@@ -111,7 +111,7 @@ public class ContractValidator {
 	
 	public static void checkAssignment (ValidationMessageReporter reporter, FAssignment assignment) {
 		TypeSystem ts = new TypeSystem();
-		FTypeRef typeLHS = ts.getTypeOf(assignment.getLhs());
+		ActualType typeLHS = ts.getTypeOf(assignment.getLhs());
 		if (typeLHS==null) {
 			reporter.reportError("invalid left-hand side in assignment", assignment, FrancaPackage.Literals.FASSIGNMENT__LHS);
 		} else {
