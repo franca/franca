@@ -34,6 +34,7 @@ import org.franca.core.franca.FTransition
 import org.franca.core.franca.FTypedElement
 
 import static extension org.franca.core.FrancaModelExtensions.*
+import org.franca.core.franca.FType
 
 import static extension org.eclipse.xtext.scoping.Scopes.*
 import static extension org.franca.core.framework.FrancaHelpers.*
