@@ -441,6 +441,7 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 		ContractValidator.checkGuard(this, guard);
 	}
 
+	
 	// visibility of derived types
 
 	@Check
@@ -448,20 +449,19 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 		if (typeref.getDerived() != null) {
 			// this is a derived type, check if referenced type can be accessed
 			FType referencedType = typeref.getDerived();
-			FInterface refParent = FrancaModelExtensions
-					.getInterface(referencedType);
-			if (refParent == null) {
-				// referenced type is defined on model level, can be accessed
-				// anyway
+			FInterface target = FrancaModelExtensions.getInterface(referencedType);
+			if (target == null) {
+				// referenced type is defined by a type collection, can be accessed freely
 			} else {
-				// referenced type is defined as part of an FInterface,
-				// check if reference is allowed by local access (same
-				// FInterface)
-				FInterface parent = FrancaModelExtensions.getInterface(typeref);
-				if (refParent != parent) {
+				// referenced type is defined by an FInterface, check if reference is allowed
+				// by local access (same FInterface) or from a base interface via inheritance
+				FInterface referrer = FrancaModelExtensions.getInterface(typeref);
+				Set<FInterface> baseInterfaces = FrancaModelExtensions.getInterfaceInheritationSet(referrer);
+				if (! baseInterfaces.contains(target)) {
 					error("Type " + referencedType.getName()
 							+ " can only be referenced inside interface "
-							+ refParent.getName(), typeref,
+							+ target.getName() + " or derived interfaces",
+							typeref,
 							FrancaPackage.Literals.FTYPE_REF__DERIVED, -1);
 				}
 			}

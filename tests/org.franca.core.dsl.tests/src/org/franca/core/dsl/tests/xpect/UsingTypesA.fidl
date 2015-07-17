@@ -1,0 +1,14 @@
+package a
+
+// anonymous type collection
+typeCollection {
+	struct AAnon_Struct_1 { UInt8 e }
+}
+
+typeCollection ATC {
+	struct ATC_Struct_1 { UInt8 e }
+}
+
+interface AIF {
+	struct AIF_Struct_1 { UInt8 e }
+}

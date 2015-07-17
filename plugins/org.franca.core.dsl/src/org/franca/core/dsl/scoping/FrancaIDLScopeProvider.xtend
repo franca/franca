@@ -59,13 +59,15 @@ class FrancaIDLScopeProvider extends AbstractDeclarativeScopeProvider {
 	}
 	
 	def IScope scope_FTypeRef_derived(FInterface _interface, EReference ref) {
-		new FTypeScope(
-				this.delegateGetScope(_interface, ref),
-				true, 
-				importUriGlobalScopeProvider, 
-				_interface.eResource(), 
-				qualifiedNameProvider
-		)
+		val defaultScope = this.delegateGetScope(_interface, ref)
+
+		// add inherited types to the scope
+		if (_interface.base!=null) {
+			val items = getAllElements(_interface.base).filter(FType)
+			items.scopeFor(defaultScope)
+		} else {
+			defaultScope
+		}
 	}
 
 	

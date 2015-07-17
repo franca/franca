@@ -1,0 +1,30 @@
+// XPECT_SETUP org.franca.core.dsl.tests.xpect.FrancaIDLXpectTests END_SETUP
+package e
+
+// tests for referencing types via interface inheritance in the local file
+
+interface EIF1 {
+	struct EIF1_Struct_1 { UInt8 e }
+
+	struct EIF1_Struct_2 {
+		// XPECT errors --> "Couldn't resolve reference to FType 'EIF2_Struct_2'." at "EIF2_Struct_2" 
+		// type reference to derived interface
+		EIF2_Struct_2 e1
+
+		// XPECT errors --> "Type EIF2_Struct_2 can only be referenced inside interface EIF2 or derived interfaces" at "EIF2.EIF2_Struct_2" 
+		// type reference to derived interface (via qualified name)
+		EIF2.EIF2_Struct_2 e2
+	}
+}
+
+interface EIF2 extends EIF1 {
+	struct EIF2_Struct_1 {
+		// type reference to base interface
+		EIF1_Struct_1 e1
+
+		// type reference to base interface (via qualified name)
+		EIF1.EIF1_Struct_1 e2
+	}
+
+	struct EIF2_Struct_2 { UInt8 e }
+}
