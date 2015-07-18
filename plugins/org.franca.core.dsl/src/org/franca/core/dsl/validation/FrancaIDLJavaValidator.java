@@ -456,13 +456,23 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 				// referenced type is defined by an FInterface, check if reference is allowed
 				// by local access (same FInterface) or from a base interface via inheritance
 				FInterface referrer = FrancaModelExtensions.getInterface(typeref);
-				Set<FInterface> baseInterfaces = FrancaModelExtensions.getInterfaceInheritationSet(referrer);
-				if (! baseInterfaces.contains(target)) {
+				boolean showError = false;
+				if (referrer==null) {
+					// referrer is a type collection, it cannot reference a type from an interface
+					showError = true;
+				} else {
+					Set<FInterface> baseInterfaces = FrancaModelExtensions.getInterfaceInheritationSet(referrer);
+					if (! baseInterfaces.contains(target)) {
+						showError = true;
+					}
+				}
+				if (showError) {
 					error("Type " + referencedType.getName()
-							+ " can only be referenced inside interface "
-							+ target.getName() + " or derived interfaces",
-							typeref,
-							FrancaPackage.Literals.FTYPE_REF__DERIVED, -1);
+						+ " can only be referenced inside interface "
+						+ target.getName() + " or derived interfaces",
+						typeref,
+						FrancaPackage.Literals.FTYPE_REF__DERIVED, -1
+					);
 				}
 			}
 		}
