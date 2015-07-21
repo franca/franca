@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Franca IDE" uid="org.franca.product" id="org.franca.product.ui.FrancaIDE" application="org.eclipse.ui.ide.workbench" version="0.9.2.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="Franca IDE" uid="org.franca.product" id="org.franca.product.ui.FrancaIDE" application="org.eclipse.ui.ide.workbench" version="0.10.0.qualifier" useFeatures="true" includeLaunchers="true">
 
 
    <configIni use="default">
