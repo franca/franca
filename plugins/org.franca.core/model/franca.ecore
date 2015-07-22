@@ -133,11 +133,12 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="actualType" lowerBound="1"
         eType="#//FTypeRef" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="FTypedElement" abstract="true" eSuperTypes="#//FModelElement">
+  <eClassifiers xsi:type="ecore:EClass" name="FTypedElement" abstract="true" eSuperTypes="#//FEvaluableElement">
     <eStructuralFeatures xsi:type="ecore:EReference" name="type" lowerBound="1" eType="#//FTypeRef"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="array" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FEvaluableElement" eSuperTypes="#//FModelElement"/>
   <eClassifiers xsi:type="ecore:EClass" name="FVariable" eSuperTypes="#//FTypedElement"/>
   <eClassifiers xsi:type="ecore:EClass" name="FStructType" eSuperTypes="#//FCompoundType">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -146,7 +147,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="base" eType="#//FStructType"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="polymorphic" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="FEnumerator" eSuperTypes="#//FModelElement">
+  <eClassifiers xsi:type="ecore:EClass" name="FEnumerator" eSuperTypes="#//FEvaluableElement">
     <eStructuralFeatures xsi:type="ecore:EReference" name="value" eType="#//FExpression"
         containment="true"/>
   </eClassifiers>
@@ -331,8 +332,8 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="error" eType="#//FMethod"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FGuard">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="condition" lowerBound="1"
-        eType="#//FExpression" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="condition" eType="#//FExpression"
+        containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FUnionType" eSuperTypes="#//FCompoundType">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -361,10 +362,13 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="TODO: update&#xA;&#xA;This class is a reference to some ref:FrancaModelAPIReference_FTypedElement[FTypedElement].&#xA;If the referenced element is no compound type (i.e., struct or union), only the e[element] property&#xA;will be used. The e[target] and e[field] properties will be null. If a field of a compound type is referenced,&#xA;the e[field] property will point to the ref:FrancaModelAPIReference_FField[FField] object. &#xA;If the compound type is nested, the e[target] property will reference the next outer level&#xA;(which is itself a compound referenced by a ref:FrancaModelAPIReference_FTypedElementRef[FTypedElementRef]. &#xA;This might be chained in order to specify a reference to a deeply nested compound element.&#xA;"/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="element" eType="#//FModelElement"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="element" eType="#//FEvaluableElement"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="qualifier" eType="#//FQualifiedElementRef"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="field" eType="#//FModelElement"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="field" eType="#//FField"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FMethodErrorEnumRef" eSuperTypes="#//FExpression">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="enumerator" eType="#//FEnumerator"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FCurrentError" eSuperTypes="#//FExpression"/>
   <eClassifiers xsi:type="ecore:EClass" name="FConstant" abstract="true" eSuperTypes="#//FExpression">
@@ -400,14 +404,14 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="op" lowerBound="1" eType="#//FOperator"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FBinaryOperation" eSuperTypes="#//FOperation">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="left" lowerBound="1" eType="#//FExpression"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="left" eType="#//FExpression"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="right" lowerBound="1" eType="#//FExpression"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="right" eType="#//FExpression"
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FUnaryOperation" eSuperTypes="#//FOperation">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="operand" lowerBound="1"
-        eType="#//FExpression" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="operand" eType="#//FExpression"
+        containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FIfStatement" eSuperTypes="#//FStatement">
     <eStructuralFeatures xsi:type="ecore:EReference" name="condition" eType="#//FExpression"

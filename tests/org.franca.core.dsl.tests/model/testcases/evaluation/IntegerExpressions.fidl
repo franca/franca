@@ -62,10 +62,10 @@ typeCollection MyTypes {
 	// reference to struct members
 	const S1 s1 = { e1: true, e2: 7 }
 	const S2 s2 = { f1: s1 }
-	const Boolean r30 = s1.e1
-	const UInt32 r31 = s1.e2
-	const Boolean r40 = s2.f1.e1
-	const UInt32 r41 = s2.f1.e2
+	const Boolean r30 = s1->e1
+	const UInt32 r31 = s1->e2
+	const Boolean r40 = s2->f1->e1
+	const UInt32 r41 = s2->f1->e2
 	
 	// not supported: references to array and map elements
 }

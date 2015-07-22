@@ -525,7 +525,7 @@ struct SomeStruct {
 
 then the type e[SomeStruct] is also available in expressions.
 E.g., if expression code[s] refers to a Franca constant of type
-e[SomeStruct], the expression code[s.member1] will be of type e[integer].
+e[SomeStruct], the expression code[s->member1] will be of type e[integer].
 
 The Franca validator ensures that all expressions have a proper type
 which also has to be consistent with the usage of the expression.

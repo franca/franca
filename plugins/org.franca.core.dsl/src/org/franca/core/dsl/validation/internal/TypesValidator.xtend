@@ -30,17 +30,18 @@ import org.franca.core.utils.ExpressionEvaluator
 import static org.franca.core.franca.FrancaPackage.Literals.*
 
 import static extension org.franca.core.FrancaModelExtensions.*
+import static org.franca.core.typesystem.ActualType.*
 
 class TypesValidator {
 
 	def static checkConstantType (ValidationMessageReporter reporter, FConstantDef constantDef) {
-		checkConstantRHS(constantDef.rhs, new ActualType(constantDef),
+		checkConstantRHS(constantDef.rhs, typeFor(constantDef),
 			reporter, constantDef, FCONSTANT_DEF__RHS, -1
 		)
 	}
 
 	def static checkConstantType (ValidationMessageReporter reporter, FDeclaration declaration) {
-		checkConstantRHS(declaration.rhs, new ActualType(declaration),
+		checkConstantRHS(declaration.rhs, typeFor(declaration),
 			reporter, declaration, FDECLARATION__RHS, -1
 		)
 	}
@@ -94,7 +95,7 @@ class TypesValidator {
 	) {
 		if (type.isImplicitArray) {
 			// we have a bracket initializer for an implicit array
-			val plainType = new ActualType(type.typeRef)
+			val plainType = typeFor(type.typeRef)
 			checkArrayElements(rhs, plainType, reporter)
 		} else {
 			// check if bracket initializer is appropriate for the expected type
@@ -133,7 +134,7 @@ class TypesValidator {
 				}
 			} else if (type.isArray) {
 				val t = type.actualDerived as FArrayType
-				checkArrayElements(rhs, new ActualType(t.elementType), reporter)
+				checkArrayElements(rhs, typeFor(t.elementType), reporter)
 			} else if (type.isMap) {
 				val t = type.actualDerived as FMapType
 				for(e : rhs.elements) {
@@ -144,11 +145,11 @@ class TypesValidator {
 								rhs, FBRACKET_INITIALIZER__ELEMENTS, idx);
 					} else {
 						checkConstantRHS(e.first,
-							new ActualType(t.keyType),
+							typeFor(t.keyType),
 							reporter, e, FELEMENT_INITIALIZER__FIRST, -1
 						)
 						checkConstantRHS(e.second,
-							new ActualType(t.valueType),
+							typeFor(t.valueType),
 							reporter, e, FELEMENT_INITIALIZER__SECOND, -1
 						)
 					}
@@ -216,7 +217,7 @@ class TypesValidator {
 			
 			// check the types for all initializers
 			for(e : rhs.elements) {
-				checkConstantRHS(e.value, new ActualType(e.element),
+				checkConstantRHS(e.value, typeFor(e.element),
 					reporter, e, FFIELD_INITIALIZER__VALUE, -1
 				)
 			}
@@ -229,7 +230,7 @@ class TypesValidator {
 
 			// check type
 			val e = rhs.elements.get(0)
-			checkConstantRHS(e.value, new ActualType(e.element),
+			checkConstantRHS(e.value, typeFor(e.element),
 				reporter, e, FFIELD_INITIALIZER__VALUE, 0
 			)
 		}
@@ -299,8 +300,8 @@ class TypesValidator {
 		val type = ts.checkType(expr, expected, issues, loc, feat)
 		if (type==null) {
 			if (issues.issues.empty) {
-				// no issues, report a generic error message
-				reporter.reportError("invalid expression", loc, feat)
+				// no issues, usually this is due to an undefined reference (which will
+				// produce a generic validation error)
 			} else {
 				for(TypeIssue ti : issues.issues) {
 					reporter.reportError(ti.message, ti.location, ti.feature)

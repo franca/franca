@@ -1,0 +1,32 @@
+// XPECT_SETUP org.franca.core.dsl.tests.xpect.FrancaIDLXpectTests END_SETUP
+package c
+
+// tests for referencing constants in another file via "import model"
+
+import model "UsingConstantsA.fidl"
+
+
+typeCollection CTC2 {
+	// reference to anonymous type collection in file A
+	const UInt32 CTC2_Const_1 = a.AAnon_Const_1
+	
+	// reference to other type collection in file A
+	const UInt32 CTC2_Const_2 = a.ATC.ATC_Const_1
+
+	// XPECT errors --> "Constant AIF_Const_1 can only be referenced inside interface AIF or derived interfaces" at "a.AIF.AIF_Const_1" 
+	// reference to interface in file A
+	const UInt32 CTC2_Const_3 = a.AIF.AIF_Const_1
+}
+
+
+interface CIF2 {
+	// reference to anonymous type collection in file A
+	const UInt32 CIF2_Const_1 = a.AAnon_Const_1
+	
+	// reference to other type collection in file A
+	const UInt32 CIF2_Const_2 = a.ATC.ATC_Const_1
+
+	// XPECT errors --> "Constant AIF_Const_1 can only be referenced inside interface AIF or derived interfaces" at "a.AIF.AIF_Const_1" 
+	// reference to interface in file A
+	const UInt32 CIF2_Const_3 = a.AIF.AIF_Const_1
+}

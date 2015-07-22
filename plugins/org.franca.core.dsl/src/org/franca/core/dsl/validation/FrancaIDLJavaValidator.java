@@ -8,11 +8,11 @@
 package org.franca.core.dsl.validation;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.xtext.naming.IQualifiedNameProvider;
 import org.eclipse.xtext.naming.QualifiedName;
@@ -36,6 +36,7 @@ import org.franca.core.franca.FAnnotation;
 import org.franca.core.franca.FAnnotationType;
 import org.franca.core.franca.FArgument;
 import org.franca.core.franca.FAssignment;
+import org.franca.core.franca.FAttribute;
 import org.franca.core.franca.FBroadcast;
 import org.franca.core.franca.FCompoundInitializer;
 import org.franca.core.franca.FCompoundType;
@@ -44,22 +45,23 @@ import org.franca.core.franca.FContract;
 import org.franca.core.franca.FDeclaration;
 import org.franca.core.franca.FEnumerationType;
 import org.franca.core.franca.FEnumerator;
+import org.franca.core.franca.FEvaluableElement;
+import org.franca.core.franca.FField;
 import org.franca.core.franca.FGuard;
 import org.franca.core.franca.FIntegerInterval;
 import org.franca.core.franca.FInterface;
 import org.franca.core.franca.FMethod;
 import org.franca.core.franca.FModel;
-import org.franca.core.franca.FModelElement;
+import org.franca.core.franca.FQualifiedElementRef;
 import org.franca.core.franca.FStructType;
 import org.franca.core.franca.FTrigger;
 import org.franca.core.franca.FType;
 import org.franca.core.franca.FTypeCollection;
 import org.franca.core.franca.FTypeRef;
+import org.franca.core.franca.FTypedElement;
 import org.franca.core.franca.FUnionType;
 import org.franca.core.franca.FrancaPackage;
 
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
 public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
@@ -449,31 +451,73 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 		if (typeref.getDerived() != null) {
 			// this is a derived type, check if referenced type can be accessed
 			FType referencedType = typeref.getDerived();
-			FInterface target = FrancaModelExtensions.getInterface(referencedType);
-			if (target == null) {
-				// referenced type is defined by a type collection, can be accessed freely
+			checkDefinitionVisible(typeref, referencedType,
+					"Type " + referencedType.getName(),
+					FrancaPackage.Literals.FTYPE_REF__DERIVED
+			);
+		}
+	}
+	
+	@Check
+	public void checkTypedElementRefVisible(FQualifiedElementRef qe) {
+		FEvaluableElement referenced = qe.getElement();
+		if (referenced!=null && referenced instanceof FTypedElement) {
+			checkDefinitionVisible(qe, referenced,
+					getTypeLabel(referenced) + " " + referenced.getName(),
+					FrancaPackage.Literals.FQUALIFIED_ELEMENT_REF__ELEMENT
+			);
+		}
+	}
+	
+	private String getTypeLabel(FEvaluableElement elem) {
+		if (elem instanceof FArgument) {
+			return "Argument";
+		} else if (elem instanceof FAttribute) {
+			return "Attribute";
+		} else if (elem instanceof FConstantDef) {
+			return "Constant";
+		} else if (elem instanceof FDeclaration) {
+			return "State variable";
+		} else if (elem instanceof FField) {
+			return "Element of struct or union";
+		} else if (elem instanceof FEnumerator) {
+			return "Enumerator";
+		} else {
+			// sensible default
+			return "Model element";
+		}
+	}
+	
+	private void checkDefinitionVisible(
+			EObject referrer,
+			EObject referenced,
+			String what,
+			EReference referencingFeature
+	) {
+		FInterface target = FrancaModelExtensions.getInterface(referenced);
+		if (target == null) {
+			// referenced element is defined by a type collection, can be accessed freely
+		} else {
+			// referenced element is defined by an FInterface, check if reference is allowed
+			// by local access (same FInterface) or from a base interface via inheritance
+			FInterface referrerInterface = FrancaModelExtensions.getInterface(referrer);
+			boolean showError = false;
+			if (referrerInterface==null) {
+				// referrer is a type collection, it cannot reference a type from an interface
+				showError = true;
 			} else {
-				// referenced type is defined by an FInterface, check if reference is allowed
-				// by local access (same FInterface) or from a base interface via inheritance
-				FInterface referrer = FrancaModelExtensions.getInterface(typeref);
-				boolean showError = false;
-				if (referrer==null) {
-					// referrer is a type collection, it cannot reference a type from an interface
+				Set<FInterface> baseInterfaces =
+						FrancaModelExtensions.getInterfaceInheritationSet(referrerInterface);
+				if (! baseInterfaces.contains(target)) {
 					showError = true;
-				} else {
-					Set<FInterface> baseInterfaces = FrancaModelExtensions.getInterfaceInheritationSet(referrer);
-					if (! baseInterfaces.contains(target)) {
-						showError = true;
-					}
 				}
-				if (showError) {
-					error("Type " + referencedType.getName()
-						+ " can only be referenced inside interface "
-						+ target.getName() + " or derived interfaces",
-						typeref,
-						FrancaPackage.Literals.FTYPE_REF__DERIVED, -1
-					);
-				}
+			}
+			if (showError) {
+				error(what + " can only be referenced inside interface "
+					+ target.getName() + " or derived interfaces",
+					referrer,
+					referencingFeature, -1
+				);
 			}
 		}
 	}

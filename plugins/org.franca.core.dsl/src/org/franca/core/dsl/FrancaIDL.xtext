@@ -365,37 +365,29 @@ PrimaryExpression returns FExpression:
 SimplePrimaryExpression returns FExpression:
   FQualifiedElementRef |
   FCurrentError |
+  FMethodErrorEnumRef |
   FConstant |
   '(' LogicalOrExpression ')';
   
 FUnaryOperation returns FExpression:
 	{FUnaryOperation}
 	op=OperatorUnary operand=SimplePrimaryExpression;
-	
+
 FCurrentError returns FCurrentError:
 	{FCurrentError}
-	ErrorReferenceTerminal
-//	type=ErrorTypeRef
-	// referencing a virtual FArgument with a type that is defined by a method either by referencing a previously
-	// defined one or by implicitly declaring a new one 
-;
-
-//ErrorTypeRef returns FTypeRef:
-//	derived=[FEnumerationType|ErrorReferenceTerminal]
-//;
+	ErrorReferenceTerminal;
 
 ErrorReferenceTerminal:
-	'errorval'
-;
+	'errorval';
 
-AnonymousErrorTypeReferenceTerminal:
-	'errordef'
-;
+FMethodErrorEnumRef:
+	'errordef' '.' enumerator=[FEnumerator|ID];
+
 
 FQualifiedElementRef:
 	{FQualifiedElementRef}
-	(element=[FTypedElement|ID] | element = [FEnumerationType|AnonymousErrorTypeReferenceTerminal])
-	({FQualifiedElementRef.qualifier=current} '.' field=[FField|ID])*;
+	element=[FEvaluableElement|FQN]
+	({FQualifiedElementRef.qualifier=current} '->' field=[FField|ID])*;
 
 FConstant returns FExpression:
 	FFloatConstant |

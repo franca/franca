@@ -9,34 +9,33 @@ package org.franca.core.dsl.scoping
 
 import com.google.common.collect.Lists
 import com.google.inject.Inject
-import java.util.Collections
 import java.util.List
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EReference
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.naming.IQualifiedNameProvider
 import org.eclipse.xtext.naming.QualifiedName
-import org.eclipse.xtext.resource.EObjectDescription
 import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.Scopes
 import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
-import org.eclipse.xtext.scoping.impl.ImportUriGlobalScopeProvider
-import org.eclipse.xtext.scoping.impl.SimpleScope
 import org.franca.core.FrancaModelExtensions
+import org.franca.core.franca.FAttribute
 import org.franca.core.franca.FCompoundInitializer
+import org.franca.core.franca.FConstantDef
 import org.franca.core.franca.FContract
+import org.franca.core.franca.FDeclaration
+import org.franca.core.franca.FEnumerator
 import org.franca.core.franca.FEventOnIf
 import org.franca.core.franca.FInterface
-import org.franca.core.franca.FModel
 import org.franca.core.franca.FModelElement
 import org.franca.core.franca.FQualifiedElementRef
 import org.franca.core.franca.FTransition
+import org.franca.core.franca.FType
+import org.franca.core.franca.FTypeCollection
 import org.franca.core.franca.FTypedElement
 
-import static extension org.franca.core.FrancaModelExtensions.*
-import org.franca.core.franca.FType
-
 import static extension org.eclipse.xtext.scoping.Scopes.*
+import static extension org.franca.core.FrancaModelExtensions.*
 import static extension org.franca.core.framework.FrancaHelpers.*
 
 /**
@@ -47,15 +46,12 @@ import static extension org.franca.core.framework.FrancaHelpers.*
  *
  */
 class FrancaIDLScopeProvider extends AbstractDeclarativeScopeProvider {
-	
+
 	@Inject
 	private IQualifiedNameProvider qualifiedNameProvider
-	
-	@Inject
-	private ImportUriGlobalScopeProvider importUriGlobalScopeProvider
-	
 
-	def IScope scope_FAssignment_lhs (FContract contract, EReference ref) {
+	
+	def IScope scope_FAssignment_lhs(FContract contract, EReference ref) {
 		contract.variables.scopeFor
 	}
 	
@@ -74,7 +70,82 @@ class FrancaIDLScopeProvider extends AbstractDeclarativeScopeProvider {
 	
 	// *****************************************************************************
 
+	def IScope scope_FQualifiedElementRef_element(FTypeCollection context, EReference ref) {
+
+		val defaultScope = this.delegateGetScope(context, ref)
+//		defaultScope.dump("defaultScope")
+
+		// remove all FTypeElements from scope which are not FConstantDefs
+		val baseScope = new FilteringScopeWrapper(defaultScope,
+			[
+				it==typeof(FConstantDef) ||
+				it==typeof(FEnumerator)
+			]
+		)
+//		baseScope.dump("baseScope")
+
+		// add inherited constant definitions to the scope
+		val baseScopeWithInherited =
+			if (context instanceof FInterface) {
+				val _interface = context as FInterface
+				if (_interface.base!=null) {
+					val items = getAllElements(_interface.base).filter(FConstantDef)
+					items.scopeFor(baseScope)
+				} else {
+					baseScope
+				}
+			} else 
+				baseScope
+		
+		new InheritedEnumeratorScope(baseScopeWithInherited, context, qualifiedNameProvider)
+	}
+
+
 	def IScope scope_FQualifiedElementRef_element (FTransition tr, EReference ref) {
+		val context = EcoreUtil2::getContainerOfType(tr, typeof(FTypeCollection))
+
+		val defaultScope = this.delegateGetScope(context, ref)
+//		defaultScope.dump("defaultScope")
+
+		// remove all FTypeElements from scope which cannot be referenced
+		val baseScope = new FilteringScopeWrapper(defaultScope,
+			[
+				it==typeof(FConstantDef) ||
+				it==typeof(FEnumerator)  ||
+				it==typeof(FDeclaration) ||
+				it==typeof(FAttribute)
+			]
+		)
+//		baseScope.dump("baseScope")
+
+		// add inherited constant definitions to the scope
+		val baseScopeWithInherited =
+			if (context instanceof FInterface) {
+				val _interface = context as FInterface
+				if (_interface.base!=null) {
+					val items = getAllElements(_interface.base).filter(FConstantDef)
+					items.scopeFor(baseScope)
+				} else {
+					baseScope
+				}
+			}
+
+		// add items which are specific for the transition
+		val scopeForTransition = getScopeForTransitionContext(tr, baseScopeWithInherited)
+		
+		new InheritedEnumeratorScope(scopeForTransition, context, qualifiedNameProvider)
+	}
+
+
+	def private dump(IScope s, String tag) {
+		println("    " + tag)
+		for(e : s.allElements) {
+			println("        " + e.name + " = " + e.EObjectOrProxy)
+		}
+	}
+
+	
+	def private IScope getScopeForTransitionContext(FTransition tr, IScope baseScope) {
 		val List<EObject> scopes = Lists.newArrayList
 
 		// add state variables of the enclosing contract to this scope
@@ -82,7 +153,7 @@ class FrancaIDLScopeProvider extends AbstractDeclarativeScopeProvider {
 		if (contract!=null) { 
 			scopes.addAll(contract.variables)
 		}
-
+		
 		// add the trigger's parameters to this scope
 		val ev = tr.trigger.event
 		if (ev.call!=null) {
@@ -93,47 +164,45 @@ class FrancaIDLScopeProvider extends AbstractDeclarativeScopeProvider {
 			scopes.addAll(ev.signal.outArgs)
 		}
 		
-		val container = EcoreUtil2::getContainerOfType(tr, typeof(FModel))
-		val outerTypeScope = this.getScope(container, ref)
-		var scope = Scopes.scopeFor(scopes, outerTypeScope)
-		
-		val method = getTriggeringMethod(ev)
-		if (method != null) {
-			var errorTypeDefinition = method.errors
-			if (errorTypeDefinition == null) {
-				errorTypeDefinition = method.errorEnum
-			}
-			if (errorTypeDefinition != null) {
-				val errorTypeName = QualifiedName.create("errordef")
-				val errorDescription =
-						new EObjectDescription(errorTypeName, errorTypeDefinition, null)
-				scope = new SimpleScope(scope, Collections.singleton(errorDescription))
-			}
-		}
-
+		val scope = Scopes.scopeFor(scopes, baseScope)
 		scope
 	}
-	
-	def IScope scope_FQualifiedElementRef_field (FQualifiedElementRef elem, EReference ref) {
+
+
+	def IScope scope_FQualifiedElementRef_field(FQualifiedElementRef elem, EReference ref) {
 		val qualifier = elem.qualifier
-		
 		if (qualifier == null) {
 			return IScope.NULLSCOPE
 		}
 		
 		val lastQualifier = qualifier.element ?: qualifier.field
-		if (lastQualifier instanceof FTypedElement) {
-			val typeRef = (lastQualifier as FTypedElement).type
-			val type = typeRef.derived
-			val Iterable<? extends FModelElement> elements = getAllElements(type)
-			return elements.scopeFor
-		} else if (lastQualifier != null) {
-			// probably we are referencing a type
-			val Iterable<? extends FModelElement> elements = getAllElements(lastQualifier)
-			return elements.scopeFor
+		switch (lastQualifier) {
+			FTypedElement: {
+				val typeRef = lastQualifier.type
+				val type = typeRef.derived
+				val Iterable<? extends FModelElement> elements = getAllElements(type)
+				elements.scopeFor
+			}
+			default: IScope.NULLSCOPE
 		}
-		
-		IScope.NULLSCOPE
+	}
+
+	def IScope scope_FMethodErrorEnumRef_enumerator(FTransition tr, EReference ref) {
+		val List<EObject> scopes = Lists.newArrayList
+
+		val ev = tr.trigger.event
+		if (ev.error!=null) {
+			val method = ev.error
+			var errorTypeDefinition = method.errors
+			if (errorTypeDefinition == null) {
+				errorTypeDefinition = method.errorEnum
+			}
+			if (errorTypeDefinition != null) {
+				val allEnums = errorTypeDefinition.allElements.filter(typeof(FEnumerator))
+				scopes += allEnums
+			}			
+		}
+		scopes.scopeFor		
 	}
 
 	def IScope scope_FFieldInitializer_element(FCompoundInitializer initializer, EReference ref) {

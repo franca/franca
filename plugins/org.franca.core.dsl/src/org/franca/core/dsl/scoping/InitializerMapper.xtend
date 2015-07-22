@@ -18,6 +18,8 @@ import org.franca.core.franca.FInitializerExpression
 import org.franca.core.franca.FMapType
 import org.franca.core.typesystem.ActualType
 
+import static org.franca.core.typesystem.ActualType.*
+
 /**
  * This class computes the expected type for nested initializer expressions. 
  */
@@ -34,11 +36,11 @@ class InitializerMapper {
 		if (e.eContainer instanceof FConstantDef) {
 			// we reached a FConstantDef, which is the root for the initializer expression
 			val cdef = e.eContainer as FConstantDef
-			new ActualType(cdef)
+			typeFor(cdef)
 		} else if (e.eContainer instanceof FDeclaration) {
 			// we reached a FDeclaration, which is the root for the initializer expression
 			val decl = e.eContainer as FDeclaration
-			new ActualType(decl)
+			typeFor(decl)
 		} else {
 			// we are somewhere below root, try to resolve expected parent type 
 			val parentInitializer = e.parentInitializer
@@ -51,18 +53,18 @@ class InitializerMapper {
 					val ei = e.eContainer as FElementInitializer
 					if (parentType.isImplicitArray) {
 						// parent is an implicit array type, e must be its plain type
-						new ActualType(parentType.typeRef)
+						typeFor(parentType.typeRef)
 					} else if (parentType.isExplicitArray) {
 						// parent is an array type, e must be of its element type
 						val p = parentType.actualDerived as FArrayType
-						new ActualType(p.elementType)
+						typeFor(p.elementType)
 					} else if (parentType.isMap) {
 						// parent is a map type, e must be of either its key or value type
 						val p = parentType.actualDerived as FMapType
 						if (e == ei.first) {
-							new ActualType(p.keyType)
+							typeFor(p.keyType)
 						} else {
-							new ActualType(p.valueType)
+							typeFor(p.valueType)
 						}
 					} else {
 						null
@@ -71,7 +73,7 @@ class InitializerMapper {
 				FCompoundInitializer: {
 					// find FFieldInitializer for e in parentInitializer's children
 					val fi = parentInitializer.elements.findFirst[f | f.value==e]
-					new ActualType(fi.element)
+					typeFor(fi.element)
 				}
 			}
 		}

@@ -15,22 +15,18 @@ import org.franca.core.franca.FBooleanConstant
 import org.franca.core.franca.FConstant
 import org.franca.core.franca.FCurrentError
 import org.franca.core.franca.FDoubleConstant
-import org.franca.core.franca.FEnumerator
 import org.franca.core.franca.FExpression
 import org.franca.core.franca.FFloatConstant
 import org.franca.core.franca.FIntegerConstant
-import org.franca.core.franca.FModelElement
 import org.franca.core.franca.FOperator
 import org.franca.core.franca.FQualifiedElementRef
 import org.franca.core.franca.FStringConstant
-import org.franca.core.franca.FTypedElement
 import org.franca.core.franca.FUnaryOperation
 import org.franca.core.franca.FrancaFactory
-import org.franca.core.typesystem.ActualType
-import org.franca.core.utils.FrancaModelCreator
 
-import static org.franca.core.FrancaModelExtensions.*
 import static org.franca.core.franca.FrancaPackage.Literals.*
+import static org.franca.core.typesystem.ActualType.*
+import org.franca.core.franca.FMethodErrorEnumRef
 
 /**
  * The type system for Franca IDL expressions.
@@ -39,8 +35,6 @@ import static org.franca.core.franca.FrancaPackage.Literals.*
  * and state variable declarations.
  */
 class TypeSystem {
-	
-	val FrancaModelCreator francaModelCreator = new FrancaModelCreator
 	
 	// some predefined types
 	public static val BOOLEAN_TYPE = getBooleanType
@@ -59,7 +53,7 @@ class TypeSystem {
 	 * 
 	 * @return type of input expression, or null on error
 	 */
-	def ActualType checkType (
+	def ActualType checkType(
 		FExpression expr,
 		ActualType expected,
 		IssueCollector collector,
@@ -67,8 +61,25 @@ class TypeSystem {
 		EStructuralFeature feat
 	) {
 		this.collector = collector
-		expr.checkType(expected, loc, feat)
+		expr?.checkType(expected, loc, feat)
 	}
+
+	/**
+	 * Get actual type of a qualified element reference.
+	 *
+	 * Either the qualified element reference is just a reference
+	 * to a FTypedElement (e.g., an attribute or a constant definition) 
+	 * or it is a (nested) compound element. In the latter case the type
+	 * is computed from the type of the compound itself and its element definition.
+	 */
+	def ActualType getTypeOf(FQualifiedElementRef expr) {
+		val te = expr.getEvaluableElement
+		if (te==null)
+			null
+		else
+			typeFor(te)	
+	}
+	
 	
 	def private dispatch ActualType checkType (FConstant expr, ActualType expected, EObject loc, EStructuralFeature feat) {
 		switch (expr) {
@@ -88,6 +99,10 @@ class TypeSystem {
 	}
 
 	def private dispatch ActualType checkType (FUnaryOperation it, ActualType expected, EObject loc, EStructuralFeature feat) {
+		// handle incomplete expressions (which might occur during validation)
+		if (operand==null)
+			return null
+			
 		if (FOperator::NEGATION.equals(op)) {
 			val ok = expected.checkIsBoolean(loc, feat)
 			val type = operand.checkType(BOOLEAN_TYPE, it, FUNARY_OPERATION__OPERAND)
@@ -99,6 +114,12 @@ class TypeSystem {
 	}
 
 	def private dispatch ActualType checkType (FBinaryOperation it, ActualType expected, EObject loc, EStructuralFeature feat) {
+		// handle incomplete expressions (which might occur during validation)
+		if (left==null || right==null) {
+			return null
+		}
+		
+		// now actually evaluate the expression
 		if (FOperator::AND.equals(op) || FOperator::OR.equals(op)) {
 			val t1 = left.checkType(BOOLEAN_TYPE, it, FBINARY_OPERATION__LEFT)
 			val t2 = right.checkType(BOOLEAN_TYPE, it, FBINARY_OPERATION__RIGHT)
@@ -144,7 +165,7 @@ class TypeSystem {
 		}
 	}
 
-	def private checkOperandsType (ActualType t1, ActualType t2, EObject loc, EStructuralFeature feat) {
+	def private checkOperandsType(ActualType t1, ActualType t2, EObject loc, EStructuralFeature feat) {
 		if (t1==null || t2==null) {
 			false
 		} else {
@@ -157,8 +178,12 @@ class TypeSystem {
 		}
 	}	
 
-	def private dispatch ActualType checkType (FQualifiedElementRef expr, ActualType expected, EObject loc, EStructuralFeature feat) {
-		val result = expr.typeOf
+	def private dispatch ActualType checkType(FQualifiedElementRef expr, ActualType expected, EObject loc, EStructuralFeature feat) {
+		val ee = expr.evaluableElement
+		if (ee==null || ee.eIsProxy)
+			return null
+
+		val result = typeFor(ee)
 		if (result==null) {
 			addIssue("expected typed expression", loc, feat)
 			null
@@ -166,59 +191,38 @@ class TypeSystem {
 			if (expected==null) {
 				result
 			} else {
-				if (expected.isEnumeration && result.isEnumeration) {
-					// expr is an enumerator value, check if its type is as expected
-					val iset = getInheritationSet(expected.derived)
-					if (iset.contains(result.derived))
-						result
-					else
-						null
-				} else {
-					// default: check type compatibility
-					if (result.isCompatibleType(expected)) {
-						result
-					} else {
-						addIssue("invalid type (is " +
-							result.getTypeString + ", expected " +
-							expected.getTypeString + ")",
-							loc, feat
-						)
-						null
-					}
-				}
+				check(result, expected, loc, feat)
 			}
 		}
 	}
 
-	/**
-	 * Get the type of some qualified element reference.
-	 * 
-	 * E.g., the type of a struct element is computed from the type
-	 * of the struct itself and its element definition.
-	 */
-	def ActualType getTypeOf (FQualifiedElementRef expr) {
-		if (expr?.qualifier==null) {
-			val te = expr?.element
-			te.typeRef
+	def private getEvaluableElement(FQualifiedElementRef expr) {
+		if (expr?.qualifier==null)
+			expr?.element
+		else
+			expr?.field	
+	}
+
+	def private dispatch ActualType checkType(FMethodErrorEnumRef expr, ActualType expected, EObject loc, EStructuralFeature feat) {
+		val result = typeFor(expr.enumerator)
+		if (result==null) {
+			addIssue("expected error enumerator", loc, feat)
+			null
 		} else {
-			expr?.field.typeRef;
+			if (expected==null) {
+				result
+			} else {
+				check(result, expected, loc, feat)
+			}
 		}
 	}
-	
-	def private ActualType getTypeRef (FModelElement elem) {
-		switch (elem) {
-			FTypedElement: new ActualType(elem)
-			FEnumerator: new ActualType(francaModelCreator.createTypeRef(elem))	
-			default: null // FModelElement without a type (maybe itself is a type)
-		}
-	}
-	
-	def private dispatch ActualType checkType (FCurrentError expr, ActualType expected, EObject loc, EStructuralFeature feat) {
+
+	def private dispatch ActualType checkType(FCurrentError expr, ActualType expected, EObject loc, EStructuralFeature feat) {
 		if (expected==null) {
-			new ActualType(francaModelCreator.createTypeRef(expr))
+			typeFor(expr)
 		} else {
 			if (expected.isEnumeration) {
-				val type = new ActualType(francaModelCreator.createTypeRef(expr))
+				val type = typeFor(expr)
 				if (type.isCompatibleType(expected)) {
 					type
 				} else {
@@ -314,6 +318,18 @@ class TypeSystem {
 		ok
 	}	
 
+	def private ActualType check(ActualType actual, ActualType expected, EObject loc, EStructuralFeature feat) {
+		if (actual.isCompatibleType(expected)) {
+			actual
+		} else {
+			addIssue("invalid type (is " +
+				actual.getTypeString + ", expected " +
+				expected.getTypeString + ")",
+				loc, feat
+			)
+			null
+		}
+	}
 
 	def static isSameType (ActualType t1, ActualType t2) {
 		return t2.isOfCompatiblePrimitiveType(t1) ||
@@ -325,7 +341,7 @@ class TypeSystem {
 		
 		// TODO: we should be more specific here depending on the actual value
 		tref.predefined = FBasicTypeId::INT32
-		new ActualType(tref)
+		typeFor(tref)
 	}
 	
 	def private static getFloatType (/*FIntegerConstant value*/) {
@@ -333,7 +349,7 @@ class TypeSystem {
 		
 		// TODO: we should be more specific here depending on the actual value
 		tref.predefined = FBasicTypeId::FLOAT
-		new ActualType(tref)
+		typeFor(tref)
 	}
 	
 	def private static getDoubleType (/*FIntegerConstant value*/) {
@@ -341,19 +357,19 @@ class TypeSystem {
 		
 		// TODO: we should be more specific here depending on the actual value
 		tref.predefined = FBasicTypeId::DOUBLE
-		new ActualType(tref)
+		typeFor(tref)
 	}
 
 	def private static getBooleanType() {
 		val tref = FrancaFactory::eINSTANCE.createFTypeRef
 		tref.predefined = FBasicTypeId::BOOLEAN
-		new ActualType(tref)
+		typeFor(tref)
 	}
 
 	def private static getStringType() {
 		val tref = FrancaFactory::eINSTANCE.createFTypeRef
 		tref.predefined = FBasicTypeId::STRING
-		new ActualType(tref)
+		typeFor(tref)
 	}
 
 	def private addIssue (String mesg, EObject loc, EStructuralFeature feat) {

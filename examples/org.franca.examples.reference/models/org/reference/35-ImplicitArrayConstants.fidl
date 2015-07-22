@@ -102,7 +102,7 @@ typeCollection MyTypeCollection35 {
 	const S2 s11 = {
 		ae1: ac1,	
 		ae2: as1,	
-		ae3: s10.ae3
+		ae3: s10->ae3
 	}
 }
 

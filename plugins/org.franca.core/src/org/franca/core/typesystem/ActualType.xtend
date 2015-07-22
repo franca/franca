@@ -1,27 +1,64 @@
 package org.franca.core.typesystem
 
+import org.franca.core.franca.FCurrentError
+import org.franca.core.franca.FEnumerator
+import org.franca.core.franca.FEvaluableElement
 import org.franca.core.franca.FTypeRef
 import org.franca.core.franca.FTypedElement
+import org.franca.core.utils.FrancaModelCreator
 
 import static org.franca.core.FrancaModelExtensions.*
 
 import static extension org.franca.core.framework.FrancaHelpers.*
 
+/**
+ * This is a wrapper for the Franca FTypeRef class used by Franca's type system.
+ * 
+ * It takes into account if the referenced type is an implicit array type.
+ */
 class ActualType {
-	
+
+	val static francaModelCreator = new FrancaModelCreator
+
 	val FTypeRef typeRef
 	val boolean implicitArray
 	
-	new (FTypeRef typeRef) {
+	private new (FTypeRef typeRef) {
 		this.typeRef = typeRef
 		this.implicitArray = false
 	}
 
-	new (FTypedElement typedElement) {
-		this.typeRef = typedElement.type
-		this.implicitArray = typedElement.array
+	private new (FTypedElement element) {
+		this.typeRef = element.type
+		this.implicitArray = element.array
+	}
+	
+	private new (FEnumerator enumerator) {
+		this.typeRef = francaModelCreator.createTypeRef(enumerator)
+		this.implicitArray = false
+	}
+	
+	private new (FCurrentError current) {
+		this.typeRef = francaModelCreator.createTypeRef(current)
+		this.implicitArray = false
+	}
+	
+	def static typeFor(FTypeRef typeRef) {
+		new ActualType(typeRef)
+	}
+	
+	def static typeFor(FEvaluableElement element) {
+		switch (element) {
+			FTypedElement: new ActualType(element)
+			FEnumerator: new ActualType(element)
+			default: null
+		}
 	}
 
+	def static typeFor(FCurrentError typeRef) {
+		new ActualType(typeRef)
+	}
+	
 	def getTypeRef() {
 		typeRef
 	}
@@ -129,12 +166,23 @@ class ActualType {
 		if (reference.derived==null || this.derived==null)
 			return false
 
+		// both types must be implicit arrays or none of them
 		if ((reference.implicitArray && !this.implicitArray) || (!reference.implicitArray && this.implicitArray))
 			return false
 		
-		// all other derived types
-		val bases = getInheritationSet(this.derived)
-		return bases.contains(reference.derived)
+		// special handling for enumeration types
+		if (this.isEnumeration || reference.isEnumeration) {
+			if (this.isEnumeration && reference.isEnumeration) {
+				val bases = getInheritationSet(reference.derived)
+				bases.contains(this.derived)
+			} else
+				false
+			
+		} else {
+			// all other derived types
+			val bases = getInheritationSet(this.derived)
+			bases.contains(reference.derived)
+		}
 	}
 
 

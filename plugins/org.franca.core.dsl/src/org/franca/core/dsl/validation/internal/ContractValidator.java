@@ -12,7 +12,6 @@ import java.util.List;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.franca.core.FrancaModelExtensions;
-import org.franca.core.typesystem.TypeSystem;
 import org.franca.core.dsl.validation.internal.util.FrancaContractDirectedGraphDataSource;
 import org.franca.core.dsl.validation.internal.util.FrancaContractUndirectedGraphDataSource;
 import org.franca.core.dsl.validation.internal.util.GraphUtil;
@@ -20,15 +19,19 @@ import org.franca.core.franca.FAssignment;
 import org.franca.core.franca.FAttribute;
 import org.franca.core.franca.FBroadcast;
 import org.franca.core.franca.FContract;
+import org.franca.core.franca.FDeclaration;
+import org.franca.core.franca.FEvaluableElement;
 import org.franca.core.franca.FEventOnIf;
 import org.franca.core.franca.FGuard;
 import org.franca.core.franca.FInterface;
 import org.franca.core.franca.FMethod;
+import org.franca.core.franca.FQualifiedElementRef;
 import org.franca.core.franca.FState;
 import org.franca.core.franca.FTransition;
 import org.franca.core.franca.FTrigger;
 import org.franca.core.franca.FrancaPackage;
 import org.franca.core.typesystem.ActualType;
+import org.franca.core.typesystem.TypeSystem;
 
 import com.google.common.collect.Lists;
 
@@ -111,9 +114,19 @@ public class ContractValidator {
 	
 	public static void checkAssignment (ValidationMessageReporter reporter, FAssignment assignment) {
 		TypeSystem ts = new TypeSystem();
-		ActualType typeLHS = ts.getTypeOf(assignment.getLhs());
+		FQualifiedElementRef lhs = assignment.getLhs();
+		if (lhs.getElement()!=null) {
+			FEvaluableElement te = lhs.getElement(); 
+			if (! (te instanceof FDeclaration)) {
+				reporter.reportError("Left-hand side of assignment must be a state variable", assignment, FrancaPackage.Literals.FASSIGNMENT__LHS);
+				return;
+			}
+		}
+
+		// check if types of LHS and RHS match
+		ActualType typeLHS = ts.getTypeOf(lhs);
 		if (typeLHS==null) {
-			reporter.reportError("invalid left-hand side in assignment", assignment, FrancaPackage.Literals.FASSIGNMENT__LHS);
+			reporter.reportError("Invalid left-hand side in assignment", assignment, FrancaPackage.Literals.FASSIGNMENT__LHS);
 		} else {
 			TypesValidator.checkExpression(reporter,
 				assignment.getRhs(), typeLHS,

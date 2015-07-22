@@ -23,7 +23,7 @@ class ContractTests extends XtextTest {//ValidationTestBase {
 	def void validateValidExpressionsContainingErrorKeywords() {
 		testFile(basePath + "ValidUsageOfErrorKeywords.fidl")
 		assertConstraints(
-			issues.inLine(11).theOneAndOnlyContains("Method is not covered by contract, not needed?")
+			issues.inLine(14).theOneAndOnlyContains("Method is not covered by contract, not needed?")
 		)
 	}
 	

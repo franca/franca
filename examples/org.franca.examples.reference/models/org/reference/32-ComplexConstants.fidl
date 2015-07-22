@@ -18,7 +18,7 @@ typeCollection MyTypeCollection32 {
 	enumeration E2 extends E1 {
 		Enum4 = 10
 		Enum5 = x
-		Enum6 = str3.e1 + x
+		Enum6 = str3->e1 + x
 	}
 	
 	array A1 of UInt16
@@ -91,7 +91,7 @@ typeCollection MyTypeCollection32 {
 		{ e1 : true, e2 : 1, e3 : "foo" },
 		{ e1 : false, e2 : 1, e3 : "foo" },
 		str1,
-		str3.e4
+		str3->e4
 	]
 
 	// struct constants
@@ -99,7 +99,7 @@ typeCollection MyTypeCollection32 {
 	const S1 str1 = { e1 : true, e2 : 1, e3 : "foo" }
 	const S2 str2 = {
 		e1 : 1,
-		e2 : { e1 : 47<11, e2 : x+1, e3 : str1.e3 },
+		e2 : { e1 : 47<11, e2 : x+1, e3 : str1->e3 },
 		e3 : false,
 		e4 : str1
 	}
@@ -121,9 +121,9 @@ typeCollection MyTypeCollection32 {
 	// union constants
 	const U1 uni1 = { e1 : 1 }
 	const U1 uni2 = { e2 : 1!=2 }
-	const U1 uni3 = { e3 : str3.e5 }
+	const U1 uni3 = { e3 : str3->e5 }
 	const U2 uni4 = { e2 : false}
-	const U3 uni5 = { e5 : { e1 : uni2.e2,  e2 : 1, e3 : "foo" } }
+	const U3 uni5 = { e5 : { e1 : uni2->e2,  e2 : 1, e3 : "foo" } }
 
 	// map constants
 	const M1 m0 = [ ]

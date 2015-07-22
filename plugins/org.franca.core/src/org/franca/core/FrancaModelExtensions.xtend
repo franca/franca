@@ -157,7 +157,7 @@ class FrancaModelExtensions {
 	}
 
 	def static dispatch Iterable<? extends FModelElement> getAllElements(FTypeCollection c) {
-		c.types
+		c.types + c.constants
 	}
 
 	def static dispatch Iterable<? extends FModelElement> getAllElements(FArrayType a) {

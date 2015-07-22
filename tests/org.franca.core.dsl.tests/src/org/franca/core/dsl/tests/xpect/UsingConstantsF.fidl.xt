@@ -1,0 +1,17 @@
+// XPECT_SETUP org.franca.core.dsl.tests.xpect.FrancaIDLXpectTests END_SETUP
+package f
+
+// tests for referencing constants via interface inheritance in another file
+
+import a.* from "UsingConstantsA.fidl"
+
+interface FIF2 extends AIF {
+	// constant reference to base interface
+	const UInt32 EIF1_Const_1 = AIF_Const_1
+
+	// constant reference to base interface (via qualified name)
+	const UInt32 EIF1_Const_2 = AIF.AIF_Const_1
+
+	// constant reference to base interface (via fully qualified name)
+	const UInt32 EIF1_Const_3 = a.AIF.AIF_Const_1
+}
