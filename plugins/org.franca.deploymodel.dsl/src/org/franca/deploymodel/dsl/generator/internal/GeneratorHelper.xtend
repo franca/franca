@@ -64,7 +64,11 @@ class GeneratorHelper {
 	}
 
 	def static getQualifiedClassname(FDSpecification it) {
-		package + "." + classname
+		val p = package
+		if (p.empty)
+			classname
+		else
+			p + "." + classname
 	}
 
 }
