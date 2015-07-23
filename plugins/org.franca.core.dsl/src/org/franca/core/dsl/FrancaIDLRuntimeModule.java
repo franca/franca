@@ -26,12 +26,15 @@ public class FrancaIDLRuntimeModule extends org.franca.core.dsl.AbstractFrancaID
 		
 	}
 
-
 	@Override
 	public Class<? extends IValueConverterService> bindIValueConverterService() {
 		return FrancaValueConverters.class;
 	}
 	
+	@org.eclipse.xtext.service.SingletonBinding(eager=true)	public Class<? extends org.franca.core.dsl.validation.FrancaIDLJavaValidator> bindFrancaIDLJavaValidator() {
+		return org.franca.core.dsl.validation.FrancaIDLValidator.class;
+	}
+
 	public Class<? extends IDefaultResourceDescriptionStrategy> bindIDefaultResourceDescriptionStrategy() {
 		return FrancaCoreResourceDescriptionStrategy.class;
 	}

@@ -1,0 +1,27 @@
+// XPECT_SETUP org.franca.core.dsl.tests.xpect.FrancaIDLXpectTests END_SETUP
+
+// XPECT errors --> "Another anonymous type collection in same package is imported via 'NameCollisionBase.fidl'" at "a.b.c"
+package a.b.c
+
+// import clashing model elements via "import ... from" syntax
+import a.b.* from "NameCollisionBase.fidl"
+
+// name collision another anonymous type collection in imported file
+typeCollection { }
+
+// name collision with another type collection in imported file
+// XPECT errors --> "Model element name collides with imported model element (imported via 'NameCollisionBase.fidl')" at "TC0"
+typeCollection TC0 { }
+
+// name collision with another interface in imported file
+// XPECT errors --> "Model element name collides with imported model element (imported via 'NameCollisionBase.fidl')" at "IF0"
+interface IF0 { }
+
+// name collision with interface in imported file
+// XPECT errors --> "Model element name collides with imported model element (imported via 'NameCollisionBase.fidl')" at "IF1"
+typeCollection IF1 { }
+
+// name collision with type collection in imported file
+// XPECT errors --> "Model element name collides with imported model element (imported via 'NameCollisionBase.fidl')" at "TC1"
+interface TC1 { }
+
