@@ -28,6 +28,11 @@ import static org.franca.core.franca.FrancaPackage.Literals.*
 import static extension org.franca.core.FrancaModelExtensions.*
 import static extension org.franca.core.dsl.validation.internal.FrancaNameProvider.*
 
+/**
+ * The validator class for Franca IDL.
+ * 
+ * Implement new validation routines here.
+ */
 class FrancaIDLValidator extends FrancaIDLJavaValidator {
 
 	/**

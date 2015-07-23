@@ -59,6 +59,12 @@ import org.franca.core.franca.FrancaPackage;
 
 import com.google.inject.Inject;
 
+/**
+ *  This Java class is an intermediate class in the hierarchy of 
+ *  validators for Franca IDL. It is still here for historical reasons.
+ *  
+ *  Please implement new validation methods in FrancaIDLValidator.xtend.
+ */
 public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 		implements ValidationMessageReporter {
 	
