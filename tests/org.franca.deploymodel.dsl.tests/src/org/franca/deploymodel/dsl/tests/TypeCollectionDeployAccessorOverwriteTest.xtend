@@ -21,7 +21,7 @@ import static extension org.franca.core.framework.FrancaHelpers.*
 
 @RunWith(typeof(XtextRunner2))
 @InjectWith(typeof(FDeployTestsInjectorProvider))
-class TypeCollectionDeployAccessorTest extends DeployAccessorTestBase {
+class TypeCollectionDeployAccessorOverwriteTest extends DeployAccessorTestBase {
 
 	FTypeCollection tc
 	TypeCollectionPropertyAccessor accessor
