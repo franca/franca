@@ -62,6 +62,7 @@ enum FDPropertyHost:
 	arguments |
 	struct_fields | union_fields | arrays | structs | unions |
 	enumerations | enumerators |
+	typedefs |
 	strings | numbers | integers | floats | booleans | byte_buffers;
 
 
@@ -179,7 +180,7 @@ FDArgument:
 	'}';
 
 
-FDTypeDefinition: FDArray | FDCompound | FDEnumeration;
+FDTypeDefinition: FDArray | FDCompound | FDEnumeration | FDTypedef;
 FDCompound: FDStruct | FDUnion;
 
 FDArray:
@@ -200,6 +201,11 @@ FDUnion:
 		fields+=FDField*
 	'}';
 
+FDTypedef:
+	'typedef' target=[fidl::FTypeDef|FQN] '{'
+		properties=FDPropertySet
+	'}';
+	
 FDField:
 	target=[fidl::FField|FQN] '{'
 		properties=FDPropertySet

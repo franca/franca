@@ -2,13 +2,15 @@ package org.franca.deploymodel.dsl.tests
 
 import org.eclipse.xtext.junit4.InjectWith
 import org.eclipselabs.xtext.utils.unittesting.XtextRunner2
-import org.example.spec.SpecCompoundHostsRef.InterfacePropertyAccessor
-import org.example.spec.SpecCompoundHostsRef.Enums.StringProp
 import org.example.spec.SpecCompoundHostsRef.Enums.StringEnumArrayProp
+import org.example.spec.SpecCompoundHostsRef.Enums.StringProp
+import org.example.spec.SpecCompoundHostsRef.InterfacePropertyAccessor
 import org.franca.core.franca.FArrayType
 import org.franca.core.franca.FEnumerationType
 import org.franca.core.franca.FInterface
 import org.franca.core.franca.FStructType
+import org.franca.core.franca.FTypeDef
+import org.franca.core.franca.FTypeRef
 import org.franca.core.franca.FUnionType
 import org.franca.deploymodel.core.FDeployedInterface
 import org.franca.deploymodel.dsl.FDeployTestsInjectorProvider
@@ -21,7 +23,6 @@ import org.junit.runner.RunWith
 import static org.junit.Assert.*
 
 import static extension org.franca.core.framework.FrancaHelpers.*
-import org.franca.core.franca.FTypeRef
 
 @RunWith(typeof(XtextRunner2))
 @InjectWith(typeof(FDeployTestsInjectorProvider))
@@ -47,6 +48,15 @@ class DeployAccessorTypesTest extends DeployAccessorTestBase {
 	}
 
 	
+	@Test
+	def void test_70DefTypesOverwrite_typedef() {
+		val typedefs = fidl.types.filter(FTypeDef)
+		assertEquals(1, typedefs.size)
+
+		val typedef1 = typedefs.get(0)
+		assertEquals(90, accessor.getTypedefProp(typedef1))
+	}
+
 	@Test
 	def void test_70DefTypesOverwrite_attrB() {
 		val attrB = fidl.attributes.get(0)

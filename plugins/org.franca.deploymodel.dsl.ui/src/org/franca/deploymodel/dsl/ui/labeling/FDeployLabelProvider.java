@@ -27,6 +27,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDProperty;
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl;
 import org.franca.deploymodel.dsl.fDeploy.FDString;
 import org.franca.deploymodel.dsl.fDeploy.FDStruct;
+import org.franca.deploymodel.dsl.fDeploy.FDTypedef;
 import org.franca.deploymodel.dsl.fDeploy.FDUnion;
 import org.franca.deploymodel.dsl.fDeploy.Import;
 
@@ -84,6 +85,10 @@ public class FDeployLabelProvider extends DefaultEObjectLabelProvider {
    }
 
    public String text(FDUnion element) {
+      return element.getTarget().getName();
+   }
+
+   public String text(FDTypedef element) {
       return element.getTarget().getName();
    }
 

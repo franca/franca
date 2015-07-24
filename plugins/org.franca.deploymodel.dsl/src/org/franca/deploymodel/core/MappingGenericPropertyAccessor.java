@@ -13,6 +13,7 @@ import org.franca.core.franca.FField;
 import org.franca.core.franca.FInterface;
 import org.franca.core.franca.FMethod;
 import org.franca.core.franca.FStructType;
+import org.franca.core.franca.FTypeDef;
 import org.franca.core.franca.FUnionType;
 import org.franca.deploymodel.dsl.FDMapper;
 import org.franca.deploymodel.dsl.fDeploy.FDArgument;
@@ -28,6 +29,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance;
 import org.franca.deploymodel.dsl.fDeploy.FDMethod;
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification;
 import org.franca.deploymodel.dsl.fDeploy.FDStruct;
+import org.franca.deploymodel.dsl.fDeploy.FDTypedef;
 import org.franca.deploymodel.dsl.fDeploy.FDUnion;
 import org.franca.deploymodel.dsl.fDeploy.FDeployFactory;
 
@@ -141,6 +143,9 @@ public class MappingGenericPropertyAccessor extends GenericPropertyAccessor{
 		} else if (obj instanceof FEnumerator) {
 			el = FDeployFactory.eINSTANCE.createFDEnumValue();
 			((FDEnumValue) el).setTarget((FEnumerator) obj);
+		} else if (obj instanceof FTypeDef) {
+			el = FDeployFactory.eINSTANCE.createFDTypedef();
+			((FDTypedef) el).setTarget((FTypeDef) obj);
 		}
 		return el;
 	}

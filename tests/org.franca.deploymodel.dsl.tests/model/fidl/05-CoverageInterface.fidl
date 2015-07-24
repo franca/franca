@@ -115,4 +115,7 @@ interface CoverageInterface {
 		aStruct someStruct
 		aUnion someUnion
 	}
+	
+	typedef aTypedef is Int16
+
 }

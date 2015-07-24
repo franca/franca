@@ -28,6 +28,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDMethod;
 import org.franca.deploymodel.dsl.fDeploy.FDRootElement;
 import org.franca.deploymodel.dsl.fDeploy.FDStruct;
 import org.franca.deploymodel.dsl.fDeploy.FDTypeDefinition;
+import org.franca.deploymodel.dsl.fDeploy.FDTypedef;
 import org.franca.deploymodel.dsl.fDeploy.FDTypes;
 import org.franca.deploymodel.dsl.fDeploy.FDUnion;
 
@@ -152,6 +153,8 @@ public class FDMapper {
 				for(FDEnumValue e : ((FDEnumeration) t).getEnumerators()) {
 					mapping.put(e.getTarget(), e);
 				}
+			} else if (t instanceof FDTypedef) {
+				mapping.put(((FDTypedef) t).getTarget(), t);
 			}
 		}
 	}

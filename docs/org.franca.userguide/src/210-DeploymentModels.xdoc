@@ -119,7 +119,9 @@ this property applies; this is a similar concept as e[pointcuts] in aspect-orien
 programming (but there are also some differences to that concept).
 
 There is a variety of hosts; ref:DeploymentInterfaceHostsPart1[the following table] and
-ref:DeploymentInterfaceHostsPart2[its second part] list those related to
+ref:DeploymentInterfaceHostsPart2[its second] and
+ref:DeploymentInterfaceHostsPart2[third second part]
+list those related to
 Franca interfaces. Note that the properties for some hosts will
 be applied to several locations of a Franca IDL interface.
 
@@ -175,7 +177,58 @@ table:DeploymentInterfaceHostsPart1[
 ]
 
 table:DeploymentInterfaceHostsPart2[
-	caption[Franca deployment: Property hosts related to interface data types.]
+	caption[Franca deployment: Property hosts related to primitive data types.]
+	tf[
+		professional
+		tcol[2] tcol[5] tcol[4] tcol[4]
+	]
+	tr[
+		td[e[Host]]
+		td[e[Description]]
+		td[e[Impacted Franca IDL elements]]
+		td[e[Example]]
+		---
+	]
+	tr[
+		td[code[FDeploy][strings]]
+		td[Properties related to string variables]
+		td[all entities with predefined type code[Franca][String]:
+			code[Franca][attribute] members,
+			arguments of code[Franca][method] and code[Franca][broadcast],
+			code[Franca][struct] fields
+		]
+		td[encoding (ASCII, Unicode, ...)]
+	]
+	tr[
+		td[code[FDeploy][integers]]
+		td[Properties related to all integer numbers]
+		td[all entities with predefined type code[Franca][Int8], code[Franca][UInt8], ...:
+			code[Franca][attribute] members,
+			arguments of code[Franca][method] and code[Franca][broadcast],
+			code[Franca][struct] fields
+		]
+		td[allowed range, little vs. big endian]
+	]
+	tr[
+		td[code[FDeploy][floats]]
+		td[Properties related to all float numbers]
+		td[all entities with predefined type code[Franca][Float] or code[Franca][Double]:
+			code[Franca][attribute] members,
+			arguments of code[Franca][method] and code[Franca][broadcast],
+			code[Franca][struct] fields
+		]
+		td[encoding (ISO...)]
+	]
+	tr[
+		td[code[FDeploy][numbers]]
+		td[Properties related to integer or float numbers]
+		td[all entities of code[FDeploy][integers] and code[FDeploy][floats] combined]
+		td[alignment]
+	]
+]
+
+table:DeploymentInterfaceHostsPart3[
+	caption[Franca deployment: Property hosts related to user-defined data types.]
 	tf[
 		professional
 		tcol[2] tcol[5] tcol[4] tcol[4]
@@ -230,40 +283,10 @@ table:DeploymentInterfaceHostsPart2[
 		td[alignment, maximum length]
 	]
 	tr[
-		td[code[FDeploy][strings]]
-		td[Properties related to string variables]
-		td[all entities with predefined type code[Franca][String]:
-			code[Franca][attribute] members,
-			arguments of code[Franca][method] and code[Franca][broadcast],
-			code[Franca][struct] fields
-		]
-		td[encoding (ASCII, Unicode, ...)]
-	]
-	tr[
-		td[code[FDeploy][integers]]
-		td[Properties related to all integer numbers]
-		td[all entities with predefined type code[Franca][Int8], code[Franca][UInt8], ...:
-			code[Franca][attribute] members,
-			arguments of code[Franca][method] and code[Franca][broadcast],
-			code[Franca][struct] fields
-		]
-		td[allowed range, little vs. big endian]
-	]
-	tr[
-		td[code[FDeploy][floats]]
-		td[Properties related to all float numbers]
-		td[all entities with predefined type code[Franca][Float] or code[Franca][Double]:
-			code[Franca][attribute] members,
-			arguments of code[Franca][method] and code[Franca][broadcast],
-			code[Franca][struct] fields
-		]
-		td[encoding (ISO...)]
-	]
-	tr[
-		td[code[FDeploy][numbers]]
-		td[Properties related to integer or float numbers]
-		td[all entities of code[FDeploy][integers] and code[FDeploy][floats] combined]
-		td[alignment]
+		td[code[FDeploy][typedefs]]
+		td[Properties related to typedefs]
+		td[code[Franca][typedef]]
+		td[enriching type definitions]
 	]
 ]
 

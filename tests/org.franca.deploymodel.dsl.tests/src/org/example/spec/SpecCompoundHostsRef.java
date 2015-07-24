@@ -17,6 +17,7 @@ import org.franca.core.franca.FEnumerator;
 import org.franca.core.franca.FField;
 import org.franca.core.franca.FModelElement;
 import org.franca.core.franca.FStructType;
+import org.franca.core.franca.FTypeDef;
 import org.franca.core.franca.FUnionType;
 import org.franca.deploymodel.core.FDeployedInterface;
 import org.franca.deploymodel.core.FDeployedProvider;
@@ -78,6 +79,9 @@ public class SpecCompoundHostsRef {
 		
 		// host 'union_fields'
 		public Integer getUFieldProp(FField obj);
+		
+		// host 'typedefs'
+		public Integer getTypedefProp(FTypeDef obj);
 		
 		
 		/**
@@ -248,6 +252,11 @@ public class SpecCompoundHostsRef {
 			return target.getInteger(obj, "UFieldProp");
 		}
 		
+		// host 'typedefs'
+		@Override
+		public Integer getTypedefProp(FTypeDef obj) {
+			return target.getInteger(obj, "TypedefProp");
+		}
 		
 		@Override
 		public IDataPropertyAccessor getOverwriteAccessor(FField obj) {
@@ -361,6 +370,12 @@ public class SpecCompoundHostsRef {
 		@Override
 		public Integer getUFieldProp(FField obj) {
 			return target.getInteger(obj, "UFieldProp");
+		}
+		
+		// host 'typedefs'
+		@Override
+		public Integer getTypedefProp(FTypeDef obj) {
+			return target.getInteger(obj, "TypedefProp");
 		}
 		
 		
@@ -637,6 +652,17 @@ public class SpecCompoundHostsRef {
 					return v;
 			}
 			return delegate.getUFieldProp(obj);
+		}
+		
+		// host 'typedefs'
+		@Override
+		public Integer getTypedefProp(FTypeDef obj) {
+			if (overwrites!=null) {
+				Integer v = target.getInteger(overwrites, "TypedefProp");
+				if (v!=null)
+					return v;
+			}
+			return delegate.getTypedefProp(obj);
 		}
 		
 		

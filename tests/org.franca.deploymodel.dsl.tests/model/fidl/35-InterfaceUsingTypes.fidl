@@ -26,6 +26,8 @@ interface InterfaceUsingTypes {
 		String field2
 	}
 	
+	typedef MyTypedef is Integer
+
 	
 	// various users of the above types
 	
@@ -34,6 +36,7 @@ interface InterfaceUsingTypes {
 	attribute MyEnumeration attrE
 	attribute MyStruct attrS
 	attribute MyUnion attrU
+	attribute MyTypedef attrT
 	
 	method method1 {
 		in {

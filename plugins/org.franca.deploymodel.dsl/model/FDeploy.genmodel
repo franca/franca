@@ -25,6 +25,7 @@
       <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/unions"/>
       <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/enumerations"/>
       <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/enumerators"/>
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/typedefs"/>
       <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/strings"/>
       <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/numbers"/>
       <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/integers"/>
@@ -132,6 +133,9 @@
     </genClasses>
     <genClasses ecoreClass="FDeploy.ecore#//FDArray">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDArray/target"/>
+    </genClasses>
+    <genClasses ecoreClass="FDeploy.ecore#//FDTypedef">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDTypedef/target"/>
     </genClasses>
     <genClasses ecoreClass="FDeploy.ecore#//FDStruct">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDStruct/target"/>

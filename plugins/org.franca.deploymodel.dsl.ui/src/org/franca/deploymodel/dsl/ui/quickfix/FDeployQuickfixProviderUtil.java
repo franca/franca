@@ -14,6 +14,7 @@ import org.franca.core.franca.FField;
 import org.franca.core.franca.FMethod;
 import org.franca.core.franca.FStructType;
 import org.franca.core.franca.FType;
+import org.franca.core.franca.FTypeDef;
 import org.franca.core.franca.FUnionType;
 import org.franca.deploymodel.dsl.fDeploy.FDArgument;
 import org.franca.deploymodel.dsl.fDeploy.FDArgumentList;
@@ -40,6 +41,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDString;
 import org.franca.deploymodel.dsl.fDeploy.FDStruct;
 import org.franca.deploymodel.dsl.fDeploy.FDTypeDefinition;
 import org.franca.deploymodel.dsl.fDeploy.FDTypeRef;
+import org.franca.deploymodel.dsl.fDeploy.FDTypedef;
 import org.franca.deploymodel.dsl.fDeploy.FDTypes;
 import org.franca.deploymodel.dsl.fDeploy.FDUnion;
 import org.franca.deploymodel.dsl.fDeploy.FDValue;
@@ -51,7 +53,7 @@ public class FDeployQuickfixProviderUtil {
 	public static <T> T getTypeForElement(Class<T> type, String name,
 			List<FType> types) {
 		for (FType t : types) {
-			if (type.isAssignableFrom(t.getClass()) && t.getName() == name) {
+			if (type.isAssignableFrom(t.getClass()) && t.getName().equals(name)) {
 				return type.cast(t);
 			}
 		}
@@ -61,7 +63,7 @@ public class FDeployQuickfixProviderUtil {
 	public static boolean hasPropertyDeclaration(List<FDProperty> props,
 			FDPropertyDecl decl) {
 		for (FDProperty p : props) {
-			if (p.getDecl().getName() == decl.getName()) {
+			if (p.getDecl().getName().equals(decl.getName())) {
 				return true;
 			}
 		}
@@ -154,14 +156,14 @@ public class FDeployQuickfixProviderUtil {
 	public static FDAttribute getOrCreateAttribute(
 			FDInterface deploymentInterface, String elementName) {
 		for (FDAttribute a : deploymentInterface.getAttributes()) {
-			if (a.getTarget().getName() == elementName) {
+			if (a.getTarget().getName().equals(elementName)) {
 				return a;
 			}
 		}
 
 		FAttribute attributeTarget = null;
 		for (FAttribute a : deploymentInterface.getTarget().getAttributes()) {
-			if (a.getName() == elementName) {
+			if (a.getName().equals(elementName)) {
 				attributeTarget = a;
 				break;
 			}
@@ -235,7 +237,7 @@ public class FDeployQuickfixProviderUtil {
 			String elementName) {
 		for (FDTypeDefinition a : types.getTypes()) {
 			if (a instanceof FDArray
-					&& ((FDArray) a).getTarget().getName() == elementName) {
+					&& ((FDArray) a).getTarget().getName().equals(elementName)) {
 				return (FDArray) a;
 			}
 		}
@@ -258,7 +260,7 @@ public class FDeployQuickfixProviderUtil {
 
 		for (FDTypeDefinition a : deploymentInterface.getTypes()) {
 			if (a instanceof FDArray
-					&& ((FDArray) a).getTarget().getName() == elementName) {
+					&& ((FDArray) a).getTarget().getName().equals(elementName)) {
 				return (FDArray) a;
 			}
 		}
@@ -280,7 +282,7 @@ public class FDeployQuickfixProviderUtil {
 			String elementName) {
 		for (FDTypeDefinition s : types.getTypes()) {
 			if (s instanceof FDStruct
-					&& ((FDStruct) s).getTarget().getName() == elementName) {
+					&& ((FDStruct) s).getTarget().getName().equals(elementName)) {
 				return (FDStruct) s;
 			}
 		}
@@ -302,7 +304,7 @@ public class FDeployQuickfixProviderUtil {
 			String elementName) {
 		for (FDTypeDefinition s : deploymentInterface.getTypes()) {
 			if (s instanceof FDStruct
-					&& ((FDStruct) s).getTarget().getName() == elementName) {
+					&& ((FDStruct) s).getTarget().getName().equals(elementName)) {
 				return (FDStruct) s;
 			}
 		}
@@ -324,7 +326,7 @@ public class FDeployQuickfixProviderUtil {
 			FDTypes types, String elementName) {
 		for (FDTypeDefinition e : types.getTypes()) {
 			if (e instanceof FDEnumeration
-					&& ((FDEnumeration) e).getTarget().getName() == elementName) {
+					&& ((FDEnumeration) e).getTarget().getName().equals(elementName)) {
 				return (FDEnumeration) e;
 			}
 		}
@@ -347,7 +349,7 @@ public class FDeployQuickfixProviderUtil {
 			FDInterface deploymentInterface, String elementName) {
 		for (FDTypeDefinition e : deploymentInterface.getTypes()) {
 			if (e instanceof FDEnumeration
-					&& ((FDEnumeration) e).getTarget().getName() == elementName) {
+					&& ((FDEnumeration) e).getTarget().getName().equals(elementName)) {
 				return (FDEnumeration) e;
 			}
 		}
@@ -371,7 +373,7 @@ public class FDeployQuickfixProviderUtil {
 
 		for (FDTypeDefinition u : types.getTypes()) {
 			if (u instanceof FDUnion
-					&& ((FDUnion) u).getTarget().getName() == elementName) {
+					&& ((FDUnion) u).getTarget().getName().equals(elementName)) {
 				return (FDUnion) u;
 			}
 		}
@@ -394,7 +396,7 @@ public class FDeployQuickfixProviderUtil {
 
 		for (FDTypeDefinition u : deploymentInterface.getTypes()) {
 			if (u instanceof FDUnion
-					&& ((FDUnion) u).getTarget().getName() == elementName) {
+					&& ((FDUnion) u).getTarget().getName().equals(elementName)) {
 				return (FDUnion) u;
 			}
 		}
@@ -409,6 +411,51 @@ public class FDeployQuickfixProviderUtil {
 			return union;
 		}
 		
+		return null;
+	}
+	
+	public static FDTypedef getOrCreateTypedef(FDTypes types,
+			String elementName) {
+		for (FDTypeDefinition a : types.getTypes()) {
+			if (a instanceof FDTypedef
+					&& ((FDTypedef) a).getTarget().getName().equals(elementName)) {
+				return (FDTypedef) a;
+			}
+		}
+
+		FTypeDef typedefTarget = getTypeForElement(FTypeDef.class,
+				elementName, types.getTarget().getTypes());
+		if (typedefTarget != null) {
+			FDTypedef alias = FDeployFactory.eINSTANCE.createFDTypedef();
+			init(alias);
+			alias.setTarget(typedefTarget);
+			types.getTypes().add(alias);
+			return alias;
+		}
+
+		return null;
+	}
+
+	public static FDTypedef getOrCreateTypedef(FDInterface deploymentInterface,
+			String elementName) {
+
+		for (FDTypeDefinition a : deploymentInterface.getTypes()) {
+			if (a instanceof FDTypedef
+					&& ((FDTypedef) a).getTarget().getName().equals(elementName)) {
+				return (FDTypedef) a;
+			}
+		}
+
+		FTypeDef typedefTarget = getTypeForElement(FTypeDef.class,
+				elementName, deploymentInterface.getTarget().getTypes());
+		if (typedefTarget != null) {
+			FDTypedef alias = FDeployFactory.eINSTANCE.createFDTypedef();
+			init(alias);
+			alias.setTarget(typedefTarget);
+			deploymentInterface.getTypes().add(alias);
+			return alias;
+		}
+
 		return null;
 	}
 	

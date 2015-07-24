@@ -26,6 +26,7 @@ import org.franca.core.franca.FInterface;
 import org.franca.core.franca.FMethod;
 import org.franca.core.franca.FStructType;
 import org.franca.core.franca.FType;
+import org.franca.core.franca.FTypeDef;
 import org.franca.core.franca.FUnionType;
 import org.franca.deploymodel.core.FDModelUtils;
 import org.franca.deploymodel.core.PropertyMappings;
@@ -68,6 +69,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDStructOverwrites;
 import org.franca.deploymodel.dsl.fDeploy.FDType;
 import org.franca.deploymodel.dsl.fDeploy.FDTypeOverwrites;
 import org.franca.deploymodel.dsl.fDeploy.FDTypeRef;
+import org.franca.deploymodel.dsl.fDeploy.FDTypedef;
 import org.franca.deploymodel.dsl.fDeploy.FDTypes;
 import org.franca.deploymodel.dsl.fDeploy.FDUnion;
 import org.franca.deploymodel.dsl.fDeploy.FDUnionOverwrites;
@@ -469,7 +471,27 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 						hasError |= true;
 					}
 				}
-			}
+			} else if (tc instanceof FTypeDef) {
+				FDTypedef c = (FDTypedef) mapper.getFDElement(tc);
+				if (c==null) {
+					if (checker.mustBeDefined((FTypeDef)tc)) {
+						error(DEPLOYMENT_ELEMENT_QUICKFIX_MESSAGE+ "'" + tc.getName() + "'",
+								parentFeature, 
+								DEPLOYMENT_ELEMENT_QUICKFIX, 
+								tc.getName(),
+								FrancaQuickFixConstants.TYPEDEF.toString());
+						error(DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE+"'" + tc.getName() + "'",
+								parentFeature,
+								DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, 
+								tc.getName(),
+								FrancaQuickFixConstants.TYPEDEF.toString());
+						hasError |= true;
+					}
+				}
+				else {
+					hasError |= checkSpecificationElementProperties(spec, c, FDeployPackage.Literals.FD_TYPEDEF__TARGET, tc.getName());
+				}
+			}	
 		}
 		
 		return hasError;

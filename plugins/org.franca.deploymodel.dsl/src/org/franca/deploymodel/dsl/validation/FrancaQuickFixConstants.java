@@ -17,6 +17,7 @@ public enum FrancaQuickFixConstants {
 	ARRAY,
 	STRUCT,
 	UNION,
-	ENUMERATION
+	ENUMERATION,
+	TYPEDEF
 	
 }

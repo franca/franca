@@ -58,7 +58,8 @@ codelanguage-def[FDeploy]
 	providers,instances,interfaces,type_collections,
 	attributes,methods,broadcasts,arguments,
 	structs,struct_fields,unions,union_fields,
-	arrays,enumerations,enumerators,strings,numbers,integers,floats,
+	arrays,enumerations,enumerators,typedefs,
+	strings,numbers,integers,floats,
 	
 	Boolean, Integer, String, Interface,
 

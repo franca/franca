@@ -53,6 +53,7 @@
     <eLiterals name="unions" value="12" literal="unions"/>
     <eLiterals name="enumerations" value="13" literal="enumerations"/>
     <eLiterals name="enumerators" value="14" literal="enumerators"/>
+    <eLiterals name="typedefs" value="21"/>
     <eLiterals name="strings" value="15" literal="strings"/>
     <eLiterals name="numbers" value="16" literal="numbers"/>
     <eLiterals name="integers" value="17" literal="integers"/>
@@ -148,6 +149,9 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FDArray" eSuperTypes="#//FDTypeDefinition #//FDOverwriteElement">
     <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass ../../org.franca.core/model/franca.ecore#//FArrayType"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDTypedef" eSuperTypes="#//FDTypeDefinition">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass ../../org.franca.core/model/franca.ecore#//FTypeDef"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FDStruct" eSuperTypes="#//FDCompound">
     <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass ../../org.franca.core/model/franca.ecore#//FStructType"/>
