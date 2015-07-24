@@ -27,7 +27,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDInterface;
 import org.franca.deploymodel.dsl.fDeploy.FDMethod;
 import org.franca.deploymodel.dsl.fDeploy.FDRootElement;
 import org.franca.deploymodel.dsl.fDeploy.FDStruct;
-import org.franca.deploymodel.dsl.fDeploy.FDTypeDef;
+import org.franca.deploymodel.dsl.fDeploy.FDTypeDefinition;
 import org.franca.deploymodel.dsl.fDeploy.FDTypes;
 import org.franca.deploymodel.dsl.fDeploy.FDUnion;
 
@@ -133,8 +133,8 @@ public class FDMapper {
 		initTypes (fdTypes.getTypes());
 	}
 	
-	private void initTypes (List<FDTypeDef> fdTypes) {
-		for(FDTypeDef t : fdTypes) {
+	private void initTypes (List<FDTypeDefinition> fdTypes) {
+		for(FDTypeDefinition t : fdTypes) {
 			if (t instanceof FDArray) {
 				mapping.put(((FDArray) t).getTarget(), t);
 			} else if (t instanceof FDStruct) {

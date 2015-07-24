@@ -38,7 +38,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDProperty;
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl;
 import org.franca.deploymodel.dsl.fDeploy.FDString;
 import org.franca.deploymodel.dsl.fDeploy.FDStruct;
-import org.franca.deploymodel.dsl.fDeploy.FDTypeDef;
+import org.franca.deploymodel.dsl.fDeploy.FDTypeDefinition;
 import org.franca.deploymodel.dsl.fDeploy.FDTypeRef;
 import org.franca.deploymodel.dsl.fDeploy.FDTypes;
 import org.franca.deploymodel.dsl.fDeploy.FDUnion;
@@ -233,7 +233,7 @@ public class FDeployQuickfixProviderUtil {
 	
 	public static FDArray getOrCreateArray(FDTypes types,
 			String elementName) {
-		for (FDTypeDef a : types.getTypes()) {
+		for (FDTypeDefinition a : types.getTypes()) {
 			if (a instanceof FDArray
 					&& ((FDArray) a).getTarget().getName() == elementName) {
 				return (FDArray) a;
@@ -256,7 +256,7 @@ public class FDeployQuickfixProviderUtil {
 	public static FDArray getOrCreateArray(FDInterface deploymentInterface,
 			String elementName) {
 
-		for (FDTypeDef a : deploymentInterface.getTypes()) {
+		for (FDTypeDefinition a : deploymentInterface.getTypes()) {
 			if (a instanceof FDArray
 					&& ((FDArray) a).getTarget().getName() == elementName) {
 				return (FDArray) a;
@@ -278,7 +278,7 @@ public class FDeployQuickfixProviderUtil {
 	
 	public static FDStruct getOrCreateStruct(FDTypes types,
 			String elementName) {
-		for (FDTypeDef s : types.getTypes()) {
+		for (FDTypeDefinition s : types.getTypes()) {
 			if (s instanceof FDStruct
 					&& ((FDStruct) s).getTarget().getName() == elementName) {
 				return (FDStruct) s;
@@ -300,7 +300,7 @@ public class FDeployQuickfixProviderUtil {
 
 	public static FDStruct getOrCreateStruct(FDInterface deploymentInterface,
 			String elementName) {
-		for (FDTypeDef s : deploymentInterface.getTypes()) {
+		for (FDTypeDefinition s : deploymentInterface.getTypes()) {
 			if (s instanceof FDStruct
 					&& ((FDStruct) s).getTarget().getName() == elementName) {
 				return (FDStruct) s;
@@ -322,7 +322,7 @@ public class FDeployQuickfixProviderUtil {
 	
 	public static FDEnumeration getOrCreateEnumeration(
 			FDTypes types, String elementName) {
-		for (FDTypeDef e : types.getTypes()) {
+		for (FDTypeDefinition e : types.getTypes()) {
 			if (e instanceof FDEnumeration
 					&& ((FDEnumeration) e).getTarget().getName() == elementName) {
 				return (FDEnumeration) e;
@@ -345,7 +345,7 @@ public class FDeployQuickfixProviderUtil {
 
 	public static FDEnumeration getOrCreateEnumeration(
 			FDInterface deploymentInterface, String elementName) {
-		for (FDTypeDef e : deploymentInterface.getTypes()) {
+		for (FDTypeDefinition e : deploymentInterface.getTypes()) {
 			if (e instanceof FDEnumeration
 					&& ((FDEnumeration) e).getTarget().getName() == elementName) {
 				return (FDEnumeration) e;
@@ -369,7 +369,7 @@ public class FDeployQuickfixProviderUtil {
 	public static FDUnion getOrCreateUnion(FDTypes types,
 			String elementName) {
 
-		for (FDTypeDef u : types.getTypes()) {
+		for (FDTypeDefinition u : types.getTypes()) {
 			if (u instanceof FDUnion
 					&& ((FDUnion) u).getTarget().getName() == elementName) {
 				return (FDUnion) u;
@@ -392,7 +392,7 @@ public class FDeployQuickfixProviderUtil {
 	public static FDUnion getOrCreateUnion(FDInterface deploymentInterface,
 			String elementName) {
 
-		for (FDTypeDef u : deploymentInterface.getTypes()) {
+		for (FDTypeDefinition u : deploymentInterface.getTypes()) {
 			if (u instanceof FDUnion
 					&& ((FDUnion) u).getTarget().getName() == elementName) {
 				return (FDUnion) u;

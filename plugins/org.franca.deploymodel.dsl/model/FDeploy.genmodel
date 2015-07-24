@@ -126,7 +126,7 @@
     <genClasses ecoreClass="FDeploy.ecore#//FDArgument">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDArgument/target"/>
     </genClasses>
-    <genClasses ecoreClass="FDeploy.ecore#//FDTypeDef"/>
+    <genClasses ecoreClass="FDeploy.ecore#//FDTypeDefinition"/>
     <genClasses ecoreClass="FDeploy.ecore#//FDCompound">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDCompound/fields"/>
     </genClasses>

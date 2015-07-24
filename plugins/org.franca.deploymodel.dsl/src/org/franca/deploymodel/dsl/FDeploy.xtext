@@ -93,7 +93,7 @@ FDRootElement:
 FDElement:
 	FDRootElement | FDInterfaceInstance |
 	FDAttribute | FDOperation | FDArgument |
-	FDTypeDef | FDField | FDEnumeration | FDEnumValue;
+	FDTypeDefinition | FDField | FDEnumeration | FDEnumValue;
 
 FDProvider:
 	'define' spec=[FDSpecification|FQN]
@@ -124,7 +124,7 @@ FDTypes:
 		properties=FDPropertySet
 
 		// properties for all type definitions in the package		
-		types+=FDTypeDef*
+		types+=FDTypeDefinition*
 	'}';
 
 FDInterface:
@@ -142,7 +142,7 @@ FDInterface:
 			attributes+=FDAttribute |		
 			methods+=FDMethod |
 			broadcasts+=FDBroadcast |
-			types+=FDTypeDef
+			types+=FDTypeDefinition
 		)*
 	'}';
 
@@ -179,7 +179,7 @@ FDArgument:
 	'}';
 
 
-FDTypeDef: FDArray | FDCompound | FDEnumeration;
+FDTypeDefinition: FDArray | FDCompound | FDEnumeration;
 FDCompound: FDStruct | FDUnion;
 
 FDArray:
