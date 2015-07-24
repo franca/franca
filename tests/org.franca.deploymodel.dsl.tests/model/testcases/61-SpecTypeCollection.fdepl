@@ -1,0 +1,11 @@
+
+// deployment specification with property definitions for type collections
+
+specification org.example.spec.SpecTypeCollection {
+	for type_collections {
+		PropInteger : Integer;
+		PropString  : String;
+		PropBoolean : Boolean;
+		PropEnum    : { a, b, c };
+	}
+}
