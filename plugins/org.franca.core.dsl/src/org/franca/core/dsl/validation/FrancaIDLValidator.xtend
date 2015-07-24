@@ -14,6 +14,7 @@ import org.franca.core.franca.FCompoundInitializer
 import org.franca.core.franca.FCompoundType
 import org.franca.core.franca.FEnumerationType
 import org.franca.core.franca.FEnumerator
+import org.franca.core.franca.FExpression
 import org.franca.core.franca.FField
 import org.franca.core.franca.FModel
 import org.franca.core.franca.FTypeCollection
@@ -22,6 +23,7 @@ import org.franca.core.franca.FTypeRef
 import org.franca.core.franca.FUnionType
 import org.franca.core.franca.FrancaPackage
 
+import static org.eclipse.xtext.nodemodel.util.NodeModelUtils.*
 import static org.franca.core.dsl.validation.internal.ValidationHelpers.*
 import static org.franca.core.franca.FrancaPackage.Literals.*
 
@@ -219,4 +221,44 @@ class FrancaIDLValidator extends FrancaIDLJavaValidator {
 		baseNames
 	}
 
+	/**
+	 * Check if an enumerator definition is actually an invalid remainder of
+	 * parsing on the lexer level, e.g. "ENUM1 = 0ENUM2". In this case, "0"
+	 * will be parsed as integer (zero), and "ENUM2" will be parsed as next
+	 * enumerator value. This can happen when no separator (optional comma)
+	 * is used. 
+	 * 
+	 * We do not want to allow this kind of "hidden" enumerator definition.
+	 * Therefore, we have to issue a validation error.
+	 * 
+	 * We have to do the implementation of the check on the parser's node model.   
+	 */
+	@Check
+	def checkEnumeratorContext(FEnumerator enumerator) {
+		val node = getNode(enumerator)
+		val prev = node.getPreviousSibling
+		
+		// sanity check first
+		if (node!=null && prev!=null) {
+			// if there is no hidden element (i.e., whitespace) right before
+			// the current node (corresponding to the enumerator under validation),
+			// it is an indicator of the case we want to detect.
+			if (! node.leafNodes.head.hidden) {
+				// however, this might produce false positives
+				// (e.g., "enumeration E {X }" should be legal, although there is
+				// a curly bracket right before "X" and no whitespace).  
+				val prevObj = prev.leafNodes.last.semanticElement
+				if (prevObj!=null) {
+					// now we check the previous node in the AST: if it is no expression
+					// then we have a special case as with "{X" above.
+					if (prevObj instanceof FExpression) {
+						error(
+							"invalid enumerator definition '" + enumerator.name + "', " +
+							"use whitespace or comma to separate enumerators",
+							enumerator, FMODEL_ELEMENT__NAME)
+					}
+				}
+			}
+		}
+	}
 }
