@@ -627,6 +627,11 @@ and hasn't been overridden in the example above. This is just an example which s
 difference between actual interface definitions and their instances.  
 
 
+section2:DeploymentModels_Definitions_Overwriting[Overwriting deployment properties]
+
+todo[This section will describe how overwriting of deployment properties works (since Franca 0.9.2).]
+
+
 section:DeploymentModels_DeploymentAccessSupport[Support for accessing deployment properties]
 
 It is important that deployment properties can be accessed easily during code generation,
