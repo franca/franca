@@ -1,0 +1,12 @@
+// deployment definition with properties for type collection
+
+import "61-SpecTypeCollection.fdepl"
+import "../fidl/10-TypeCollection.fidl"
+
+define org.example.spec.SpecTypeCollection for typeCollection fidl.MyTypeCollection {
+
+	PropInteger = 4711
+	PropString = "foo"
+	PropBoolean = true
+	PropEnum = a
+}

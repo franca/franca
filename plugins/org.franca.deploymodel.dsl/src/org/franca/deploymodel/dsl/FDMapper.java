@@ -65,7 +65,7 @@ public class FDMapper {
 	 * @param fdt  the deployment definition for a list of types. 
 	 */
 	public FDMapper (FDTypes fdt) {
-		initTypes(fdt.getTypes());
+		initTypeCollection(fdt);
 	}
 
 
@@ -119,13 +119,18 @@ public class FDMapper {
 					visited.add(fdTypes);
 
 					// init global types in this root element
-					initTypes(fdTypes.getTypes());
+					initTypeCollection(fdTypes);
 
 					// add its referenced root elements to queue
 					work.addAll(e.getUse());
 				}
 			}
 		}
+	}
+	
+	private void initTypeCollection (FDTypes fdTypes) {
+		mapping.put(fdTypes.getTarget(), fdTypes);
+		initTypes (fdTypes.getTypes());
 	}
 	
 	private void initTypes (List<FDTypeDef> fdTypes) {
