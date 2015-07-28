@@ -77,6 +77,9 @@ class EvaluationTests extends XtextTest {
 		check("i04", 77)
 		check("i05", 20)
 		check("i06", 2)
+		check("i07", 2)
+		check("i08", 2)
+		check("i09", 20)
 	}
 
 	@Test

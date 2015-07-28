@@ -39,6 +39,9 @@ typeCollection MyTypes {
 	const UInt32 i04 = 11 * 7
 	const UInt32 i05 = 120 / 6
 	const UInt32 i06 = 20 / 7
+	const UInt32 i07 = 5-3
+	const UInt32 i08 = 5+-3
+	const UInt32 i09 = -4*-5
 	
 	// evaluation of hex values
 	const UInt32 h01 = 0x01
@@ -54,6 +57,10 @@ typeCollection MyTypes {
 	// huge numbers
 	const UInt64 h10 = 1000000 * 1000000
 	const UInt64 h11 = h10 + 1 + h10
+
+	// double numbers
+	const Double d01 = 3.0d
+	const Double d02 = -3.0d
 
 	// simple string constants
 	const String s10 = "foo"

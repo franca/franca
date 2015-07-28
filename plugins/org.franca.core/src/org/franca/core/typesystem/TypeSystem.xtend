@@ -107,6 +107,18 @@ class TypeSystem {
 			val ok = expected.checkIsBoolean(loc, feat)
 			val type = operand.checkType(BOOLEAN_TYPE, it, FUNARY_OPERATION__OPERAND)
 			if (ok) type else null
+		} else if (FOperator::SUBTRACTION.equals(op)) {
+			val ok = expected.checkIsNumber(loc, feat)
+			if (ok) {
+				if (expected.isInteger) {
+					operand.checkType(INTEGER_TYPE, it, FUNARY_OPERATION__OPERAND)
+				} else if (expected.isFloat) {
+					operand.checkType(FLOAT_TYPE, it, FUNARY_OPERATION__OPERAND)
+				} else if (expected.isDouble) {
+					operand.checkType(DOUBLE_TYPE, it, FUNARY_OPERATION__OPERAND)
+				}
+			} else
+				null
 		} else {
 			addIssue("unknown unary operator", loc, feat)
 			null
@@ -297,6 +309,20 @@ class TypeSystem {
 		val ok = expected.isDouble
 		if (!ok) {
 			addIssue("invalid type (is Double, expected " +
+				expected.getTypeString + ")",
+				loc, feat
+			)
+		}
+		ok
+	}
+	
+	def private checkIsNumber (ActualType expected, EObject loc, EStructuralFeature feat) {
+		if (expected==null)
+			return true
+
+		val ok = expected.isNumber
+		if (!ok) {
+			addIssue("invalid type (is number, expected " +
 				expected.getTypeString + ")",
 				loc, feat
 			)

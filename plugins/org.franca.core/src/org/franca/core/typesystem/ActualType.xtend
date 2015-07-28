@@ -95,6 +95,10 @@ class ActualType {
 		(! implicitArray) && typeRef.isFloatingPoint
 	}
 	
+	def isNumber() {
+		(! implicitArray) && typeRef.isNumber
+	}
+	
 	def isString() {
 		(! implicitArray) && typeRef.isString
 	}

@@ -90,6 +90,8 @@ class ExpressionEvaluator {
 			
 		switch (op) {
 			case FOperator::NEGATION: !(e as Boolean)
+			// TODO: this doesn't work for floats and doubles
+			case FOperator::SUBTRACTION: -(e as BigInteger)
 			default: null
 		}
 	}

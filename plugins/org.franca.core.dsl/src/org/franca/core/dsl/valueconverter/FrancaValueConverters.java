@@ -69,6 +69,26 @@ public class FrancaValueConverters extends Ecore2XtextTerminalConverters {
 					}
 					return result;
 				} catch (Exception e) {
+					throw new ValueConverterException("Not a proper integer value.", node, e);
+				}
+			}
+		};
+	}
+	
+	@ValueConverter(rule = "INTERVAL_BOUND")
+	public IValueConverter<BigInteger> INTERVAL_BOUND() {
+		return new AbstractNullSafeConverter<BigInteger>() {
+			@Override
+			protected String internalToString(BigInteger value) {
+				return value.toString(10);
+			}
+
+			@Override
+			protected BigInteger internalToValue(String string, INode node)
+					throws ValueConverterException {
+				try {
+					return new BigInteger(string, 10);
+				} catch (Exception e) {
 					throw new ValueConverterException("Not a proper hexadecimal value.", node, e);
 				}
 			}

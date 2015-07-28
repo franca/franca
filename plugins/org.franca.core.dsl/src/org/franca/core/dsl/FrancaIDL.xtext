@@ -140,8 +140,12 @@ enum FBasicTypeId returns FBasicTypeId:
 	
 FIntegerInterval returns FIntegerInterval:
 	{FIntegerInterval}
-	'Integer' ('(' (lowerBound=E_BigInteger | 'minInt') ',' (upperBound=E_BigInteger | 'maxInt') ')')?
+	'Integer' ('(' (lowerBound=INTERVAL_BOUND | 'minInt') ',' (upperBound=INTERVAL_BOUND | 'maxInt') ')')?
 ;
+
+INTERVAL_BOUND returns ecore::EBigInteger:
+	'-'? INT;
+
 
 FType returns FType:
 	FArrayType |
@@ -431,7 +435,7 @@ enum OperatorMultiplicative returns FOperator:
 	multiplication="*" | division="/"
 ;
 enum OperatorUnary returns FOperator:
-	negation="!"
+	negation="!" | subtraction="-"
 ;
 
 // **************************************************************
@@ -451,18 +455,15 @@ EBoolean returns ecore::EBoolean:
 	'false' | 'true';
 
 E_BigInteger returns ecore::EBigInteger:
-	NEGATIVE_INT | INT | HEX
+	INT | HEX
 ;
 
 terminal E_DOUBLE_OBJECT returns ecore::EDoubleObject :
-	 '-'? INT '.' INT ('e' '-'? INT)? 'd'
+	 INT '.' INT ('e' '-'? INT)? 'd'
 ;
 terminal E_FLOAT_OBJECT returns ecore::EFloatObject :
-	 '-'? INT '.' INT ('e' '-'? INT)? 'f'
+	 INT '.' INT ('e' '-'? INT)? 'f'
 ;
-
-terminal NEGATIVE_INT returns ecore::EBigInteger:
-	'-'INT;
 
 terminal HEX :
 	 ('0x'|'0X')(('0'..'9')|('a'..'f')|('A'..'F'))+;
