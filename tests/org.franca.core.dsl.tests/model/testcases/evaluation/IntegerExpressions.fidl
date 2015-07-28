@@ -39,6 +39,11 @@ typeCollection MyTypes {
 	const UInt32 i04 = 11 * 7
 	const UInt32 i05 = 120 / 6
 	const UInt32 i06 = 20 / 7
+	
+	// evaluation of hex values
+	const UInt32 h01 = 0x01
+	const UInt32 h02 = 0x10 // 16 in decimal
+	const UInt32 h03 = 0x2710 // 10000 in decimal 
 
 	// complex integer operations (normal range)
 	const UInt32 i10 = 1 + 2 + 3 + 4 + 5

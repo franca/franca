@@ -80,6 +80,13 @@ class EvaluationTests extends XtextTest {
 	}
 
 	@Test
+	def testHexValues() {
+		check("h01", 1)
+		check("h02", 16)
+		check("h03", 10000)
+	}
+
+	@Test
 	def testComplexIntegerOperations() {
 		check("i10", 15)
 		check("i11", 717)

@@ -14,8 +14,9 @@ typeCollection MyTypeCollection30 {
 	const UInt16 i11 = 1
 	const UInt16 i12 = 1+1+2+3+5+8+13
 	const UInt16 i13 = 17*23
-//	const UInt16 i14 = 0xabcd
-//	const UInt16 i15 = 0xD0C0
+	const UInt16 i14 = 0xabcd
+	const UInt16 i15 = 0xD0C0
+	const UInt32 i16 = 0Xfedcba98
 	const UInt32 i21 = 100000
 	const Int32  i22 = -100000
 	const UInt64 i31 = 10000000
