@@ -29,13 +29,9 @@ typeCollection {
 		// XPECT errors --> "invalid enumerator definition 'Four', use whitespace or comma to separate enumerators" at "Four"
 		C = 17+4Four
 	
-		// XPECT errors --> "invalid enumerator definition 'x1234', use whitespace or comma to separate enumerators" at "x1234"
-		// Note: This will be legal as soon as Franca IDL supports hex values
-		D = 0x1234
-
 		// XPECT errors --> "invalid enumerator definition 'b010101', use whitespace or comma to separate enumerators" at "b010101"
 		// Note: This will be legal as soon as Franca IDL supports binary values
-		E = 0b010101
+		D = 0b010101
 	}
 	
 }
