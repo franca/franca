@@ -168,13 +168,13 @@ interface Speller {
 				on call undoCharacter [charsAdded>0] -> ReqUndoCharacter
 				on call getCurrentState -> ReqGetCurrentState
 				on call getValueListEntries
-					[ index+length < lastSpellerState.valueListCount]
+					[ index+length < lastSpellerState->valueListCount]
 					-> ReqGetValueListEntries
 				on call selectInput
-					[ lastSpellerState.isFullMatch ]
+					[ lastSpellerState->isFullMatch ]
 					-> ReqSelectInput
 				on call selectValueListEntry
-					[ index < lastSpellerState.valueListCount ] 
+					[ index < lastSpellerState->valueListCount ] 
 					-> ReqSelectValueListEntry
 			}
 

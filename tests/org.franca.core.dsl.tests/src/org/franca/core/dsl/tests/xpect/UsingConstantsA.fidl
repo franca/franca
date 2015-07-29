@@ -1,0 +1,15 @@
+package a
+
+// anonymous type collection
+typeCollection {
+	const UInt32 AAnon_Const_1 = 32
+}
+
+typeCollection ATC {
+	const UInt32 ATC_Const_1 = 32
+}
+
+interface AIF {
+	const UInt32 AIF_Const_1 = 16
+}
+

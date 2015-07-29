@@ -7,39 +7,41 @@
  *******************************************************************************/
 package org.franca.core.dsl.validation.internal;
 
+import java.math.BigInteger
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EStructuralFeature
-import org.franca.core.contracts.IssueCollector
-import org.franca.core.contracts.TypeIssue
-import org.franca.core.contracts.TypeSystem
-import org.franca.core.framework.FrancaHelpers
+import org.franca.core.typesystem.IssueCollector
+import org.franca.core.typesystem.TypeIssue
+import org.franca.core.typesystem.TypeSystem
+import org.franca.core.franca.FArrayType
+import org.franca.core.franca.FBracketInitializer
+import org.franca.core.franca.FCompoundInitializer
 import org.franca.core.franca.FConstantDef
+import org.franca.core.franca.FDeclaration
+import org.franca.core.franca.FEnumerator
 import org.franca.core.franca.FExpression
 import org.franca.core.franca.FInitializer
-import org.franca.core.franca.FTypeRef
-import org.franca.core.franca.FCompoundInitializer
-import org.franca.core.franca.FStructType
-import org.franca.core.franca.FBracketInitializer
-import org.franca.core.franca.FArrayType
-import org.franca.core.franca.FMapType
 import org.franca.core.franca.FInitializerExpression
+import org.franca.core.franca.FMapType
+import org.franca.core.franca.FStructType
+import org.franca.core.typesystem.ActualType
+import org.franca.core.utils.ExpressionEvaluator
 
-import static org.franca.core.franca.FrancaPackage$Literals.*
+import static org.franca.core.franca.FrancaPackage.Literals.*
+
 import static extension org.franca.core.FrancaModelExtensions.*
-import static extension org.franca.core.framework.FrancaHelpers.*
-import org.franca.core.franca.FEnumerator
-import org.franca.core.franca.FDeclaration
+import static org.franca.core.typesystem.ActualType.*
 
 class TypesValidator {
 
 	def static checkConstantType (ValidationMessageReporter reporter, FConstantDef constantDef) {
-		checkConstantRHS(constantDef.rhs, constantDef.type,
+		checkConstantRHS(constantDef.rhs, typeFor(constantDef),
 			reporter, constantDef, FCONSTANT_DEF__RHS, -1
 		)
 	}
 
 	def static checkConstantType (ValidationMessageReporter reporter, FDeclaration declaration) {
-		checkConstantRHS(declaration.rhs, declaration.type,
+		checkConstantRHS(declaration.rhs, typeFor(declaration),
 			reporter, declaration, FDECLARATION__RHS, -1
 		)
 	}
@@ -67,7 +69,7 @@ class TypesValidator {
 
 	def private static void checkConstantRHS (
 		FInitializerExpression rhs,
-		FTypeRef typeLHS,
+		ActualType typeLHS,
 		ValidationMessageReporter reporter,
 		EObject ctxt,
 		EStructuralFeature feature,
@@ -85,69 +87,116 @@ class TypesValidator {
 
 	def private static dispatch checkInitializer (
 		FBracketInitializer rhs,
-		FTypeRef type,
+		ActualType type,
 		ValidationMessageReporter reporter,
 		EObject ctxt,
 		EStructuralFeature feature,
 		int index
 	) {
-		if (! (type.isArray || type.isMap)) {
-			reporter.reportError(
-					"invalid initializer in constant definition (expected " +
-						FrancaHelpers::getTypeString(type) + ")",
-					ctxt, feature);
-			return;
-		}
-		
-		if (type.isArray) {
-			val t = type.actualDerived as FArrayType
-			for(e : rhs.elements) {
-				val idx = rhs.elements.indexOf(e)
-				if (e.second!=null) {
-					reporter.reportError(
-							"invalid initializer for array element",
-							rhs, FBRACKET_INITIALIZER__ELEMENTS, idx);
-				} else {
-					checkConstantRHS(e.first,
-						t.elementType,
-						reporter, e, FELEMENT_INITIALIZER__FIRST, -1
-					)
+		if (type.isImplicitArray) {
+			// we have a bracket initializer for an implicit array
+			val plainType = typeFor(type.typeRef)
+			checkArrayElements(rhs, plainType, reporter)
+		} else {
+			// check if bracket initializer is appropriate for the expected type
+			if (! (type.isByteBuffer || type.isExplicitArray || type.isMap)) {
+				reporter.reportError(
+						"invalid initializer in constant definition (expected " +
+							type.getTypeString + ")",
+						ctxt, feature);
+				return;
+			}
+			
+			if (type.isByteBuffer) {
+				for(e : rhs.elements) {
+					val idx = rhs.elements.indexOf(e)
+					if (e.second!=null) {
+						reporter.reportError(
+								"invalid initializer (expected 0..255)",
+								rhs, FBRACKET_INITIALIZER__ELEMENTS, idx);
+					} else {
+						val expr = e.first
+						if (expr instanceof FExpression) {
+							val res = ExpressionEvaluator.evaluateInteger(expr)
+							if (res==null) {
+								reporter.reportError(
+										"invalid byte buffer element",
+										rhs, FBRACKET_INITIALIZER__ELEMENTS, idx);
+							} else {
+								if (res.signum<0 || res.compareTo(BigInteger.valueOf(255))>0) {
+									reporter.reportError(
+											"byte buffer element must be UInt8",
+											rhs, FBRACKET_INITIALIZER__ELEMENTS, idx);
+								}
+							}
+						}
+					}
+				}
+			} else if (type.isArray) {
+				val t = type.actualDerived as FArrayType
+				checkArrayElements(rhs, typeFor(t.elementType), reporter)
+			} else if (type.isMap) {
+				val t = type.actualDerived as FMapType
+				for(e : rhs.elements) {
+					val idx = rhs.elements.indexOf(e)
+					if (e.second==null) {
+						reporter.reportError(
+								"invalid initializer for map element",
+								rhs, FBRACKET_INITIALIZER__ELEMENTS, idx);
+					} else {
+						checkConstantRHS(e.first,
+							typeFor(t.keyType),
+							reporter, e, FELEMENT_INITIALIZER__FIRST, -1
+						)
+						checkConstantRHS(e.second,
+							typeFor(t.valueType),
+							reporter, e, FELEMENT_INITIALIZER__SECOND, -1
+						)
+					}
 				}
 			}
-		} else if (type.isMap) {
-			val t = type.actualDerived as FMapType
-			for(e : rhs.elements) {
-				val idx = rhs.elements.indexOf(e)
-				if (e.second==null) {
-					reporter.reportError(
-							"invalid initializer for map element",
-							rhs, FBRACKET_INITIALIZER__ELEMENTS, idx);
-				} else {
-					checkConstantRHS(e.first,
-						t.keyType,
-						reporter, e, FELEMENT_INITIALIZER__FIRST, -1
-					)
-					checkConstantRHS(e.second,
-						t.valueType,
-						reporter, e, FELEMENT_INITIALIZER__SECOND, -1
-					)
-				}
+		}
+	}
+	
+	def private static checkArrayElements(
+		FBracketInitializer rhs,
+		ActualType type,
+		ValidationMessageReporter reporter
+	) {
+		for(e : rhs.elements) {
+			val idx = rhs.elements.indexOf(e)
+			if (e.second!=null) {
+				reporter.reportError(
+						"invalid initializer for array element",
+						rhs, FBRACKET_INITIALIZER__ELEMENTS, idx);
+			} else {
+				checkConstantRHS(e.first, type,
+					reporter, e, FELEMENT_INITIALIZER__FIRST, -1
+				)
 			}
 		}
 	}
 	
 	def private static dispatch checkInitializer (
 		FCompoundInitializer rhs,
-		FTypeRef type,
+		ActualType type,
 		ValidationMessageReporter reporter,
 		EObject ctxt,
 		EStructuralFeature feature,
 		int index
 	) {
+		if (type.isImplicitArray) {
+			// this is a compound initializer, but we expected an initializer for an (implicit) array
+			reporter.reportError(
+					"Invalid array initializer in constant definition",
+					ctxt, feature, index);
+			return;
+		}
+
 		if (! type.isCompound) {
 			reporter.reportError(
 					"invalid compound initializer in constant definition (expected " +
-						FrancaHelpers::getTypeString(type) + ")",
+						type.getTypeString + ")",
 					ctxt, feature, index);
 			return;
 		}
@@ -168,7 +217,7 @@ class TypesValidator {
 			
 			// check the types for all initializers
 			for(e : rhs.elements) {
-				checkConstantRHS(e.value, e.element.type,
+				checkConstantRHS(e.value, typeFor(e.element),
 					reporter, e, FFIELD_INITIALIZER__VALUE, -1
 				)
 			}
@@ -181,7 +230,7 @@ class TypesValidator {
 
 			// check type
 			val e = rhs.elements.get(0)
-			checkConstantRHS(e.value, e.element.type,
+			checkConstantRHS(e.value, typeFor(e.element),
 				reporter, e, FFIELD_INITIALIZER__VALUE, 0
 			)
 		}
@@ -189,7 +238,7 @@ class TypesValidator {
 
 	def private static dispatch checkInitializer (
 		FInitializer rhs,
-		FTypeRef type,
+		ActualType type,
 		ValidationMessageReporter reporter,
 		EObject ctxt,
 		EStructuralFeature feature,
@@ -202,7 +251,7 @@ class TypesValidator {
 	def static boolean checkExpression (
 			ValidationMessageReporter reporter,
 			FExpression expr,
-			FTypeRef expected,
+			ActualType expected,
 			EObject loc, EStructuralFeature feat)
 	{
 		checkExpression(reporter, expr, expected, loc, feat, -1)
@@ -219,7 +268,7 @@ class TypesValidator {
 	def private static boolean checkExpression (
 			ValidationMessageReporter reporter,
 			FExpression expr,
-			FTypeRef expected,
+			ActualType expected,
 			EObject loc, EStructuralFeature feat, int index)
 	{
 		val type = getCheckedExpressionType(reporter, expr, expected, loc, feat, index)
@@ -238,11 +287,12 @@ class TypesValidator {
 	 *  
 	 * @param expr  the expression which should be checked
 	 * @param expected  the expected type, may be null
+	 * @param isImplicitArray true if the expected type is an implicit array 
 	 */
-	def private static FTypeRef getCheckedExpressionType (
+	def private static ActualType getCheckedExpressionType (
 			ValidationMessageReporter reporter,
 			FExpression expr,
-			FTypeRef expected,
+			ActualType expected,
 			EObject loc, EStructuralFeature feat, int index)
 	{
 		val ts = new TypeSystem
@@ -250,8 +300,8 @@ class TypesValidator {
 		val type = ts.checkType(expr, expected, issues, loc, feat)
 		if (type==null) {
 			if (issues.issues.empty) {
-				// no issues, report a generic error message
-				reporter.reportError("invalid expression", loc, feat)
+				// no issues, usually this is due to an undefined reference (which will
+				// produce a generic validation error)
 			} else {
 				for(TypeIssue ti : issues.issues) {
 					reporter.reportError(ti.message, ti.location, ti.feature)

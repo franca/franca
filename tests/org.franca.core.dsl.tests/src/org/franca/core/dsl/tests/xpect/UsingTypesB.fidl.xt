@@ -1,0 +1,47 @@
+// XPECT_SETUP org.franca.core.dsl.tests.xpect.FrancaIDLXpectTests END_SETUP
+package B
+
+// tests for referencing types in the local file
+
+typeCollection BTC1 {
+	struct BTC1_Struct_1 { UInt8 e }
+}
+
+interface BIF1 {
+	struct BIF1_Struct_1 { UInt8 e }
+}
+
+
+typeCollection BTC2 {
+	struct BTC2_Struct_1 { UInt8 e }
+	
+	struct BTC2_Struct_2 {
+		// local reference to same type collection
+		BTC2_Struct_1 e1
+
+		// local reference to other type collection
+		BTC1.BTC1_Struct_1 e2
+
+		// XPECT errors --> "Type BIF1_Struct_1 can only be referenced inside interface BIF1 or derived interfaces" at "BIF1.BIF1_Struct_1" 
+		// local reference to interface
+		BIF1.BIF1_Struct_1 e3
+	}
+}
+
+
+interface BIF2 {
+	struct BIF2_Struct_1 { UInt8 e }
+	
+	struct BIF2_Struct_2 {
+		// local reference to same interface
+		BIF2_Struct_1 e1
+
+		// local reference to other type collection
+		BTC1.BTC1_Struct_1 e2
+
+		// XPECT errors --> "Type BIF1_Struct_1 can only be referenced inside interface BIF1 or derived interfaces" at "BIF1.BIF1_Struct_1" 
+		// local reference to interface
+		BIF1.BIF1_Struct_1 e3
+	}
+}
+

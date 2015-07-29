@@ -1,0 +1,103 @@
+chapter:GettingStarted[Getting Started]
+
+All tooling needed for Franca is available as a set of Eclipse plug-ins.
+Thus, the easiest way to start with Franca is to use an off-the-shelf Eclipse
+distribution and add those plug-ins and their dependencies to this environment.
+This section will describe how to quickly install this tool platform and be able to 
+ul[
+	item[define interfaces using the Franca IDL textual editor]
+	item[develop a code generator based on Franca IDL interfaces]
+]
+
+If you haven't done so, we recommend that you read the ref:Introduction[Introduction chapter]
+now in order to get some fundamental information about Franca.
+
+
+section:GettingStarted_InstallBinary[Install Eclipse-based Franca tooling]
+
+The installation instructions for the Franca tooling are not part of this 
+User Guide. You will find them online at the Franca EclipseLabs page (Wiki section):
+link[http://code.google.com/a/eclipselabs.org/p/franca/wiki/FrancaQuickInstallGuide][Franca Quick Install
+Guide].
+
+
+section:GettingStarted_ImportExampleProject[Import example project]
+
+The example project e[org.franca.examples.basic] is provided as part of
+Franca's public distribution. Put this project onto your local file system and 
+import it to the Eclipse workspace by the following steps:
+ol[
+	item[In Eclipse, select e[File > Import...].]
+	item[In the dialog that opens up, select e[General > Existing projects into workspace].]
+	item[In the e[Import projects] dialog, browse the file system and locate the 
+	     directory where the e[org.franca.examples.basic] directory is contained.]
+	item[Select the project in the e[Projects] list.]
+	item[Ensure that e[Copy projects into workspace] is not selected.]
+	item[Press e[Finish].]
+] 
+
+The example project will be part of your Eclipse workspace now.
+Open the Franca IDL example file e[examples/franca/demo1.fidl] by locating it
+in the Package Explorer and double-click it.
+The Franca IDL textual editor will open, allowing you to review the example 
+and also do some changes.   
+
+section:GettingStarted_ExampleProject[Contents of example project]
+
+The example project provides several test cases, which are located in the package
+ul[
+	item[e[org.franca.examples.basic.tests]]
+]
+
+You will find this package in the e[src] folder
+which is part of the e[org.franca.examples.basic] example project.
+Each of these test cases might be started by selecting e[Run As > JUnit Test] in the
+test's context menu.
+
+ul[
+	item[Test case e[Franca2HtmlTest.java]:
+		This test loads a Franca example file and generates a documentation html page from it.
+		The html page will be located in the folder e[src-gen/interfaces].
+		Press F5 for refreshing this folder in case it doesn't show up there after running
+		the test case.  
+	]
+	item[Test case e[HppGeneratorTest.java]:
+		This test loads a Franca example file and generates a C++ class definition
+		from it. The generated code will be printed on the console. It is just an
+		example and is by far not complete.
+	]
+]
+
+
+section:GettingStarted_CreateNewInterface[Create new Franca interface]
+
+In order to create a new Franca interface, open the context menu of the
+folder e[examples/franca] and select e[New > File]. In the e[New File] dialog,
+enter a file name with the extension e[.fidl]. After pressing the e[Finish] button
+the Franca IDL editor will show up with the new file, which is still empty.
+
+Now you may use keyboard shortcuts like Ctrl-Space to use Content Assist to create
+the contents for your Franca file. 
+
+More information is available about ref:FrancaConcepts[Franca concepts]
+and in the Franca ref:FrancaIDL[language reference].
+
+
+section:GettingStarted_DevelopCodegenerator[Develop your own code generator]
+
+If you want to develop a new generator which can produce source code from any 
+Franca IDL file, we recommend to use the example generator from test case
+e[HppGeneratorTest.java]. This code generator has been developed with the 
+Xtend language, which translates directly to Java classes.
+Further documentation about Xtend can be found link[http://www.xtend-lang.org][here].
+
+The example generator e[ExampleHppGenerator.xtend] is located in folder e[src],
+in package
+
+e[org.franca.examples.basic.generators].
+
+For starting quickly, clone this xtend file and also the corresponding test case
+and adapt the copied files for your needs.
+For more information on generator development, please refer to
+ref:BuildingGenerators[Building generators with Franca].
+ 

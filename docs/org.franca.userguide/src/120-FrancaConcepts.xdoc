@@ -1,0 +1,210 @@
+chapter:FrancaConcepts[Franca Concepts]
+
+The Franca framework is built on several concepts:
+ul[
+	item[the Franca core model and the Franca IDL]
+	item[the Franca transformation framework]
+	item[the Franca generator framework]
+	item[distinction of IDL model and deployment model]
+]
+
+This chapter provides some detailed explanation for each of these concepts.
+ 
+
+section:FrancaConcepts_IDL_CoreModel[Franca Core Model and IDL]
+
+section2:FrancaConcepts_IDL_CoreModel_Basic[Franca Core Model]
+
+Franca aims at formal definitions of software interfaces. Basically, this targets
+information about attributes and methods provided by the interfaces which should
+be defined. Franca contains a e[core model], which describes these concepts
+(and some more, like datatypes). The core model is implemented using the
+link[http://www.eclipse.org/modeling/emf/][Eclipse Modeling Framework (EMF)].
+Based on the EMF technology, there is a rich set of tools available
+for manipulating and transforming models describing software interfaces.
+
+The detailed API of Franca's core model is described
+in section ref:FrancaModelAPI[Franca Model API].
+
+section2:FrancaConcepts_IDL_CoreModel_IDL[Franca IDL Model]
+
+Franca is not only able to define interfaces e[somehow], but via an IDL.
+Therefore, Franca IDL has been created as a textual language (a e[DSL], short
+for Domain-Specific Language), which can be used with the help of a nice editor 
+to create, review and edit software interfaces. The internal representation 
+of Franca IDL files (i.e. interface definitions) is the core model described above.
+The IDL is implemented with link[http://www.eclipse.org/xtext][Xtext].
+
+The detailed reference of Franca IDL is described ref:FrancaIDL[here].
+
+section2:FrancaConcepts_IDL_CoreModel_Plugins[Franca Core Eclipse Plugins]
+
+The following plugins are relevant for the core model and the IDL:
+ul[
+	item[e[org.franca.core]: This plugin contains the core model based on EMF.]
+	item[e[org.franca.core.dsl]: This plugin contains the IDL definition.
+		It is based on e[org.franca.core] and Xtext.
+	]
+	item[e[org.franca.core.dsl.ui]: This plugin contains the IDL textual editor.
+		It is based on e[org.franca.core], e[org.franca.core.dsl], Xtext and
+		the user interface parts of the Eclipse IDE.
+	]
+]
+
+
+section:FrancaConcepts_IDL_Transformations[Franca Transformation Framework]
+
+Based on the Franca core model described above, interface specifications
+defined in other IDLs (in many different formats, ranging from XML to textual DSLs
+or proprietary formats) can be transformed to/from Franca.
+In that context, Franca plays the role of a pivot model. Different IDLs can be 
+transformed into each other by chaining transformations like: e[IDL1 to Franca to IDL2].
+
+ref:FrancaExampleNetwork shows an example setup of Franca transformations and generators.
+The green arrows indicate transformation and reverse transformation between the
+Franca core model and another IDL's model. 
+
+img:FrancaExampleNetwork[images/franca_architecture.png]
+	[An example setup of Franca transformations and generators.][][]
+
+Generally, IDLs in arbitrary formats can be part of the transformation framework.
+However, Franca provides special support for IDLs which are implemented using EMF.
+In this case, the link[http://www.xtend-lang.org][Xtend] language can be used to
+implement transformations in an elegant way.
+
+Franca defines a e[pattern] for implementing such transformations: the e[connector].
+A Franca connector for a specific non-Franca IDL provides functions for loading
+and saving models in that IDL and also for transforming models to/from Franca.
+Each connector should implement Franca's e[IFrancaConnector] interface located in the
+e[org.franca.core.framework] package. Typically, each connector is provided as a
+separate Eclipse plug-in. E.g., Franca's e[D-Bus Support] feature contains
+the plug-in e[org.franca.connectors.dbus] (and a corresponding UI plug-in)
+for handling DBus Introspection XML files. 
+
+See chapter ref:BuildingTransformations[Bulding Transformations] for more details 
+on this concept. In chapter ref:FrancaConnectors[Franca Connectors] the currently
+supported connectors are listed and explained in some more detail.
+
+
+
+section:FrancaConcepts_IDL_Generators[Franca Generator Framework]
+
+The Franca core model is also used as a starting point for generating code and
+other artifacts. As EMF provides a generated ref:FrancaModelAPI[Java API]
+out of Franca's core model, a plethora of tools can be used for building
+generators. We recommend to use the link[http://www.xtend-lang.org][Xtend]
+language for this, as it is a simple and productive way of implementing
+generators based on a Java API.
+
+In Franca' source distribution you can find the
+ref:FrancaTooling_Generators[HTML Generator], which generates nice HTML pages
+out of Franca IDL interfaces. This generator can serve as an example of how
+to build generators for Franca models with Xtend. 
+
+See chapter ref:BuildingGenerators[Building Generators] for more details 
+on this concept. 
+
+
+section:FrancaConcepts_DeploymentModels[Franca Deployment Models]
+
+The contents of the Franca core model and the IDL are deliberately restricted to
+the actual interface specification. Additionally, there is a lot of information
+regarding to interfaces and APIs which are related to the implementation
+of the interfaces on a target platform and the actual deployment of these
+interfaces on the platform. Some examples for this kind of data:
+ul[
+	item[How are the data types encoded on the target platform (e.g., endianness, padding)?]
+	item[Are calls blocking or non-blocking?]
+	item[How can the instances of an interface be found and addressed (i.e., service discovery)?]
+	item[Which quality-of-service promises are valid?]
+]
+
+The next ref:FrancaConcepts_AddingFeatures[section] provides some guidelines
+for deciding whether new features belong to the Franca IDL itself or to the deployment model.
+
+The actual information in a deployment model depends heavily on the target IPC framework.
+Therefore, there is no generic deployment model (on a similar abstraction level as Franca IDL itself).
+Instead, the features of the actual deployment model for the target platform can only
+be defined with the target platform in mind.
+
+As the information which must be stored in a deployment model is equally important
+as soon as a Franca IDL interface is incarnated on a real target, the Franca Framework
+provides support for defining and creating deployment models.
+A separate Franca Deployment Language is available, which contains of two parts:
+ul[
+	item[specification of deployment properties (done only once per deployment target platform)]
+	item[definition of actual values for deployment properties (done for every Franca interface
+		which has to be deployed on the target platform)
+	]
+]
+
+As it is important that deployment properties can be accessed easily during code generation,
+validation, etc., Franca provides some infrastructure for retrieving the deployment data
+attached to various interface entities easily.
+
+See chapter ref:DeploymentModels[Franca Deployment Models] for more details 
+about deployment concepts, their relation to Franca IDL and some examples.
+
+
+section:FrancaConcepts_AddingFeatures[Guidelines for adding new features to Franca IDL]
+
+Although the feature set of Franca IDL can cover the needs of many today's IDLs
+and IPC frameworks on the market, there might be the need to extend Franca IDL.
+Technically, this is no big deal. However, extending the expressivity of Franca IDL
+will usually require adaptions on existing transformations and code generators
+in order to reflect the IDL changes in the dependent artifacts. Thus, every extension
+to Franca IDL should be well-founded and backed with a solid semantic notion. 
+
+In order to support features which are seemingly missing in Franca IDL,
+there are several options:
+ul[
+	item[actually extend Franca IDL to support the feature]
+	item[put the additional information in a ref:FIDL_CommentsStructured[structured comment]
+	     (using an appropriate @-tag)
+	]
+	item[put the additional information into a
+	     platform-specific ref:FrancaConcepts_DeploymentModels[deployment model]
+	]
+	item[deliberately ignore the feature (if there is a good reason for this)]
+] 
+
+In order to decide which of these option is appropriate consider the following criteria:
+ul[
+	item[e[IDL]: information needed only for the application logic like:
+		ol[
+			item[syntactic description of interfaces]
+			item[dynamic behaviour, e.g. application protocol contracts]
+			item[application constraints:
+				ul[
+					item[like discrete values]
+					item[interval ranges accepted for method input parameters]
+					item[default values for attributes]
+				]
+			]
+		]
+	]
+	item[e[deployment model]: information that is used for code generation but is
+		highly dependent on the backend IPC used
+		ol[
+			item[call semantic: synchronous, asynchronous?]
+			item[communication partner addressing information,
+				e.g. TCP/IP addresses or service discovery related information
+			]
+			item[data coding: physical representation of data (e.g., alignment, memory layout)]
+			item[QoS information, allocation of ressources:
+				network (bandwidth, priorities), CPU (priority, processing share),
+				RAM (quota), etc.
+			]
+		]
+	]
+	item[e[structured comments]: information not used for productive code generation
+		ol[
+			item[documentation]
+			item[meta-information used during transformations
+				(e.g., URI or filename of source IDL
+			]
+			item[meta-information regarding the interface itself (e.g. deprecation)]
+		]
+	]
+]
+

@@ -108,7 +108,7 @@ class FDeployGenerator implements IGenerator {
 		 * Enumerations for deployment specification «spec.name».
 		 */
 		public interface Enums
-			«IF spec.base!=null»extends «spec.base.name».Enums«ENDIF»
+			«IF spec.base!=null»extends «spec.base.qualifiedClassname».Enums«ENDIF»
 		{
 			«FOR d : spec.declarations»
 				«FOR p : d.properties»
@@ -168,11 +168,11 @@ class FDeployGenerator implements IGenerator {
 		/**
 		 * Accessor for deployment properties for '«spec.name»' specification
 		 *
-		 * @deprecated use class «spec.name».«type»PropertyAccessor instead
+		 * @deprecated use class «spec.qualifiedClassname».«type»PropertyAccessor instead
 		 */
 		public class «spec.getLegacyClassname(type)»
-			extends «spec.name».«type»PropertyAccessor
-			implements «spec.name».Enums
+			extends «spec.qualifiedClassname».«type»PropertyAccessor
+			implements «spec.qualifiedClassname».Enums
 		{
 			public «spec.getLegacyClassname(type)»(«getSupportingClass(type)» target) {
 				super(target);
@@ -184,21 +184,6 @@ class FDeployGenerator implements IGenerator {
 
 	// *****************************************************************************
 	// basic helpers
-
-		
-	def private getPackage (FDSpecification it) {
-		val sep = name.lastIndexOf(".")
-		if (sep>0)
-			name.substring(0, sep)
-		else
-			""
-	}
-
-	def private classname (FDSpecification it) {
-		val sep = name.lastIndexOf(".")
-		val basename = if (sep>0) name.substring(sep+1) else name
-		basename.toFirstUpper
-	}
 	
 	def private getLegacyClassname (FDSpecification it, String type) {
 		val sep = name.lastIndexOf(".")

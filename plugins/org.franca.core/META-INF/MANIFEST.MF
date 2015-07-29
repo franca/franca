@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Franca core plugin
 Bundle-SymbolicName: org.franca.core;singleton:=true
-Bundle-Version: 0.9.2.qualifier
+Bundle-Version: 0.10.0.qualifier
 Bundle-ClassPath: .
 Bundle-Vendor: itemis AG
 Bundle-Localization: plugin
@@ -14,6 +14,7 @@ Export-Package: org.franca.core,
  org.franca.core.franca,
  org.franca.core.franca.impl,
  org.franca.core.franca.util,
+ org.franca.core.typesystem,
  org.franca.core.utils,
  org.franca.core.utils.digraph
 Require-Bundle: org.eclipse.core.runtime,

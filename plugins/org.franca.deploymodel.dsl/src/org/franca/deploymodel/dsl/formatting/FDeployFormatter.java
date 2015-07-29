@@ -56,7 +56,7 @@ public class FDeployFormatter extends AbstractDeclarativeFormatter {
 		c.setLinewrap(2).around(f.getFDAttributeRule());
 		c.setLinewrap(2).around(f.getFDMethodRule());
 		c.setLinewrap(2).around(f.getFDBroadcastRule());
-		c.setLinewrap(2).around(f.getFDTypeDefRule());
+		c.setLinewrap(2).around(f.getFDTypeDefinitionRule());
 		
 		// some details...
 		c.setNoLinewrap().after(f.getFDTypesAccess().getAsKeyword_5_0());

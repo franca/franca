@@ -53,6 +53,7 @@
     <eLiterals name="unions" value="12" literal="unions"/>
     <eLiterals name="enumerations" value="13" literal="enumerations"/>
     <eLiterals name="enumerators" value="14" literal="enumerators"/>
+    <eLiterals name="typedefs" value="21"/>
     <eLiterals name="strings" value="15" literal="strings"/>
     <eLiterals name="numbers" value="16" literal="numbers"/>
     <eLiterals name="integers" value="17" literal="integers"/>
@@ -106,7 +107,7 @@
   <eClassifiers xsi:type="ecore:EClass" name="FDTypes" eSuperTypes="#//FDRootElement">
     <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass ../../org.franca.core/model/franca.ecore#//FTypeCollection"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="types" upperBound="-1"
-        eType="#//FDTypeDef" containment="true"/>
+        eType="#//FDTypeDefinition" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FDInterface" eSuperTypes="#//FDRootElement">
     <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass ../../org.franca.core/model/franca.ecore#//FInterface"/>
@@ -117,7 +118,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="broadcasts" upperBound="-1"
         eType="#//FDBroadcast" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="types" upperBound="-1"
-        eType="#//FDTypeDef" containment="true"/>
+        eType="#//FDTypeDefinition" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FDAttribute" eSuperTypes="#//FDOverwriteElement">
     <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass ../../org.franca.core/model/franca.ecore#//FAttribute"/>
@@ -141,13 +142,16 @@
   <eClassifiers xsi:type="ecore:EClass" name="FDArgument" eSuperTypes="#//FDOverwriteElement">
     <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass ../../org.franca.core/model/franca.ecore#//FArgument"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="FDTypeDef" eSuperTypes="#//FDElement"/>
-  <eClassifiers xsi:type="ecore:EClass" name="FDCompound" eSuperTypes="#//FDTypeDef">
+  <eClassifiers xsi:type="ecore:EClass" name="FDTypeDefinition" eSuperTypes="#//FDElement"/>
+  <eClassifiers xsi:type="ecore:EClass" name="FDCompound" eSuperTypes="#//FDTypeDefinition">
     <eStructuralFeatures xsi:type="ecore:EReference" name="fields" upperBound="-1"
         eType="#//FDField" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="FDArray" eSuperTypes="#//FDTypeDef #//FDOverwriteElement">
+  <eClassifiers xsi:type="ecore:EClass" name="FDArray" eSuperTypes="#//FDTypeDefinition #//FDOverwriteElement">
     <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass ../../org.franca.core/model/franca.ecore#//FArrayType"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDTypedef" eSuperTypes="#//FDTypeDefinition">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass ../../org.franca.core/model/franca.ecore#//FTypeDef"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FDStruct" eSuperTypes="#//FDCompound">
     <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass ../../org.franca.core/model/franca.ecore#//FStructType"/>
@@ -158,7 +162,7 @@
   <eClassifiers xsi:type="ecore:EClass" name="FDField" eSuperTypes="#//FDOverwriteElement">
     <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass ../../org.franca.core/model/franca.ecore#//FField"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="FDEnumeration" eSuperTypes="#//FDElement #//FDTypeDef">
+  <eClassifiers xsi:type="ecore:EClass" name="FDEnumeration" eSuperTypes="#//FDElement #//FDTypeDefinition">
     <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass ../../org.franca.core/model/franca.ecore#//FEnumerationType"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="enumerators" upperBound="-1"
         eType="#//FDEnumValue" containment="true"/>

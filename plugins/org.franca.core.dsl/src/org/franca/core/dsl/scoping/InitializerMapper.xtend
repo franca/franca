@@ -8,17 +8,17 @@
 package org.franca.core.dsl.scoping
 
 import org.eclipse.emf.ecore.EObject
+import org.franca.core.franca.FArrayType
+import org.franca.core.franca.FBracketInitializer
 import org.franca.core.franca.FCompoundInitializer
 import org.franca.core.franca.FConstantDef
-import org.franca.core.franca.FInitializerExpression
-import org.franca.core.franca.FTypeRef
-import org.franca.core.franca.FBracketInitializer
-import org.franca.core.franca.FArrayType
-import org.franca.core.franca.FElementInitializer
-
-import static extension org.franca.core.framework.FrancaHelpers.*
-import org.franca.core.franca.FMapType
 import org.franca.core.franca.FDeclaration
+import org.franca.core.franca.FElementInitializer
+import org.franca.core.franca.FInitializerExpression
+import org.franca.core.franca.FMapType
+import org.franca.core.typesystem.ActualType
+
+import static org.franca.core.typesystem.ActualType.*
 
 /**
  * This class computes the expected type for nested initializer expressions. 
@@ -28,19 +28,19 @@ class InitializerMapper {
 	/**
 	 * Compute the expected type for any nested initializer expression. 
 	 */
-	def static FTypeRef getExpectedType (FCompoundInitializer initializer) {
+	def static ActualType getExpectedType (FCompoundInitializer initializer) {
 		initializer.type
 	}
 	
-	def static private FTypeRef getType (FInitializerExpression e) {
+	def static private ActualType getType (FInitializerExpression e) {
 		if (e.eContainer instanceof FConstantDef) {
 			// we reached a FConstantDef, which is the root for the initializer expression
 			val cdef = e.eContainer as FConstantDef
-			cdef.type
+			typeFor(cdef)
 		} else if (e.eContainer instanceof FDeclaration) {
 			// we reached a FDeclaration, which is the root for the initializer expression
 			val decl = e.eContainer as FDeclaration
-			decl.type
+			typeFor(decl)
 		} else {
 			// we are somewhere below root, try to resolve expected parent type 
 			val parentInitializer = e.parentInitializer
@@ -51,17 +51,20 @@ class InitializerMapper {
 				FBracketInitializer: {
 					// parent is a FBracketInitializer, get FElementInitializer for e
 					val ei = e.eContainer as FElementInitializer
-					if (parentType.isArray) {
+					if (parentType.isImplicitArray) {
+						// parent is an implicit array type, e must be its plain type
+						typeFor(parentType.typeRef)
+					} else if (parentType.isExplicitArray) {
 						// parent is an array type, e must be of its element type
 						val p = parentType.actualDerived as FArrayType
-						p.elementType
+						typeFor(p.elementType)
 					} else if (parentType.isMap) {
 						// parent is a map type, e must be of either its key or value type
 						val p = parentType.actualDerived as FMapType
 						if (e == ei.first) {
-							p.keyType
+							typeFor(p.keyType)
 						} else {
-							p.valueType
+							typeFor(p.valueType)
 						}
 					} else {
 						null
@@ -70,7 +73,7 @@ class InitializerMapper {
 				FCompoundInitializer: {
 					// find FFieldInitializer for e in parentInitializer's children
 					val fi = parentInitializer.elements.findFirst[f | f.value==e]
-					fi.element.type
+					typeFor(fi.element)
 				}
 			}
 		}

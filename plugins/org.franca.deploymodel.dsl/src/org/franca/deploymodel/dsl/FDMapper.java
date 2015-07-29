@@ -27,7 +27,8 @@ import org.franca.deploymodel.dsl.fDeploy.FDInterface;
 import org.franca.deploymodel.dsl.fDeploy.FDMethod;
 import org.franca.deploymodel.dsl.fDeploy.FDRootElement;
 import org.franca.deploymodel.dsl.fDeploy.FDStruct;
-import org.franca.deploymodel.dsl.fDeploy.FDTypeDef;
+import org.franca.deploymodel.dsl.fDeploy.FDTypeDefinition;
+import org.franca.deploymodel.dsl.fDeploy.FDTypedef;
 import org.franca.deploymodel.dsl.fDeploy.FDTypes;
 import org.franca.deploymodel.dsl.fDeploy.FDUnion;
 
@@ -65,7 +66,7 @@ public class FDMapper {
 	 * @param fdt  the deployment definition for a list of types. 
 	 */
 	public FDMapper (FDTypes fdt) {
-		initTypes(fdt.getTypes());
+		initTypeCollection(fdt);
 	}
 
 
@@ -119,7 +120,7 @@ public class FDMapper {
 					visited.add(fdTypes);
 
 					// init global types in this root element
-					initTypes(fdTypes.getTypes());
+					initTypeCollection(fdTypes);
 
 					// add its referenced root elements to queue
 					work.addAll(e.getUse());
@@ -128,8 +129,13 @@ public class FDMapper {
 		}
 	}
 	
-	private void initTypes (List<FDTypeDef> fdTypes) {
-		for(FDTypeDef t : fdTypes) {
+	private void initTypeCollection (FDTypes fdTypes) {
+		mapping.put(fdTypes.getTarget(), fdTypes);
+		initTypes (fdTypes.getTypes());
+	}
+	
+	private void initTypes (List<FDTypeDefinition> fdTypes) {
+		for(FDTypeDefinition t : fdTypes) {
 			if (t instanceof FDArray) {
 				mapping.put(((FDArray) t).getTarget(), t);
 			} else if (t instanceof FDStruct) {
@@ -147,6 +153,8 @@ public class FDMapper {
 				for(FDEnumValue e : ((FDEnumeration) t).getEnumerators()) {
 					mapping.put(e.getTarget(), e);
 				}
+			} else if (t instanceof FDTypedef) {
+				mapping.put(((FDTypedef) t).getTarget(), t);
 			}
 		}
 	}

@@ -56,6 +56,10 @@ define org.example.spec.SpecCompoundHosts for interface fidl.InterfaceUsingTypes
 		}
 	}
 
+	typedef MyTypedef {
+		TypedefProp = 90
+	}
+
 
 	// deployment for all users of the above types (using the overwrite feature)
 
@@ -102,6 +106,13 @@ define org.example.spec.SpecCompoundHosts for interface fidl.InterfaceUsingTypes
 			field2 { StringProp = t }
 		}
 	}
+	
+	attribute attrT {
+		AttributeProp = 160
+		
+		// Note: Overwriting is not implemented for typedefs (might be in a future version). 
+	}
+
 
 	method method1 {
 		in {

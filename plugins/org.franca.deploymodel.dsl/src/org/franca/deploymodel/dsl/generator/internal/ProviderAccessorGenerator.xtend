@@ -28,7 +28,7 @@ class ProviderAccessorGenerator {
 		 * according to the '«spec.name»' specification.
 		 */
 		public static class ProviderPropertyAccessor
-			«IF spec.base!=null»extends «spec.base.name».ProviderPropertyAccessor«ENDIF»
+			«IF spec.base!=null»extends «spec.base.qualifiedClassname».ProviderPropertyAccessor«ENDIF»
 			implements Enums
 		{
 			final private FDeployedProvider target;

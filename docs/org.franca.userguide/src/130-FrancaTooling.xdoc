@@ -1,0 +1,130 @@
+chapter:FrancaTooling[Franca Tools User's Guide]
+
+section:FrancaTooling_Editor[Franca IDL Editor]
+
+The core tool for Franca users is the nice textual editor which can be used
+to review and edit Franca IDL files. The Franca IDL Editor is a textual editor
+which is similar to Eclipse's text-based editors like in JDT or CDT.
+It is provided as Eclipse plugin and can be installed in any Eclipse environment
+which provides modeling support.
+
+The following screenshot shows the Franca IDL editor in action.
+
+img[images/franca_editor_screenshot_1.png][Screenshot of Franca IDL editor with
+	content assist and validation markers.][ ][ ]
+
+The editor provides syntax highlighting,
+code completion, content assist, folding, online validation, a helpful outline view,
+jump-to-definition and find-references with shortcuts, and many more features.
+See ref:KeyboardShortcuts for a table of most important keyboard short-cuts for Franca.
+
+table:KeyboardShortcuts[
+	caption[Most important Eclipse keyboard short-cuts for Franca.]
+	tf[
+		professional
+		tcol[3] tcol[2] tcol[4]
+	]
+	tr[
+		td[e[Shortcut]]
+		td[e[Function]]
+		td[e[Description]]
+		---
+	]
+	tr[
+		td[Ctrl-7]
+		td[Toggle comment]
+		td[Toggle comment for current line or selection.]
+	]
+	tr[
+		td[Ctrl-Space]
+		td[Content Assist]
+		td[Context sensitive suggestions for possible values.]
+	]
+	tr[
+		td[F3 or Ctrl-MouseClick]
+		td[Jump to definition]
+		td[Jumps to the definition of the reference under cursor.]
+	]
+]
+
+
+You may download a nice cheat sheet with more keyboard shortcuts
+link[http://5ise.quanxinquanyi.de/2012/01/13/xtext-end-user-domain-experts-cheat-sheet/][here].
+
+todo[More detail about the Franca IDL Editor will be provided here later.]
+
+
+section:FrancaTooling_ContractViewer[Franca Contract Viewer]
+
+The dynamic behavior of interfaces can be modeled using protocol state machines.
+See section ref:FIDL_Contracts[Contracts] for a description of the correct syntax.
+As contracts must be an integral part of a Franca interface, the state machines
+are modeled in the same textual editor as the other parts of a Franca interface
+(as described in the previous section).
+
+In order to understand the structure of the protocol state machine of a contract
+quickly, Franca comes with a e[Contract Viewer]. In order to use it,
+the Franca e[User Interface Add-Ons] feature has to be installed in the IDE.
+
+section2:FrancaTooling_ContractViewer_kieler[Contract Viewer in Franca 0.9.2 and later]
+
+Since Franca 0.9.2, the contract viewer implementation is based on the KIELER framework.
+After installing KIELER and the Franca User Interface Add-Ons feature
+(see section ref:GettingStarted_InstallBinary[Install Eclipse-based Franca tooling] for
+more information on installation), the Eclipse toolbar will offer a green/yellow button
+which allows to open the e[KIELER View Management Quick Configuration].
+The following screenshots show how this toolbar button and the corresponding dialog look like.  
+
+img[images/kieler_toolbar_icon_screenshot.png][Toolbar button to launch the KIELER configuration.][][][.5]
+
+img[images/kieler_configuration_dialog.png][The KIELER quick configuration dialog.][][][.7]
+
+In order to show the contract viewer, you have to ensure that the checkboxes
+e[Enable view management] and e[Show Franca contract] are selected. Now a separate contract
+viewer will open for each opened Franca IDL file which defines an interface contract.
+If the viewer doesn't open automatically, select
+e[Windows > Show View... > Other] and their e[KIELER Lightweight Diagrams > Lighweight Diagram]. 
+ 
+The following screenshot shows the contract viewer with an example contract.
+
+img[images/contractviewer_screenshot.png][Screenshot of the Franca Contract Viewer.][][][.8]
+
+On the left side, the protocol state machine (PSM) for the contract is displayed,
+which consists of e[states] (in yellow) and e[transitions] (arrows). 
+The initial state of the PSM is depicted by a black dot and an unlabeled transition pointing to it.
+On the right side of the viewer, an options section offers several ways to tweak the diagram.
+E.g., transition triggers can be hidden and the overall direction of the layout can be tuned. 
+
+By clicking on a state in the left-hand part of the view, the corresponding state definition
+in the Franca IDL editor is selected automatically. This allows to easily find a correspondence
+between the diagram and its textual definition.
+
+section2:FrancaTooling_ContractViewer_zest[Contract Viewer in Franca 0.9.1 and earlier]
+
+In Franca 0.9.1 or earlier, the contract viewer implementation was based on ZEST.
+Here, the contract viewer could be opened by selecting e[Window > Show View... > Franca].
+Its appearance differed a lot compared to the KIELER based viewer described above.
+
+The "T" button in the upper right of the ZEST-based viewer window toggled the labels for
+all transitions of the protocol state machine. If the labels are switched off, 
+mouse hovers are available which provide the information about transition conditions. 
+
+
+section:FrancaTooling_Generators[Franca IDL HTML Generator]
+
+The HTML generator for Franca IDL files is provided as Java class
+e[HTMLGenerator]. It is located in package e[org.franca.generators.html]
+and provided by Eclipse plugin e[org.franca.generators].
+In this plugin, a helper Java class e[FrancaGenerators] is provided which
+should be used to run the HTML generator:
+
+code[Java][
+FModel fmodel = FrancaIDLHelpers.instance().loadModel(inputfile);
+FrancaGenerators.instance().genHTML(fmodel, "html-gen-dir");
+] 
+
+The HTML generator is implemented using the link[http://www.xtend-lang.org][Xtend]
+language. The Xtend-builder automatically creates the Java class mentioned
+above from this implementation. 
+
+

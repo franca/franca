@@ -8,24 +8,21 @@
 package org.franca.core.dsl.validation;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.xtext.naming.IQualifiedNameProvider;
-import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.nodemodel.INode;
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils;
 import org.eclipse.xtext.validation.Check;
 import org.eclipse.xtext.validation.CheckMode;
 import org.eclipse.xtext.validation.ValidationMessageAcceptor;
 import org.franca.core.FrancaModelExtensions;
-import org.franca.core.ImportedModelInfo;
 import org.franca.core.dsl.validation.internal.ContractValidator;
 import org.franca.core.dsl.validation.internal.CyclicDependenciesValidator;
-import org.franca.core.dsl.validation.internal.FrancaIDLValidator;
 import org.franca.core.dsl.validation.internal.OverloadingValidator;
 import org.franca.core.dsl.validation.internal.TypesValidator;
 import org.franca.core.dsl.validation.internal.ValidationHelpers;
@@ -36,85 +33,51 @@ import org.franca.core.franca.FAnnotation;
 import org.franca.core.franca.FAnnotationType;
 import org.franca.core.franca.FArgument;
 import org.franca.core.franca.FAssignment;
+import org.franca.core.franca.FAttribute;
 import org.franca.core.franca.FBroadcast;
-import org.franca.core.franca.FCompoundInitializer;
-import org.franca.core.franca.FCompoundType;
 import org.franca.core.franca.FConstantDef;
 import org.franca.core.franca.FContract;
 import org.franca.core.franca.FDeclaration;
 import org.franca.core.franca.FEnumerationType;
 import org.franca.core.franca.FEnumerator;
+import org.franca.core.franca.FEvaluableElement;
+import org.franca.core.franca.FField;
 import org.franca.core.franca.FGuard;
 import org.franca.core.franca.FIntegerInterval;
 import org.franca.core.franca.FInterface;
 import org.franca.core.franca.FMethod;
 import org.franca.core.franca.FModel;
-import org.franca.core.franca.FModelElement;
+import org.franca.core.franca.FQualifiedElementRef;
 import org.franca.core.franca.FStructType;
 import org.franca.core.franca.FTrigger;
 import org.franca.core.franca.FType;
 import org.franca.core.franca.FTypeCollection;
 import org.franca.core.franca.FTypeRef;
+import org.franca.core.franca.FTypedElement;
 import org.franca.core.franca.FUnionType;
 import org.franca.core.franca.FrancaPackage;
 
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
+/**
+ *  This Java class is an intermediate class in the hierarchy of 
+ *  validators for Franca IDL. It is still here for historical reasons.
+ *  
+ *  Please implement new validation methods in FrancaIDLValidator.xtend.
+ */
 public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 		implements ValidationMessageReporter {
 	
 	@Inject
 	protected CyclicDependenciesValidator cyclicDependenciesValidator; 
 	
-	@Inject IQualifiedNameProvider qnProvider;
+	@Inject
+	protected IQualifiedNameProvider qnProvider;
 
-	// delegate to FrancaIDLValidator
-	FrancaIDLValidator auxValidator = new FrancaIDLValidator(this);
-
-	@Check
-	public void checkAnonymousTypeCollections(FModel model) {
-		int count = 0;
-		FTypeCollection anon = null;
-		for (FTypeCollection coll : model.getTypeCollections()) {
-			if (isAnonymous(coll)) {
-				anon = coll;
-				count++;
-			}
-		}
-		
-		if (count > 1) {
-			error(
-					"There can be only one anonymous type collection in a *.fidl file!", 
-					model, 
-					FrancaPackage.Literals.FMODEL__NAME
-				);
-		}
-		
-		if (anon!=null) {
-			// check against imported type collections
-			ImportedModelInfo imported = FrancaModelExtensions.getAllImportedModels(model);
-			for(FModel m : imported.getImportedModels()) {
-				if (m.getName().equals(model.getName())) {
-					for(FTypeCollection tc : m.getTypeCollections()) {
-						if (isAnonymous(tc)) {
-							error("Another anonymous type collection in same package is imported via " +
-										imported.getViaString(m.eResource()),
-									model,
-									FrancaPackage.Literals.FMODEL__NAME);
-							return;
-						}
-					}
-				}
-			}
-		}
-	}
-	
-	private boolean isAnonymous (FTypeCollection tc) {
-		return tc.getName()==null || tc.getName().isEmpty();
-	}
-	
+	/**
+	 * Call external validators (those have been installed via an
+	 * Eclipse extension point).
+	 */
 	@Check
 	public void checkExtensionValidators(FModel model) {
 		CheckMode mode = getCheckMode();
@@ -123,65 +86,7 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 		}
 	}
 
-	@Check
-	public void checkTypeCollectionNamesUnique(FModel model) {
-		if (model.getTypeCollections().isEmpty())
-			return;
-
-		// check local type collections
-		final Iterable<FTypeCollection> tcs = FrancaModelExtensions.getNamedTypedCollections(model);
-		ValidationHelpers.checkDuplicates(this, tcs,
-				FrancaPackage.Literals.FMODEL_ELEMENT__NAME,
-				"type collection name");
-
-		// check against imported type collections
-		ImportedModelInfo imported = FrancaModelExtensions.getAllImportedModels(model);
-		for(FModel m : imported.getImportedModels()) {
-			for(FTypeCollection tc : m.getTypeCollections()) {
-				if (! isAnonymous(tc)) {
-					QualifiedName qn = qnProvider.getFullyQualifiedName(tc);
-					for(FTypeCollection tc0 : tcs) {
-						QualifiedName qn0 = qnProvider.getFullyQualifiedName(tc0);
-						if (qn.equals(qn0)) {
-							error("Type collection name collides with imported type collection " +
-									"(imported via " + imported.getViaString(m.eResource()) + ")",
-									tc0,
-									FrancaPackage.Literals.FMODEL_ELEMENT__NAME);
-						}
-					}
-				}
-			}
-		}
-	}
-
-	@Check
-	public void checkInterfaceNamesUnique(FModel model) {
-		if (model.getInterfaces().isEmpty())
-			return;
-
-		// check local interfaces
-		ValidationHelpers.checkDuplicates(this, model.getInterfaces(),
-				FrancaPackage.Literals.FMODEL_ELEMENT__NAME,
-				"interface name");
-
-		// check against imported interfaces
-		ImportedModelInfo imported = FrancaModelExtensions.getAllImportedModels(model);
-		for(FModel m : imported.getImportedModels()) {
-			for(FInterface i : m.getInterfaces()) {
-				QualifiedName qn = qnProvider.getFullyQualifiedName(i);
-				for(FInterface i0 : model.getInterfaces()) {
-					QualifiedName qn0 = qnProvider.getFullyQualifiedName(i0);
-					if (qn.equals(qn0)) {
-						error("Interface name collides with imported interface " +
-								"(imported via " + imported.getViaString(m.eResource()) + ")",
-								i0,
-								FrancaPackage.Literals.FMODEL_ELEMENT__NAME);
-					}
-				}
-			}
-		}
-	}
-
+	
 	@Check
 	public void checkTypeNamesUnique(FTypeCollection collection) {
 		ValidationHelpers.checkDuplicates(this, collection.getTypes(),
@@ -207,16 +112,6 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 	}
 
 	@Check
-	public void checkCompoundElementsUnique(FCompoundType type) {
-		auxValidator.checkCompoundElementsUnique(type);
-	}
-
-	@Check
-	public void checkUnionElementTypesUnique(FUnionType type) {
-		auxValidator.checkUnionElementTypesUnique(type);
-	}
-
-	@Check
 	public void checkStructHasElements(FStructType type) {
 		if (type.getBase()==null && type.getElements().isEmpty() &&
 				! type.isPolymorphic()) {
@@ -236,22 +131,12 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 	}
 	
 	@Check
-	public void checkEnumeratorsUnique(FEnumerationType type) {
-		auxValidator.checkEnumeratorsUnique(type);
-	}
-
-	@Check
 	public void checkEnumerationHasEnumerators(FEnumerationType type) {
 		if (type.getEnumerators().isEmpty()) {
 			error("Enumeration must not be empty",
 					type,
 					FrancaPackage.Literals.FMODEL_ELEMENT__NAME, -1);
 		}
-	}
-
-	@Check
-	public void checkCompoundInitializerUnique(FCompoundInitializer ci) {
-		auxValidator.checkCompoundInitializersUnique(ci);
 	}
 
 
@@ -441,6 +326,7 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 		ContractValidator.checkGuard(this, guard);
 	}
 
+	
 	// visibility of derived types
 
 	@Check
@@ -448,22 +334,73 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 		if (typeref.getDerived() != null) {
 			// this is a derived type, check if referenced type can be accessed
 			FType referencedType = typeref.getDerived();
-			FInterface refParent = FrancaModelExtensions
-					.getInterface(referencedType);
-			if (refParent == null) {
-				// referenced type is defined on model level, can be accessed
-				// anyway
+			checkDefinitionVisible(typeref, referencedType,
+					"Type " + referencedType.getName(),
+					FrancaPackage.Literals.FTYPE_REF__DERIVED
+			);
+		}
+	}
+	
+	@Check
+	public void checkTypedElementRefVisible(FQualifiedElementRef qe) {
+		FEvaluableElement referenced = qe.getElement();
+		if (referenced!=null && referenced instanceof FTypedElement) {
+			checkDefinitionVisible(qe, referenced,
+					getTypeLabel(referenced) + " " + referenced.getName(),
+					FrancaPackage.Literals.FQUALIFIED_ELEMENT_REF__ELEMENT
+			);
+		}
+	}
+	
+	private String getTypeLabel(FEvaluableElement elem) {
+		if (elem instanceof FArgument) {
+			return "Argument";
+		} else if (elem instanceof FAttribute) {
+			return "Attribute";
+		} else if (elem instanceof FConstantDef) {
+			return "Constant";
+		} else if (elem instanceof FDeclaration) {
+			return "State variable";
+		} else if (elem instanceof FField) {
+			return "Element of struct or union";
+		} else if (elem instanceof FEnumerator) {
+			return "Enumerator";
+		} else {
+			// sensible default
+			return "Model element";
+		}
+	}
+	
+	private void checkDefinitionVisible(
+			EObject referrer,
+			EObject referenced,
+			String what,
+			EReference referencingFeature
+	) {
+		FInterface target = FrancaModelExtensions.getInterface(referenced);
+		if (target == null) {
+			// referenced element is defined by a type collection, can be accessed freely
+		} else {
+			// referenced element is defined by an FInterface, check if reference is allowed
+			// by local access (same FInterface) or from a base interface via inheritance
+			FInterface referrerInterface = FrancaModelExtensions.getInterface(referrer);
+			boolean showError = false;
+			if (referrerInterface==null) {
+				// referrer is a type collection, it cannot reference a type from an interface
+				showError = true;
 			} else {
-				// referenced type is defined as part of an FInterface,
-				// check if reference is allowed by local access (same
-				// FInterface)
-				FInterface parent = FrancaModelExtensions.getInterface(typeref);
-				if (refParent != parent) {
-					error("Type " + referencedType.getName()
-							+ " can only be referenced inside interface "
-							+ refParent.getName(), typeref,
-							FrancaPackage.Literals.FTYPE_REF__DERIVED, -1);
+				Set<FInterface> baseInterfaces =
+						FrancaModelExtensions.getInterfaceInheritationSet(referrerInterface);
+				if (! baseInterfaces.contains(target)) {
+					showError = true;
 				}
+			}
+			if (showError) {
+				error(what + " can only be referenced inside interface "
+					+ target.getName() + " or derived interfaces",
+					referrer,
+					referencingFeature, -1
+				);
 			}
 		}
 	}

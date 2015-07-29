@@ -1,0 +1,124 @@
+/** **************************************************************************
+ * FRANCA TYPICAL SET-UP: SMALL EXAMPLE
+ *
+ * 2015-02-12 kbirken, derived from infotainment example
+ *
+ * ************************************************************************** */
+ 
+// relative path for generation of diagrams from this model
+generate_to = "../src/images-gen"
+
+
+// **************************************************************************
+
+// the Common IDL eval environment
+plugin org.franca.examples.genivi
+
+// the Franca plugins
+plugin org.franca.core
+plugin org.franca.generators
+
+// DBus Introspection IDL
+plugin ics.lipci.metamodels.dbus.introspect
+plugin dbus_generators_somewhere
+plugin org.franca.connectors.dbus
+
+// UML integration (Yamaica...)
+plugin some.uml.ea.bridge
+
+// AUTOSAR Ports
+plugin org.autosar.model
+plugin org.franca.connectors.autosar
+
+// CommonAPI
+plugin org.genivi.commonapi.core
+
+
+// **************************************************************************
+
+model Franca_IDL {
+	purpose "Central IDL model - base for generators and common IDL"
+	file franca.ecore
+	in org.franca.core
+}
+
+model DBus_IDL {
+	purpose "D-Bus Introspection XML"
+	file introspec.ecore
+	in ics.lipci.metamodels.dbus.introspect
+}
+
+//model Telepathy_IDL {
+//	purpose "Telepathy IDL (XML-based DBus extension)"
+//	file introspec_t.ecore
+//	in ics.lipci.metamodels.telepathy
+//}
+
+model UML {
+	purpose "UML stereotypes for interfaces"
+	file bridge_to_EA
+	in some.uml.ea.bridge
+}
+
+
+// **************************************************************************
+
+model AUTOSAR {
+	purpose "AUTOSAR XML"
+	file autosar.ecore
+	in org.autosar.model
+}
+
+// **************************************************************************
+
+transformation DBus2FrancaTrafo {
+	source DBus_IDL
+	target Franca_IDL
+	in org.franca.connectors.dbus
+	reverse Franca2DBusTrafo
+}
+
+transformation UML2FrancaTrafo {
+	source UML
+	target Franca_IDL
+	in some.uml.ea.bridge
+	reverse Franca2UMLTrafo
+}
+
+transformation AUTOSAR2FrancaTrafo {
+	source AUTOSAR
+	target Franca_IDL
+	in org.franca.connectors.autosar
+	reverse Franca2AUTOSARTrafo
+}
+
+
+// **************************************************************************
+
+generator CommonAPI_Cpp {
+	source Franca_IDL
+	output "CommonAPI C++"
+	in org.genivi.commonapi.core
+}
+
+
+generator FrancaAPI_JavaScript {
+	source Franca_IDL
+	output "HTML5 UIs: Websocket layer"
+	in org.franca.generators
+}
+
+generator FrancaAPI_joynr {
+	source Franca_IDL
+	output "Code for joynr platform"
+	in some.unknown.generators
+}
+
+generator FrancaAPI_HTML {
+	source Franca_IDL
+	output "HTML documentation for API"
+	in org.franca.generators
+}
+
+
+// **************************************************************************

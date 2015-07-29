@@ -24,7 +24,6 @@ FModel returns FModel:
 	(imports+=Import)*
 	( typeCollections+=FTypeCollection | interfaces+=FInterface	)*;
 
-
 // **************************************************************
 // type collection and interface
 
@@ -141,8 +140,12 @@ enum FBasicTypeId returns FBasicTypeId:
 	
 FIntegerInterval returns FIntegerInterval:
 	{FIntegerInterval}
-	'Integer' ('(' (lowerBound=E_BigInteger | 'minInt') ',' (upperBound=E_BigInteger | 'maxInt') ')')?
+	'Integer' ('(' (lowerBound=INTERVAL_BOUND | 'minInt') ',' (upperBound=INTERVAL_BOUND | 'maxInt') ')')?
 ;
+
+INTERVAL_BOUND returns ecore::EBigInteger:
+	'-'? INT;
+
 
 FType returns FType:
 	FArrayType |
@@ -189,14 +192,14 @@ FEnumerationType returns FEnumerationType:
 	'enumeration' name=ID
 	('extends' base=[FEnumerationType|FQN])?
 	'{'
-		(enumerators+=FEnumerator)*
+		(enumerators+=FEnumerator (','? enumerators+=FEnumerator)*)?
     '}';
 
 FEnumerationTypeBody returns FEnumerationType:
 	{FEnumerationType}
 	('extends' base=[FEnumerationType|FQN])?
 	'{'
-		(enumerators+=FEnumerator)*
+		(enumerators+=FEnumerator (','? enumerators+=FEnumerator)*)?
     '}';
 
 FEnumerator returns FEnumerator:
@@ -365,37 +368,29 @@ PrimaryExpression returns FExpression:
 SimplePrimaryExpression returns FExpression:
   FQualifiedElementRef |
   FCurrentError |
+  FMethodErrorEnumRef |
   FConstant |
   '(' LogicalOrExpression ')';
   
 FUnaryOperation returns FExpression:
 	{FUnaryOperation}
-	op = OperatorUnary operand = SimplePrimaryExpression;
-	
+	op=OperatorUnary operand=SimplePrimaryExpression;
+
 FCurrentError returns FCurrentError:
 	{FCurrentError}
-	ErrorReferenceTerminal
-//	type=ErrorTypeRef
-	// referencing a virtual FArgument with a type that is defined by a method either by referencing a previously
-	// defined one or by implicitly declaring a new one 
-;
-
-//ErrorTypeRef returns FTypeRef:
-//	derived=[FEnumerationType|ErrorReferenceTerminal]
-//;
+	ErrorReferenceTerminal;
 
 ErrorReferenceTerminal:
-	'errorval'
-;
+	'errorval';
 
-AnonymousErrorTypeReferenceTerminal:
-	'errordef'
-;
+FMethodErrorEnumRef:
+	'errordef' '.' enumerator=[FEnumerator|ID];
+
 
 FQualifiedElementRef:
 	{FQualifiedElementRef}
-	(element=[FTypedElement|ID] | element = [FEnumerationType|AnonymousErrorTypeReferenceTerminal])
-	({FQualifiedElementRef.qualifier=current} '.' field=[FField|ID])*;
+	element=[FEvaluableElement|FQN]
+	({FQualifiedElementRef.qualifier=current} '->' field=[FField|ID])*;
 
 FConstant returns FExpression:
 	FFloatConstant |
@@ -440,7 +435,7 @@ enum OperatorMultiplicative returns FOperator:
 	multiplication="*" | division="/"
 ;
 enum OperatorUnary returns FOperator:
-	negation="!"
+	negation="!" | subtraction="-"
 ;
 
 // **************************************************************
@@ -460,21 +455,18 @@ EBoolean returns ecore::EBoolean:
 	'false' | 'true';
 
 E_BigInteger returns ecore::EBigInteger:
-	NEGATIVE_INT | INT
+	INT | HEX
 ;
 
 terminal E_DOUBLE_OBJECT returns ecore::EDoubleObject :
-	 '-'? INT '.' INT ('e' '-'? INT)? 'd'
+	 INT '.' INT ('e' '-'? INT)? 'd'
 ;
 terminal E_FLOAT_OBJECT returns ecore::EFloatObject :
-	 '-'? INT '.' INT ('e' '-'? INT)? 'f'
+	 INT '.' INT ('e' '-'? INT)? 'f'
 ;
 
-terminal NEGATIVE_INT returns ecore::EBigInteger:
-	'-'INT;
-
-//terminal HEX:
-//	'0' ('x'|'X')(('0'..'9')|('a'..'f')|('A'..'F'))+;
+terminal HEX :
+	 ('0x'|'0X')(('0'..'9')|('a'..'f')|('A'..'F'))+;
 	
 terminal ANNOTATION_STRING returns ecore::EString:
 	'@' (('a'..'z')|'-')+ (' '|'\t')* ':'

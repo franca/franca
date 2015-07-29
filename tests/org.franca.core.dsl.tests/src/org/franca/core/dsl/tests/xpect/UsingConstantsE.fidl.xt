@@ -1,0 +1,26 @@
+// XPECT_SETUP org.franca.core.dsl.tests.xpect.FrancaIDLXpectTests END_SETUP
+package e
+
+// tests for referencing constants via interface inheritance in the local file
+
+interface EIF1 {
+	const UInt32 EIF1_Const_1 = 32
+
+	// XPECT errors --> "Couldn't resolve reference to FEvaluableElement 'EIF2_Const_1'." at "EIF2_Const_1"
+	// constant reference to derived interface
+	const UInt32 EIF1_Const_2 = EIF2_Const_1
+
+	// XPECT errors --> "Constant EIF2_Const_1 can only be referenced inside interface EIF2 or derived interfaces" at "EIF2.EIF2_Const_1" 
+	// constant reference to derived interface (via qualified name)
+	const UInt32 EIF1_Const_3 = EIF2.EIF2_Const_1
+}
+
+interface EIF2 extends EIF1 {
+	const UInt32 EIF2_Const_1 = 32
+
+	// constant reference to base interface
+	const UInt32 EIF2_Const_2 = EIF1_Const_1
+
+	// constant reference to base interface (via qualified name)
+	const UInt32 EIF2_Const_3 = EIF1.EIF1_Const_1
+}

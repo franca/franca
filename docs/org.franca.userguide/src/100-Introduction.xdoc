@@ -1,0 +1,126 @@
+chapter:Introduction[Introduction]
+
+Welcome to e[Franca]! e[Franca] is a framework for definition and transformation of
+software APIs. The core of it is e[Franca IDL] (Interface Definition Language),
+which is ref:FrancaIDL[a textual language for specification of APIs].
+As Franca is based on Eclipse, there are some ref:Intro_FrancaTools[powerful tools]
+which can be used to work with Franca. E.g., a user-friendly editor for
+Franca IDL files is available.
+
+
+section:Intro_FrancaArchitecture[Franca framework architecture]
+
+Especially for system integrators, it is time and again necessary to combine
+software components or subsystems which use different kinds of 
+inter-process-communication (IPC) and different IDLs. Possible reasons for this
+are:
+ul[
+	item[the need for integration of 3rd-party and legacy components]
+	item[conformance to new standards and]
+	item[non-functional system requirements like performance and footprint]
+]
+
+This integration is often solved by ad-hoc solutions, developing wrappers 
+or adapters manually after defining a mapping of two IDLs' concepts which
+should be integrated. This approach is tedious and often leads to inaccuracies 
+and software shortcomings and bugs in the runtime system.
+
+Franca provides a framework for bridging the gap between different
+IDLs by formally well-founded model transformations in an easy way.
+Using the Franca framework, these transformations will be encapsulated
+as e[Franca connectors], which are Eclipse plugins for loading/saving of
+IDL model instances (i.e. files which formally describe interfaces) and
+converting them to or from Franca IDL files. Franca (the e[lingua franca])
+is the pivot point for these transformations.
+ref:TransformationFramework shows how connectors (depicted by arrows)
+form a star-shaped network between Franca IDL and other IDLs. 
+
+img:TransformationFramework[images-gen/franca_trafos_conceptual_hts_logical.png]
+	[Franca transformation framework.][][][.5]
+
+Advanced features like model validation can also be included in the connector plugins.
+Franca provides its own extensive model validation, which can be used as an
+intermediate validation step while transforming models from one IDL to another.
+
+
+Additionally, the Franca framework is well-suited for developing 
+code generators. This is shown in ref:GenerationFramework.
+Using connectors (i.e., IDL model transformations) and
+generators together leads to powerful tool sets which can be used to 
+convert interfaces in several IDLs to Franca and generate source code and
+configuration files from this. Thus, Franca really helps to solve the 
+integration problem mentioned above in an elegant way.
+
+img:GenerationFramework[images-gen/franca_generators_conceptual_hts_logical.png]
+	[Franca transformation and generation framework.][][][.7]
+
+For detail information about the architecture concepts of Franca,
+please refer to chapter ref:FrancaConcepts[Franca Concepts].
+
+
+section:Intro_FrancaIDL[Franca IDL]
+
+Franca IDL is language-neutral and also independent of concrete bindings.
+Here is a simple example with an interface which supports just one method:
+
+code[Franca][
+interface CalculatorAPI {
+	method add {
+		in {
+			Float a
+			Float b
+		}
+		out {
+			Float sum
+		}
+	}
+} 
+]
+
+APIs defined with Franca IDL may consist of attributes, methods and broadcasts.
+You may rely on built-in, primitive types (e.g., Int16 or String) or define your
+own types using arrays, structures, enumerations, type aliases, maps and others.
+For some of the types, inheritance is supported.
+
+Franca IDL also supports to optionally define the e[dynamic behaviour] of an API.
+This is done by specifying a e[contract], which basically consists of a 
+e[protocol state machine] (PSM) which is a part of the interface.
+The contract defines states of the interface and transitions between those states.
+Each transition is triggered by a method call, a broadcast, or the change of an
+attribute of the interface. For client/server-like architectures, you can think of
+the PSM as being part of the connection.      
+
+Franca IDL specifications may be distributed to multiple files.
+This is especially useful if several APIs have to be defined, which share some
+common data types and structures. 
+
+For detail information about syntax and semantics of Franca IDL, please
+refer to the ref:FrancaIDL[Franca IDL Language Reference].
+
+
+section:Intro_FrancaTools[Franca Tooling]
+
+The core tool for Franca users is the nice textual editor which can be used
+to review and edit Franca IDL files. The editor is provided as Eclipse plugin
+and can be installed in any Eclipse environment which provides modeling support.
+ref:FrancaEditorScreenshot shows a screenshot of Franca's IDL editor in action.
+
+img:FrancaEditorScreenshot[images/franca_editor_screenshot_1.png]
+	[Screenshot of Franca IDL editor.][][][.7]
+
+The editor provides syntax highlighting,
+code completion, folding, online validation, a helpful outline view,
+jump-to-definition and find-references with shortcuts, and many more features.
+You can find additional information about the editor ref:FrancaTooling[here].
+
+
+The Franca distribution also contains an example generator, which produces
+HTML files from Franca IDL files. This can be used as is (for generating 
+HTML documentation from interface definitions), or adapted to your needs by
+using the clone-and-own pattern. 
+
+For more information about the Franca IDL editor and other tooling,
+please refer to chapter ref:FrancaTooling[Franca Tooling].
+
+
+

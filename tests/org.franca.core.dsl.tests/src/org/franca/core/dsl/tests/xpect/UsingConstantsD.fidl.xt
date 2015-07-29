@@ -1,0 +1,44 @@
+// XPECT_SETUP org.franca.core.dsl.tests.xpect.FrancaIDLXpectTests END_SETUP
+package d
+
+// tests for referencing constants in another file via "import .. from"
+
+import a.* from "UsingConstantsA.fidl"
+
+
+typeCollection DTC2 {
+	// reference to anonymous type collection in file A
+	const UInt32 DTC2_Const_1 = a.AAnon_Const_1
+	const UInt32 DTC2_Const_2 = AAnon_Const_1
+	
+	// reference to other type collection in file A
+	const UInt32 DTC2_Const_3 = a.ATC.ATC_Const_1
+	const UInt32 DTC2_Const_4 = ATC.ATC_Const_1
+
+	// XPECT errors --> "Constant AIF_Const_1 can only be referenced inside interface AIF or derived interfaces" at "a.AIF.AIF_Const_1" 
+	// reference to interface in file A
+	const UInt32 DTC2_Const_5 = a.AIF.AIF_Const_1
+
+	// XPECT errors --> "Constant AIF_Const_1 can only be referenced inside interface AIF or derived interfaces" at "AIF.AIF_Const_1" 
+	// reference to interface in file A
+	const UInt32 DTC2_Const_6 = AIF.AIF_Const_1
+}
+
+
+interface DIF2 {
+	// reference to anonymous type collection in file A
+	const UInt32 DIF2_Const_1 = a.AAnon_Const_1
+	const UInt32 DIF2_Const_2 = AAnon_Const_1
+	
+	// reference to other type collection in file A
+	const UInt32 DIF2_Const_3 = a.ATC.ATC_Const_1
+	const UInt32 DIF2_Const_4 = ATC.ATC_Const_1
+
+	// XPECT errors --> "Constant AIF_Const_1 can only be referenced inside interface AIF or derived interfaces" at "a.AIF.AIF_Const_1" 
+	// reference to interface in file A
+	const UInt32 DIF2_Const_5 = a.AIF.AIF_Const_1
+
+	// XPECT errors --> "Constant AIF_Const_1 can only be referenced inside interface AIF or derived interfaces" at "AIF.AIF_Const_1" 
+	// reference to interface in file A
+	const UInt32 DIF2_Const_6 = AIF.AIF_Const_1
+}

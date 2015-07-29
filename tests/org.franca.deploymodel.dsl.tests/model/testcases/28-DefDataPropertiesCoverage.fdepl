@@ -409,4 +409,8 @@ define a.b.c.MySpec03 for interface fidl.CoverageInterface {
 		}
 	}
 
+	typedef aTypedef {
+		PropTypedef = 0
+	}
+
 }

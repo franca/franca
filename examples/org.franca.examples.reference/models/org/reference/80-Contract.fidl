@@ -36,7 +36,7 @@ interface MyInterface80 {
 				on update a -> init {
 					// access value of attribute and store it in lastA
 					// TODO: introduce implicit variable here (e.g., "val")
-					lastA = MyInterface80.a
+					lastA = a
 				}
 
 				// attribute-set event from client side

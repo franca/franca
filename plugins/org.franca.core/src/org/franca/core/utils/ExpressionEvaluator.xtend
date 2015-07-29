@@ -15,7 +15,6 @@ import org.franca.core.franca.FOperator
 import org.franca.core.franca.FQualifiedElementRef
 import org.franca.core.franca.FConstantDef
 
-import static extension org.franca.core.contracts.TypeSystem.*
 import org.franca.core.franca.FBooleanConstant
 import org.franca.core.franca.FUnaryOperation
 import org.franca.core.franca.FField
@@ -91,6 +90,8 @@ class ExpressionEvaluator {
 			
 		switch (op) {
 			case FOperator::NEGATION: !(e as Boolean)
+			// TODO: this doesn't work for floats and doubles
+			case FOperator::SUBTRACTION: -(e as BigInteger)
 			default: null
 		}
 	}

@@ -1,0 +1,42 @@
+// XPECT_SETUP org.franca.core.dsl.tests.xpect.FrancaIDLXpectTests END_SETUP
+package b
+
+// tests for referencing constants in the local file
+
+typeCollection BTC1 {
+	const UInt32 BTC1_Const_1 = 32
+}
+
+interface BIF1 {
+	const UInt32 BIF1_Const_1 = 32
+}
+
+
+typeCollection BTC2 {
+	const UInt32 BTC2_Const_1 = 42
+	
+	// local reference to same type collection
+	const UInt32 BTC2_Const_2 = BTC2_Const_1
+
+	// local reference to other type collection
+	const UInt32 BTC2_Const_3 = BTC1.BTC1_Const_1
+
+	// XPECT errors --> "Constant BIF1_Const_1 can only be referenced inside interface BIF1 or derived interfaces" at "BIF1.BIF1_Const_1" 
+	// local reference to interface
+	const UInt32 BTC2_Const_4 = BIF1.BIF1_Const_1
+}
+
+
+interface BIF2 {
+	const UInt32 BIF2_Const_1 = 32
+	
+		// local reference to same interface
+	const UInt32 BIF2_Const_2 = BIF2_Const_1
+
+	// local reference to other type collection
+	const UInt32 BIF2_Const_3 = BTC2.BTC2_Const_1
+
+	// XPECT errors --> "Constant BIF1_Const_1 can only be referenced inside interface BIF1 or derived interfaces" at "BIF1.BIF1_Const_1" 
+	// local reference to interface
+	const UInt32 BIF2_Const_4 = BIF1.BIF1_Const_1
+}

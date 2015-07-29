@@ -46,6 +46,11 @@ public class ReferenceModelTests extends XtextTest {
     }
 
     @Test
+    public void test_35_ComplexConstants() {
+    	testFile("35-ImplicitArrayConstants.fidl");
+    }
+
+    @Test
     public void test_60_Interface() {
     	testFile("60-Interface.fidl");
     	assertConstraints(issues.nOfThemContain(8, "not covered by contract"));

@@ -1,0 +1,19 @@
+// XPECT_SETUP org.franca.core.dsl.tests.xpect.FrancaIDLXpectTests END_SETUP
+package f
+
+// tests for referencing types via interface inheritance in another file
+
+import a.* from "UsingTypesA.fidl"
+
+interface FIF2 extends AIF {
+	struct FIF2_Struct_1 {
+		// type reference to base interface
+		AIF_Struct_1 e1
+
+		// type reference to base interface (via qualified name)
+		AIF.AIF_Struct_1 e2
+
+		// type reference to base interface (via fully qualified name)
+		a.AIF.AIF_Struct_1 e3
+	}
+}

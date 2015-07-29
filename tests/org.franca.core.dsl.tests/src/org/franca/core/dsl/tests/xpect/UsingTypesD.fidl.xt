@@ -1,0 +1,49 @@
+// XPECT_SETUP org.franca.core.dsl.tests.xpect.FrancaIDLXpectTests END_SETUP
+package d
+
+// tests for referencing types in another file via "import .. from"
+
+import a.* from "UsingTypesA.fidl"
+
+
+typeCollection DTC2 {
+	struct DTC2_Struct_1 {
+		// reference to anonymous type collection in file A
+		a.AAnon_Struct_1 e1
+		AAnon_Struct_1 e2
+
+		// reference to other type collection in file A
+		a.ATC.ATC_Struct_1 e3
+		ATC.ATC_Struct_1 e4
+
+		// XPECT errors --> "Type AIF_Struct_1 can only be referenced inside interface AIF or derived interfaces" at "a.AIF.AIF_Struct_1" 
+		// reference to interface in file A
+		a.AIF.AIF_Struct_1 e5
+
+		// XPECT errors --> "Type AIF_Struct_1 can only be referenced inside interface AIF or derived interfaces" at "AIF.AIF_Struct_1" 
+		// reference to interface in file A
+		AIF.AIF_Struct_1 e6
+	}
+}
+
+
+interface DIF2 {
+	struct DIF2_Struct_3 {
+		// reference to anonymous type collection in file A
+		a.AAnon_Struct_1 e1
+		AAnon_Struct_1 e2
+
+		// reference to other type collection in file A
+		a.ATC.ATC_Struct_1 e3
+		ATC.ATC_Struct_1 e4
+
+		// XPECT errors --> "Type AIF_Struct_1 can only be referenced inside interface AIF or derived interfaces" at "a.AIF.AIF_Struct_1" 
+		// reference to interface in file A
+		a.AIF.AIF_Struct_1 e5
+
+		// XPECT errors --> "Type AIF_Struct_1 can only be referenced inside interface AIF or derived interfaces" at "AIF.AIF_Struct_1" 
+		// reference to interface in file A
+		AIF.AIF_Struct_1 e6
+	}
+}
+

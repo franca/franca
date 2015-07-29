@@ -13,28 +13,31 @@ import java.util.List
 import java.util.Set
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.naming.IQualifiedNameProvider
+import org.eclipse.xtext.xbase.lib.Procedures.Procedure1
 import org.franca.core.dsl.validation.util.DiGraphAnalyzationUtil
 import org.franca.core.franca.FArrayType
+import org.franca.core.franca.FAttribute
+import org.franca.core.franca.FBinaryOperation
+import org.franca.core.franca.FBracketInitializer
+import org.franca.core.franca.FCompoundInitializer
+import org.franca.core.franca.FConstant
+import org.franca.core.franca.FConstantDef
+import org.franca.core.franca.FElementInitializer
 import org.franca.core.franca.FEnumerationType
+import org.franca.core.franca.FEnumerator
+import org.franca.core.franca.FEvaluableElement
 import org.franca.core.franca.FInterface
 import org.franca.core.franca.FMapType
 import org.franca.core.franca.FModel
+import org.franca.core.franca.FQualifiedElementRef
 import org.franca.core.franca.FStructType
+import org.franca.core.franca.FType
 import org.franca.core.franca.FTypeCollection
 import org.franca.core.franca.FTypeDef
-import org.franca.core.franca.FUnionType
-import org.franca.core.franca.FConstantDef
-import org.franca.core.franca.FQualifiedElementRef
-import org.franca.core.franca.FConstant
-import org.franca.core.franca.FBinaryOperation
-import org.franca.core.franca.FUnaryOperation
-import org.franca.core.franca.FBracketInitializer
-import org.franca.core.franca.FCompoundInitializer
-import org.franca.core.franca.FType
 import org.franca.core.franca.FTypedElement
+import org.franca.core.franca.FUnaryOperation
+import org.franca.core.franca.FUnionType
 import org.franca.core.utils.digraph.Digraph
-import org.franca.core.franca.FElementInitializer
-import org.eclipse.xtext.xbase.lib.Procedures.Procedure1
 
 class CyclicDependenciesValidator {
 	@Inject IQualifiedNameProvider qnProvider;
@@ -49,7 +52,7 @@ class CyclicDependenciesValidator {
 		d.addEdgesForSubtree(m, m.dependencies, analyzedElements)
 		try {
 			d.topoSort
-		} catch (Digraph$HasCyclesException xe) {
+		} catch (Digraph.HasCyclesException xe) {
 			val eResourceOfModel = m.eResource;
 			val fqNameOfModel = qnProvider.getFullyQualifiedName(m).toString
 			val edgesMap = d.edgesIterator.toMultiMap
@@ -119,6 +122,10 @@ class CyclicDependenciesValidator {
 		newArrayList(a.elementType.derived)
 	}
 
+	def dispatch List<? extends EObject> dependencies(FAttribute a) {
+		newArrayList()
+	}
+
 	def dispatch dependencies(FStructType s) {
 
 		// s.elements.fold(<EObject>newArrayList(s.base),[result,element| result+= element.type.derived; result])
@@ -129,6 +136,13 @@ class CyclicDependenciesValidator {
 
 	def dispatch dependencies(FEnumerationType e) {
 		newArrayList(e.base)
+	}
+
+	def dispatch dependencies(FEnumerator e) {
+		if (e.value==null)
+			<EObject>newArrayList()
+		else
+			newArrayList(e.value)
 	}
 
 	def dispatch dependencies(FTypeDef td) {
@@ -181,6 +195,10 @@ class CyclicDependenciesValidator {
 		result
 	}
 		
+	def dispatch dependencies(FEvaluableElement e) {
+		<EObject>newArrayList()
+	}
+	
 	def dispatch dependencies(FQualifiedElementRef e) {
 		val result = newArrayList
 		if (e.qualifier==null) {
@@ -196,7 +214,7 @@ class CyclicDependenciesValidator {
 	}
 	
 	def protected dispatch List<EObject> dependencies(Object e) {
-		throw new IllegalStateException("Unhandled parameter types: dependencies not yet implemented for" + e)
+		throw new IllegalStateException("Unhandled parameter type: dependencies not yet implemented for " + e)
 	}
 
 	def protected dispatch List<EObject> dependencies(Void e) {

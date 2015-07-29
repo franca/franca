@@ -1,0 +1,66 @@
+
+%----------------------------------------------------------------------------------------
+% TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\begingroup
+\thispagestyle{empty}
+\begin{tikzpicture}[remember picture,overlay]
+\coordinate [below=12cm] (midpoint) at (current page.north);
+\node at (current page.north west)
+{\begin{tikzpicture}[remember picture,overlay]
+\node[anchor=north west,inner sep=0pt] at (0,0) {\includegraphics[width=\paperwidth]{background}}; % Background image
+\makeatletter % switch @ sign for accessing author and title
+\draw[anchor=north] (midpoint) node [fill=gray!30!white,fill opacity=0.6,text opacity=1,inner sep=1cm]{\Huge\centering\bfseries\sffamily\parbox[c][][t]{\paperwidth}{\centering \@title\\[16pt]
+\includegraphics[width=100pt]{images/FrancaLogo120.png}\\[10pt]
+{\Large \@author}}};
+\makeatother
+\end{tikzpicture}};
+\end{tikzpicture}
+\vfill
+\endgroup
+
+%----------------------------------------------------------------------------------------
+% COPYRIGHT PAGE
+%----------------------------------------------------------------------------------------
+
+\newpage
+~\vfill
+\thispagestyle{empty}
+
+\noindent Copyright \copyright\ 2013-2015 itemis AG\\ % Copyright notice
+
+\noindent \textsc{\href{http://www.itemis.de}{www.itemis.de}}\\ % URL
+
+\noindent This document and the accompanying software/materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    \href{http://www.eclipse.org/legal/epl-v10.html}{http://www.eclipse.org/legal/epl-v10.html}.\\
+
+\noindent The information contained herein is subject to change without notice
+    and is not warranted to be error-free. If you find any errors, please report
+    them to us in writing.\\
+
+\noindent This software is developed for general use in a variety of information management
+    applications. It is not developed or intended for use in any inherently dangerous
+    applications, including applications which may create a risk of personal injury.
+    If you use this software in dangerous applications, then you shall be responsible
+    to take all appropriate fail-safe, backup, redundancy, and other measures to ensure
+    the safe use of this software. itemis AG disclaims any liability for any damages
+    caused by use of this software in dangerous applications.\\
+
+
+%----------------------------------------------------------------------------------------
+% TABLE OF CONTENTS
+%----------------------------------------------------------------------------------------
+
+\chapterimage{chapter_head_1.pdf} % Table of contents heading image
+
+\pagestyle{empty} % No headers
+
+\tableofcontents % Print the table of contents itself
+
+\cleardoublepage % Forces the first chapter to start on an odd page so it's on the right
+
+\pagestyle{fancy} % Print headers again
+

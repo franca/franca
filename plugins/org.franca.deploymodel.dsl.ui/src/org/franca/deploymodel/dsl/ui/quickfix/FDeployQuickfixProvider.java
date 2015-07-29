@@ -25,6 +25,7 @@ import org.franca.core.franca.FMethod;
 import org.franca.core.franca.FModelElement;
 import org.franca.core.franca.FStructType;
 import org.franca.core.franca.FType;
+import org.franca.core.franca.FTypeDef;
 import org.franca.core.franca.FUnionType;
 import org.franca.deploymodel.core.FDModelUtils;
 import org.franca.deploymodel.core.PropertyMappings;
@@ -430,6 +431,13 @@ public class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 				else if (type == FrancaQuickFixConstants.ENUMERATION && tc.getName().equals(elementName)) {
 					elements.add(FDeployQuickfixProviderUtil.getOrCreateEnumeration(deploymentInterface, elementName));
 				}
+			} else if (tc instanceof FTypeDef) {
+				if (elementName == null) {
+					elements.add(FDeployQuickfixProviderUtil.getOrCreateTypedef(deploymentInterface, tc.getName()));
+				}
+				else if (type == FrancaQuickFixConstants.TYPEDEF && tc.getName().equals(elementName)) {
+					elements.add(FDeployQuickfixProviderUtil.getOrCreateTypedef(deploymentInterface, elementName));
+				}
 			}
 		}
 
@@ -467,6 +475,9 @@ public class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 		else if (type == FrancaQuickFixConstants.UNION) {
 			deploymentElement = FDeployQuickfixProviderUtil.getOrCreateUnion(types, elementName);
 		}
+		else if (type == FrancaQuickFixConstants.TYPEDEF) {
+			deploymentElement = FDeployQuickfixProviderUtil.getOrCreateTypedef(types, elementName);
+		} 
 		if (isRecursive && deploymentElement != null) {
 			applyFixForElementInternal(deploymentElement, isRecursive);
 		}

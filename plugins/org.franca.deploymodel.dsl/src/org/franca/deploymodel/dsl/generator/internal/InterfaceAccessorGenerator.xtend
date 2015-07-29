@@ -10,6 +10,8 @@ package org.franca.deploymodel.dsl.generator.internal
 import com.google.inject.Inject
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification
 
+import static extension org.franca.deploymodel.dsl.generator.internal.GeneratorHelper.*
+
 class InterfaceAccessorGenerator extends CommonAccessorMethodGenerator {
 
 	@Inject extension ImportManager
@@ -20,7 +22,7 @@ class InterfaceAccessorGenerator extends CommonAccessorMethodGenerator {
 		 * deployment specification '«spec.name»'.
 		 */
 		public static class InterfacePropertyAccessor
-			«IF spec.base!=null»extends «spec.base.name».InterfacePropertyAccessor«ENDIF»
+			«IF spec.base!=null»extends «spec.base.qualifiedClassname».InterfacePropertyAccessor«ENDIF»
 			implements IDataPropertyAccessor
 		{
 			final private MappingGenericPropertyAccessor target;

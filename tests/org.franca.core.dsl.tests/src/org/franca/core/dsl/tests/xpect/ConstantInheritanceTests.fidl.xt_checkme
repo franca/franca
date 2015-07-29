@@ -1,0 +1,19 @@
+// XPECT_SETUP org.franca.core.dsl.tests.xpect.FrancaIDLXpectTests END_SETUP
+package a.b.c
+interface Base {
+	// XPECT errors --> "Name conflict for constant 'base1'" at "base1"
+	const UInt16 base1 = 11 
+
+	// XxPECT errors --> "Name conflict for constant 'base2'" at "base2"
+//	const UInt16 base2 = 12 
+}
+
+interface Medium extends Base {
+	// XPECT errors --> "Name conflict for constant 'base1'" at "base1"
+	const UInt16 base1 = 21
+}
+
+interface Derived extends Medium {
+	// XPxECT errors --> "Name conflict for constant 'base2'" at "base2"
+	//const UInt16 base2 = 77
+}

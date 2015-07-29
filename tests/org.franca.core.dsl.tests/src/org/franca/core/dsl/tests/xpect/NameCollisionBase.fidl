@@ -1,0 +1,17 @@
+// this file is used as base for testing the validation of name collisions
+package a.b.c
+
+// anonymous type collection in package a.b.c
+typeCollection { }
+
+// named type collection in package a.b.c
+typeCollection TC0 { }
+
+// named type collection in package a.b.c
+typeCollection TC1 { }
+
+// interface in package a.b.c
+interface IF0 { }
+
+// interface in package a.b.c
+interface IF1 { }

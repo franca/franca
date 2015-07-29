@@ -157,7 +157,7 @@ class FrancaModelExtensions {
 	}
 
 	def static dispatch Iterable<? extends FModelElement> getAllElements(FTypeCollection c) {
-		c.types
+		c.types + c.constants
 	}
 
 	def static dispatch Iterable<? extends FModelElement> getAllElements(FArrayType a) {
@@ -200,15 +200,23 @@ class FrancaModelExtensions {
 	/**
 	 * Get all non-anonymous type collections of a model.
 	 */
-	 def static getNamedTypedCollections (FModel model) {
+	 def static getNamedTypedCollections(FModel model) {
 	 	model.typeCollections.filter[name!=null && !name.empty]
+	 }
+
+
+	/**
+	 * Get all named type collections and interfaces of a model.
+	 */
+	 def static getNamedPackageMembers(FModel model) {
+	 	model.namedTypedCollections + model.interfaces
 	 }
 
 
 	/**
 	 * Get all FModels which are imported by current model (transitively).
 	 */
-	def static getAllImportedModels (FModel model) {
+	def static getAllImportedModels(FModel model) {
 		val rset = model.eResource.resourceSet
 		val Set<Resource> visited = newHashSet
 		val Queue<Resource> todo = newLinkedList(model.eResource)
@@ -260,7 +268,7 @@ class FrancaModelExtensions {
 		new ImportedModelInfo(imported, importedVia)
 	}
 
-	def private static getFModel (Resource res) {
+	def private static getFModel(Resource res) {
 		if (res.contents==null || res.contents.empty) {
 			null
 		} else {
@@ -277,11 +285,15 @@ class FrancaModelExtensions {
 
 @Data
 class ImportedModelInfo {
-	Iterable<FModel> importedModels
+	Iterable<FModel> importedModels_
 	Map<Resource, Set<Import>> importVia
 	
-	def getViaString (Resource res) {
+	def getViaString(Resource res) {
 		val via = importVia.get(res)
 		via.join(', ', ["'" + importURI + "'"])
+	}
+	
+	def getImportedModels() {
+		this.importedModels_
 	}
 }

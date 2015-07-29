@@ -95,4 +95,29 @@ class CodeGeneratorTest extends GeneratorTestBase {
 		assertTrue(isEqualJava(expected, generated))
 	}
 
+	@Test
+	def void test_61_SpecTypeCollection() {
+		val root = loadModel("testcases/61-SpecTypeCollection.fdepl");
+
+		// generate code in memory
+		val fsa = new InMemoryFileSystemAccess
+		generator.doGenerate(root.eResource, fsa)
+
+		assertEquals(4, fsa.textFiles.size)
+//		for(f : fsa.textFiles.keySet) {
+//			val gen = fsa.textFiles.get(f).toString
+//			gen.printMultiLine("Generated:")
+//		}
+
+		val generated = fsa.textFiles.values().get(0).toString
+		
+		// load expected result code and patch class name 
+		val expected =
+			readFile("src/org/example/spec/SpecTypeCollectionRef.java")
+				.replace("SpecTypeCollectionRef", "SpecTypeCollection")
+
+		// do actual line-by-line comparison
+		assertTrue(isEqualJava(expected, generated))
+	}
+
 }

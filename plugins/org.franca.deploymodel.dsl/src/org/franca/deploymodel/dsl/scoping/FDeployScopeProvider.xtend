@@ -27,6 +27,7 @@ import org.franca.core.franca.FCompoundType
 import org.franca.core.franca.FEnumerationType
 import org.franca.core.franca.FStructType
 import org.franca.core.franca.FType
+import org.franca.core.franca.FTypeDef
 import org.franca.core.franca.FUnionType
 import org.franca.deploymodel.core.FDModelUtils
 import org.franca.deploymodel.core.PropertyMappings
@@ -54,13 +55,14 @@ import org.franca.deploymodel.dsl.fDeploy.FDPropertyFlag
 import org.franca.deploymodel.dsl.fDeploy.FDProvider
 import org.franca.deploymodel.dsl.fDeploy.FDStruct
 import org.franca.deploymodel.dsl.fDeploy.FDTypeOverwrites
+import org.franca.deploymodel.dsl.fDeploy.FDTypedef
 import org.franca.deploymodel.dsl.fDeploy.FDTypes
 import org.franca.deploymodel.dsl.fDeploy.FDUnion
 import org.franca.deploymodel.dsl.fDeploy.FDeployPackage
 
 import static extension org.eclipse.xtext.scoping.Scopes.*
-import static extension org.franca.deploymodel.core.FDModelUtils.*
 import static extension org.franca.core.FrancaModelExtensions.*
+import static extension org.franca.deploymodel.core.FDModelUtils.*
 
 class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 
@@ -120,6 +122,10 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 		ctxt.getScopes(typeof(FEnumerationType))
 	}
 
+	def scope_FDTypedef_target(FDTypes ctxt, EReference ref) {
+		ctxt.getScopes(typeof(FTypeDef))
+	}
+
 	def private getScopes(FDTypes ctxt, Class<? extends EObject> clazz) {
 		ctxt.getTarget().getTypes().filter(clazz).scopeFor
 	}
@@ -157,6 +163,10 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 
 	def scope_FDEnumeration_target(FDInterface ctxt, EReference ref) {
 		ctxt.getScopes(typeof(FEnumerationType))
+	}
+
+	def scope_FDTypedef_target(FDInterface ctxt, EReference ref) {
+		ctxt.getScopes(typeof(FTypeDef))
 	}
 
 	def private getScopes(FDInterface ctxt, Class<? extends EObject> clazz) {
@@ -288,6 +298,10 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 	}
 
 	def scope_FDProperty_decl(FDEnumValue owner, EReference ref) {
+		owner.getPropertyDecls
+	}
+
+	def scope_FDProperty_decl(FDTypedef owner, EReference ref) {
 		owner.getPropertyDecls
 	}
 

@@ -21,7 +21,7 @@
          point="org.eclipse.ui.newWizards">
       <wizard
             category="org.franca.core.ui.addons.wizard.category"
-            class="org.franca.core.ui.addons.contractviewer.util.ContractViewerExecutableExtensionFactory:org.franca.core.ui.addons.wizard.FrancaIDLFileWizard"
+            class="org.franca.core.ui.addons.FrancaAddOnsExecutableExtensionFactory:org.franca.core.ui.addons.wizard.FrancaIDLFileWizard"
             finalPerspective="org.eclipse.pde.ui.PDEPerspective"
             icon="icons/franca_logo.png"
             id="org.franca.core.ui.addons.newidlfilewizard"
@@ -34,7 +34,7 @@
       </category>
       <wizard
             category="org.franca.core.ui.addons.wizard.category"
-            class="org.franca.core.ui.addons.contractviewer.util.ContractViewerExecutableExtensionFactory:org.franca.core.ui.addons.wizard.FrancaFDEPLFileWizard"
+            class="org.franca.core.ui.addons.FrancaAddOnsExecutableExtensionFactory:org.franca.core.ui.addons.wizard.FrancaFDEPLFileWizard"
             finalPerspective="org.eclipse.pde.ui.PDEPerspective"
             icon="icons/franca_logo.png"
             id="org.franca.core.ui.addons.newfdeplfilewizard"

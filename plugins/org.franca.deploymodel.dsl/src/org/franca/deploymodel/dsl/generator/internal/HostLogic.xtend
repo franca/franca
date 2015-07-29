@@ -27,6 +27,7 @@ class HostLogic {
 			case UNION_FIELDS:     "FField"
 			case ENUMERATIONS:     "FEnumerationType"
 			case ENUMERATORS:      "FEnumerator"
+			case TYPEDEFS:         "FTypeDef"
 			//case NUMBERS:        // generic handling
 			//case FLOATS:         // generic handling
 			//case INTEGERS:       // generic handling

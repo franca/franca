@@ -145,6 +145,7 @@
       <genFeatures createChild="false" propertyDescription="if the typed element is an implicit array definition, this property will be set to a string (e.g., the string '[]'). If the typed element is a single value (not an array), this property will be null. Do not rely on the actual value of the string."
           ecoreFeature="ecore:EAttribute franca.ecore#//FTypedElement/array"/>
     </genClasses>
+    <genClasses ecoreClass="franca.ecore#//FEvaluableElement"/>
     <genClasses ecoreClass="franca.ecore#//FVariable"/>
     <genClasses ecoreClass="franca.ecore#//FStructType">
       <genFeatures notify="false" createChild="false" propertyDescription="the base struct from which this struct inherits. Franca supports single inheritance for structs. Structs which inherit from a base struct cannot be polymorphic."
@@ -280,6 +281,9 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FQualifiedElementRef/element"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FQualifiedElementRef/qualifier"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FQualifiedElementRef/field"/>
+    </genClasses>
+    <genClasses ecoreClass="franca.ecore#//FMethodErrorEnumRef">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FMethodErrorEnumRef/enumerator"/>
     </genClasses>
     <genClasses ecoreClass="franca.ecore#//FCurrentError"/>
     <genClasses ecoreClass="franca.ecore#//FConstant"/>

@@ -38,6 +38,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDProvider;
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification;
 import org.franca.deploymodel.dsl.fDeploy.FDStruct;
 import org.franca.deploymodel.dsl.fDeploy.FDStructOverwrites;
+import org.franca.deploymodel.dsl.fDeploy.FDTypedef;
 import org.franca.deploymodel.dsl.fDeploy.FDTypes;
 import org.franca.deploymodel.dsl.fDeploy.FDUnion;
 import org.franca.deploymodel.dsl.fDeploy.FDUnionOverwrites;
@@ -224,6 +225,8 @@ public class PropertyMappings {
 			return FDPropertyHost.ENUMERATIONS;
 		} else if (elem instanceof FDEnumValue) {
 			return FDPropertyHost.ENUMERATORS;
+		} else if (elem instanceof FDTypedef) {
+			return FDPropertyHost.TYPEDEFS;
 		}
 
 		return null;

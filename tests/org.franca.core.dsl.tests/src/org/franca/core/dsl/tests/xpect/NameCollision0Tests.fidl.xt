@@ -1,0 +1,28 @@
+// XPECT_SETUP org.franca.core.dsl.tests.xpect.FrancaIDLXpectTests END_SETUP
+
+// XPECT errors --> "duplicate anonymous type collection in package 'a.b.c'" at "a.b.c"
+package a.b.c
+
+// two anonymous type collections in same package
+typeCollection { }
+typeCollection { }
+typeCollection { }
+
+// two type collections with name TC1
+// XPECT errors --> "Name conflict for model element 'TC1'" at "TC1"
+typeCollection TC1 { }
+// XPECT errors --> "Name conflict for model element 'TC1'" at "TC1"
+typeCollection TC1 { }
+
+// two interfaces with name IF1
+// XPECT errors --> "Name conflict for model element 'IF1'" at "IF1"
+interface IF1 { }
+// XPECT errors --> "Name conflict for model element 'IF1'" at "IF1"
+interface IF1 { }
+
+// a type collection and an interface with same name
+// XPECT errors --> "Name conflict for model element 'Clash'" at "Clash"
+typeCollection Clash { }
+// XPECT errors --> "Name conflict for model element 'Clash'" at "Clash"
+interface Clash { }
+

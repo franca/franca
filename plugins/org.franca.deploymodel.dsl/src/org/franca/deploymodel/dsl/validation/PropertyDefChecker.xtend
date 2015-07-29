@@ -9,14 +9,15 @@ import org.franca.core.franca.FEnumerationType
 import org.franca.core.franca.FField
 import org.franca.core.franca.FMethod
 import org.franca.core.franca.FStructType
+import org.franca.core.franca.FTypeDef
 import org.franca.core.franca.FTypeRef
 import org.franca.core.franca.FUnionType
 import org.franca.deploymodel.dsl.FDSpecificationExtender
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyHost
+
 import static org.franca.deploymodel.dsl.fDeploy.FDPropertyHost.*
 
 import static extension org.franca.core.framework.FrancaHelpers.*
-import org.franca.core.franca.FTypedElement
 
 /**
  * Compute if a given Franca IDL element has to be defined in
@@ -79,6 +80,10 @@ class PropertyDefChecker {
 		if (enumerators.empty) return false
 		if (specHelper.isMandatory(ENUMERATORS)) return true
 		false
+	}
+	
+	def mustBeDefined (FTypeDef it) {
+		specHelper.isMandatory(TYPEDEFS)
 	}
 	
 

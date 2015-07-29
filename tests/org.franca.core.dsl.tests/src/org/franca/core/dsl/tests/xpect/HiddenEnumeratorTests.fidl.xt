@@ -1,0 +1,37 @@
+// XPECT_SETUP org.franca.core.dsl.tests.xpect.FrancaIDLXpectTests END_SETUP
+
+package a.b.c
+
+// the tests in this model check for "hidden" enumerators, which occur due
+// to ambiguities on the lexer level.
+
+typeCollection {
+	
+	enumeration Legal1 {
+		A B C
+	}
+
+	enumeration Legal2 {
+		A=1 B=1 C=1
+	}
+
+	enumeration Legal3 {A B C}
+
+	enumeration Legal4 {A=1 B=1 C=1}
+	
+	enumeration Illegal5 {
+		// XPECT errors --> "invalid enumerator definition 'Hidden_Enum1', use whitespace or comma to separate enumerators" at "Hidden_Enum1"
+		A=0Hidden_Enum1
+		
+		// XPECT errors --> "invalid enumerator definition 'Hidden_Enum2', use whitespace or comma to separate enumerators" at "Hidden_Enum2"
+		B = 12345Hidden_Enum2
+		
+		// XPECT errors --> "invalid enumerator definition 'Four', use whitespace or comma to separate enumerators" at "Four"
+		C = 17+4Four
+	
+		// XPECT errors --> "invalid enumerator definition 'b010101', use whitespace or comma to separate enumerators" at "b010101"
+		// Note: This will be legal as soon as Franca IDL supports binary values
+		D = 0b010101
+	}
+	
+}

@@ -43,5 +43,9 @@ specification org.example.spec.SpecCompoundHosts {
 	for union_fields {
 		UFieldProp : Integer;
 	}
+	
+	for typedefs {
+		TypedefProp : Integer;
+	}
 }
 
