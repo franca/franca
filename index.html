@@ -1,0 +1,139 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Franca by franca</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1 class="header">Franca</h1>
+        <p class="header">A framework for defining and transforming interfaces</p>
+
+        <ul>
+          <li class="download"><a class="buttons" href="https://github.com/franca/franca/zipball/master">Download ZIP</a></li>
+          <li class="download"><a class="buttons" href="https://github.com/franca/franca/tarball/master">Download TAR</a></li>
+          <li><a class="buttons github" href="https://github.com/franca/franca">View On GitHub</a></li>
+        </ul>
+
+        <p class="header">This project is maintained by <a class="header name" href="https://github.com/franca">franca</a></p>
+
+
+      </header>
+      <section>
+        <h1>
+<a id="welcome-to-franca" class="anchor" href="#welcome-to-franca" aria-hidden="true"><span class="octicon octicon-link"></span></a>Welcome to Franca!</h1>
+
+<p>Franca is a powerful framework for definition and transformation of software interfaces.
+It is used for integrating software components from different suppliers, which are built based on various runtime frameworks, platforms and IPC mechanisms. The core of it is <em>Franca IDL</em> (Interface Definition Language), which is a textual language for specification of APIs.</p>
+
+<h2>
+<a id="migration-to-github" class="anchor" href="#migration-to-github" aria-hidden="true"><span class="octicon octicon-link"></span></a>Migration to github</h2>
+
+<p>As you are reading this, the migration of the Franca homepage and git repository to github is done. 
+The git repository has moved, and all issues (closed and open ones) have been migrated.
+However, some work is still to do, e.g., providing proper issue reports, migrating the wiki pages from EclipseLabs
+and providing a github-docs page including the Franca update site for use by the Eclipse installation process.</p>
+
+<h2>
+<a id="franca-goes-eclipse" class="anchor" href="#franca-goes-eclipse" aria-hidden="true"><span class="octicon octicon-link"></span></a>Franca goes Eclipse</h2>
+
+<p>Franca will be established as an official Eclipse project. The proposal is available online: <a href="http://eclipse.org/proposals/modeling.franca/">http://eclipse.org/proposals/modeling.franca/</a></p>
+
+<h2>
+<a id="franca-features" class="anchor" href="#franca-features" aria-hidden="true"><span class="octicon octicon-link"></span></a>Franca features</h2>
+
+<p>As Franca is based on Eclipse, there are some powerful tools which can be used to work with Franca. Most important, Franca offers a user-friendly editor for reviewing and editing Franca IDL files.</p>
+
+<p>The following diagram shows the major benefits of using Franca.</p>
+
+<p><img src="https://raw.githubusercontent.com/franca/franca/master/docs/web/images/FrancaBenefits.png" alt="Franca benefits"></p>
+
+<h3>
+<a id="transformations-and-generation" class="anchor" href="#transformations-and-generation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Transformations and generation</h3>
+
+<p>Franca offers a framework for building transformations from/to other IDLs (e.g., D-Bus, OMG-IDL or others)
+and code generation. We recommend using <a href="http://xtend-lang.org">Xtend</a> for building the generators,
+but it is generally possible to use other tools and languages which are based on EMF models or Java APIs for the task.</p>
+
+<p>Support for the D-Bus Introspection format is available as installable feature of Franca.</p>
+
+<h3>
+<a id="specification-of-dynamic-behavior" class="anchor" href="#specification-of-dynamic-behavior" aria-hidden="true"><span class="octicon octicon-link"></span></a>Specification of dynamic behavior</h3>
+
+<p>With Franca, the dynamic behavior of client/server interactions can be specified using <em>protocol state machines</em>.
+Tools are available to use these specifications for validating implementations,
+e.g., checking runtime traces against the expected order of events on the interface.
+A graphical viewer for protocol state machines is part of Franca.</p>
+
+<h3>
+<a id="flexible-deployment-models" class="anchor" href="#flexible-deployment-models" aria-hidden="true"><span class="octicon octicon-link"></span></a>Flexible deployment models</h3>
+
+<p>In specific application domains, it may be necessary to extend interface specifications by platform-
+or target-specific information. This is supported by Franca's deployment models, which allow these kind
+of extensions in a type-safe way.
+Thus, role-based development workflows can be established: Platform architects own the deployment
+specifications, whereas project architects and developers are responsible for providing the
+platform-specific data for their actual interfaces.</p>
+
+<h3>
+<a id="rapid-interface-prototyping" class="anchor" href="#rapid-interface-prototyping" aria-hidden="true"><span class="octicon octicon-link"></span></a>Rapid interface prototyping</h3>
+
+<p>Generate a test environment for your interface instantly and see your interface in action!
+This is accomplished by generating <a href="http://eclipse.org/etrice">eTrice</a> models from Franca interfaces
+and generate executable Java code from these models. The test environment will consist of a client
+component (acting as dynamic test case executor) and a server component (acting as an intelligent mock object).</p>
+
+<h2>
+<a id="franca-and-commonapi" class="anchor" href="#franca-and-commonapi" aria-hidden="true"><span class="octicon octicon-link"></span></a>Franca and CommonAPI</h2>
+
+<p>If you want to generate C++ code directly from Franca interface specifications,
+<a href="http://projects.genivi.org/commonapi">CommonAPI C++</a> might be the proper solution.
+It is designed to decouple generated API from the actual IPC stack and cooperates seamlessly with Franca.
+CommonAPI was created in the context of the <a href="http://genivi.org">GENIVI</a> initiative.</p>
+
+<h2>
+<a id="forum" class="anchor" href="#forum" aria-hidden="true"><span class="octicon octicon-link"></span></a>Forum</h2>
+
+<p>For feedback and discussions around Franca there is a
+Franca forum at Google Groups, see <a href="http://groups.google.com/group/franca-framework">http://groups.google.com/group/franca-framework</a>.</p>
+
+<h2>
+<a id="misc" class="anchor" href="#misc" aria-hidden="true"><span class="octicon octicon-link"></span></a>Misc</h2>
+
+<p>There is an <a href="http://ftp.itemis.de/presentations/franca_std/">online Franca presentation</a> available.
+This can also be used nicely from smartphones and tablets.</p>
+
+<p>The Franca framework has been built using the open source projects <a href="http://www.eclipse.org/emf">EMF</a>,
+<a href="http://www.xtext.org">Xtext</a> and <a href="http://xtend-lang.org">Xtend</a>.
+Thanks to all committers of those projects for their great and helpful contributions!</p>
+
+<p><img src="http://web-static-cloudfront.s3.amazonaws.com/images/badges/BuiltOnDEV.png" alt="BuiltOnDEV"></p>
+      </section>
+      <footer>
+        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+		          <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-62656875-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
