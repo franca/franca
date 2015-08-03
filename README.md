@@ -5,14 +5,15 @@ It is used for integrating software components from different suppliers, which a
 
 ## Migration to github
 
-As you are reading this, the migration of the Franca homepage and git repository to github is done. 
-The git repository has moved, and all issues (closed and open ones) have been migrated.
-However, some work is still to do, e.g., providing proper issue reports, migrating the wiki pages from EclipseLabs
-and providing a github-docs page including the Franca update site for use by the Eclipse installation process.
+As you are reading this, the migration of the Franca homepage and git repository to github is done.
+The old page at EclipseLabs is still available (at least parts of it), but it will soon be switched
+to read-only. Please clone or fork from the github repository, and also use the issue tracker available
+on Franca's github site.
 
 ## Franca homepage
 
-More information about Franca can be found here: http://franca.github.io/franca.
+More information about Franca can be found here: http://franca.github.io/franca
+and in the wiki [on this page](https://github.com/franca/franca/wiki).
 
 ## Franca features
 
@@ -63,7 +64,7 @@ Franca forum at Google Groups, see http://groups.google.com/group/franca-framewo
 
 ## Misc
 
-There is an [online Franca presentation](http://ftp.itemis.de/presentations/franca_std/) available.
+There is an [online Franca presentation](https://projects.itemis.de/html/web-presentations/kbi/std/franca_std/) available.
 This can also be used nicely from smartphones and tablets.
 
 The Franca framework has been built using the open source projects [EMF](http://www.eclipse.org/emf),
