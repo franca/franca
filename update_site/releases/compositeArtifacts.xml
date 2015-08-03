@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<?compositeArtifactRepository version='1.0.0'?>
+<repository name='&quot;Franca update site (releases)&quot;'
+    type='org.eclipse.equinox.internal.p2.artifact.repository.CompositeArtifactRepository' version='1.0.0'>
+  <properties size='1'>
+    <property name='p2.timestamp' value='1247702444'/>
+  </properties>
+  <children size='11'>
+      <child location='0.8.5'/>
+      <child location='0.8.6'/>
+      <child location='0.8.7'/>
+      <child location='0.8.8'/>
+      <child location='0.8.9'/>
+      <child location='0.8.10'/>
+      <child location='0.8.11'/>
+      <child location='0.9.0'/>
+      <child location='0.9.1'/>
+      <child location='0.9.2'/>
+      <child location='0.10.0'/>
+  </children>
+</repository>
