@@ -21,7 +21,7 @@ As Franca is based on Eclipse, there are some powerful tools which can be used t
 
 The following diagram shows the major benefits of using Franca.
 
-![Franca benefits](https://raw.githubusercontent.com/franca/franca/master/docs/web/images/FrancaBenefits.png)
+![Franca benefits](https://projects.itemis.de/html/web-presentations/kbi/std/franca_std/resources/franca_feature_overview.png)
 
 ### Transformations and generation
 Franca offers a framework for building transformations from/to other IDLs (e.g., D-Bus, OMG-IDL or others)
