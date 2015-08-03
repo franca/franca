@@ -12,7 +12,7 @@ and providing a github-docs page including the Franca update site for use by the
 
 ## Franca homepage
 
-More information about Franca can be found here: http://franca.github.io/franca.## Franca goes Eclipse
+More information about Franca can be found here: http://franca.github.io/franca.
 
 ## Franca features
 
