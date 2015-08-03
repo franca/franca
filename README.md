@@ -10,9 +10,9 @@ The git repository has moved, and all issues (closed and open ones) have been mi
 However, some work is still to do, e.g., providing proper issue reports, migrating the wiki pages from EclipseLabs
 and providing a github-docs page including the Franca update site for use by the Eclipse installation process.
 
-## Franca goes Eclipse
+## Franca homepage
 
-Franca will be established as an official Eclipse project. The proposal is available online: http://eclipse.org/proposals/modeling.franca/
+More information about Franca can be found here: http://franca.github.io/franca.## Franca goes Eclipse
 
 ## Franca features
 
