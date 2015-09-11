@@ -10,7 +10,10 @@ The old page at EclipseLabs is still available (at least parts of it), but it wi
 to read-only. Please clone or fork from the github repository, and also use the issue tracker available
 on Franca's github site.
 
-## Franca homepage
+## Franca documentation and homepage
+
+The latest Franca User Guide (incl. a reference chapter for the IDL) is available
+[here](https://drive.google.com/folderview?id=0B7JseVbR6jvhUnhLOUM5ZGxOOG8).
 
 More information about Franca can be found here: http://franca.github.io/franca
 and in the wiki [on this page](https://github.com/franca/franca/wiki).
