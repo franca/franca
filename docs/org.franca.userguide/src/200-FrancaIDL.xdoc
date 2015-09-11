@@ -1344,15 +1344,8 @@ section:FIDL_MultipleFiles[Fully qualified names, packages, and multiple files]
 
 section2:FIDL_MultipleFiles_FQN[Fully qualified names]
 
-All top-level elements of Franca (i.e., type collections and interfaces)
-are accessed by their e[fully qualified name].
-A fully qualified name (or short: e[FQN]) is a sequence of identifiers (at least one)
-separated by dots. The following example shows an interface identified by a FQN: 
-code[Franca][
-interface examples.franca.ExampleInterface {
-	// ...
-}
-]
+A e[fully qualified name] (or short: e[FQN]) is a sequence of identifiers (at least one)
+separated by dots.
 
 
 section2:FIDL_MultipleFiles_Package[Package declarations]
@@ -1364,9 +1357,9 @@ by concatening the package's FQN and the element's FQN. Example:
 
 code[Franca][
 package org.franca.examples
-interface simple.ExampleInterface {
+interface ExampleInterface {
 	// this interface can be globally accessed by the FQN
-	//   org.franca.examples.simple.ExampleInterface
+	//   org.franca.examples.ExampleInterface
 }
 ]
 
