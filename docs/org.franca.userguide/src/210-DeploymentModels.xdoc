@@ -225,6 +225,18 @@ table:DeploymentInterfaceHostsPart2[
 		td[all entities of code[FDeploy][integers] and code[FDeploy][floats] combined]
 		td[alignment]
 	]
+	tr[
+		td[code[FDeploy][booleans]]
+		td[Properties related to booleans]
+		td[all entities with predefined type code[Franca][Boolean]]
+		td[various flags (optional...)]
+	]
+	tr[
+		td[code[FDeploy][byte_buffers]]
+		td[Properties related to byte buffer variables]
+		td[all entities with predefined type code[Franca][ByteBuffer]]
+		td[maximal length of a buffer]
+	]
 ]
 
 table:DeploymentInterfaceHostsPart3[
