@@ -142,6 +142,72 @@ interface Speller {
 
 
 	// ***************************************************************
+	// data types for speller interface
+		
+	<** @description : set of location input state criteria **>
+	enumeration ECriterion {
+	   COUNTRY
+	   TOWN
+	   STREET
+	   HOUSENUMBER
+	   ZIPCODE
+	}
+	
+	struct TLocationDescription {
+		UInt8 dummy
+	}
+	
+	<** @description : location input state **>
+	struct TInputState {
+		TLocationDescription locationDescription
+		TCriterionList availableSelectionCriteria
+		Boolean isDestinationValid
+	}
+
+
+	<**
+		@description : set of location input state criteria
+	**>
+	array TCriterionList of ECriterion 
+	
+	struct TValueList {
+		UInt8 dummy
+	}
+	
+	<** @description : speller input state structure **>
+	struct TSpellerState {
+		ECriterion criterion
+		String inputString
+		Boolean isFullMatch
+		Boolean isUndoAvailable
+		String validCharacters
+		TValueList valueList
+		UInt32 valueListCount
+	}
+	
+	
+	<**
+	@param : X_NO_FULLMATCH will be returned when the input is no full match
+	@param : X_NO_INPUT will be returned when the property 'input' is empty
+	@param : X_NO_HISTORY will be returned when there is no history available to remove a 
+	        character. Hhappens when the operation setInput() is used to 
+	        initialize the input to an arbitrary value."
+	**>
+	enumeration XErrorSetSpelling {
+	   X_SPELLING_NOT_ACTIVE
+	   X_NO_FULLMATCH
+	   X_NO_INPUT
+	   X_NO_HISTORY
+	}
+	
+	<** @description : reflects state of operation on location input controller **>
+	enumeration EStateOfOperation {
+	   NOT_OPERABLE
+	   FULLY_OPERABLE
+	}
+	
+	
+	// ***************************************************************
 	// dynamic behavior
 
 	contract {
@@ -222,70 +288,4 @@ interface Speller {
 		}	
 	}
 
-
-	// ***************************************************************
-	// data types for speller interface
-		
-	<** @description : set of location input state criteria **>
-	enumeration ECriterion {
-	   COUNTRY
-	   TOWN
-	   STREET
-	   HOUSENUMBER
-	   ZIPCODE
-	}
-	
-	struct TLocationDescription {
-		UInt8 dummy
-	}
-	
-	<** @description : location input state **>
-	struct TInputState {
-		TLocationDescription locationDescription
-		TCriterionList availableSelectionCriteria
-		Boolean isDestinationValid
-	}
-
-
-	<**
-		@description : set of location input state criteria
-	**>
-	array TCriterionList of ECriterion 
-	
-	struct TValueList {
-		UInt8 dummy
-	}
-	
-	<** @description : speller input state structure **>
-	struct TSpellerState {
-		ECriterion criterion
-		String inputString
-		Boolean isFullMatch
-		Boolean isUndoAvailable
-		String validCharacters
-		TValueList valueList
-		UInt32 valueListCount
-	}
-	
-	
-	<**
-	@param : X_NO_FULLMATCH will be returned when the input is no full match
-	@param : X_NO_INPUT will be returned when the property 'input' is empty
-	@param : X_NO_HISTORY will be returned when there is no history available to remove a 
-	        character. Hhappens when the operation setInput() is used to 
-	        initialize the input to an arbitrary value."
-	**>
-	enumeration XErrorSetSpelling {
-	   X_SPELLING_NOT_ACTIVE
-	   X_NO_FULLMATCH
-	   X_NO_INPUT
-	   X_NO_HISTORY
-	}
-	
-	<** @description : reflects state of operation on location input controller **>
-	enumeration EStateOfOperation {
-	   NOT_OPERABLE
-	   FULLY_OPERABLE
-	}
-	
 }
