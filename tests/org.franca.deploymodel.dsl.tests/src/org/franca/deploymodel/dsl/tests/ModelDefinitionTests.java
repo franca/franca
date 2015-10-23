@@ -93,5 +93,12 @@ public class ModelDefinitionTests extends XtextTest {
     			"fidl/40-InterfaceWithOverloading.fidl");
     }
 
+    @Test
+    public void test_90_DefKeywordClash() {
+    	testFile("testcases/90-DefKeywordClash.fdepl",
+    			"testcases/08-SpecDeplKeyword.fdepl",
+    			"fidl/80-InterfaceWithDeplKeywords.fidl");
+    }
+
 }
 

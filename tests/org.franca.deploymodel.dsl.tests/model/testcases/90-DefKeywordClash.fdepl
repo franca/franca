@@ -1,0 +1,38 @@
+
+import "08-SpecDeplKeyword.fdepl"
+import "../fidl/80-InterfaceWithDeplKeywords.fidl"
+
+define TestSpec for typeCollection fidl.TypeCollectionWithDeplKeywords {
+	struct SomeStruct {
+		^interfaces {
+			TestProperty1 = ""
+			TestProperty2 = ^for
+		}
+		abc {
+			TestProperty1 = ""
+			TestProperty2 = ^specification
+		}
+	}
+}
+
+define TestSpec for typeCollection fidl.^numbers { }
+
+define TestSpec for interface fidl.InterfaceWithDeplKeywords {
+	method callme {
+		in {
+			^interfaces {
+				TestProperty5 = ""
+			}
+			^attributes {
+				TestProperty5 = ""
+			}
+			^methods {
+				TestProperty5 = ""
+			}
+		}
+	}
+}
+
+define TestSpec for interface fidl.^providers {
+	method ^arguments { }
+}

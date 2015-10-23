@@ -1,0 +1,14 @@
+
+// Deployment specification for testing the clash of fidl identifiers
+// with deployment DSL keywords (see 80-InterfaceWithDeplKeywords.fidl).
+ 
+specification TestSpec {
+	for struct_fields {
+		TestProperty1: String;
+		TestProperty2: { ^specification, ^arguments, ^for };
+	}
+
+	for arguments {
+		TestProperty5: String;
+	}
+}
