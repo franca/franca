@@ -5,7 +5,7 @@
 specification TestSpec {
 	for struct_fields {
 		TestProperty1: String;
-		TestProperty2: { ^specification, ^arguments, ^for };
+		TestProperty2: { ^specification, ^arguments };
 	}
 
 	for arguments {

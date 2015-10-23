@@ -6,7 +6,7 @@ define TestSpec for typeCollection fidl.TypeCollectionWithDeplKeywords {
 	struct SomeStruct {
 		^interfaces {
 			TestProperty1 = ""
-			TestProperty2 = ^for
+			TestProperty2 = ^arguments
 		}
 		abc {
 			TestProperty1 = ""
