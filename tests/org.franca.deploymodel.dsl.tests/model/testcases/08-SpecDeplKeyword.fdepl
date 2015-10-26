@@ -1,8 +1,9 @@
 
 // Deployment specification for testing the clash of fidl identifiers
 // with deployment DSL keywords (see 80-InterfaceWithDeplKeywords.fidl).
- 
-specification TestSpec {
+
+// even the FQN of the specification contains an escaped keyword 
+specification example.^floats.TestSpec {
 	for struct_fields {
 		TestProperty1: String;
 		TestProperty2: { ^specification, ^arguments };

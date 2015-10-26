@@ -1,6 +1,6 @@
 package fidl
 
-// a TypeCollection and an Interface using keywords from the
+// some type collections and interfaces using keywords from the
 // deployment model DSL as identifiers
  
 typeCollection TypeCollectionWithDeplKeywords {

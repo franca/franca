@@ -10,7 +10,6 @@ package org.franca.deploymodel.dsl;
 import org.eclipse.xtext.conversion.IValueConverterService;
 import org.eclipse.xtext.conversion.impl.AbstractIDValueConverter;
 import org.franca.deploymodel.dsl.generator.internal.ImportManager;
-import org.franca.deploymodel.dsl.valueconverter.FDeployIDValueConverter;
 import org.franca.deploymodel.dsl.valueconverter.FDeployValueConverters;
 
 import com.google.inject.Binder;
@@ -30,9 +29,5 @@ public class FDeployRuntimeModule extends AbstractFDeployRuntimeModule {
 	@Override
 	public Class<? extends IValueConverterService> bindIValueConverterService() {
 		return FDeployValueConverters.class;
-	}
-	
-	public Class<? extends AbstractIDValueConverter> bindAbstractIDValueConverter() {
-		return FDeployIDValueConverter.class;
 	}
 }

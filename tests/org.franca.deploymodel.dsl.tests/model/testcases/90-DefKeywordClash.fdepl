@@ -2,7 +2,7 @@
 import "08-SpecDeplKeyword.fdepl"
 import "../fidl/80-InterfaceWithDeplKeywords.fidl"
 
-define TestSpec for typeCollection fidl.TypeCollectionWithDeplKeywords {
+define example.^floats.TestSpec for typeCollection fidl.TypeCollectionWithDeplKeywords {
 	struct SomeStruct {
 		^interfaces {
 			TestProperty1 = ""
@@ -15,9 +15,9 @@ define TestSpec for typeCollection fidl.TypeCollectionWithDeplKeywords {
 	}
 }
 
-define TestSpec for typeCollection fidl.^numbers { }
+define example.^floats.TestSpec for typeCollection fidl.^numbers { }
 
-define TestSpec for interface fidl.InterfaceWithDeplKeywords {
+define example.^floats.TestSpec for interface fidl.InterfaceWithDeplKeywords {
 	method callme {
 		in {
 			^interfaces {
@@ -33,6 +33,6 @@ define TestSpec for interface fidl.InterfaceWithDeplKeywords {
 	}
 }
 
-define TestSpec for interface fidl.^providers {
+define example.^floats.TestSpec for interface fidl.^providers {
 	method ^arguments { }
 }
