@@ -96,9 +96,11 @@ FMethod returns FMethod:
 	'{'
 		('in' '{' (inArgs+=FArgument)* '}' )?
 		('out' '{' (outArgs+=FArgument)* '}' )?
-		('error'
-			( errorEnum=[FEnumerationType|FQN] |
-			  errors=FEnumerationTypeBody )
+		(
+			(errorComment=FAnnotationBlock)?
+			'error'
+				( errorEnum=[FEnumerationType|FQN] |
+			  	errors=FEnumerationTypeBody )
 		)?
     '}';
 
