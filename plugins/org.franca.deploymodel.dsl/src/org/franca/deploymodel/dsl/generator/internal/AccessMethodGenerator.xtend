@@ -14,9 +14,9 @@ abstract class AccessMethodGenerator {
 
 	@Inject extension ImportManager
 	
-	def generateAccessMethods (FDSpecification spec, boolean forInterfaces) '''
+	def generateAccessMethods (FDSpecification spec, boolean forInterfaces, ICodeContext context) '''
 		«FOR d : spec.declarations»
-			«d.genProperties(forInterfaces)»
+			«d.genProperties(forInterfaces, context)»
 		«ENDFOR»
 	'''
 
@@ -36,31 +36,31 @@ abstract class AccessMethodGenerator {
 	)
 
 
-	def private genProperties(FDDeclaration decl, boolean forInterfaces) '''
+	def private genProperties(FDDeclaration decl, boolean forInterfaces, ICodeContext context) '''
 		«IF decl.properties.size > 0 && decl.host.getFrancaType(forInterfaces)!=null»
 			// host '«decl.host.getName»'
 			«FOR p : decl.properties»
-			«p.genProperty(decl.host, forInterfaces)»
+			«p.genProperty(decl.host, forInterfaces, context)»
 			«ENDFOR»
 			
 		«ENDIF»
 	'''
 	
-	def private genProperty(FDPropertyDecl pd, FDPropertyHost host, boolean forInterfaces) {
+	def private genProperty(FDPropertyDecl pd, FDPropertyHost host, boolean forInterfaces, ICodeContext context) {
 		if (host==FDPropertyHost::ARRAYS) {
 			// special handling for ARRAYS,
 			// might be explicit array types or inline arrays
 			'''
-				«genProperty(pd, host, "FArrayType", false)»
-				«genProperty(pd, host, "FField", false)»
+				«genProperty(pd, host, "FArrayType", false, context)»
+				«genProperty(pd, host, "FField", false, context)»
 				«IF forInterfaces»
-				«genProperty(pd, host, "FAttribute", true)»
-				«genProperty(pd, host, "FArgument", true)»
+				«genProperty(pd, host, "FAttribute", true, context)»
+				«genProperty(pd, host, "FArgument", true, context)»
 				«ENDIF»
 			'''
 		} else {
 			val ftype = host.getFrancaType(forInterfaces)
-			genProperty(pd, host, ftype, false)
+			genProperty(pd, host, ftype, false, context)
 		}
 	}
 	
@@ -69,11 +69,13 @@ abstract class AccessMethodGenerator {
 		FDPropertyDecl it,
 		FDPropertyHost host,
 		String francaType,
-		boolean forceInterfaceOnly
+		boolean forceInterfaceOnly,
+		ICodeContext context
 	) {
 		addNeededFrancaType(francaType)
 		val isOnlyForInterface = forceInterfaceOnly || host.isInterfaceOnly 
 		if (francaType!=null) {
+			context.requireTargetMember
 			if (isEnum) {
 				val enumType = name.toFirstUpper
 				val retType =
