@@ -1,0 +1,13 @@
+// deployment definition
+
+import "10-SpecPropertyIntegerTypes.fdepl"
+import "../fidl/05-CoverageInterface.fidl"
+
+define a.b.c.MySpec10Int for interface fidl.CoverageInterface {
+	method aMethod {
+		IntegerPropMandatory = 123
+		IntegerPropOptional = 0
+		IntegerPropPosDefault = -123
+		IntegerPropNegDefault = -123
+	}
+}
