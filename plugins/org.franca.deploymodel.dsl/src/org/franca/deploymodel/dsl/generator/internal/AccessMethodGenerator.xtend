@@ -59,7 +59,7 @@ abstract class AccessMethodGenerator {
 				«ENDIF»
 			'''
 		} else {
-			val ftype = host.getFrancaType(forInterfaces)
+			val ftype = host.getFrancaTypeName(forInterfaces)
 			genProperty(pd, host, ftype, false, context)
 		}
 	}
