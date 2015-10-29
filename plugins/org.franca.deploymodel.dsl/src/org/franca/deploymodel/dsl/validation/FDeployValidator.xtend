@@ -7,10 +7,13 @@
  *******************************************************************************/
 package org.franca.deploymodel.dsl.validation
 
+import com.google.common.collect.Sets
 import java.util.Collection
 import java.util.List
+import java.util.Map
 import java.util.Queue
 import java.util.Set
+import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.EcoreUtil2
 import org.franca.core.franca.FArrayType
 import org.franca.core.franca.FEnumerationType
@@ -18,14 +21,19 @@ import org.franca.core.franca.FStructType
 import org.franca.core.franca.FType
 import org.franca.core.franca.FTypeRef
 import org.franca.core.franca.FUnionType
+import org.franca.deploymodel.dsl.fDeploy.FDDeclaration
+import org.franca.deploymodel.dsl.fDeploy.FDEnumType
 import org.franca.deploymodel.dsl.fDeploy.FDInterface
+import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl
 import org.franca.deploymodel.dsl.fDeploy.FDRootElement
-import org.franca.deploymodel.dsl.fDeploy.FDTypes
-import static org.franca.deploymodel.dsl.fDeploy.FDeployPackage$Literals.*
-
-import static extension org.franca.core.utils.CycleChecker.*
-import static extension org.franca.core.FrancaModelExtensions.*
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification
+import org.franca.deploymodel.dsl.fDeploy.FDTypes
+import org.franca.deploymodel.dsl.generator.internal.HostLogic
+
+import static org.franca.deploymodel.dsl.fDeploy.FDeployPackage.Literals.*
+
+import static extension org.franca.core.FrancaModelExtensions.*
+import static extension org.franca.core.utils.CycleChecker.*
 
 class FDeployValidator {
 	
@@ -83,7 +91,7 @@ class FDeployValidator {
 	 * @returns FDSpecification which has an extends-cycle, null if the
 	 *          extends-relation is cycle-free.
 	 * */
-	def getCyclicBaseSpec (FDSpecification spec) {
+	def getCyclicBaseSpec(FDSpecification spec) {
 		var Set<FDSpecification> visited = newHashSet
 		var s = spec
 		var FDSpecification last = null
@@ -98,6 +106,122 @@ class FDeployValidator {
 		return null
 	}
 
+	/**
+	 * Check if a FDSpecification contains properties which lead 
+	 * to clashes in the generated property accessor Java code.
+	 */
+	def checkClashingProperties(FDSpecification spec) {
+		// compute groups of properties with same name
+		val allPropertyDecls = spec.declarations.map[properties].flatten
+		val groups = allPropertyDecls.groupBy[name]
+		
+		// check each group in turn
+		for(propName : groups.keySet) {
+			val props = groups.get(propName)
+			
+			// find duplicates in the group if they have the same host
+			val perHost = props.groupBy[getHost]
+			val directDuplicates = perHost.values.filter[size>1].flatten.toSet 
+			for(pd : directDuplicates) {
+				reporter.reportError(
+					"Duplicate property name '" + pd.name + "'",
+					pd, FD_PROPERTY_DECL__NAME)
+			}
+
+			// continue with all remaining property declarations
+			// (if there is a clash already for the same host, we skip all other checks)
+			val localUnique = Sets.difference(props.toSet, directDuplicates)
+
+			// check properties according to clashes due to their argument type
+			// of the resulting property accessor methods
+			localUnique.checkGroupArgumentType
+
+			// enumeration-typed properties must not have the same name
+			val enumProps = localUnique.filter[isEnumType]
+			if (enumProps.size > 1) {
+				for(ep : enumProps) {
+					reporter.reportError(
+						"Deployment property '" + ep.name + "' with an enumeration type has to be unique",
+						ep, FD_PROPERTY_DECL__NAME)
+				}
+			}
+		} 
+	}
+	
+	/**
+	 * Check a group of properties according to the argument type of the
+	 * resulting property accessor get() method.<p/>
+	 * 
+	 * All properties in the input group should have the same name.
+	 * If the name is different, the actual getter argument type is
+	 * not relevant.
+	 * 
+	 * @param items the to-be-checked group of properties with the same name
+	 */
+	def private checkGroupArgumentType(Iterable<FDPropertyDecl> items) {
+		// group items according to the type of the accessor argument
+		val argtypeGroups = items.groupBy[HostLogic.getFrancaType(host, true)]
+		
+		// report errors for properties with same of conflicting argument type 
+		val Map<Class<? extends EObject>, Iterable<Class<? extends EObject>>> colliding = newHashMap
+		val argtypes = argtypeGroups.keySet
+		for(at : argtypes) {
+			val List<Class<? extends EObject>> colliders = newArrayList
+			 
+			// check for conflicts with same argument type
+			if (argtypeGroups.get(at).size>1) {
+				colliders.add(at)
+			}
+			
+			// check for conflicts with other argument types
+			colliders += argtypes.filter[it!=at && willCollide(it, at)]
+
+			if (! colliders.empty)
+				colliding.put(at, colliders)
+		}
+		
+		for(h : colliding.keySet) {
+			val collidingProps = colliding.get(h).map[argtypeGroups.get(it)].flatten.toSet
+			for(p : argtypeGroups.get(h)) {
+				val coll = collidingProps.filter[it!=p].map[host].map[getName].toSet.sort.join(', ')
+				reporter.reportError(
+					"Name conflict for property '" + p.name + "' due to conflicting property hosts" +
+					" (conflicting: " + coll + ")",
+					p, FD_PROPERTY_DECL__NAME)
+			}
+		}
+	}
+	
+	/**
+	 * Check if two types will collide if used as single arguments of 
+	 * methods which use Java's static overloading.<p/>
+	 * 
+	 * Example with colliding types:
+	 * <code><pre>
+	 * public void get(FArgument a)
+	 * public void get(EObject b)
+	 * </pre></code><p/>
+	 * 
+	 * Example with independent types:
+	 * <code><pre>
+	 * public void get(FArgument a)
+	 * public void get(FMethod b)
+	 * </pre></code><p/>
+	 */
+	def private willCollide(Class<? extends EObject> a, Class<? extends EObject> b) {
+		a.isAssignableFrom(b) || b.isAssignableFrom(a)
+	}
+	
+	def private isEnumType(FDPropertyDecl decl) {
+		val t = decl.type.complex
+		t!=null && (t instanceof FDEnumType)
+	}
+	
+	def private getHost(FDPropertyDecl decl) {
+		val declaration = decl.eContainer as FDDeclaration
+		declaration.host
+	}
+	
 
 	// *****************************************************************************
 

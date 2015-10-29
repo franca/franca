@@ -1,0 +1,210 @@
+// XPECT_SETUP org.franca.deploymodel.dsl.tests.xpect.FrancaDeploymodelXpectTests END_SETUP
+
+// deployment specification with duplicate property names for same host
+specification SpecClashingPropertyNames1 {
+
+	for structs {
+		// XPECT errors --> "Duplicate property name 'Prop01'" at "Prop01"
+		Prop01 : String;
+		// XPECT errors --> "Duplicate property name 'Prop01'" at "Prop01"
+		Prop01 : Integer;
+	}
+}
+
+
+// deployment specification with duplicate property names for a splitted host
+specification SpecClashingPropertyNames2 {
+
+	for structs {
+		// XPECT errors --> "Duplicate property name 'Prop02'" at "Prop02"
+		Prop02 : String;
+	}
+
+	for structs {
+		// XPECT errors --> "Duplicate property name 'Prop02'" at "Prop02"
+		Prop02 : Integer;
+	}
+}
+
+
+// deployment specification with clashing property names because of
+// conflicting accessor method arguments
+specification SpecClashingWithHostsSameArgumentType {
+
+	for structs {
+		// XPECT errors --> "Name conflict for property 'Prop01' due to conflicting property hosts (conflicting: arrays, booleans, floats, integers, numbers, strings)" at "Prop01"
+		Prop01 : Boolean  (default: false);
+		// XPECT errors --> "Name conflict for property 'Prop02' due to conflicting property hosts (conflicting: arrays, booleans, floats, integers, numbers, strings)" at "Prop02"
+		Prop02 : Boolean;
+		// XPECT errors --> "Name conflict for property 'Prop11' due to conflicting property hosts (conflicting: arrays, booleans, floats, integers, numbers, strings)" at "Prop11"
+		Prop11 : Integer  (default: 0);
+		// XPECT errors --> "Name conflict for property 'Prop12' due to conflicting property hosts (conflicting: arrays, booleans, floats, integers, numbers, strings)" at "Prop12"
+		Prop12 : Integer; 
+	}
+	
+	for unions {
+		// XPECT errors --> "Name conflict for property 'Prop01' due to conflicting property hosts (conflicting: arrays, booleans, floats, integers, numbers, strings)" at "Prop01"
+		Prop01 : Boolean  (default: false);
+		// XPECT errors --> "Name conflict for property 'Prop02' due to conflicting property hosts (conflicting: arrays, booleans, floats, integers, numbers, strings)" at "Prop02"
+		Prop02 : Boolean;
+		// XPECT errors --> "Name conflict for property 'Prop11' due to conflicting property hosts (conflicting: arrays, booleans, floats, integers, numbers, strings)" at "Prop11"
+		Prop11 : String   (default: "foo");
+		// XPECT errors --> "Name conflict for property 'Prop12' due to conflicting property hosts (conflicting: arrays, booleans, floats, integers, numbers, strings)" at "Prop12"
+		Prop12 : String; 
+	}
+
+	for arguments {
+		// XPECT errors --> "Name conflict for property 'Prop01' due to conflicting property hosts (conflicting: arrays, booleans, floats, integers, numbers, strings)" at "Prop01"
+		Prop01 : Boolean  (default: false);
+		// XPECT errors --> "Name conflict for property 'Prop02' due to conflicting property hosts (conflicting: arrays, booleans, floats, integers, numbers, strings)" at "Prop02"
+		Prop02 : Boolean;
+		// XPECT errors --> "Name conflict for property 'Prop11' due to conflicting property hosts (conflicting: arrays, booleans, floats, integers, numbers, strings)" at "Prop11"
+		Prop11 : String   (default: "bar");
+		// XPECT errors --> "Name conflict for property 'Prop12' due to conflicting property hosts (conflicting: arrays, booleans, floats, integers, numbers, strings)" at "Prop12"
+		Prop12 : String; 
+	}
+
+	for attributes {
+		// XPECT errors --> "Name conflict for property 'Prop01' due to conflicting property hosts (conflicting: arrays, booleans, floats, integers, numbers, strings)" at "Prop01"
+		Prop01 : Boolean  (default: false);
+		// XPECT errors --> "Name conflict for property 'Prop02' due to conflicting property hosts (conflicting: arrays, booleans, floats, integers, numbers, strings)" at "Prop02"
+		Prop02 : Boolean;
+		// XPECT errors --> "Name conflict for property 'Prop11' due to conflicting property hosts (conflicting: arrays, booleans, floats, integers, numbers, strings)" at "Prop11"
+		Prop11 : Interface  (optional);
+		// XPECT errors --> "Name conflict for property 'Prop12' due to conflicting property hosts (conflicting: arrays, booleans, floats, integers, numbers, strings)" at "Prop12"
+		Prop12 : Interface; 
+	}
+
+	for arrays {
+		// XPECT errors --> "Name conflict for property 'Prop01' due to conflicting property hosts (conflicting: arguments, attributes, booleans, floats, integers, numbers, strings, structs, unions)" at "Prop01"
+		Prop01 : Boolean  (default: false);
+		// XPECT errors --> "Name conflict for property 'Prop02' due to conflicting property hosts (conflicting: arguments, attributes, booleans, floats, integers, numbers, strings, structs, unions)" at "Prop02"
+		Prop02 : Boolean;
+		// XPECT errors --> "Name conflict for property 'Prop11' due to conflicting property hosts (conflicting: arguments, attributes, booleans, floats, integers, numbers, strings, structs, unions)" at "Prop11"
+		Prop11 : Boolean  (default: true);
+		// XPECT errors --> "Name conflict for property 'Prop12' due to conflicting property hosts (conflicting: arguments, attributes, booleans, floats, integers, numbers, strings, structs, unions)" at "Prop12"
+		Prop12 : Boolean; 
+	}
+
+	for numbers {
+		// XPECT errors --> "Name conflict for property 'Prop01' due to conflicting property hosts (conflicting: arguments, arrays, attributes, booleans, floats, integers, strings, structs, unions)" at "Prop01"
+		Prop01 : Boolean  (default: false);
+		// XPECT errors --> "Name conflict for property 'Prop02' due to conflicting property hosts (conflicting: arguments, arrays, attributes, booleans, floats, integers, strings, structs, unions)" at "Prop02"
+		Prop02 : Boolean;
+		// XPECT errors --> "Name conflict for property 'Prop11' due to conflicting property hosts (conflicting: arguments, arrays, attributes, booleans, floats, integers, strings, structs, unions)" at "Prop11"
+		Prop11 : Interface  (optional);
+		// XPECT errors --> "Name conflict for property 'Prop12' due to conflicting property hosts (conflicting: arguments, arrays, attributes, booleans, floats, integers, strings, structs, unions)" at "Prop12"
+		Prop12 : Interface; 
+	}
+
+	for integers {
+		// XPECT errors --> "Name conflict for property 'Prop01' due to conflicting property hosts (conflicting: arguments, arrays, attributes, booleans, floats, numbers, strings, structs, unions)" at "Prop01"
+		Prop01 : Boolean  (default: false);
+		// XPECT errors --> "Name conflict for property 'Prop02' due to conflicting property hosts (conflicting: arguments, arrays, attributes, booleans, floats, numbers, strings, structs, unions)" at "Prop02"
+		Prop02 : Boolean;
+		// XPECT errors --> "Name conflict for property 'Prop11' due to conflicting property hosts (conflicting: arguments, arrays, attributes, booleans, floats, numbers, strings, structs, unions)" at "Prop11"
+		Prop11 : Instance  (optional);
+		// XPECT errors --> "Name conflict for property 'Prop12' due to conflicting property hosts (conflicting: arguments, arrays, attributes, booleans, floats, numbers, strings, structs, unions)" at "Prop12"
+		Prop12 : Instance; 
+	}
+
+	for floats {
+		// XPECT errors --> "Name conflict for property 'Prop01' due to conflicting property hosts (conflicting: arguments, arrays, attributes, booleans, integers, numbers, strings, structs, unions)" at "Prop01"
+		Prop01 : Boolean  (default: false);
+		// XPECT errors --> "Name conflict for property 'Prop02' due to conflicting property hosts (conflicting: arguments, arrays, attributes, booleans, integers, numbers, strings, structs, unions)" at "Prop02"
+		Prop02 : Boolean;
+		// XPECT errors --> "Name conflict for property 'Prop11' due to conflicting property hosts (conflicting: arguments, arrays, attributes, booleans, integers, numbers, strings, structs, unions)" at "Prop11"
+		Prop11 : String  (default: "foo");
+		// XPECT errors --> "Name conflict for property 'Prop12' due to conflicting property hosts (conflicting: arguments, arrays, attributes, booleans, integers, numbers, strings, structs, unions)" at "Prop12"
+		Prop12 : String; 
+	}
+
+	for booleans {
+		// XPECT errors --> "Name conflict for property 'Prop01' due to conflicting property hosts (conflicting: arguments, arrays, attributes, floats, integers, numbers, strings, structs, unions)" at "Prop01"
+		Prop01 : Boolean  (default: false);
+		// XPECT errors --> "Name conflict for property 'Prop02' due to conflicting property hosts (conflicting: arguments, arrays, attributes, floats, integers, numbers, strings, structs, unions)" at "Prop02"
+		Prop02 : Boolean;
+		// XPECT errors --> "Name conflict for property 'Prop11' due to conflicting property hosts (conflicting: arguments, arrays, attributes, floats, integers, numbers, strings, structs, unions)" at "Prop11"
+		Prop11 : Integer  (default: 2);
+		// XPECT errors --> "Name conflict for property 'Prop12' due to conflicting property hosts (conflicting: arguments, arrays, attributes, floats, integers, numbers, strings, structs, unions)" at "Prop12"
+		Prop12 : Integer; 
+	}
+
+	for strings {
+		// XPECT errors --> "Name conflict for property 'Prop01' due to conflicting property hosts (conflicting: arguments, arrays, attributes, booleans, floats, integers, numbers, structs, unions)" at "Prop01"
+		Prop01 : Boolean  (default: false);
+		// XPECT errors --> "Name conflict for property 'Prop02' due to conflicting property hosts (conflicting: arguments, arrays, attributes, booleans, floats, integers, numbers, structs, unions)" at "Prop02"
+		Prop02 : Boolean;
+		// XPECT errors --> "Name conflict for property 'Prop11' due to conflicting property hosts (conflicting: arguments, arrays, attributes, booleans, floats, integers, numbers, structs, unions)" at "Prop11"
+		Prop11 : Boolean  (default: true);
+		// XPECT errors --> "Name conflict for property 'Prop12' due to conflicting property hosts (conflicting: arguments, arrays, attributes, booleans, floats, integers, numbers, structs, unions)" at "Prop12"
+		Prop12 : Boolean; 
+	}
+}
+
+
+// deployment specification with clashing property names because of enumeration type
+specification SpecClashingWithEnumerationsSimple {
+
+	for structs {
+		// no clashes here
+		Prop01 : String;
+		Prop02 : Integer;
+		Prop03 : Boolean;
+		Prop04 : Interface;
+		Prop05 : Instance;
+
+		// XPECT errors --> "Deployment property 'Prop11' with an enumeration type has to be unique" at "Prop11"
+		Prop11 : {x1,x2}  (default: x1);
+		// XPECT errors --> "Deployment property 'Prop12' with an enumeration type has to be unique" at "Prop12"
+		Prop12 : {x3,x4}; 
+	}
+	
+	for unions {
+		// no clashes here
+		Prop01 : String;
+		Prop02 : Integer;
+		Prop03 : Boolean;
+		Prop04 : Interface;
+		Prop05 : Instance;
+
+		// XPECT errors --> "Deployment property 'Prop11' with an enumeration type has to be unique" at "Prop11"
+		Prop11 : {u1,u2}  (default: u1);
+		// XPECT errors --> "Deployment property 'Prop12' with an enumeration type has to be unique" at "Prop12"
+		Prop12 : {u3,u4}; 
+	}
+}
+	
+
+// deployment specification with clashing property names because of enumeration type
+specification SpecClashingWithEnumerationsFull {
+
+	for structs {
+		// XPECT errors --> "Deployment property 'Prop11' with an enumeration type has to be unique" at "Prop11"
+		Prop11 : {x1,x2}  (default: x1);
+		// XPECT errors --> "Deployment property 'Prop12' with an enumeration type has to be unique" at "Prop12"
+		Prop12 : {x3,x4}; 
+	}
+	
+	for unions {
+		// XPECT errors --> "Deployment property 'Prop11' with an enumeration type has to be unique" at "Prop11"
+		Prop11 : {u1,u2}  (default: u1);
+		// XPECT errors --> "Deployment property 'Prop12' with an enumeration type has to be unique" at "Prop12"
+		Prop12 : {u3,u4}; 
+	}
+	
+	for arguments {
+		// XPECT errors --> "Deployment property 'Prop11' with an enumeration type has to be unique" at "Prop11"
+		Prop11 : {a1,a2}  (default: a1);
+		// XPECT errors --> "Deployment property 'Prop12' with an enumeration type has to be unique" at "Prop12"
+		Prop12 : {a3,a4}; 
+	}
+
+	for attributes {
+		// XPECT errors --> "Deployment property 'Prop11' with an enumeration type has to be unique" at "Prop11"
+		Prop11 : {z1,z2}  (default: z1);
+		// XPECT errors --> "Deployment property 'Prop12' with an enumeration type has to be unique" at "Prop12"
+		Prop12 : {z3,z4}; 
+	}
+}
+

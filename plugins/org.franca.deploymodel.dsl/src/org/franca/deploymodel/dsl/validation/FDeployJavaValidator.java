@@ -183,11 +183,11 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 		}
 	}
 	
-   @Check
-   public void checkDeclaration(FDDeclaration decl) {
-       ValidationHelpers.checkDuplicates(this, decl.getProperties(), FDeployPackage.Literals.FD_PROPERTY_DECL__NAME, "property name");
-   }
-	  
+	@Check
+	public void checkClashingProperties(FDSpecification spec) {
+		deployValidator.checkClashingProperties(spec);
+	}
+
 	@Check
 	public void checkBaseSpec (FDSpecification spec) {
 		FDSpecification cycleSpec = deployValidator.getCyclicBaseSpec(spec);
