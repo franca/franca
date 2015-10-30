@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2014 itemis AG (http://www.itemis.de).
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************/
 package org.franca.core.utils
 
 import java.math.BigInteger
@@ -9,21 +16,21 @@ import org.franca.core.franca.FTypeRef
 import org.franca.core.franca.FrancaFactory
 
 /**
- * Converter for all integer type references of a model. 
+ * Converter for all integer type references of a model.<p/>
  * 
  * It provides conversions from ranged integer types to predefined basic
  * integer types and vice versa. For the conversion from ranged integers to
  * predefined integers it can be configured if unsigned types are available
  * or not. E.g., for converting a Franca model towards a Java platform the
- * usage of unsigned types can be disallowed.
+ * usage of unsigned types can be disallowed.<p/>
  * 
  * The input model is transformed in-place, i.e., its FTypeRef objects are
- * converted directly.
+ * converted directly.<p/>
  * 
  * This class can be used as a preprocessor for existing code generators or
- * transformations. 
+ * transformations.<p/> 
  *   
- * @see https://code.google.com/a/eclipselabs.org/p/franca/issues/detail?id=18
+ * @see https://github.com/franca/franca/issues/18
  * 
  * @author Klaus Birken (itemis AG)
  */
