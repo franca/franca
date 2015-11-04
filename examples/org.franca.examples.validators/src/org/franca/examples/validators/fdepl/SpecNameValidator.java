@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package org.franca.examples.deploymodel.validators;
+package org.franca.examples.validators.fdepl;
 
 import org.eclipse.xtext.validation.ValidationMessageAcceptor;
 import org.franca.deploymodel.dsl.fDeploy.FDModel;
