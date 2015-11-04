@@ -13,6 +13,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.xtext.validation.Check;
+import org.eclipse.xtext.validation.CheckMode;
 import org.eclipse.xtext.validation.ValidationMessageAcceptor;
 import org.franca.core.FrancaModelExtensions;
 import org.franca.core.franca.FArgument;
@@ -75,6 +76,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDUnionOverwrites;
 import org.franca.deploymodel.dsl.fDeploy.FDValue;
 import org.franca.deploymodel.dsl.fDeploy.FDValueArray;
 import org.franca.deploymodel.dsl.fDeploy.FDeployPackage;
+import org.franca.deploymodel.dsl.validation.internal.ValidatorRegistry;
 
 import com.google.common.collect.Lists;
 
@@ -107,7 +109,20 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 	// delegate to FDeployValidator
 	FDeployValidator deployValidator = new FDeployValidator(this);
 
+	// *****************************************************************************
 	
+	/**
+	 * Call external validators (those which have been installed via the Eclipse
+	 * 'deploymentValidator' extension point).
+	 */
+	@Check
+	public void checkExtensionValidators(FDModel model) {
+		CheckMode mode = getCheckMode();
+		for (IFDeployExternalValidator validator : ValidatorRegistry.getValidatorMap().get(mode)) {
+			validator.validateModel(model, getMessageAcceptor());
+		}
+	}
+
 	// *****************************************************************************
 	// basic checks
 	
