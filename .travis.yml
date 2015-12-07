@@ -1,3 +1,11 @@
 language: java
 script: cd releng/org.franca.parent && mvn clean install
+
+# use new travis infrastructure (container-based)
 sudo: false
+
+# select branches per whitelist
+branches:
+  only:
+    - master
+    - develop
