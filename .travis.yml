@@ -1,4 +1,13 @@
 language: java
+
+# start xvfb to allow UI tests
+env:  
+  global:  
+    - DISPLAY=:99.0  
+  before_install:  
+    - sh -e /etc/init.d/xvfb start - sleep 10
+
+# run actual build
 script: cd releng/org.franca.parent && mvn clean install
 
 # use new travis infrastructure (container-based)
