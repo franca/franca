@@ -72,7 +72,7 @@ location "http://xtext-utils.eclipselabs.org.codespot.com/git.distribution/relea
 
 // eclemma, needed for test coverage check 
 location "http://update.eclemma.org/" {
-	com.mountainminds.eclemma.feature.feature.group [2.3.2,3.0.0)
+	com.mountainminds.eclemma.feature.feature.group [2.3.3,3.0.0)
 }
 
 // xdoc, needed for documentation
