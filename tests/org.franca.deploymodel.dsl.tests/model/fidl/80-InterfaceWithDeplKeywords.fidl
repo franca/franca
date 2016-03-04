@@ -1,0 +1,29 @@
+package fidl
+
+// some type collections and interfaces using keywords from the
+// deployment model DSL as identifiers
+ 
+typeCollection TypeCollectionWithDeplKeywords {
+	struct SomeStruct {
+		Int32 interfaces
+		Int32 abc
+	}
+}
+
+// the name of this type collection clashes with a keyword of the deployment DSL
+typeCollection numbers { }
+
+interface InterfaceWithDeplKeywords {
+	method callme {
+		in {
+			UInt16 interfaces
+			UInt16 attributes
+			UInt16 methods 
+		}
+	}
+}
+
+// the name of this interface clashes with a keyword of the deployment DSL
+interface providers {
+	method arguments { }
+}

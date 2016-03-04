@@ -37,6 +37,8 @@ class FEventUtils {
 			a.respond==b.respond
 		} else if (a.error!=null && b.error!=null) {
 			a.error==b.error
+		} else if (a.signal!=null && b.signal!=null) {
+			a.signal==b.signal
 		} else if (a.set!=null && b.set!=null) {
 			a.set==b.set
 		} else if (a.update!=null && b.update!=null) {

@@ -16,40 +16,49 @@ class TypeCollectionAccessorGenerator extends CommonAccessorMethodGenerator {
 	
 	@Inject extension ImportManager
 
-	def generate(FDSpecification spec) '''
-		/**
-		 * Accessor for deployment properties for Franca type collections according
-		 * to deployment specification '«spec.name»'.
-		 */		
-		public static class TypeCollectionPropertyAccessor
-			«IF spec.base!=null»extends «spec.base.qualifiedClassname».TypeCollectionPropertyAccessor«ENDIF»
-			implements IDataPropertyAccessor
-		{
-			final private MappingGenericPropertyAccessor target;
-			private final DataPropertyAccessorHelper helper;
+	def generate(FDSpecification spec) {
+		val context = new CodeContext
+		val methods = spec.generateAccessMethods(false, context)
 
-			«addNeededFrancaType("FDeployedTypeCollection")»
-			public TypeCollectionPropertyAccessor(FDeployedTypeCollection target) {
-				«IF spec.base!=null»
-				super(target);
+		'''
+			/**
+			 * Accessor for deployment properties for Franca type collections according
+			 * to deployment specification '«spec.name»'.
+			 */		
+			public static class TypeCollectionPropertyAccessor
+				«IF spec.base!=null»extends «spec.base.qualifiedClassname».TypeCollectionPropertyAccessor«ENDIF»
+				implements IDataPropertyAccessor
+			{
+				«IF context.targetNeeded»
+				private final MappingGenericPropertyAccessor target;
 				«ENDIF»
-				this.target = target;
-				this.helper = new DataPropertyAccessorHelper(target, this);
-			}
+				private final DataPropertyAccessorHelper helper;
 			
-			«spec.generateAccessMethods(false)»
+				«addNeededFrancaType("FDeployedTypeCollection")»
+				public TypeCollectionPropertyAccessor(FDeployedTypeCollection target) {
+					«IF spec.base!=null»
+					super(target);
+					«ENDIF»
+					«IF context.targetNeeded»
+					this.target = target;
+					«ENDIF»
+					this.helper = new DataPropertyAccessorHelper(target, this);
+				}
+				
+				«methods»
+				
+				@Override
+				public IDataPropertyAccessor getOverwriteAccessor(FField obj) {
+					return helper.getOverwriteAccessorAux(obj);
+				}
 			
-			@Override
-			public IDataPropertyAccessor getOverwriteAccessor(FField obj) {
-				return helper.getOverwriteAccessorAux(obj);
+				@Override
+				«addNeededFrancaType("FArrayType")»
+				public IDataPropertyAccessor getOverwriteAccessor(FArrayType obj) {
+					return helper.getOverwriteAccessorAux(obj);
+				}
 			}
-		
-			@Override
-			«addNeededFrancaType("FArrayType")»
-			public IDataPropertyAccessor getOverwriteAccessor(FArrayType obj) {
-				return helper.getOverwriteAccessorAux(obj);
-			}
-		}
-	'''
-
+		'''
+	}
+	
 }

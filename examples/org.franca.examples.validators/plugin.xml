@@ -1,17 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension
-         point="org.franca.core.dsl.francaValidator">
+   <extension point="org.franca.core.dsl.francaValidator">
       <validator
-            class="org.franca.core.validation.validators.PackageNameValidator"
+            class="org.franca.examples.validators.fidl.PackageNameValidator"
             mode="FAST"
             name="Package name validator">
       </validator>
       <validator
-            class="org.franca.core.validation.validators.UniqueStateNameValidator"
+            class="org.franca.examples.validators.fidl.UniqueStateNameValidator"
             mode="EXPENSIVE"
             name="Unique state name validator">
+      </validator>
+   </extension>
+
+   <extension point="org.franca.deploymodel.dsl.deploymentValidator">
+      <validator
+            class="org.franca.examples.validators.fdepl.SpecNameValidator"
+            mode="FAST"
+            name="Specification name validator">
       </validator>
    </extension>
 </plugin>

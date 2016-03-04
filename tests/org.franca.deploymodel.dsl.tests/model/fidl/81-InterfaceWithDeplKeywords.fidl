@@ -1,0 +1,15 @@
+package fidl
+
+// an interface with overloaded methods using keywords from the
+// deployment model DSL as identifiers
+ 
+interface ClashingOverloadInterface {
+	method callme:numbers {
+		in {
+			UInt16 x
+		}
+	}
+
+	method callme:strings {
+	}
+}

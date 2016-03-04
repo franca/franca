@@ -22,45 +22,58 @@ class ProviderAccessorGenerator {
 	@Inject extension ImportManager
 	@Inject CommonAccessorMethodGenerator helper
 
-	def generate(FDSpecification spec) '''
-		/**
-		 * Accessor for deployment properties for providers and interface instances
-		 * according to the '«spec.name»' specification.
-		 */
-		public static class ProviderPropertyAccessor
-			«IF spec.base!=null»extends «spec.base.qualifiedClassname».ProviderPropertyAccessor«ENDIF»
-			implements Enums
-		{
-			final private FDeployedProvider target;
-		
-			«addNeededFrancaType("FDeployedProvider")»
-			public ProviderPropertyAccessor(FDeployedProvider target) {
-				«IF spec.base!=null»
-				super(target);
-				«ENDIF»
-				this.target = target;
-			}
+	def generate(FDSpecification spec) {
+		val context = new CodeContext
+		val methods =
+			'''
+				«FOR d : spec.declarations»
+					«d.genProperties(context)»
+				«ENDFOR»
+			'''
+
+		'''
+			/**
+			 * Accessor for deployment properties for providers and interface instances
+			 * according to the '«spec.name»' specification.
+			 */
+			public static class ProviderPropertyAccessor
+				«IF spec.base!=null»extends «spec.base.qualifiedClassname».ProviderPropertyAccessor«ENDIF»
+				implements Enums
+			{
+				«IF context.targetNeeded»
+				final private FDeployedProvider target;
+				«ENDIF»				
 			
-			«FOR d : spec.declarations»
-				«d.genProperties»
-			«ENDFOR»
-		}
-	'''
+				«addNeededFrancaType("FDeployedProvider")»
+				public ProviderPropertyAccessor(FDeployedProvider target) {
+					«IF spec.base!=null»
+					super(target);
+					«ENDIF»
+					«IF context.targetNeeded»
+					this.target = target;
+					«ENDIF»
+				}
+				
+				«methods»
+			}
+		'''
+	}
 	
-	def private genProperties(FDDeclaration decl) '''
+	def private genProperties(FDDeclaration decl, ICodeContext context) '''
 		«IF decl.properties.size > 0 && decl.host.isProviderHost»
 			// host '«decl.host.getName»'
 			«FOR p : decl.properties»
-			«p.genProperty(decl.host)»
+			«p.genProperty(decl.host, context)»
 			«ENDFOR»
 			
 		«ENDIF»
 	'''
 	
-	def private genProperty(FDPropertyDecl it, FDPropertyHost host) {
+	def private genProperty(FDPropertyDecl it, FDPropertyHost host, ICodeContext context) {
 		val francaType = host.getFrancaTypeProvider
 		addNeededFrancaType(francaType)
 		if (francaType!=null) {
+			context.requireTargetMember
 			if (isEnum) {
 				val enumType = name.toFirstUpper
 				val retType =

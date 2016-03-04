@@ -77,9 +77,9 @@ interface MediaPlayer {
 
 	<** @description : Repeat modes for playback. **>
 	enumeration RepeatMode {
-		MODE_REPEAT_NONE   = "0"
-		MODE_REPEAT_SINGLE = "1"
-		MODE_REPEAT_ALL    = "2"
+		MODE_REPEAT_NONE   = 0
+		MODE_REPEAT_SINGLE = 1
+		MODE_REPEAT_ALL    = 2
 	}
 
 	<** @description: Track metadata. **>

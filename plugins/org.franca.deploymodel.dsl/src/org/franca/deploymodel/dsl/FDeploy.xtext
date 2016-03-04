@@ -270,11 +270,12 @@ FDComplexValue:
 
 FDValueArray:
 	'{' values+=FDValue (',' values+=FDValue)* '}';
-	
+
+// a typed constant value 
 FDValue:
 	FDInteger | FDString | FDBoolean | FDInterfaceRef | FDGeneric;
 	
-FDInteger:	    value=INT;
+FDInteger:	    value=SignedInt;
 FDString:	    value=STRING;
 FDBoolean:      value=('false'|'true');
 FDInterfaceRef: '&' value=[fidl::FInterface|FQN];
@@ -296,6 +297,12 @@ FQN:
 FQN_WITH_SELECTOR:
 	FQN (':' ID)?;
 
+// positive or negative integer
+SignedInt returns ecore::EInt:
+	NEGATIVE_INT | INT;
+
+// terminal rule: negative integer
+terminal NEGATIVE_INT returns ecore::EInt:
+	'-' ('0'..'9')+;
 
 // **************************************************************
-	

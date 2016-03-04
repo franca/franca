@@ -136,6 +136,11 @@ public class ModelTests extends XtextTest {
     }
     
     @Test
+    public void test_61_MethodComments() {
+    	testFile("testcases/61-MethodComments.fidl");
+    }
+    
+    @Test
     public void test_65_Broadcast() {
     	testFile("testcases/65-Broadcast.fidl");
     }

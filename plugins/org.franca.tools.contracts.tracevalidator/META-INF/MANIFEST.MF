@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: org.franca.tools.contracts.tracevalidator
 Bundle-SymbolicName: org.franca.tools.contracts.tracevalidator
-Bundle-Version: 0.10.0.qualifier
+Bundle-Version: 0.10.1.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: itemis AG
 Require-Bundle: org.eclipse.core.resources;bundle-version="3.8.1",

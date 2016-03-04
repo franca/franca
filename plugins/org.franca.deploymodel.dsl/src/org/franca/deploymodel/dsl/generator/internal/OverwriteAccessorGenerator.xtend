@@ -35,7 +35,6 @@ class OverwriteAccessorGenerator extends AccessMethodGenerator {
 			private final Map<FField, FDField> mappedFields;
 			«addNeededFrancaType("FEnumerator")»
 			private final Map<FEnumerator, FDEnumValue> mappedEnumerators;
-			private final DataPropertyAccessorHelper helper;
 		
 			«addNeededFrancaType("FDTypeOverwrites")»
 			public OverwriteAccessor(
@@ -48,7 +47,6 @@ class OverwriteAccessorGenerator extends AccessMethodGenerator {
 				«ENDIF»
 				this.target = genericAccessor;
 				this.delegate = delegate;
-				this.helper = new DataPropertyAccessorHelper(genericAccessor, this);
 		
 				this.overwrites = overwrites;
 				this.mappedFields = Maps.newHashMap();
@@ -73,7 +71,7 @@ class OverwriteAccessorGenerator extends AccessMethodGenerator {
 				}
 			}
 			
-			«spec.generateAccessMethods(false)»
+			«spec.generateAccessMethods(false, new CodeContext)»
 			
 			@Override
 			public IDataPropertyAccessor getOverwriteAccessor(FField obj) {

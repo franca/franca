@@ -60,6 +60,7 @@ codelanguage-def[FDeploy]
 	structs,struct_fields,unions,union_fields,
 	arrays,enumerations,enumerators,typedefs,
 	strings,numbers,integers,floats,
+	booleans,byte_buffers,
 	
 	Boolean, Integer, String, Interface,
 

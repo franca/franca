@@ -21,7 +21,7 @@ import org.xpect.xtext.lib.tests.XtextTests;
 import com.google.common.collect.Multimap;
 
 @RunWith(XpectRunner.class)
-@XpectTestFiles(files={"SpecValidationTest.fdepl.xt"})
+@XpectTestFiles(files={"SpecNameValidationTest.fdepl.xt", "PropDeclClashValidationTest.fdepl.xt"})
 @XpectSetup({ XtextStandaloneSetup.class })
 public class FrancaDeploymodelXpectTests extends XtextTests {
 	@Xpect

@@ -87,7 +87,11 @@ public class CreateFrancaFromDBusXMLHandler extends AbstractHandler {
     		try {
     			fmodel = conn.toFranca(dbus);
     			out.println(IssueReporter.getReportString(conn.getLastTransformationIssues()));    			
-   		} catch (Exception e) {
+    		} catch (Exception e) {
+    			// print stack trace to stdout to ease debugging
+    			e.printStackTrace();
+    			
+    			// print explanation and stack trace to console
     			err.println("Exception during transformation: " + e.toString());
     			for(StackTraceElement f : e.getStackTrace()) {
     				err.println("\tat " + f.toString());

@@ -1,0 +1,15 @@
+
+import "08-SpecDeplKeyword.fdepl"
+import "../fidl/81-InterfaceWithDeplKeywords.fidl"
+
+define example.^floats.TestSpec for interface fidl.ClashingOverloadInterface {
+
+	method callme:^numbers {
+	in {
+		x {
+			TestProperty5 = ""
+		}
+	}
+}
+}
+
