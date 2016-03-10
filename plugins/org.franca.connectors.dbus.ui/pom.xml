@@ -10,7 +10,7 @@
 	</parent>
 
 	<artifactId>org.franca.connectors.dbus.ui</artifactId>
-	<description>This Eclipse plugin contains the Franca/D-Bus connector UI. It requires the dbus-emf-model plugin from Eclipse Labs.</description>
+	<description>This Eclipse plugin contains the Franca/D-Bus connector UI. It requires the dbus-emf-model plug-in.</description>
 	<packaging>eclipse-plugin</packaging>
 	<build>
 		<sourceDirectory>src</sourceDirectory>
