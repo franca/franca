@@ -43,6 +43,8 @@
 			<module>../../plugins/org.franca.tools.contracts.tracevalidator</module>
             <module>../../plugins/org.franca.connectors.dbus</module>
             <module>../../plugins/org.franca.connectors.dbus.ui</module>
+            <module>../../plugins/org.franca.connectors.omgidl</module>
+            <module>../../plugins/org.franca.connectors.omgidl.ui</module>
 			<module>../../plugins/org.franca.connectors.idl</module>
             <module>../../plugins/org.franca.product.ui</module>
     		<!-- test base modules -->
@@ -54,6 +56,7 @@
             <module>../../examples/org.franca.examples.reference</module>
             <module>../../tests/org.franca.tools.contracts.tracevalidator.tests</module>
             <module>../../tests/org.franca.connectors.dbus.tests</module>
+            <module>../../tests/org.franca.connectors.omgidl.tests</module>
 			<module>../../tests/org.franca.connectors.idl.tests</module>
     		<!-- documentation/help modules -->
             <module>../../docs/org.franca.userguide</module>
