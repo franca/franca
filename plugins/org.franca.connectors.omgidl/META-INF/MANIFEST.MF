@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Franca OMG IDL Connector
+Bundle-SymbolicName: org.franca.connectors.omgidl
+Bundle-Version: 0.10.1.qualifier
+Bundle-Activator: org.franca.connectors.omgidl.Activator
+Bundle-Vendor: itemis AG
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.xtend.lib;bundle-version="2.5.0",
+ com.google.guava,
+ com.google.inject;bundle-version="3.0.0",
+ org.eclipse.xtext,
+ org.eclipse.xtext.xbase.lib,
+ org.eclipse.xtend.typesystem.emf;visibility:=reexport,
+ org.franca.core;bundle-version="0.10.1",
+ org.franca.core.dsl;bundle-version="0.10.1",
+ org.csu.idl.idlmm;bundle-version="1.1.0";visibility:=reexport,
+ org.csu.idl.xtext;visibility:=reexport
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
+Export-Package: org.franca.connectors.omgidl
