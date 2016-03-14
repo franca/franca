@@ -53,9 +53,12 @@ location "http://kbirken.github.io/dbus-emf-model/releases/" {
 	model.emf.dbusxml.feature.feature.group [0.8.0,1.0.0)
 }
 
-// idl4emf, needed for OMG IDL connector
 location "http://franca.github.io/franca/update_site/thirdparty" {
+	// idl4emf, needed for OMG IDL connector
 	org.csu.idl.feature.group [1.1.0,2.0.0)	
+
+	// idl4emf, needed for OMG IDL connector
+	com.google.eclipse.protobuf.feature.group [1.5.2,2.0.0)	
 }
 
 // etrice, needed for eTrice connector
