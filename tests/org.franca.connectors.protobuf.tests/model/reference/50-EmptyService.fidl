@@ -1,0 +1,4 @@
+package dummy_package
+
+interface ExampleService1 {
+}
