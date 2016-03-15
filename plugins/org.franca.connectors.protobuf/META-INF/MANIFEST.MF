@@ -14,7 +14,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.xtend.typesystem.emf;visibility:=reexport,
  org.franca.core;bundle-version="0.10.1",
  org.franca.core.dsl;bundle-version="0.10.1",
- com.google.eclipse.protobuf;bundle-version="1.5.3";visibility:=reexport
+ com.google.eclipse.protobuf;bundle-version="1.5.3"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: org.franca.connectors.protobuf

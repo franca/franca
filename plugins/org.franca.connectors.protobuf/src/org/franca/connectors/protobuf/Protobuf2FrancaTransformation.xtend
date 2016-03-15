@@ -16,6 +16,8 @@ import org.franca.core.franca.FModel
 import org.franca.core.franca.FrancaFactory
 
 import static org.franca.core.framework.TransformationIssue.*
+import com.google.eclipse.protobuf.protobuf.Message
+import org.franca.core.franca.FTypeCollection
 
 /**
  * Model-to-model transformation from Google Protobuf to Franca IDL.
@@ -24,12 +26,10 @@ import static org.franca.core.framework.TransformationIssue.*
  */
 class Protobuf2FrancaTransformation {
 
-//	val static DEFAULT_NODE_NAME = "default"
-	 
+	//	val static DEFAULT_NODE_NAME = "default"
 	@Inject extension TransformationLogger
 
-//	List<FType> newTypes
-	
+	//	List<FType> newTypes
 	def getTransformationIssues() {
 		return getIssues
 	}
@@ -37,46 +37,62 @@ class Protobuf2FrancaTransformation {
 	def FModel transform(Protobuf src) {
 		clearIssues
 
-		val it = factory.createFModel
+		val fmodel = factory.createFModel
 
-		// TODO: set via protobuf package declaration 
-		it.name = "dummy_package"
-		
+		fmodel.name = src.elements.filter(com.google.eclipse.protobuf.protobuf.Package).head?.name ?: "dummy_package"
+
 		if (src.elements.empty) {
-			addIssue(IMPORT_WARNING,
-				src, ProtobufPackage::PROTOBUF__ELEMENTS,
+			addIssue(IMPORT_WARNING, src, ProtobufPackage::PROTOBUF__ELEMENTS,
 				"Empty proto file, created empty Franca model")
 		} else {
-			for(elem : src.elements) {
-				switch(elem) {
-					Service: it.interfaces.add(elem.transformService)
-					// TODO: map top-level protobuf Message to struct in Franca anonymous typecollection
+			for (elem : src.elements) {
+				switch (elem) {
+					Service:
+						fmodel.interfaces.add(elem.transformService)
+					Message:
+						fmodel.typeCollections.add(elem.transformMessage(fmodel))
 					default: {
-						addIssue(FEATURE_NOT_HANDLED_YET,
-							elem, ProtobufPackage::PROTOBUF__ELEMENTS,
+						addIssue(FEATURE_NOT_HANDLED_YET, elem, ProtobufPackage::PROTOBUF__ELEMENTS,
 							"Unsupported protobuf element '" + elem.class.name + "', will be ignored")
-					} 
+					}
 				}
 			}
 		}
-		
-		it
-	}		
 
-	def private transformService(Service src) {
-		val it = factory.createFInterface
-		it.name = src.name
-		
+		fmodel
+	}
+	
+	def FTypeCollection transformMessage(Message message, FModel model){
+		val typeCollection = model.typeCollections.head ?: factory.createFTypeCollection
+
+		//TODO add comments if necessary
+		val struct = factory.createFStructType
+		struct.name = message.name
+		if (message.elements.empty)
+			struct.polymorphic = true
+		else {
+			//TODO transform message elements
+			for (elem : message.elements) {
+			}
+		}
+
+		typeCollection.types += struct
+		model.typeCollections += typeCollection
+		typeCollection
+	}
+
+	def private transformService(Service service) {
+		val interface = factory.createFInterface
+		interface.name = service.name
+
 		// transform elements of this service
-		for(elem : src.elements) {
+		for (elem : service.elements) {
 			// TODO
 		}
-		it
+		interface
 	}
 
 	def private factory() {
 		FrancaFactory::eINSTANCE
 	}
 }
-
-

@@ -23,12 +23,13 @@ class Protobuf2FrancaTests {
 	val MODEL_DIR = "model/testcases/"
 	val REF_DIR = "model/reference/"
 	val GEN_DIR = "src-gen/testcases/"
-	
-	@Inject	extension FrancaPersistenceManager
+
+	@Inject extension FrancaPersistenceManager
 
 	@Test
 	def test_50() {
 		test("50-EmptyService")
+		test("50-EmptyMessage")
 	}
 
 	@Test
@@ -37,8 +38,6 @@ class Protobuf2FrancaTests {
 	}
 
 	// TODO: add more testcases here
-
-
 	/**
 	 * Utility method for executing one transformation and comparing the result with a reference model.
 	 */
@@ -49,11 +48,11 @@ class Protobuf2FrancaTests {
 		// load the OMG IDL input model
 		val conn = new ProtobufConnector
 		val omgidl = conn.loadModel(MODEL_DIR + inputfile + PROTOBUF_EXT) as ProtobufModelContainer
-		
+
 		// do the actual transformation to Franca IDL and save the result
 		val fmodelGen = conn.toFranca(omgidl)
 		fmodelGen.saveModel(GEN_DIR + inputfile + FRANCA_IDL_EXT)
-		
+
 		// load the reference Franca IDL model
 		val fmodelRef = loadModel(REF_DIR + inputfile + FRANCA_IDL_EXT)
 
@@ -64,7 +63,7 @@ class Protobuf2FrancaTests {
 		val comparison = EMFCompare.builder.build.compare(scope)
 		val List<Diff> differences = comparison.differences
 		var nDiffs = 0
-		for(diff : differences) {
+		for (diff : differences) {
 			if (! (diff instanceof ResourceAttachmentChangeSpec)) {
 				System.out.println(diff.toString)
 				nDiffs++
@@ -73,7 +72,6 @@ class Protobuf2FrancaTests {
 
 		// TODO: is there a way to show the difference in a side-by-side view if the test fails?
 		// (EMF Compare should provide a nice view for this...)		
-
 		// we expect that both Franca IDL models are identical 
 		assertEquals(0, nDiffs)
 	}

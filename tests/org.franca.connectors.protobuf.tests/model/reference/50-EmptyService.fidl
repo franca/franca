@@ -1,4 +1,4 @@
-package dummy_package
+package org.franca.connectors.protobuf.tests
 
 interface ExampleService1 {
 }
