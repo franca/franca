@@ -18,6 +18,8 @@ import org.franca.core.franca.FrancaFactory
 import static org.franca.core.framework.TransformationIssue.*
 import com.google.eclipse.protobuf.protobuf.Message
 import org.franca.core.franca.FTypeCollection
+import com.google.eclipse.protobuf.protobuf.MessageField
+import org.franca.core.franca.FField
 
 /**
  * Model-to-model transformation from Google Protobuf to Franca IDL.
@@ -71,14 +73,26 @@ class Protobuf2FrancaTransformation {
 		if (message.elements.empty)
 			struct.polymorphic = true
 		else {
-			//TODO transform message elements
+			//TODO transform message elements 
 			for (elem : message.elements) {
+				switch elem{
+					MessageField : struct.elements += elem.transformMessageField
+					default: {
+						addIssue(FEATURE_NOT_HANDLED_YET, elem, ProtobufPackage::MESSAGE__ELEMENTS,
+							"Unsupported message element '" + elem.class.name + "', will be ignored")
+					}
+				}
 			}
 		}
 
 		typeCollection.types += struct
 		model.typeCollections += typeCollection
 		typeCollection
+	}
+	
+	def Iterable<? extends FField> transformMessageField(MessageField field){
+		//TODO
+		return null
 	}
 
 	def private transformService(Service service) {
