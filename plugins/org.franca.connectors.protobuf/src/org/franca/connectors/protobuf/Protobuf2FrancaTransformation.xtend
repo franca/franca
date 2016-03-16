@@ -7,19 +7,24 @@
  *******************************************************************************/
 package org.franca.connectors.protobuf
 
+import com.google.eclipse.protobuf.protobuf.ComplexTypeLink
+import com.google.eclipse.protobuf.protobuf.CustomOption
+import com.google.eclipse.protobuf.protobuf.Enum
+import com.google.eclipse.protobuf.protobuf.Literal
+import com.google.eclipse.protobuf.protobuf.Message
+import com.google.eclipse.protobuf.protobuf.MessageField
+import com.google.eclipse.protobuf.protobuf.NativeOption
+import com.google.eclipse.protobuf.protobuf.Package
 import com.google.eclipse.protobuf.protobuf.Protobuf
 import com.google.eclipse.protobuf.protobuf.ProtobufPackage
+import com.google.eclipse.protobuf.protobuf.ScalarTypeLink
 import com.google.eclipse.protobuf.protobuf.Service
 import com.google.inject.Inject
 import org.franca.core.framework.TransformationLogger
-import org.franca.core.franca.FModel
+import org.franca.core.franca.FBasicTypeId
 import org.franca.core.franca.FrancaFactory
 
 import static org.franca.core.framework.TransformationIssue.*
-import com.google.eclipse.protobuf.protobuf.Message
-import org.franca.core.franca.FTypeCollection
-import com.google.eclipse.protobuf.protobuf.MessageField
-import org.franca.core.franca.FField
 
 /**
  * Model-to-model transformation from Google Protobuf to Franca IDL.
@@ -36,12 +41,12 @@ class Protobuf2FrancaTransformation {
 		return getIssues
 	}
 
-	def FModel transform(Protobuf src) {
+	def create factory.createFModel transform(Protobuf src) {
 		clearIssues
 
-		val fmodel = factory.createFModel
+		val typeCollection = typeCollections.head ?: factory.createFTypeCollection
 
-		fmodel.name = src.elements.filter(com.google.eclipse.protobuf.protobuf.Package).head?.name ?: "dummy_package"
+		name = src.elements.filter(Package).head?.name ?: "dummy_package"
 
 		if (src.elements.empty) {
 			addIssue(IMPORT_WARNING, src, ProtobufPackage::PROTOBUF__ELEMENTS,
@@ -50,9 +55,11 @@ class Protobuf2FrancaTransformation {
 			for (elem : src.elements) {
 				switch (elem) {
 					Service:
-						fmodel.interfaces.add(elem.transformService)
+						interfaces += elem.transformService
 					Message:
-						fmodel.typeCollections.add(elem.transformMessage(fmodel))
+						typeCollection.types += elem.transformMessage
+					Enum:
+						typeCollection.types += elem.transformEnum
 					default: {
 						addIssue(FEATURE_NOT_HANDLED_YET, elem, ProtobufPackage::PROTOBUF__ELEMENTS,
 							"Unsupported protobuf element '" + elem.class.name + "', will be ignored")
@@ -60,23 +67,30 @@ class Protobuf2FrancaTransformation {
 				}
 			}
 		}
-
-		fmodel
+		if (!typeCollection.types.empty)
+			typeCollections += typeCollection
 	}
-	
-	def FTypeCollection transformMessage(Message message, FModel model){
-		val typeCollection = model.typeCollections.head ?: factory.createFTypeCollection
+
+	def private create factory.createFEnumerationType transformEnum(Enum enum1) {
+
+		//TODO extend
+		name = enum1.name
+		enumerators += enum1.elements.map[transformEnumElement]
+	}
+
+	def private create factory.createFStructType transformMessage(Message message) {
 
 		//TODO add comments if necessary
-		val struct = factory.createFStructType
-		struct.name = message.name
+		name = message.name
 		if (message.elements.empty)
-			struct.polymorphic = true
+			polymorphic = true
 		else {
+
 			//TODO transform message elements 
 			for (elem : message.elements) {
-				switch elem{
-					MessageField : struct.elements += elem.transformMessageField
+				switch elem {
+					MessageField:
+						elements += elem.transformMessageField
 					default: {
 						addIssue(FEATURE_NOT_HANDLED_YET, elem, ProtobufPackage::MESSAGE__ELEMENTS,
 							"Unsupported message element '" + elem.class.name + "', will be ignored")
@@ -84,26 +98,78 @@ class Protobuf2FrancaTransformation {
 				}
 			}
 		}
+	}
 
-		typeCollection.types += struct
-		model.typeCollections += typeCollection
-		typeCollection
+	def private create factory.createFField transformMessageField(MessageField field) {
+
+		//TODO think about the array
+		type = field.type.transformTypeLink
+		name = field.name
+	}
+
+	def dispatch create factory.createFTypeRef transformTypeLink(ScalarTypeLink scalarType) {
+		switch scalarType.target {
+			//TODO sint32 | sint64 | fixed32 | fixed64 | sfixed32 | sfixed64
+			case DOUBLE:
+				predefined = FBasicTypeId.DOUBLE
+			case FLOAT:
+				predefined = FBasicTypeId.FLOAT
+			case INT32:
+				predefined = FBasicTypeId.INT32
+			case INT64:
+				predefined = FBasicTypeId.INT64
+			case UINT32:
+				predefined = FBasicTypeId.UINT32
+			case UINT64:
+				predefined = FBasicTypeId.UINT64
+			case BOOL:
+				predefined = FBasicTypeId.BOOLEAN
+			case STRING:
+				predefined = FBasicTypeId.STRING
+			case BYTES:
+				predefined = FBasicTypeId.BYTE_BUFFER
+			default: {
+				addIssue(FEATURE_NOT_HANDLED_YET, scalarType, ProtobufPackage::MESSAGE_FIELD,
+					"Unsupported message element '" + scalarType.class.name + "', will be ignored")
+			}
+		}
+	}
+
+	def dispatch create factory.createFTypeRef transformTypeLink(ComplexTypeLink complexType) {
+		switch complexType.target {
+			Enum: {
+				derived = (complexType.target as Enum).transformEnum
+			}
+		//			ExtensibleType:
+		//complexType.transformExtensibleType
+		}
+
+	}
+
+	def private dispatch create factory.createFEnumerator transformEnumElement(Literal literal) {
+		//TODO do we need to give a value??
+		name = literal.name
+	}
+
+	def private dispatch create factory.createFEnumerator transformEnumElement(NativeOption option) {
+		//TODO
 	}
 	
-	def Iterable<? extends FField> transformMessageField(MessageField field){
+	def private dispatch create factory.createFEnumerator transformEnumElement(CustomOption option) {
 		//TODO
-		return null
 	}
 
-	def private transformService(Service service) {
-		val interface = factory.createFInterface
-		interface.name = service.name
+	def transformExtensibleType(ComplexTypeLink complexType) {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+
+	def private create factory.createFInterface transformService(Service service) {
+		name = service.name
 
 		// transform elements of this service
 		for (elem : service.elements) {
 			// TODO
 		}
-		interface
 	}
 
 	def private factory() {

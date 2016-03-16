@@ -1,0 +1,25 @@
+package org.franca.connectors.protobuf.tests
+
+typeCollection {
+	struct Request1 {
+		String string1
+		Int32 int32_1
+		ByteBuffer bytes1
+		Boolean bool1
+		Double double1
+		undefined fixed32_1
+		undefined fixed64_1
+	}
+
+	struct Response1 {
+		Float float1
+		Int64 int64_1
+		undefined sfixed32_1
+		undefined sfixed64_1
+		undefined sint32_1
+		undefined sint64_1
+		UInt32 uint32_1
+		UInt64 uint64_1
+	}
+
+}

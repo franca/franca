@@ -15,6 +15,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 import static org.junit.Assert.assertEquals
+import org.junit.Ignore
 
 @RunWith(typeof(XtextRunner2))
 @InjectWith(typeof(FrancaIDLTestsInjectorProvider))
@@ -35,6 +36,14 @@ class Protobuf2FrancaTests {
 	@Test
 	def test_60() {
 		test("60-ServiceWithOneRPC")
+		test("60-MessageWithScalarValueTypeFields")
+	}
+	
+	@Test
+	@Ignore
+	//FIXME 
+	def test_complexTypeFields() {
+		test("60-MessageWithComplexTypeFields")
 	}
 
 	// TODO: add more testcases here

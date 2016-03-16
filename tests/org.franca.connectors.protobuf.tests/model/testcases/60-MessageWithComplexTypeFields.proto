@@ -5,11 +5,15 @@ package org.franca.connectors.protobuf.tests;
 message Request1 {
 	required string string1 = 1;
 	optional int32 int32_1 = 2;
-	optional bytes bytes1 = 3;
-	required bool bool1 = 4;
-	optional double double1 = 5;
-	optional fixed32 fixed32_1 = 6;
-	required fixed64 fixed64_1 = 7;
+	repeated uint32 uint32_1 = 3;
+	optional Scalar scalar1 = 4;
+
+}
+
+enum Scalar {
+	myString = 0 [default = 2];
+	mylong = 123456789;
+	myhex = 0x1af;
 }
 
 message Response1 {
