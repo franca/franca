@@ -13,11 +13,14 @@ message Request1 {
 	optional int32 int32_1 = 2;
 	repeated uint32 uint32_1 = 3;
 	optional Scalar scalar1 = 4;
-	required Complex complex1 = 5;
+	enum Scalar {
+		myString = 0 [default = 2];
+		mylong = 13;
+		myhex = 0x1;
+	}
+
+	message bla{
+
+	}
 }
 
-enum Complex {
-	complexString = 0;
-	complexLong = 12344;
-	complexHex = 0x1af;
-}

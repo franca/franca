@@ -5,6 +5,7 @@ import java.util.List
 import org.eclipse.emf.compare.Diff
 import org.eclipse.emf.compare.EMFCompare
 import org.eclipse.emf.compare.internal.spec.ResourceAttachmentChangeSpec
+import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.xtext.junit4.InjectWith
 import org.eclipselabs.xtext.utils.unittesting.XtextRunner2
 import org.franca.connectors.protobuf.ProtobufConnector
@@ -15,7 +16,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 import static org.junit.Assert.assertEquals
-import org.junit.Ignore
 
 @RunWith(typeof(XtextRunner2))
 @InjectWith(typeof(FrancaIDLTestsInjectorProvider))
@@ -40,10 +40,13 @@ class Protobuf2FrancaTests {
 	}
 	
 	@Test
-	@Ignore
-	//FIXME 
 	def test_complexTypeFields() {
 		test("60-MessageWithComplexTypeFields")
+	}
+	
+	@Test
+	def test_oneOf() {
+		test("60-MessageWithOneof")
 	}
 
 	// TODO: add more testcases here
@@ -61,9 +64,10 @@ class Protobuf2FrancaTests {
 		// do the actual transformation to Franca IDL and save the result
 		val fmodelGen = conn.toFranca(omgidl)
 		fmodelGen.saveModel(GEN_DIR + inputfile + FRANCA_IDL_EXT)
-
+		
 		// load the reference Franca IDL model
 		val fmodelRef = loadModel(REF_DIR + inputfile + FRANCA_IDL_EXT)
+		EcoreUtil.resolveAll(fmodelRef.eResource)
 
 		// use EMF Compare to compare both Franca IDL models (the generated and the reference model)
 		val rset1 = fmodelGen.eResource.resourceSet

@@ -10,14 +10,13 @@ enum Scalar {
 
 message Request1 {
 	required string string1 = 1;
-	optional int32 int32_1 = 2;
-	repeated uint32 uint32_1 = 3;
-	optional Scalar scalar1 = 4;
-	required Complex complex1 = 5;
+	repeated oneof test_oneOf{
+	 	string string1 = 2;
+
+	 	group group1 = 5[default = 3] {
+			optional uint32 uint32_1 = 3;
+	 		repeated Scalar scalar1 = 4;
+	 	}
+	}
 }
 
-enum Complex {
-	complexString = 0;
-	complexLong = 12344;
-	complexHex = 0x1af;
-}
