@@ -1,0 +1,23 @@
+syntax = "proto2";
+
+package org.franca.connectors.protobuf.tests;
+
+enum Scalar {
+	myString = 0 [default = 2];
+	mylong = 123456789;
+	myhex = 0x1af;
+}
+
+message Request1 {
+	required string string1 = 1;
+	optional int32 int32_1 = 2;
+	repeated uint32 uint32_1 = 3;
+	optional Scalar scalar1 = 4;
+	required Complex complex1 = 5;
+}
+
+enum Complex {
+	complexString = 0;
+	complexLong = 12344;
+	complexHex = 0x1af;
+}

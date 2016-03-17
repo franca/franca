@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/mbarbero/fr.obeo.releng.targetplatform -->
-<target name="Franca Target Platform - Eclipse 4.4" sequenceNumber="1457593669">
+<target name="Franca Target Platform - Eclipse 4.4" sequenceNumber="1457593670">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.sdk.feature.group" version="4.4.2.v20150204-1700"/>
@@ -39,7 +39,8 @@
       <repository location="http://kbirken.github.io/dbus-emf-model/releases/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="org.csu.idl.feature.group" version="1.1.0.201603092352"/>
+      <unit id="org.csu.idl.feature.group" version="1.1.0.201603151811"/>
+      <unit id="com.google.eclipse.protobuf.feature.group" version="1.5.2.201603142207"/>
       <repository location="http://franca.github.io/franca/update_site/thirdparty"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
