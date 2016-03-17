@@ -1,0 +1,32 @@
+// empty interfaces with type declarations 
+#include "orb.idl"
+#include "TypeCode.idl"
+
+module testcase12 {
+	struct FooStruct {
+		short short_member;
+		long long_member;
+		long long longlong_member;
+		unsigned short ushort_member;
+		unsigned long ulong_member;
+		unsigned long long ulonglong_member;
+		float float_member;
+		double double_member;
+		long double long_double_member;
+		char char_member;
+		wchar wchar_member;
+		string string_member;
+		wstring wstring_member;
+		boolean boolean_member;
+		octet octet_member;
+		any any_member;
+		Object object_member;
+		void void_member;
+		fixed fixed_member;
+	}
+	interface ExampleInterface1 {
+	};
+	
+	interface ExampleInterface2 {
+	};
+};

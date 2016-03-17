@@ -5,5 +5,7 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="model"/>
+	<classpathentry kind="lib" path="C:/Eclipse/eclipse-luna-franca/eclipse/plugins/org.eclipse.emf.compare.ide.ui_4.1.0.201506080833.jar"/>
+	<classpathentry kind="lib" path="C:/Eclipse/eclipse-luna-franca/eclipse/plugins/org.eclipse.emf.compare.edit_4.1.0.201506080833.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

@@ -1,0 +1,29 @@
+package testcase12
+
+typeCollection 
+{
+	version { major 1 minor 0 }
+	struct FooStruct {
+		Int16 short_member;
+		Int32 long_member;
+		Int64 longlong_member;
+		UInt16 ushort_member;
+		UInt32 ulong_member;
+		UInt64 ulonglong_member;
+		Float float_member;
+		Double double_member;
+		Double long_double_member; // no Long Double in Franca
+		char char_member; // no char in Franca
+		wchar wchar_member; // no wchar in Franca
+		String string_member;
+		String wstring_member; // no Wide String in Franca
+		Boolean boolean_member;
+		/* ignored temporarily
+		octet octet_member;
+		any any_member;
+		Object object_member;
+		void void_member;
+		fixed fixed_member;
+		*/
+	}
+}

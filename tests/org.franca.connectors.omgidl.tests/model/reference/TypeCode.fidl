@@ -1,0 +1,4 @@
+package typecode
+
+interface ExampleInterface_TypeCode {
+}

@@ -18,12 +18,14 @@ import org.franca.core.franca.FModel
 import org.franca.core.franca.FrancaFactory
 
 import static org.franca.core.framework.TransformationIssue.*
+import org.csu.idl.idlmm.Include
 
 /**
  * Model-to-model transformation from OMG IDL (aka CORBA) to Franca IDL.  
  */
 class OMGIDL2FrancaTransformation {
-
+	val static OMG_IDL_EXT = '.idl'
+	val static FRANCA_IDL_EXT = '.fidl'
 //	val static DEFAULT_NODE_NAME = "default"
 	 
 	@Inject extension TransformationLogger
@@ -40,6 +42,7 @@ class OMGIDL2FrancaTransformation {
 		val it = factory.createFModel
 
 		// TODO: handle src.includes
+		src.includes.forEach[include | include.transformIncludeDeclaration(it)]
 		
 		if (src.contains.empty) {
 			addIssue(IMPORT_WARNING,
@@ -51,7 +54,7 @@ class OMGIDL2FrancaTransformation {
 					src, IdlmmPackage::TRANSLATION_UNIT__IDENTIFIER,
 					"OMG IDL translation unit with more than one definition, ignoring all but the first one")
 			}
-			
+			println(src.identifier)
 			// TODO: what should we do with TUs that have more than one definition?
 			val first = src.contains.get(0)
 			if (first instanceof ModuleDef) {
@@ -95,6 +98,28 @@ class OMGIDL2FrancaTransformation {
 					src, IdlmmPackage::CONTAINED__IDENTIFIER,
 					"OMG IDL definition '" + src.class.name + "' not handled yet (object '" + src.identifier + "')")
 			
+	}
+	
+	def private transformIncludeDeclaration (Include src, FModel target) {
+		factory.createImport => [
+			importURI = src.transformIncludeFileName
+			
+			target.imports.add(it)
+		]
+	}
+	
+	def private transformIncludeFileName (Include src) {
+		val uri = src.importURI
+		if (uri.isNullOrEmpty) {
+			addIssue(FEATURE_UNSUPPORTED_VALUE,
+				src, IdlmmPackage::INCLUDE__IMPORT_URI,
+				"The URI of imported IDL file '" + src + "' is null or empty"
+			)
+		}
+		if (uri.contains(OMG_IDL_EXT)) {
+			return uri.substring(0, uri.indexOf(OMG_IDL_EXT)) + FRANCA_IDL_EXT
+		}
+		return uri + FRANCA_IDL_EXT
 	}
 
 	def private factory() {

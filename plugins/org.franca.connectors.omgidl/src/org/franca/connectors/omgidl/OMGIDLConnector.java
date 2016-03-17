@@ -7,9 +7,13 @@
  *******************************************************************************/
 package org.franca.connectors.omgidl;
 
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
 
 import org.csu.idl.idlmm.TranslationUnit;
+import org.csu.idl.xtext.loader.ExtendedIDLLoader;
 import org.csu.idl.xtext.loader.IDLLoader;
 import org.eclipse.emf.common.util.URI;
 import org.franca.core.framework.IFrancaConnector;
@@ -44,6 +48,21 @@ public class OMGIDLConnector implements IFrancaConnector {
 			System.out.println("Loaded OMG IDL interface " + model.getIdentifier());
 		}
 		return new OMGIDLModelContainer(model);
+	}
+	
+	
+	public Map<IModelContainer, String> loadModels(String filename) {
+		Map<IModelContainer, String> map_ModelContainer_FileName = new LinkedHashMap<IModelContainer, String>();
+		Map<TranslationUnit, String> map_TranslationUnit_FileName = loadOMGIDLModels(filename);
+		for (TranslationUnit model : map_TranslationUnit_FileName.keySet() ) {
+			if (model==null) {
+				System.out.println("Error: Could not load OMG IDL model from file " + filename);
+			} else {
+				System.out.println("Loaded OMG IDL interface " + model.getIdentifier());
+			}
+			map_ModelContainer_FileName.put(new OMGIDLModelContainer(model), map_TranslationUnit_FileName.get(model));
+		}
+		return map_ModelContainer_FileName;
 	}
 
 	@Override
@@ -99,13 +118,13 @@ public class OMGIDLConnector implements IFrancaConnector {
 //		return resourceSet;
 //	}
 	
-
 	private static TranslationUnit loadOMGIDLModel(String fileName) {
 		URI uri = FileHelper.createURI(fileName);
 		String filePath = uri.toFileString();
 
 		// TODO: is it correct to use the IDLLoader class (e.g., it does some pre- and postprocessing which might be harmful)?
-		IDLLoader loader = new IDLLoader();
+		// A: Preprocessing is harmful in the case of "#include". Instead of IDLLoader, ExtendedIDLLoader is used, in which prepossing is suppressed.
+		IDLLoader loader = new ExtendedIDLLoader();//new IDLLoader();
 		try {
 			loader.load(filePath);
 		} catch (Exception e) {
@@ -114,6 +133,23 @@ public class OMGIDLConnector implements IFrancaConnector {
 		}
 		return loader.getModel();
 	}
-
+	
+	/***
+	 * Load the OMG IDL model indicated by {@code fileName} and all the other OMG IDL models included by it
+	 * @param fileName 
+	 * @return A list of TranslationUnit
+	 */
+	private static Map<TranslationUnit, String> loadOMGIDLModels(String fileName) {
+		URI uri = FileHelper.createURI(fileName);
+		String filePath = uri.toFileString();
+		ExtendedIDLLoader loader = new ExtendedIDLLoader();
+		try {
+			loader.load(filePath);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Collections.emptyMap();
+		}
+		return loader.getModels();
+	}
 }
 
