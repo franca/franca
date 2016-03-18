@@ -3,11 +3,9 @@ package org.franca.connectors.omgidl.tests
 import com.google.inject.Inject
 import java.util.List
 import org.csu.idl.idlmm.IdlmmPackage
-import org.eclipse.compare.CompareConfiguration
 import org.eclipse.emf.compare.Diff
 import org.eclipse.emf.compare.EMFCompare
-import org.eclipse.emf.compare.domain.impl.EMFCompareEditingDomain
-import org.eclipse.emf.edit.provider.ComposedAdapterFactory
+import org.eclipse.emf.compare.internal.spec.ResourceAttachmentChangeSpec
 import org.eclipse.xtext.junit4.InjectWith
 import org.eclipselabs.xtext.utils.unittesting.XtextRunner2
 import org.franca.connectors.omgidl.OMGIDLConnector
@@ -18,11 +16,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 import static org.junit.Assert.assertEquals
-import org.eclipse.emf.compare.ide.ui.internal.editor.ComparisonEditorInput
-import org.eclipse.emf.compare.internal.spec.ResourceAttachmentChangeSpec
-import org.eclipse.compare.CompareUI
-import org.eclipse.emf.compare.ide.ui.internal.configuration.EMFCompareConfiguration
-import org.eclipse.compare.internal.CompareUIPlugin
 
 @RunWith(typeof(XtextRunner2))
 @InjectWith(typeof(FrancaIDLTestsInjectorProvider))
@@ -44,8 +37,13 @@ class OMGIDL2FrancaTests {
 	@Test
 	def test_11() {
 		IdlmmPackage.eINSTANCE.eClass()
-		test("11-EmptyInterfacesWithIncludes")//("11-EmptyInterfacesWithIncludes")
+		test("11-EmptyInterfacesWithIncludes")
 	}
+//	
+//	def test_12() {
+//		IdlmmPackage.eINSTANCE.eClass()
+//		test("12-TypeDeclarations")
+//	}
 
 	/**
 	 * Utility method for executing one transformation and comparing the result with a reference model.

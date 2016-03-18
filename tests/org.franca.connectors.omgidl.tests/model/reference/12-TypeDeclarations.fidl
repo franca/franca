@@ -13,17 +13,16 @@ typeCollection
 		Float float_member;
 		Double double_member;
 		Double long_double_member; // no Long Double in Franca
-		char char_member; // no char in Franca
-		wchar wchar_member; // no wchar in Franca
+		undefined char_member; // no char in Franca
+		undefined wchar_member; // no wchar in Franca
 		String string_member;
 		String wstring_member; // no Wide String in Franca
 		Boolean boolean_member;
-		/* ignored temporarily
-		octet octet_member;
-		any any_member;
-		Object object_member;
-		void void_member;
-		fixed fixed_member;
-		*/
+		// undefined types in Franca
+		undefined octet_member;
+		undefined any_member;
+		undefined object_member;
+		undefined void_member;
+		undefined fixed_member;
 	}
 }
