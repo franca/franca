@@ -1,0 +1,12 @@
+syntax = "proto2";
+
+package org.franca.connectors.protobuf.tests;
+
+option java_package = "org.eclipse";
+
+message Request1 {
+	option message_set_wire_format = true;
+	repeated int32 int321 = 1 [deprecated = true];
+}
+
+

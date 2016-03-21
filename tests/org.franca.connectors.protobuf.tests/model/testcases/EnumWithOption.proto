@@ -8,6 +8,8 @@ extend google.protobuf.EnumOptions {
   optional bool my_enum_option = 50003;
 }
 
+
+
 enum Scalar {
 	myString = 0 [default = 2];
 	mylong = 123456789;

@@ -1,0 +1,10 @@
+package org.franca.connectors.protobuf.tests
+
+typeCollection {
+	struct Request1{
+		Int32 [] int321
+	} 
+}
+
+
+

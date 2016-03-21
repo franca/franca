@@ -1,0 +1,15 @@
+package org.franca.connectors.protobuf.tests
+
+typeCollection {
+	struct Response1{
+		Double uint32_1
+	}
+	
+	struct Request1 {
+		Response1 response1
+	}
+	
+	
+}
+
+
