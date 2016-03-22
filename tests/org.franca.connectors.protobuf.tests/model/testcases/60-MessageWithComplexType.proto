@@ -4,8 +4,8 @@ package org.franca.connectors.protobuf.tests;
 
 enum Scalar {
 	myString = 0 [default = 2];
-	mylong = 123456789;
-	myhex = 0x1af;
+	myLong = 123456789;
+	myHex = 0x1af;
 }
 
 message Request1 {
@@ -13,14 +13,41 @@ message Request1 {
 	optional int32 int32_1 = 2;
 	repeated uint32 uint32_1 = 3;
 	optional Scalar scalar1 = 4;
+	optional Response1 response1 = 5;
 	enum Scalar {
 		myString = 0 [default = 2];
-		mylong = 13;
-		myhex = 0x1;
+		myLong = 13;
+		myHex = 0x1;
 	}
 
-	message bla{
+	message Foo {
 
+		required string string1 = 1;
+		optional int32 int32_1 = 2;
+		repeated uint32 uint32_1 = 3;
+
+		optional Scalar scalar1 = 4;
+		enum Scalar {
+			myString = 0 [default = 2];
+			myLong = 135;
+			myHex = 0x1;
+		}
 	}
+
+	repeated group group1 = 10{
+		required string string1 = 1;
+	}
+
+
+
+}
+
+message Response1{
+	optional uint32 uint32_1 = 3;
+}
+
+message Response2{
+	repeated org.franca.connectors.protobuf.tests.Request1 request1 = 4;
+	optional uint32 uint32_1 = 3;
 }
 

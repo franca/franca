@@ -12,6 +12,7 @@ import org.franca.connectors.protobuf.ProtobufConnector
 import org.franca.connectors.protobuf.ProtobufModelContainer
 import org.franca.core.dsl.FrancaIDLTestsInjectorProvider
 import org.franca.core.dsl.FrancaPersistenceManager
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -37,16 +38,33 @@ class Protobuf2FrancaTests {
 	def test_60() {
 		test("60-ServiceWithOneRPC")
 		test("60-MessageWithScalarValueTypeFields")
-	}
-	
-	@Test
-	def test_complexTypeFields() {
 		test("60-MessageWithComplexTypeFields")
+		test("60-MessageWithComplexType")
+		test("60-MessageWithMessageField")
+	}
+
+	@Test
+	def test_OneOf() {
+		test("60-MessageWithOneof")
 	}
 	
 	@Test
-	def test_oneOf() {
-		test("60-MessageWithOneof")
+	def test_Extend() {
+		test("60-MessageWithExtend")
+	}
+	
+	@Test
+	@Ignore
+	def test_MultiFiles() {
+		test("MultiFiles")
+	}
+
+	@Test
+	@Ignore
+	def test_Option() {
+
+		//		test("Option")
+		test("EnumWithOption")
 	}
 
 	// TODO: add more testcases here
@@ -59,19 +77,21 @@ class Protobuf2FrancaTests {
 
 		// load the OMG IDL input model
 		val conn = new ProtobufConnector
-		val omgidl = conn.loadModel(MODEL_DIR + inputfile + PROTOBUF_EXT) as ProtobufModelContainer
+		val protobufidl = conn.loadModel(MODEL_DIR + inputfile + PROTOBUF_EXT) as ProtobufModelContainer
 
 		// do the actual transformation to Franca IDL and save the result
-		val fmodelGen = conn.toFranca(omgidl)
+		val fmodelGen = conn.toFranca(protobufidl)
+		EcoreUtil.resolveAll(fmodelGen)
 		fmodelGen.saveModel(GEN_DIR + inputfile + FRANCA_IDL_EXT)
-		
+
 		// load the reference Franca IDL model
 		val fmodelRef = loadModel(REF_DIR + inputfile + FRANCA_IDL_EXT)
 		EcoreUtil.resolveAll(fmodelRef.eResource)
 
 		// use EMF Compare to compare both Franca IDL models (the generated and the reference model)
-		val rset1 = fmodelGen.eResource.resourceSet
 		val rset2 = fmodelRef.eResource.resourceSet
+		val rset1 = fmodelGen.eResource.resourceSet
+
 		val scope = EMFCompare.createDefaultScope(rset1, rset2)
 		val comparison = EMFCompare.builder.build.compare(scope)
 		val List<Diff> differences = comparison.differences

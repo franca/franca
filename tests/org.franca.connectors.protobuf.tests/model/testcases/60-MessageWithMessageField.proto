@@ -1,0 +1,15 @@
+syntax = "proto2";
+
+package org.franca.connectors.protobuf.tests;
+
+message Response1{
+	optional double uint32_1 = 3;
+}
+
+message Request1 {
+	optional Response1 response1 = 5;
+}
+
+
+
+

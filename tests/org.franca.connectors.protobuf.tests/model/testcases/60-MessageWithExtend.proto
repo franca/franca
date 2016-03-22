@@ -9,11 +9,15 @@ enum Scalar {
 }
 
 message Request1 {
+	extensions 900 to 1000;
 	required string string1 = 1;
 	repeated oneof test_oneOf{
+	 	extensions 700 to 800;
+
 	 	string string1 = 2;
 
 	 	group Group1 = 5[default = 3] {
+	 		extensions 800 to 900;
 			optional uint32 uint32_1 = 3;
 	 		repeated Scalar scalar1 = 4;
 	 	}
@@ -24,6 +28,17 @@ message Request1 {
 	 		repeated Group1 group1 = 999;
 	 	}
 	}
+}
+
+required group group1 = 1{
+}
+
+extend Request1{
+	repeated uint32 uint321 = 901;
+}
+
+extend Request1{
+	repeated uint32 uint = 902;
 }
 
 
