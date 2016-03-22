@@ -12,11 +12,11 @@ import org.franca.connectors.protobuf.ProtobufConnector
 import org.franca.connectors.protobuf.ProtobufModelContainer
 import org.franca.core.dsl.FrancaIDLTestsInjectorProvider
 import org.franca.core.dsl.FrancaPersistenceManager
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 
 import static org.junit.Assert.assertEquals
-import org.junit.Ignore
 
 @RunWith(typeof(XtextRunner2))
 @InjectWith(typeof(FrancaIDLTestsInjectorProvider))
@@ -52,6 +52,12 @@ class Protobuf2FrancaTests {
 	def test_Extend() {
 		test("60-MessageWithExtend")
 	}
+	
+	@Test
+	@Ignore
+	def test_MultiFiles() {
+		test("MultiFiles")
+	}
 
 	@Test
 	@Ignore
@@ -71,10 +77,10 @@ class Protobuf2FrancaTests {
 
 		// load the OMG IDL input model
 		val conn = new ProtobufConnector
-		val omgidl = conn.loadModel(MODEL_DIR + inputfile + PROTOBUF_EXT) as ProtobufModelContainer
+		val protobufidl = conn.loadModel(MODEL_DIR + inputfile + PROTOBUF_EXT) as ProtobufModelContainer
 
 		// do the actual transformation to Franca IDL and save the result
-		val fmodelGen = conn.toFranca(omgidl)
+		val fmodelGen = conn.toFranca(protobufidl)
 		EcoreUtil.resolveAll(fmodelGen)
 		fmodelGen.saveModel(GEN_DIR + inputfile + FRANCA_IDL_EXT)
 

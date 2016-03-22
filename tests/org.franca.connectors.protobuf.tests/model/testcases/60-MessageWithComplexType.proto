@@ -46,3 +46,8 @@ message Response1{
 	optional uint32 uint32_1 = 3;
 }
 
+message Response2{
+	repeated org.franca.connectors.protobuf.tests.Request1 request1 = 4;
+	optional uint32 uint32_1 = 3;
+}
+

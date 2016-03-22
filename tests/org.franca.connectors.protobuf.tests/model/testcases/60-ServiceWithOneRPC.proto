@@ -1,9 +1,8 @@
-
 syntax = "proto2";
 
-//message Request1 {}
-//message Response1 {}
+message Request1 {}
+message Response1 {}
 
 service ExampleService1 {
-//	rpc Search (Request1) returns (Response1);
+	rpc Search (Request1) returns (Response1);
 }

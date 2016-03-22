@@ -23,6 +23,11 @@ typeCollection {
 		UInt32 uint32_1
 	}
 	
+	struct Response2{
+		Request1 [] request1
+		UInt32 uint32_1
+	}
+	
 	enumeration Request1_Scalar{
 		myString
 		myLong
@@ -41,13 +46,10 @@ typeCollection {
 		UInt32 [] uint32_1
 		Request1_Foo_Scalar scalar1
 	}
-	
-	
 
 	struct Request1_Group1{
 		String string1
 	}
-	
 }
 
 

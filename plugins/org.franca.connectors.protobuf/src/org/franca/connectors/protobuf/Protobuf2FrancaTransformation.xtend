@@ -12,21 +12,26 @@ import com.google.eclipse.protobuf.protobuf.ComplexTypeLink
 import com.google.eclipse.protobuf.protobuf.Enum
 import com.google.eclipse.protobuf.protobuf.Extensions
 import com.google.eclipse.protobuf.protobuf.Group
+import com.google.eclipse.protobuf.protobuf.Import
 import com.google.eclipse.protobuf.protobuf.Literal
 import com.google.eclipse.protobuf.protobuf.Message
 import com.google.eclipse.protobuf.protobuf.MessageElement
 import com.google.eclipse.protobuf.protobuf.MessageField
+import com.google.eclipse.protobuf.protobuf.MessageLink
 import com.google.eclipse.protobuf.protobuf.Modifier
 import com.google.eclipse.protobuf.protobuf.OneOf
 import com.google.eclipse.protobuf.protobuf.Option
 import com.google.eclipse.protobuf.protobuf.Package
 import com.google.eclipse.protobuf.protobuf.Protobuf
 import com.google.eclipse.protobuf.protobuf.ProtobufPackage
+import com.google.eclipse.protobuf.protobuf.Rpc
 import com.google.eclipse.protobuf.protobuf.ScalarTypeLink
 import com.google.eclipse.protobuf.protobuf.Service
+import com.google.eclipse.protobuf.protobuf.Stream
 import com.google.eclipse.protobuf.protobuf.TypeExtension
 import com.google.inject.Inject
 import java.util.LinkedList
+import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.xtend.lib.annotations.Data
 import org.franca.core.framework.TransformationLogger
@@ -53,6 +58,7 @@ class Protobuf2FrancaTransformation {
 	@Inject extension TransformationLogger
 
 	val LinkedList<FType> types = newLinkedList
+	val LinkedList<org.franca.core.franca.Import> imports = newLinkedList
 
 	var TransformContext currentContext
 	var int index
@@ -63,20 +69,19 @@ class Protobuf2FrancaTransformation {
 
 	def create factory.createFModel transform(Protobuf src) {
 		clearIssues
-
 		val typeCollection = typeCollections.head ?: factory.createFTypeCollection
 		index = 0
-
-		if (!types.empty) {
+		if (!types.empty || !imports.empty) {
 			types.clear
-			addIssue(IMPORT_WARNING, src, ProtobufPackage::PROTOBUF,
+			imports.clear
+			addIssue(IMPORT_WARNING, src, ProtobufPackage.PROTOBUF,
 				"One instance may be executing two transformations")
 		}
 
 		name = src.elements.filter(Package).head?.name ?: "dummy_package"
 
 		if (src.elements.empty) {
-			addIssue(IMPORT_WARNING, src, ProtobufPackage::PROTOBUF__ELEMENTS,
+			addIssue(IMPORT_WARNING, src, ProtobufPackage.PROTOBUF__ELEMENTS,
 				"Empty proto file, created empty Franca model")
 		} else {
 			for (elem : src.elements) {
@@ -97,10 +102,16 @@ class Protobuf2FrancaTransformation {
 						index ++;
 						typeCollection.types += elem.transformTypeExtension
 					}
+					Import: {
+						val importElement = elem.transformImport
+						if (!importElement.importURI.nullOrEmpty){
+								it.imports += importElement
+							}
+					}
 					case elem instanceof Package || elem instanceof Option: {
 					}
 					default: {
-						addIssue(FEATURE_NOT_HANDLED_YET, elem, ProtobufPackage::PROTOBUF__ELEMENTS,
+						addIssue(FEATURE_NOT_HANDLED_YET, elem, ProtobufPackage.PROTOBUF__ELEMENTS,
 							"Unsupported protobuf element '" + elem.class.name + "', will be ignored")
 					}
 				}
@@ -109,6 +120,39 @@ class Protobuf2FrancaTransformation {
 		typeCollection.types += types
 		if (!typeCollection.types.empty)
 			typeCollections += typeCollection
+	}
+	
+	private def create factory.createImport transformImport(Import elem) {
+		val uri = URI.createFileURI(elem.importURI)
+		if (uri !== null) {
+			if (!uri.lastSegment.endsWith(".proto")) {
+				//TODO
+				addIssue(FEATURE_NOT_HANDLED_YET, elem, ProtobufPackage.IMPORT__IMPORT_URI,
+					"Unsupported uri element '" + elem.importURI + "', will be ignored")
+			}
+			else {
+				if (!uri.isFile){
+					addIssue(IMPORT_ERROR, elem, ProtobufPackage.IMPORT__IMPORT_URI,
+					"Couldn't find the import source file: '" + elem.importURI + "', will be ignored")
+					return ;
+				}
+				val conn = new ProtobufConnector
+				val normalizedUri = elem.eResource.resourceSet.URIConverter.normalize(uri)
+				val protobufidl = conn.loadModel(normalizedUri.toFileString) as ProtobufModelContainer
+				val fmodelGen = conn.toFranca(protobufidl)
+				
+				elem.eResource.resourceSet.createResource(normalizedUri)
+				
+				importURI = uri.lastSegment.split("\\.").get(0).concat(".fidl")
+				importedNamespace = fmodelGen.name+".*"
+			}
+		} else
+			addIssue(
+				IMPORT_ERROR,
+				elem,
+				ProtobufPackage.IMPORT__IMPORT_URI,
+				"Invalid import URI '" + elem.importURI + "', will be ignored"
+			)
 	}
 
 	def private create factory.createFStructType transformTypeExtension(TypeExtension typeExtension) {
@@ -149,7 +193,7 @@ class Protobuf2FrancaTransformation {
 	}
 
 	def private encapsulateTypeRef(FType type) {
-		val it = FrancaFactory::eINSTANCE.createFTypeRef
+		val it = FrancaFactory.eINSTANCE.createFTypeRef
 		derived = type;
 		return it
 	}
@@ -216,7 +260,7 @@ class Protobuf2FrancaTransformation {
 				return null
 			}
 			default: {
-				addIssue(FEATURE_NOT_HANDLED_YET, elem, ProtobufPackage::MESSAGE__ELEMENTS,
+				addIssue(FEATURE_NOT_HANDLED_YET, elem, ProtobufPackage.MESSAGE__ELEMENTS,
 					"Unsupported message element '" + elem.class.name + "', will be ignored")
 				return null
 			}
@@ -251,7 +295,7 @@ class Protobuf2FrancaTransformation {
 			case BYTES:
 				predefined = FBasicTypeId.BYTE_BUFFER
 			default: {
-				addIssue(FEATURE_NOT_HANDLED_YET, scalarType, ProtobufPackage::MESSAGE_FIELD,
+				addIssue(FEATURE_NOT_HANDLED_YET, scalarType, ProtobufPackage.MESSAGE_FIELD,
 					"Unsupported message element '" + scalarType.class.name + "', will be ignored")
 			}
 		}
@@ -259,10 +303,7 @@ class Protobuf2FrancaTransformation {
 
 	def private dispatch transformTypeLink(ComplexTypeLink complexTypeLink) {
 		if (complexTypeLink.target.eIsProxy) {
-
-			//FIXME
 			val resourceSet = complexTypeLink.eResource.resourceSet
-			EcoreUtil.resolveAll(resourceSet)
 			EcoreUtil.resolve(complexTypeLink.target, resourceSet)
 		}
 		complexTypeLink.target.transformComplexType
@@ -303,11 +344,32 @@ class Protobuf2FrancaTransformation {
 
 		// transform elements of this service
 		for (elem : service.elements) {
-			// TODO
+			switch elem {
+				Rpc: {
+					methods += elem.transformRpc
+				}
+				Stream: {
+					//TODO
+				}
+				Option: {
+					//TODO confirm whether skip it.
+				}
+			}
 		}
 	}
 
+	def private create factory.createFArgument transformMessageLink(MessageLink messageLink) {
+		type = encapsulateTypeRef(messageLink.target.transformMessage)
+		name = messageLink.target.name.toFirstLower
+	}
+
+	def private create factory.createFMethod transformRpc(Rpc rpc) {
+		name = rpc.name
+		inArgs += rpc.argType.transformMessageLink
+		outArgs += rpc.returnType.transformMessageLink
+	}
+
 	def private factory() {
-		FrancaFactory::eINSTANCE
+		FrancaFactory.eINSTANCE
 	}
 }
