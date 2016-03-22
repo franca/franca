@@ -16,6 +16,7 @@ import org.csu.idl.idlmm.TranslationUnit;
 import org.csu.idl.xtext.loader.ExtendedIDLLoader;
 import org.csu.idl.xtext.loader.IDLLoader;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
 import org.franca.core.framework.IFrancaConnector;
 import org.franca.core.framework.IModelContainer;
 import org.franca.core.framework.IssueReporter;
@@ -33,10 +34,13 @@ public class OMGIDLConnector implements IFrancaConnector {
 //	private String fileExtension = "idl";
 
 	private Set<TransformationIssue> lastTransformationIssues = null;
-
+	
+	private Map<EObject, EObject> transformationMap;
+	
 	/** constructor */
 	public OMGIDLConnector() {
 		injector = Guice.createInjector(new OMGIDLConnectorModule());
+		transformationMap = new LinkedHashMap<EObject, EObject>();
 	}
 	
 	@Override
@@ -86,8 +90,8 @@ public class OMGIDLConnector implements IFrancaConnector {
 		
 		OMGIDL2FrancaTransformation trafo = injector.getInstance(OMGIDL2FrancaTransformation.class);
 		OMGIDLModelContainer omg = (OMGIDLModelContainer)model;
-		FModel fmodel = trafo.transform(omg.model());
-		
+		FModel fmodel = trafo.transform(omg.model(),transformationMap);
+		transformationMap = trafo.getTransformationMap();
 		lastTransformationIssues = trafo.getTransformationIssues();
 		System.out.println(IssueReporter.getReportString(lastTransformationIssues));
 

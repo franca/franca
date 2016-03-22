@@ -19,6 +19,38 @@ import org.franca.core.franca.FrancaFactory
 
 import static org.franca.core.framework.TransformationIssue.*
 import org.csu.idl.idlmm.Include
+import org.csu.idl.idlmm.StructDef
+import org.csu.idl.idlmm.Field
+import org.csu.idl.idlmm.PrimitiveDef
+import org.franca.core.franca.FBasicTypeId
+import org.franca.core.franca.FStructType
+import org.csu.idl.idlmm.IDLType
+import org.csu.idl.idlmm.Typed
+import org.csu.idl.idlmm.EnumDef
+import org.csu.idl.idlmm.EnumMember
+import org.franca.core.franca.FEnumerationType
+import org.franca.core.franca.FEnumerator
+import org.csu.idl.idlmm.UnionDef
+import org.csu.idl.idlmm.UnionField
+import org.franca.core.franca.FUnionType
+import org.franca.core.franca.FType
+import org.csu.idl.idlmm.AliasDef
+import org.csu.idl.idlmm.ConstantDef
+import org.franca.core.franca.FConstantDef
+import org.csu.idl.idlmm.Expression
+import org.csu.idl.idlmm.BinaryExpression
+import org.franca.core.franca.FExpression
+import org.franca.core.franca.FOperator
+import org.csu.idl.idlmm.UnaryExpression
+import org.csu.idl.idlmm.ConstantDefRef
+import org.csu.idl.idlmm.ValueExpression
+import java.math.BigInteger
+import org.franca.core.franca.FTypeRef
+import org.csu.idl.idlmm.TypedefDef
+import java.util.Map
+import org.eclipse.emf.ecore.EObject
+import java.lang.reflect.Type
+import org.franca.core.franca.FEvaluableElement
 
 /**
  * Model-to-model transformation from OMG IDL (aka CORBA) to Franca IDL.  
@@ -27,7 +59,9 @@ class OMGIDL2FrancaTransformation {
 	val static OMG_IDL_EXT = '.idl'
 	val static FRANCA_IDL_EXT = '.fidl'
 //	val static DEFAULT_NODE_NAME = "default"
-	 
+	
+	Map<EObject, EObject> map_IDL_Franca
+	
 	@Inject extension TransformationLogger
 
 //	List<FType> newTypes
@@ -35,12 +69,18 @@ class OMGIDL2FrancaTransformation {
 	def getTransformationIssues() {
 		return getIssues
 	}
+	
+	def getTransformationMap() {
+		map_IDL_Franca ?: newLinkedHashMap()
+	}
 
-	def FModel transform(TranslationUnit src) {
+	def FModel transform(TranslationUnit src, Map<EObject, EObject> map) {
 		clearIssues
-
+		
+		map_IDL_Franca = map
+		
 		val it = factory.createFModel
-
+		map_IDL_Franca.put(src, it)
 		// TODO: handle src.includes
 		src.includes.forEach[include | include.transformIncludeDeclaration(it)]
 		
@@ -54,7 +94,6 @@ class OMGIDL2FrancaTransformation {
 					src, IdlmmPackage::TRANSLATION_UNIT__IDENTIFIER,
 					"OMG IDL translation unit with more than one definition, ignoring all but the first one")
 			}
-			println(src.identifier)
 			// TODO: what should we do with TUs that have more than one definition?
 			val first = src.contains.get(0)
 			if (first instanceof ModuleDef) {
@@ -66,7 +105,9 @@ class OMGIDL2FrancaTransformation {
 
 				// map all definitions of this module to the Franca model
 				for(d : first.contains) {
-					d.transformDefinition(it)
+					if(!map_IDL_Franca.containsKey(d)) {
+						d.transformDefinition(it)						
+					}
 				}
 			} else {
 				// TODO: check if this restriction is what we want
@@ -78,8 +119,7 @@ class OMGIDL2FrancaTransformation {
 		it
 	}
 
-
-	def private dispatch transformDefinition(InterfaceDef src, FModel target) {
+	def private dispatch void transformDefinition(InterfaceDef src, FModel target) {
 		factory.createFInterface => [
 			// transform all properties of this InterfaceDef
 			name = src.identifier
@@ -91,13 +131,222 @@ class OMGIDL2FrancaTransformation {
 	}
 
 	// TODO: handle all kinds of OMG IDL definitions here
+	def private dispatch void transformDefinition(AliasDef src, FModel target) {
+		factory.createFTypeDef => [
+			name = src.identifier
+			if (src.sharedType == null) {
+				actualType = src.containedType.transformIDLType
+			}
+			target.addInAnonymousTypeCollection(it)
+		]
+	}
+	
+	def private dispatch void transformDefinition(StructDef src, FModel target) {
+		factory.createFStructType => [
+			name = src.identifier
+			src.members.forEach[member | member.transformTyped(it)]
+			target.addInAnonymousTypeCollection(it)
+		]
+	}
+	
+	def private dispatch void transformDefinition(EnumDef src, FModel target) {
+		factory.createFEnumerationType => [
+			name = src.identifier
+			src.members.forEach[member | member.transformDefinition(it)]
+			target.addInAnonymousTypeCollection(it)
+			map_IDL_Franca.put(src,it)
+		]
+	}
+	
+	def private dispatch void transformDefinition(UnionDef src, FModel target) {
+		factory.createFUnionType => [
+			name = src.identifier
+			src.unionMembers.forEach[member | member.transformTyped(it)]
+			target.addInAnonymousTypeCollection(it)
+		]
+	}
+	
+	def private dispatch void transformDefinition(EnumMember src, FEnumerationType target) {
+		factory.createFEnumerator => [
+			name = src.identifier
+			target.enumerators.add(it)
+			map_IDL_Franca.put(src, it)
+		]
+	}
+	
+	def private dispatch void transformDefinition(ConstantDef src, FModel target) {
+		factory.createFConstantDef => [
+			name = src.identifier
+			if (src.sharedType == null) {
+				type = src.containedType.transformIDLType
+			} else {
+				type = src.sharedType.transformIDLType
+			}
+			rhs = src.constValue.transformExpression(type)
+			target.addInAnonymousTypeCollection(it)
+		]
+	}
 	
 	// catch-all for this dispatch method
-	def private dispatch transformDefinition(Contained src, FModel target) {
-				addIssue(FEATURE_NOT_HANDLED_YET,
-					src, IdlmmPackage::CONTAINED__IDENTIFIER,
-					"OMG IDL definition '" + src.class.name + "' not handled yet (object '" + src.identifier + "')")
-			
+	def private dispatch void transformDefinition(Contained src, FModel target) {
+		addIssue(FEATURE_NOT_HANDLED_YET,
+			src, IdlmmPackage::CONTAINED__IDENTIFIER,
+			"OMG IDL definition '" + src.class.name + "' not handled yet (object '" + src.identifier + "')")
+	}
+	
+	def private dispatch transformTyped(Typed src, FStructType target) {
+		addIssue(FEATURE_NOT_HANDLED_YET,
+			src, IdlmmPackage::TYPED,
+			"OMG IDL Typed '" + src.class.name + "' not handled yet (object '" + src.toString + "')")
+	}
+	
+	def private dispatch transformTyped(Field src, FStructType target) {
+		factory.createFField => [
+			name = src.identifier
+			if (src.containedType instanceof PrimitiveDef) {
+				type = (src.containedType as PrimitiveDef).transformIDLType()
+			}
+			target.elements.add(it)
+		]
+	}
+	
+	def private dispatch transformTyped(UnionField src, FUnionType target) {
+		factory.createFField => [
+			name = src.identifier
+			if (src.containedType instanceof PrimitiveDef) {
+				type = (src.containedType as PrimitiveDef).transformIDLType()
+			}
+			target.elements.add(it)
+		]
+	}
+	
+	def private dispatch FTypeRef transformIDLType(IDLType src) {
+		addIssue(FEATURE_NOT_HANDLED_YET,
+			src, IdlmmPackage::IDL_TYPE,
+			"OMG IDL IDLType '" + src.class.name + "' not handled yet (object '" + src.typeCode + "')")
+		return null
+	}
+	
+	def private dispatch FTypeRef transformIDLType(PrimitiveDef src) {
+		factory.createFTypeRef => [
+			predefined = switch src.kind {
+				case PK_SHORT: FBasicTypeId.INT16
+				case PK_LONG: FBasicTypeId.INT32
+				case PK_LONGLONG: FBasicTypeId.INT64
+				case PK_USHORT: FBasicTypeId.UINT16
+				case PK_ULONG: FBasicTypeId.UINT32
+				case PK_ULONGLONG: FBasicTypeId.UINT64
+				case PK_FLOAT: FBasicTypeId.FLOAT
+				case PK_DOUBLE: FBasicTypeId.DOUBLE
+				case PK_LONGDOUBLE: FBasicTypeId.DOUBLE
+				case PK_STRING: FBasicTypeId.STRING
+				case PK_WSTRING: FBasicTypeId.STRING
+				case PK_BOOLEAN: FBasicTypeId.BOOLEAN
+				default: FBasicTypeId.UNDEFINED
+			}
+		]
+	}
+	
+	def private dispatch FTypeRef transformIDLType(EnumDef src) {
+		factory.createFTypeRef => [
+			val fEnumerationType = map_IDL_Franca.get(src)
+			if (fEnumerationType instanceof FEnumerationType) {
+				derived = fEnumerationType
+			} else if (fEnumerationType == null) {
+				val translationUnit = src.translationUnit
+				if (map_IDL_Franca.get(translationUnit) != null) {
+					src.transformDefinition(map_IDL_Franca.get(src.translationUnit))
+					derived = (map_IDL_Franca.get(src) as FEnumerationType)
+				} else {
+					addIssue(FEATURE_NOT_HANDLED_YET,
+						translationUnit, IdlmmPackage::TRANSLATION_UNIT,
+						"OMG IDL Translation Unit '" + translationUnit.class.name + "' not handled yet (object '" + translationUnit + "')")
+				}
+			}
+		]
+	}
+	
+	def private dispatch transformExpression(Expression src, FTypeRef type) {
+		addIssue(FEATURE_NOT_HANDLED_YET,
+			src, IdlmmPackage::EXPRESSION,
+			"OMG IDL Expression '" + src.class.name + "' not handled yet (object '" + src + "')")
+	}
+	
+	def private dispatch FExpression transformExpression(BinaryExpression src, FTypeRef type) {
+		factory.createFBinaryOperation => [
+			left = src.left.transformExpression(type)
+			op = src.operator.transformOperator
+			right = src.right.transformExpression(type)
+		]
+	}
+	
+	def private dispatch FExpression transformExpression(UnaryExpression src, FTypeRef type) {
+		factory.createFUnaryOperation => [
+			operand = src.expression.transformExpression(type)
+			op = src.operator.transformOperator
+		]
+	}
+	
+	def private dispatch FExpression transformExpression (ValueExpression src, FTypeRef type) {
+		val regex_INT = '[0-9]+'
+		val regex_HEX_LITERAL = '0x[0-9a-fA-F]+' //('0'..'9'|'a'..'f'|'A'..'F')+
+		val regex_WIDE_STRING_LITERAL = "L\"(.*)\""
+		val regex_INTEGER_LITERAL = '[0-9]+\\.[0]+'
+		val regex_FLOATING_PT_LITERAL = '(([0-9]*\\.[0-9]+)|([0-9]+))[dD]'
+		val regex_BOOLEAN_LITERAL = '(TRUE)|(FALSE)'
+		val expression = switch src.value {
+			case src.value.matches(regex_INT): {
+				 switch (type.derived) {
+				 	case (type.derived instanceof FEnumerationType): 
+				 		factory.createFQualifiedElementRef => [
+				 			element = 
+				 			 ((type.derived as FEnumerationType).enumerators.get(Integer.valueOf(src.value)) as FEvaluableElement)
+				 			]
+				 	default: factory.createFIntegerConstant => [^val = new BigInteger(src.value)]
+				 }
+			}
+			case src.value.matches(regex_INTEGER_LITERAL): factory.createFIntegerConstant => [^val = new BigInteger(src.value.substring(0, src.value.indexOf('.')))]
+			case src.value.matches(regex_HEX_LITERAL): factory.createFIntegerConstant => [^val = new BigInteger(src.value.substring(2), 16)]
+			case src.value.matches(regex_WIDE_STRING_LITERAL): factory.createFStringConstant => [^val = src.value.substring(2, src.value.length-1)]
+			case src.value.matches(regex_FLOATING_PT_LITERAL): {
+				switch (type.predefined) {
+					case FBasicTypeId.DOUBLE: factory.createFDoubleConstant => [^val = Double.valueOf(src.value)]
+					default: factory.createFFloatConstant => [^val = new Float(src.value)]
+				}
+			} 
+			case src.value.matches(regex_BOOLEAN_LITERAL): factory.createFBooleanConstant => [^val = new Boolean(src.value)]
+			default: factory.createFStringConstant => [^val = src.value.substring(1, src.value.length-1)]
+		}
+		return expression
+	}
+	
+	def private dispatch FExpression transformExpression (ConstantDefRef src, FTypeRef type) {
+		
+	}
+	
+	/*-------------------------------------------------------------------------------------------*/
+	
+	def private transformOperator (String operator) {
+		val op = switch operator {
+			case '|' : FOperator.OR
+			case '^' : null
+			case '&' : FOperator.AND
+			case '>>' : null
+			case '<<' : null
+			case '+' : FOperator.ADDITION
+			case '-' : FOperator.SUBTRACTION
+			case '*' : FOperator.MULTIPLICATION
+			case '/' : FOperator.DIVISION
+			case '%' : null
+			case '~' : null
+			default : null
+		}
+		if (op == null) {
+			addIssue(FEATURE_NOT_HANDLED_YET,
+			null, IdlmmPackage::EXPRESSION,
+			"OMG IDL Operatior '" + operator + "' in Expression not handled yet")
+		}
+		return op
 	}
 	
 	def private transformIncludeDeclaration (Include src, FModel target) {
@@ -121,7 +370,48 @@ class OMGIDL2FrancaTransformation {
 		}
 		return uri + FRANCA_IDL_EXT
 	}
-
+	
+	def private createTypeCollection (String name, int major, int minor) {
+		factory.createFTypeCollection => [
+			it.name = name
+			it.version = factory.createFVersion => [
+				it.major = major
+				it.minor = minor
+			]
+		]
+	}
+	
+	def private dispatch addInAnonymousTypeCollection (FModel target, FType type) {
+		if (target.typeCollections.isNullOrEmpty) {
+			val typeCollection = createTypeCollection(null, 1, 0)
+			typeCollection.types.add(type)
+			target.typeCollections.add(typeCollection)
+		} else {
+			target.typeCollections.get(0).types.add(type)
+		}
+	}
+	
+	def private dispatch addInAnonymousTypeCollection (FModel target, FConstantDef consttantDef) {
+		if (target.typeCollections.isNullOrEmpty) {
+			val typeCollection = createTypeCollection(null, 1, 0)
+			typeCollection.constants.add(consttantDef)
+			target.typeCollections.add(typeCollection)
+		} else {
+			target.typeCollections.get(0).constants.add(consttantDef)
+		}
+	}
+	
+	def private getTranslationUnit (EObject object) {
+		var obj = object.eContainer
+		while (obj != null) {
+			if (obj instanceof TranslationUnit){
+				return obj
+			}
+			obj = obj.eContainer
+		}
+		return obj
+	}
+	
 	def private factory() {
 		FrancaFactory::eINSTANCE
 	}

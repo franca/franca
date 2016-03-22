@@ -6,6 +6,7 @@ import org.csu.idl.idlmm.IdlmmPackage
 import org.eclipse.emf.compare.Diff
 import org.eclipse.emf.compare.EMFCompare
 import org.eclipse.emf.compare.internal.spec.ResourceAttachmentChangeSpec
+import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.xtext.junit4.InjectWith
 import org.eclipselabs.xtext.utils.unittesting.XtextRunner2
 import org.franca.connectors.omgidl.OMGIDLConnector
@@ -39,11 +40,18 @@ class OMGIDL2FrancaTests {
 		IdlmmPackage.eINSTANCE.eClass()
 		test("11-EmptyInterfacesWithIncludes")
 	}
-//	
-//	def test_12() {
-//		IdlmmPackage.eINSTANCE.eClass()
-//		test("12-TypeDeclarations")
-//	}
+	
+	@Test
+	def test_12() {
+		IdlmmPackage.eINSTANCE.eClass()
+		test("12-TypeDeclarations")
+	}
+	
+	@Test
+	def test_13() {
+		IdlmmPackage.eINSTANCE.eClass()
+		test("13-ConstantDeclarations")
+	}
 
 	/**
 	 * Utility method for executing one transformation and comparing the result with a reference model.
@@ -57,11 +65,12 @@ class OMGIDL2FrancaTests {
 		// for each generated OMG IDL model
 		for (iomgidl: map_OMGIDLModelContainer_FileName.keySet.toArray.reverseView) {
 			val omgidl = iomgidl as OMGIDLModelContainer
-			val fmodelGen = conn.toFranca(omgidl)
+			var fmodelGen = conn.toFranca(omgidl)
 			val fileName = map_OMGIDLModelContainer_FileName.get(iomgidl)
 			fmodelGen.saveModel(GEN_DIR + fileName + FRANCA_IDL_EXT)
 			// load the reference Franca IDL model
 			val fmodelRef = loadModel(REF_DIR + fileName + FRANCA_IDL_EXT)
+			EcoreUtil.resolveAll(fmodelRef)
 			// use EMF Compare to compare both Franca IDL models (the generated and the reference model)
 			val rset1 = fmodelGen.eResource.resourceSet
 			val rset2 = fmodelRef.eResource.resourceSet

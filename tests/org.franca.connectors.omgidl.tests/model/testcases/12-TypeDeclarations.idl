@@ -1,6 +1,4 @@
-// empty interfaces with type declarations 
-#include "orb.idl"
-#include "TypeCode.idl"
+// empty interfaces with type declarations
 
 module testcase12 {
 	struct FooStruct {
@@ -21,9 +19,17 @@ module testcase12 {
 		octet octet_member;
 		any any_member;
 		Object object_member;
-		void void_member;
-		fixed fixed_member;
-	}
+	};
+	enum FooEnum {
+		EnumMember1,
+		EnumMember2,
+		EnumMember3
+	};
+	union FooUnion switch (short) {
+		case 0: long UnionMember1;
+		case 1: double UnionMember2;
+	};
+	typedef long FooTypeDef1;
 	interface ExampleInterface1 {
 	};
 	

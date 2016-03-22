@@ -4,25 +4,39 @@ typeCollection
 {
 	version { major 1 minor 0 }
 	struct FooStruct {
-		Int16 short_member;
-		Int32 long_member;
-		Int64 longlong_member;
-		UInt16 ushort_member;
-		UInt32 ulong_member;
-		UInt64 ulonglong_member;
-		Float float_member;
-		Double double_member;
-		Double long_double_member; // no Long Double in Franca
-		undefined char_member; // no char in Franca
-		undefined wchar_member; // no wchar in Franca
-		String string_member;
-		String wstring_member; // no Wide String in Franca
-		Boolean boolean_member;
+		Int16 short_member
+		Int32 long_member
+		Int64 longlong_member
+		UInt16 ushort_member
+		UInt32 ulong_member
+		UInt64 ulonglong_member
+		Float float_member
+		Double double_member
+		Double long_double_member // no Long Double in Franca
+		undefined char_member // no char in Franca
+		undefined wchar_member // no wchar in Franca
+		String string_member
+		String wstring_member // no Wide String in Franca
+		Boolean boolean_member
 		// undefined types in Franca
-		undefined octet_member;
-		undefined any_member;
-		undefined object_member;
-		undefined void_member;
-		undefined fixed_member;
+		undefined octet_member
+		undefined any_member
+		undefined object_member
 	}
+	enumeration FooEnum {
+		EnumMember1,
+		EnumMember2,
+		EnumMember3
+	}
+	union FooUnion {
+		Int32 UnionMember1
+		Double UnionMember2
+	}
+	typedef FooTypeDef1 is Int32
+}
+
+interface ExampleInterface1 {
+}
+
+interface ExampleInterface2 {
 }
