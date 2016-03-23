@@ -3,6 +3,10 @@ package testcase12
 typeCollection 
 {
 	version { major 1 minor 0 }
+	struct FooNestedStruct {
+		Int16 short_member
+		UInt16 ushort_member
+	}
 	struct FooStruct {
 		Int16 short_member
 		Int32 long_member
@@ -22,17 +26,25 @@ typeCollection
 		undefined octet_member
 		undefined any_member
 		undefined object_member
+		FooNestedStruct struct_member
 	}
+	typedef FooTypeDef2 is FooStruct
 	enumeration FooEnum {
-		EnumMember1,
-		EnumMember2,
+		EnumMember1
+		EnumMember2
 		EnumMember3
 	}
+	
 	union FooUnion {
 		Int32 UnionMember1
 		Double UnionMember2
 	}
 	typedef FooTypeDef1 is Int32
+	
+	array FooArray_1 of UInt16
+	array FooArray_2 of FooArray_1
+	array FooArray_3 of FooArray_2
+	typedef FooArray is FooArray_3
 }
 
 interface ExampleInterface1 {

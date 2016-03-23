@@ -51,6 +51,8 @@ import java.util.Map
 import org.eclipse.emf.ecore.EObject
 import java.lang.reflect.Type
 import org.franca.core.franca.FEvaluableElement
+import org.csu.idl.idlmm.ArrayDef
+import org.franca.core.franca.FModelElement
 
 /**
  * Model-to-model transformation from OMG IDL (aka CORBA) to Franca IDL.  
@@ -58,6 +60,7 @@ import org.franca.core.franca.FEvaluableElement
 class OMGIDL2FrancaTransformation {
 	val static OMG_IDL_EXT = '.idl'
 	val static FRANCA_IDL_EXT = '.fidl'
+	val static HYPHEN = '_'
 //	val static DEFAULT_NODE_NAME = "default"
 	
 	Map<EObject, EObject> map_IDL_Franca
@@ -106,7 +109,7 @@ class OMGIDL2FrancaTransformation {
 				// map all definitions of this module to the Franca model
 				for(d : first.contains) {
 					if(!map_IDL_Franca.containsKey(d)) {
-						d.transformDefinition(it)						
+						map_IDL_Franca.put(d, d.transformDefinition(it))					
 					}
 				}
 			} else {
@@ -119,7 +122,7 @@ class OMGIDL2FrancaTransformation {
 		it
 	}
 
-	def private dispatch void transformDefinition(InterfaceDef src, FModel target) {
+	def private dispatch FModelElement transformDefinition(InterfaceDef src, FModel target) {
 		factory.createFInterface => [
 			// transform all properties of this InterfaceDef
 			name = src.identifier
@@ -131,17 +134,19 @@ class OMGIDL2FrancaTransformation {
 	}
 
 	// TODO: handle all kinds of OMG IDL definitions here
-	def private dispatch void transformDefinition(AliasDef src, FModel target) {
+	def private dispatch FModelElement transformDefinition(AliasDef src, FModel target) {
 		factory.createFTypeDef => [
 			name = src.identifier
 			if (src.sharedType == null) {
 				actualType = src.containedType.transformIDLType
+			} else {
+				actualType = src.sharedType.transformIDLType
 			}
 			target.addInAnonymousTypeCollection(it)
 		]
 	}
 	
-	def private dispatch void transformDefinition(StructDef src, FModel target) {
+	def private dispatch FModelElement transformDefinition(StructDef src, FModel target) {
 		factory.createFStructType => [
 			name = src.identifier
 			src.members.forEach[member | member.transformTyped(it)]
@@ -149,16 +154,15 @@ class OMGIDL2FrancaTransformation {
 		]
 	}
 	
-	def private dispatch void transformDefinition(EnumDef src, FModel target) {
+	def private dispatch FModelElement transformDefinition(EnumDef src, FModel target) {
 		factory.createFEnumerationType => [
 			name = src.identifier
 			src.members.forEach[member | member.transformDefinition(it)]
 			target.addInAnonymousTypeCollection(it)
-			map_IDL_Franca.put(src,it)
 		]
 	}
 	
-	def private dispatch void transformDefinition(UnionDef src, FModel target) {
+	def private dispatch FModelElement transformDefinition(UnionDef src, FModel target) {
 		factory.createFUnionType => [
 			name = src.identifier
 			src.unionMembers.forEach[member | member.transformTyped(it)]
@@ -166,15 +170,14 @@ class OMGIDL2FrancaTransformation {
 		]
 	}
 	
-	def private dispatch void transformDefinition(EnumMember src, FEnumerationType target) {
+	def private dispatch FModelElement transformDefinition(EnumMember src, FEnumerationType target) {
 		factory.createFEnumerator => [
 			name = src.identifier
 			target.enumerators.add(it)
-			map_IDL_Franca.put(src, it)
 		]
 	}
 	
-	def private dispatch void transformDefinition(ConstantDef src, FModel target) {
+	def private dispatch FModelElement transformDefinition(ConstantDef src, FModel target) {
 		factory.createFConstantDef => [
 			name = src.identifier
 			if (src.sharedType == null) {
@@ -188,11 +191,14 @@ class OMGIDL2FrancaTransformation {
 	}
 	
 	// catch-all for this dispatch method
-	def private dispatch void transformDefinition(Contained src, FModel target) {
+	def private dispatch FModelElement transformDefinition(Contained src, FModel target) {
 		addIssue(FEATURE_NOT_HANDLED_YET,
 			src, IdlmmPackage::CONTAINED__IDENTIFIER,
 			"OMG IDL definition '" + src.class.name + "' not handled yet (object '" + src.identifier + "')")
+		return null
 	}
+	
+	/*------------------ transform Typed --------------------------------- */
 	
 	def private dispatch transformTyped(Typed src, FStructType target) {
 		addIssue(FEATURE_NOT_HANDLED_YET,
@@ -203,8 +209,16 @@ class OMGIDL2FrancaTransformation {
 	def private dispatch transformTyped(Field src, FStructType target) {
 		factory.createFField => [
 			name = src.identifier
-			if (src.containedType instanceof PrimitiveDef) {
+			if (src.sharedType != null) {
+				type = src.sharedType.transformIDLType
+			} else if (src.containedType instanceof PrimitiveDef) {
 				type = (src.containedType as PrimitiveDef).transformIDLType()
+			} else if (src.containedType instanceof StructDef) {
+				println('josjo1')
+				map_IDL_Franca.put(src.containedType, (src.containedType as StructDef).transformDefinition(map_IDL_Franca.get(src.translationUnit)))
+				println('josjo2')
+				type = src.containedType.transformIDLType
+				println('josjo3')
 			}
 			target.elements.add(it)
 		]
@@ -220,11 +234,27 @@ class OMGIDL2FrancaTransformation {
 		]
 	}
 	
+	/* -------------------- transform IDLType ---------------------- */
+	/**
+	 * Generate the reference to other user-defined type
+	 */
 	def private dispatch FTypeRef transformIDLType(IDLType src) {
-		addIssue(FEATURE_NOT_HANDLED_YET,
-			src, IdlmmPackage::IDL_TYPE,
-			"OMG IDL IDLType '" + src.class.name + "' not handled yet (object '" + src.typeCode + "')")
-		return null
+		factory.createFTypeRef => [
+			switch src {
+				case map_IDL_Franca.containsKey(src) : derived = map_IDL_Franca.get(src) as FType
+				case !map_IDL_Franca.containsKey(src): {
+					val translationUnit = src.translationUnit
+					if (map_IDL_Franca.get(translationUnit) != null && src instanceof Contained) {
+						derived = (src as Contained).transformDefinition(map_IDL_Franca.get(src.translationUnit)) as FType
+						map_IDL_Franca.put(src, derived)
+					} else {
+						addIssue(FEATURE_NOT_HANDLED_YET,
+							translationUnit, IdlmmPackage::TRANSLATION_UNIT,
+							"OMG IDL Translation Unit '" + translationUnit.class.name + "' not handled yet (object '" + translationUnit + "')")
+					}
+				}
+			} 
+		]
 	}
 	
 	def private dispatch FTypeRef transformIDLType(PrimitiveDef src) {
@@ -247,25 +277,29 @@ class OMGIDL2FrancaTransformation {
 		]
 	}
 	
-	def private dispatch FTypeRef transformIDLType(EnumDef src) {
+	def private dispatch FTypeRef transformIDLType(ArrayDef src) {
+		return src.transformIDLType(map_IDL_Franca.get(src.translationUnit) as FModel, src.bounds.size)
+	}
+	
+	def private FTypeRef transformIDLType(ArrayDef src, FModel target, int dimensionSize) {
 		factory.createFTypeRef => [
-			val fEnumerationType = map_IDL_Franca.get(src)
-			if (fEnumerationType instanceof FEnumerationType) {
-				derived = fEnumerationType
-			} else if (fEnumerationType == null) {
-				val translationUnit = src.translationUnit
-				if (map_IDL_Franca.get(translationUnit) != null) {
-					src.transformDefinition(map_IDL_Franca.get(src.translationUnit))
-					derived = (map_IDL_Franca.get(src) as FEnumerationType)
-				} else {
-					addIssue(FEATURE_NOT_HANDLED_YET,
-						translationUnit, IdlmmPackage::TRANSLATION_UNIT,
-						"OMG IDL Translation Unit '" + translationUnit.class.name + "' not handled yet (object '" + translationUnit + "')")
-				}
-			}
+			derived = factory.createFArrayType => [
+						name = src.name + HYPHEN + dimensionSize
+						if (dimensionSize <= 1) {
+							if (src.sharedType == null) {
+								elementType = src.containedType.transformIDLType
+							} else {
+								elementType = src.sharedType.transformIDLType
+							}
+						} else {
+							elementType = src.transformIDLType(target, dimensionSize - 1)
+						}
+						target.addInAnonymousTypeCollection(it)
+					]
 		]
 	}
 	
+	/* ------------------ dispatch transform Expression ------------------------- */
 	def private dispatch transformExpression(Expression src, FTypeRef type) {
 		addIssue(FEATURE_NOT_HANDLED_YET,
 			src, IdlmmPackage::EXPRESSION,

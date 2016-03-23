@@ -1,6 +1,7 @@
 // empty interfaces with type declarations
 
 module testcase12 {
+	typedef testcase12::FooStruct FooTypeDef2;
 	struct FooStruct {
 		short short_member;
 		long long_member;
@@ -19,6 +20,10 @@ module testcase12 {
 		octet octet_member;
 		any any_member;
 		Object object_member;
+		struct FooNestedStruct {
+			short short_member;
+			unsigned short ushort_member;
+		} struct_member;
 	};
 	enum FooEnum {
 		EnumMember1,
@@ -30,6 +35,8 @@ module testcase12 {
 		case 1: double UnionMember2;
 	};
 	typedef long FooTypeDef1;
+	
+	typedef unsigned short FooArray [4][2][3];
 	interface ExampleInterface1 {
 	};
 	
