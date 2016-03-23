@@ -29,7 +29,7 @@ public class FrancaValueConverters extends Ecore2XtextTerminalConverters {
 
 			@Override
 			protected String internalToString(Float value) {
-				return value.toString();
+				return value.toString() + "f";
 			}
 		};
 	}
@@ -44,7 +44,7 @@ public class FrancaValueConverters extends Ecore2XtextTerminalConverters {
 			}
              @Override
 			protected String internalToString(Double value) {
-				return value.toString();
+				return value.toString() + "d";
 			}
 		};
 	}
