@@ -3,9 +3,9 @@ package org.franca.connectors.protobuf.tests
 typeCollection {
 	
 	enumeration Scalar{
-		myString
-		myLong
-		myHex
+		myString = 0
+		myLong = 123456789
+		myHex = 431
 	}
 	
 	struct Request1 {
@@ -29,15 +29,15 @@ typeCollection {
 	}
 	
 	enumeration Request1_Scalar{
-		myString
-		myLong
-		myHex
+		myString = 0
+		myLong = 13
+		myHex = 1
 	}
 	
 	enumeration Request1_Foo_Scalar{
-		myString
-		myLong
-		myHex
+		myString = 0
+		myLong = 135
+		myHex = 1
 	}
 	
 	struct Request1_Foo{

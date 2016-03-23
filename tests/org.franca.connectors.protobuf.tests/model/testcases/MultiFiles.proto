@@ -3,7 +3,7 @@ syntax = "proto2";
 package org.franca.connectors.protobuf.tests.multifiles;
 
 //import "org.franca.connectors.protobuf.tests";
-import "model/testcases/50-EmptyMessage.proto";
+import "model/testcases/EmptyMessage.proto";
 
 message Foo{
 	repeated Request1 request1 = 4;

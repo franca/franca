@@ -2,7 +2,7 @@ syntax = "proto2";
 
 package org.franca.connectors.protobuf.tests.utils;
 
-import "/org.franca.connectors.protobuf.tests/model/testcases/60-MessageWithOneof.proto";
+import "/org.franca.connectors.protobuf.tests/model/testcases/MessageWithOneof.proto";
 
 extend Request1{
 	optional int32 bar = 126;

@@ -29,45 +29,66 @@ class Protobuf2FrancaTests {
 	@Inject extension FrancaPersistenceManager
 
 	@Test
-	def test_50() {
-		test("50-EmptyService")
-		test("50-EmptyMessage")
+	def test_Empty() {
+		test("EmptyService")
+		test("EmptyMessage")
+	}
+	
+	@Test 
+	def messageWithScalarValueTypeFields(){
+		test("MessageWithScalarValueTypeFields")
 	}
 
 	@Test
-	def test_60() {
-		test("60-ServiceWithOneRPC")
-		test("60-MessageWithScalarValueTypeFields")
-		test("60-MessageWithComplexTypeFields")
-		test("60-MessageWithComplexType")
-		test("60-MessageWithMessageField")
+	def test_ServiceWithOneRPC(){
+		test("ServiceWithOneRPC")
+	}
+	
+	@Test
+	def test_MessageWithComplexTypeFields(){
+		test("MessageWithComplexTypeFields")
+	}
+	
+	@Test
+	def test_MessageWithComplexType(){
+		test("MessageWithComplexType")
+	}
+	
+	@Test
+	def test_MessageWithMessageField() {
+		test("MessageWithMessageField")
 	}
 
 	@Test
 	def test_OneOf() {
-		test("60-MessageWithOneof")
+		test("MessageWithOneof")
 	}
 	
 	@Test
 	def test_Extend() {
-		test("60-MessageWithExtend")
+		test("MessageWithExtend")
 	}
 	
 	@Test
 	@Ignore
-	def test_MultiFiles() {
+	//FIXME 
+	def test_Import() {
 		test("MultiFiles")
 	}
 
 	@Test
 	@Ignore
 	def test_Option() {
-
-		//		test("Option")
+		//test("Option")
 		test("EnumWithOption")
 	}
+	
+	@Test
+	//FIXME Franca Serializer issues : the subtraction operator is separated from the number. 
+	def enum_01(){
+		test("Enum_01")
+	}
 
-	// TODO: add more testcases here
 	/**
 	 * Utility method for executing one transformation and comparing the result with a reference model.
 	 */

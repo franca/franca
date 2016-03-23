@@ -30,6 +30,7 @@ import com.google.eclipse.protobuf.protobuf.Service
 import com.google.eclipse.protobuf.protobuf.Stream
 import com.google.eclipse.protobuf.protobuf.TypeExtension
 import com.google.inject.Inject
+import java.math.BigInteger
 import java.util.LinkedList
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.util.EcoreUtil
@@ -37,6 +38,7 @@ import org.eclipse.xtend.lib.annotations.Data
 import org.franca.core.framework.TransformationLogger
 import org.franca.core.franca.FBasicTypeId
 import org.franca.core.franca.FField
+import org.franca.core.franca.FOperator
 import org.franca.core.franca.FType
 import org.franca.core.franca.FrancaFactory
 
@@ -58,7 +60,6 @@ class Protobuf2FrancaTransformation {
 	@Inject extension TransformationLogger
 
 	val LinkedList<FType> types = newLinkedList
-	val LinkedList<org.franca.core.franca.Import> imports = newLinkedList
 
 	var TransformContext currentContext
 	var int index
@@ -73,7 +74,6 @@ class Protobuf2FrancaTransformation {
 		index = 0
 		if (!types.empty || !imports.empty) {
 			types.clear
-			imports.clear
 			addIssue(IMPORT_WARNING, src, ProtobufPackage.PROTOBUF,
 				"One instance may be executing two transformations")
 		}
@@ -104,9 +104,9 @@ class Protobuf2FrancaTransformation {
 					}
 					Import: {
 						val importElement = elem.transformImport
-						if (!importElement.importURI.nullOrEmpty){
-								it.imports += importElement
-							}
+						if (!importElement.importURI.nullOrEmpty) {
+							it.imports += importElement
+						}
 					}
 					case elem instanceof Package || elem instanceof Option: {
 					}
@@ -121,30 +121,30 @@ class Protobuf2FrancaTransformation {
 		if (!typeCollection.types.empty)
 			typeCollections += typeCollection
 	}
-	
+
 	private def create factory.createImport transformImport(Import elem) {
 		val uri = URI.createFileURI(elem.importURI)
 		if (uri !== null) {
 			if (!uri.lastSegment.endsWith(".proto")) {
+
 				//TODO
 				addIssue(FEATURE_NOT_HANDLED_YET, elem, ProtobufPackage.IMPORT__IMPORT_URI,
 					"Unsupported uri element '" + elem.importURI + "', will be ignored")
-			}
-			else {
-				if (!uri.isFile){
+			} else {
+				if (!uri.isFile) {
 					addIssue(IMPORT_ERROR, elem, ProtobufPackage.IMPORT__IMPORT_URI,
-					"Couldn't find the import source file: '" + elem.importURI + "', will be ignored")
-					return ;
+						"Couldn't find the import source file: '" + elem.importURI + "', will be ignored")
+					return;
 				}
 				val conn = new ProtobufConnector
 				val normalizedUri = elem.eResource.resourceSet.URIConverter.normalize(uri)
 				val protobufidl = conn.loadModel(normalizedUri.toFileString) as ProtobufModelContainer
 				val fmodelGen = conn.toFranca(protobufidl)
-				
+
 				elem.eResource.resourceSet.createResource(normalizedUri)
-				
+
 				importURI = uri.lastSegment.split("\\.").get(0).concat(".fidl")
-				importedNamespace = fmodelGen.name+".*"
+				importedNamespace = fmodelGen.name + ".*"
 			}
 		} else
 			addIssue(
@@ -274,30 +274,37 @@ class Protobuf2FrancaTransformation {
 	}
 
 	def private dispatch create factory.createFTypeRef transformTypeLink(ScalarTypeLink scalarType) {
-		switch scalarType.target {
-			//TODO sint32 | sint64 | fixed32 | fixed64 | sfixed32 | sfixed64
+		predefined = switch scalarType.target {
 			case DOUBLE:
-				predefined = FBasicTypeId.DOUBLE
+				FBasicTypeId.DOUBLE
 			case FLOAT:
-				predefined = FBasicTypeId.FLOAT
+				FBasicTypeId.FLOAT
 			case INT32:
-				predefined = FBasicTypeId.INT32
+				FBasicTypeId.INT32
 			case INT64:
-				predefined = FBasicTypeId.INT64
+				FBasicTypeId.INT64
 			case UINT32:
-				predefined = FBasicTypeId.UINT32
+				FBasicTypeId.UINT32
 			case UINT64:
-				predefined = FBasicTypeId.UINT64
+				FBasicTypeId.UINT64
 			case BOOL:
-				predefined = FBasicTypeId.BOOLEAN
+				FBasicTypeId.BOOLEAN
 			case STRING:
-				predefined = FBasicTypeId.STRING
+				FBasicTypeId.STRING
 			case BYTES:
-				predefined = FBasicTypeId.BYTE_BUFFER
-			default: {
-				addIssue(FEATURE_NOT_HANDLED_YET, scalarType, ProtobufPackage.MESSAGE_FIELD,
-					"Unsupported message element '" + scalarType.class.name + "', will be ignored")
-			}
+				FBasicTypeId.BYTE_BUFFER
+			case SINT32:
+				FBasicTypeId.INT32
+			case SINT64:
+				FBasicTypeId.INT64
+			case FIXED32:
+				FBasicTypeId.UINT32
+			case FIXED64:
+				FBasicTypeId.UINT64
+			case SFIXED32:
+				FBasicTypeId.INT32
+			case SFIXED64:
+				FBasicTypeId.INT64
 		}
 	}
 
@@ -321,9 +328,19 @@ class Protobuf2FrancaTransformation {
 	}
 
 	def private dispatch create factory.createFEnumerator transformEnumElement(Literal literal) {
-
-		//TODO do we need to give a value??
 		name = literal.name
+		val integerConstant = factory.createFIntegerConstant => [
+				^val = BigInteger.valueOf(Math.abs(literal.index))
+			]
+		value = switch literal.index {
+			case literal.index <0 :
+				factory.createFUnaryOperation =>[
+					op = FOperator.SUBTRACTION
+					operand = integerConstant
+				]
+			default :
+				integerConstant
+		}
 	}
 
 	def private dispatch create factory.createFEnumerator transformEnumElement(Option option) {
