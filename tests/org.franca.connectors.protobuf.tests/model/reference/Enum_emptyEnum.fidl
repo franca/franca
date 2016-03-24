@@ -1,0 +1,10 @@
+package org.franca.connectors.protobuf.tests
+
+typeCollection {
+	enumeration Request1 {
+	}
+
+	enumeration Response1 {
+	}
+
+}

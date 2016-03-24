@@ -1,0 +1,38 @@
+package org.franca.connectors.protobuf.tests
+
+typeCollection {
+	
+	struct SearchResponse{
+		SearchResponse_Result [] result 
+	}
+	
+	struct SomeOtherMessage{
+		SearchResponse_Result result
+	}
+	
+	struct Outer polymorphic{
+	}
+	
+	struct SearchResponse_Result {
+		String url
+		String title
+		String [] snippets
+	}
+	
+	struct Outer_MiddleAA_Inner{
+		Int64 ival
+		Boolean booly
+	}
+	
+	struct Outer_MiddleAA polymorphic{
+	}
+	
+	struct Outer_MiddleBB_Inner{
+		Int32 ival
+		Boolean booly
+	}
+	
+	struct Outer_MiddleBB polymorphic{
+	}
+	
+}

@@ -1,0 +1,32 @@
+syntax = "proto2";
+
+package org.franca.connectors.protobuf.tests;
+
+message SearchResponse {
+  message Result {
+    required string url = 1;
+    optional string title = 2;
+    repeated string snippets = 3;
+  }
+   repeated Result result = 1;
+}
+
+message SomeOtherMessage {
+  optional SearchResponse.Result result = 1;
+}
+
+message Outer {       // Level 0
+  message MiddleAA {  // Level 1
+    message Inner {   // Level 2
+      required int64 ival = 1;
+      optional bool  booly = 2;
+    }
+  }
+  message MiddleBB {  // Level 1
+    message Inner {   // Level 2
+      required int32 ival = 1;
+      optional bool  booly = 2;
+    }
+  }
+}
+

@@ -19,6 +19,7 @@ import com.google.eclipse.protobuf.protobuf.MessageElement
 import com.google.eclipse.protobuf.protobuf.MessageField
 import com.google.eclipse.protobuf.protobuf.MessageLink
 import com.google.eclipse.protobuf.protobuf.Modifier
+import com.google.eclipse.protobuf.protobuf.NativeFieldOption
 import com.google.eclipse.protobuf.protobuf.OneOf
 import com.google.eclipse.protobuf.protobuf.Option
 import com.google.eclipse.protobuf.protobuf.Package
@@ -72,7 +73,7 @@ class Protobuf2FrancaTransformation {
 		clearIssues
 		val typeCollection = typeCollections.head ?: factory.createFTypeCollection
 		index = 0
-		if (!types.empty || !imports.empty) {
+		if (!types.empty) {
 			types.clear
 			addIssue(IMPORT_WARNING, src, ProtobufPackage.PROTOBUF,
 				"One instance may be executing two transformations")
@@ -223,7 +224,7 @@ class Protobuf2FrancaTransformation {
 	def private FField transformMessageElement(MessageElement elem) {
 		switch elem {
 			MessageField:
-				elem.transformMessageField
+				return elem.transformMessageField
 			OneOf: {
 				val union = factory.createFUnionType
 				union.name = currentContext.contextNameSpacePrefix + elem.name.toFirstUpper
@@ -231,46 +232,52 @@ class Protobuf2FrancaTransformation {
 					transformField(union.name, [element.transformMessageElement])
 				].filterNull
 				types += union
-				union.createField(elem.name, elem.isIsRepeated)
+				return union.createField(elem.name, false)
 			}
 			Group: {
 				val group = elem.transformGroup
 				types += group
-				group.createField(elem.name, elem.modifier == Modifier.REPEATED)
+				return group.createField(elem.name,elem.modifier==Modifier.REPEATED)
 			}
 			Enum: {
 				val enum1 = elem.transformEnum
 				enum1.name = currentContext.contextNameSpacePrefix + elem.name.toFirstUpper
 				types += enum1
-				return null
 			}
 			Message: {
 				val nameSpace = currentContext.contextNameSpacePrefix + elem.name.toFirstUpper
 				val struct = transform(nameSpace, [elem.transformMessage])
 				struct.name = nameSpace
 				types += struct
-				struct.createField(elem.name, false)
 			}
 			Option: {
-				return null
 			}
 			Extensions: {
-
-				//TODO maybe search in the global scope and add fields in the current Message.
-				return null
+			}
+			TypeExtension:{
+				types += elem.transformTypeExtension
 			}
 			default: {
 				addIssue(FEATURE_NOT_HANDLED_YET, elem, ProtobufPackage.MESSAGE__ELEMENTS,
 					"Unsupported message element '" + elem.class.name + "', will be ignored")
-				return null
 			}
 		}
+		return null
 	}
 
 	def private create factory.createFField transformMessageField(MessageField field) {
 		type = EcoreUtil.copy(field.type.transformTypeLink)
 		name = field.name
 		array = field.modifier == Modifier.REPEATED
+		val tmp = field.fieldOptions.filter(NativeFieldOption).map[source.target]
+		tmp.filter(MessageField).forEach[msgField |
+			if ((msgField as MessageField).name == "deprecated")
+				it.comment = factory.createFAnnotationBlock =>[
+					elements += factory.createFAnnotation =>[
+						rawText = "@deprecated : " + field.name
+					]
+				]
+		]
 	}
 
 	def private dispatch create factory.createFTypeRef transformTypeLink(ScalarTypeLink scalarType) {

@@ -10,7 +10,7 @@ typeCollection {
 	
 	struct Request1 {
 		String string1
-		Request1_Test_oneOf[] test_oneOf
+		Request1_Test_oneOf test_oneOf
 	}
 	struct Request1_Test_oneOf_Group1{
 		UInt32 uint32_1

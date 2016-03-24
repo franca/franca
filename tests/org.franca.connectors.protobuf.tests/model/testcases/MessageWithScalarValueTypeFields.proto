@@ -4,8 +4,8 @@ package org.franca.connectors.protobuf.tests;
 
 message Request1 {
 	required string string1 = 1;
-	optional int32 int32_1 = 2;
-	optional bytes bytes1 = 3;
+	optional int32 int32_1 = 2 ;
+	optional bytes bytes1 = 3 [default = "bla"];
 	required bool bool1 = 4;
 	optional double double1 = 5;
 	optional fixed32 fixed32_1 = 6;

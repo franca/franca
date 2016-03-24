@@ -14,7 +14,6 @@ typeCollection {
 		UInt32 [] uint32_1
 		Request1_Scalar scalar1
 		Response1 response1
-		Request1_Foo foo
 		Request1_Group1 [] group1
 	}
 	

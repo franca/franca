@@ -1,0 +1,18 @@
+
+
+specification org.franca.connectors.protobuf.tests.ProtobufSpec {
+	for struct_fields {
+		IsOptional : Boolean ( default: true, optional ); 
+		DefaultValue : String (optional);
+		Ctype : {CORD, STRING, STRING_PIECE} (optional);
+		Packed : Boolean (optional);
+		Experimental_map_key : String (optional);
+	}
+	
+	for structs {
+		Message_set_wire_format : Boolean (optional);
+		No_standard_descriptor_accessor : Boolean (optional);
+	}
+	
+	//TODO file options
+}

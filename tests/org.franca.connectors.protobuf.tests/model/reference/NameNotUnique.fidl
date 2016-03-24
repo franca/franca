@@ -1,0 +1,17 @@
+package org.franca.connectors.protobuf.tests
+
+typeCollection {
+	struct Request polymorphic {
+	}
+
+	struct Request polymorphic {
+	}
+	
+	enumeration Scalar{
+		field = 1
+	}
+	
+	enumeration Scalar{
+		field = 2
+	}
+}
