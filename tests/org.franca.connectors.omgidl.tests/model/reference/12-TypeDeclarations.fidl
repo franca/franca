@@ -7,6 +7,20 @@ typeCollection
 		Int16 short_member
 		UInt16 ushort_member
 	}
+	
+	union FooUnion {
+		Int32 UnionMember1
+		Double UnionMember2
+	}
+
+	array FooStruct_FooArray_1 of FooUnion
+
+	array FooStruct_FooArray_2 of FooStruct_FooArray_1
+
+	array FooStruct_FooArray_3 of FooStruct_FooArray_2
+
+	array FooStruct_FooArray_4 of FooStruct_FooArray_3
+	
 	struct FooStruct {
 		Int16 short_member
 		Int32 long_member
@@ -27,17 +41,13 @@ typeCollection
 		undefined any_member
 		undefined object_member
 		FooNestedStruct struct_member
+		FooStruct_FooArray_4 FooArray
 	}
 	typedef FooTypeDef2 is FooStruct
 	enumeration FooEnum {
 		EnumMember1
 		EnumMember2
 		EnumMember3
-	}
-	
-	union FooUnion {
-		Int32 UnionMember1
-		Double UnionMember2
 	}
 	typedef FooTypeDef1 is Int32
 	

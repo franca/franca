@@ -24,6 +24,7 @@ module testcase12 {
 			short short_member;
 			unsigned short ushort_member;
 		} struct_member;
+		FooUnion FooArray [4][2][3][1];
 	};
 	enum FooEnum {
 		EnumMember1,

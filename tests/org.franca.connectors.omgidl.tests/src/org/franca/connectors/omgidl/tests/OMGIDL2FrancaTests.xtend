@@ -37,20 +37,23 @@ class OMGIDL2FrancaTests {
 	// TODO: add more testcases here
 	@Test
 	def test_11() {
-		IdlmmPackage.eINSTANCE.eClass()
+//		IdlmmPackage.eINSTANCE.eClass()
 		test("11-EmptyInterfacesWithIncludes")
 	}
 	
 	@Test
 	def test_12() {
-		IdlmmPackage.eINSTANCE.eClass()
 		test("12-TypeDeclarations")
 	}
 	
 	@Test
 	def test_13() {
-		IdlmmPackage.eINSTANCE.eClass()
 		test("13-ConstantDeclarations")
+	}
+	
+	@Test
+	def test_14() {
+		test("14-InterfaceDeclarations")
 	}
 
 	/**
