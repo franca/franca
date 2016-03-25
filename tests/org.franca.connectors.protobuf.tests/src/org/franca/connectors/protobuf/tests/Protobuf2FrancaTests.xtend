@@ -10,15 +10,12 @@ import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.xtext.generator.JavaIoFileSystemAccess
 import org.eclipse.xtext.junit4.InjectWith
 import org.eclipselabs.xtext.utils.unittesting.XtextRunner2
-import org.franca.connectors.protobuf.Protobuf2FrancaDeploymentGenerator
+import org.franca.connectors.protobuf.Protobuf2FrancaDeployment
 import org.franca.connectors.protobuf.ProtobufConnector
 import org.franca.connectors.protobuf.ProtobufModelContainer
 import org.franca.core.dsl.FrancaIDLTestsInjectorProvider
 import org.franca.core.dsl.FrancaPersistenceManager
-import org.franca.deploymodel.core.FDModelExtender
-import org.franca.deploymodel.core.FDeployedTypeCollection
 import org.franca.deploymodel.dsl.FDeployPersistenceManager
-import org.franca.deploymodel.dsl.fDeploy.FDModel
 import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -44,7 +41,7 @@ class Protobuf2FrancaTests {
 	JavaIoFileSystemAccess fsa
 	
 	@Inject
-	Protobuf2FrancaDeploymentGenerator generator
+	Protobuf2FrancaDeployment generator
 
 	@Test
 	def empty() {
@@ -110,8 +107,8 @@ class Protobuf2FrancaTests {
 	}
 
 	@Test
-	@Ignore
 	//FIXME implicit import
+	@Ignore
 	def option() {
 		test("Option")
 		//test("EnumWithOption")
@@ -144,21 +141,8 @@ class Protobuf2FrancaTests {
 		EcoreUtil.resolveAll(fmodelGen)
 		fmodelGen.saveModel(GEN_DIR + inputfile + FRANCA_IDL_EXT)
 		
-//		val uri = URI.createURI(GEN_DIR + inputfile + FRANCA_IDL_EXT)
-//		fsa.generateFile(DEPLOY_DIR+ inputfile +".fdepl", compileDeploy(uri.trimSegments(0).toFileString))
-//		
-//		val FDModel fdmodel = loader.loadModel(DEPLOY_DIR+ inputfile +".fdepl")
-//		assertNotNull(fdmodel)
-//		
-//		// get first provider definition referenced by FDeploy model
-//		val FDModelExtender fdmodelExt = new FDModelExtender(fdmodel)
-//		val typeCollections = fdmodelExt.FDTypesList
-//		assertTrue(typeCollections.size>0)
-//		val typeCollection = typeCollections.get(0)
-//		
-//		val FDeployedTypeCollection deployed = new FDeployedTypeCollection(typeCollection)
-//		generator.generate(protobufidl.model,fmodelGen)
-		
+		//val uri = URI.createURI(GEN_DIR + inputfile + FRANCA_IDL_EXT)		
+		//fsa.generateFile(DEPLOY_DIR+ inputfile +".fdepl", conn.generateFrancaDeployment(protobufidl, uri))
 		
 		// load the reference Franca IDL model
 		val fmodelRef = loadModel(REF_DIR + inputfile + FRANCA_IDL_EXT)

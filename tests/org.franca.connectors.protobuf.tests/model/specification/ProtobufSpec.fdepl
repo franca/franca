@@ -1,7 +1,8 @@
 
 
-specification org.franca.connectors.protobuf.tests.ProtobufSpec {
+specification org.franca.connectors.protobuf.ProtobufSpec {
 	for struct_fields {
+		Tag : Integer;
 		IsOptional : Boolean ( default: true, optional ); 
 		DefaultValue : String (optional);
 		Ctype : {CORD, STRING, STRING_PIECE} (optional);
