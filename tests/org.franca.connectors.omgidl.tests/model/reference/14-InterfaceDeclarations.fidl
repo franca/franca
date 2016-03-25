@@ -2,14 +2,27 @@ package testcase14
 
 interface fooInterface1 {
 	typedef L1 is Int32
+	method opA {
+		in {
+			L1 l_1
+		}
+	}
 }
 
 interface fooInterface2 {
 	typedef L1 is Int16
+	method opB {
+		in {
+			Int32 l
+		}
+	}
 }
 
 interface fooInterface3 extends fooInterface1 {
 	typedef L2 is L1 //test case is ok
 	typedef L3 is undefined
 	const Int32 FooConstLong1 = 15
+	attribute Float FooAttributeFloat
+	attribute L2 FooAttributeL2
+	attribute Boolean FooReadonlyAttributeBoolean readonly
 }

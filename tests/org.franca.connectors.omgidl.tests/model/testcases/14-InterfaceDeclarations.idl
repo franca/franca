@@ -13,5 +13,8 @@ module testcase14 {
 		typedef fooInterface1::L1 L2;
 		typedef fooInterface2::L1 L3;
 		const long FooConstLong1 = 15;
+		attribute float FooAttributeFloat;
+		attribute L2 FooAttributeL2;
+		readonly attribute boolean FooReadonlyAttributeBoolean;
 	};
 };
