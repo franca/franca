@@ -1,0 +1,62 @@
+#ifndef _evm_idl 
+#define _evm_idl
+
+
+interface evm
+{
+	
+	
+	enum state_t 
+	{
+		
+		state1, 
+		
+		state2, 
+		
+		state3, 
+		
+		stateInvalid, 
+		state4
+		
+	}; //end enum state_t
+	
+	
+	enum type_t 
+	{
+		onState, 
+		offState
+		
+	}; //end enum type_t
+	
+	
+	struct evm_t
+	{
+		
+		string name;
+		
+		evm::type_t type;
+		
+		evm::state_t state;
+		
+		short height;
+		
+	}; //end struct evm_t
+	
+}; //end interface evm
+
+interface evmCollection
+{
+	
+	
+	typedef sequence<evm::evm_t> evmCollection_t;
+	evmCollection::evmCollection_t getAllevms(  );
+	
+}; //end interface evmCollection
+
+interface evmWithControl : evm
+{
+	
+	void lower(  );
+	
+}; //end interface evmWithControl
+#endif

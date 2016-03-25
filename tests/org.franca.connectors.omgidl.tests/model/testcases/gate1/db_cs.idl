@@ -1,0 +1,14 @@
+#ifndef _db_cs_idl 
+#define _db_cs_idl
+
+#include "db_t.idl"
+#include "evs.idl"
+
+
+interface db_cs
+{
+	
+	db::db_t getDb(  );
+	
+}; //end interface db_cs
+#endif

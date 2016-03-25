@@ -1,0 +1,13 @@
+#ifndef _csm_cs_idl 
+#define _csm_cs_idl
+
+#include "csm_t.idl"
+
+
+interface csm_cs
+{
+	
+	oneway void setStatus( in csm_t::cStatus_t status );
+	
+}; //end interface csm_cs
+#endif

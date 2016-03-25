@@ -1,0 +1,33 @@
+#ifndef _evm_ev_idl 
+#define _evm_ev_idl
+
+#include "evc_t.idl"
+#include "evs.idl"
+#include "evm.idl"
+
+
+interface evmEvent : CosTypedEventComm::TypedPushConsumer
+{
+	
+	
+	struct evmEvent_t
+	{
+		
+		evc_t::timespec_t timestamp;
+		
+		string name;
+		
+		evm::type_t type;
+		
+		evm::state_t state;
+		
+		short height;
+		
+	}; //end struct evmEvent_t
+	
+	typedef sequence<evmEvent::evmEvent_t> evmEventCollection_t;
+	
+	void change( in evmEvent::evmEventCollection_t events );
+	
+}; //end interface evmEvent
+#endif

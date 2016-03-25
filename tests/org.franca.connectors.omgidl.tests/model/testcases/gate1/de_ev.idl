@@ -1,0 +1,14 @@
+#ifndef _de_ev_idl 
+#define _de_ev_idl
+
+#include "de.idl"
+#include "evs.idl"
+
+
+interface de_ev : CosTypedEventComm::TypedPushConsumer
+{
+	
+	void pushDe( in de::de_t dEntity );
+	
+}; //end interface de_ev
+#endif
