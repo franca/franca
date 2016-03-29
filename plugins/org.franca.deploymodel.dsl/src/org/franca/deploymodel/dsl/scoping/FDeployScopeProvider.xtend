@@ -214,8 +214,7 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 		val type = parent.getOverwriteTargetType
 		if (type!=null) {
 			if (type instanceof FCompoundType) {
-				val compound = type as FCompoundType
-				return compound.elements.scopeFor
+				return type.elements.scopeFor
 			}
 		}
 		IScope.NULLSCOPE
@@ -237,8 +236,7 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 		val type = parent.getOverwriteTargetType
 		if (type!=null) {
 			if (type instanceof FEnumerationType) {
-				val enumeration = type as FEnumerationType
-				return enumeration.enumerators.scopeFor
+				return type.enumerators.scopeFor
 			}
 		}
 		IScope.NULLSCOPE
@@ -357,7 +355,7 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 		if (typeRef.getComplex != null) {
 			val type = typeRef.getComplex
 			if (type instanceof FDEnumType) {
-				return (type as FDEnumType).getEnumerators.scopeFor
+				return type.getEnumerators.scopeFor
 			}
 		} else {
 			if (typeRef.predefined==FDPredefinedTypeId::INSTANCE) {
