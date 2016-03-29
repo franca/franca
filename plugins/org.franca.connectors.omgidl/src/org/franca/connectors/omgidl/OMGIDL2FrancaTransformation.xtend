@@ -8,65 +8,61 @@
 package org.franca.connectors.omgidl
 
 import com.google.inject.Inject
+import java.math.BigInteger
+import java.util.List
+import java.util.Map
+import org.csu.idl.idlmm.AliasDef
+import org.csu.idl.idlmm.ArrayDef
+import org.csu.idl.idlmm.AttributeDef
+import org.csu.idl.idlmm.BinaryExpression
+import org.csu.idl.idlmm.ConstantDef
+import org.csu.idl.idlmm.ConstantDefRef
 import org.csu.idl.idlmm.Contained
+import org.csu.idl.idlmm.EnumDef
+import org.csu.idl.idlmm.EnumMember
+import org.csu.idl.idlmm.Expression
+import org.csu.idl.idlmm.Field
+import org.csu.idl.idlmm.ForwardDef
+import org.csu.idl.idlmm.IDLType
 import org.csu.idl.idlmm.IdlmmPackage
+import org.csu.idl.idlmm.Include
 import org.csu.idl.idlmm.InterfaceDef
 import org.csu.idl.idlmm.ModuleDef
+import org.csu.idl.idlmm.OperationDef
+import org.csu.idl.idlmm.ParameterDef
+import org.csu.idl.idlmm.PrimitiveDef
+import org.csu.idl.idlmm.SequenceDef
+import org.csu.idl.idlmm.StructDef
 import org.csu.idl.idlmm.TranslationUnit
+import org.csu.idl.idlmm.Typed
+import org.csu.idl.idlmm.TypedefDef
+import org.csu.idl.idlmm.UnaryExpression
+import org.csu.idl.idlmm.UnionDef
+import org.csu.idl.idlmm.UnionField
+import org.csu.idl.idlmm.ValueExpression
+import org.eclipse.emf.common.util.URI
+import org.eclipse.emf.ecore.EObject
 import org.franca.core.framework.TransformationLogger
+import org.franca.core.franca.FAttribute
+import org.franca.core.franca.FBasicTypeId
+import org.franca.core.franca.FConstantDef
+import org.franca.core.franca.FEnumerationType
+import org.franca.core.franca.FEvaluableElement
+import org.franca.core.franca.FExpression
+import org.franca.core.franca.FInterface
+import org.franca.core.franca.FMethod
 import org.franca.core.franca.FModel
+import org.franca.core.franca.FModelElement
+import org.franca.core.franca.FOperator
+import org.franca.core.franca.FStructType
+import org.franca.core.franca.FType
+import org.franca.core.franca.FTypeCollection
+import org.franca.core.franca.FTypeRef
+import org.franca.core.franca.FTypedElement
+import org.franca.core.franca.FUnionType
 import org.franca.core.franca.FrancaFactory
 
 import static org.franca.core.framework.TransformationIssue.*
-import org.csu.idl.idlmm.Include
-import org.csu.idl.idlmm.StructDef
-import org.csu.idl.idlmm.Field
-import org.csu.idl.idlmm.PrimitiveDef
-import org.franca.core.franca.FBasicTypeId
-import org.franca.core.franca.FStructType
-import org.csu.idl.idlmm.IDLType
-import org.csu.idl.idlmm.Typed
-import org.csu.idl.idlmm.EnumDef
-import org.csu.idl.idlmm.EnumMember
-import org.franca.core.franca.FEnumerationType
-import org.franca.core.franca.FEnumerator
-import org.csu.idl.idlmm.UnionDef
-import org.csu.idl.idlmm.UnionField
-import org.franca.core.franca.FUnionType
-import org.franca.core.franca.FType
-import org.csu.idl.idlmm.AliasDef
-import org.csu.idl.idlmm.ConstantDef
-import org.franca.core.franca.FConstantDef
-import org.csu.idl.idlmm.Expression
-import org.csu.idl.idlmm.BinaryExpression
-import org.franca.core.franca.FExpression
-import org.franca.core.franca.FOperator
-import org.csu.idl.idlmm.UnaryExpression
-import org.csu.idl.idlmm.ConstantDefRef
-import org.csu.idl.idlmm.ValueExpression
-import java.math.BigInteger
-import org.franca.core.franca.FTypeRef
-import org.csu.idl.idlmm.TypedefDef
-import java.util.Map
-import org.eclipse.emf.ecore.EObject
-import java.lang.reflect.Type
-import org.franca.core.franca.FEvaluableElement
-import org.csu.idl.idlmm.ArrayDef
-import org.franca.core.franca.FModelElement
-import org.franca.core.franca.FInterface
-import org.franca.core.franca.FTypeDef
-import java.util.List
-import org.csu.idl.idlmm.AttributeDef
-import org.franca.core.franca.FAttribute
-import org.csu.idl.idlmm.OperationDef
-import org.csu.idl.idlmm.ParameterDef
-import org.franca.core.franca.FMethod
-import org.franca.core.franca.FArgument
-import org.csu.idl.idlmm.SequenceDef
-import org.franca.core.franca.FTypedElement
-import org.franca.core.franca.FTypeCollection
-
-import org.franca.connectors.omgidl.OMGIDL2FrancaTransformationUtil
 
 /**
  * Model-to-model transformation from OMG IDL (aka CORBA) to Franca IDL.  
@@ -91,21 +87,23 @@ class OMGIDL2FrancaTransformation {
 	def getTransformationMap() {
 		map_IDL_Franca ?: newLinkedHashMap()
 	}
-
+	
+	/**
+	 * Transform to single Franca model
+	 */
 	def FModel transform(TranslationUnit src, Map<EObject, EObject> map) {
 		clearIssues
-		
+		// register global map IDL2Franca to local one 
 		map_IDL_Franca = map
-		
 		val it = factory.createFModel
 		map_IDL_Franca.put(src, it)
-		// TODO: handle src.includes
+		// handle src.includes
 		src.includes.forEach[include | include.transformIncludeDeclaration(it)]
-		
 		if (src.contains.empty) {
 			addIssue(IMPORT_WARNING,
 				src, IdlmmPackage::TRANSLATION_UNIT__IDENTIFIER,
 				"Empty OMG IDL translation unit, created empty Franca model")
+			
 		} else {
 			if (src.contains.size > 1) {
 				addIssue(FEATURE_IS_IGNORED,
@@ -136,6 +134,72 @@ class OMGIDL2FrancaTransformation {
 			}
 		}
 		it
+	}
+	
+	/**
+	 * Transform to a list of Franca models
+	 */
+	def List<FModel> transformToMultiFModel(TranslationUnit src, Map<EObject, EObject> map) {
+		clearIssues
+		// register global map IDL2Franca to local one 
+		map_IDL_Franca = map
+		val models = newLinkedList()
+		if (src.contains.empty) {
+			addIssue(IMPORT_WARNING,
+				src, IdlmmPackage::TRANSLATION_UNIT__IDENTIFIER,
+				"Empty OMG IDL translation unit, created empty Franca model")
+			val model = factory.createFModel
+			model.name = URI.createFileURI(src.eResource.URI.trimFileExtension.lastSegment).lastSegment
+			map_IDL_Franca.put(src, model)
+			src.includes.forEach[include | include.transformIncludeDeclaration(model)]
+			models.add(model)
+		} else {
+			// case: interfaces on top level of TranslationUnit
+			val interfaces = src.contains.filter(InterfaceDef)
+			if (interfaces.size > 0) {
+				val model = factory.createFModel
+				model.name = URI.createFileURI(src.eResource.URI.trimFileExtension.lastSegment).lastSegment
+				map_IDL_Franca.put(src, model)
+				src.includes.forEach[include | include.transformIncludeDeclaration(model)]
+				for(^interface: interfaces) {
+					if(!map_IDL_Franca.containsKey(^interface)) {
+						map_IDL_Franca.put(^interface, ^interface.transformDefinition(model))					
+					}
+				}
+				models.add(model)
+			}
+			// case: modules on top level of TranslationUnit
+			for (module: src.contains.filter(ModuleDef)){
+				val model = factory.createFModel
+				model.name = module.identifier
+				map_IDL_Franca.put(module, model)
+				src.includes.forEach[include | include.transformIncludeDeclaration(model)]
+				for(d : module.contains) {
+					if(!map_IDL_Franca.containsKey(d)) {
+						map_IDL_Franca.put(d, d.transformDefinition(model))					
+					}
+				}
+				models.add(model)
+			}
+			// case: other containeds (except interfaces and modules) on top level of TranslationUnit
+			val others = src.contains.filter[
+				var isOther = true
+				if (it instanceof ModuleDef) {
+					isOther = false
+				} else if (it instanceof InterfaceDef) {
+					isOther = false 
+				} else if (it instanceof ForwardDef) {
+					isOther = false
+				}
+				isOther
+			]
+			if (!others.isNullOrEmpty) {
+				addIssue(IMPORT_ERROR,
+					src, IdlmmPackage::TRANSLATION_UNIT__CONTAINS,
+					"Members of OMG IDL translation unit should be of type either 'interface' or 'module'")
+			}
+		}
+		models
 	}
 	
 	/* ---------------------- dispatch transform Contained ------------------------- */
@@ -305,7 +369,7 @@ class OMGIDL2FrancaTransformation {
 			} else if (src.containedType instanceof PrimitiveDef) {
 				type = (src.containedType as PrimitiveDef).transformIDLType
 			} else if (src.containedType instanceof StructDef) {
-				map_IDL_Franca.put(src.containedType, (src.containedType as StructDef).transformDefinition(map_IDL_Franca.get(src.translationUnit)))
+				map_IDL_Franca.put(src.containedType, (src.containedType as StructDef).transformDefinition(map_IDL_Franca.get(src.container)))
 				type = src.containedType.transformIDLType
 			} else if (src.containedType instanceof ArrayDef) {
 				type = (src.containedType as ArrayDef).transformIDLType((src.eContainer as Contained).identifier + HYPHEN)
@@ -363,14 +427,14 @@ class OMGIDL2FrancaTransformation {
 				}
 				case map_IDL_Franca.containsKey(src) : derived = map_IDL_Franca.get(src) as FType
 				default: {
-					val translationUnit = src.translationUnit
-					if (map_IDL_Franca.get(translationUnit) != null && src instanceof Contained) {
-						derived = (src as Contained).transformDefinition(map_IDL_Franca.get(src.translationUnit)) as FType
+					val container = src.container
+					if (src instanceof Contained && map_IDL_Franca.get(container) != null) {
+						derived = (src as Contained).transformDefinition(map_IDL_Franca.get(container)) as FType
 						map_IDL_Franca.put(src, derived)
 					} else {
 						addIssue(FEATURE_NOT_HANDLED_YET,
 							translationUnit, IdlmmPackage::TRANSLATION_UNIT,
-							"OMG IDL Translation Unit '" + translationUnit.class.name + "' not handled yet (object '" + translationUnit + "')")
+							"OMG IDL Container '" + container.class.name + "' not handled yet (object '" + container + "')")
 					}
 				}
 			} 
@@ -523,17 +587,14 @@ class OMGIDL2FrancaTransformation {
 	}
 	
 	def private transformIncludeFileName (Include src) {
-		val uri = src.importURI
-		if (uri.isNullOrEmpty) {
+		var uri = URI.createFileURI(src.importURI)
+		if (uri.isEmpty) {
 			addIssue(FEATURE_UNSUPPORTED_VALUE,
 				src, IdlmmPackage::INCLUDE__IMPORT_URI,
 				"The URI of imported IDL file '" + src + "' is null or empty"
 			)
 		}
-		if (uri.contains(OMG_IDL_EXT)) {
-			return uri.substring(0, uri.indexOf(OMG_IDL_EXT)) + FRANCA_IDL_EXT
-		}
-		return uri + FRANCA_IDL_EXT
+		return uri.lastSegment.substring(0, uri.lastSegment.indexOf(uri.fileExtension) - 1) + FRANCA_IDL_EXT
 	}
 	
 	def private dispatch addInTypeCollection (FTypeCollection target, FType type) {
@@ -554,7 +615,6 @@ class OMGIDL2FrancaTransformation {
 	
 	// obj can be any IDL object
 	def private getMappedTypeCollection (EObject obj) {
-		println('ok' + obj)
 		OMGIDL2FrancaTransformationUtil.getTypeCollection(map_IDL_Franca.get(obj.container))
 	}
 	
@@ -574,8 +634,11 @@ class OMGIDL2FrancaTransformation {
 	}
 	
 	def private getTranslationUnit (EObject object) {
-		var obj = object
-		while (obj != null && (!(obj instanceof TranslationUnit))) {
+		if (object instanceof TranslationUnit) {
+			return object
+		}
+		var obj = object.eContainer
+		while (obj != null) {
 			if (obj instanceof TranslationUnit){
 				return obj
 			}
@@ -585,8 +648,11 @@ class OMGIDL2FrancaTransformation {
 	}
 	
 	def private getModuleContainer (EObject object) {
-		var obj = object
-		while (obj != null && (!(obj instanceof ModuleDef))) {
+		if (object instanceof ModuleDef) {
+			return object
+		}
+		var obj = object.eContainer
+		while (obj != null) {
 			if (obj instanceof ModuleDef){
 				return obj
 			}
@@ -599,22 +665,17 @@ class OMGIDL2FrancaTransformation {
 	 * Return the {@code object}'s closest ancestor of type InterfaceDef or null 
 	 */
 	def private getInterfaceContainer (EObject object) {
-		var obj = object
-		while (obj != null && (!(obj instanceof InterfaceDef))) {
+		if (object instanceof InterfaceDef) {
+			return object
+		}
+		var obj = object.eContainer
+		while (obj != null) {
 			if (obj instanceof InterfaceDef){
 				return obj
 			}
 			obj = obj.eContainer
 		}
 		return obj
-	}
-	
-	
-	
-	
-	
-	def private getMappedFrancaObject (EObject src) {
-		map_IDL_Franca.get(src)
 	}
 	
 	def private factory() {

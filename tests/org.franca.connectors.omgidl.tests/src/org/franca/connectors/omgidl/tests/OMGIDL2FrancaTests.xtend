@@ -37,7 +37,6 @@ class OMGIDL2FrancaTests {
 	// TODO: add more testcases here
 	@Test
 	def test_11() {
-//		IdlmmPackage.eINSTANCE.eClass()
 		test("11-EmptyInterfacesWithIncludes")
 	}
 	
@@ -55,6 +54,11 @@ class OMGIDL2FrancaTests {
 	def test_14() {
 		test("14-InterfaceDeclarations")
 	}
+	
+	@Test
+	def void test_15() {
+		test("csm_t", "model/testcases/gate1/", GEN_DIR, "model/reference/gate1/")
+	}
 
 	/**
 	 * Utility method for executing one transformation and comparing the result with a reference model.
@@ -68,26 +72,32 @@ class OMGIDL2FrancaTests {
 		// for each generated OMG IDL model
 		for (iomgidl: map_OMGIDLModelContainer_FileName.keySet.toArray.reverseView) {
 			val omgidl = iomgidl as OMGIDLModelContainer
-			var fmodelGen = conn.toFranca(omgidl)
+			val fmodelGens = conn.toFrancas(omgidl)
 			val fileName = map_OMGIDLModelContainer_FileName.get(iomgidl)
-			fmodelGen.saveModel(GEN_DIR + fileName + FRANCA_IDL_EXT)
-			// load the reference Franca IDL model
-			val fmodelRef = loadModel(REF_DIR + fileName + FRANCA_IDL_EXT)
-			EcoreUtil.resolveAll(fmodelRef)
-			// use EMF Compare to compare both Franca IDL models (the generated and the reference model)
-			val rset1 = fmodelGen.eResource.resourceSet
-			val rset2 = fmodelRef.eResource.resourceSet
-			val scope = EMFCompare.createDefaultScope(rset1, rset2)
-			val comparison = EMFCompare.builder.build.compare(scope)
-			val List<Diff> differences = comparison.differences
-			var nDiffs = 0
-			for(diff : differences) {
-				if (! (diff instanceof ResourceAttachmentChangeSpec)) {
-					System.out.println(diff.toString)
-					nDiffs++
+			for (fmodelGen: fmodelGens) {
+				var name = fileName
+				if (fmodelGens.size > 1) {
+					name = name + '-' + fmodelGen.name
 				}
+				fmodelGen.saveModel(GEN_DIR + name + FRANCA_IDL_EXT)
+				// load the reference Franca IDL model
+				val fmodelRef = loadModel(REF_DIR + name + FRANCA_IDL_EXT)
+				EcoreUtil.resolveAll(fmodelRef)
+				// use EMF Compare to compare both Franca IDL models (the generated and the reference model)
+				val rset1 = fmodelGen.eResource.resourceSet
+				val rset2 = fmodelRef.eResource.resourceSet
+				val scope = EMFCompare.createDefaultScope(rset1, rset2)
+				val comparison = EMFCompare.builder.build.compare(scope)
+				val List<Diff> differences = comparison.differences
+				var nDiffs = 0
+				for(diff : differences) {
+					if (! (diff instanceof ResourceAttachmentChangeSpec)) {
+						System.out.println(diff.toString)
+						nDiffs++
+					}
+				}
+				assertEquals(0, nDiffs)
 			}
-			assertEquals(0, nDiffs)
 		}
 		// do the actual transformation to Franca IDL and save the result
 //		val fmodelGen = conn.toFranca(omgidl)
@@ -123,5 +133,43 @@ class OMGIDL2FrancaTests {
 		
 		// we expect that both Franca IDL models are identical 
 //		assertEquals(0, nDiffs)
+	}
+	
+	def private test(String inputfile, String model_dir, String gen_dir, String ref_dir) {
+		val OMG_IDL_EXT = ".idl"
+		val FRANCA_IDL_EXT = ".fidl"
+		// load the OMG IDL input model
+		val conn = new OMGIDLConnector
+		val map_OMGIDLModelContainer_FileName = conn.loadModels(model_dir + inputfile + OMG_IDL_EXT)
+		// for each generated OMG IDL model
+		for (iomgidl: map_OMGIDLModelContainer_FileName.keySet.toArray.reverseView) {
+			val omgidl = iomgidl as OMGIDLModelContainer
+			val fmodelGens = conn.toFrancas(omgidl)
+			val fileName = map_OMGIDLModelContainer_FileName.get(iomgidl)
+			for (fmodelGen: fmodelGens) {
+				var name = fileName
+				if (fmodelGens.size > 1) {
+					name = name + '-' + fmodelGen.name
+				}
+				fmodelGen.saveModel(gen_dir + name + FRANCA_IDL_EXT)
+				// load the reference Franca IDL model
+				val fmodelRef = loadModel(ref_dir + name + FRANCA_IDL_EXT)
+				EcoreUtil.resolveAll(fmodelRef)
+				// use EMF Compare to compare both Franca IDL models (the generated and the reference model)
+				val rset1 = fmodelGen.eResource.resourceSet
+				val rset2 = fmodelRef.eResource.resourceSet
+				val scope = EMFCompare.createDefaultScope(rset1, rset2)
+				val comparison = EMFCompare.builder.build.compare(scope)
+				val List<Diff> differences = comparison.differences
+				var nDiffs = 0
+				for(diff : differences) {
+					if (! (diff instanceof ResourceAttachmentChangeSpec)) {
+						System.out.println(diff.toString)
+						nDiffs++
+					}
+				}
+				assertEquals(0, nDiffs)
+			}
+		}
 	}
 }

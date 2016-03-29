@@ -1,0 +1,19 @@
+package csm_t
+
+typeCollection {
+	version {
+		major 1
+		minor 0
+	}
+	enumeration statusType {
+		FAILED
+		OPERATIONAL
+	}
+
+	struct cStatus_t {
+		String name
+		statusType newStatus
+		String amplifyingInfo
+	}
+
+}

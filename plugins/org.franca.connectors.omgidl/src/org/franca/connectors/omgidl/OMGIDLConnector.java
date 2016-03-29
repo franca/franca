@@ -9,6 +9,7 @@ package org.franca.connectors.omgidl;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -97,6 +98,21 @@ public class OMGIDLConnector implements IFrancaConnector {
 
 		return fmodel;
 	}
+	
+	public List<FModel> toFrancas(IModelContainer model) {
+		if (! (model instanceof OMGIDLModelContainer)) {
+			return null;
+		}
+		
+		OMGIDL2FrancaTransformation trafo = injector.getInstance(OMGIDL2FrancaTransformation.class);
+		OMGIDLModelContainer omg = (OMGIDLModelContainer)model;
+		List<FModel> fmodels = trafo.transformToMultiFModel(omg.model(),transformationMap);
+		transformationMap = trafo.getTransformationMap();
+		lastTransformationIssues = trafo.getTransformationIssues();
+		System.out.println(IssueReporter.getReportString(lastTransformationIssues));
+
+		return fmodels;
+	}
 
 	@Override
 	public IModelContainer fromFranca(FModel fmodel) {
@@ -128,7 +144,7 @@ public class OMGIDLConnector implements IFrancaConnector {
 
 		// TODO: is it correct to use the IDLLoader class (e.g., it does some pre- and postprocessing which might be harmful)?
 		// A: Preprocessing is harmful in the case of "#include". Instead of IDLLoader, ExtendedIDLLoader is used, in which prepossing is suppressed.
-		IDLLoader loader = new ExtendedIDLLoader();//new IDLLoader();
+		IDLLoader loader = new IDLLoader();
 		try {
 			loader.load(filePath);
 		} catch (Exception e) {
