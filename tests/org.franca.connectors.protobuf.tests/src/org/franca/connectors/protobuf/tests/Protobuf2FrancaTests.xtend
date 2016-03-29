@@ -103,6 +103,8 @@ class Protobuf2FrancaTests {
 	}
 	
 	@Test
+	@Ignore
+	//FIXME 
 	def test_Import() {
 		test("MultiFiles")
 	}
