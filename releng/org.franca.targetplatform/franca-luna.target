@@ -40,7 +40,7 @@
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.csu.idl.feature.group" version="1.1.0.201603172153"/>
-      <unit id="com.google.eclipse.protobuf.feature.group" version="1.5.3.201603231107"/>
+      <unit id="com.google.eclipse.protobuf.feature.group" version="1.5.3.201603291641"/>
       <repository location="http://franca.github.io/franca/update_site/thirdparty"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
