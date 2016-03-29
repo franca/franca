@@ -14,12 +14,8 @@ import model.emf.dbusxml.AccessType
 import model.emf.dbusxml.DbusxmlFactory
 import model.emf.dbusxml.DirectionType
 import model.emf.dbusxml.DocType
-import org.eclipse.emf.common.util.BasicEList.FastCompare
 import org.eclipse.emf.common.util.EList
-import org.eclipse.emf.ecore.util.EObjectEList
-import org.eclipse.emf.ecore.util.EcoreEList
 import org.eclipse.emf.ecore.util.EcoreUtil
-import org.eclipse.emf.ecore.util.EcoreUtil.Copier
 import org.franca.core.framework.TransformationLogger
 import org.franca.core.franca.FAnnotation
 import org.franca.core.franca.FAnnotationType
