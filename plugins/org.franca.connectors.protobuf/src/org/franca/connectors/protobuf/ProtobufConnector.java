@@ -79,33 +79,14 @@ public class ProtobufConnector implements IFrancaConnector {
 		return fmodel;
 	}
 	
-	//FIXME
-	public FDModel toFrancaDeployment(IModelContainer model, URI fmodelUri){
-		if (! (model instanceof ProtobufModelContainer)) {
-			return null;
-		}
-		
-		Protobuf2FrancaDeployment trafo = injector.getInstance(Protobuf2FrancaDeployment.class);
-		ProtobufModelContainer dbus = (ProtobufModelContainer)model;
-		FDModel fdmodel = trafo.transform(dbus.model(), fmodelUri);
-		
-//		lastTransformationIssues = trafo.getTransformationIssues();
-//		System.out.println(IssueReporter.getReportString(lastTransformationIssues));
-
-		return fdmodel;
-	}
-	
-	public CharSequence generateFrancaDeployment(IModelContainer model, URI fmodelUri){
+	public CharSequence generateFrancaDeployment(IModelContainer model, String specification, String fidlPath, String fileName){
 		if (! (model instanceof ProtobufModelContainer)) {
 			return null;
 		}
 		
 		Protobuf2FrancaDeploymentGenerator trafo = injector.getInstance(Protobuf2FrancaDeploymentGenerator.class);
 		ProtobufModelContainer dbus = (ProtobufModelContainer)model;
-		return trafo.generate(dbus.model(), fmodelUri);
-		
-//		lastTransformationIssues = trafo.getTransformationIssues();
-//		System.out.println(IssueReporter.getReportString(lastTransformationIssues));
+		return trafo.generate(dbus.model(), specification, fidlPath, fileName);
 	}
 
 	@Override

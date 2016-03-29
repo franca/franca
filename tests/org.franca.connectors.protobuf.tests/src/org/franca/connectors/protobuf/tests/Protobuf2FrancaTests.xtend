@@ -10,12 +10,10 @@ import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.xtext.generator.JavaIoFileSystemAccess
 import org.eclipse.xtext.junit4.InjectWith
 import org.eclipselabs.xtext.utils.unittesting.XtextRunner2
-import org.franca.connectors.protobuf.Protobuf2FrancaDeployment
 import org.franca.connectors.protobuf.ProtobufConnector
 import org.franca.connectors.protobuf.ProtobufModelContainer
 import org.franca.core.dsl.FrancaIDLTestsInjectorProvider
 import org.franca.core.dsl.FrancaPersistenceManager
-import org.franca.deploymodel.dsl.FDeployPersistenceManager
 import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -29,19 +27,15 @@ class Protobuf2FrancaTests {
 	val MODEL_DIR = "model/testcases/"
 	val REF_DIR = "model/reference/"
 	val GEN_DIR = "src-gen/testcases/"
-	val DEPLOY_DIR = "model/deploy/"
+	val DEPLOY_DIR = "C:\\Users\\shi\\git\\franca\\tests\\org.franca.connectors.protobuf.tests\\model\\deploy\\"
+	val FIDL_DIR = "../../src-gen/testcases/"
 	val SPEC_FILE = "../specification/ProtobufSpec.fdepl"
 
 	@Inject extension FrancaPersistenceManager
 	
 	@Inject
-	FDeployPersistenceManager loader
-	
-	@Inject
 	JavaIoFileSystemAccess fsa
 	
-	@Inject
-	Protobuf2FrancaDeployment generator
 
 	@Test
 	def empty() {
@@ -141,8 +135,8 @@ class Protobuf2FrancaTests {
 		EcoreUtil.resolveAll(fmodelGen)
 		fmodelGen.saveModel(GEN_DIR + inputfile + FRANCA_IDL_EXT)
 		
-		//val uri = URI.createURI(GEN_DIR + inputfile + FRANCA_IDL_EXT)		
-		//fsa.generateFile(DEPLOY_DIR+ inputfile +".fdepl", conn.generateFrancaDeployment(protobufidl, uri))
+		fsa.outputPath = DEPLOY_DIR		
+		fsa.generateFile(inputfile +".fdepl", conn.generateFrancaDeployment(protobufidl, SPEC_FILE, FIDL_DIR, inputfile))
 		
 		// load the reference Franca IDL model
 		val fmodelRef = loadModel(REF_DIR + inputfile + FRANCA_IDL_EXT)
@@ -168,14 +162,4 @@ class Protobuf2FrancaTests {
 		// we expect that both Franca IDL models are identical 
 		assertEquals(0, nDiffs)
 	}
-	
-	private def compileDeploy(String francaFile) '''
-	import "«SPEC_FILE»"
-
-	import "../«francaFile»"
-	
-	define org.franca.connectors.protobuf.tests.ProtobufSpec for typeCollection org.franca.connectors.protobuf.tests{
-		
-	}
-	'''
 }
