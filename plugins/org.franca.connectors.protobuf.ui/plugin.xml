@@ -28,7 +28,7 @@
                      type="org.eclipse.core.resources.IFile">
                   <test
                         property="org.eclipse.core.resources.name"
-                        value="*.protobuf">
+                        value="*.proto">
                   </test>
                </adapt>
             </iterate>
