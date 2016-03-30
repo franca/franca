@@ -18,6 +18,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 import static org.junit.Assert.*
+import java.math.BigInteger
 
 @RunWith(typeof(XtextRunner2))
 @InjectWith(typeof(FrancaIDLTestsInjectorProvider))
@@ -88,6 +89,49 @@ class SerializerTests {
 			
 			typeCollection TC1 {
 				const Double c1 = 12345.67d
+			}'''
+
+		assertEquals(expected, result)		
+	}
+	
+	@Test
+	def void testNegativeEnumeratorValue() {
+		// build test model
+		val fmodel = f.createFModel => [
+			name = "the.package"
+			typeCollections.add(
+				f.createFTypeCollection => [
+					name = "TC1"
+					types.add(
+						f.createFEnumerationType => [
+							name = "Enum1"
+							enumerators.add(
+								f.createFEnumerator => [
+									name = "E1"
+									value = f.createFIntegerConstant => [
+										^val = BigInteger.valueOf(-123L)
+									]
+								]
+							)
+						]
+					)
+				]
+			)
+		] 
+		
+		// serialize to string
+		val result = serializer.serialize(fmodel)
+		println(result)
+		
+		// compare with expected
+		val expected = '''
+			package the.package
+			
+			typeCollection TC1 {
+				enumeration Enum1 {
+					E1 = -123
+				}
+			
 			}'''
 
 		assertEquals(expected, result)		
