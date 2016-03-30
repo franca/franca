@@ -121,7 +121,7 @@ class SerializerTests {
 		
 		// serialize to string
 		val result = serializer.serialize(fmodel)
-		println(result)
+		//println(result)
 		
 		// compare with expected
 		val expected = '''
@@ -136,6 +136,54 @@ class SerializerTests {
 
 		assertEquals(expected, result)		
 	}
+
+
+	@Test
+	def void testEscapeKeywords() {
+		// build test model
+		val fmodel = f.createFModel => [
+			name = "the.package"
+			typeCollections.add(
+				f.createFTypeCollection => [
+					name = "TC1"
+					types.add(
+						f.createFEnumerationType => [
+							name = "Enum2"
+							enumerators.add(
+								f.createFEnumerator => [ name = "attribute" ]
+							)
+							enumerators.add(
+								f.createFEnumerator => [ name = "method" ]
+							)
+							enumerators.add(
+								f.createFEnumerator => [ name = "broadcast" ]
+							)
+						]
+					)
+				]
+			)
+		] 
+		
+		// serialize to string
+		val result = serializer.serialize(fmodel)
+		//println(result)
+		
+		// compare with expected
+		val expected = '''
+			package the.package
+			
+			typeCollection TC1 {
+				enumeration Enum2 {
+					^attribute
+					^method
+					^broadcast
+				}
+			
+			}'''
+
+		assertEquals(expected, result)		
+	}
+	
 	
 	def private f() {
 		FrancaFactory.eINSTANCE
