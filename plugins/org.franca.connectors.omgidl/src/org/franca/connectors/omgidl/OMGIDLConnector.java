@@ -7,6 +7,7 @@
  *******************************************************************************/
 package org.franca.connectors.omgidl;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -50,7 +51,7 @@ public class OMGIDLConnector implements IFrancaConnector {
 		if (model==null) {
 			System.out.println("Error: Could not load OMG IDL model from file " + filename);
 		} else {
-			System.out.println("Loaded OMG IDL interface " + model.getIdentifier());
+			System.out.println("Loaded OMG IDL model " + model.getIdentifier());
 		}
 		return new OMGIDLModelContainer(model);
 	}
@@ -63,7 +64,7 @@ public class OMGIDLConnector implements IFrancaConnector {
 			if (model==null) {
 				System.out.println("Error: Could not load OMG IDL model from file " + filename);
 			} else {
-				System.out.println("Loaded OMG IDL interface " + model.getIdentifier());
+				System.out.println("Loaded OMG IDL model " + map_TranslationUnit_FileName.get(model));//model.getIdentifier());
 			}
 			map_ModelContainer_FileName.put(new OMGIDLModelContainer(model), map_TranslationUnit_FileName.get(model));
 		}
@@ -100,13 +101,15 @@ public class OMGIDLConnector implements IFrancaConnector {
 	}
 	
 	public List<FModel> toFrancas(IModelContainer model) {
+		List<FModel> fmodels = new ArrayList<FModel>();
 		if (! (model instanceof OMGIDLModelContainer)) {
-			return null;
+			return fmodels;
 		}
 		
 		OMGIDL2FrancaTransformation trafo = injector.getInstance(OMGIDL2FrancaTransformation.class);
 		OMGIDLModelContainer omg = (OMGIDLModelContainer)model;
-		List<FModel> fmodels = trafo.transformToMultiFModel(omg.model(),transformationMap);
+//		fmodels.addAll(trafo.transformToMultiFModel(omg.model(),transformationMap));
+		fmodels.add(trafo.transformToSingleFModel(omg.model(),transformationMap));
 		transformationMap = trafo.getTransformationMap();
 		lastTransformationIssues = trafo.getTransformationIssues();
 		System.out.println(IssueReporter.getReportString(lastTransformationIssues));
