@@ -1,0 +1,73 @@
+package Pkg.Astronomy_t;
+option java_package =  "Pkg.Astronomy";
+
+import "Common_t.proto";
+import "Infrastructure_t.proto";
+
+enum objectType_t
+{
+   eObject_Sun = 0;
+   eObject_Moon = 1;
+}
+
+enum phenomenonType_t
+{
+   ePhenomenon_BeginTwilight = 0;
+   ePhenomenon_Rise = 1;
+   ePhenomenon_Set = 2;
+   ePhenomenon_EndTwilight = 3;
+}
+
+enum phenomonSpecialCondition_t
+{
+   ePhenomonSpecialCondition_None = 0;
+   ePhenomonSpecialCondition_Condition1 = 1;
+   ePhenomonSpecialCondition_Condition2 = 2;
+}
+		
+///////////////////////////////// Messages /////////////////////////////////////
+
+message illuminanceInfo_t
+{	
+   optional double data1 = 1;
+   optional double data2 = 2;
+   optional double data3 = 3;
+}
+
+
+message objectPhenomenaInfo_t
+{	
+   repeated phenomenonInfo_t phenomena = 1;
+   optional phenomonSpecialCondition_t specialCondition = 2;
+}
+
+message observationInfo_t
+{	
+   optional Pkg.Infrastructure.Infrastructure_t.timespec_t observationTime = 1;
+
+   optional Pkg.Infrastructure.Common_t.position_t observationLocation = 2;
+}
+
+message phenomenonInfo_t
+{	
+   optional phenomenonType_t phenomenonType = 1;
+   optional Pkg.Infrastructure.Infrastructure_t.timespec_t time = 2;
+}
+
+message sunMoonIlluminanceInfo_t
+{	
+   optional illuminanceInfo_t sunIlluminance = 1;
+   optional illuminanceInfo_t moonIlluminance = 2;
+   optional observationInfo_t observationInfo = 3;
+}
+
+message sunMoonRiseSetInfo_t
+{	
+  optional objectPhenomenaInfo_t sunPhenomena = 1;
+
+  optional objectPhenomenaInfo_t moonPhenomena = 2;
+
+  optional observationInfo_t observationInfo = 3;
+}
+
+	

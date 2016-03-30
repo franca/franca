@@ -1,0 +1,43 @@
+
+
+
+
+
+///////////////////////////////// Package Information //////////////////////////
+package Pkg.Misc.Overlay_Service.Overlay_ps;
+option java_package =  "Pkg.Misc.Overlay_Service";
+
+///////////////////////////////// Import Information ///////////////////////////
+import "Overlay_t.proto";
+
+///////////////////////////////// Enumerations /////////////////////////////////
+
+
+enum majorVersion
+{
+   eMajorVersion = 7;
+}
+
+
+enum minorVersion
+{
+   eMinorVersion = 0;
+}
+		
+///////////////////////////////// Messages /////////////////////////////////////
+
+
+message groupChangePublish
+{	
+   
+   repeated Pkg.Misc.Overlay_t.groupChange_t info = 1;
+}
+
+
+message overlayChangePublish
+{	
+   
+   repeated Pkg.Misc.Overlay_t.overlayChange_t info = 1;
+}
+
+	

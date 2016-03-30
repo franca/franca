@@ -1,0 +1,140 @@
+
+
+
+
+
+///////////////////////////////// Package Information //////////////////////////
+package Pkg.Infrastructure.Infrastructure_t;
+option java_package =  "Pkg.Infrastructure";
+
+///////////////////////////////// Import Information ///////////////////////////
+
+///////////////////////////////// Enumerations /////////////////////////////////
+
+
+enum historyOrderType_t
+{
+   eHistoryOrder_Unknown = 0;
+   eHistoryOrder_OldestFirst = 1;
+   eHistoryOrder_NewestFirst = 2;
+}
+
+
+enum replyStatusType_t
+{
+   eReplyStatus_InProgress = 0;
+   eReplyStatus_Complete = 1;
+}
+
+
+enum requestStatusType_t
+{
+   eRequestStatus_Success = 0;
+   eRequestStatus_Error = 1;
+}
+
+
+enum systemExceptionType_t
+{
+   eSystemException_Unknown = 0;
+   eSystemException_1 = 1;
+   eSystemException_2 = 2;
+}
+		
+///////////////////////////////// Messages /////////////////////////////////////
+
+
+message baseReplyHeader_t
+{	
+   
+   optional replyStatusType_t status = 2;
+
+   
+   optional string correlationID = 1;
+}
+
+
+message baseRequestHeader_t
+{	
+   
+   optional string correlationID = 1;
+
+   
+   optional sint64 maxResponseSize = 2;
+
+   
+   optional bytes userToken = 3;
+}
+
+
+message heartbeat_t
+{	
+   
+   optional timespec_t timestamp = 1;
+}
+
+
+message historyRequestHeader_t
+{	
+   
+   optional timespan_t timeSpan = 1;
+
+   
+   optional sint64 maxResponseSize = 2;
+
+   
+   optional historyOrderType_t responseOrder = 3;
+}
+
+
+message message_t
+{	
+   
+   optional timespec_t messageCreationTime = 8;
+
+   
+   optional string messageOriginationInformation = 9;
+
+   
+   optional bytes encodedData = 1;
+
+   
+   optional string messageName = 2;
+
+   
+   optional systemExceptionType_t sysException = 3;
+
+   
+   optional baseRequestHeader_t requestHeader = 4;
+
+   
+   optional baseReplyHeader_t replyHeader = 5;
+
+   
+   optional sint64 sequenceNumber = 6;
+
+   
+   optional bool flag = 7;
+}
+
+
+message timespan_t
+{	
+   
+   optional timespec_t startTime = 1;
+
+   
+   optional timespec_t stopTime = 2;
+}
+
+
+message timespec_t
+{	
+   
+   optional sint64 seconds = 1;
+
+   
+   optional sint64 nanoseconds = 2;
+}
+
+	

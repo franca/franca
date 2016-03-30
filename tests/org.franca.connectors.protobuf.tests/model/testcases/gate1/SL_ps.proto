@@ -1,0 +1,36 @@
+
+
+
+
+
+///////////////////////////////// Package Information //////////////////////////
+package Pkg.Misc.SL_Service.SecurityLevel_ps;
+option java_package =  "Pkg.Misc.SL_Service";
+
+///////////////////////////////// Import Information ///////////////////////////
+import "SL_t.proto";
+
+///////////////////////////////// Enumerations /////////////////////////////////
+
+
+enum majorVersion
+{
+   eMajorVersion = 1;
+}
+
+
+enum minorVersion
+{
+   eMinorVersion = 2;
+}
+		
+///////////////////////////////// Messages /////////////////////////////////////
+
+
+message SLInfoPublish
+{	
+   
+   optional Pkg.Misc.SL_t.SL_t info = 1;
+}
+
+	
