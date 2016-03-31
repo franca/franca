@@ -19,6 +19,8 @@ import org.junit.runner.RunWith
 
 import static org.junit.Assert.*
 import java.math.BigInteger
+import org.franca.core.franca.FOperation
+import org.franca.core.franca.FOperator
 
 @RunWith(typeof(XtextRunner2))
 @InjectWith(typeof(FrancaIDLTestsInjectorProvider))
@@ -95,7 +97,7 @@ class SerializerTests {
 	}
 	
 	@Test
-	def void testNegativeEnumeratorValue() {
+	def void testNegativeEnumeratorValue1() {
 		// build test model
 		val fmodel = f.createFModel => [
 			name = "the.package"
@@ -109,7 +111,55 @@ class SerializerTests {
 								f.createFEnumerator => [
 									name = "E1"
 									value = f.createFIntegerConstant => [
+										// NB: the grammar FrancaIDL.xtext doesn't allow negative integer constants,
+										// but the serialization is working nevertheless.
 										^val = BigInteger.valueOf(-123L)
+									]
+								]
+							)
+						]
+					)
+				]
+			)
+		] 
+		
+		// serialize to string
+		val result = serializer.serialize(fmodel)
+		//println(result)
+		
+		// compare with expected
+		val expected = '''
+			package the.package
+			
+			typeCollection TC1 {
+				enumeration Enum1 {
+					E1 = -123
+				}
+			
+			}'''
+
+		assertEquals(expected, result)		
+	}
+
+	@Test
+	def void testNegativeEnumeratorValue2() {
+		// build test model
+		val fmodel = f.createFModel => [
+			name = "the.package"
+			typeCollections.add(
+				f.createFTypeCollection => [
+					name = "TC1"
+					types.add(
+						f.createFEnumerationType => [
+							name = "Enum1"
+							enumerators.add(
+								f.createFEnumerator => [
+									name = "E1"
+									value = f.createFUnaryOperation => [
+										op = FOperator.SUBTRACTION
+										operand = f.createFIntegerConstant => [
+											^val = BigInteger.valueOf(123L)
+										]
 									]
 								]
 							)

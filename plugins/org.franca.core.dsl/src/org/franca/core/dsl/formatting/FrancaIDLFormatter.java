@@ -90,6 +90,8 @@ public class FrancaIDLFormatter extends AbstractDeclarativeFormatter {
 		c.setLinewrap(1).around(f.getFEnumeratorRule());
 		c.setLinewrap(1).around(f.getFFieldRule());
 		
+		// expressions
+		c.setNoSpace().after(f.getFUnaryOperationAccess().getOpAssignment_1());
 		
 		//version information
 		c.setLinewrap(1).after(f.getFVersionAccess().getMajorAssignment_3());
