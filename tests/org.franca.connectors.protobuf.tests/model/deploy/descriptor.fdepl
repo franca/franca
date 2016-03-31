@@ -1,5 +1,5 @@
-import "../specification/ProtobufSpec.fdepl"
-import "../../src-gen/testcases/descriptor.fidl"
+import "../../src-gen/testcases/"
+import "../specification/ProtobufSpec.fdepldescriptor.fidl"
 
 specification google.protobuf1.descriptorSpec extends org.franca.connectors.protobuf.ProtobufSpec {
 	for interfaces {

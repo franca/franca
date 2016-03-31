@@ -1,5 +1,5 @@
-import "../specification/ProtobufSpec.fdepl"
-import "../../src-gen/testcases/NestedTypes.fidl"
+import "../../src-gen/testcases/"
+import "../specification/ProtobufSpec.fdeplNestedTypes.fidl"
 
 specification org.franca.connectors.protobuf.tests.NestedTypesSpec extends org.franca.connectors.protobuf.ProtobufSpec {
 }

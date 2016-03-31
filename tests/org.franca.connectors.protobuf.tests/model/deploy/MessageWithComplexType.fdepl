@@ -1,5 +1,5 @@
-import "../specification/ProtobufSpec.fdepl"
-import "../../src-gen/testcases/MessageWithComplexType.fidl"
+import "../../src-gen/testcases/"
+import "../specification/ProtobufSpec.fdeplMessageWithComplexType.fidl"
 
 specification org.franca.connectors.protobuf.tests.MessageWithComplexTypeSpec extends org.franca.connectors.protobuf.ProtobufSpec {
 	for enumerators {

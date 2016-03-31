@@ -109,7 +109,7 @@ class Protobuf2FrancaDeploymentGenerator {
 		import "«specification»"
 		import "«fidlPath»«fileName».fidl"
 		
-		specification «packageName».«fileName»Spec extends org.franca.connectors.protobuf.ProtobufSpec {
+		specification «packageName».«fileName.path»Spec extends org.franca.connectors.protobuf.ProtobufSpec {
 			«IF fileOptions.size > 8 || fileOptions.exists[!predefinedFileOptions.contains(it)]»
 				for interfaces {
 					«FOR fileOption : fileOptions»
@@ -158,7 +158,7 @@ class Protobuf2FrancaDeploymentGenerator {
 		}
 		
 		«IF !structFields.empty || !enumOptions.empty || unionFields.empty»
-			define «packageName».«fileName»Spec for typeCollection «packageName»{
+			define «packageName».«fileName.path»Spec for typeCollection «packageName»{
 				«FOR elem : structFields.keySet»
 					struct «elem» {
 						«IF structOptions.get(elem) !== null»
@@ -185,7 +185,7 @@ class Protobuf2FrancaDeploymentGenerator {
 			}
 		«ENDIF»
 		«FOR interfaceName : interfaceOptions.keySet»
-			define «packageName».«fileName»Spec for interface «packageName».«interfaceName»{
+			define «packageName».«fileName.path»Spec for interface «packageName».«interfaceName.path»{
 				«FOR option : interfaceOptions.get(interfaceName)»
 					«option.key» = «option.value»
 				«ENDFOR»
@@ -199,13 +199,17 @@ class Protobuf2FrancaDeploymentGenerator {
 			}
 		«ENDFOR»
 		«IF !fileOptions.empty»
-			define «packageName».«fileName»Spec for interface «packageName».FileOption{
+			define «packageName».«fileName.path»Spec for interface «packageName».FileOption{
 				«FOR elem : fileOptions»
 					«elem.key» = «elem.value»
 				«ENDFOR»
 			}
 		«ENDIF»
 	'''
+	
+	def String getPath(String fullname) {
+		fullname.replace('/','.')
+	}
 
 	def CharSequence generate(Protobuf protobufModel, String specification, String fidlPath, String fileName) {
 		index = 0

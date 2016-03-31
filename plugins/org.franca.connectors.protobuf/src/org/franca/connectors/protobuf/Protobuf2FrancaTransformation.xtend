@@ -142,19 +142,20 @@ class Protobuf2FrancaTransformation {
 						"Couldn't find the import source file: '" + elem.importURI + "', will be ignored")
 					return;
 				}
-//				val conn = new ProtobufConnector
+				val conn = new ProtobufConnector
 				//TODO import google/protobuf/descriptor.proto
 				val normalizedUri = elem.eResource.resourceSet.URIConverter.normalize(uri)
 				
 				
 				
-				//val protobufidl = conn.loadModel(normalizedUri.toFileString) as ProtobufModelContainer
-				//val fmodelGen = conn.toFranca(protobufidl)
+				val protobufidl = conn.loadModel(normalizedUri.toFileString) as ProtobufModelContainer
+				val importName = protobufidl.model.elements.filter(Package).head?.name ?: "dummy_package"
+//				val fmodelGen = conn.toFranca(protobufidl)
 
 				elem.eResource.resourceSet.getResource(normalizedUri,true)
 
 				importURI = uri.lastSegment.split("\\.").get(0).concat(".fidl")
-				importedNamespace = "org.franca.connectors.protobuf.tests.*" //fmodelGen.name + ".*"
+				importedNamespace = importName + ".*"
 			}
 		} else
 			addIssue(
@@ -201,7 +202,7 @@ class Protobuf2FrancaTransformation {
 	}
 
 	def private create factory.createFEnumerationType transformEnum(Enum enum1) {
-		name = enum1.name
+		name = enum1.name.toFirstUpper
 		enumerators += enum1.elements.filter[element|!(element instanceof Option)].map[transformEnumElement]
 	}
 

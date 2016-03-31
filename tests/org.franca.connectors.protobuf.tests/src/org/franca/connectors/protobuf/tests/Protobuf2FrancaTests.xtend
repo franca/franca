@@ -130,11 +130,83 @@ class Protobuf2FrancaTests {
 	def enum_emptyEnum(){
 		test("Enum_emptyEnum")
 	}
-
-	/**
-	 * Utility method for executing one transformation and comparing the result with a reference model.
-	 */
-	private def test(String inputfile) {
+	
+	@Test
+	def test_Astronomy_rr(){
+		test("gate1/Astronomy_rr","../"+FIDL_DIR,"../"+SPEC_FILE)
+	}
+	
+	@Test
+	def test_Astronomy_t(){
+		test("gate1/Astronomy_t","../"+FIDL_DIR,"../"+SPEC_FILE)
+	}
+	
+	@Test
+	def test_Common_t(){
+		test("gate1/Common_t","../"+FIDL_DIR,"../"+SPEC_FILE)
+	}
+	
+	@Test
+	def test_Ct_t(){
+		test("gate1/Ct_t","../"+FIDL_DIR,"../"+SPEC_FILE)
+	}
+	
+	@Test
+	def test_CtCommon_t(){
+		test("gate1/CtCommon_t","../"+FIDL_DIR,"../"+SPEC_FILE)
+	}
+	
+	@Test
+	def test_Infrastructure_t(){
+		test("gate1/Infrastructure_t","../"+FIDL_DIR,"../"+SPEC_FILE)
+	}
+	
+	@Test
+	def test_Mt_ps(){
+		test("gate1/Mt_ps","../"+FIDL_DIR,"../"+SPEC_FILE)
+	}
+	
+	@Test
+	def test_Mt_rr(){
+		test("gate1/Mt_rr","../"+FIDL_DIR,"../"+SPEC_FILE)
+	}
+	
+	@Test
+	def test_Mt_t(){
+		test("gate1/Mt_t","../"+FIDL_DIR,"../"+SPEC_FILE)
+	}
+	
+	@Test
+	def test_Overlay_ps(){
+		test("gate1/Overlay_ps","../"+FIDL_DIR,"../"+SPEC_FILE)
+	}
+	
+	@Test
+	def test_Overlay_rr(){
+		test("gate1/Overlay_rr","../"+FIDL_DIR,"../"+SPEC_FILE)
+	}
+	
+	@Test
+	def test_Overlay_t(){
+		test("gate1/Overlay_t","../"+FIDL_DIR,"../"+SPEC_FILE)
+	}
+	
+	@Test
+	def test_SL_ps(){
+		test("gate1/SL_ps","../"+FIDL_DIR,"../"+SPEC_FILE)
+	}
+	
+	@Test
+	def test_SL_rr(){
+		test("gate1/SL_rr","../"+FIDL_DIR,"../"+SPEC_FILE)
+	}
+	
+	@Test
+	def test_SL_t(){
+		test("gate1/SL_t","../"+FIDL_DIR,"../"+SPEC_FILE)
+	}
+	
+	private def test(String inputfile, String fidl_dir, String specificfile) {
 		val PROTOBUF_EXT = ".proto"
 		val FRANCA_IDL_EXT = ".fidl"
 		
@@ -144,11 +216,11 @@ class Protobuf2FrancaTests {
 
 		// do the actual transformation to Franca IDL and save the result
 		val fmodelGen = conn.toFranca(protobufidl)
-		EcoreUtil.resolveAll(fmodelGen)
+		
 		fmodelGen.saveModel(GEN_DIR + inputfile + FRANCA_IDL_EXT)
 		
 		fsa.outputPath = DEPLOY_DIR		
-		fsa.generateFile(inputfile +".fdepl", conn.generateFrancaDeployment(protobufidl, SPEC_FILE, FIDL_DIR, inputfile))
+		fsa.generateFile(inputfile +".fdepl", conn.generateFrancaDeployment(protobufidl, specificfile, fidl_dir, inputfile))
 		
 		// load the reference Franca IDL model
 		val fmodelRef = loadModel(REF_DIR + inputfile + FRANCA_IDL_EXT)
@@ -173,5 +245,12 @@ class Protobuf2FrancaTests {
 		// (EMF Compare should provide a nice view for this...)		
 		// we expect that both Franca IDL models are identical 
 		assertEquals(0, nDiffs)
+	}
+
+	/**
+	 * Utility method for executing one transformation and comparing the result with a reference model.
+	 */
+	private def test(String inputfile) {
+		test(inputfile,SPEC_FILE,FIDL_DIR)
 	}
 }

@@ -1,5 +1,5 @@
-import "../specification/ProtobufSpec.fdepl"
-import "../../src-gen/testcases/MessageWithExtend.fidl"
+import "../../src-gen/testcases/"
+import "../specification/ProtobufSpec.fdeplMessageWithExtend.fidl"
 
 specification org.franca.connectors.protobuf.tests.MessageWithExtendSpec extends org.franca.connectors.protobuf.ProtobufSpec {
 	for enumerators {
