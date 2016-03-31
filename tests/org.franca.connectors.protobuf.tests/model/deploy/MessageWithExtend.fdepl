@@ -2,7 +2,8 @@ import "../specification/ProtobufSpec.fdepl"
 import "../../src-gen/testcases/MessageWithExtend.fidl"
 
 specification org.franca.connectors.protobuf.tests.MessageWithExtendSpec extends org.franca.connectors.protobuf.ProtobufSpec {
-	//TODO Add custom options
+	for enumerators {
+	}
 }
 
 define org.franca.connectors.protobuf.tests.MessageWithExtendSpec for typeCollection org.franca.connectors.protobuf.tests{

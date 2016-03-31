@@ -27,7 +27,7 @@ class Protobuf2FrancaTests {
 	val MODEL_DIR = "model/testcases/"
 	val REF_DIR = "model/reference/"
 	val GEN_DIR = "src-gen/testcases/"
-	val DEPLOY_DIR = "C:\\Users\\shi\\git\\franca\\tests\\org.franca.connectors.protobuf.tests\\model\\deploy\\"
+	val DEPLOY_DIR = "model/deploy/"
 	val FIDL_DIR = "../../src-gen/testcases/"
 	val SPEC_FILE = "../specification/ProtobufSpec.fdepl"
 
@@ -94,8 +94,8 @@ class Protobuf2FrancaTests {
 	}
 	
 	@Test
+	//FIXME
 	@Ignore
-	//FIXME 
 	def test_Import() {
 		test("MultiFiles")
 	}
@@ -106,6 +106,18 @@ class Protobuf2FrancaTests {
 	def option() {
 		test("Option")
 		//test("EnumWithOption")
+	}
+	
+	@Test
+	//FIXME implicit import
+	@Ignore
+	def customOptions() {
+		test("CustomOptions")
+	}
+	
+	@Test
+	def descriptor(){
+		test("descriptor")
 	}
 	
 	@Test

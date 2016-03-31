@@ -2,6 +2,9 @@ import "../specification/ProtobufSpec.fdepl"
 import "../../src-gen/testcases/ServiceWithOneRPC.fidl"
 
 specification dummy_package.ServiceWithOneRPCSpec extends org.franca.connectors.protobuf.ProtobufSpec {
-	//TODO Add custom options
+	for methods {
+	}
 }
 
+define dummy_package.ServiceWithOneRPCSpec for typeCollection dummy_package{
+}

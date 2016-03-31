@@ -36,6 +36,7 @@ import java.util.LinkedList
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.xtend.lib.annotations.Data
+import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 import org.franca.core.framework.TransformationLogger
 import org.franca.core.franca.FBasicTypeId
 import org.franca.core.franca.FField
@@ -80,6 +81,10 @@ class Protobuf2FrancaTransformation {
 		}
 
 		name = src.elements.filter(Package).head?.name ?: "dummy_package"
+		
+		if (src.elements.filter(Option).size > 0){
+			interfaces += factory.createFInterface =>[name = "FileOption"]
+		}
 
 		if (src.elements.empty) {
 			addIssue(IMPORT_WARNING, src, ProtobufPackage.PROTOBUF__ELEMENTS,
@@ -137,15 +142,19 @@ class Protobuf2FrancaTransformation {
 						"Couldn't find the import source file: '" + elem.importURI + "', will be ignored")
 					return;
 				}
-				val conn = new ProtobufConnector
+//				val conn = new ProtobufConnector
+				//TODO import google/protobuf/descriptor.proto
 				val normalizedUri = elem.eResource.resourceSet.URIConverter.normalize(uri)
-				val protobufidl = conn.loadModel(normalizedUri.toFileString) as ProtobufModelContainer
-				val fmodelGen = conn.toFranca(protobufidl)
+				
+				
+				
+				//val protobufidl = conn.loadModel(normalizedUri.toFileString) as ProtobufModelContainer
+				//val fmodelGen = conn.toFranca(protobufidl)
 
-				elem.eResource.resourceSet.createResource(normalizedUri)
+				elem.eResource.resourceSet.getResource(normalizedUri,true)
 
 				importURI = uri.lastSegment.split("\\.").get(0).concat(".fidl")
-				importedNamespace = fmodelGen.name + ".*"
+				importedNamespace = "org.franca.connectors.protobuf.tests.*" //fmodelGen.name + ".*"
 			}
 		} else
 			addIssue(
@@ -157,11 +166,30 @@ class Protobuf2FrancaTransformation {
 	}
 
 	def private create factory.createFStructType transformTypeExtension(TypeExtension typeExtension) {
-		name = typeExtension.type.target.name.toFirstUpper + "_" + index
-		base = transformExtensibleType(typeExtension.type.target)
+		if (typeExtension.type.target.eIsProxy){
+			val resourceSet = typeExtension.eResource.resourceSet
+			EcoreUtil.resolveAll(resourceSet)
+			val resolved = EcoreUtil.resolve(typeExtension.type.target, resourceSet)
+			if (resolved.eIsProxy){
+				//TODO
+				name = "unsolved_"+ NodeModelUtils.getNode(typeExtension.type).text.replace('.','_').trim
+				val fakeBase = createFakeBaseStruct
+				base = fakeBase
+			}
+		}
+		else {
+			name = typeExtension.type.target.name.toFirstUpper + "_" + index
+			base = transformExtensibleType(typeExtension.type.target)
+		}
 		elements += typeExtension.elements.map [ element |
 			transformField(name, [element.transformMessageElement])
 		].filterNull
+	}
+	
+	def private create factory.createFStructType createFakeBaseStruct(){
+		name = "unknown" 
+		polymorphic = true
+		types += it
 	}
 
 	def private dispatch transformExtensibleType(Message message) {
@@ -319,6 +347,7 @@ class Protobuf2FrancaTransformation {
 		if (complexTypeLink.target.eIsProxy) {
 			val resourceSet = complexTypeLink.eResource.resourceSet
 			EcoreUtil.resolve(complexTypeLink.target, resourceSet)
+			EcoreUtil.resolveAll(resourceSet)
 		}
 		complexTypeLink.target.transformComplexType
 	}
@@ -328,9 +357,9 @@ class Protobuf2FrancaTransformation {
 			Enum:
 				complexType.transformEnum
 			Message:
-				complexType.transformMessage
+				transform(complexType.name,[complexType.transformMessage])
 			Group:
-				complexType.transformGroup
+				transform(complexType.name,[complexType.transformGroup])
 		}
 	}
 
