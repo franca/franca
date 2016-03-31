@@ -132,11 +132,13 @@ class Protobuf2FrancaTests {
 	}
 	
 	@Test
+	@Ignore
 	def test_Astronomy_rr(){
 		test("gate1/Astronomy_rr","../"+FIDL_DIR,"../"+SPEC_FILE)
 	}
 	
 	@Test
+	@Ignore
 	def test_Astronomy_t(){
 		test("gate1/Astronomy_t","../"+FIDL_DIR,"../"+SPEC_FILE)
 	}
@@ -147,11 +149,13 @@ class Protobuf2FrancaTests {
 	}
 	
 	@Test
+	@Ignore
 	def test_Ct_t(){
 		test("gate1/Ct_t","../"+FIDL_DIR,"../"+SPEC_FILE)
 	}
 	
 	@Test
+	@Ignore
 	def test_CtCommon_t(){
 		test("gate1/CtCommon_t","../"+FIDL_DIR,"../"+SPEC_FILE)
 	}
@@ -162,46 +166,55 @@ class Protobuf2FrancaTests {
 	}
 	
 	@Test
+	@Ignore
 	def test_Mt_ps(){
 		test("gate1/Mt_ps","../"+FIDL_DIR,"../"+SPEC_FILE)
 	}
 	
 	@Test
+	@Ignore
 	def test_Mt_rr(){
 		test("gate1/Mt_rr","../"+FIDL_DIR,"../"+SPEC_FILE)
 	}
 	
 	@Test
+	@Ignore
 	def test_Mt_t(){
 		test("gate1/Mt_t","../"+FIDL_DIR,"../"+SPEC_FILE)
 	}
 	
 	@Test
+	@Ignore
 	def test_Overlay_ps(){
 		test("gate1/Overlay_ps","../"+FIDL_DIR,"../"+SPEC_FILE)
 	}
 	
 	@Test
+	@Ignore
 	def test_Overlay_rr(){
 		test("gate1/Overlay_rr","../"+FIDL_DIR,"../"+SPEC_FILE)
 	}
 	
 	@Test
+	@Ignore
 	def test_Overlay_t(){
 		test("gate1/Overlay_t","../"+FIDL_DIR,"../"+SPEC_FILE)
 	}
 	
 	@Test
+	@Ignore
 	def test_SL_ps(){
 		test("gate1/SL_ps","../"+FIDL_DIR,"../"+SPEC_FILE)
 	}
 	
 	@Test
+	@Ignore
 	def test_SL_rr(){
 		test("gate1/SL_rr","../"+FIDL_DIR,"../"+SPEC_FILE)
 	}
 	
 	@Test
+	@Ignore
 	def test_SL_t(){
 		test("gate1/SL_t","../"+FIDL_DIR,"../"+SPEC_FILE)
 	}
