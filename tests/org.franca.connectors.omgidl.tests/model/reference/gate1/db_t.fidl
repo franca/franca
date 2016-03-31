@@ -1,0 +1,22 @@
+package db
+import model "evc_t.fidl"
+
+typeCollection {
+	version {
+		major 1
+		minor 0
+	}
+	struct dbBound_t {
+		evc_t.Latitude_t latitude
+		undefined longitude
+		Float data1
+		Float data2
+		evc_t.validData_t validityFlag
+	}
+
+	struct db_t {
+		db_t NLT
+		dbBound_t NMT
+	}
+
+}

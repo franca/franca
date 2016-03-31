@@ -4,7 +4,7 @@
 module csm_t 
 {
 	
-	enum statusType 
+	enum statusTypes 
 	{
 		FAILED, 
 		OPERATIONAL
@@ -17,7 +17,7 @@ module csm_t
 		
 		string name;
 		
-		statusType newStatus;
+		statusTypes newStatus;
 		
 		string amplifyingInfo;
 		

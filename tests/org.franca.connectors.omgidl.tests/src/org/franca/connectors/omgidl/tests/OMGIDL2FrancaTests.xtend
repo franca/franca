@@ -41,40 +41,85 @@ class OMGIDL2FrancaTests {
 		test("11-EmptyInterfacesWithIncludes")
 	}
 	
-//	@Test
-//	def test_12() {
-//		test("12-TypeDeclarations")
-//	}
-//	
-//	@Test
-//	def test_13() {
-//		test("13-ConstantDeclarations")
-//	}
-//	
-//	@Test
-//	def test_14() {
-//		test("14-InterfaceDeclarations")
-//	}
-//	
-//	@Test
-//	def void test_20() {
-//		test("bn_ev", "model/testcases/gate1/", GEN_DIR, "model/reference/gate1/")
-//	}
-//	
-//	@Test
-//	def void test_21() {
-//		test("bn_t", "model/testcases/gate1/", GEN_DIR, "model/reference/gate1/")
-//	}
-//	
-//	@Test
-//	def void test_22() {
-//		test("csm_cs", "model/testcases/gate1/", GEN_DIR, "model/reference/gate1/")
-//	}
-//	
-//	@Test
-//	def void test_23() {
-//		test("csm_t", "model/testcases/gate1/", GEN_DIR, "model/reference/gate1/")
-//	}
+	@Test
+	def test_12() {
+		test("12-TypeDeclarations")
+	}
+	
+	@Test
+	def test_13() {
+		test("13-ConstantDeclarations")
+	}
+	
+	@Test
+	def test_14() {
+		test("14-InterfaceDeclarations")
+	}
+	
+	@Test
+	def void test_20() {
+		test("bn_ev", "model/testcases/gate1/", GEN_DIR, "model/reference/gate1/")
+	}
+	
+	@Test
+	def void test_21() {
+		test("bn_t", "model/testcases/gate1/", GEN_DIR, "model/reference/gate1/")
+	}
+	
+	@Test
+	def void test_22() {
+		test("csm_cs", "model/testcases/gate1/", GEN_DIR, "model/reference/gate1/")
+	}
+	
+	@Test
+	def void test_23() {
+		test("csm_t", "model/testcases/gate1/", GEN_DIR, "model/reference/gate1/")
+	}
+	
+	@Test
+	def void test_24() {
+		test("db_cs", "model/testcases/gate1/", GEN_DIR, "model/reference/gate1/")
+	}
+	
+	@Test
+	def void test_25() {
+		test("db_ev", "model/testcases/gate1/", GEN_DIR, "model/reference/gate1/")
+	}
+	
+	@Test
+	def void test_26() {
+		test("db_t", "model/testcases/gate1/", GEN_DIR, "model/reference/gate1/")
+	}
+	
+	@Test
+	def void test_27() {
+		test("de_ev", "model/testcases/gate1/", GEN_DIR, "model/reference/gate1/")
+	}
+	
+	@Test
+	def void test_28() {
+		test("de", "model/testcases/gate1/", GEN_DIR, "model/reference/gate1/")
+	}
+	
+	@Test
+	def void test_29() {
+		test("evc_t", "model/testcases/gate1/", GEN_DIR, "model/reference/gate1/")
+	}
+	
+	@Test
+	def void test_30() {
+		test("evm_ev", "model/testcases/gate1/", GEN_DIR, "model/reference/gate1/")
+	}
+	
+	@Test
+	def void test_31() {
+		test("evm", "model/testcases/gate1/", GEN_DIR, "model/reference/gate1/")
+	}
+	
+	@Test
+	def void test_32() {
+		test("evs", "model/testcases/gate1/", GEN_DIR, "model/reference/gate1/")
+	}
 
 	/**
 	 * Utility method for executing one transformation and comparing the result with a reference model.
@@ -154,12 +199,13 @@ class OMGIDL2FrancaTests {
 	def private test(String inputfile, String model_dir, String gen_dir, String ref_dir) {
 		val OMG_IDL_EXT = ".idl"
 		val FRANCA_IDL_EXT = ".fidl"
+		var nDiffs = 0
 		// load the OMG IDL input model
 		val conn = new OMGIDLConnector
 		val map_OMGIDLModelContainer_FileName = conn.loadModels(model_dir + inputfile + OMG_IDL_EXT)
 		// for each generated OMG IDL model
 		for (iomgidl: map_OMGIDLModelContainer_FileName.keySet.toArray.reverseView) {
-			val omgidl = iomgidl as OMGIDLModelContainer
+			val omgidl = iomgidl as OMGIDLModelContainer			
 			val fmodelGens = conn.toFrancas(omgidl)
 			val fileName = map_OMGIDLModelContainer_FileName.get(iomgidl)
 			for (fmodelGen: fmodelGens) {
@@ -177,15 +223,14 @@ class OMGIDL2FrancaTests {
 				val scope = EMFCompare.createDefaultScope(rset1, rset2)
 				val comparison = EMFCompare.builder.build.compare(scope)
 				val List<Diff> differences = comparison.differences
-				var nDiffs = 0
 				for(diff : differences) {
 					if (! (diff instanceof ResourceAttachmentChangeSpec)) {
 //						System.out.println(diff.toString)
 						nDiffs++
 					}
 				}
-				assertEquals(0, nDiffs)
 			}
 		}
+		assertEquals(0, nDiffs)
 	}
 }

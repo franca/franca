@@ -33,7 +33,7 @@ interface de
 	
 	readonly attribute de::state_t deState;
 	
-	de::de_t getDeData(  );
+	de::de_t getDeData(  ) raises (evc_t::canNotAccessData);// raises ... is added to test the exception with at least one field
 	
 }; //end interface de
 #endif

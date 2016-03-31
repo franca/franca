@@ -1,0 +1,38 @@
+package evm
+
+interface evm {
+	enumeration state_t {
+		state1
+		state2
+		state3
+		stateInvalid
+		state4
+	}
+
+	enumeration type_t {
+		onState
+		offState
+	}
+
+	struct evm_t {
+		String name
+		type_t type
+		state_t ^state
+		Int16 height
+	}
+
+}
+
+interface evmCollection {
+	array Sequence_0 of undefined
+
+	typedef evmCollection_t is Sequence_0
+
+	method getAllevms {
+	}
+}
+
+interface evmWithControl extends evm {
+	method lower {
+	}
+}

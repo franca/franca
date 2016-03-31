@@ -9,4 +9,3 @@ module testcase11 {
 	interface ExampleInterface2 {
 	};
 };
-

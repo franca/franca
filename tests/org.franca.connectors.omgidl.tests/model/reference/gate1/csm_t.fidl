@@ -5,14 +5,14 @@ typeCollection {
 		major 1
 		minor 0
 	}
-	enumeration statusType {
+	enumeration statusTypes {
 		FAILED
 		OPERATIONAL
 	}
 
 	struct cStatus_t {
 		String name
-		statusType newStatus
+		statusTypes newStatus
 		String amplifyingInfo
 	}
 

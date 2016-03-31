@@ -1,0 +1,11 @@
+package db_ev
+import model "db_t.fidl"
+import model "evs.fidl"
+
+interface db_ev extends evs.TypedPushConsumer {
+	method db {
+		in {
+			db.db_t arg
+		}
+	}
+}

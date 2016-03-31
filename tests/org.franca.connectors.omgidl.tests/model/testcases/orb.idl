@@ -1,4 +1,3 @@
-
 module orb {
 	interface ExampleInterface_orb {
 	};

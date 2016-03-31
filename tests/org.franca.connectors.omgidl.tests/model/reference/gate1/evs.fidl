@@ -1,0 +1,109 @@
+package evs
+
+interface PushSupplier {
+	method disconnect_push_supplier {
+	}
+}
+
+interface PushConsumer {
+	method push {
+		in {
+			undefined data
+		}
+		error {
+			Disconnected
+		}
+	}
+	method disconnect_push_consumer {
+	}
+}
+
+interface TypedPushConsumer extends PushConsumer {
+	method get_typed_consumer {
+	}
+}
+
+interface ProxyPushConsumer extends PushConsumer {
+	method connect_push_supplier {
+		in {
+			undefined push_supplier
+		}
+		error {
+			AlreadyConnected
+		}
+	}
+}
+
+interface ProxyPushSupplier extends PushSupplier {
+	method connect_push_consumer {
+		in {
+			undefined push_consumer
+		}
+		error {
+			AlreadyConnected
+			TypeError
+		}
+	}
+}
+
+interface SupplierAdmin {
+	method obtain_push_consumer {
+	}
+}
+
+interface TypedProxyPushConsumer extends ProxyPushConsumer {
+}
+
+interface ConsumerAdmin {
+	method obtain_push_supplier {
+	}
+}
+
+interface TypedSupplierAdmin extends SupplierAdmin {
+	method obtain_typed_push_consumer {
+		in {
+			Key supported_interface
+		}
+		error {
+			InterfaceNotSupported
+		}
+	}
+}
+
+interface TypedConsumerAdmin extends ConsumerAdmin {
+	method obtain_typed_push_supplier {
+		in {
+			Key uses_interface
+		}
+		error {
+			NoSuchImplementation
+		}
+	}
+}
+
+interface EventChannel {
+	method for_consumers {
+	}
+	method for_suppliers {
+	}
+	method destroy {
+	}
+}
+
+interface TypedEventChannel {
+	method for_consumers {
+	}
+	method for_suppliers {
+	}
+	method destroy {
+	}
+}
+
+typeCollection {
+	version {
+		major 1
+		minor 0
+	}
+	typedef Key is String
+
+}
