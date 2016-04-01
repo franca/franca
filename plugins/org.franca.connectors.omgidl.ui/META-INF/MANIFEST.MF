@@ -17,3 +17,4 @@ Require-Bundle: org.eclipse.ui,
  org.csu.idl.idlmm;bundle-version="1.1.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
+Import-Package: org.apache.commons.lang

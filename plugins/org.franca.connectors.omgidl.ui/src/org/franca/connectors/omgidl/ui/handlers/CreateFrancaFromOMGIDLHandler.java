@@ -7,6 +7,9 @@
  *******************************************************************************/
 package org.franca.connectors.omgidl.ui.handlers;
 
+import java.util.Map;
+
+import org.apache.commons.lang.ArrayUtils;
 import org.csu.idl.idlmm.TranslationUnit;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -23,6 +26,7 @@ import org.franca.connectors.omgidl.OMGIDLConnector;
 import org.franca.connectors.omgidl.OMGIDLModelContainer;
 import org.franca.core.dsl.FrancaPersistenceManager;
 import org.franca.core.dsl.ui.util.SpecificConsole;
+import org.franca.core.framework.IModelContainer;
 import org.franca.core.framework.IssueReporter;
 import org.franca.core.franca.FModel;
 
@@ -57,11 +61,16 @@ public class CreateFrancaFromOMGIDLHandler extends AbstractHandler {
     		// load D-Bus Introspection XML file
             out.println("Loading D-Bus Introspection XML file '" + omgidlFile + "' ...");
             OMGIDLConnector conn = new OMGIDLConnector();
-    		OMGIDLModelContainer omgidl = (OMGIDLModelContainer)conn.loadModel(omgidlFile);
-    		if (omgidl==null) {
-    			err.println("Couldn't load OMG IDL file '" + omgidlFile + "'.");
-    			return null;
-    		}
+//    		OMGIDLModelContainer omgidl = (OMGIDLModelContainer)conn.loadModel(omgidlFile);
+            Map<IModelContainer, String> map_OMGIDLModelContainer_FileName = conn.loadModels(omgidlFile);
+//    		if (omgidl==null) {
+//    			err.println("Couldn't load OMG IDL file '" + omgidlFile + "'.");
+//    			return null;
+//    		}
+            Object[] iomgidls = map_OMGIDLModelContainer_FileName.keySet().toArray();
+            ArrayUtils.reverse(iomgidls);
+            for (Object iomgidl: iomgidls) {
+            	OMGIDLModelContainer omgidl = (OMGIDLModelContainer) iomgidl;
     		TranslationUnit tu = omgidl.model();
     		if (tu==null) {
     			err.println("Error during load of OMG IDL file '" + omgidlFile + "'.");
@@ -73,7 +82,7 @@ public class CreateFrancaFromOMGIDLHandler extends AbstractHandler {
     		out.println("Transforming to Franca IDL model ...");
     		FModel fmodel = null;
     		try {
-    			fmodel = conn.toFranca(omgidl);
+    			fmodel = conn.toFrancas(omgidl).get(0);
     			out.println(IssueReporter.getReportString(conn.getLastTransformationIssues()));    			
     		} catch (Exception e) {
     			// print stack trace to stdout to ease debugging
@@ -90,7 +99,8 @@ public class CreateFrancaFromOMGIDLHandler extends AbstractHandler {
     		
     		// save Franca fidl file
     		int ext = file.getName().lastIndexOf("." + file.getFileExtension());
-    		String outfile = file.getName().substring(0, ext) + ".fidl";
+//    		String outfile = file.getName().substring(0, ext) + ".fidl";
+    		String outfile = map_OMGIDLModelContainer_FileName.get(iomgidl) + ".fidl";
     		String outpath = outputDir + "/" + outfile;
     		try {
 	    		if (saver.saveModel(fmodel, outpath)) {
@@ -106,7 +116,7 @@ public class CreateFrancaFromOMGIDLHandler extends AbstractHandler {
     			err.println("Internal transformation error, aborting.");
 				return null;
     		}
-
+            }
     		// refresh IDE (in order to make new files visible)
             IProject project = file.getProject();
             try {
