@@ -1,14 +1,14 @@
 import "../../specification/ProtobufSpec.fdepl"
 import "../../../src-gen/testcases/gate1/Infrastructure_t.fidl"
 
-specification Pkg.Infrastructure.Infrastructure_t.gate1.Infrastructure_tSpec extends org.franca.connectors.protobuf.ProtobufSpec {
+specification Pkg.Infrastructure.Infrastructure_t.Infrastructure_tSpec extends org.franca.connectors.protobuf.ProtobufSpec {
 	for interfaces {
 	}
 	for enumerators {
 	}
 }
 
-define Pkg.Infrastructure.Infrastructure_t.gate1.Infrastructure_tSpec for typeCollection Pkg.Infrastructure.Infrastructure_t{
+define Pkg.Infrastructure.Infrastructure_t.Infrastructure_tSpec for typeCollection Pkg.Infrastructure.Infrastructure_t{
 	struct Message_t {
 		messageCreationTime {
 			Tag = 8
@@ -112,6 +112,6 @@ define Pkg.Infrastructure.Infrastructure_t.gate1.Infrastructure_tSpec for typeCo
 		}
 	}
 }
-define Pkg.Infrastructure.Infrastructure_t.gate1.Infrastructure_tSpec for interface Pkg.Infrastructure.Infrastructure_t.FileOption{
+define Pkg.Infrastructure.Infrastructure_t.Infrastructure_tSpec for interface Pkg.Infrastructure.Infrastructure_t.FileOption{
 	Java_package = Pkg.Infrastructure
 }

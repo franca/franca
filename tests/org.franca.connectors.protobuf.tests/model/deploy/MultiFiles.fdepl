@@ -1,0 +1,18 @@
+import "../../src-gen/testcases/"
+import "../specification/ProtobufSpec.fdeplMultiFiles.fidl"
+
+specification org.franca.connectors.protobuf.tests.multifiles.MultiFilesSpec extends org.franca.connectors.protobuf.ProtobufSpec {
+}
+
+define org.franca.connectors.protobuf.tests.multifiles.MultiFilesSpec for typeCollection org.franca.connectors.protobuf.tests.multifiles{
+	struct Foo {
+		request1 {
+			Tag = 4
+			FieldRule = REPEATED
+		}
+		uint32_1 {
+			Tag = 3
+			FieldRule = OPTIONAL
+		}
+	}
+}

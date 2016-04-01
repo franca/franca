@@ -2,7 +2,6 @@ package org.franca.connectors.protobuf.tests
 
 import com.google.inject.Inject
 import java.util.List
-import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.compare.Diff
 import org.eclipse.emf.compare.EMFCompare
 import org.eclipse.emf.compare.internal.spec.ResourceAttachmentChangeSpec
@@ -11,7 +10,6 @@ import org.eclipse.xtext.generator.JavaIoFileSystemAccess
 import org.eclipse.xtext.junit4.InjectWith
 import org.eclipselabs.xtext.utils.unittesting.XtextRunner2
 import org.franca.connectors.protobuf.ProtobufConnector
-import org.franca.connectors.protobuf.ProtobufModelContainer
 import org.franca.core.dsl.FrancaIDLTestsInjectorProvider
 import org.franca.core.dsl.FrancaPersistenceManager
 import org.junit.Ignore
@@ -134,137 +132,132 @@ class Protobuf2FrancaTests {
 	@Test
 	@Ignore
 	def test_Astronomy_rr(){
-		test("gate1/Astronomy_rr","../"+FIDL_DIR,"../"+SPEC_FILE)
+		test("Astronomy_rr","../"+FIDL_DIR+"gate1/","../"+SPEC_FILE, "gate1/")
 	}
 	
 	@Test
 	@Ignore
 	def test_Astronomy_t(){
-		test("gate1/Astronomy_t","../"+FIDL_DIR,"../"+SPEC_FILE)
+		test("Astronomy_t","../"+FIDL_DIR+"gate1/","../"+SPEC_FILE, "gate1/")
 	}
 	
 	@Test
 	def test_Common_t(){
-		test("gate1/Common_t","../"+FIDL_DIR,"../"+SPEC_FILE)
+		test("Common_t","../"+FIDL_DIR+"gate1/","../"+SPEC_FILE, "gate1/")
 	}
 	
 	@Test
 	@Ignore
 	def test_Ct_t(){
-		test("gate1/Ct_t","../"+FIDL_DIR,"../"+SPEC_FILE)
+		test("Ct_t","../"+FIDL_DIR+"gate1/","../"+SPEC_FILE, "gate1/")
 	}
 	
 	@Test
 	@Ignore
 	def test_CtCommon_t(){
-		test("gate1/CtCommon_t","../"+FIDL_DIR,"../"+SPEC_FILE)
+		test("CtCommon_t","../"+FIDL_DIR+"gate1/","../"+SPEC_FILE, "gate1/")
 	}
 	
 	@Test
 	def test_Infrastructure_t(){
-		test("gate1/Infrastructure_t","../"+FIDL_DIR,"../"+SPEC_FILE)
+		test("Infrastructure_t","../"+FIDL_DIR+"gate1/","../"+SPEC_FILE, "gate1/")
 	}
 	
 	@Test
 	@Ignore
 	def test_Mt_ps(){
-		test("gate1/Mt_ps","../"+FIDL_DIR,"../"+SPEC_FILE)
+		test("Mt_ps","../"+FIDL_DIR+"gate1/","../"+SPEC_FILE, "gate1/")
 	}
 	
 	@Test
 	@Ignore
 	def test_Mt_rr(){
-		test("gate1/Mt_rr","../"+FIDL_DIR,"../"+SPEC_FILE)
+		test("Mt_rr","../"+FIDL_DIR+"gate1/","../"+SPEC_FILE, "gate1/")
 	}
 	
 	@Test
 	@Ignore
 	def test_Mt_t(){
-		test("gate1/Mt_t","../"+FIDL_DIR,"../"+SPEC_FILE)
+		test("Mt_t","../"+FIDL_DIR+"gate1/","../"+SPEC_FILE, "gate1/")
 	}
 	
 	@Test
 	@Ignore
 	def test_Overlay_ps(){
-		test("gate1/Overlay_ps","../"+FIDL_DIR,"../"+SPEC_FILE)
+		test("Overlay_ps","../"+FIDL_DIR+"gate1/","../"+SPEC_FILE, "gate1/")
 	}
 	
 	@Test
 	@Ignore
 	def test_Overlay_rr(){
-		test("gate1/Overlay_rr","../"+FIDL_DIR,"../"+SPEC_FILE)
+		test("Overlay_rr","../"+FIDL_DIR+"gate1/","../"+SPEC_FILE, "gate1/")
 	}
 	
 	@Test
 	@Ignore
 	def test_Overlay_t(){
-		test("gate1/Overlay_t","../"+FIDL_DIR,"../"+SPEC_FILE)
+		test("Overlay_t","../"+FIDL_DIR+"gate1/","../"+SPEC_FILE, "gate1/")
 	}
 	
 	@Test
 	@Ignore
 	def test_SL_ps(){
-		test("gate1/SL_ps","../"+FIDL_DIR,"../"+SPEC_FILE)
+		test("SL_ps","../"+FIDL_DIR+"gate1/","../"+SPEC_FILE, "gate1/")
 	}
 	
 	@Test
 	@Ignore
 	def test_SL_rr(){
-		test("gate1/SL_rr","../"+FIDL_DIR,"../"+SPEC_FILE)
+		test("SL_rr","../"+FIDL_DIR+"gate1/","../"+SPEC_FILE, "gate1/")
 	}
 	
 	@Test
 	@Ignore
 	def test_SL_t(){
-		test("gate1/SL_t","../"+FIDL_DIR,"../"+SPEC_FILE)
+		test("SL_t","../"+FIDL_DIR+"gate1/","../"+SPEC_FILE,"gate1/")
 	}
 	
-	private def test(String inputfile, String fidl_dir, String specificfile) {
+	private def test(String inputfile, String fidl_dir, String specificfile, String post_dir) {
 		val PROTOBUF_EXT = ".proto"
 		val FRANCA_IDL_EXT = ".fidl"
 		
 		// load the OMG IDL input model
 		val conn = new ProtobufConnector
-		val protobufidl = conn.loadModel(MODEL_DIR + inputfile + PROTOBUF_EXT) as ProtobufModelContainer
-
-		// do the actual transformation to Franca IDL and save the result
-		val fmodelGen = conn.toFranca(protobufidl)
+		val protobufidls = conn.loadModels(MODEL_DIR+post_dir + inputfile + PROTOBUF_EXT)
 		
-		fmodelGen.saveModel(GEN_DIR + inputfile + FRANCA_IDL_EXT)
-		
-		fsa.outputPath = DEPLOY_DIR		
-		fsa.generateFile(inputfile +".fdepl", conn.generateFrancaDeployment(protobufidl, specificfile, fidl_dir, inputfile))
-		
-		// load the reference Franca IDL model
-		val fmodelRef = loadModel(REF_DIR + inputfile + FRANCA_IDL_EXT)
-		EcoreUtil.resolveAll(fmodelRef.eResource)
-		fmodelRef.saveModel(GEN_DIR + inputfile + FRANCA_IDL_EXT)
-		
-		// use EMF Compare to compare both Franca IDL models (the generated and the reference model)
-		val rset2 = fmodelRef.eResource.resourceSet
-		val rset1 = fmodelGen.eResource.resourceSet
-
-		val scope = EMFCompare.createDefaultScope(rset1, rset2)
-		val comparison = EMFCompare.builder.build.compare(scope)
-		val List<Diff> differences = comparison.differences
-		var nDiffs = 0
-		for (diff : differences) {
-			if (! (diff instanceof ResourceAttachmentChangeSpec)) {
-				System.out.println(diff.toString)
-				nDiffs++
+		val fmodelGens = conn.toFrancas(protobufidls)
+		val filenames = protobufidls.map[fileName]
+		for (var i=0; i< fmodelGens.size; i++){
+			fmodelGens.get(i).saveModel(GEN_DIR+post_dir + filenames.get(i) + FRANCA_IDL_EXT)
+			
+			fsa.outputPath = DEPLOY_DIR+post_dir		
+			fsa.generateFile(filenames.get(i) +".fdepl", conn.generateFrancaDeployment(protobufidls.get(i), specificfile, fidl_dir, filenames.get(i)))
+			
+			val fmodelRef = loadModel(REF_DIR+post_dir + filenames.get(i) + FRANCA_IDL_EXT)
+			EcoreUtil.resolveAll(fmodelRef.eResource)
+			
+			// use EMF Compare to compare both Franca IDL models (the generated and the reference model)
+			val rset2 = fmodelRef.eResource.resourceSet
+			val rset1 = fmodelGens.get(i).eResource.resourceSet //TODO
+	
+			val scope = EMFCompare.createDefaultScope(rset1, rset2)
+			val comparison = EMFCompare.builder.build.compare(scope)
+			val List<Diff> differences = comparison.differences
+			var nDiffs = 0
+			for (diff : differences) {
+				if (! (diff instanceof ResourceAttachmentChangeSpec)) {
+					System.out.println(diff.toString)
+					nDiffs++
+				}
 			}
+			assertEquals(0, nDiffs)
 		}
-
-		// TODO: is there a way to show the difference in a side-by-side view if the test fails?
-		// (EMF Compare should provide a nice view for this...)		
-		// we expect that both Franca IDL models are identical 
-		assertEquals(0, nDiffs)
 	}
 
 	/**
 	 * Utility method for executing one transformation and comparing the result with a reference model.
 	 */
 	private def test(String inputfile) {
-		test(inputfile,SPEC_FILE,FIDL_DIR)
+		test(inputfile,SPEC_FILE,FIDL_DIR,"")
 	}
 }

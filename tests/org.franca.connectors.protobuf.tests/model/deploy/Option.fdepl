@@ -1,8 +1,11 @@
-import "../specification/ProtobufSpec.fdepl"
-import "../../src-gen/testcases/Option.fidl"
+import "../../src-gen/testcases/"
+import "../specification/ProtobufSpec.fdeplOption.fidl"
 
 specification org.franca.connectors.protobuf.tests.OptionSpec extends org.franca.connectors.protobuf.ProtobufSpec {
-	//TODO Add custom options
+	for interfaces {
+	}
+	for struct_fields {
+	}
 }
 
 define org.franca.connectors.protobuf.tests.OptionSpec for typeCollection org.franca.connectors.protobuf.tests{
@@ -11,20 +14,31 @@ define org.franca.connectors.protobuf.tests.OptionSpec for typeCollection org.fr
 		No_standard_descriptor_accessor = true
 		int321 {
 			Tag = 1
-			IsOptional = true
+			FieldRule = OPTIONAL
 			DefaultValue = "12"
+			Deprecated = true
+			Ctype = STRING
+			Experimental_map_key = ''
 		}
 		int641 {
 			Tag = 2
-			IsOptional = false
+			FieldRule = REPEATED
+			Packed = true
 		}
 		int322 {
 			Tag = 3
-			IsOptional = false
+			FieldRule = REQUIRED
+			Ctype = CORD
+			Deprecated = false
 		}
 		int323 {
 			Tag = 4
-			IsOptional = false
+			FieldRule = REQUIRED
+			Ctype = STRING_PIECE
+			Deprecated = true
 		}
 	}
+}
+define org.franca.connectors.protobuf.tests.OptionSpec for interface org.franca.connectors.protobuf.tests.FileOption{
+	Java_package = org.eclipse
 }

@@ -1,14 +1,14 @@
 import "../../specification/ProtobufSpec.fdepl"
 import "../../../src-gen/testcases/gate1/Common_t.fidl"
 
-specification Pkg.Infrastructure.Common_t.gate1.Common_tSpec extends org.franca.connectors.protobuf.ProtobufSpec {
+specification Pkg.Infrastructure.Common_t.Common_tSpec extends org.franca.connectors.protobuf.ProtobufSpec {
 	for interfaces {
 	}
 	for enumerators {
 	}
 }
 
-define Pkg.Infrastructure.Common_t.gate1.Common_tSpec for typeCollection Pkg.Infrastructure.Common_t{
+define Pkg.Infrastructure.Common_t.Common_tSpec for typeCollection Pkg.Infrastructure.Common_t{
 	struct AType {
 		data1 {
 			Tag = 1
@@ -112,6 +112,6 @@ define Pkg.Infrastructure.Common_t.gate1.Common_tSpec for typeCollection Pkg.Inf
 		}
 	}
 }
-define Pkg.Infrastructure.Common_t.gate1.Common_tSpec for interface Pkg.Infrastructure.Common_t.FileOption{
+define Pkg.Infrastructure.Common_t.Common_tSpec for interface Pkg.Infrastructure.Common_t.FileOption{
 	Java_package = Pkg.Infrastructure
 }

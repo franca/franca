@@ -31,7 +31,6 @@ import com.google.eclipse.protobuf.protobuf.Service
 import com.google.eclipse.protobuf.protobuf.Stream
 import com.google.eclipse.protobuf.protobuf.TypeExtension
 import com.google.inject.Inject
-import com.google.inject.Provider
 import java.math.BigInteger
 import java.util.LinkedList
 import java.util.Map
@@ -39,17 +38,14 @@ import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.xtend.lib.annotations.Data
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
-import org.eclipse.xtext.resource.XtextResourceSet
 import org.franca.core.framework.TransformationLogger
 import org.franca.core.franca.FBasicTypeId
 import org.franca.core.franca.FField
-import org.franca.core.franca.FModel
 import org.franca.core.franca.FOperator
 import org.franca.core.franca.FType
 import org.franca.core.franca.FrancaFactory
 
 import static org.franca.core.framework.TransformationIssue.*
-import org.eclipse.emf.ecore.resource.URIConverter
 
 @Data
 class TransformContext {
@@ -65,14 +61,10 @@ class Protobuf2FrancaTransformation {
 
 	//	val static DEFAULT_NODE_NAME = "default"
 	@Inject extension TransformationLogger
-	
-	@Inject Provider<XtextResourceSet> resourceSetProvider
 
 	val LinkedList<FType> types = newLinkedList
-	
-	val Map<String,FType> externalTypes = newHashMap
-	
-	private var FModel fmodel 
+
+	var Map<String, FType> externalTypes
 
 	var TransformContext currentContext
 	var int index
@@ -81,8 +73,8 @@ class Protobuf2FrancaTransformation {
 		return getIssues
 	}
 
-	def create factory.createFModel transform(Protobuf src) {
-		fmodel = it
+	def create factory.createFModel transform(Protobuf src, Map<String, FType> externalTypes) {
+		this.externalTypes = externalTypes
 		clearIssues
 		val typeCollection = typeCollections.head ?: factory.createFTypeCollection
 		index = 0
@@ -93,9 +85,9 @@ class Protobuf2FrancaTransformation {
 		}
 
 		name = src.elements.filter(Package).head?.name ?: "dummy_package"
-		
-		if (src.elements.filter(Option).size > 0){
-			interfaces += factory.createFInterface =>[name = "FileOption"]
+
+		if (src.elements.filter(Option).size > 0) {
+			interfaces += factory.createFInterface => [name = "FileOption"]
 		}
 
 		if (src.elements.empty) {
@@ -154,40 +146,9 @@ class Protobuf2FrancaTransformation {
 						"Couldn't find the import source file: '" + elem.importURI + "', will be ignored")
 					return;
 				}
+
 				//TODO import google/protobuf/descriptor.proto
-				
 				importURI = uri.lastSegment.split("\\.").get(0).concat(".fidl")
-				
-				val importResource = elem.eResource.resourceSet.getResource(uri,false)
-				if (!importResource.contents.empty){
-					if (this.fmodel.eResource === null){
-						val resourceSet = resourceSetProvider.get
-						val tmpURI = URI.createURI(elem.eResource.URI.trimFileExtension.lastSegment+index++ + ".fidl")
-						val resource = resourceSet.createResource(resourceSet.URIConverter.normalize(tmpURI))
-						resource.contents.add(this.fmodel)
-					}
-					
-					val conn = new ProtobufConnector
-					val protobufidl = conn.loadModel(uri.toFileString) as ProtobufModelContainer
-			
-					// do the actual transformation to Franca IDL and save the result
-					val fmodel = conn.toFranca(protobufidl)
-					
-					val resourceURI = URI.createURI(uri.trimFileExtension.lastSegment+index++ + ".fidl")
-					val resource = this.fmodel.eResource.resourceSet.createResource(this.fmodel.eResource.resourceSet.URIConverter.normalize(resourceURI))
-					resource.contents.add(fmodel)
-					
-					fmodel.typeCollections.head.types.forEach[type|
-						externalTypes.put(uri.lastSegment.replace(".","_")+"_"+type.name,type)
-					]
-//					importedNamespace = fmodel.name+".*"
-//					val model = importResource.contents.head as Protobuf
-//					val fmodel  = transform(model)
-					
-				} 
-//				else{
-//					importedNamespace = "dummy_package" + ".*"
-//				}
 			}
 		} else
 			addIssue(
@@ -199,18 +160,18 @@ class Protobuf2FrancaTransformation {
 	}
 
 	def private create factory.createFStructType transformTypeExtension(TypeExtension typeExtension) {
-		if (typeExtension.type.target.eIsProxy){
+		if (typeExtension.type.target.eIsProxy) {
 			val resourceSet = typeExtension.eResource.resourceSet
 			EcoreUtil.resolveAll(resourceSet)
 			val resolved = EcoreUtil.resolve(typeExtension.type.target, resourceSet)
-			if (resolved.eIsProxy){
+			if (resolved.eIsProxy) {
+
 				//TODO
-				name = "unsolved_"+ NodeModelUtils.getNode(typeExtension.type).text.replace('.','_').trim
+				name = "unsolved_" + NodeModelUtils.getNode(typeExtension.type).text.replace('.', '_').trim
 				val fakeBase = createFakeBaseStruct
 				base = fakeBase
 			}
-		}
-		else {
+		} else {
 			name = typeExtension.type.target.name.toFirstUpper + "_" + index
 			base = transformExtensibleType(typeExtension.type.target)
 		}
@@ -218,9 +179,9 @@ class Protobuf2FrancaTransformation {
 			transformField(name, [element.transformMessageElement])
 		].filterNull
 	}
-	
-	def private create factory.createFStructType createFakeBaseStruct(){
-		name = "unknown" 
+
+	def private create factory.createFStructType createFakeBaseStruct() {
+		name = "unknown"
 		polymorphic = true
 		types += it
 	}
@@ -298,7 +259,7 @@ class Protobuf2FrancaTransformation {
 			Group: {
 				val group = elem.transformGroup
 				types += group
-				return group.createField(elem.name,elem.modifier==Modifier.REPEATED)
+				return group.createField(elem.name, elem.modifier == Modifier.REPEATED)
 			}
 			Enum: {
 				val enum1 = elem.transformEnum
@@ -315,7 +276,7 @@ class Protobuf2FrancaTransformation {
 			}
 			Extensions: {
 			}
-			TypeExtension:{
+			TypeExtension: {
 				types += elem.transformTypeExtension
 			}
 			default: {
@@ -331,10 +292,10 @@ class Protobuf2FrancaTransformation {
 		name = field.name
 		array = field.modifier == Modifier.REPEATED
 		val tmp = field.fieldOptions.filter(NativeFieldOption).map[source.target]
-		tmp.filter(MessageField).forEach[msgField |
+		tmp.filter(MessageField).forEach [ msgField |
 			if ((msgField as MessageField).name == "deprecated")
-				it.comment = factory.createFAnnotationBlock =>[
-					elements += factory.createFAnnotation =>[
+				it.comment = factory.createFAnnotationBlock => [
+					elements += factory.createFAnnotation => [
 						rawText = "@deprecated : " + field.name
 					]
 				]
@@ -381,33 +342,32 @@ class Protobuf2FrancaTransformation {
 	}
 
 	def private create factory.createFTypeRef transformComplexType(ComplexType complexType) {
-		derived = switch complexType {
-			Enum:
-				complexType.transformEnum
-			Message: {
-				val key = complexType.eResource.URI.lastSegment.replace(".","_")+"_"+complexType.name
-				if (externalTypes.containsKey(key)){
-					externalTypes.get(key)
-				} else
-				transform(complexType.name,[complexType.transformMessage])	
+		val key = complexType.eResource.URI.trimFileExtension.toString + "_" + complexType.name.toFirstUpper
+		if (externalTypes.containsKey(key)) {
+			derived = externalTypes.get(key)
+		} else
+			derived = switch complexType {
+				Enum:
+					complexType.transformEnum
+				Message:
+					transform(complexType.name, [complexType.transformMessage])
+				Group:
+					transform(complexType.name, [complexType.transformGroup])
 			}
-			Group:
-				transform(complexType.name,[complexType.transformGroup])
-		}
 	}
 
 	def private dispatch create factory.createFEnumerator transformEnumElement(Literal literal) {
 		name = literal.name
 		val integerConstant = factory.createFIntegerConstant => [
-				^val = BigInteger.valueOf(Math.abs(literal.index))
-			]
+			^val = BigInteger.valueOf(Math.abs(literal.index))
+		]
 		value = switch literal.index {
-			case literal.index <0 :
-				factory.createFUnaryOperation =>[
+			case literal.index < 0:
+				factory.createFUnaryOperation => [
 					op = FOperator.SUBTRACTION
 					operand = integerConstant
 				]
-			default :
+			default:
 				integerConstant
 		}
 	}

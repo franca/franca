@@ -1,0 +1,20 @@
+package Pkg.HME.Mt_Service.Mt_ps
+import model "Mt_t.fidl"
+
+interface FileOption {
+}
+
+typeCollection {
+	enumeration MajorVersion {
+		eMajorVersion = 2
+	}
+
+	enumeration MinorVersion {
+		eMinorVersion = 0
+	}
+
+	struct MtUpdatePublish {
+		Pkg.HME.Mt_t.MtReport_t info
+	}
+
+}

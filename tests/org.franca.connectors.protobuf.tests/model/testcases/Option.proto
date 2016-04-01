@@ -2,6 +2,8 @@ syntax = "proto2";
 
 package org.franca.connectors.protobuf.tests;
 
+import "descriptor.proto"; //TODO Currently don't support implict import.
+
 option java_package = "org.eclipse";
 
 message Request1 {

@@ -18,6 +18,12 @@ import com.google.eclipse.protobuf.protobuf.Protobuf;
  */
 public class ProtobufModelContainer implements IModelContainer {
 	private Protobuf model = null;
+	private String fileName;
+	
+	public ProtobufModelContainer (Protobuf model, String fileName) {
+		this.model = model;
+		this.fileName = fileName;
+	}
 	
 	public ProtobufModelContainer (Protobuf model) {
 		this.model = model;
@@ -25,6 +31,10 @@ public class ProtobufModelContainer implements IModelContainer {
 	
 	public Protobuf model() {
 		return model;
+	}
+	
+	public String getFileName(){
+		return fileName;
 	}
 
  }
