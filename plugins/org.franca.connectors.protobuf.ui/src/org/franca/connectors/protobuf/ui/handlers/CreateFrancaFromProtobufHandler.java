@@ -53,23 +53,26 @@ public class CreateFrancaFromProtobufHandler extends AbstractHandler {
     		// load Google Protobuf file
             out.println("Loading Google Protobuf file '" + protoFile + "' ...");
             ProtobufConnector conn = new ProtobufConnector();
-            ProtobufModelContainer proto = (ProtobufModelContainer)conn.loadModel(protoFile);
-    		if (proto==null) {
-    			err.println("Couldn't load Google Protobuf file '" + protoFile + "'.");
-    			return null;
-    		}
-    		Protobuf model = proto.model();
-    		if (model==null) {
-    			err.println("Error during load of Google Protobuf file '" + protoFile + "'.");
-    			return null;
-    		}
-    		out.println("Google Protobuf: loaded proto file '" + protoFile + "'");
+            Iterable<ProtobufModelContainer> protos = conn.loadModels(protoFile);
+            for (ProtobufModelContainer proto: protos){
+            	if (proto==null) {
+        			err.println("Couldn't load Google Protobuf file '" + proto.getFileName() + "'.");
+        			return null;
+        		}
+        		Protobuf model = proto.model();
+        		if (model==null) {
+        			err.println("Error during load of Google Protobuf file '" + proto.getFileName() + "'.");
+        			return null;
+        		}
+        		out.println("Google Protobuf: loaded proto file '" + proto.getFileName() + "'");
+            }
+    		
     		
     		// transform Google Protobuf to Franca
     		out.println("Transforming to Franca IDL model ...");
-    		FModel fmodel = null;
+    		Iterable<FModel> fmodels = null;
     		try {
-    			fmodel = conn.toFranca(proto);
+    			fmodels = conn.toFrancas(protos);
     			out.println(IssueReporter.getReportString(conn.getLastTransformationIssues()));    			
     		} catch (Exception e) {
     			// print stack trace to stdout to ease debugging
@@ -89,11 +92,13 @@ public class CreateFrancaFromProtobufHandler extends AbstractHandler {
     		String outfile = file.getName().substring(0, ext) + ".fidl";
     		String outpath = outputDir + "/" + outfile;
     		try {
-	    		if (saver.saveModel(fmodel, outpath)) {
-	    			out.println("Saved Franca IDL file '" + outpath + "'.");
-	    		} else {
-	    			err.println("Franca IDL file couldn't be written to file '" + outpath + "'.");
-	    		}
+    			for (FModel fmodel: fmodels){
+    				if (saver.saveModel(fmodel, outpath)) {
+    	    			out.println("Saved Franca IDL file '" + outpath + "'.");
+    	    		} else {
+    	    			err.println("Franca IDL file couldn't be written to file '" + outpath + "'.");
+    	    		}
+    			}
     		} catch (Exception e) {
     			err.println("Exception while persisting result model to file: " + e.toString());
     			for(StackTraceElement f : e.getStackTrace()) {
