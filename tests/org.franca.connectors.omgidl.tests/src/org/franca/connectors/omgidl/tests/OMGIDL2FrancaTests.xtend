@@ -215,7 +215,7 @@ class OMGIDL2FrancaTests {
 				}
 				fmodelGen.saveModel(gen_dir + name + FRANCA_IDL_EXT)
 				// load the reference Franca IDL model
-				val fmodelRef = loadModel(gen_dir + name + FRANCA_IDL_EXT)
+				val fmodelRef = loadModel(ref_dir + name + FRANCA_IDL_EXT)
 				EcoreUtil.resolveAll(fmodelRef)
 				// use EMF Compare to compare both Franca IDL models (the generated and the reference model)
 				val rset1 = fmodelGen.eResource.resourceSet
@@ -225,7 +225,7 @@ class OMGIDL2FrancaTests {
 				val List<Diff> differences = comparison.differences
 				for(diff : differences) {
 					if (! (diff instanceof ResourceAttachmentChangeSpec)) {
-//						System.out.println(diff.toString)
+						System.out.println(diff.toString)
 						nDiffs++
 					}
 				}

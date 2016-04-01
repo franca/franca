@@ -20,10 +20,10 @@ import org.csu.idl.idlmm.ConstantDefRef
 import org.csu.idl.idlmm.Contained
 import org.csu.idl.idlmm.EnumDef
 import org.csu.idl.idlmm.EnumMember
+import org.csu.idl.idlmm.ExceptionDef
 import org.csu.idl.idlmm.Expression
 import org.csu.idl.idlmm.Field
 import org.csu.idl.idlmm.ForwardDef
-import org.csu.idl.idlmm.IDLType
 import org.csu.idl.idlmm.IdlmmPackage
 import org.csu.idl.idlmm.Include
 import org.csu.idl.idlmm.InterfaceDef
@@ -63,7 +63,6 @@ import org.franca.core.franca.FUnionType
 import org.franca.core.franca.FrancaFactory
 
 import static org.franca.core.framework.TransformationIssue.*
-import org.csu.idl.idlmm.ExceptionDef
 
 /**
  * Model-to-model transformation from OMG IDL (aka CORBA) to Franca IDL.  
@@ -306,13 +305,15 @@ class OMGIDL2FrancaTransformation {
 					map_IDL_Franca.put(src.derivesFrom.get(0), baseInterface)
 					baseInterface
 				}) as FInterface
-				// a warning is issued
-				val bases = newArrayList()
-				src.derivesFrom.forEach[bases.add(it.identifier)]
-				addIssue(FEATURE_NOT_FULLY_SUPPORTED,
-					src, IdlmmPackage::INTERFACE_DEF__DERIVES_FROM,
-					"OMG IDL multiple interface inheritance from " + bases.join(', ') + " to " + src.identifier + " can not be completely mapped to Franca"
-				)
+				// if the size of bases is larger than one, a warning is issued
+				if (src.derivesFrom.size > 1) {
+					val bases = newArrayList()
+					src.derivesFrom.forEach[bases.add(it.identifier)]
+					addIssue(FEATURE_NOT_FULLY_SUPPORTED,
+						src, IdlmmPackage::INTERFACE_DEF__DERIVES_FROM,
+						"OMG IDL multiple interface inheritance from " + bases.join(', ') + " to " + src.identifier + " can not be completely mapped to Franca"
+					)
+				}
 			}
 			// cache all the interfaces directly or indirectly extended by src
 			baseInterfaces = src.baseInterfaces
@@ -335,7 +336,7 @@ class OMGIDL2FrancaTransformation {
 	// TODO: handle all kinds of OMG IDL definitions here
 	def private dispatch FModelElement transformDefinition(TypedefDef src, FModel target) {
 		val definition = src.transformDefinition as FType
-		OMGIDL2FrancaTransformationUtil.getTypeCollection(target).addInTypeCollection(definition)
+		target.getTypeCollection().addInTypeCollection(definition)
 		return definition
 	}
 	
@@ -349,7 +350,7 @@ class OMGIDL2FrancaTransformation {
 	def private dispatch FModelElement transformDefinition(ConstantDef src, FModel target) {
 		val definition = src.transformDefinition as FConstantDef
 //		target.mappedFrancaObject.typeCollection
-		OMGIDL2FrancaTransformationUtil.getTypeCollection(target).addInTypeCollection(definition)
+		target.getTypeCollection().addInTypeCollection(definition)
 //		addInAnonymousTypeCollection(definition)
 		return definition
 	}
@@ -358,7 +359,7 @@ class OMGIDL2FrancaTransformation {
 	def private dispatch FModelElement transformDefinition(Contained src, FModel target) {
 		val definition = src.transformDefinition
 		if (definition != null) {
-			OMGIDL2FrancaTransformationUtil.getTypeCollection(target).addInTypeCollection(definition)
+			target.getTypeCollection().addInTypeCollection(definition)
 		}
 		return definition
 	}
@@ -521,8 +522,10 @@ class OMGIDL2FrancaTransformation {
 	def private dispatch transformTyped(UnionField src, FUnionType target) {
 		factory.createFField => [
 			name = src.identifier
-			if (src.containedType instanceof PrimitiveDef) {
-				type = (src.containedType as PrimitiveDef).transformIDLType()
+			if (src.sharedType == null) {
+				type = src.containedType.transformIDLType
+			} else {
+				type = src.sharedType.transformIDLType
 			}
 			target.elements.add(it)
 		]
@@ -560,9 +563,29 @@ class OMGIDL2FrancaTransformation {
 	 */
 	def private dispatch FTypeRef transformIDLType(EObject src) {
 		factory.createFTypeRef => [
-			// src can be interface
 			switch src {
-				// This case identifies that the type is invisible in the given interface A, since its container interface B is neither A nor a base interface of A
+				// src, i.e. the referenced type, can be an interface but not a proxy interface
+				case src instanceof InterfaceDef && !src.eIsProxy : {
+					if (!map_IDL_Franca.containsKey(src)) {
+						map_IDL_Franca.put(src, (src as InterfaceDef).transformDefinition(map_IDL_Franca.get(src.translationUnit)))						
+					}
+					val interfacedef = map_IDL_Franca.get(src)
+					if (map_IDL_Franca.containsKey(interfacedef)) {
+						derived = map_IDL_Franca.get(interfacedef) as FType
+					} else {
+						derived = factory.createFTypeDef => [ ifDef |
+							map_IDL_Franca.put(interfacedef, ifDef)
+							ifDef.name = (src as InterfaceDef).identifier + 'Reference'
+							ifDef.actualType = factory.createFTypeRef => [ stringRef |
+								stringRef.predefined = FBasicTypeId.STRING
+							]
+							src.translationUnit.mappedTypeCollection.addInTypeCollection(ifDef)
+						]
+					}
+				}
+				// This case identifies that
+				// 1. src does not exist in IDL model, so it is loaded as a proxy InterfaceDef
+				// 2. the type is invisible in the given interface A, since its container interface B is neither A nor a base interface of A
 				case (src.interfaceContainer != null) && (!baseInterfaces.contains(src.interfaceContainer)): {
 					predefined = FBasicTypeId.UNDEFINED
 				}
@@ -576,7 +599,6 @@ class OMGIDL2FrancaTransformation {
 						derived = (src as Contained).transformDefinition(map_IDL_Franca.get(container)) as FType
 						map_IDL_Franca.put(src, derived)
 					} else {
-						println('yes!')
 						addIssue(FEATURE_NOT_HANDLED_YET,
 							translationUnit, IdlmmPackage::TRANSLATION_UNIT,
 							"OMG IDL Container '" + container.class.name + "' not handled yet (object '" + container + "')")
@@ -771,7 +793,18 @@ class OMGIDL2FrancaTransformation {
 	
 	// obj can be any IDL object
 	def private getMappedTypeCollection (EObject obj) {
-		OMGIDL2FrancaTransformationUtil.getTypeCollection(map_IDL_Franca.get(obj.container))
+		map_IDL_Franca.get(obj.container).getTypeCollection()
+	}
+	
+	def private dispatch getTypeCollection (FModel target) {
+		if (target.typeCollections.isNullOrEmpty) {
+			target.typeCollections.add(createTypeCollection(null, 1, 0))
+		}
+		target.typeCollections.get(0)
+	}
+
+	def private dispatch getTypeCollection (FInterface target) {
+		target
 	}
 	
 	/**
@@ -835,6 +868,16 @@ class OMGIDL2FrancaTransformation {
 			obj = obj.eContainer
 		}
 		return obj
+	}
+	
+	def private createTypeCollection (String name, int major, int minor) {
+		factory.createFTypeCollection => [
+			it.name = name
+			it.version = factory.createFVersion => [
+				it.major = major
+				it.minor = minor
+			]
+		]
 	}
 	
 	def private factory() {

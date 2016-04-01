@@ -26,7 +26,7 @@ interface TypedPushConsumer extends PushConsumer {
 interface ProxyPushConsumer extends PushConsumer {
 	method connect_push_supplier {
 		in {
-			undefined push_supplier
+			PushSupplierReference push_supplier
 		}
 		error {
 			AlreadyConnected
@@ -37,7 +37,7 @@ interface ProxyPushConsumer extends PushConsumer {
 interface ProxyPushSupplier extends PushSupplier {
 	method connect_push_consumer {
 		in {
-			undefined push_consumer
+			PushConsumerReference push_consumer
 		}
 		error {
 			AlreadyConnected
@@ -105,5 +105,6 @@ typeCollection {
 		minor 0
 	}
 	typedef Key is String
-
+	typedef PushSupplierReference is String
+	typedef PushConsumerReference is String
 }
