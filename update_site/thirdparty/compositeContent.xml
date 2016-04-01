@@ -7,7 +7,7 @@
   </properties>
   <children size='3'>
       <child location='gef4/0.1.0.201312280305'/>
-      <child location='idl4emf/1.1.0.201603291752'/>
+      <child location='idl4emf/1.1.0.201604011521'/>
       <child location='protobuf-dt/1.5.3.201603311730'/>
   </children>
 </repository>
