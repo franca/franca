@@ -1,10 +1,10 @@
 package org.franca.connectors.protobuf.tests.multifiles
 
-import org.franca.connectors.protobuf.tests.* from "EmptyMessage.fidl"
+import model "EmptyMessage.fidl"
 
 typeCollection {
 	struct Foo {
-		Request1 [ ] request1
+		org.franca.connectors.protobuf.tests.Request1 [ ] request1
 		UInt32 uint32_1
 		
 	}

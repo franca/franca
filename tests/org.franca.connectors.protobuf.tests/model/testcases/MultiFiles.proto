@@ -6,6 +6,6 @@ package org.franca.connectors.protobuf.tests.multifiles;
 import "EmptyMessage.proto";
 
 message Foo{
-	repeated Request1 request1 = 4;
+	repeated org.franca.connectors.protobuf.tests.Request1 request1 = 4;
 	optional uint32 uint32_1 = 3;
 }

@@ -238,7 +238,8 @@ class Protobuf2FrancaTests {
 		// load the reference Franca IDL model
 		val fmodelRef = loadModel(REF_DIR + inputfile + FRANCA_IDL_EXT)
 		EcoreUtil.resolveAll(fmodelRef.eResource)
-
+		fmodelRef.saveModel(GEN_DIR + inputfile + FRANCA_IDL_EXT)
+		
 		// use EMF Compare to compare both Franca IDL models (the generated and the reference model)
 		val rset2 = fmodelRef.eResource.resourceSet
 		val rset1 = fmodelGen.eResource.resourceSet

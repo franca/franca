@@ -18,4 +18,5 @@ public class ProtobufConnectorModule extends AbstractModule {
 	protected void configure() {
 		bind(TransformationLogger.class).in(Singleton.class);
 	}
+	
 }

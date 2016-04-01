@@ -31,20 +31,25 @@ import com.google.eclipse.protobuf.protobuf.Service
 import com.google.eclipse.protobuf.protobuf.Stream
 import com.google.eclipse.protobuf.protobuf.TypeExtension
 import com.google.inject.Inject
+import com.google.inject.Provider
 import java.math.BigInteger
 import java.util.LinkedList
+import java.util.Map
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.xtend.lib.annotations.Data
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
+import org.eclipse.xtext.resource.XtextResourceSet
 import org.franca.core.framework.TransformationLogger
 import org.franca.core.franca.FBasicTypeId
 import org.franca.core.franca.FField
+import org.franca.core.franca.FModel
 import org.franca.core.franca.FOperator
 import org.franca.core.franca.FType
 import org.franca.core.franca.FrancaFactory
 
 import static org.franca.core.framework.TransformationIssue.*
+import org.eclipse.emf.ecore.resource.URIConverter
 
 @Data
 class TransformContext {
@@ -60,8 +65,14 @@ class Protobuf2FrancaTransformation {
 
 	//	val static DEFAULT_NODE_NAME = "default"
 	@Inject extension TransformationLogger
+	
+	@Inject Provider<XtextResourceSet> resourceSetProvider
 
 	val LinkedList<FType> types = newLinkedList
+	
+	val Map<String,FType> externalTypes = newHashMap
+	
+	private var FModel fmodel 
 
 	var TransformContext currentContext
 	var int index
@@ -71,6 +82,7 @@ class Protobuf2FrancaTransformation {
 	}
 
 	def create factory.createFModel transform(Protobuf src) {
+		fmodel = it
 		clearIssues
 		val typeCollection = typeCollections.head ?: factory.createFTypeCollection
 		index = 0
@@ -129,7 +141,7 @@ class Protobuf2FrancaTransformation {
 	}
 
 	private def create factory.createImport transformImport(Import elem) {
-		val uri = URI.createFileURI(elem.importURI)
+		val uri = URI.createURI(elem.importURI)
 		if (uri !== null) {
 			if (!uri.lastSegment.endsWith(".proto")) {
 
@@ -142,20 +154,40 @@ class Protobuf2FrancaTransformation {
 						"Couldn't find the import source file: '" + elem.importURI + "', will be ignored")
 					return;
 				}
-				val conn = new ProtobufConnector
 				//TODO import google/protobuf/descriptor.proto
-				val normalizedUri = elem.eResource.resourceSet.URIConverter.normalize(uri)
 				
-				
-				
-				val protobufidl = conn.loadModel(normalizedUri.toFileString) as ProtobufModelContainer
-				val importName = protobufidl.model.elements.filter(Package).head?.name ?: "dummy_package"
-//				val fmodelGen = conn.toFranca(protobufidl)
-
-				elem.eResource.resourceSet.getResource(normalizedUri,true)
-
 				importURI = uri.lastSegment.split("\\.").get(0).concat(".fidl")
-				importedNamespace = importName + ".*"
+				
+				val importResource = elem.eResource.resourceSet.getResource(uri,false)
+				if (!importResource.contents.empty){
+					if (this.fmodel.eResource === null){
+						val resourceSet = resourceSetProvider.get
+						val tmpURI = URI.createURI(elem.eResource.URI.trimFileExtension.lastSegment+index++ + ".fidl")
+						val resource = resourceSet.createResource(resourceSet.URIConverter.normalize(tmpURI))
+						resource.contents.add(this.fmodel)
+					}
+					
+					val conn = new ProtobufConnector
+					val protobufidl = conn.loadModel(uri.toFileString) as ProtobufModelContainer
+			
+					// do the actual transformation to Franca IDL and save the result
+					val fmodel = conn.toFranca(protobufidl)
+					
+					val resourceURI = URI.createURI(uri.trimFileExtension.lastSegment+index++ + ".fidl")
+					val resource = this.fmodel.eResource.resourceSet.createResource(this.fmodel.eResource.resourceSet.URIConverter.normalize(resourceURI))
+					resource.contents.add(fmodel)
+					
+					fmodel.typeCollections.head.types.forEach[type|
+						externalTypes.put(uri.lastSegment.replace(".","_")+"_"+type.name,type)
+					]
+//					importedNamespace = fmodel.name+".*"
+//					val model = importResource.contents.head as Protobuf
+//					val fmodel  = transform(model)
+					
+				} 
+//				else{
+//					importedNamespace = "dummy_package" + ".*"
+//				}
 			}
 		} else
 			addIssue(
@@ -345,11 +377,6 @@ class Protobuf2FrancaTransformation {
 	}
 
 	def private dispatch transformTypeLink(ComplexTypeLink complexTypeLink) {
-		if (complexTypeLink.target.eIsProxy) {
-			val resourceSet = complexTypeLink.eResource.resourceSet
-			EcoreUtil.resolve(complexTypeLink.target, resourceSet)
-			EcoreUtil.resolveAll(resourceSet)
-		}
 		complexTypeLink.target.transformComplexType
 	}
 
@@ -357,8 +384,13 @@ class Protobuf2FrancaTransformation {
 		derived = switch complexType {
 			Enum:
 				complexType.transformEnum
-			Message:
-				transform(complexType.name,[complexType.transformMessage])
+			Message: {
+				val key = complexType.eResource.URI.lastSegment.replace(".","_")+"_"+complexType.name
+				if (externalTypes.containsKey(key)){
+					externalTypes.get(key)
+				} else
+				transform(complexType.name,[complexType.transformMessage])	
+			}
 			Group:
 				transform(complexType.name,[complexType.transformGroup])
 		}
