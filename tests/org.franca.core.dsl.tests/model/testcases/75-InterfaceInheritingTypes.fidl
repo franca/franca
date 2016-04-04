@@ -1,0 +1,31 @@
+// interface which inherits types from base interface 
+package testcases
+
+// this interfaces defines some types
+interface BaseInterface {
+	
+	array MyArray of UInt16
+
+	struct MyStruct {
+		UInt32 e
+	}
+	
+	union MyUnion {
+		UInt32 e
+	}
+	
+	map MyMap { UInt16 to Float }
+	
+	typedef MyTypedef is UInt16
+}
+
+
+// this interface refers to the types from BaseInterface
+interface MyInterface extends BaseInterface {
+	typedef MyArray1 is MyArray
+	typedef MyStruct1 is MyStruct
+	typedef MyUnion1 is MyUnion
+	typedef MyMap1 is MyMap
+	typedef MyTypedef1 is MyTypedef
+}
+

@@ -144,6 +144,11 @@ public class ModelTests extends XtextTest {
     public void test_65_Broadcast() {
     	testFile("testcases/65-Broadcast.fidl");
     }
+ 
+    @Test
+    public void test_75_InterfaceInheritingTypes() {
+    	testFile("testcases/75-InterfaceInheritingTypes.fidl");
+    }
     
     @Test
     public void test_80_InterfaceManagingOthers() {
