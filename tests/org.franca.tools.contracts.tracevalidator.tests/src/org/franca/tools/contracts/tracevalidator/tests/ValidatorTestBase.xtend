@@ -7,11 +7,11 @@ import org.eclipselabs.xtext.utils.unittesting.XtextTest
 import org.franca.core.dsl.FrancaPersistenceManager
 import org.franca.core.franca.FContract
 import org.franca.core.franca.FEventOnIf
+import org.franca.core.franca.FInterface
 import org.franca.tools.contracts.tracevalidator.TraceValidator
 
 import static org.franca.tools.contracts.tracevalidator.tests.TraceBuilder.*
 import static org.junit.Assert.*
-import org.franca.core.franca.FInterface
 
 class ValidatorTestBase extends XtextTest {
 
@@ -42,6 +42,10 @@ class ValidatorTestBase extends XtextTest {
 
 	def protected static getMethod(FInterface api, String methodName) {
 		api.methods.findFirst[name==methodName]
+	}
+
+	def protected static getBroadcast(FInterface api, String broadcastName) {
+		api.broadcasts.findFirst[name==broadcastName]
 	}
 }
 
