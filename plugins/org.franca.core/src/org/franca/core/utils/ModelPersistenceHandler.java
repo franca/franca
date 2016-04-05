@@ -17,7 +17,9 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
+import org.eclipse.emf.ecore.util.EcoreUtil;
+
+import com.google.common.collect.Maps;
 
 /**
  * Base class to deal with Eclipse mechanisms to load/save models.
@@ -77,6 +79,7 @@ public class ModelPersistenceHandler {
 		try {
 			resource = resourceSet.getResource(absURI, true);
 			resource.load(Collections.EMPTY_MAP);
+			//System.out.println("ModelPersistenceHandler: Loaded model from " + resource.getURI());
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
@@ -123,39 +126,75 @@ public class ModelPersistenceHandler {
 	 * @return true if the model was saved
 	 */
 	public boolean saveModel(EObject model, String filename, String cwd) {
+		return saveModel(model, filename, cwd, Maps.<String, EObject>newHashMap());
+	}
+
+	public boolean saveModel(EObject model, String filename, String cwd, Map<String, EObject> importedModels) {
+		if (! initResourcesRecursively(model, filename, cwd, importedModels))
+			return false;
+		
+		return saveModelRecursively(model, filename, cwd);
+	}
+
+	private boolean initResourcesRecursively(EObject model, String filename, String cwd, Map<String, EObject> importedModels) {
 		URI fileURI = normalizeURI(URI.createURI(filename));
 		URI cwdURI = normalizeURI(URI.createURI(cwd));
-		URI existingURI = null;
-		/**
-		 * Issue 102 FrancaPersistanceManager.savemodel  appends / for the folder path , and one more / was introduced here, which will throw file not 
-		 * found exception ,  so the other / has been removed here and the issue is fixed
-		 */
+
 		URI toSaveURI = URI.createURI(cwdURI.toString() + fileURI.toString());
 		Resource resource = model.eResource();
 		
-		if (model.eResource() != null) {
-			//change the ResourceSet to this one
-			resourceSet.getResources().add(model.eResource());
-			existingURI = model.eResource().getURI();
-			//and save the model using the new URI
-			model.eResource().setURI(toSaveURI);
-			//System.out.println("(" + existingURI + "," + toSaveURI + ")");
-			resourceSet.getURIConverter().getURIMap().put(existingURI, toSaveURI);
-		} else {
+		if (resource == null) {
 			// create a resource containing the model
-		
+			//System.out.println("ModelPersistenceHandler: Creating new resource " + toSaveURI);
 			resource = resourceSet.createResource(toSaveURI);
 			resource.getContents().add(model);
-	
 		}
 
-		//save the root model
-		try {
-		model.eResource().save(Collections.EMPTY_MAP);
-		} catch (IOException e) {
-			e.printStackTrace();
+		// recursive call for all its imports
+		for (Iterator<String> it = fileHandlerRegistry.get(fileURI.fileExtension()).importsIterator(model); it.hasNext();) {
+			String importURI = it.next();
+			URI createFileURI = URI.createFileURI(importURI);
+			// resolve the relative path of the imports so that the correct path is obtained for loading the model
+			URI resolve = createFileURI.resolve(cwdURI);
+			String cwdNew = getCWDForImport(fileURI, cwdURI).toString();
+			if (importedModels.containsKey(importURI)) {
+				//System.out.println("importedModel will be created - " + importURI);
+				initResourcesRecursively(importedModels.get(importURI), importURI, cwdNew, importedModels);
+			} else {
+				Resource actualResource = resourceSet.getResource(resolve, true);
+				initResourcesRecursively(actualResource.getContents().get(0), importURI, cwdNew, importedModels);
+			}
 		}
-		//and all its imports recursively
+
+		return true;
+		
+	}
+
+	private boolean saveModelRecursively(EObject model, String filename, String cwd) {
+		URI fileURI = normalizeURI(URI.createURI(filename));
+		URI cwdURI = normalizeURI(URI.createURI(cwd));
+
+		URI toSaveURI = URI.createURI(cwdURI.toString() + fileURI.toString());
+		Resource resource = model.eResource();
+
+		// here we assume that each model has a proper resource 
+		if (resource== null) {
+			System.err.println("ModelPersistenceHandler: Model without resource, aborting (" + toSaveURI + ")");
+			return false;
+		}
+
+		// change the ResourceSet to this one
+		//resourceSet.getResources().add(resource);
+		URI existingURI = resource.getURI();
+		// and save the model using the new URI
+		resource.setURI(toSaveURI);
+		//System.out.println("ModelPersistenceHandler: Saving model as resource " + toSaveURI);
+		if (! existingURI.equals(toSaveURI)) {
+			//System.out.println("    previous URI was different: " + existingURI);
+			resourceSet.getURIConverter().getURIMap().put(existingURI, toSaveURI);
+		}
+		
+		// recursive call for all its imports
 		for (Iterator<String> it = fileHandlerRegistry.get(fileURI.fileExtension()).importsIterator(model); it.hasNext();) {
 			String importURI = it.next();
 			URI createFileURI = URI.createFileURI(importURI);
@@ -165,7 +204,14 @@ public class ModelPersistenceHandler {
 			 */
 			URI resolve = createFileURI.resolve(cwdURI);
 			Resource actualResource = resourceSet.getResource(resolve,true);
-			saveModel(actualResource.getContents().get(0), importURI, getCWDForImport(fileURI, cwdURI).toString());
+			saveModelRecursively(actualResource.getContents().get(0), importURI, getCWDForImport(fileURI, cwdURI).toString());
+		}
+
+		// save the model
+		try {
+			resource.save(Collections.EMPTY_MAP);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 
 		return true;

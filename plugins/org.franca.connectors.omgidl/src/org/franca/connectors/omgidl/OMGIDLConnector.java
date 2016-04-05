@@ -16,9 +16,9 @@ import java.util.Set;
 
 import org.csu.idl.idlmm.TranslationUnit;
 import org.csu.idl.xtext.loader.ExtendedIDLLoader;
-import org.csu.idl.xtext.loader.IDLLoader;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.xtext.xbase.lib.ListExtensions;
 import org.franca.core.framework.IFrancaConnector;
 import org.franca.core.framework.IModelContainer;
 import org.franca.core.framework.IssueReporter;
@@ -26,6 +26,9 @@ import org.franca.core.framework.TransformationIssue;
 import org.franca.core.franca.FModel;
 import org.franca.core.utils.FileHelper;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
@@ -36,41 +39,26 @@ public class OMGIDLConnector implements IFrancaConnector {
 //	private String fileExtension = "idl";
 
 	private Set<TransformationIssue> lastTransformationIssues = null;
-	
-	private Map<EObject, EObject> transformationMap;
-	
+		
 	/** constructor */
 	public OMGIDLConnector() {
 		injector = Guice.createInjector(new OMGIDLConnectorModule());
-		transformationMap = new LinkedHashMap<EObject, EObject>();
 	}
 	
 	@Override
 	public IModelContainer loadModel(String filename) {
-		TranslationUnit model = loadOMGIDLModel(filename);
-		if (model==null) {
+		Map<TranslationUnit, String> units = loadOMGIDLModel(filename);
+		if (units.isEmpty()) {
 			System.out.println("Error: Could not load OMG IDL model from file " + filename);
 		} else {
-			System.out.println("Loaded OMG IDL model " + model.getIdentifier());
+			System.out.println("Loaded OMG IDL model from file " + filename + " (consists of " + units.size() + " files)");
 		}
-		return new OMGIDLModelContainer(model);
+//		for(TranslationUnit unit : units.keySet()) {
+//			System.out.println("loadModel: " + unit.eResource().getURI() + " is " + units.get(unit));
+//		}
+		return new OMGIDLModelContainer(units);
 	}
 	
-	
-	public Map<IModelContainer, String> loadModels(String filename) {
-		Map<IModelContainer, String> map_ModelContainer_FileName = new LinkedHashMap<IModelContainer, String>();
-		Map<TranslationUnit, String> map_TranslationUnit_FileName = loadOMGIDLModels(filename);
-		for (TranslationUnit model : map_TranslationUnit_FileName.keySet() ) {
-			if (model==null) {
-				System.out.println("Error: Could not load OMG IDL model from file " + filename);
-			} else {
-				System.out.println("Loaded OMG IDL model " + map_TranslationUnit_FileName.get(model));//model.getIdentifier());
-			}
-			map_ModelContainer_FileName.put(new OMGIDLModelContainer(model), map_TranslationUnit_FileName.get(model));
-		}
-		return map_ModelContainer_FileName;
-	}
-
 	@Override
 	public boolean saveModel(IModelContainer model, String filename) {
 		if (! (model instanceof OMGIDLModelContainer)) {
@@ -92,7 +80,9 @@ public class OMGIDLConnector implements IFrancaConnector {
 		
 		OMGIDL2FrancaTransformation trafo = injector.getInstance(OMGIDL2FrancaTransformation.class);
 		OMGIDLModelContainer omg = (OMGIDLModelContainer)model;
-		FModel fmodel = trafo.transform(omg.model(),transformationMap);
+
+		Map<EObject, EObject> transformationMap = Maps.newLinkedHashMap();
+		FModel fmodel = trafo.transform(omg.model(), transformationMap);
 		transformationMap = trafo.getTransformationMap();
 		lastTransformationIssues = trafo.getTransformationIssues();
 		System.out.println(IssueReporter.getReportString(lastTransformationIssues));
@@ -100,21 +90,37 @@ public class OMGIDLConnector implements IFrancaConnector {
 		return fmodel;
 	}
 	
-	public List<FModel> toFrancas(IModelContainer model) {
-		List<FModel> fmodels = new ArrayList<FModel>();
+	/**
+	 * Convert a OMG IDL model to Franca.</p>
+	 * 
+	 * The input model might consist of multiple files. The output might consist of multiple files, too.</p>
+	 * 
+	 * @param model the input OMG IDL model
+	 * @return a sorted map of result models where the first one is the root model.
+	 */
+	public Map<FModel, String> toFrancas(IModelContainer model) {
+		Map<FModel, String> fmodels = Maps.newLinkedHashMap();
 		if (! (model instanceof OMGIDLModelContainer)) {
 			return fmodels;
 		}
 		
 		OMGIDL2FrancaTransformation trafo = injector.getInstance(OMGIDL2FrancaTransformation.class);
 		OMGIDLModelContainer omg = (OMGIDLModelContainer)model;
-//		fmodels.addAll(trafo.transformToMultiFModel(omg.model(),transformationMap));
-		fmodels.add(trafo.transformToSingleFModel(omg.model(),transformationMap));
-		transformationMap = trafo.getTransformationMap();
-		lastTransformationIssues = trafo.getTransformationIssues();
-		System.out.println(IssueReporter.getReportString(lastTransformationIssues));
+		Map<EObject, EObject> transformationMap = Maps.newLinkedHashMap();
+		for(TranslationUnit unit : ListExtensions.reverseView(omg.models())) {
+			//System.out.println("transforming " + omg.getFilename(unit));
+			FModel fmodel = trafo.transformToSingleFModel(unit, transformationMap);
+			fmodels.put(fmodel, omg.getFilename(unit));
+			transformationMap = trafo.getTransformationMap();
+			lastTransformationIssues = trafo.getTransformationIssues();
+			System.out.println(IssueReporter.getReportString(lastTransformationIssues));
+		}
 
-		return fmodels;
+		Map<FModel, String> result = Maps.newLinkedHashMap();
+		for(FModel fmodel : ListExtensions.reverseView(Lists.newArrayList(fmodels.keySet()))) {
+			result.put(fmodel, fmodels.get(fmodel));
+		}
+		return result;
 	}
 
 	@Override
@@ -141,30 +147,19 @@ public class OMGIDLConnector implements IFrancaConnector {
 //		return resourceSet;
 //	}
 	
-	private static TranslationUnit loadOMGIDLModel(String fileName) {
-		URI uri = FileHelper.createURI(fileName);
-		String filePath = uri.toFileString();
-
-		// TODO: is it correct to use the IDLLoader class (e.g., it does some pre- and postprocessing which might be harmful)?
-		// A: Preprocessing is harmful in the case of "#include". Instead of IDLLoader, ExtendedIDLLoader is used, in which prepossing is suppressed.
-		IDLLoader loader = new IDLLoader();
-		try {
-			loader.load(filePath);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-		return loader.getModel();
-	}
-	
 	/***
 	 * Load the OMG IDL model indicated by {@code fileName} and all the other OMG IDL models included by it
 	 * @param fileName 
 	 * @return A list of TranslationUnit
 	 */
-	private static Map<TranslationUnit, String> loadOMGIDLModels(String fileName) {
+	private static Map<TranslationUnit, String> loadOMGIDLModel(String fileName) {
 		URI uri = FileHelper.createURI(fileName);
 		String filePath = uri.toFileString();
+
+		// The preprocessing of IDLLoader will replace all "#include" statements and replace them by the contents of
+		// the included file. We do not want this here, because we would like to represent each idl input file as a
+		// separate model. Thus, instead of IDLLoader, ExtendedIDLLoader is used, which doesn't do prepocessing.
+		//IDLLoader loader = new IDLLoader();
 		ExtendedIDLLoader loader = new ExtendedIDLLoader();
 		try {
 			loader.load(filePath);

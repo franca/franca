@@ -7,12 +7,16 @@
  *******************************************************************************/
 package org.franca.core.dsl;
 
+import java.util.Map;
+
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.franca.core.franca.FModel;
 import org.franca.core.utils.FileHelper;
 import org.franca.core.utils.ModelPersistenceHandler;
 
+import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
@@ -110,12 +114,16 @@ public class FrancaPersistenceManager {
 	 * @return true if save could be completed successfully
 	 */
 	public boolean saveModel(FModel model, String filename) {
+		return saveModel(model, filename, Maps.<String, EObject>newHashMap());
+	}
+	
+	public boolean saveModel(FModel model, String filename, Map<String, EObject> importedModels) {
 		URI uri = FileHelper.createURI(filename);
 		
 		if (uri.segmentCount() > 1) {
-			return saveModel(model, uri.lastSegment(), uri.trimSegments(1).toString() + "/");
+			return saveModel(model, uri.lastSegment(), uri.trimSegments(1).toString() + "/", importedModels);
 		} else {
-			return saveModel(model, filename, "");
+			return saveModel(model, filename, "", importedModels);
 		}
 	}
 	
@@ -129,6 +137,10 @@ public class FrancaPersistenceManager {
 	 * @return true if save could be completed successfully
 	 */
 	public boolean saveModel(FModel model, String filename, String cwd) {
+		return saveModel(model, filename, cwd, Maps.<String, EObject>newHashMap());
+	}
+
+	public boolean saveModel(FModel model, String filename, String cwd, Map<String, EObject> importedModels) {
 		ResourceSet resourceSet = null;
 		String fn = filename;
 		
@@ -145,7 +157,7 @@ public class FrancaPersistenceManager {
 			resourceSet = model.eResource().getResourceSet();
 		}
 
-		return createModelPersistenceHandler(resourceSet).saveModel(model, fn, cwd);
+		return createModelPersistenceHandler(resourceSet).saveModel(model, fn, cwd, importedModels);
 	}
 
 	// TODO: refactor MPH in order to avoid this function
