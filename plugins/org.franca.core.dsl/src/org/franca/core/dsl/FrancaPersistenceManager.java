@@ -12,6 +12,7 @@ import java.util.Map;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.franca.core.framework.IImportedModelProvider;
 import org.franca.core.franca.FModel;
 import org.franca.core.utils.FileHelper;
 import org.franca.core.utils.ModelPersistenceHandler;
@@ -114,10 +115,11 @@ public class FrancaPersistenceManager {
 	 * @return true if save could be completed successfully
 	 */
 	public boolean saveModel(FModel model, String filename) {
-		return saveModel(model, filename, Maps.<String, EObject>newHashMap());
+		IImportedModelProvider importedModels = null;
+		return saveModel(model, filename, importedModels);
 	}
 	
-	public boolean saveModel(FModel model, String filename, Map<String, EObject> importedModels) {
+	public boolean saveModel(FModel model, String filename, IImportedModelProvider importedModels) {
 		URI uri = FileHelper.createURI(filename);
 		
 		if (uri.segmentCount() > 1) {
@@ -137,10 +139,10 @@ public class FrancaPersistenceManager {
 	 * @return true if save could be completed successfully
 	 */
 	public boolean saveModel(FModel model, String filename, String cwd) {
-		return saveModel(model, filename, cwd, Maps.<String, EObject>newHashMap());
+		return saveModel(model, filename, cwd, null);
 	}
 
-	public boolean saveModel(FModel model, String filename, String cwd, Map<String, EObject> importedModels) {
+	public boolean saveModel(FModel model, String filename, String cwd, IImportedModelProvider importedModels) {
 		ResourceSet resourceSet = null;
 		String fn = filename;
 		

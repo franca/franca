@@ -8,6 +8,7 @@
 package org.franca.connectors.omgidl;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -16,6 +17,7 @@ import org.csu.idl.xtext.loader.ExtendedIDLLoader;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.xbase.lib.ListExtensions;
+import org.franca.core.dsl.FrancaPersistenceManager;
 import org.franca.core.framework.FrancaModelContainer;
 import org.franca.core.framework.IFrancaConnector;
 import org.franca.core.framework.IModelContainer;
@@ -24,8 +26,8 @@ import org.franca.core.framework.TransformationIssue;
 import org.franca.core.franca.FModel;
 import org.franca.core.utils.FileHelper;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
@@ -69,6 +71,14 @@ public class OMGIDLConnector implements IFrancaConnector {
 	}
 
 	
+	/**
+	 * Convert a OMG IDL model to Franca.</p>
+	 * 
+	 * The input model might consist of multiple files. The output might consist of multiple files, too.</p>
+	 * 
+	 * @param model the input OMG IDL model
+	 * @return a model container with the resulting root Franca model and some additional information
+	 */
 	@Override
 	public FrancaModelContainer toFranca(IModelContainer model) {
 		if (! (model instanceof OMGIDLModelContainer)) {
@@ -77,47 +87,33 @@ public class OMGIDLConnector implements IFrancaConnector {
 		
 		OMGIDL2FrancaTransformation trafo = injector.getInstance(OMGIDL2FrancaTransformation.class);
 		OMGIDLModelContainer omg = (OMGIDLModelContainer)model;
+		Map<String, EObject> importedModels = Maps.newLinkedHashMap();
 
 		Map<EObject, EObject> transformationMap = Maps.newLinkedHashMap();
-		FModel fmodel = trafo.transform(omg.model(), transformationMap);
-		transformationMap = trafo.getTransformationMap();
-		lastTransformationIssues = trafo.getTransformationIssues();
-		System.out.println(IssueReporter.getReportString(lastTransformationIssues));
-
-		return new FrancaModelContainer(fmodel);
-	}
-	
-	/**
-	 * Convert a OMG IDL model to Franca.</p>
-	 * 
-	 * The input model might consist of multiple files. The output might consist of multiple files, too.</p>
-	 * 
-	 * @param model the input OMG IDL model
-	 * @return a sorted map of result models where the first one is the root model.
-	 */
-	public Map<FModel, String> toFrancas(IModelContainer model) {
-		Map<FModel, String> fmodels = Maps.newLinkedHashMap();
-		if (! (model instanceof OMGIDLModelContainer)) {
-			return fmodels;
-		}
-		
-		OMGIDL2FrancaTransformation trafo = injector.getInstance(OMGIDL2FrancaTransformation.class);
-		OMGIDLModelContainer omg = (OMGIDLModelContainer)model;
-		Map<EObject, EObject> transformationMap = Maps.newLinkedHashMap();
-		for(TranslationUnit unit : ListExtensions.reverseView(omg.models())) {
+		lastTransformationIssues = Sets.newLinkedHashSet();
+		List<TranslationUnit> inputModels = ListExtensions.reverseView(omg.models());
+		FModel rootModel = null;
+		String rootName = null;
+		for(TranslationUnit unit : inputModels) {
 			//System.out.println("transforming " + omg.getFilename(unit));
 			FModel fmodel = trafo.transformToSingleFModel(unit, transformationMap);
-			fmodels.put(fmodel, omg.getFilename(unit));
 			transformationMap = trafo.getTransformationMap();
-			lastTransformationIssues = trafo.getTransformationIssues();
-			System.out.println(IssueReporter.getReportString(lastTransformationIssues));
+			lastTransformationIssues.addAll(trafo.getTransformationIssues());
+
+			if (inputModels.indexOf(unit)==inputModels.size()-1) {
+				// this is the last input model, i.e., the top-most one
+				rootModel = fmodel;
+				rootName = omg.getFilename(unit);
+			} else {
+				String importURI =
+						omg.getFilename(unit) + "." + FrancaPersistenceManager.FRANCA_FILE_EXTENSION;
+				importedModels.put(importURI, fmodel);
+			}
 		}
 
-		Map<FModel, String> result = Maps.newLinkedHashMap();
-		for(FModel fmodel : ListExtensions.reverseView(Lists.newArrayList(fmodels.keySet()))) {
-			result.put(fmodel, fmodels.get(fmodel));
-		}
-		return result;
+		System.out.println(IssueReporter.getReportString(lastTransformationIssues));
+
+		return new FrancaModelContainer(rootModel, rootName, importedModels);
 	}
 
 	@Override
@@ -145,9 +141,11 @@ public class OMGIDLConnector implements IFrancaConnector {
 //	}
 	
 	/***
-	 * Load the OMG IDL model indicated by {@code fileName} and all the other OMG IDL models included by it
-	 * @param fileName 
-	 * @return A list of TranslationUnit
+	 * Load the OMG IDL model indicated by {@code fileName} and all the other OMG IDL models
+	 * included by it.</p>
+	 * 
+	 * @param fileName the path and name of the top-level input file 
+	 * @return a list of TranslationUnit objects
 	 */
 	private static Map<TranslationUnit, String> loadOMGIDLModel(String fileName) {
 		URI uri = FileHelper.createURI(fileName);

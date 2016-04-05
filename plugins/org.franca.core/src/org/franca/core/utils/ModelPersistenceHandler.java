@@ -17,7 +17,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.franca.core.framework.IImportedModelProvider;
 
 import com.google.common.collect.Maps;
 
@@ -117,26 +117,34 @@ public class ModelPersistenceHandler {
 	}
 
 	/**
-	 * Saves a model to a file. If cross-references are used in the model then the model must be part of a ResourceSet
-	 * containing all the other referenced models.
+	 * Saves a model to a file. If cross-references are used in the model, then the
+	 * model must be part of a ResourceSet containing all the other referenced models.</p>
 	 * 
-	 * @param filename
-	 *            the name of the file to be saved
+	 * @param filename the name of the file to be saved
 	 * @param cwd a relative directory to save the file and its dependencies 
 	 * @return true if the model was saved
 	 */
 	public boolean saveModel(EObject model, String filename, String cwd) {
-		return saveModel(model, filename, cwd, Maps.<String, EObject>newHashMap());
+		return saveModel(model, filename, cwd, null);
 	}
 
-	public boolean saveModel(EObject model, String filename, String cwd, Map<String, EObject> importedModels) {
+	/**
+	 * Saves a model to a file. If cross-references are used in the model, then the
+	 * model must be part of a ResourceSet containing all the other referenced models.</p>
+	 * 
+	 * @param filename the name of the file to be saved
+	 * @param cwd a relative directory to save the file and its dependencies 
+	 * @param importedModels an interface which provides a referenced model from its importURI string
+	 * @return true if the model was saved
+	 */
+	public boolean saveModel(EObject model, String filename, String cwd, IImportedModelProvider importedModels) {
 		if (! initResourcesRecursively(model, filename, cwd, importedModels))
 			return false;
 		
 		return saveModelRecursively(model, filename, cwd);
 	}
 
-	private boolean initResourcesRecursively(EObject model, String filename, String cwd, Map<String, EObject> importedModels) {
+	private boolean initResourcesRecursively(EObject model, String filename, String cwd, IImportedModelProvider importedModels) {
 		URI fileURI = normalizeURI(URI.createURI(filename));
 		URI cwdURI = normalizeURI(URI.createURI(cwd));
 
@@ -157,9 +165,10 @@ public class ModelPersistenceHandler {
 			// resolve the relative path of the imports so that the correct path is obtained for loading the model
 			URI resolve = createFileURI.resolve(cwdURI);
 			String cwdNew = getCWDForImport(fileURI, cwdURI).toString();
-			if (importedModels.containsKey(importURI)) {
+			EObject importedModel = importedModels!=null ? importedModels.getModel(importURI) : null;
+			if (importedModel!=null) {
 				//System.out.println("importedModel will be created - " + importURI);
-				initResourcesRecursively(importedModels.get(importURI), importURI, cwdNew, importedModels);
+				initResourcesRecursively(importedModel, importURI, cwdNew, importedModels);
 			} else {
 				Resource actualResource = resourceSet.getResource(resolve, true);
 				initResourcesRecursively(actualResource.getContents().get(0), importURI, cwdNew, importedModels);

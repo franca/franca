@@ -7,6 +7,7 @@
  *******************************************************************************/
 package org.franca.connectors.omgidl.ui.handlers;
 
+import java.io.File;
 import java.util.Map;
 
 import org.csu.idl.idlmm.TranslationUnit;
@@ -26,8 +27,10 @@ import org.franca.connectors.omgidl.OMGIDLConnector;
 import org.franca.connectors.omgidl.OMGIDLModelContainer;
 import org.franca.core.dsl.FrancaPersistenceManager;
 import org.franca.core.dsl.ui.util.SpecificConsole;
+import org.franca.core.framework.FrancaModelContainer;
 import org.franca.core.framework.IssueReporter;
 import org.franca.core.franca.FModel;
+import org.franca.core.utils.FileHelper;
 
 import com.google.inject.Inject;
 
@@ -66,17 +69,18 @@ public class CreateFrancaFromOMGIDLHandler extends AbstractHandler {
 //    			return null;
 //    		}
             for (TranslationUnit tu : ListExtensions.reverseView(omgidl.models())) {
+            	String filename = omgidl.getFilename(tu) + ".idl";
 	    		if (tu==null) {
-	    			err.println("Error during load of OMG IDL file '" + omgidlFile + "'.");
+	    			err.println("Error during load of OMG IDL file '" + filename + "'.");
 	    			return null;
 	    		}
-	    		out.println("OMG IDL: loaded translation unit '" + tu.getIdentifier() + "'");
+	    		out.println("OMG IDL: loaded translation unit from file " + filename);
     		
 	    		// transform OMG IDL to Franca
 	    		out.println("Transforming to Franca IDL model ...");
-	    		Map<FModel, String> result = null;
+	    		FrancaModelContainer result = null;
 	    		try {
-	    			result = conn.toFrancas(omgidl);
+	    			result = conn.toFranca(omgidl);
 	    			out.println(IssueReporter.getReportString(conn.getLastTransformationIssues()));    			
 	    		} catch (Exception e) {
 	    			// print stack trace to stdout to ease debugging
@@ -95,14 +99,13 @@ public class CreateFrancaFromOMGIDLHandler extends AbstractHandler {
 	    		int ext = file.getName().lastIndexOf("." + file.getFileExtension());
 	    		try {
 	    			// save all transformed files
-	    			for(FModel fmodel : result.keySet()) {
-	    	    		String outfile = result.get(fmodel) + ".fidl";
-	    	    		String outpath = outputDir + "/" + outfile;
-	    	    		if (saver.saveModel(fmodel, outpath)) {
-	    	    			out.println("Saved Franca IDL file '" + outpath + "'.");
-	    	    		} else {
-	    	    			err.println("Franca IDL file couldn't be written to file '" + outpath + "'.");
-	    	    		}
+    	    		String outfile = result.modelName() +
+    	    				"." + FrancaPersistenceManager.FRANCA_FILE_EXTENSION;
+    	    		String outpath = outputDir + File.separator + outfile;
+	    			if (saver.saveModel(result.model(), outpath, result)) {
+    	    			out.println("Saved Franca IDL file '" + outpath + "'.");
+    	    		} else {
+    	    			err.println("Franca IDL file couldn't be written to file '" + outpath + "'.");
 	    			}
 	    		} catch (Exception e) {
 	    			err.println("Exception while persisting result model to file: " + e.toString());

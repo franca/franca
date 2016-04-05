@@ -35,7 +35,7 @@ class OMGIDL2FrancaTests {
 	val GEN_DIR2 = "src-gen/testcases/gate1/"
 	
 	val OMG_IDL_EXT = ".idl"
-	val FRANCA_IDL_EXT = ".fidl"
+	val FRANCA_IDL_EXT = "." + FrancaPersistenceManager.FRANCA_FILE_EXTENSION
 
 	@Inject	extension FrancaPersistenceManager
 	
@@ -151,26 +151,18 @@ class OMGIDL2FrancaTests {
 		val omgidl = conn.loadModel(model_dir + inputfile + OMG_IDL_EXT) as OMGIDLModelContainer
 
 		// transform to Franca 
-		val fmodelsGen = conn.toFrancas(omgidl)
+		val fmodelGen = conn.toFranca(omgidl)
+		val rootModelName = fmodelGen.modelName
 
-		// the first generated model will be the root model, this determines which reference model should be loaded
-		val root = fmodelsGen.entrySet.iterator.head
-		val rootName = root.value
-
-		val Map<String, EObject> importedModels = newHashMap() 
-		for (fmodelGen : fmodelsGen.keySet().toList.reverseView) {
-			val importURI = fmodelsGen.get(fmodelGen) + FRANCA_IDL_EXT
-			//println("generated: " + importURI + ": " + fmodelGen.name)
-			importedModels.put(importURI, fmodelGen)
-		}
-		root.key.saveModel(gen_dir + root.value + FRANCA_IDL_EXT, importedModels)
+		// save transformed Franca file(s)
+		fmodelGen.model.saveModel(gen_dir + rootModelName + FRANCA_IDL_EXT, fmodelGen)
 		
 		// load the reference Franca IDL model and resolve whole model explicitly
-		val fmodelRef = loadModel(ref_dir + rootName + FRANCA_IDL_EXT)
+		val fmodelRef = loadModel(ref_dir + rootModelName + FRANCA_IDL_EXT)
 		EcoreUtil.resolveAll(fmodelRef.eResource.resourceSet)
 
 		// use EMF Compare to compare both Franca IDL models (the generated and the reference model)
-		val rset1 = root.key.eResource.resourceSet
+		val rset1 = fmodelGen.model.eResource.resourceSet
 		val rset2 = fmodelRef.eResource.resourceSet
 		val scope = new DefaultComparisonScope(rset1, rset2, null)
 
