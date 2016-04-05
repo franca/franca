@@ -7,10 +7,7 @@
  *******************************************************************************/
 package org.franca.connectors.omgidl;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -19,6 +16,7 @@ import org.csu.idl.xtext.loader.ExtendedIDLLoader;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.xbase.lib.ListExtensions;
+import org.franca.core.framework.FrancaModelContainer;
 import org.franca.core.framework.IFrancaConnector;
 import org.franca.core.framework.IModelContainer;
 import org.franca.core.framework.IssueReporter;
@@ -28,7 +26,6 @@ import org.franca.core.utils.FileHelper;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
@@ -73,7 +70,7 @@ public class OMGIDLConnector implements IFrancaConnector {
 
 	
 	@Override
-	public FModel toFranca(IModelContainer model) {
+	public FrancaModelContainer toFranca(IModelContainer model) {
 		if (! (model instanceof OMGIDLModelContainer)) {
 			return null;
 		}
@@ -87,7 +84,7 @@ public class OMGIDLConnector implements IFrancaConnector {
 		lastTransformationIssues = trafo.getTransformationIssues();
 		System.out.println(IssueReporter.getReportString(lastTransformationIssues));
 
-		return fmodel;
+		return new FrancaModelContainer(fmodel);
 	}
 	
 	/**

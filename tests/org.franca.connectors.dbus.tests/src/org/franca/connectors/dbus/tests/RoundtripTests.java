@@ -36,7 +36,7 @@ public class RoundtripTests {
 		String inputfile = "model/testcases/32-StructAttribute.xml";
 		DBusModelContainer dbus = (DBusModelContainer)conn.loadModel(inputfile);
 		
-		FModel fmodel = conn.toFranca(dbus);
+		FModel fmodel = conn.toFranca(dbus).model();
 		loader.saveModel(fmodel, "src-gen/testcases/32-StructAttribute.fidl");
 
 		DBusModelContainer fromFranca = (DBusModelContainer)conn.fromFranca(fmodel);

@@ -12,6 +12,6 @@ import org.franca.core.franca.FModel;
 public interface IFrancaConnector extends IModelPersistenceManager {
 
 	// conversion to/from Franca models
-	public FModel toFranca (IModelContainer model);
+	public FrancaModelContainer toFranca (IModelContainer model);
 	public IModelContainer fromFranca (FModel fmodel);
 }

@@ -7,6 +7,7 @@ package org.franca.connectors.protobuf
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
+
 import com.google.eclipse.protobuf.ProtobufStandaloneSetup
 import com.google.eclipse.protobuf.protobuf.Import
 import com.google.eclipse.protobuf.protobuf.Protobuf
@@ -19,6 +20,7 @@ import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.resource.XtextResource
 import org.eclipse.xtext.resource.XtextResourceSet
+import org.franca.core.framework.FrancaModelContainer
 import org.franca.core.framework.IFrancaConnector
 import org.franca.core.framework.IModelContainer
 import org.franca.core.framework.IssueReporter
@@ -76,7 +78,7 @@ public class ProtobufConnector implements IFrancaConnector {
 	//		return saveProtobufModel(createConfiguredResourceSet(), mc.model(), mc.getComments(), fn);
 	}
 
-	override FModel toFranca(IModelContainer model) {
+	override FrancaModelContainer toFranca(IModelContainer model) {
 		if (! (model instanceof ProtobufModelContainer)) {
 			return null;
 		}
@@ -88,7 +90,7 @@ public class ProtobufConnector implements IFrancaConnector {
 		lastTransformationIssues = trafo.getTransformationIssues();
 		System.out.println(IssueReporter.getReportString(lastTransformationIssues));
 
-		return fmodel;
+		return new FrancaModelContainer(fmodel);
 	}
 
 	def Iterable<FModel> toFrancas(Iterable<ProtobufModelContainer> models) {
