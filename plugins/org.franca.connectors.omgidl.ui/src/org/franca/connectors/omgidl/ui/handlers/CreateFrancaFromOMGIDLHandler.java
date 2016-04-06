@@ -105,7 +105,7 @@ public class CreateFrancaFromOMGIDLHandler extends AbstractHandler {
 	    			if (saver.saveModel(result.model(), outpath, result)) {
     	    			out.println("Saved Franca IDL file '" + outpath + "'.");
     	    		} else {
-    	    			err.println("Franca IDL file couldn't be written to file '" + outpath + "'.");
+    	    			err.println("Franca IDL model couldn't be written to file '" + outpath + "'.");
 	    			}
 	    		} catch (Exception e) {
 	    			err.println("Exception while persisting result model to file: " + e.toString());
