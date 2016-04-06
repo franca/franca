@@ -5,6 +5,9 @@ import org.eclipse.emf.compare.Match
 import org.eclipse.emf.compare.ReferenceChange
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.compare.DifferenceKind
+import org.franca.core.franca.FModelElement
+import org.franca.core.franca.FModel
+import org.franca.core.franca.FTypeRef
 
 class ComparisonTextReportGenerator extends ComparisonReportGeneratorBase {
 	override String generateReport(Match m) { generateMatch(m) }
@@ -36,5 +39,22 @@ class ComparisonTextReportGenerator extends ComparisonReportGeneratorBase {
 	}
 	
 	protected def dispatch String generateModelElement(Object o) '''«o.toString»'''
-	protected def dispatch String generateModelElement(EObject o) '''«o.simpleName»'''
+	protected def dispatch String generateModelElement(EObject o) {
+	
+		o.displayName
+	
+}
+	def dispatch getDisplayName(FModel element){
+		'''«element.simpleName» «element.name»'''.toString
+	}
+	def dispatch getDisplayName(FModelElement element){
+		'''«element.simpleName» «element.name»'''.toString
+	}
+	def dispatch getDisplayName(EObject element){
+		'''«element.simpleName» «element.name»'''.toString
+	}
+	def dispatch getDisplayName(FTypeRef element){
+		'''«element.simpleName»'''.toString
+	}
+	
 }
