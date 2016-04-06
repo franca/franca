@@ -1,14 +1,19 @@
+/*******************************************************************************
+ * Copyright (c) 2016 itemis AG (http://www.itemis.de).
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************/
 package org.franca.connectors.omgidl.tests
 
 import com.google.inject.Inject
 import java.util.List
-import java.util.Map
 import org.csu.idl.idlmm.IdlmmPackage
 import org.eclipse.emf.compare.Diff
 import org.eclipse.emf.compare.EMFCompare
 import org.eclipse.emf.compare.internal.spec.ResourceAttachmentChangeSpec
 import org.eclipse.emf.compare.scope.DefaultComparisonScope
-import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.xtext.junit4.InjectWith
 import org.eclipselabs.xtext.utils.unittesting.XtextRunner2
