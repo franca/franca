@@ -57,8 +57,11 @@ location "http://franca.github.io/franca/update_site/thirdparty" {
 	// idl4emf, needed for OMG IDL connector
 	org.csu.idl.feature.group [1.1.0,2.0.0)	
 
-	// idl4emf, needed for OMG IDL connector
-	com.google.eclipse.protobuf.feature.group [1.5.2,2.0.0)	
+	// protobuf-dt, needed for Google Protobuf connector
+	com.google.eclipse.protobuf.feature.group [1.5.2,2.0.0)
+	
+	// xdoc, needed for documentation (xdoc4franca fork)
+	org.eclipse.xtext.xdoc.feature.feature.group [0.1.5,1.0.0)
 }
 
 // etrice, needed for eTrice connector
@@ -82,9 +85,3 @@ location "http://xtext-utils.eclipselabs.org.codespot.com/git.distribution/relea
 location "http://update.eclemma.org/" {
 	com.mountainminds.eclemma.feature.feature.group [2.3.3,3.0.0)
 }
-
-// xdoc, needed for documentation
-location "http://xdoc4franca-release.eclipselabs.org.codespot.com/git/update_site/releases" {
-	org.eclipse.xtext.xdoc.feature.feature.group [0.1.5,1.0.0)
-}
-
