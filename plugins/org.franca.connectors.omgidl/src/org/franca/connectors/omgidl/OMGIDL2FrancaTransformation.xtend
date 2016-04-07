@@ -24,6 +24,7 @@ import org.csu.idl.idlmm.ExceptionDef
 import org.csu.idl.idlmm.Expression
 import org.csu.idl.idlmm.Field
 import org.csu.idl.idlmm.ForwardDef
+import org.csu.idl.idlmm.IDLType
 import org.csu.idl.idlmm.IdlmmPackage
 import org.csu.idl.idlmm.Include
 import org.csu.idl.idlmm.InterfaceDef
@@ -31,6 +32,7 @@ import org.csu.idl.idlmm.ModuleDef
 import org.csu.idl.idlmm.OperationDef
 import org.csu.idl.idlmm.ParameterDef
 import org.csu.idl.idlmm.PrimitiveDef
+import org.csu.idl.idlmm.PrimitiveKind
 import org.csu.idl.idlmm.SequenceDef
 import org.csu.idl.idlmm.StructDef
 import org.csu.idl.idlmm.TranslationUnit
@@ -390,6 +392,20 @@ class OMGIDL2FrancaTransformation {
 		factory.createFMethod => [
 			map_IDL_Franca.put(src, it)
 			name = src.identifier
+			if (src.sharedType!=null || !src.containedType.isVoid) {
+				// add operation's return value as first out argument with name _RESULT 
+				outArgs.add(
+					factory.createFArgument => [
+						name = "_RESULT"
+						type =
+							if (src.sharedType == null) {
+								src.containedType.transformIDLType
+							} else {
+								src.sharedType.transformIDLType
+							}
+					]
+				)
+			}
 			src.parameters.forEach[member | member.transformTyped(it)]
 			if (!src.canRaise.isNullOrEmpty) {
 				errors = factory.createFEnumerationType => [errorContainer|
@@ -418,6 +434,14 @@ class OMGIDL2FrancaTransformation {
 			}
 //			src.canRaise.forEach[exception | exception.]
 		]
+	}
+
+	def private isVoid(IDLType type) {
+		if (type instanceof PrimitiveDef) {
+			type.kind==PrimitiveKind.PK_VOID
+		} else {
+			false
+		}
 	}
 	
 	def private dispatch FModelElement transformDefinition(AliasDef src) {

@@ -20,6 +20,9 @@ interface de {
 		}
 	}
 	method getDeData {
+		out {
+			de_t _RESULT
+		}
 		error {
 			canNotAccessData
 		}

@@ -20,6 +20,9 @@ interface PushConsumer {
 
 interface TypedPushConsumer extends PushConsumer {
 	method get_typed_consumer {
+		out {
+			undefined _RESULT
+		}
 	}
 }
 
@@ -48,6 +51,9 @@ interface ProxyPushSupplier extends PushSupplier {
 
 interface SupplierAdmin {
 	method obtain_push_consumer {
+		out {
+			ProxyPushConsumerReference _RESULT
+		}
 	}
 }
 
@@ -56,6 +62,9 @@ interface TypedProxyPushConsumer extends ProxyPushConsumer {
 
 interface ConsumerAdmin {
 	method obtain_push_supplier {
+		out {
+			ProxyPushSupplierReference _RESULT
+		}
 	}
 }
 
@@ -63,6 +72,9 @@ interface TypedSupplierAdmin extends SupplierAdmin {
 	method obtain_typed_push_consumer {
 		in {
 			Key supported_interface
+		}
+		out {
+			TypedProxyPushConsumerReference _RESULT
 		}
 		error {
 			InterfaceNotSupported
@@ -75,6 +87,9 @@ interface TypedConsumerAdmin extends ConsumerAdmin {
 		in {
 			Key uses_interface
 		}
+		out {
+			ProxyPushSupplierReference _RESULT
+		}
 		error {
 			NoSuchImplementation
 		}
@@ -83,8 +98,14 @@ interface TypedConsumerAdmin extends ConsumerAdmin {
 
 interface EventChannel {
 	method for_consumers {
+		out {
+			ConsumerAdminReference _RESULT
+		}
 	}
 	method for_suppliers {
+		out {
+			SupplierAdminReference _RESULT
+		}
 	}
 	method destroy {
 	}
@@ -92,8 +113,14 @@ interface EventChannel {
 
 interface TypedEventChannel {
 	method for_consumers {
+		out {
+			TypedConsumerAdminReference _RESULT
+		}
 	}
 	method for_suppliers {
+		out {
+			TypedSupplierAdminReference _RESULT
+		}
 	}
 	method destroy {
 	}
@@ -104,7 +131,17 @@ typeCollection {
 		major 1
 		minor 0
 	}
+	
 	typedef Key is String
+
 	typedef PushSupplierReference is String
 	typedef PushConsumerReference is String
+	typedef ProxyPushConsumerReference is String
+	typedef ProxyPushSupplierReference is String
+	typedef TypedProxyPushConsumerReference is String
+	typedef ConsumerAdminReference is String
+	typedef SupplierAdminReference is String
+	typedef TypedConsumerAdminReference is String
+	typedef TypedSupplierAdminReference is String
+
 }
