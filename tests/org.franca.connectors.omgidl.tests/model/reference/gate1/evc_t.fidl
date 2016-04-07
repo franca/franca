@@ -18,7 +18,7 @@ typeCollection {
 
 	typedef doubleSeq is Sequence_1
 
-	array Sequence_2 of undefined
+	array Sequence_2 of UInt8
 
 	typedef octetSeq is Sequence_2
 

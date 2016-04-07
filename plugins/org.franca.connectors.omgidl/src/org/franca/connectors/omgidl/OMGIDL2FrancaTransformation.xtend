@@ -635,6 +635,7 @@ class OMGIDL2FrancaTransformation {
 	def private dispatch FTypeRef transformIDLType(PrimitiveDef src) {
 		factory.createFTypeRef => [
 			predefined = switch src.kind {
+				case PK_OCTET: FBasicTypeId.UINT8
 				case PK_SHORT: FBasicTypeId.INT16
 				case PK_LONG: FBasicTypeId.INT32
 				case PK_LONGLONG: FBasicTypeId.INT64

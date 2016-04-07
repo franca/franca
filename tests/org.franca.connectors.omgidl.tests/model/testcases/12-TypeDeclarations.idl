@@ -3,6 +3,7 @@
 module testcase12 {
 	typedef testcase12::FooStruct FooTypeDef2;
 	struct FooStruct {
+		octet octet_member;
 		short short_member;
 		long long_member;
 		long long longlong_member;
@@ -17,7 +18,6 @@ module testcase12 {
 		string string_member;
 		wstring wstring_member;
 		boolean boolean_member;
-		octet octet_member;
 		any any_member;
 		Object object_member;
 		struct FooNestedStruct {
