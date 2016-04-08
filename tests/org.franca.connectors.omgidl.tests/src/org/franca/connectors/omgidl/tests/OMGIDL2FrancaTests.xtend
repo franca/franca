@@ -21,7 +21,9 @@ import org.franca.connectors.omgidl.OMGIDLConnector
 import org.franca.connectors.omgidl.OMGIDLModelContainer
 import org.franca.core.dsl.FrancaIDLTestsInjectorProvider
 import org.franca.core.dsl.FrancaPersistenceManager
+import org.franca.core.dsl.tests.compare.ComparisonHtmlReportGenerator
 import org.franca.core.dsl.tests.compare.ComparisonTextReportGenerator
+import org.franca.core.utils.FileHelper
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -182,10 +184,14 @@ class OMGIDL2FrancaTests {
 		}
 
 		// produce some nice output of the differences, if there are any
-		val gen = new ComparisonTextReportGenerator
+		val genText = new ComparisonTextReportGenerator
+		val genHTML = new ComparisonHtmlReportGenerator
 		for(m : comparison.matches) {
-			if (m.allDifferences.size() > 0)
-				println(gen.generateReport(m))
+			if (m.allDifferences.size() > 0) {
+				println(genText.generateReport(m))
+				val html = genHTML.generateReport(m)
+				FileHelper.save("target/surefire-reports", inputfile + "_diff.html", html)
+			}
 		}
 		
 		/* 
