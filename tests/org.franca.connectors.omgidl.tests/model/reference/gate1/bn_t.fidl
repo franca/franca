@@ -34,7 +34,7 @@ typeCollection {
 	}
 
 	struct typedData1_t {
-		undefined data
+		evc_t.evcData3_t data
 		dataOriginationType_t type
 	}
 
@@ -49,7 +49,7 @@ typeCollection {
 	}
 
 	struct typedData4_t {
-		undefined data
+		evc_t.evcData2_t data
 		dataOriginationType_t type
 	}
 
@@ -59,7 +59,7 @@ typeCollection {
 	}
 
 	struct typedLongitude_t {
-		undefined data
+		evc_t.Longitude_t data
 		dataOriginationType_t type
 	}
 

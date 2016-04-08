@@ -39,6 +39,7 @@ typeCollection {
 	typedef shortSeq is Sequence_6
 
 	typedef Latitude_t is Double
+	typedef Longitude_t is Double
 
 	struct canNotAccessData {
 		String reason

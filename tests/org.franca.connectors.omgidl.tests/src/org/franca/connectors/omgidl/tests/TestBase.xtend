@@ -13,7 +13,13 @@ import org.eclipse.emf.compare.Diff
 import org.eclipse.emf.compare.EMFCompare
 import org.eclipse.emf.compare.internal.spec.ResourceAttachmentChangeSpec
 import org.eclipse.emf.compare.scope.DefaultComparisonScope
+import org.eclipse.emf.ecore.EObject
+import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.emf.ecore.util.EcoreUtil
+import org.eclipse.xtext.diagnostics.Severity
+import org.eclipse.xtext.validation.CheckMode
+import org.eclipse.xtext.validation.IResourceValidator
+import org.eclipse.xtext.validation.Issue
 import org.franca.connectors.omgidl.OMGIDLConnector
 import org.franca.connectors.omgidl.OMGIDLModelContainer
 import org.franca.core.dsl.FrancaPersistenceManager
@@ -22,6 +28,7 @@ import org.franca.core.dsl.tests.compare.ComparisonTextReportGenerator
 import org.franca.core.utils.FileHelper
 
 import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertNotNull
 
 class TestBase {
 
@@ -29,6 +36,7 @@ class TestBase {
 	val FRANCA_IDL_EXT = "." + FrancaPersistenceManager.FRANCA_FILE_EXTENSION
 
 	@Inject	extension FrancaPersistenceManager
+	@Inject IResourceValidator validator
 	
 
 	def protected testTransformation(String inputfile, String model_dir, String gen_dir, String ref_dir) {
@@ -36,8 +44,13 @@ class TestBase {
 		val conn = new OMGIDLConnector
 		val omgidl = conn.loadModel(model_dir + inputfile + OMG_IDL_EXT) as OMGIDLModelContainer
 
+		// validate input model(s)
+		val nErrors = validateModel(omgidl.model, true)
+		assertEquals("Errors during validation of input model", 0, nErrors)
+
 		// transform to Franca 
 		val fmodelGen = conn.toFranca(omgidl)
+		assertNotNull("Tranformation to Franca return null", fmodelGen)
 		val rootModelName = fmodelGen.modelName
 
 		// save transformed Franca file(s)
@@ -85,5 +98,36 @@ class TestBase {
 		// we expect that both Franca IDL models are identical 
 		assertEquals(0, nDiffs)
 	}
+	
+	def private int validateModel(EObject model, boolean recursively) {
+		var nErrors = 0
+		val mainResource = model.eResource
+
+		val toBeValidated = newArrayList
+		if (recursively) {
+			val resources = mainResource.getResourceSet.getResources
+			toBeValidated.addAll(resources)
+		} else {
+			toBeValidated.add(mainResource)
+		}
+
+		for(Resource res : toBeValidated) {
+			try {
+				val List<Issue> validationErrors = validator.validate(res, CheckMode.ALL, null)
+				for (Issue issue : validationErrors) {
+					val msg = '''«issue.severity» at «res.URI.path» #«issue.lineNumber»: «issue.message»'''
+					System.err.println(msg)
+					if (issue.severity==Severity.ERROR)
+						nErrors++
+				}
+			} catch (Exception e) {
+				System.err.println("Error from Xtext validator (" + e.message + ")")
+				nErrors++
+			}
+		}
+		
+		nErrors
+	}
+
 	
 }
