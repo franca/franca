@@ -57,6 +57,7 @@ public class FrancaIDLFormatter extends AbstractDeclarativeFormatter {
 		
 		// interface in general
 		c.setLinewrap(2).around(f.getFInterfaceRule());
+		c.setLinewrap(2).after(f.getFVersionRule());
 		
 		// attributes
 		c.setLinewrap(2).around(f.getFAttributeRule());
@@ -66,6 +67,8 @@ public class FrancaIDLFormatter extends AbstractDeclarativeFormatter {
 		c.setLinewrap(1).around(f.getFBroadcastRule());
 		c.setLinewrap(1).around(f.getFArgumentRule());
 
+		// constants
+		c.setLinewrap(1).before(f.getFConstantDefRule());
 		
 		// types
 		c.setLinewrap(1).before(f.getFTypeRule());
