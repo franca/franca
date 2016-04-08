@@ -1,7 +1,6 @@
 package org.franca.connectors.idl;
 
 import java.io.File;
-import java.util.List;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
@@ -9,17 +8,11 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.log4j.Logger;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.xtext.diagnostics.Severity;
-import org.eclipse.xtext.validation.CheckMode;
-import org.eclipse.xtext.validation.Issue;
-import org.franca.core.dsl.FrancaIDLVersion;
 import org.franca.core.dsl.cli.AbstractCommandLineTool;
 import org.franca.core.dsl.cli.CommonOptions;
 import org.franca.core.franca.FModel;
 import org.franca.core.utils.FileHelper;
 
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
 /**
@@ -72,27 +65,7 @@ public class Franca2IdlStandalone extends AbstractCommandLineTool {
 //		logger.info("Franca IDL: package '" + fmodel.getName() + "'");
 
 		// call validator
-		int nErrors = 0;
-		Resource mainResource = fmodel.eResource();
-		List<Resource> toBeValidated = Lists.newArrayList();
-		if (line.hasOption(RECURSIVE_VALIDATION)) {
-			toBeValidated.addAll(mainResource.getResourceSet().getResources());
-		} else {
-			toBeValidated.add(mainResource);
-		}
-		for(Resource res : toBeValidated) {
-			List<Issue> validationErrors = validator.validate(res, CheckMode.ALL, null);
-			for (Issue issue : validationErrors) {
-				String msg = issue.getSeverity() +
-						" at " + res.getURI().path() +
-						" #" + issue.getLineNumber() + ": " +
-						issue.getMessage();
-				System.err.println(msg);
-				if (issue.getSeverity()==Severity.ERROR)
-					nErrors++;
-			}
-		}
-		
+		int nErrors = validateModel(fmodel, line.hasOption(RECURSIVE_VALIDATION));
 		if (nErrors>0) {
 			System.err.println("Validation of Franca model: " + nErrors + " errors, aborting.");
 			return -1;
@@ -103,7 +76,7 @@ public class Franca2IdlStandalone extends AbstractCommandLineTool {
 		if (line.hasOption(CommonOptions.OUTDIR)) {
 			String outputFolder = line.getOptionValue(CommonOptions.OUTDIR);
 			String outPath = outputFolder + "/" + fmodel.getName().replaceAll("[.]", "/");
-			String filename = getBasename(mainResource.getURI()) + ".idl";
+			String filename = getBasename(fmodel.eResource().getURI()) + ".idl";
 			FileHelper.save(outPath, filename, output);
 		} else {
 			// no outdir specified, write to stdout

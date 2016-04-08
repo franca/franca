@@ -9,13 +9,19 @@ package org.franca.core.dsl.cli
 
 import com.google.inject.Inject
 import com.google.inject.Injector
+import java.util.List
 import org.apache.commons.cli.CommandLine
 import org.apache.commons.cli.CommandLineParser
 import org.apache.commons.cli.GnuParser
 import org.apache.commons.cli.HelpFormatter
 import org.apache.commons.cli.Options
 import org.apache.commons.cli.ParseException
+import org.eclipse.emf.ecore.EObject
+import org.eclipse.emf.ecore.resource.Resource
+import org.eclipse.xtext.diagnostics.Severity
+import org.eclipse.xtext.validation.CheckMode
 import org.eclipse.xtext.validation.IResourceValidator
+import org.eclipse.xtext.validation.Issue
 import org.franca.core.dsl.FrancaIDLStandaloneSetup
 import org.franca.core.dsl.FrancaIDLVersion
 import org.franca.core.dsl.FrancaPersistenceManager
@@ -173,4 +179,37 @@ abstract class AbstractCommandLineTool {
 	 */
 	abstract def protected int run(CommandLine line)
 	
+	/**
+	 * Validate a model before processing it.</p>
+	 * 
+	 * The validation can be done for the model only or for all models in its resource set.
+	 * 
+	 * @param model the model which should be validated
+	 * @param recursively if true, all models in the resource set will be validated
+	 * @return number of errors (only continue processing if no error occurred) 
+	 */
+	def protected int validateModel(EObject model, boolean recursively) {
+		var nErrors = 0
+		val mainResource = model.eResource
+
+		val toBeValidated = newArrayList
+		if (recursively) {
+			val resources = mainResource.getResourceSet.getResources
+			toBeValidated.addAll(resources)
+		} else {
+			toBeValidated.add(mainResource)
+		}
+
+		for(Resource res : toBeValidated) {
+			val List<Issue> validationErrors = validator.validate(res, CheckMode.ALL, null)
+			for (Issue issue : validationErrors) {
+				val msg = '''«issue.severity» at «res.URI.path» #«issue.lineNumber»: «issue.message»'''
+				logError(msg)
+				if (issue.severity==Severity.ERROR)
+					nErrors++;
+			}
+		}
+		
+		nErrors
+	}
 }
