@@ -15,6 +15,11 @@ import org.franca.core.dsl.FrancaPersistenceManager
 import org.franca.core.dsl.cli.AbstractCommandLineTool
 import org.franca.core.dsl.cli.CommonOptions
 
+/**
+ * The command-line tool for running the OMG IDL to Franca transformation.</p>
+ * 
+ * @author Klaus Birken (itemis AG)
+ */
 class OMGIDL2FrancaStandalone extends AbstractCommandLineTool {
 	
 	static final Logger logger = Logger.getLogger(typeof(OMGIDL2FrancaStandalone))
@@ -49,6 +54,7 @@ class OMGIDL2FrancaStandalone extends AbstractCommandLineTool {
 			val filename = (arg as String).trim
 			if (! filename.endsWith(".idl")) {
 				logger.error("Input file must have suffix 'idl' (filename is '" + filename + "')!")
+				return -1
 			} else {
 				if (verbose)
 					logger.info("Processing input file " + filename)
@@ -57,34 +63,43 @@ class OMGIDL2FrancaStandalone extends AbstractCommandLineTool {
 				val omgidl = conn.loadModel(filename) as OMGIDLModelContainer
 				if (omgidl==null) {
 					logger.error("Couldn't load input model from file!")
+					return -2
 				} else {
 					if (verbose)
 						logger.info("Input model consists of " + omgidl.models.size + " files")
 					
-					nInputs++
-					
-					// transform to Franca 
-					val fmodelGen = conn.toFranca(omgidl)
-					val rootModelName = fmodelGen.modelName
-
-					// determine output folder for generated Franca files
-					val outputDir =
-						if (line.hasOption(CommonOptions.OUTDIR)) {
-							line.getOptionValue(CommonOptions.OUTDIR)
-						} else {
-							// no outdir specified, write to current working directory
-							System.getProperty("user.dir")
-						}
-					
-	    			// save all models resulting from transformation to file
-    	    		val outfile = rootModelName +
-    	    				"." + FrancaPersistenceManager.FRANCA_FILE_EXTENSION;
-    	    		val outpath = outputDir + File.separator + outfile;
-	    			if (persistenceManager.saveModel(fmodelGen.model, outpath, fmodelGen)) {
-    	    			logger.info("Saved Franca IDL file '" + outpath + "'.");
-    	    		} else {
-    	    			logger.error("Franca IDL model couldn't be written to file '" + outpath + "'.");
-	    			}
+					// do validation of input model(s)
+					val nErrors = validateModel(omgidl.model, true)
+					if (nErrors>0) {
+						logger.error("Transformation aborted due to validation errors in input model!")
+						return -3
+					} else {
+						nInputs++
+						
+						// transform to Franca 
+						val fmodelGen = conn.toFranca(omgidl)
+						val rootModelName = fmodelGen.modelName
+	
+						// determine output folder for generated Franca files
+						val outputDir =
+							if (line.hasOption(CommonOptions.OUTDIR)) {
+								line.getOptionValue(CommonOptions.OUTDIR)
+							} else {
+								// no outdir specified, write to current working directory
+								System.getProperty("user.dir")
+							}
+						
+		    			// save all models resulting from transformation to file
+	    	    		val outfile = rootModelName +
+	    	    				"." + FrancaPersistenceManager.FRANCA_FILE_EXTENSION;
+	    	    		val outpath = outputDir + File.separator + outfile;
+		    			if (persistenceManager.saveModel(fmodelGen.model, outpath, fmodelGen)) {
+	    	    			logger.info("Saved Franca IDL file '" + outpath + "'.");
+	    	    		} else {
+	    	    			logger.error("Franca IDL model couldn't be written to file '" + outpath + "'.");
+	    	    			return -4
+		    			}
+					}
 				}
 			}
 		}
