@@ -1,4 +1,5 @@
 package db
+
 import model "evc_t.fidl"
 
 typeCollection {
@@ -6,9 +7,10 @@ typeCollection {
 		major 1
 		minor 0
 	}
+
 	struct dbBound_t {
 		evc_t.Latitude_t latitude
-		undefined longitude
+		evc_t.Longitude_t longitude
 		Float data1
 		Float data2
 		evc_t.validData_t validityFlag

@@ -14,8 +14,14 @@ Require-Bundle: org.eclipse.xtext.generator;resolution:=optional,
  org.franca.core;bundle-version="0.9.1";visibility:=reexport,
  org.eclipse.core.runtime;bundle-version="3.7.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Export-Package: org.franca.core.dsl,org.franca.core.dsl.formatting,org
- .franca.core.dsl.parseTreeConstruction,org.franca.core.dsl.parser.ant
- lr,org.franca.core.dsl.parser.antlr.internal,org.franca.core.dsl.reso
- urce,org.franca.core.dsl.scoping,org.franca.core.dsl.services,org.fra
- nca.core.dsl.validation,org.franca.core.dsl.validation.util
+Export-Package: org.franca.core.dsl,
+ org.franca.core.dsl.cli,
+ org.franca.core.dsl.formatting,
+ org.franca.core.dsl.parseTreeConstruction,
+ org.franca.core.dsl.parser.antlr,
+ org.franca.core.dsl.parser.antlr.internal,
+ org.franca.core.dsl.resource,
+ org.franca.core.dsl.scoping,
+ org.franca.core.dsl.services,
+ org.franca.core.dsl.validation,
+ org.franca.core.dsl.validation.util

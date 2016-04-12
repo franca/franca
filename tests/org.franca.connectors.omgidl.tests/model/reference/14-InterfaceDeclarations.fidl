@@ -6,6 +6,9 @@ interface fooInterface1 {
 		in {
 			L1 l_1
 		}
+		out {
+			Int16 _RESULT
+		}
 	}
 }
 
@@ -14,6 +17,9 @@ interface fooInterface2 {
 	method opB {
 		in {
 			Int32 l
+		}
+		out {
+			L1 _RESULT
 		}
 	}
 }

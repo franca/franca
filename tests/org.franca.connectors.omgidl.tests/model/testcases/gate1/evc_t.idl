@@ -35,6 +35,9 @@ module evc_t
 	
 	
 	typedef double Latitude_t;
+
+	// FIXED: missing Longitude_t
+	typedef double Longitude_t;
 	
 	
 	exception canNotAccessData 

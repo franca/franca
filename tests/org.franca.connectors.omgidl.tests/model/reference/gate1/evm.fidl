@@ -29,6 +29,9 @@ interface evmCollection {
 	typedef evmCollection_t is Sequence_0
 
 	method getAllevms {
+		out {
+			evmCollection_t _RESULT
+		}
 	}
 }
 

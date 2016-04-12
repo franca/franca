@@ -43,8 +43,8 @@ module bn_t
 	
 	struct typedData1_t
 	{
-		
-		evc_t::evc_Data3 data;
+		// FIXED - invalid datatype evc_Data3
+		evc_t::evcData3_t data;
 		dataOriginationType_t type;
 		
 	}; //end struct typedData1_t
@@ -71,7 +71,8 @@ module bn_t
 	struct typedData4_t
 	{
 		
-		evc_t::evc_Data2_t data;
+		// FIXED - invalid datatype evc_Data2_t
+		evc_t::evcData2_t data;
 		dataOriginationType_t type;
 		
 	}; //end struct typedData4_t

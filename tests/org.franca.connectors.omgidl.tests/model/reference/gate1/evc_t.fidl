@@ -18,7 +18,7 @@ typeCollection {
 
 	typedef doubleSeq is Sequence_1
 
-	array Sequence_2 of undefined
+	array Sequence_2 of UInt8
 
 	typedef octetSeq is Sequence_2
 
@@ -39,6 +39,7 @@ typeCollection {
 	typedef shortSeq is Sequence_6
 
 	typedef Latitude_t is Double
+	typedef Longitude_t is Double
 
 	struct canNotAccessData {
 		String reason

@@ -22,6 +22,7 @@ typeCollection
 	array FooStruct_FooArray_4 of FooStruct_FooArray_3
 	
 	struct FooStruct {
+		UInt8 octet_member
 		Int16 short_member
 		Int32 long_member
 		Int64 longlong_member
@@ -37,7 +38,6 @@ typeCollection
 		String wstring_member // no Wide String in Franca
 		Boolean boolean_member
 		// undefined types in Franca
-		undefined octet_member
 		undefined any_member
 		undefined object_member
 		FooNestedStruct struct_member
