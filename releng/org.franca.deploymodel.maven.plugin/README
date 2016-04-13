@@ -1,0 +1,19 @@
+To use the Franca deploymodel plug-in add the following configuration to your Maven build:
+
+<plugin>
+	<groupId>org.franca</groupId>
+	<artifactId>franca-deploymodel-maven-plugin</artifactId>
+	<version>${franca.version}</version>
+	<executions>
+		<execution>
+			<goals>
+				<goal>generate</goal>
+			</goals>
+
+			<!-- Optional. If you want/have to redirect the generator output. -->
+			<configuration>
+				<outputDirectory>${project.basedir}/src-gen</outputDirectory>
+			</configuration>
+		</execution>
+	</executions>
+</plugin>
