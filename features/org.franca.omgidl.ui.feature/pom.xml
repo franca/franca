@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.franca</groupId>
+		<artifactId>org.franca.parent</artifactId>
+		<version>0.10.1-SNAPSHOT</version>
+		<relativePath>../../releng/org.franca.parent/pom.xml</relativePath>
+	</parent>
+
+	<groupId>org.franca.feature</groupId>
+	<artifactId>org.franca.omgidl.ui</artifactId>
+	<packaging>eclipse-feature</packaging>
+</project>

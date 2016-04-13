@@ -30,6 +30,18 @@
    <feature id="org.franca.dbus.ui.sdk" version="0.0.0">
       <category name="org.franca"/>
    </feature>
+   <feature id="org.franca.omgidl" version="0.0.0">
+      <category name="org.franca"/>
+   </feature>
+   <feature id="org.franca.omgidl.sdk" version="0.0.0">
+      <category name="org.franca"/>
+   </feature>
+   <feature id="org.franca.omgidl.ui" version="0.0.0">
+      <category name="org.franca"/>
+   </feature>
+   <feature id="org.franca.omgidl.ui.sdk" version="0.0.0">
+      <category name="org.franca"/>
+   </feature>
    <category-def name="org.franca" label="Franca">
       <description>
          Franca is a framework for definition and transformation of software interfaces. 
