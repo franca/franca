@@ -12,9 +12,10 @@ Require-Bundle: org.franca.core.dsl;bundle-version="0.9.1";visibility:=reexport,
  org.eclipse.xtext.builder,
  org.eclipse.ui.console;bundle-version="3.5.100",
  org.eclipse.core.expressions,
- org.eclipse.jdt.core;resolution:=optional
-Import-Package: org.apache.log4j,
- org.franca.core.franca
+ org.eclipse.jdt.core;resolution:=optional,
+ org.eclipse.xtend;bundle-version="2.0.0";resolution:=optional;visibility:=reexport,
+ org.eclipse.xtend.lib;bundle-version="2.7.3";resolution:=optional;visibility:=reexport
+Import-Package: org.apache.log4j
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.franca.core.dsl.ui,org.franca.core.dsl.ui.contenta
  ssist,org.franca.core.dsl.ui.contentassist.antlr,org.franca.core.dsl.
