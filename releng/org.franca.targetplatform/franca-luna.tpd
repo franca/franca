@@ -40,7 +40,7 @@ location "http://download.eclipse.org/modeling/tmf/xtext/updates/composite/relea
 
 
 // KLighD from KIELER, needed for UI add-ons
-location "http://rtsys.informatik.uni-kiel.de/~kieler/updatesite/nightly" {
+location "http://rtsys.informatik.uni-kiel.de/~kieler/updatesite" {
  	de.cau.cs.kieler.kiml.feature.feature.group lazy //[0.18.0,1.0.0)
  	de.cau.cs.kieler.klighd.sdk.feature.feature.group lazy //[0.6.0.201505180202,1.0.0)
  	//de.cau.cs.kieler.kiml.graphviz.feature.feature.group
