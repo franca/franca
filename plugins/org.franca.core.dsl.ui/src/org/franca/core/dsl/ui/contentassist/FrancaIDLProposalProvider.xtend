@@ -37,12 +37,12 @@ class FrancaIDLProposalProvider extends AbstractFrancaIDLProposalProvider {
 		var classPathContext = xtextresourceSet.classpathURIContext
 		if (classPathContext instanceof JavaProject) {
 			containers.forEach[
-				it.resourceDescriptions.filter[it.URI.toString != model.eResource.URI.toString].forEach[
+				it.resourceDescriptions.filter[it.URI.toString != model.eResource.URI.toString && it.URI.fileExtension=="fidl"].forEach[
 					classpathResources += it.URI.toClassPathString]]
 		}
 
 		containers.forEach[
-			it.resourceDescriptions.filter[it.URI.toString != model.eResource.URI.toString].forEach[
+			it.resourceDescriptions.filter[it.URI.toString != model.eResource.URI.toString && it.URI.fileExtension=="fidl"].forEach[
 				platformResources += it.URI.toString]]
 				
 		if (context.prefix == "\"classpath:") {
