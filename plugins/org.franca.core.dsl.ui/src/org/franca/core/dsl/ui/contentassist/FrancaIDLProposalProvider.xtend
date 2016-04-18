@@ -15,6 +15,7 @@ import org.eclipse.xtext.ui.editor.contentassist.ConfigurableCompletionProposal
 import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext
 import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor
 import org.eclipse.xtext.ui.editor.contentassist.ReplacementTextApplier
+import org.franca.core.utils.FrancaIDLUtils
 
 class FrancaIDLProposalProvider extends AbstractFrancaIDLProposalProvider {
 
@@ -27,42 +28,58 @@ class FrancaIDLProposalProvider extends AbstractFrancaIDLProposalProvider {
 
 	override completeImport_ImportURI(EObject model, Assignment assignment, ContentAssistContext context,
 		ICompletionProposalAcceptor acceptor) {
+		val modelUri = model.eResource.URI
 		val platformResources = newArrayList()
 		val classpathResources = newArrayList()
 		var xtextresourceSet = model.eResource.resourceSet as XtextResourceSet
 		var containers = containerManager.getVisibleContainers(
-			descriptionManager.getResourceDescription(model.eResource), provider.
-				getResourceDescriptions(model.eResource))
+			descriptionManager.getResourceDescription(model.eResource),
+			provider.getResourceDescriptions(model.eResource))
 
 		var classPathContext = xtextresourceSet.classpathURIContext
 		if (classPathContext instanceof JavaProject) {
-			containers.forEach[
-				it.resourceDescriptions.filter[it.URI.toString != model.eResource.URI.toString && it.URI.fileExtension=="fidl"].forEach[
-					classpathResources += it.URI.toClassPathString]]
+			containers.forEach [
+				it.resourceDescriptions.filter[
+					it.URI.toString != model.eResource.URI.toString && (it.URI.fileExtension == "fidl")].forEach [
+					classpathResources += it.URI
+					platformResources += it.URI
+				]
+			]
 		}
 
-		containers.forEach[
-			it.resourceDescriptions.filter[it.URI.toString != model.eResource.URI.toString && it.URI.fileExtension=="fidl"].forEach[
-				platformResources += it.URI.toString]]
-				
 		if (context.prefix == "\"classpath:") {
 			classpathResources.forEach [
-				it.createProposal(context, acceptor)
+				it.createClasspathProposal(modelUri,context, acceptor)
 			]
 		} else if (context.prefix == "\"platform:") {
 			platformResources.forEach [
-				it.createProposal(context, acceptor)
+				it.createPlatformProposal(modelUri,context, acceptor)
 			]
 		} else {
 			platformResources.forEach [
-				it.createProposal(context, acceptor)
+				it.createPlatformProposal(modelUri,context,acceptor)
 			]
 			classpathResources.forEach [
-				it.createProposal(context, acceptor)
+				it.createClasspathProposal(modelUri,context, acceptor)
 			]
 		}
 		super.completeImport_ImportURI(model, assignment, context, acceptor)
 	}
+	
+	def void createClasspathProposal(URI uri,URI model, ContentAssistContext context, ICompletionProposalAcceptor acceptor)
+	{
+		var result = toClassPathString(uri);
+		var displayString = uri.lastSegment() + " - " + result;
+		createProposal(result,displayString, context, acceptor);
+	}
+	
+	def void createPlatformProposal(URI uri,URI model, ContentAssistContext context, ICompletionProposalAcceptor acceptor)
+	{
+		val result = FrancaIDLUtils.relativeURIString(model,uri)
+		var displayString = uri.lastSegment() + " - " + result;
+		createProposal(result,displayString,context,acceptor)
+	}
+	
 
 	def toClassPathString(URI uri) {
 		val segments = uri.segmentsList.classPathSegments
@@ -75,8 +92,8 @@ class FrancaIDLProposalProvider extends AbstractFrancaIDLProposalProvider {
 		sublist
 	}
 
-	def createProposal(String name, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		var proposal = createCompletionProposal('''«name.toString»''', context)
+	def createProposal(String name,String display, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		var proposal = createCompletionProposal('''«name.toString»''',display,null, context)
 
 		if (proposal instanceof ConfigurableCompletionProposal) {
 			var c = proposal as ConfigurableCompletionProposal
