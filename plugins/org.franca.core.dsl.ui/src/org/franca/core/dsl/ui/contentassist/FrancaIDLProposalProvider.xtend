@@ -16,6 +16,9 @@ import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext
 import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor
 import org.eclipse.xtext.ui.editor.contentassist.ReplacementTextApplier
 import org.franca.core.utils.FrancaIDLUtils
+import org.eclipse.core.resources.FileInfoMatcherDescription
+import org.franca.core.franca.Import
+import org.franca.core.franca.FModel
 
 class FrancaIDLProposalProvider extends AbstractFrancaIDLProposalProvider {
 
@@ -28,7 +31,17 @@ class FrancaIDLProposalProvider extends AbstractFrancaIDLProposalProvider {
 
 	override completeImport_ImportURI(EObject model, Assignment assignment, ContentAssistContext context,
 		ICompletionProposalAcceptor acceptor) {
+		var FModel fmodel = null
 		val modelUri = model.eResource.URI
+		if(model instanceof FModel){
+			fmodel = model as FModel
+		}
+		else if(model instanceof Import)
+		{
+			fmodel = model.eContainer as FModel
+		}
+		
+		val importedUris = fmodel.imports.map[it.importURI]
 		val platformResources = newArrayList()
 		val classpathResources = newArrayList()
 		var xtextresourceSet = model.eResource.resourceSet as XtextResourceSet
@@ -49,35 +62,39 @@ class FrancaIDLProposalProvider extends AbstractFrancaIDLProposalProvider {
 
 		if (context.prefix == "\"classpath:") {
 			classpathResources.forEach [
-				it.createClasspathProposal(modelUri,context, acceptor)
+				it.createClasspathProposal(modelUri,context, acceptor,importedUris)
 			]
 		} else if (context.prefix == "\"platform:") {
 			platformResources.forEach [
-				it.createPlatformProposal(modelUri,context, acceptor)
+				it.createPlatformProposal(modelUri,context, acceptor,importedUris)
 			]
 		} else {
 			platformResources.forEach [
-				it.createPlatformProposal(modelUri,context,acceptor)
+				it.createPlatformProposal(modelUri,context,acceptor,importedUris)
 			]
 			classpathResources.forEach [
-				it.createClasspathProposal(modelUri,context, acceptor)
+				it.createClasspathProposal(modelUri,context, acceptor,importedUris)
 			]
 		}
 		super.completeImport_ImportURI(model, assignment, context, acceptor)
 	}
 	
-	def void createClasspathProposal(URI uri,URI model, ContentAssistContext context, ICompletionProposalAcceptor acceptor)
+	def void createClasspathProposal(URI uri,URI model, ContentAssistContext context, ICompletionProposalAcceptor acceptor,List<String> importedUris)
 	{
 		var result = toClassPathString(uri);
-		var displayString = uri.lastSegment() + " - " + result;
-		createProposal(result,displayString, context, acceptor);
+		if(!importedUris.contains(result)){
+			var displayString = uri.lastSegment() + " - " + result;
+			createProposal(result,displayString, context, acceptor);
+		}
 	}
 	
-	def void createPlatformProposal(URI uri,URI model, ContentAssistContext context, ICompletionProposalAcceptor acceptor)
+	def void createPlatformProposal(URI uri,URI model, ContentAssistContext context, ICompletionProposalAcceptor acceptor,List<String> importedUris)
 	{
 		val result = FrancaIDLUtils.relativeURIString(model,uri)
-		var displayString = uri.lastSegment() + " - " + result;
-		createProposal(result,displayString,context,acceptor)
+		if(!importedUris.contains(result)){
+			var displayString = uri.lastSegment() + " - " + result;
+			createProposal(result,displayString,context,acceptor)
+		}
 	}
 	
 

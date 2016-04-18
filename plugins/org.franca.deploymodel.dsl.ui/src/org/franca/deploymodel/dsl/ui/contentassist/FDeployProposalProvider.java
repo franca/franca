@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jdt.internal.core.JavaProject;
@@ -36,8 +37,10 @@ import org.franca.core.franca.FTypeCollection;
 import org.franca.core.franca.FUnionType;
 import org.franca.core.utils.FrancaIDLUtils;
 import org.franca.deploymodel.core.FDModelUtils;
+import org.franca.deploymodel.dsl.fDeploy.FDModel;
 import org.franca.deploymodel.dsl.fDeploy.FDOverwriteElement;
 import org.franca.deploymodel.dsl.fDeploy.FDeployPackage;
+import org.franca.deploymodel.dsl.fDeploy.Import;
 import org.franca.deploymodel.dsl.scoping.DeploySpecProvider;
 import org.franca.deploymodel.dsl.scoping.DeploySpecProvider.DeploySpecEntry;
 
@@ -106,6 +109,17 @@ public class FDeployProposalProvider extends AbstractFDeployProposalProvider {
 		List<IContainer> visibleContainers = containerUtil.getVisibleContainers(model.eResource());
 		URI fromURI = model.eResource().getURI();
 		List<URI> proposedURIs = new ArrayList<URI>();
+		FDModel fdmodel = null;
+		if (model instanceof FDModel) {
+			fdmodel = (FDModel) model;
+		}else if (model instanceof Import) {
+			fdmodel = (FDModel)model.eContainer();
+		}
+		EList<Import> imports = fdmodel.getImports();
+		List<String> importedUris = Lists.newArrayList();
+		for (Import import1 : imports) {
+			importedUris.add(import1.getImportURI());	
+		}
 		for (IContainer iContainer : visibleContainers) {
 			Iterable<IResourceDescription> resourceDescriptions = iContainer.getResourceDescriptions();
 			for (Iterator<IResourceDescription> iterator = resourceDescriptions.iterator(); iterator.hasNext();) {
@@ -118,8 +132,10 @@ public class FDeployProposalProvider extends AbstractFDeployProposalProvider {
 		}
 		for (URI uri : proposedURIs) {
 			String result = FrancaIDLUtils.relativeURIString(fromURI, uri);
-			String displayString = uri.lastSegment() + " - " + result;
-			acceptor.accept(createCompletionProposal("\"" + result + "\"", displayString, null, context));
+			if(!importedUris.contains(result)){
+				String displayString = uri.lastSegment() + " - " + result;
+				acceptor.accept(createCompletionProposal("\"" + result + "\"", displayString, null, context));
+			}
 		}
 		List<URI> classpathResources = Lists.newArrayList();
 		XtextResourceSet resourceSet = (XtextResourceSet)model.eResource().getResourceSet();
@@ -135,19 +151,21 @@ public class FDeployProposalProvider extends AbstractFDeployProposalProvider {
 			}
 		}
 		if (context.getPrefix()=="\"classpath:") {
-			createProposals(context, acceptor, classpathResources,fromURI);
+			createProposals(context, acceptor, classpathResources,fromURI,importedUris);
 		}
 		else {
-			createProposals(context, acceptor, classpathResources,fromURI);
+			createProposals(context, acceptor, classpathResources,fromURI,importedUris);
 		}		
 		super.completeImport_ImportURI(model, assignment, context, acceptor);
 	}
 
-	private void createProposals(ContentAssistContext context,ICompletionProposalAcceptor acceptor,List<URI> classpathResources,URI fromURI) {
+	private void createProposals(ContentAssistContext context,ICompletionProposalAcceptor acceptor,List<URI> classpathResources,URI fromURI, List<String> importedUris) {
 		for (URI path : classpathResources) {
 			String result = toClassPathString(path);
-			String displayString = path.lastSegment() + " - " + result;
-			createProposal(result,displayString, context, acceptor);
+			if(!importedUris.contains(result)){
+				String displayString = path.lastSegment() + " - " + result;
+				createProposal(result,displayString, context, acceptor);
+			}
 		}
 	}
 
