@@ -1,8 +1,5 @@
 package google.protobuf1
 
-interface FileOption {
-}
-
 typeCollection {
 	struct FileDescriptorSet {
 		FileDescriptorProto [ ] file

@@ -7,6 +7,8 @@
  *******************************************************************************/
 package org.franca.connectors.protobuf
 
+import com.google.eclipse.protobuf.protobuf.BOOL
+import com.google.eclipse.protobuf.protobuf.BooleanLink
 import com.google.eclipse.protobuf.protobuf.ComplexType
 import com.google.eclipse.protobuf.protobuf.ComplexTypeLink
 import com.google.eclipse.protobuf.protobuf.Enum
@@ -20,6 +22,7 @@ import com.google.eclipse.protobuf.protobuf.MessageField
 import com.google.eclipse.protobuf.protobuf.MessageLink
 import com.google.eclipse.protobuf.protobuf.Modifier
 import com.google.eclipse.protobuf.protobuf.NativeFieldOption
+import com.google.eclipse.protobuf.protobuf.NativeOption
 import com.google.eclipse.protobuf.protobuf.OneOf
 import com.google.eclipse.protobuf.protobuf.Option
 import com.google.eclipse.protobuf.protobuf.Package
@@ -59,6 +62,8 @@ class TransformContext {
  */
 class Protobuf2FrancaTransformation {
 
+	val static OPTION_DEPRECATED = "deprecated"
+	
 	//	val static DEFAULT_NODE_NAME = "default"
 	@Inject extension TransformationLogger
 
@@ -86,7 +91,8 @@ class Protobuf2FrancaTransformation {
 
 		name = src.elements.filter(Package).head?.name ?: "dummy_package"
 
-		if (src.elements.filter(Option).size > 0) {
+		val options = src.elements.filter(Option)
+		if (options.findFirst[needsInterface]!=null) {
 			interfaces += factory.createFInterface => [name = "FileOption"]
 		}
 
@@ -130,6 +136,18 @@ class Protobuf2FrancaTransformation {
 		typeCollection.types += types
 		if (!typeCollection.types.empty)
 			typeCollections += typeCollection
+	}
+
+	def private needsInterface(Option option) {
+		if (option instanceof NativeOption) {
+			// we assume that all native options do not need an additional Franca interface
+			return false
+//			val opt = option.source.target
+//			if (opt instanceof MessageField) {
+//				...
+//			}
+		}
+		true
 	}
 
 	private def create factory.createImport transformImport(Import elem) {
@@ -291,15 +309,28 @@ class Protobuf2FrancaTransformation {
 		type = EcoreUtil.copy(field.type.transformTypeLink)
 		name = field.name
 		array = field.modifier == Modifier.REPEATED
-		val tmp = field.fieldOptions.filter(NativeFieldOption).map[source.target]
-		tmp.filter(MessageField).forEach [ msgField |
-			if ((msgField as MessageField).name == "deprecated")
+		val nativeOptions = field.fieldOptions.filter(NativeFieldOption)
+		val v = nativeOptions.getOptionValue(OPTION_DEPRECATED)
+		if (v instanceof BooleanLink) {
+			if (v.target == BOOL.TRUE) {
 				it.comment = factory.createFAnnotationBlock => [
 					elements += factory.createFAnnotation => [
 						rawText = "@deprecated : " + field.name
 					]
 				]
-		]
+			}
+		}
+	}
+	
+	def private getOptionValue(Iterable<NativeFieldOption> options, String option) {
+		for(opt : options) {
+			val definition = opt.source.target 
+			if (definition instanceof MessageField) {
+				if (definition.name == option)
+					return opt.value
+			}
+		}
+		return null
 	}
 
 	def private dispatch create factory.createFTypeRef transformTypeLink(ScalarTypeLink scalarType) {

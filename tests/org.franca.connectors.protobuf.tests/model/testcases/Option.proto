@@ -2,9 +2,8 @@ syntax = "proto2";
 
 package org.franca.connectors.protobuf.tests;
 
-import "descriptor.proto"; //TODO Currently don't support implict import.
-
 option java_package = "org.eclipse";
+
 
 message Request1 {
 	option message_set_wire_format = true;
@@ -14,5 +13,4 @@ message Request1 {
 	required int32 int322 = 3 [ctype = CORD, deprecated = false];
 	required int32 int323 = 4 [ctype = STRING_PIECE, deprecated = true];
 }
-
 
