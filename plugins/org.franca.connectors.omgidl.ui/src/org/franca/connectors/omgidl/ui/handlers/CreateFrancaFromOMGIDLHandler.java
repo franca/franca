@@ -48,15 +48,11 @@ public class CreateFrancaFromOMGIDLHandler extends AbstractHandler {
             final MessageConsoleStream err = myConsole.getErr();
             
             if (selection.isEmpty()) {
-            	err.println("Please select exactly one file with extension 'xml'!");
+            	err.println("Please select exactly one file with extension 'idl'!");
                 return null;
             }
 
             IFile file = (IFile) ((IStructuredSelection) selection).getFirstElement();
-//            if (! isOMGIDLFile(file)) {
-//    			err.println("The selected file is not OMG IDL format!");
-//    			return null;
-//            }
             String omgidlFile = file.getLocationURI().toString();
             String outputDir = file.getParent().getLocation().toString();
 
@@ -95,7 +91,7 @@ public class CreateFrancaFromOMGIDLHandler extends AbstractHandler {
 					return null;
 	    		}
     		
-	    		// save Franca fidl file
+	    		// save Franca fidl file(s)
 	    		int ext = file.getName().lastIndexOf("." + file.getFileExtension());
 	    		try {
 	    			// save all transformed files
@@ -116,7 +112,8 @@ public class CreateFrancaFromOMGIDLHandler extends AbstractHandler {
 					return null;
 	    		}
             }
-    		// refresh IDE (in order to make new files visible)
+ 
+            // refresh IDE (in order to make new files visible)
             IProject project = file.getProject();
             try {
     			project.refreshLocal(IResource.DEPTH_INFINITE, null);;
