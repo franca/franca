@@ -7,7 +7,6 @@
  *******************************************************************************/
 package org.franca.connectors.omgidl.tests
 
-import org.csu.idl.idlmm.IdlmmPackage
 import org.eclipse.xtext.junit4.InjectWith
 import org.eclipselabs.xtext.utils.unittesting.XtextRunner2
 import org.franca.core.dsl.FrancaIDLTestsInjectorProvider
