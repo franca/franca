@@ -121,11 +121,11 @@ class Protobuf2FrancaGate1Tests {
 	/**
 	 * Utility method for executing one transformation and comparing the result with a reference model.
 	 */
-//	def private test(String inputfile) {
+//	def private void test(String inputfile) {
 //		testTransformation(inputfile, MODEL_DIR, GEN_DIR, REF_DIR)
 //	}
 
-	private def test(String inputfile, String fidl_dir, String specificfile, String post_dir) {
+	private def void test(String inputfile, String fidl_dir, String specificfile, String post_dir) {
 //		val PROTOBUF_EXT = ".proto"
 //		val FRANCA_IDL_EXT = ".fidl"
 //		
