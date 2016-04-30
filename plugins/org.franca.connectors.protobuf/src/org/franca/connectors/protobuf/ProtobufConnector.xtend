@@ -169,10 +169,9 @@ public class ProtobufConnector implements IFrancaConnector {
 			return null;
 
 		val root = resource.getContents().get(0) as Protobuf
-		val uriDotIndex = uri.lastSegment.indexOf(uri.fileExtension) - 1
-		part2import.put(root, uri.lastSegment.substring(0, uriDotIndex))
+		part2import.put(root, uri.lastSegment.trimExtension(uri.fileExtension))
 
-		val modelURIs = root.collectImportURIsAndLoadModels(resourceSet)
+		val modelURIs = root.collectImportURIsAndLoadModels(uri, resourceSet)
 		if (modelURIs.empty) {
 			return #[ root ].convert(part2import)
 		}
@@ -184,24 +183,28 @@ public class ProtobufConnector implements IFrancaConnector {
 				]
 			]
 		]
-		val topoModels = digraph.topoSort.reverseView
+		val topoModels = digraph.topoSort
 		val models = topoModels.map[resourceSet.getResource(URI.createURI(it), false)?.contents?.head as Protobuf]
 		models.convert(part2import)
 	}
 
 	def private convert(List<Protobuf> models, Map<Protobuf,String> part2import) {
-		models.toInvertedMap[part2import.get(it)]
+		val result = models.toInvertedMap[part2import.get(it)]
+		result
 	}
 
 	def private Map<String, ArrayList<URI>> collectImportURIsAndLoadModels(
 		Protobuf model,
+		URI importingURI,
 		XtextResourceSet resourceSet
 	) {
+		//val baseURI = importingURI.trimSegments(1)
 		val modelURIs = newHashMap
-		model.elements.filter(Import).forEach [ import_ |
+		for(import_ : model.elements.filter(Import)) {
 			val importURI = URI.createURI(import_.importURI)
+			val resolvedImportURI = importURI.deresolve(importingURI)
 
-			// TODO cycle detection 
+			// TODO cycle detection
 			val key = model.eResource.URI.toString
 			var list = modelURIs.get(key)
 			if (list == null) {
@@ -212,10 +215,16 @@ public class ProtobufConnector implements IFrancaConnector {
 			val importResource = resourceSet.getResource(importURI, false)
 			if (! importResource?.contents.empty) {
 				val pmodel = importResource.contents.head as Protobuf
-				part2import.put(pmodel, import_.importURI)
-				modelURIs.putAll(pmodel.collectImportURIsAndLoadModels(resourceSet))
+				val trimmed = resolvedImportURI.toFileString.trimExtension(importingURI.fileExtension)
+				part2import.put(pmodel, trimmed)
+				modelURIs.putAll(pmodel.collectImportURIsAndLoadModels(importURI, resourceSet))
 			}
-		]
+		}
 		return modelURIs
+	}
+	
+	def private trimExtension(String filename, String ext) {
+		val dotIndex = filename.indexOf(ext) - 1
+		filename.substring(0, dotIndex)
 	}
 }

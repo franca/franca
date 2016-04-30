@@ -30,12 +30,6 @@ class Protobuf2FrancaGate1Tests {
 	val FIDL_DIR = "../../src-gen/testcases/gate1/"
 	val SPEC_FILE = "../specification/ProtobufSpec.fdepl"
 
-	@Inject extension FrancaPersistenceManager
-	
-	@Inject
-	JavaIoFileSystemAccess fsa
-	
-	
 	@Test
 	@Ignore
 	def test_Astronomy_rr(){
@@ -50,7 +44,7 @@ class Protobuf2FrancaGate1Tests {
 	
 	@Test
 	def test_Common_t(){
-		test("Common_t","../"+FIDL_DIR+"gate1/","../"+SPEC_FILE, "gate1/")
+		test("Common_t", "../"+FIDL_DIR+"gate1/","../"+SPEC_FILE, "gate1/")
 	}
 	
 	@Test

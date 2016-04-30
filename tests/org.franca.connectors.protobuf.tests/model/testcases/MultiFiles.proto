@@ -2,10 +2,9 @@ syntax = "proto2";
 
 package org.franca.connectors.protobuf.tests.multifiles;
 
-//import "org.franca.connectors.protobuf.tests";
 import "EmptyMessage.proto";
 
-message Foo{
+message Foo {
 	repeated org.franca.connectors.protobuf.tests.Request1 request1 = 4;
 	optional uint32 uint32_1 = 3;
 }
