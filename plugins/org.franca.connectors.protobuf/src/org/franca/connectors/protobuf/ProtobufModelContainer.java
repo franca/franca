@@ -7,7 +7,9 @@
  *******************************************************************************/
 package org.franca.connectors.protobuf;
 
-import org.franca.core.framework.IModelContainer;
+import java.util.Map;
+
+import org.franca.core.framework.MultiModelContainer;
 
 import com.google.eclipse.protobuf.protobuf.Protobuf;
 
@@ -16,25 +18,13 @@ import com.google.eclipse.protobuf.protobuf.Protobuf;
  *  
  * @author Klaus Birken (itemis AG)
  */
-public class ProtobufModelContainer implements IModelContainer {
-	private Protobuf model = null;
-	private String fileName;
-	
-	public ProtobufModelContainer (Protobuf model, String fileName) {
-		this.model = model;
-		this.fileName = fileName;
-	}
-	
-	public ProtobufModelContainer (Protobuf model) {
-		this.model = model;
-	}
-	
-	public Protobuf model() {
-		return model;
-	}
-	
-	public String getFileName(){
-		return fileName;
+public class ProtobufModelContainer extends MultiModelContainer<Protobuf> {
+
+	public ProtobufModelContainer(Protobuf model) {
+		super(model);
 	}
 
- }
+	public ProtobufModelContainer(Map<Protobuf, String> part2filename) {
+		super(part2filename);
+	}
+}

@@ -7,6 +7,8 @@
  *******************************************************************************/
 package org.franca.connectors.protobuf.ui.handlers;
 
+import java.io.File;
+
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -18,10 +20,12 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.console.MessageConsoleStream;
 import org.eclipse.ui.handlers.HandlerUtil;
+import org.eclipse.xtext.xbase.lib.ListExtensions;
 import org.franca.connectors.protobuf.ProtobufConnector;
 import org.franca.connectors.protobuf.ProtobufModelContainer;
 import org.franca.core.dsl.FrancaPersistenceManager;
 import org.franca.core.dsl.ui.util.SpecificConsole;
+import org.franca.core.framework.FrancaModelContainer;
 import org.franca.core.framework.IssueReporter;
 import org.franca.core.franca.FModel;
 
@@ -53,60 +57,59 @@ public class CreateFrancaFromProtobufHandler extends AbstractHandler {
     		// load Google Protobuf file
             out.println("Loading Google Protobuf file '" + protoFile + "' ...");
             ProtobufConnector conn = new ProtobufConnector();
-            Iterable<ProtobufModelContainer> protos = conn.loadModels(protoFile);
-            for (ProtobufModelContainer proto: protos){
-            	if (proto==null) {
-        			err.println("Couldn't load Google Protobuf file '" + proto.getFileName() + "'.");
-        			return null;
-        		}
-        		Protobuf model = proto.model();
-        		if (model==null) {
-        			err.println("Error during load of Google Protobuf file '" + proto.getFileName() + "'.");
-        			return null;
-        		}
-        		out.println("Google Protobuf: loaded proto file '" + proto.getFileName() + "'");
+            ProtobufModelContainer protos = (ProtobufModelContainer)conn.loadModel(protoFile);
+//        	if (protos==null) {
+//    			err.println("Couldn't load Google Protobuf file '" + protoFile + "'.");
+//    			return null;
+//    		}
+            for (Protobuf pm : ListExtensions.reverseView(protos.models())) {
+            	String filename = protos.getFilename(pm) + ".proto";
+	    		if (pm==null) {
+	    			err.println("Error during load of Protobuf file '" + filename + "'.");
+	    			return null;
+	    		}
+	    		out.println("Google Protobuf: loaded proto file " + filename);
+    		
+	    		// transform Google Protobuf to Franca
+	    		out.println("Transforming to Franca IDL model ...");
+	    		FrancaModelContainer result = null;
+	    		try {
+	    			result = conn.toFranca(protos);
+	    			out.println(IssueReporter.getReportString(conn.getLastTransformationIssues()));    			
+	    		} catch (Exception e) {
+	    			// print stack trace to stdout to ease debugging
+	    			e.printStackTrace();
+	    			
+	    			// print explanation and stack trace to console
+	    			err.println("Exception during transformation: " + e.toString());
+	    			for(StackTraceElement f : e.getStackTrace()) {
+	    				err.println("\tat " + f.toString());
+	    			}
+	    			err.println("Internal transformation error, aborting.");
+					return null;
+	    		}
+    		
+	    		// save Franca fidl file(s)
+	    		int ext = file.getName().lastIndexOf("." + file.getFileExtension());
+	    		try {
+	    			// save all transformed files
+		    		String outfile = result.modelName() +
+		    				"." + FrancaPersistenceManager.FRANCA_FILE_EXTENSION;
+		    		String outpath = outputDir + File.separator + outfile;
+	    			if (saver.saveModel(result.model(), outpath, result)) {
+		    			out.println("Saved Franca IDL file '" + outpath + "'.");
+		    		} else {
+		    			err.println("Franca IDL model couldn't be written to file '" + outpath + "'.");
+	    			}
+	    		} catch (Exception e) {
+	    			err.println("Exception while persisting result model to file: " + e.toString());
+	    			for(StackTraceElement f : e.getStackTrace()) {
+	    				err.println("\tat " + f.toString());
+	    			}
+	    			err.println("Internal transformation error, aborting.");
+					return null;
+	    		}
             }
-    		
-    		
-    		// transform Google Protobuf to Franca
-    		out.println("Transforming to Franca IDL model ...");
-    		Iterable<FModel> fmodels = null;
-    		try {
-    			fmodels = conn.toFrancas(protos);
-    			out.println(IssueReporter.getReportString(conn.getLastTransformationIssues()));    			
-    		} catch (Exception e) {
-    			// print stack trace to stdout to ease debugging
-    			e.printStackTrace();
-    			
-    			// print explanation and stack trace to console
-    			err.println("Exception during transformation: " + e.toString());
-    			for(StackTraceElement f : e.getStackTrace()) {
-    				err.println("\tat " + f.toString());
-    			}
-    			err.println("Internal transformation error, aborting.");
-				return null;
-    		}
-    		
-    		// save Franca fidl file
-    		int ext = file.getName().lastIndexOf("." + file.getFileExtension());
-    		String outfile = file.getName().substring(0, ext) + ".fidl";
-    		String outpath = outputDir + "/" + outfile;
-    		try {
-    			for (FModel fmodel: fmodels){
-    				if (saver.saveModel(fmodel, outpath)) {
-    	    			out.println("Saved Franca IDL file '" + outpath + "'.");
-    	    		} else {
-    	    			err.println("Franca IDL file couldn't be written to file '" + outpath + "'.");
-    	    		}
-    			}
-    		} catch (Exception e) {
-    			err.println("Exception while persisting result model to file: " + e.toString());
-    			for(StackTraceElement f : e.getStackTrace()) {
-    				err.println("\tat " + f.toString());
-    			}
-    			err.println("Internal transformation error, aborting.");
-				return null;
-    		}
 
     		// refresh IDE (in order to make new files visible)
             IProject project = file.getProject();
