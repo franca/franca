@@ -1,8 +1,6 @@
 package Pkg.HME.M_Service.Mt_rr
-import model "Mt_t.fidl"
 
-interface FileOption {
-}
+import model "Mt_t.fidl"
 
 typeCollection {
 	enumeration MajorVersion {

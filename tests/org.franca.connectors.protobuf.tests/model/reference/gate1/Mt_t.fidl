@@ -1,8 +1,6 @@
 package Pkg.HME.Mt_t
-import model "Infrastructure_t.fidl"
 
-interface FileOption {
-}
+import model "Infrastructure_t.fidl"
 
 typeCollection {
 	enumeration MtCRType_t {

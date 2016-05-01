@@ -1,10 +1,8 @@
 package Pkg.Ct.Ct_t
+
 import model "Common_t.fidl"
 import model "CtCommon_t.fidl"
 import model "Infrastructure_t.fidl"
-
-interface FileOption {
-}
 
 typeCollection {
 	enumeration AeGenericClassificationType_t {

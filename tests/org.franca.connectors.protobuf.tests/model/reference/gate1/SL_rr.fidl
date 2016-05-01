@@ -1,8 +1,6 @@
 package Pkg.Misc.SL_Service.SL_rr
-import model "SL_t.fidl"
 
-interface FileOption {
-}
+import model "SL_t.fidl"
 
 typeCollection {
 	enumeration MajorVersion {

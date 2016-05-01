@@ -1,8 +1,6 @@
 package Pkg.Misc.Overlay_Service.Overlay_rr
-import model "Overlay_t.fidl"
 
-interface FileOption {
-}
+import model "Overlay_t.fidl"
 
 typeCollection {
 	enumeration MajorVersion {

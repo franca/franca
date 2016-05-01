@@ -86,17 +86,14 @@ public class ProtobufConnector implements IFrancaConnector {
 		val ProtobufModelContainer proto = model as ProtobufModelContainer
 		val Map<String, EObject> importedModels = newLinkedHashMap
 
-		val Map<String, FType> externalTypes = newHashMap
+		var Map<EObject, FType> externalTypes = newHashMap
 		lastTransformationIssues = newLinkedHashSet
 		val inputModels = ListExtensions.reverseView(proto.models)
 		var FModel rootModel = null
 		var String rootName = null;
 		for(item : inputModels) {
 			val fmodel = trafo.transform(item, externalTypes)
-			fmodel.typeCollections?.head?.types?.forEach [ type |
-				externalTypes.put(proto.model.eResource.URI.trimFileExtension.toString + "_" + type.name.toFirstUpper,
-					type) // TODO use packagename + fileName
-			]
+			externalTypes = trafo.getExternalTypes
 			lastTransformationIssues.addAll(trafo.getTransformationIssues)
 
 			if (inputModels.indexOf(item) == inputModels.size-1) {

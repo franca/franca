@@ -46,7 +46,6 @@ class Protobuf2FrancaGate1Tests extends TestBase {
 	}
 	
 	@Test
-	@Ignore
 	def test_Ct_t(){
 		test("Ct_t")
 	}
@@ -62,49 +61,41 @@ class Protobuf2FrancaGate1Tests extends TestBase {
 	}
 	
 	@Test
-	@Ignore
 	def test_Mt_ps(){
 		test("Mt_ps")
 	}
 	
 	@Test
-	@Ignore
 	def test_Mt_rr(){
 		test("Mt_rr")
 	}
 	
 	@Test
-	@Ignore
 	def test_Mt_t(){
 		test("Mt_t")
 	}
 	
 	@Test
-	@Ignore
 	def test_Overlay_ps(){
 		test("Overlay_ps")
 	}
 	
 	@Test
-	@Ignore
 	def test_Overlay_rr(){
 		test("Overlay_rr")
 	}
 	
 	@Test
-	@Ignore
 	def test_Overlay_t(){
 		test("Overlay_t")
 	}
 	
 	@Test
-	@Ignore
 	def test_SL_ps(){
 		test("SL_ps")
 	}
 	
 	@Test
-	@Ignore
 	def test_SL_rr(){
 		test("SL_rr")
 	}

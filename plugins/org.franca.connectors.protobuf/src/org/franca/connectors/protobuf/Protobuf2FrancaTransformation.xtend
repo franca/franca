@@ -38,6 +38,7 @@ import java.math.BigInteger
 import java.util.LinkedList
 import java.util.Map
 import org.eclipse.emf.common.util.URI
+import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.xtend.lib.annotations.Data
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
@@ -46,6 +47,7 @@ import org.franca.core.franca.FBasicTypeId
 import org.franca.core.franca.FField
 import org.franca.core.franca.FOperator
 import org.franca.core.franca.FType
+import org.franca.core.franca.FTypeCollection
 import org.franca.core.franca.FrancaFactory
 
 import static org.franca.core.framework.TransformationIssue.*
@@ -67,9 +69,9 @@ class Protobuf2FrancaTransformation {
 	//	val static DEFAULT_NODE_NAME = "default"
 	@Inject extension TransformationLogger
 
-	val LinkedList<FType> types = newLinkedList
+	val Map<EObject, FType> types = newLinkedHashMap
 
-	var Map<String, FType> externalTypes
+	var Map<EObject, FType> externalTypes
 
 	var TransformContext currentContext
 	var int index
@@ -78,9 +80,15 @@ class Protobuf2FrancaTransformation {
 		return getIssues
 	}
 
-	def create factory.createFModel transform(Protobuf src, Map<String, FType> externalTypes) {
-		this.externalTypes = externalTypes
+	def getExternalTypes() {
+		externalTypes ?: newLinkedHashMap()
+	}
+
+	def create factory.createFModel transform(Protobuf src, Map<EObject, FType> externalTypes) {
 		clearIssues
+
+		this.externalTypes = externalTypes
+
 		val typeCollection = typeCollections.head ?: factory.createFTypeCollection
 		index = 0
 		if (!types.empty) {
@@ -106,17 +114,17 @@ class Protobuf2FrancaTransformation {
 						interfaces += elem.transformService
 					Message: {
 						currentContext = new TransformContext(elem.name.toFirstUpper)
-						typeCollection.types += elem.transformMessage
+						typeCollection.add(elem, elem.transformMessage)
 					}
 					Enum:
 						typeCollection.types += elem.transformEnum
 					Group: {
 						currentContext = new TransformContext("")
-						typeCollection.types += elem.transformGroup
+						typeCollection.add(elem, elem.transformGroup)
 					}
 					TypeExtension: {
-						index ++;
-						typeCollection.types += elem.transformTypeExtension
+						index++;
+						typeCollection.add(elem, elem.transformTypeExtension)
 					}
 					Import: {
 						val importElement = elem.transformImport
@@ -124,8 +132,9 @@ class Protobuf2FrancaTransformation {
 							it.imports += importElement
 						}
 					}
-					case elem instanceof Package || elem instanceof Option: {
-					}
+//					case elem instanceof Package || elem instanceof Option: {
+//						// currently not mapped
+//					}
 					default: {
 						addIssue(FEATURE_NOT_HANDLED_YET, elem, ProtobufPackage.PROTOBUF__ELEMENTS,
 							"Unsupported protobuf element '" + elem.class.name + "', will be ignored")
@@ -133,11 +142,19 @@ class Protobuf2FrancaTransformation {
 				}
 			}
 		}
-		typeCollection.types += types
+		for(entry : types.entrySet) {
+			typeCollection.add(entry.key, entry.value)
+		}
 		if (!typeCollection.types.empty)
 			typeCollections += typeCollection
 	}
 
+	def private add(FTypeCollection tc, EObject src, FType target) {
+		tc.types += target
+		if (src!=null)
+			externalTypes.put(src, target)	
+	}
+	
 	def private needsInterface(Option option) {
 		if (option instanceof NativeOption) {
 			// we assume that all native options do not need an additional Franca interface
@@ -201,7 +218,7 @@ class Protobuf2FrancaTransformation {
 	def private create factory.createFStructType createFakeBaseStruct() {
 		name = "unknown"
 		polymorphic = true
-		types += it
+		types.put(null, it)
 	}
 
 	def private dispatch transformExtensibleType(Message message) {
@@ -271,31 +288,31 @@ class Protobuf2FrancaTransformation {
 				union.elements += elem.elements.map [ element |
 					transformField(union.name, [element.transformMessageElement])
 				].filterNull
-				types += union
+				types.put(elem, union) // TODO: correct?
 				return union.createField(elem.name, false)
 			}
 			Group: {
 				val group = elem.transformGroup
-				types += group
+				types.put(elem, group)
 				return group.createField(elem.name, elem.modifier == Modifier.REPEATED)
 			}
 			Enum: {
 				val enum1 = elem.transformEnum
 				enum1.name = currentContext.contextNameSpacePrefix + elem.name.toFirstUpper
-				types += enum1
+				types.put(elem, enum1)
 			}
 			Message: {
 				val nameSpace = currentContext.contextNameSpacePrefix + elem.name.toFirstUpper
 				val struct = transform(nameSpace, [elem.transformMessage])
 				struct.name = nameSpace
-				types += struct
+				types.put(elem, struct) // TODO: correct?
 			}
 			Option: {
 			}
 			Extensions: {
 			}
 			TypeExtension: {
-				types += elem.transformTypeExtension
+				types.put(elem, elem.transformTypeExtension)
 			}
 			default: {
 				addIssue(FEATURE_NOT_HANDLED_YET, elem, ProtobufPackage.MESSAGE__ELEMENTS,
