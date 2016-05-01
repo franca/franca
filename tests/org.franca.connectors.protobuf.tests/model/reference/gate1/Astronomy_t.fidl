@@ -1,9 +1,7 @@
 package Pkg.Astronomy_t
+
 import model "Common_t.fidl"
 import model "Infrastructure_t.fidl"
-
-interface FileOption {
-}
 
 typeCollection {
 	enumeration ObjectType_t {

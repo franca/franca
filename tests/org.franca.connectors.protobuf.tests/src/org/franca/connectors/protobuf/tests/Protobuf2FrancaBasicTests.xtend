@@ -84,8 +84,6 @@ class Protobuf2FrancaBasicTests extends TestBase {
 	}
 
 	@Test
-	//FIXME implicit import
-//	@Ignore
 	def option() {
 		test("Option")
 		//test("EnumWithOption")

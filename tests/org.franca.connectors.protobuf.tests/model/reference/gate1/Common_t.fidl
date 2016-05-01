@@ -1,8 +1,5 @@
 package Pkg.Infrastructure.Common_t
 
-interface FileOption {
-}
-
 typeCollection {
 	enumeration SbType_type_t {
 		eSb_Unknown = 0

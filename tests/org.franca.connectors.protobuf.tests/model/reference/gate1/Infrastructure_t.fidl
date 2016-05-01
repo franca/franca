@@ -1,8 +1,5 @@
 package Pkg.Infrastructure.Infrastructure_t
 
-interface FileOption {
-}
-
 typeCollection {
 	enumeration HistoryOrderType_t {
 		eHistoryOrder_Unknown = 0

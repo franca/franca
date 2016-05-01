@@ -21,111 +21,108 @@ import org.eclipse.emf.compare.scope.DefaultComparisonScope
 
 @RunWith(typeof(XtextRunner2))
 @InjectWith(typeof(FrancaIDLTestsInjectorProvider))
-class Protobuf2FrancaGate1Tests {
+class Protobuf2FrancaGate1Tests extends TestBase {
 
 	val MODEL_DIR = "model/testcases/gate1/"
 	val REF_DIR = "model/reference/gate1/"
 	val GEN_DIR = "src-gen/testcases/gate1/"
-	val DEPLOY_DIR = "model/deploy/"
-	val FIDL_DIR = "../../src-gen/testcases/gate1/"
-	val SPEC_FILE = "../specification/ProtobufSpec.fdepl"
+//	val DEPLOY_DIR = "model/deploy/"
+//	val FIDL_DIR = "../../src-gen/testcases/gate1/"
+//	val SPEC_FILE = "../specification/ProtobufSpec.fdepl"
 
 	@Test
-	@Ignore
 	def test_Astronomy_rr(){
-		test("Astronomy_rr","../"+FIDL_DIR+"gate1/","../"+SPEC_FILE, "gate1/")
+		test("Astronomy_rr")
 	}
 	
 	@Test
-	@Ignore
 	def test_Astronomy_t(){
-		test("Astronomy_t","../"+FIDL_DIR+"gate1/","../"+SPEC_FILE, "gate1/")
+		test("Astronomy_t")
 	}
 	
 	@Test
 	def test_Common_t(){
-		test("Common_t", "../"+FIDL_DIR+"gate1/","../"+SPEC_FILE, "gate1/")
+		test("Common_t")
 	}
 	
 	@Test
 	@Ignore
 	def test_Ct_t(){
-		test("Ct_t","../"+FIDL_DIR+"gate1/","../"+SPEC_FILE, "gate1/")
+		test("Ct_t")
 	}
 	
 	@Test
-	@Ignore
 	def test_CtCommon_t(){
-		test("CtCommon_t","../"+FIDL_DIR+"gate1/","../"+SPEC_FILE, "gate1/")
+		test("CtCommon_t")
 	}
 	
 	@Test
 	def test_Infrastructure_t(){
-		test("Infrastructure_t","../"+FIDL_DIR+"gate1/","../"+SPEC_FILE, "gate1/")
+		test("Infrastructure_t")
 	}
 	
 	@Test
 	@Ignore
 	def test_Mt_ps(){
-		test("Mt_ps","../"+FIDL_DIR+"gate1/","../"+SPEC_FILE, "gate1/")
+		test("Mt_ps")
 	}
 	
 	@Test
 	@Ignore
 	def test_Mt_rr(){
-		test("Mt_rr","../"+FIDL_DIR+"gate1/","../"+SPEC_FILE, "gate1/")
+		test("Mt_rr")
 	}
 	
 	@Test
 	@Ignore
 	def test_Mt_t(){
-		test("Mt_t","../"+FIDL_DIR+"gate1/","../"+SPEC_FILE, "gate1/")
+		test("Mt_t")
 	}
 	
 	@Test
 	@Ignore
 	def test_Overlay_ps(){
-		test("Overlay_ps","../"+FIDL_DIR+"gate1/","../"+SPEC_FILE, "gate1/")
+		test("Overlay_ps")
 	}
 	
 	@Test
 	@Ignore
 	def test_Overlay_rr(){
-		test("Overlay_rr","../"+FIDL_DIR+"gate1/","../"+SPEC_FILE, "gate1/")
+		test("Overlay_rr")
 	}
 	
 	@Test
 	@Ignore
 	def test_Overlay_t(){
-		test("Overlay_t","../"+FIDL_DIR+"gate1/","../"+SPEC_FILE, "gate1/")
+		test("Overlay_t")
 	}
 	
 	@Test
 	@Ignore
 	def test_SL_ps(){
-		test("SL_ps","../"+FIDL_DIR+"gate1/","../"+SPEC_FILE, "gate1/")
+		test("SL_ps")
 	}
 	
 	@Test
 	@Ignore
 	def test_SL_rr(){
-		test("SL_rr","../"+FIDL_DIR+"gate1/","../"+SPEC_FILE, "gate1/")
+		test("SL_rr")
 	}
 	
 	@Test
-	@Ignore
 	def test_SL_t(){
-		test("SL_t","../"+FIDL_DIR+"gate1/","../"+SPEC_FILE,"gate1/")
+		test("SL_t")
 	}
+
 	
 	/**
 	 * Utility method for executing one transformation and comparing the result with a reference model.
 	 */
-//	def private void test(String inputfile) {
-//		testTransformation(inputfile, MODEL_DIR, GEN_DIR, REF_DIR)
-//	}
+	def private void test(String inputfile) {
+		testTransformation(inputfile, MODEL_DIR, GEN_DIR, REF_DIR)
+	}
 
-	private def void test(String inputfile, String fidl_dir, String specificfile, String post_dir) {
+//	private def void test(String inputfile, String fidl_dir, String specificfile, String post_dir) {
 //		val PROTOBUF_EXT = ".proto"
 //		val FRANCA_IDL_EXT = ".fidl"
 //		
@@ -165,6 +162,6 @@ class Protobuf2FrancaGate1Tests {
 //			}
 //			assertEquals(0, nDiffs)
 //		}
-	}
+//	}
 
 }

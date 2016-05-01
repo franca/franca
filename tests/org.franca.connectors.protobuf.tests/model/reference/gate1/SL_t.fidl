@@ -1,8 +1,6 @@
 package Pkg.Misc.SL_t
-import model "Infrastructure_t.fidl"
 
-interface FileOption {
-}
+import model "Infrastructure_t.fidl"
 
 typeCollection {
 	enumeration SLType_t {
