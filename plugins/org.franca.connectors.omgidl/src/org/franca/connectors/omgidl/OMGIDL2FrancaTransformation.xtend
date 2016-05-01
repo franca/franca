@@ -70,6 +70,7 @@ import static org.franca.core.framework.TransformationIssue.*
  * Model-to-model transformation from OMG IDL (aka CORBA) to Franca IDL.  
  */
 class OMGIDL2FrancaTransformation {
+	
 	val static FRANCA_IDL_EXT = 'fidl'
 	val static HYPHEN = '_'
 //	val static DEFAULT_NODE_NAME = "default"
@@ -96,10 +97,13 @@ class OMGIDL2FrancaTransformation {
 	 */
 	def FModel transform(TranslationUnit src, Map<EObject, EObject> map) {
 		clearIssues
+
 		// register global map IDL2Franca to local one 
 		map_IDL_Franca = map
+
 		val it = factory.createFModel
 		map_IDL_Franca.put(src, it)
+
 		// handle src.includes
 		src.includes.forEach[include | include.transformIncludeDeclaration(it)]
 		if (src.contains.empty) {
