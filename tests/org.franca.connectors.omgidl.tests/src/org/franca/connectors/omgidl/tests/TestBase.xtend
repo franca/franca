@@ -18,10 +18,10 @@ class TestBase extends TransformationTestBase {
 
 	val OMG_IDL_EXT = ".idl"
 
-	def protected testTransformation(String inputfile, String model_dir, String gen_dir, String ref_dir) {
+	def protected testTransformation(String inputfile, String modelDir, String genDir, String refDir) {
 		// load the OMG IDL input model (may consist of multiple files)
 		val conn = new OMGIDLConnector
-		val omgidl = conn.loadModel(model_dir + inputfile + OMG_IDL_EXT) as OMGIDLModelContainer
+		val omgidl = conn.loadModel(modelDir + inputfile + OMG_IDL_EXT) as OMGIDLModelContainer
 
 		// validate input model(s)
 		val nErrors = validateModel(omgidl.model, true)
@@ -29,14 +29,14 @@ class TestBase extends TransformationTestBase {
 
 		// transform to Franca 
 		val fmodelGen = conn.toFranca(omgidl)
-		assertNotNull("Tranformation to Franca return null", fmodelGen)
+		assertNotNull("Tranformation to Franca returned null", fmodelGen)
 		val rootModelName = fmodelGen.modelName
 
 		// save transformed Franca file(s)
-		fmodelGen.model.saveModel(gen_dir + rootModelName + FRANCA_IDL_EXT, fmodelGen)
+		fmodelGen.model.saveModel(genDir + rootModelName + FRANCA_IDL_EXT, fmodelGen)
 		
 		// load the reference Franca IDL model
-		val fmodelRef = loadModel(ref_dir + rootModelName + FRANCA_IDL_EXT)
+		val fmodelRef = loadModel(refDir + rootModelName + FRANCA_IDL_EXT)
 
 		// we expect that both Franca IDL models are identical 
 		val nDiffs = finalizeTest(fmodelGen, fmodelRef, inputfile, "target/surefire-reports")

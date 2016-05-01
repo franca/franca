@@ -18,10 +18,10 @@ class TestBase extends TransformationTestBase {
 
 	val PROTOBUF_EXT = ".proto"
 
-	def protected testTransformation(String inputfile, String model_dir, String gen_dir, String ref_dir) {
+	def protected testTransformation(String inputfile, String modelDir, String genDir, String refDir) {
 		// load the Protobuf input model (may consist of multiple files)
 		val conn = new ProtobufConnector
-		val proto = conn.loadModel(model_dir + inputfile + PROTOBUF_EXT) as ProtobufModelContainer
+		val proto = conn.loadModel(modelDir + inputfile + PROTOBUF_EXT) as ProtobufModelContainer
 
 		// validate input model(s)
 		val nErrors = validateModel(proto.model, true)
@@ -33,10 +33,10 @@ class TestBase extends TransformationTestBase {
 		val rootModelName = fmodelGen.modelName
 
 		// save transformed Franca file(s)
-		fmodelGen.model.saveModel(gen_dir + rootModelName + FRANCA_IDL_EXT, fmodelGen)
+		fmodelGen.model.saveModel(genDir + rootModelName + FRANCA_IDL_EXT, fmodelGen)
 		
 		// load the reference Franca IDL model
-		val fmodelRef = loadModel(ref_dir + rootModelName + FRANCA_IDL_EXT)
+		val fmodelRef = loadModel(refDir + rootModelName + FRANCA_IDL_EXT)
 
 		// we expect that both Franca IDL models are identical 
 		val nDiffs = finalizeTest(fmodelGen, fmodelRef, inputfile, "target/surefire-reports")
