@@ -27,9 +27,9 @@ interface InterfaceTest {
 				// XPECT errors --> "invalid type (is enumeration 'Errors', expected Boolean)" at "savedError"
 				on error forceEnumError [!savedError] -> start
 				
-				// XPECT errors --> "operands must have compatible types"
+				// XPECT errors --> "operands must have compatible types" at "errordef.Error == TC.OtherErrors.OtherError"
 				on error forceEnumError [errordef.Error == TC.OtherErrors.OtherError] -> start
-				// XPECT errors --> "operands must have compatible types"
+				// XPECT errors --> "operands must have compatible types" at "errordef.Error == otherError"
 				on error forceEnumError [errordef.Error == otherError] -> start
 				// XPECT errors --> "operands must have compatible types" at "errorval == otherError"
 				on error forceEnumError [errorval == otherError] -> start				

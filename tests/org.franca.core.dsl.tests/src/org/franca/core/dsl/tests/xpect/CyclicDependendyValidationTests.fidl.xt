@@ -1,92 +1,93 @@
 //  XPECT_SETUP org.franca.core.dsl.tests.xpect.FrancaIDLXpectTests END_SETUP 
 package a.b.c
+
 typeCollection FStructTypeCycles {
-	//  XPECT errors  --> "Cyclic dependency detected: this->FStructTypeCycles.T->this"
+	//  XPECT errors  --> "Cyclic dependency detected: this->FStructTypeCycles.T->this" at "S"
 	struct S {
 		T t
 	}
-	//  XPECT errors  --> "Cyclic dependency detected: this->FStructTypeCycles.S->this"
+	//  XPECT errors  --> "Cyclic dependency detected: this->FStructTypeCycles.S->this" at "T"
 	struct T extends S { }
 }
 
 typeCollection ArrayTypeCycles {
-	//  XPECT errors  --> "Cyclic dependency detected: this->ArrayTypeCycles.TheArray->this"
+	//  XPECT errors  --> "Cyclic dependency detected: this->ArrayTypeCycles.TheArray->this" at "TheStruct"
 	struct TheStruct {
 		 TheArray a
 	}
-	//  XPECT errors  --> "Cyclic dependency detected: this->ArrayTypeCycles.TheStruct->this"
+	//  XPECT errors  --> "Cyclic dependency detected: this->ArrayTypeCycles.TheStruct->this" at "TheArray"
 	array TheArray of TheStruct 
 }	
 
 typeCollection EnumerationTypeCycles {
-	//  XPECT errors  --> "Cyclic dependency detected: this->EnumerationTypeCycles.e2->EnumerationTypeCycles.e3->EnumerationTypeCycles.e4->this"
+	//  XPECT errors  --> "Cyclic dependency detected: this->EnumerationTypeCycles.e2->EnumerationTypeCycles.e3->EnumerationTypeCycles.e4->this" at "e1"
 	enumeration e1 extends e2 { A }
-	//  XPECT errors  --> "Cyclic dependency detected: this->EnumerationTypeCycles.e3->EnumerationTypeCycles.e4->EnumerationTypeCycles.e1->this"
+	//  XPECT errors  --> "Cyclic dependency detected: this->EnumerationTypeCycles.e3->EnumerationTypeCycles.e4->EnumerationTypeCycles.e1->this" at "e2"
 	enumeration e2 extends e3 { B }
-	//  XPECT errors  --> "Cyclic dependency detected: this->EnumerationTypeCycles.e4->EnumerationTypeCycles.e1->EnumerationTypeCycles.e2->this"
+	//  XPECT errors  --> "Cyclic dependency detected: this->EnumerationTypeCycles.e4->EnumerationTypeCycles.e1->EnumerationTypeCycles.e2->this" at "e3"
 	enumeration e3 extends e4 { C }
-	//  XPECT errors  --> "Cyclic dependency detected: this->EnumerationTypeCycles.e1->EnumerationTypeCycles.e2->EnumerationTypeCycles.e3->this"
+	//  XPECT errors  --> "Cyclic dependency detected: this->EnumerationTypeCycles.e1->EnumerationTypeCycles.e2->EnumerationTypeCycles.e3->this" at "e4"
 	enumeration e4 extends e1 { D }
 }	
 
 typeCollection UnionTypeCycles {
-	//  XPECT errors  --> "Cyclic dependency detected: this->UnionTypeCycles.u2->UnionTypeCycles.u1->this"
+	//  XPECT errors  --> "Cyclic dependency detected: this->UnionTypeCycles.u2->UnionTypeCycles.u1->this" at "S"
 	struct S {
 		u2 theUnion
 	}
-	//  XPECT errors  --> "Cyclic dependency detected: this->UnionTypeCycles.S->UnionTypeCycles.u2->this"
+	//  XPECT errors  --> "Cyclic dependency detected: this->UnionTypeCycles.S->UnionTypeCycles.u2->this" at "u1"
 	union u1 { S b }
-	//  XPECT errors  --> "Cyclic dependency detected: this->UnionTypeCycles.u1->UnionTypeCycles.S->this"
+	//  XPECT errors  --> "Cyclic dependency detected: this->UnionTypeCycles.u1->UnionTypeCycles.S->this" at "u2"
 	union u2 extends u1 {}
-	//  XPECT errors  --> "Cyclic dependency detected: this->UnionTypeCycles.i2->this"
+	//  XPECT errors  --> "Cyclic dependency detected: this->UnionTypeCycles.i2->this" at "i1"
 	union i1  extends i2 {}
-	//  XPECT errors  --> "Cyclic dependency detected: this->UnionTypeCycles.i1->this"
+	//  XPECT errors  --> "Cyclic dependency detected: this->UnionTypeCycles.i1->this" at "i2"
 	union i2  extends i1 {}
 }
 
 typeCollection MapTypeCycles {
-	//  XPECT errors  -->"Cyclic dependency detected: this->MapTypeCycles.M1->this"
+	//  XPECT errors  -->"Cyclic dependency detected: this->MapTypeCycles.M1->this" at "S1"
 	struct S1 { M1 m }
-	//  XPECT errors  -->"Cyclic dependency detected: this->MapTypeCycles.S1->this"
+	//  XPECT errors  -->"Cyclic dependency detected: this->MapTypeCycles.S1->this" at "M1"
 	map M1 {Int16 to S1}
 	
-	//  XPECT errors  -->"Cyclic dependency detected: this->MapTypeCycles.M2->this"
+	//  XPECT errors  -->"Cyclic dependency detected: this->MapTypeCycles.M2->this" at "U2"
 	union U2 {M2 m}
-	//  XPECT errors  -->"Cyclic dependency detected: this->MapTypeCycles.U2->this"
+	//  XPECT errors  -->"Cyclic dependency detected: this->MapTypeCycles.U2->this" at "M2"
 	map M2 {U2 to Int16}
 	
-	//  XPECT errors  -->"Cyclic dependency detected: this->MapTypeCycles.M4->this"
+	//  XPECT errors  -->"Cyclic dependency detected: this->MapTypeCycles.M4->this"at "M3"
 	map M3 {Int16 to M4}
-	//  XPECT errors  -->"Cyclic dependency detected: this->MapTypeCycles.M3->this"
+	//  XPECT errors  -->"Cyclic dependency detected: this->MapTypeCycles.M3->this" at "M4"
 	map M4 {Int16 to M3}
 }
 
 typeCollection TypeDefCycles {
-	//  XPECT errors  -->"Cyclic dependency detected: this->TypeDefCycles.TD1->this"
+	//  XPECT errors  -->"Cyclic dependency detected: this->TypeDefCycles.TD1->this" at "S1"
 	struct S1 { TD1 m }
-	//  XPECT errors  -->"Cyclic dependency detected: this->TypeDefCycles.S1->this"
+	//  XPECT errors  -->"Cyclic dependency detected: this->TypeDefCycles.S1->this" at "TD1"
 	typedef TD1 is S1 
 }
 
-//  XPECT errors  -->"Cyclic dependency detected: this->T2->this"
+//  XPECT errors  -->"Cyclic dependency detected: this->T2->this" at "T1"
 interface T1 extends T2 { }
-//  XPECT errors  -->"Cyclic dependency detected: this->T1->this"
+//  XPECT errors  -->"Cyclic dependency detected: this->T1->this" at "T2"
 interface T2 extends T1 { }
 
 typeCollection ArraySelfReference {
-	//  XPECT errors  --> "Cyclic dependency detected: this->this"
+	//  XPECT errors  --> "Cyclic dependency detected: this->this" at "MyArray"
 	array MyArray of MyArray
 }
 
 typeCollection ArrayIndirectSelfReference {
-	//  XPECT errors  -->"Cyclic dependency detected: this->ArrayIndirectSelfReference.OtherArray->this"
+	//  XPECT errors  -->"Cyclic dependency detected: this->ArrayIndirectSelfReference.OtherArray->this" at "MyArray"
 	array MyArray of OtherArray
-	//  XPECT errors  -->"Cyclic dependency detected: this->ArrayIndirectSelfReference.MyArray->this"
+	//  XPECT errors  -->"Cyclic dependency detected: this->ArrayIndirectSelfReference.MyArray->this" at "OtherArray"
 	array OtherArray of MyArray
 }
 
 typeCollection StructSelfReference {
-	//  XPECT errors  --> "Cyclic dependency detected: this->this"
+	//  XPECT errors  --> "Cyclic dependency detected: this->this" at "MyStruct"
 	struct MyStruct {
 		UInt8 a
 		MyStruct b
@@ -95,7 +96,7 @@ typeCollection StructSelfReference {
 }
 
 typeCollection UnionSelfReference {
-	//  XPECT errors  --> "Cyclic dependency detected: this->this"
+	//  XPECT errors  --> "Cyclic dependency detected: this->this" at "MyUnion"
 	union MyUnion {
 		UInt8 a
 		MyUnion b
@@ -104,23 +105,23 @@ typeCollection UnionSelfReference {
 }
 
 typeCollection TypedefSelfReference {
-	//  XPECT errors  --> "Cyclic dependency detected: this->this"
+	//  XPECT errors  --> "Cyclic dependency detected: this->this" at "MyTypedef"
 	typedef MyTypedef is MyTypedef
 }
 
 typeCollection ConstantDefSelfReference {
-	//  XPECT errors  --> "Cyclic dependency detected: this->this"
+	//  XPECT errors  --> "Cyclic dependency detected: this->this" at "a"
 	const UInt8 a = a
 }
 
 typeCollection ConstantDefIndirectReference {
-	//  XPECT errors  -->"Cyclic dependency detected: this->ConstantDefIndirectReference.b->this"
+	//  XPECT errors  -->"Cyclic dependency detected: this->ConstantDefIndirectReference.b->this" at "a"
 	const UInt8 a = b
-	//  XPECT errors  -->"Cyclic dependency detected: this->ConstantDefIndirectReference.a->this"
+	//  XPECT errors  -->"Cyclic dependency detected: this->ConstantDefIndirectReference.a->this" at "b"
 	const UInt8 b = a
 }
 
 typeCollection ConstantDefSelfRefViaExpression {
-	//  XPECT errors  --> "Cyclic dependency detected: this->this"
+	//  XPECT errors  --> "Cyclic dependency detected: this->this" at "a"
 	const UInt8 a = 3 * a
 }
