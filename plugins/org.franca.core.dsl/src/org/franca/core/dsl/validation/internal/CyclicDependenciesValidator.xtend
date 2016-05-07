@@ -97,28 +97,28 @@ class CyclicDependenciesValidator {
 		}
 	}
 
-	def dispatch dependencies(FModel m) {
+	def dispatch List<? extends EObject> dependencies(FModel m) {
 		val List<EObject> result = new ArrayList<EObject>()
 		result.addAll(m.interfaces)
 		result.addAll(m.typeCollections)
 		result
 	}
 
-	def dispatch dependencies(FInterface i) {
+	def dispatch List<? extends EObject> dependencies(FInterface i) {
 		val result = new ArrayList<EObject>();
 		result.add(i.base)
 		result.addAll(i.types)
 		result
 	}
 
-	def dispatch dependencies(FTypeCollection c) {
+	def dispatch List<? extends EObject> dependencies(FTypeCollection c) {
 		val result = new ArrayList<EObject>();
 		result.addAll(c.types)
 		result.addAll(c.constants)
 		result
 	}
 
-	def dispatch dependencies(FArrayType a) {
+	def dispatch List<? extends EObject> dependencies(FArrayType a) {
 		newArrayList(a.elementType.derived)
 	}
 
@@ -126,62 +126,64 @@ class CyclicDependenciesValidator {
 		newArrayList()
 	}
 
-	def dispatch dependencies(FStructType s) {
+	def dispatch List<? extends EObject> dependencies(FStructType s) {
 
 		// s.elements.fold(<EObject>newArrayList(s.base),[result,element| result+= element.type.derived; result])
-		val result = newArrayList(s.base)
-		result.addAll(s.elements.map[type.derived])
+		val List<FType> result = newArrayList(s.base)
+		val List<FType> elemTypes = s.elements.map[type.derived]
+		result.addAll(elemTypes)
 		result
 	}
 
-	def dispatch dependencies(FEnumerationType e) {
+	def dispatch List<? extends EObject> dependencies(FEnumerationType e) {
 		newArrayList(e.base)
 	}
 
-	def dispatch dependencies(FEnumerator e) {
+	def dispatch List<? extends EObject> dependencies(FEnumerator e) {
 		if (e.value==null)
 			<EObject>newArrayList()
 		else
 			newArrayList(e.value)
 	}
 
-	def dispatch dependencies(FTypeDef td) {
+	def dispatch List<? extends EObject> dependencies(FTypeDef td) {
 		newArrayList(td.actualType.derived)
 	}
 
-	def dispatch dependencies(FUnionType u) {
-		val result = newArrayList(u.base)
-		result.addAll(u.elements.map[type.derived])
+	def dispatch List<? extends EObject> dependencies(FUnionType u) {
+		val List<FType> result = newArrayList(u.base)
+		val List<FType> elems = u.elements.map[type.derived]
+		result.addAll(elems)
 		result
 	}
 
-	def dispatch dependencies(FMapType m) {
+	def dispatch List<? extends EObject> dependencies(FMapType m) {
 		newArrayList(m.keyType, m.valueType).map[derived]
 	}
 
-	def dispatch dependencies(FConstantDef c) {
+	def dispatch List<? extends EObject> dependencies(FConstantDef c) {
 		newArrayList(c.rhs)
 	}
 	
-	def dispatch dependencies(FBinaryOperation op) {
+	def dispatch List<? extends EObject> dependencies(FBinaryOperation op) {
 		newArrayList(op.left, op.right)
 	}
 	
-	def dispatch dependencies(FUnaryOperation op) {
+	def dispatch List<? extends EObject> dependencies(FUnaryOperation op) {
 		newArrayList(op.operand)
 	}
 	
-	def dispatch dependencies(FConstant c) {
+	def dispatch List<? extends EObject> dependencies(FConstant c) {
 		<EObject>newArrayList()
 	}
 	
-	def dispatch dependencies(FBracketInitializer ai) {
+	def dispatch List<? extends EObject> dependencies(FBracketInitializer ai) {
 		val result = newArrayList
 		result.addAll(ai.elements)
 		result
 	}
 		
-	def dispatch dependencies(FElementInitializer ai) {
+	def dispatch List<? extends EObject> dependencies(FElementInitializer ai) {
 		val result = newArrayList
 		result.add(ai.first)
 		if (ai.second!=null)
@@ -189,17 +191,17 @@ class CyclicDependenciesValidator {
 		result
 	}
 		
-	def dispatch dependencies(FCompoundInitializer si) {
+	def dispatch List<? extends EObject> dependencies(FCompoundInitializer si) {
 		val result = newArrayList
 		result.addAll(si.elements.map[value])
 		result
 	}
 		
-	def dispatch dependencies(FEvaluableElement e) {
+	def dispatch List<? extends EObject> dependencies(FEvaluableElement e) {
 		<EObject>newArrayList()
 	}
 	
-	def dispatch dependencies(FQualifiedElementRef e) {
+	def dispatch List<? extends EObject> dependencies(FQualifiedElementRef e) {
 		val result = newArrayList
 		if (e.qualifier==null) {
 			result.add(e.element)
