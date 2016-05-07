@@ -10,7 +10,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.xtext.junit4.ui.util.JavaProjectSetupUtil;
+import org.xpect.setup.XpectSetupComponent;
 import org.xpect.xtext.lib.setup.FileSetupContext;
+import org.xpect.xtext.lib.setup.workspace.JavaProject;
 import org.xpect.xtext.lib.setup.workspace.Workspace;
 
 /**
@@ -30,6 +32,7 @@ import org.xpect.xtext.lib.setup.workspace.Workspace;
  </pre>
  */ 
 @SuppressWarnings("restriction")
+@XpectSetupComponent
 public class JavaProjectWithReferences extends org.xpect.xtext.lib.setup.workspace.JavaProject {
 
 	protected List<String> projectReferences = new ArrayList<String>();
