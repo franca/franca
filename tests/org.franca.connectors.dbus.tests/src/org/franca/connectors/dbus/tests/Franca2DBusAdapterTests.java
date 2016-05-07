@@ -45,38 +45,35 @@ public class Franca2DBusAdapterTests {
 	public void test_30() {
 		doTransformTest("30-SimpleAttribute");
 	}
+	
 	@Test
 	public void testCycle_75() {
 		doTransformTest("75-TestCycle");
-		
 	}
-	
 	
 	@Test
 	public void test_75() {
-		
 		doTransformTest("75-TestInterfaceInheritance");
 	}
+
 	@Test
 	public void test_40() {
 		doTransformTest("40-PolymorphicStructs");
 	}
+
 	@Test
 	public void testIntegerRange_109() {
 		doTransformTest("109-TestIntegerRange");
-		
 	}
 	
 	@Test
 	public void TestUnion() {
 		doTransformTest("TestUnion");
-		
 	}
 	
 	@Test
 	public void TestEnum() {
 		doTransformTest("TestEnum");
-		
 	}
 
 	@SuppressWarnings("restriction")
