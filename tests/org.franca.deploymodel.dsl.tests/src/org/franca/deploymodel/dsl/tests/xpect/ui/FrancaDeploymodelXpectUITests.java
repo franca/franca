@@ -75,7 +75,7 @@ public class FrancaDeploymodelXpectUITests extends AbstractContentAssistProcesso
 	@ParameterParser(syntax = "'at' arg1=OFFSET")
 	public void proposals( //
 			@CommaSeparatedValuesExpectation ICommaSeparatedValuesExpectation expectation, //
-			int arg1, @ThisResource XtextResource resource, @ThisOffset int offset, @ThisModel EObject theModel)
+			int arg1, @ThisResource XtextResource resource, @ThisModel EObject theModel)
 			throws Exception {
 		// Since the inherited method setup has a @Before Annotation, I expect the XpectRunner to invoke it.
 		// For some reason, this runner does invoke the @BeforeClass - stuff, but not the @Before
