@@ -24,8 +24,8 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.emf.ecore.xmi.impl.URIHandlerImpl;
+import org.franca.core.framework.AbstractFrancaConnector;
 import org.franca.core.framework.FrancaModelContainer;
-import org.franca.core.framework.IFrancaConnector;
 import org.franca.core.framework.IModelContainer;
 import org.franca.core.framework.IssueReporter;
 import org.franca.core.framework.TransformationIssue;
@@ -43,7 +43,7 @@ import model.emf.dbusxml.NodeType;
 import model.emf.dbusxml.util.DbusxmlResourceFactoryImpl;
 import model.emf.dbusxml.util.DbusxmlResourceImpl;
 
-public class DBusConnector implements IFrancaConnector {
+public class DBusConnector extends AbstractFrancaConnector {
 
 	private Injector injector;
 
@@ -55,14 +55,14 @@ public class DBusConnector implements IFrancaConnector {
 	public DBusConnector () {
 		injector = Guice.createInjector(new DBusConnectorModule());
 	}
-	
+
 	@Override
 	public IModelContainer loadModel (String filename) {
 		NodeType model = loadDBusModel(createConfiguredResourceSet(), filename);
 		if (model==null) {
-			System.out.println("Error: Could not load DBus interface from file " + filename);
+			out.println("Error: Could not load DBus interface from file " + filename);
 		} else {
-			System.out.println("Loaded DBus interface " + model.getName());
+			out.println("Loaded DBus interface " + model.getName());
 		}
 		return new DBusModelContainer(model);
 	}
@@ -94,7 +94,7 @@ public class DBusConnector implements IFrancaConnector {
 		FModel fmodel = trafo.transform(dbus.model());
 		
 		lastTransformationIssues = trafo.getTransformationIssues();
-		System.out.println(IssueReporter.getReportString(lastTransformationIssues));
+		out.println(IssueReporter.getReportString(lastTransformationIssues));
 
 		return new FrancaModelContainer(fmodel);
 	}
@@ -110,7 +110,7 @@ public class DBusConnector implements IFrancaConnector {
 		
 		// report issues
 		lastTransformationIssues = trafo.getTransformationIssues();
-		System.out.println(IssueReporter.getReportString(lastTransformationIssues));
+		out.println(IssueReporter.getReportString(lastTransformationIssues));
 
 		// create the model container and add some comments to the model
 		DBusModelContainer mc = new DBusModelContainer(dbus);
@@ -183,7 +183,7 @@ public class DBusConnector implements IFrancaConnector {
 	}
 
 
-	private static boolean saveDBusModel (ResourceSet resourceSet, NodeType model, Iterable<String> comments, String fileName) {
+	private boolean saveDBusModel (ResourceSet resourceSet, NodeType model, Iterable<String> comments, String fileName) {
 		URI fileUri = URI.createFileURI(new File(fileName).getAbsolutePath());
 		DbusxmlResourceImpl res = (DbusxmlResourceImpl) resourceSet.createResource(fileUri);
 		res.setEncoding("UTF-8");
@@ -191,7 +191,7 @@ public class DBusConnector implements IFrancaConnector {
 		res.getContents().add(model);
 		try {
 			res.save(Collections.EMPTY_MAP);
-	        System.out.println("Created DBus Introspection file " + fileName);
+	        out.println("Created DBus Introspection file " + fileName);
 	        
 	        List<String> additionalLines = Lists.newArrayList();
 	        

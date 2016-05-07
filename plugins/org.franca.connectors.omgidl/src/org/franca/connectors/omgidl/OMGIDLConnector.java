@@ -18,8 +18,8 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.xbase.lib.ListExtensions;
 import org.franca.core.dsl.FrancaPersistenceManager;
+import org.franca.core.framework.AbstractFrancaConnector;
 import org.franca.core.framework.FrancaModelContainer;
-import org.franca.core.framework.IFrancaConnector;
 import org.franca.core.framework.IModelContainer;
 import org.franca.core.framework.IssueReporter;
 import org.franca.core.framework.TransformationIssue;
@@ -31,7 +31,7 @@ import com.google.common.collect.Sets;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
-public class OMGIDLConnector implements IFrancaConnector {
+public class OMGIDLConnector extends AbstractFrancaConnector {
 
 	private Injector injector;
 
@@ -48,12 +48,12 @@ public class OMGIDLConnector implements IFrancaConnector {
 	public IModelContainer loadModel(String filename) {
 		Map<TranslationUnit, String> units = loadOMGIDLModel(filename);
 		if (units.isEmpty()) {
-			System.out.println("Error: Could not load OMG IDL model from file " + filename);
+			out.println("Error: Could not load OMG IDL model from file " + filename);
 		} else {
-			System.out.println("Loaded OMG IDL model from file " + filename + " (consists of " + units.size() + " files)");
+			out.println("Loaded OMG IDL model from file " + filename + " (consists of " + units.size() + " files)");
 		}
 //		for(TranslationUnit unit : units.keySet()) {
-//			System.out.println("loadModel: " + unit.eResource().getURI() + " is " + units.get(unit));
+//			out.println("loadModel: " + unit.eResource().getURI() + " is " + units.get(unit));
 //		}
 		return new OMGIDLModelContainer(units);
 	}
@@ -95,7 +95,7 @@ public class OMGIDLConnector implements IFrancaConnector {
 		FModel rootModel = null;
 		String rootName = null;
 		for(TranslationUnit unit : inputModels) {
-			//System.out.println("transforming " + omg.getFilename(unit));
+			//out.println("transforming " + omg.getFilename(unit));
 			FModel fmodel = trafo.transformToSingleFModel(unit, transformationMap);
 			transformationMap = trafo.getTransformationMap();
 			lastTransformationIssues.addAll(trafo.getTransformationIssues());
@@ -111,7 +111,7 @@ public class OMGIDLConnector implements IFrancaConnector {
 			}
 		}
 
-		System.out.println(IssueReporter.getReportString(lastTransformationIssues));
+		out.println(IssueReporter.getReportString(lastTransformationIssues));
 
 		return new FrancaModelContainer(rootModel, rootName, importedModels);
 	}

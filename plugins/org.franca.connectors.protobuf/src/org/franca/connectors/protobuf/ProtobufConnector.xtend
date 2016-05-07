@@ -22,8 +22,8 @@ import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.resource.XtextResource
 import org.eclipse.xtext.resource.XtextResourceSet
 import org.franca.core.dsl.FrancaPersistenceManager
+import org.franca.core.framework.AbstractFrancaConnector
 import org.franca.core.framework.FrancaModelContainer
-import org.franca.core.framework.IFrancaConnector
 import org.franca.core.framework.IModelContainer
 import org.franca.core.framework.IssueReporter
 import org.franca.core.framework.TransformationIssue
@@ -32,7 +32,7 @@ import org.franca.core.franca.FType
 import org.franca.core.utils.FileHelper
 import org.franca.core.utils.digraph.Digraph
 
-public class ProtobufConnector implements IFrancaConnector {
+public class ProtobufConnector extends AbstractFrancaConnector {
 
 	var Injector injector
 
@@ -48,12 +48,12 @@ public class ProtobufConnector implements IFrancaConnector {
 	override IModelContainer loadModel(String filename) {
 		val Map<Protobuf, String> units = loadProtobufModel(filename);
 		if (units.isEmpty()) {
-			System.out.println("Error: Could not load Protobuf model from file " + filename);
+			out.println("Error: Could not load Protobuf model from file " + filename);
 		} else {
-			System.out.println("Loaded Protobuf model from file " + filename + " (consists of " + units.size() + " files)");
+			out.println("Loaded Protobuf model from file " + filename + " (consists of " + units.size() + " files)");
 		}
 //		for(Protobuf unit : units.keySet()) {
-//			System.out.println("loadModel: " + unit.eResource().getURI() + " is " + units.get(unit));
+//			out.println("loadModel: " + unit.eResource().getURI() + " is " + units.get(unit));
 //		}
 		return new ProtobufModelContainer(units);
 	}
@@ -211,9 +211,9 @@ public class ProtobufConnector implements IFrancaConnector {
 			list.add(importURI)
 			val importResource = resourceSet.getResource(importURI, false)
 			if (! importResource?.contents.empty) {
-				val pmodel = importResource.contents.head as Protobuf
+					val pmodel = importResource.contents.head as Protobuf
 				val trimmed = resolvedImportURI.toFileString.trimExtension(importingURI.fileExtension)
-				part2import.put(pmodel, trimmed)
+					part2import.put(pmodel, trimmed)
 				modelURIs.putAll(pmodel.collectImportURIsAndLoadModels(importURI, resourceSet))
 			}
 		}
