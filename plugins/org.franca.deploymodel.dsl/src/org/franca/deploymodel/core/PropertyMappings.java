@@ -120,6 +120,10 @@ public class PropertyMappings {
 		if (hosts.contains(FDPropertyHost.INTEGERS) || hosts.contains(FDPropertyHost.FLOATS))
 			hosts.add(FDPropertyHost.NUMBERS);
 
+		// if looking for STRUCT_FIELDS or UNION_FIELDS, we also look for FIELDS
+		if (hosts.contains(FDPropertyHost.STRUCT_FIELDS) || hosts.contains(FDPropertyHost.UNION_FIELDS))
+			hosts.add(FDPropertyHost.FIELDS);
+		
 		return getAllPropertyDeclsHelper(spec, hosts);
 	}
 

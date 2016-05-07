@@ -45,6 +45,9 @@ specification a.b.c.MySpec03 {
 	for union_fields {
 		PropUnionField : Integer;
 	}
+	for fields {
+		PropField : Integer;
+	}
 	for typedefs {
 		PropTypedef : Integer;
 	}

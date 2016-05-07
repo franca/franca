@@ -98,7 +98,7 @@ class PropertyDefChecker {
 	def mustBeDefined (FField it) {
 		val isStruct = eContainer instanceof FStructType
 		val host = if (isStruct) STRUCT_FIELDS else UNION_FIELDS
-		specHelper.isMandatory(host) || type.mustBeDefined(array)
+		specHelper.isMandatory(host) || specHelper.isMandatory(FIELDS) || type.mustBeDefined(array)
 	}
 
 

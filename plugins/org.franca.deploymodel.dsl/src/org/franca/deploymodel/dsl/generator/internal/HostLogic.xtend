@@ -56,6 +56,7 @@ class HostLogic {
 			case UNIONS:     	   typeof(FUnionType)
 			case STRUCT_FIELDS:    typeof(FField)
 			case UNION_FIELDS:     typeof(FField)
+			case FIELDS:           typeof(FField)
 			case ENUMERATIONS:     typeof(FEnumerationType)
 			case ENUMERATORS:      typeof(FEnumerator)
 			case TYPEDEFS:         typeof(FTypeDef)

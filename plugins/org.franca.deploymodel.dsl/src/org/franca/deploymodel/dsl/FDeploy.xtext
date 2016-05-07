@@ -60,7 +60,8 @@ enum FDPropertyHost:
 	type_collections | interfaces |
 	attributes | methods | broadcasts |
 	arguments |
-	struct_fields | union_fields | arrays | structs | unions |
+	struct_fields | union_fields | fields |
+	arrays | structs | unions |
 	enumerations | enumerators |
 	typedefs |
 	strings | numbers | integers | floats | booleans | byte_buffers;

@@ -17,7 +17,7 @@ specification a.b.c.MySpec14 {
 		Prop12 : String; 
 	}
 
-	// properties from struct_fields and union_fields are mutually exclusive 
+	// properties from struct_fields, union_fields and fields are mutually exclusive 
 	for struct_fields {
 		Prop01 : Boolean  (default: false);
 		Prop02 : Boolean;

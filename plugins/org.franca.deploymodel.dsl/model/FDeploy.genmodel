@@ -32,6 +32,7 @@
       <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/floats"/>
       <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/booleans"/>
       <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/byte_buffers"/>
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/fields"/>
     </genEnums>
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="FDeploy.ecore#//FDPredefinedTypeId">
       <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPredefinedTypeId/Integer"/>
