@@ -53,7 +53,7 @@ specification org.example.spec.MySpec extends The_PlatformDeploySpec
 
 // XPECT proposals at 'org.example.spec.MySpec' --> The_PlatformDeploySpec, The_PlatformDeploySpec_WithAlias, org.example.spec.MySpec 
 define org.example.spec.MySpec 
-	// XPECT errors at 'The_PlatformDeploySpec' --> "Couldn't resolve reference to FTypeCollection 'demo.MyTypeCollection'." at "demo.MyTypeCollection"
+	// XPECT errors --> "Couldn't resolve reference to FTypeCollection 'demo.MyTypeCollection'." at "demo.MyTypeCollection"
 	for typeCollection demo.MyTypeCollection as DeployedTypes {
 		
 	}
