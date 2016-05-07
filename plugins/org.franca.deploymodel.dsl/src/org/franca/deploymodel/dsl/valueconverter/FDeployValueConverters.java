@@ -7,12 +7,11 @@
 *******************************************************************************/
 package org.franca.deploymodel.dsl.valueconverter;
 
-import org.eclipse.xtext.common.services.DefaultTerminalConverters;
 import org.eclipse.xtext.conversion.IValueConverter;
 import org.eclipse.xtext.conversion.ValueConverter;
 import org.eclipse.xtext.conversion.impl.AbstractDeclarativeValueConverterService;
 import org.eclipse.xtext.conversion.impl.AbstractIDValueConverter;
-import org.eclipse.xtext.conversion.impl.IDValueConverter;
+import org.eclipse.xtext.conversion.impl.AbstractValueConverter;
 import org.eclipse.xtext.conversion.impl.INTValueConverter;
 import org.eclipse.xtext.conversion.impl.STRINGValueConverter;
 import org.eclipse.xtext.nodemodel.INode;
@@ -78,7 +77,7 @@ public class FDeployValueConverters extends AbstractDeclarativeValueConverterSer
 	/**
      * Value converter for FQN and FQN_WITH_SELECTOR.
      */
-    private class FQNValueConverter extends IDValueConverter {
+    private class FQNValueConverter extends AbstractValueConverter<String> {
     	final static String SELECTOR = ":";
     	
         @Override
