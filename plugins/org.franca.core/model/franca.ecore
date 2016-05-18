@@ -229,6 +229,7 @@
     <eLiterals name="source_uri" value="10" literal="@source-uri"/>
     <eLiterals name="source_alias" value="11" literal="@source-alias"/>
     <eLiterals name="details" value="12" literal="@details"/>
+    <eLiterals name="return" value="13" literal="@return"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="FOperator">
     <eLiterals name="Or" literal="||"/>

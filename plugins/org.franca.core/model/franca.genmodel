@@ -34,6 +34,7 @@
       <genEnumLiterals ecoreEnumLiteral="franca.ecore#//FAnnotationType/source_uri"/>
       <genEnumLiterals ecoreEnumLiteral="franca.ecore#//FAnnotationType/source_alias"/>
       <genEnumLiterals ecoreEnumLiteral="franca.ecore#//FAnnotationType/details"/>
+      <genEnumLiterals ecoreEnumLiteral="franca.ecore#//FAnnotationType/return"/>
     </genEnums>
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="franca.ecore#//FOperator">
       <genEnumLiterals ecoreEnumLiteral="franca.ecore#//FOperator/Or"/>
