@@ -1,5 +1,6 @@
 package org.franca.core.franca.impl;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.franca.core.franca.FAnnotation;
 import org.franca.core.franca.FAnnotationType;
 
@@ -36,7 +37,7 @@ public class FAnnotationAuxImpl {
 			sep++;
 
 		String comment = raw.substring(sep);
-		return comment;
+		return comment.replace("\\*", "*").replace("\\@", "@");
 	}
 
 	public static void setType (FAnnotation host, FAnnotationType type) {
