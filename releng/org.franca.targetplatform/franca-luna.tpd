@@ -61,6 +61,10 @@ location "http://franca.github.io/franca/update_site/thirdparty" {
 	
 	// xdoc, needed for documentation (xdoc4franca fork)
 	org.eclipse.xtext.xdoc.feature.feature.group [0.1.5,1.0.0)
+
+	// xtext-utils, needed for tests
+	// we temporarily host this on franca-thirdparty until xtext-utils finds a new home
+	org.eclipselabs.xtext.utils.unittesting.feature.feature.group [0.9.3,0.10.0)	
 }
 
 // etrice, needed for eTrice connector
@@ -73,11 +77,6 @@ location "http://franca.github.io/franca/update_site/thirdparty" {
 location "http://www.xpect-tests.org/updatesite/nightly/" {
 	org.eclipse.jdt.junit.runners.feature.feature.group [0.1.0,1.0.0)
 	org.xpect.sdk.feature.group [0.1.0,1.0.0)
-}
-
-// xtext-utils, needed for tests
-location "http://xtext-utils.eclipselabs.org.codespot.com/git.distribution/releases/unittesting-0.9.x" {
-	org.eclipselabs.xtext.utils.unittesting.feature.feature.group [0.9.3,0.10.0)	
 }
 
 // eclemma, needed for test coverage check 
