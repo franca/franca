@@ -469,7 +469,7 @@
 		<repository>
 			<id>xdoc</id>
 			<layout>p2</layout>
-			<url>http://xdoc4franca-release.eclipselabs.org.codespot.com/git/update_site/releases/</url>
+			<url>http://franca.github.io/franca/update_site/thirdparty</url>
 		</repository>
 	</repositories>			
 
