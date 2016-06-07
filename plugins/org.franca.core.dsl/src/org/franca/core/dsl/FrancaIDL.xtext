@@ -160,18 +160,18 @@ FType returns FType:
 FArrayType returns FArrayType:
 	{FArrayType}
 	(comment=FAnnotationBlock)?
-	'array' name=ID 'of' elementType=FTypeRef;
+	(public?='public')? 'array' name=ID 'of' elementType=FTypeRef;
 
 FTypeDef returns FTypeDef:
 	{FTypeDef}
 	(comment=FAnnotationBlock)?
-	'typedef' name=ID 'is' actualType=FTypeRef
+	(public?='public')? 'typedef' name=ID 'is' actualType=FTypeRef
 	; 
 
 FStructType returns FStructType:
 	{FStructType}
 	(comment=FAnnotationBlock)?
-	'struct' name=ID
+	(public?='public')? 'struct' name=ID
 		(
 			('extends' base=[FStructType|FQN]) |
 			(polymorphic?='polymorphic')
@@ -183,7 +183,7 @@ FStructType returns FStructType:
 FUnionType returns FUnionType:
 	{FUnionType}
 	(comment=FAnnotationBlock)?
-	'union' name=ID ('extends' base=[FUnionType|FQN])?
+	(public?='public')? 'union' name=ID ('extends' base=[FUnionType|FQN])?
 	'{'
 		(elements+=FField)*
     '}';
@@ -191,7 +191,7 @@ FUnionType returns FUnionType:
 FEnumerationType returns FEnumerationType:
 	{FEnumerationType}
 	(comment=FAnnotationBlock)?
-	'enumeration' name=ID
+	(public?='public')? 'enumeration' name=ID
 	('extends' base=[FEnumerationType|FQN])?
 	'{'
 		(enumerators+=FEnumerator (','? enumerators+=FEnumerator)*)?
