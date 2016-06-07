@@ -383,6 +383,7 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 		} else {
 			// referenced element is defined by an FInterface, check if reference is allowed
 			// by local access (same FInterface) or from a base interface via inheritance
+			FType type = (FType) referenced;
 			FInterface referrerInterface = FrancaModelExtensions.getInterface(referrer);
 			boolean showError = false;
 			if (referrerInterface==null) {
@@ -392,15 +393,17 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 				Set<FInterface> baseInterfaces =
 						FrancaModelExtensions.getInterfaceInheritationSet(referrerInterface);
 				if (! baseInterfaces.contains(target)) {
-					showError = true;
+					if (type.isPublic())
+						showError = false;
+					else {
+						showError = true;
+					}
 				}
 			}
 			if (showError) {
-				error(what + " can only be referenced inside interface "
-					+ target.getName() + " or derived interfaces",
-					referrer,
-					referencingFeature, -1
-				);
+				error("either "+what + " is not a public type or it can only be referenced inside interface "
+						+ target.getName() + " or derived interfaces",
+						referrer, referencingFeature, -1);
 			}
 		}
 	}
