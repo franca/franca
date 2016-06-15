@@ -10,6 +10,7 @@ package org.franca.connectors.protobuf
 import com.google.eclipse.protobuf.ProtobufStandaloneSetup
 import com.google.eclipse.protobuf.protobuf.Import
 import com.google.eclipse.protobuf.protobuf.Protobuf
+import com.google.eclipse.protobuf.scoping.IFileUriResolver
 import com.google.inject.Guice
 import com.google.inject.Injector
 import java.util.ArrayList
@@ -31,12 +32,13 @@ import org.franca.core.franca.FModel
 import org.franca.core.franca.FType
 import org.franca.core.utils.FileHelper
 import org.franca.core.utils.digraph.Digraph
+import com.google.eclipse.protobuf.scoping.ProtoDescriptorProvider
 
 public class ProtobufConnector extends AbstractFrancaConnector {
 
 	var Injector injector
 
-	//	private String fileExtension = "proto";
+	//private String fileExtension = "proto";
 	
 	var Set<TransformationIssue> lastTransformationIssues = null
 
@@ -52,9 +54,10 @@ public class ProtobufConnector extends AbstractFrancaConnector {
 		} else {
 			out.println("Loaded Protobuf model from file " + filename + " (consists of " + units.size() + " files)");
 		}
-//		for(Protobuf unit : units.keySet()) {
-//			out.println("loadModel: " + unit.eResource().getURI() + " is " + units.get(unit));
-//		}
+		for(Protobuf unit : units.keySet()) {
+			val res = unit.eResource
+			out.println("loadModel: " + res.getURI() + " is " + units.get(unit));
+		}
 		return new ProtobufModelContainer(units);
 	}
 
@@ -92,6 +95,7 @@ public class ProtobufConnector extends AbstractFrancaConnector {
 		var FModel rootModel = null
 		var String rootName = null;
 		for(item : inputModels) {
+//			println("toFranca: input model " + item.elements)
 			val fmodel = trafo.transform(item, externalTypes)
 			externalTypes = trafo.getExternalTypes
 			lastTransformationIssues.addAll(trafo.getTransformationIssues)
@@ -100,9 +104,11 @@ public class ProtobufConnector extends AbstractFrancaConnector {
 				// this is the last input model, i.e., the top-most one
 				rootModel = fmodel;
 				rootName = proto.getFilename(item)
+//				println("toFranca: primary output model " + rootName)
 			} else {
 				val String importURI =
 						proto.getFilename(item) + "." + FrancaPersistenceManager.FRANCA_FILE_EXTENSION;
+//				println("toFranca: secondary output model " + importURI)
 				importedModels.put(importURI, fmodel)
 			}
 		}
@@ -158,8 +164,9 @@ public class ProtobufConnector extends AbstractFrancaConnector {
 		val URI uri = FileHelper.createURI(fileName)
 
 		val injector = new ProtobufStandaloneSetup().createInjectorAndDoEMFRegistration
+		val fileUriResolver = injector.getInstance(IFileUriResolver)
 		val XtextResourceSet resourceSet = injector.getInstance(XtextResourceSet)
-		resourceSet.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE)
+		//resourceSet.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE)
 		val Resource resource = resourceSet.getResource(uri, true)
 
 		if (resource.getContents().isEmpty())
@@ -168,7 +175,7 @@ public class ProtobufConnector extends AbstractFrancaConnector {
 		val root = resource.getContents().get(0) as Protobuf
 		part2import.put(root, uri.lastSegment.trimExtension(uri.fileExtension))
 
-		val modelURIs = root.collectImportURIsAndLoadModels(uri, resourceSet)
+		val modelURIs = root.collectImportURIsAndLoadModels(uri, resourceSet, fileUriResolver)
 		if (modelURIs.empty) {
 			return #[ root ].convert(part2import)
 		}
@@ -193,35 +200,44 @@ public class ProtobufConnector extends AbstractFrancaConnector {
 	def private Map<String, ArrayList<URI>> collectImportURIsAndLoadModels(
 		Protobuf model,
 		URI importingURI,
-		XtextResourceSet resourceSet
+		XtextResourceSet resourceSet,
+		IFileUriResolver fileUriResolver
 	) {
 		//val baseURI = importingURI.trimSegments(1)
 		val modelURIs = newHashMap
 		for(import_ : model.elements.filter(Import)) {
-			val importURI = URI.createURI(import_.importURI)
-			val resolvedImportURI = importURI.deresolve(importingURI)
+			if (import_.importURI != ProtoDescriptorProvider.PROTO_DESCRIPTOR_URI) {
+				val importURIOriginal = URI.createURI(import_.importURI)
+				fileUriResolver.resolveAndUpdateUri(import_)
+				val importURI = URI.createURI(import_.importURI)
+	
+				// TODO cycle detection
+				val key = model.eResource.URI.toString
+				var list = modelURIs.get(key)
+				if (list == null) {
+					list = <URI>newArrayList
+					modelURIs.put(key, list)
+				}
+				list.add(importURI)
+				val importResource = resourceSet.getResource(importURI, true)
+				if (importResource != null) {
+					if (! importResource.contents.empty) {
+						val pmodel = importResource.contents.head as Protobuf
+						val trimmed = importURIOriginal.toFileString.trimExtension(importingURI.fileExtension)
+						part2import.put(pmodel, trimmed)
+						modelURIs.putAll(pmodel.collectImportURIsAndLoadModels(importURI, resourceSet, fileUriResolver))
+					}
+				} else {
+					println("Warning: Cannot import resource '" + importURI + "'")
+				}
+			}
 
-			// TODO cycle detection
-			val key = model.eResource.URI.toString
-			var list = modelURIs.get(key)
-			if (list == null) {
-				list = <URI>newArrayList
-				modelURIs.put(key, list)
-			}
-			list.add(importURI)
-			val importResource = resourceSet.getResource(importURI, false)
-			if (! importResource?.contents.empty) {
-					val pmodel = importResource.contents.head as Protobuf
-				val trimmed = resolvedImportURI.toFileString.trimExtension(importingURI.fileExtension)
-					part2import.put(pmodel, trimmed)
-				modelURIs.putAll(pmodel.collectImportURIsAndLoadModels(importURI, resourceSet))
-			}
 		}
 		return modelURIs
 	}
 	
 	def private trimExtension(String filename, String ext) {
-		val dotIndex = filename.indexOf(ext) - 1
+		val dotIndex = filename.lastIndexOf(ext) - 1
 		filename.substring(0, dotIndex)
 	}
 }

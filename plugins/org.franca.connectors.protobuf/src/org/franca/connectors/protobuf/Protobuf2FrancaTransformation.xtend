@@ -97,12 +97,13 @@ class Protobuf2FrancaTransformation {
 				"One instance may be executing two transformations")
 		}
 
-		name = src.elements.filter(Package).head?.name ?: "dummy_package"
+		val packages = src.elements.filter(Package)
+		name = packages.head?.name ?: "dummy_package"
 
 		val options = src.elements.filter(Option)
-		if (options.findFirst[needsInterface]!=null) {
-			interfaces += factory.createFInterface => [name = "FileOption"]
-		}
+//		if (options.findFirst[needsInterface]!=null) {
+//			interfaces += factory.createFInterface => [name = "FileOption"]
+//		}
 
 		if (src.elements.empty) {
 			addIssue(IMPORT_WARNING, src, ProtobufPackage.PROTOBUF__ELEMENTS,
@@ -222,7 +223,6 @@ class Protobuf2FrancaTransformation {
 	}
 
 	def private dispatch transformExtensibleType(Message message) {
-		message.transformMessage
 	}
 
 	def private dispatch transformExtensibleType(Group group) {
@@ -244,7 +244,7 @@ class Protobuf2FrancaTransformation {
 	}
 
 	def private getContextNameSpacePrefix(TransformContext context) {
-		if (context.namespace.nullOrEmpty)
+		if (context?.namespace.nullOrEmpty)
 			return ""
 		else
 			context.namespace.toFirstUpper + "_"

@@ -4,10 +4,11 @@ package org.franca.connectors.protobuf.tests;
 
 import "google/protobuf/descriptor.proto";
 
+option java_package = "asa";
+
 extend google.protobuf.EnumOptions {
   optional bool my_enum_option = 50003;
 }
-
 
 
 enum Scalar {

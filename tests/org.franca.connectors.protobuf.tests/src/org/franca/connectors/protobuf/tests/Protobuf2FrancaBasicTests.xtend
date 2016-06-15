@@ -10,7 +10,6 @@ package org.franca.connectors.protobuf.tests
 import org.eclipse.xtext.junit4.InjectWith
 import org.eclipselabs.xtext.utils.unittesting.XtextRunner2
 import org.franca.core.dsl.FrancaIDLTestsInjectorProvider
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -86,12 +85,14 @@ class Protobuf2FrancaBasicTests extends TestBase {
 	@Test
 	def option() {
 		test("Option")
-		//test("EnumWithOption")
 	}
 	
 	@Test
-	//FIXME implicit import
-	@Ignore
+	def enumWithOption() {
+		test("EnumWithOption")
+	}
+	
+	@Test
 	def customOptions() {
 		test("CustomOptions")
 	}

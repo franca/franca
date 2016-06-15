@@ -3,9 +3,7 @@ syntax = "proto2";
 package org.franca.connectors.protobuf.tests;
 
 
-message Foo {
-
-}
+message Foo { }
 
 message Baz {
   extend Foo {
