@@ -177,11 +177,13 @@ class Protobuf2FrancaTransformation {
 				addIssue(FEATURE_NOT_HANDLED_YET, elem, ProtobufPackage.IMPORT__IMPORT_URI,
 					"Unsupported uri element '" + elem.importURI + "', will be ignored")
 			} else {
-				if (!uri.isFile) {
-					addIssue(IMPORT_ERROR, elem, ProtobufPackage.IMPORT__IMPORT_URI,
-						"Couldn't find the import source file: '" + elem.importURI + "', will be ignored")
-					return;
-				}
+				// deactivated this check because some imported files may be read from classpath
+				// (e.g., descriptor.proto is read from the jar file of the protobuf-plugin) 
+//				if (!uri.isFile) {
+//					addIssue(IMPORT_ERROR, elem, ProtobufPackage.IMPORT__IMPORT_URI,
+//						"Couldn't find the import source file: '" + elem.importURI + "', will be ignored")
+//					return;
+//				}
 
 				//TODO import google/protobuf/descriptor.proto
 				importURI = uri.lastSegment.split("\\.").get(0).concat(".fidl")
