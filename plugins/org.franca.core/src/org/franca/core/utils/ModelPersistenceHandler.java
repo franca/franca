@@ -138,7 +138,9 @@ public class ModelPersistenceHandler {
 	 * @return true if the model was saved
 	 */
 	public boolean saveModel(EObject model, String filename, String cwd, IImportedModelProvider importedModels) {
-		System.out.println("Saving Franca model: root file is " + filename + ", " + importedModels.getNModels() + " imported models.");
+		System.out.println("Saving Franca model: root file is " + filename + ", " +
+				(importedModels!=null ? importedModels.getNModels() : 0) + " imported models."
+		);
 		if (! initResourcesRecursively(model, filename, cwd, importedModels))
 			return false;
 		
