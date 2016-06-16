@@ -1,11 +1,26 @@
 language: java
 
-# start xvfb to allow UI tests
-env:  
-  global:  
-    - DISPLAY=:99.0  
-  before_install:  
-    - sh -e /etc/init.d/xvfb start - sleep 10
+jdk: oraclejdk8
+
+
+# this stuff is needed for allowing UI tests
+
+env: DISPLAY=:99.0
+
+install: true
+
+before_install:
+ - sudo apt-get update
+ - sudo apt-get install gnome-themes-standard
+ - sudo apt-get install metacity
+# - sudo apt-get install libwebkit-dev
+
+before_script:
+ - sh -e /etc/init.d/xvfb start
+ - sleep 10 # give xvfb some time to start
+ - metacity --sm-disable --replace &
+ - sleep 10 # give metacity some time to start
+
 
 # run actual build
 script: cd releng/org.franca.parent && mvn clean install
