@@ -138,6 +138,7 @@ public class ModelPersistenceHandler {
 	 * @return true if the model was saved
 	 */
 	public boolean saveModel(EObject model, String filename, String cwd, IImportedModelProvider importedModels) {
+		System.out.println("Saving Franca model: root file is " + filename + ", " + importedModels.getNModels() + " imported models.");
 		if (! initResourcesRecursively(model, filename, cwd, importedModels))
 			return false;
 		
@@ -153,7 +154,8 @@ public class ModelPersistenceHandler {
 		
 		if (resource == null) {
 			// create a resource containing the model
-			//System.out.println("ModelPersistenceHandler: Creating new resource " + toSaveURI);
+			System.out.println("ModelPersistenceHandler: Creating new resource " + toSaveURI +
+					", #resources=" + resourceSet.getResources().size());
 			resource = resourceSet.createResource(toSaveURI);
 			resource.getContents().add(model);
 		}
@@ -161,15 +163,25 @@ public class ModelPersistenceHandler {
 		// recursive call for all its imports
 		for (Iterator<String> it = fileHandlerRegistry.get(fileURI.fileExtension()).importsIterator(model); it.hasNext();) {
 			String importURI = it.next();
-			URI createFileURI = URI.createFileURI(importURI);
+			URI importFileURI = URI.createFileURI(importURI);
+
 			// resolve the relative path of the imports so that the correct path is obtained for loading the model
-			URI resolve = createFileURI.resolve(cwdURI);
+			URI resolve = importFileURI.resolve(cwdURI);
 			String cwdNew = getCWDForImport(fileURI, cwdURI).toString();
+			System.out.println("  Handling model import:" +
+					" importURI=" + importURI +
+					" fileURI=" + importFileURI +
+					" cwdNew=" + cwdNew
+			);
 			EObject importedModel = importedModels!=null ? importedModels.getModel(importURI) : null;
 			if (importedModel!=null) {
 				//System.out.println("importedModel will be created - " + importURI);
 				initResourcesRecursively(importedModel, importURI, cwdNew, importedModels);
 			} else {
+				System.out.println("  Available resources:");
+				for(Resource res : resourceSet.getResources()) {
+					System.out.println("    " + res.toString());
+				}
 				Resource actualResource = resourceSet.getResource(resolve, true);
 				initResourcesRecursively(actualResource.getContents().get(0), importURI, cwdNew, importedModels);
 			}
