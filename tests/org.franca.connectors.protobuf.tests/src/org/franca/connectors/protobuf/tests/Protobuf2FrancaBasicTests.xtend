@@ -23,18 +23,22 @@ class Protobuf2FrancaBasicTests extends TestBase {
 	val GEN_DIR = "src-gen/testcases/"
 
 	@Test
-	def empty() {
-		test("EmptyService")
+	def emptyMessage() {
 		test("EmptyMessage")
 	}
 	
+	@Test
+	def emptyService() {
+		test("EmptyService")
+	}
+	
 	@Test 
-	def messageWithScalarValueTypeFields(){
+	def messageWithScalarValueTypeFields() {
 		test("MessageWithScalarValueTypeFields")
 	}
 
 	@Test
-	def serviceWithOneRPC(){
+	def serviceWithOneRPC() {
 		test("ServiceWithOneRPC")
 	}
 	
@@ -64,17 +68,17 @@ class Protobuf2FrancaBasicTests extends TestBase {
 	}
 	
 	@Test
-	def extend_nested() {
+	def extendNested() {
 		test("NestedExtensions")
 	}
 	
 	@Test 
-	def nameNotUnique(){
+	def nameNotUnique() {
 		test ("NameNotUnique")
 	}
 	
 	@Test 
-	def nestedTypes(){
+	def nestedTypes() {
 		test ("NestedTypes")
 	}
 	
@@ -101,17 +105,17 @@ class Protobuf2FrancaBasicTests extends TestBase {
 	}
 	
 	@Test
-	def descriptor(){
+	def descriptor() {
 		test("descriptor")
 	}
 	
 	@Test
-	def enum_enumeratorValue(){
+	def enum_enumeratorValue() {
 		test("Enum_enumeratorValue")
 	}
 	
 	@Test
-	def enum_emptyEnum(){
+	def enum_emptyEnum() {
 		test("Enum_emptyEnum")
 	}
 
