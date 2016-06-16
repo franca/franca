@@ -19,4 +19,5 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: org.franca.connectors.protobuf
 Import-Package: org.franca.deploymodel.core,
- org.franca.deploymodel.dsl.fDeploy
+ org.franca.deploymodel.dsl.fDeploy,
+ org.apache.log4j
