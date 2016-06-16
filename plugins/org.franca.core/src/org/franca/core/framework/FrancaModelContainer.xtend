@@ -58,5 +58,8 @@ class FrancaModelContainer implements IModelContainer, IImportedModelProvider {
 		}
 	}
 	
+	override getNModels() {
+		importedModels.size
+	}
 	
 }

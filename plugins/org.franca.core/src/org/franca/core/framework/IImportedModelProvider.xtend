@@ -19,4 +19,10 @@ interface IImportedModelProvider {
 	 * model-to-model transformation which produces some Franca and FDeploy models.
 	 */
 	abstract def EObject getModel(String importURI)	
+	
+	/**
+	 * Return the number of import URIs supported by this provider.
+	 */
+	abstract def int getNModels()
+	
 }
