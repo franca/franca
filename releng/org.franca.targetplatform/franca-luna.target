@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/mbarbero/fr.obeo.releng.targetplatform -->
-<target name="Franca Target Platform - Eclipse 4.4" sequenceNumber="1457593680">
+<target name="Franca Target Platform - Eclipse 4.4" sequenceNumber="1457593682">
 <locations>
 	<location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
 		<unit id="org.eclipse.sdk.feature.group" version="4.4.2.v20150204-1700"/>
@@ -40,7 +40,7 @@
 	</location>
 	<location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
 		<unit id="org.csu.idl.feature.group" version="1.1.0.201604011521"/>
-		<unit id="com.google.eclipse.protobuf.feature.group" version="1.5.3.201606161340"/>
+		<unit id="com.google.eclipse.protobuf.feature.group" version="1.5.3.201606161514"/>
 		<unit id="org.eclipse.xtext.xdoc.feature.feature.group" version="0.1.5.201506301442"/>
 		<unit id="org.eclipselabs.xtext.utils.unittesting.feature.feature.group" version="0.9.3.201204261440"/>
 		<repository location="http://franca.github.io/franca/update_site/thirdparty"/>
