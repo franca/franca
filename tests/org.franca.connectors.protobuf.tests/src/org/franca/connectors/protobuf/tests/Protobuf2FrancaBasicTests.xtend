@@ -116,6 +116,7 @@ class Protobuf2FrancaBasicTests extends TestBase {
 	 * Utility method for executing one transformation and comparing the result with a reference model.
 	 */
 	def private test(String inputfile) {
+		println("----------------------- TEST Protobuf2FrancaBasic '" + inputfile + "' -----------------------")
 		testTransformation(inputfile, MODEL_DIR, GEN_DIR, REF_DIR)
 	}
 
