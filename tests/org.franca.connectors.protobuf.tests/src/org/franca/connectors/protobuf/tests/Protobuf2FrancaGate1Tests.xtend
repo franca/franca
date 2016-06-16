@@ -110,6 +110,7 @@ class Protobuf2FrancaGate1Tests extends TestBase {
 	 * Utility method for executing one transformation and comparing the result with a reference model.
 	 */
 	def private void test(String inputfile) {
+		println("----------------------- TEST Protobuf2FrancaGate1 '" + inputfile + "' -----------------------")
 		testTransformation(inputfile, MODEL_DIR, GEN_DIR, REF_DIR)
 	}
 
