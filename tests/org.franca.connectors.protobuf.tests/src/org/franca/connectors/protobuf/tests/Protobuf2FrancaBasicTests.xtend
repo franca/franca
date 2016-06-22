@@ -43,12 +43,12 @@ class Protobuf2FrancaBasicTests extends TestBase {
 	}
 	
 	@Test
-	def messageWithComplexTypeFields(){
+	def messageWithComplexTypeFields() {
 		test("MessageWithComplexTypeFields")
 	}
 	
 	@Test
-	def messageWithComplexType(){
+	def messageWithComplexType() {
 		test("MessageWithComplexType")
 	}
 	
@@ -93,20 +93,14 @@ class Protobuf2FrancaBasicTests extends TestBase {
 	}
 	
 	@Test
-	@Ignore
+//	@Ignore
 	def enumWithOption() {
 		test("EnumWithOption")
 	}
 	
 	@Test
-	@Ignore
 	def customOptions() {
 		test("CustomOptions")
-	}
-	
-	@Test
-	def descriptor() {
-		test("descriptor")
 	}
 	
 	@Test

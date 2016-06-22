@@ -31,5 +31,5 @@ typeCollection {
 		UInt32 [ ] uint32_1
 		UInt64 uint64_1
 	}
+	
 }
-

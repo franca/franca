@@ -92,8 +92,22 @@ public class ProtobufConnector extends AbstractFrancaConnector {
 		var Map<EObject, FType> externalTypes = newHashMap
 		lastTransformationIssues = newLinkedHashSet
 		val inputModels = ListExtensions.reverseView(proto.models)
+
+		// first check if we need to transform "descriptor.proto"
+		if (inputModels.findFirst[trafo.needsDescriptorInclude(it)]!=null) {
+			val provider = protobufInjector.getInstance(ProtoDescriptorProvider);
+			val descriptorProto = provider.primaryDescriptor
+			val descriptorModel = descriptorProto.resource.contents.get(0) as Protobuf
+			
+			val fmodel = trafo.transform(descriptorModel, externalTypes)
+			externalTypes = trafo.getExternalTypes
+			lastTransformationIssues.addAll(trafo.getTransformationIssues)
+			importedModels.put("descriptor.fidl", fmodel)
+		}
+
+		// now transform actual input models (sorted from bottom to top in the import graph)
 		var FModel rootModel = null
-		var String rootName = null;
+		var String rootName = null
 		for(item : inputModels) {
 //			println("toFranca: input model " + item.elements)
 			val fmodel = trafo.transform(item, externalTypes)
@@ -117,7 +131,6 @@ public class ProtobufConnector extends AbstractFrancaConnector {
 
 		return new FrancaModelContainer(rootModel, rootName, importedModels)
 	}
-
 
 	def CharSequence generateFrancaDeployment(IModelContainer model, String specification, String fidlPath,
 		String fileName) {
@@ -155,6 +168,15 @@ public class ProtobufConnector extends AbstractFrancaConnector {
 	
 	val Map<Protobuf, String> part2import = newLinkedHashMap
 	
+	var private Injector injectorProtobuf = null;
+
+	def private getProtobufInjector() {
+		if (injectorProtobuf==null) {
+			injectorProtobuf = new ProtobufStandaloneSetup().createInjectorAndDoEMFRegistration
+		}
+		injectorProtobuf
+	}
+
 	def private Map<Protobuf, String> loadProtobufModel(String fileName) {
 		
 		// we are using a member table to collect the importURI string for all resources
@@ -163,9 +185,8 @@ public class ProtobufConnector extends AbstractFrancaConnector {
 		
 		val URI uri = FileHelper.createURI(fileName)
 
-		val injector = new ProtobufStandaloneSetup().createInjectorAndDoEMFRegistration
-		val fileUriResolver = injector.getInstance(IFileUriResolver)
-		val XtextResourceSet resourceSet = injector.getInstance(XtextResourceSet)
+		val fileUriResolver = protobufInjector.getInstance(IFileUriResolver)
+		val XtextResourceSet resourceSet = protobufInjector.getInstance(XtextResourceSet)
 		//resourceSet.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE)
 		val Resource resource = resourceSet.getResource(uri, true)
 

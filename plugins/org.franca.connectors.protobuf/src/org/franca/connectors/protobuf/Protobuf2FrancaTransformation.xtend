@@ -12,6 +12,7 @@ import com.google.eclipse.protobuf.protobuf.BooleanLink
 import com.google.eclipse.protobuf.protobuf.ComplexType
 import com.google.eclipse.protobuf.protobuf.ComplexTypeLink
 import com.google.eclipse.protobuf.protobuf.Enum
+import com.google.eclipse.protobuf.protobuf.ExtensibleType
 import com.google.eclipse.protobuf.protobuf.Extensions
 import com.google.eclipse.protobuf.protobuf.Group
 import com.google.eclipse.protobuf.protobuf.Import
@@ -35,7 +36,6 @@ import com.google.eclipse.protobuf.protobuf.Stream
 import com.google.eclipse.protobuf.protobuf.TypeExtension
 import com.google.inject.Inject
 import java.math.BigInteger
-import java.util.LinkedList
 import java.util.Map
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
@@ -51,6 +51,8 @@ import org.franca.core.franca.FTypeCollection
 import org.franca.core.franca.FrancaFactory
 
 import static org.franca.core.framework.TransformationIssue.*
+import org.eclipse.xtend.typesystem.emf.EcoreUtil2
+import com.google.eclipse.protobuf.scoping.ProtoDescriptorProvider
 
 @Data
 class TransformContext {
@@ -65,6 +67,7 @@ class TransformContext {
 class Protobuf2FrancaTransformation {
 
 	val static OPTION_DEPRECATED = "deprecated"
+	val static DESCRIPTOR_BASENAME = "descriptor"
 	
 	//	val static DEFAULT_NODE_NAME = "default"
 	@Inject extension TransformationLogger
@@ -75,7 +78,8 @@ class Protobuf2FrancaTransformation {
 
 	var TransformContext currentContext
 	var int index
-
+	var needsDescriptorImport = false
+	
 	def getTransformationIssues() {
 		return getIssues
 	}
@@ -83,14 +87,31 @@ class Protobuf2FrancaTransformation {
 	def getExternalTypes() {
 		externalTypes ?: newLinkedHashMap()
 	}
-
+	
+	/**
+	 * Check if the resulting Franca IDL model needs to import "descriptor.fidl".
+	 * 
+	 * The file "descriptor.fidl" is corresponding to the Protobuf file "descriptor.proto". 
+	 */
+	def boolean needsDescriptorInclude(Protobuf src) {
+		for(te : EcoreUtil2.allContents(src).filter(TypeExtension)) {
+			val target = te.type.target
+			if (target.isFromDescriptorProto) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	def create factory.createFModel transform(Protobuf src, Map<EObject, FType> externalTypes) {
 		clearIssues
 
 		this.externalTypes = externalTypes
-
-		val typeCollection = typeCollections.head ?: factory.createFTypeCollection
+		
 		index = 0
+		needsDescriptorImport = false
+		
+		val typeCollection = typeCollections.head ?: factory.createFTypeCollection
 		if (!types.empty) {
 			types.clear
 			addIssue(IMPORT_WARNING, src, ProtobufPackage.PROTOBUF,
@@ -117,8 +138,9 @@ class Protobuf2FrancaTransformation {
 						currentContext = new TransformContext(elem.name.toFirstUpper)
 						typeCollection.add(elem, elem.transformMessage)
 					}
-					Enum:
+					Enum: {
 						typeCollection.types += elem.transformEnum
+					}
 					Group: {
 						currentContext = new TransformContext("")
 						typeCollection.add(elem, elem.transformGroup)
@@ -128,9 +150,13 @@ class Protobuf2FrancaTransformation {
 						typeCollection.add(elem, elem.transformTypeExtension)
 					}
 					Import: {
-						val importElement = elem.transformImport
-						if (!importElement.importURI.nullOrEmpty) {
-							it.imports += importElement
+						// do not import descriptor.fidl exactly when descriptor.proto is imported
+						// instead, we apply a different, Franca-specific logic
+						if (! elem.importURI.endsWith("/" + DESCRIPTOR_BASENAME + ".proto")) {
+							val importElement = elem.transformImport
+							if (!importElement.importURI.nullOrEmpty) {
+								it.imports += importElement
+							}
 						}
 					}
 //					case elem instanceof Package || elem instanceof Option: {
@@ -143,11 +169,20 @@ class Protobuf2FrancaTransformation {
 				}
 			}
 		}
+		
+		if (needsDescriptorImport) {
+			val import = factory.createImport
+			import.importURI = DESCRIPTOR_BASENAME + ".fidl"
+			it.imports.add(import)
+		}
+
 		for(entry : types.entrySet) {
 			typeCollection.add(entry.key, entry.value)
 		}
-		if (!typeCollection.types.empty)
+
+		if (! typeCollection.types.empty) {
 			typeCollections += typeCollection
+		}
 	}
 
 	def private add(FTypeCollection tc, EObject src, FType target) {
@@ -198,26 +233,35 @@ class Protobuf2FrancaTransformation {
 	}
 
 	def private create factory.createFStructType transformTypeExtension(TypeExtension typeExtension) {
-		if (typeExtension.type.target.eIsProxy) {
+		val target = typeExtension.type.target
+		if (target.eIsProxy) {
 			val resourceSet = typeExtension.eResource.resourceSet
 			EcoreUtil.resolveAll(resourceSet)
-			val resolved = EcoreUtil.resolve(typeExtension.type.target, resourceSet)
+			val resolved = EcoreUtil.resolve(target, resourceSet)
 			if (resolved.eIsProxy) {
-
 				//TODO
 				name = "unsolved_" + NodeModelUtils.getNode(typeExtension.type).text.replace('.', '_').trim
 				val fakeBase = createFakeBaseStruct
 				base = fakeBase
 			}
 		} else {
-			name = typeExtension.type.target.name.toFirstUpper + "_" + index
-			base = transformExtensibleType(typeExtension.type.target)
+			if (target.isFromDescriptorProto) {
+				needsDescriptorImport = true
+			}
+			name = target.name.toFirstUpper + "_" + index
+			base = transformExtensibleType(target)
 		}
+		
 		elements += typeExtension.elements.map [ element |
 			transformField(name, [element.transformMessageElement])
 		].filterNull
 	}
 
+	def private boolean isFromDescriptorProto(ExtensibleType type) {
+		val res = type.eResource
+		res!=null && res.URI.lastSegment == DESCRIPTOR_BASENAME+".proto"
+	}
+	
 	def private create factory.createFStructType createFakeBaseStruct() {
 		name = "unknown"
 		polymorphic = true

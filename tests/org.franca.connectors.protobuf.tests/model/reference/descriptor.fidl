@@ -1,4 +1,4 @@
-package google.protobuf1
+package google.protobuf
 
 typeCollection {
 	struct FileDescriptorSet {
