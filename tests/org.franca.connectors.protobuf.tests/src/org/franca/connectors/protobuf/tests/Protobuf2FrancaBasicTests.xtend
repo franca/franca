@@ -93,7 +93,6 @@ class Protobuf2FrancaBasicTests extends TestBase {
 	}
 	
 	@Test
-//	@Ignore
 	def enumWithOption() {
 		test("EnumWithOption")
 	}

@@ -3,7 +3,7 @@ package org.franca.connectors.protobuf.tests
 import model "descriptor.fidl"
 
 typeCollection {
-	struct EnumOptions_1 {
+	struct EnumOptions_1 extends google.protobuf.EnumOptions {
 		Boolean my_enum_option
 	}
 

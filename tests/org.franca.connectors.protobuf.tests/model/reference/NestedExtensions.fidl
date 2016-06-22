@@ -8,7 +8,7 @@ typeCollection {
 	struct Baz polymorphic {
 	}
 	
-	struct Foo_0 /*extends Foo*/ {
+	struct Foo_0 extends Foo {
 		Baz foo_ext
 	}
 }

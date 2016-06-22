@@ -30,14 +30,14 @@ message Request1 {
 	}
 }
 
-required group group1 = 1{
+required group group1 = 1 {
 }
 
-extend Request1{
+extend Request1 {
 	repeated uint32 uint321 = 901;
 }
 
-extend Request1{
+extend Request1 {
 	repeated uint32 uint = 902;
 }
 

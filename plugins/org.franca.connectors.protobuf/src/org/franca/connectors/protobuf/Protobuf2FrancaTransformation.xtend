@@ -41,18 +41,18 @@ import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.xtend.lib.annotations.Data
+import org.eclipse.xtend.typesystem.emf.EcoreUtil2
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 import org.franca.core.framework.TransformationLogger
 import org.franca.core.franca.FBasicTypeId
 import org.franca.core.franca.FField
 import org.franca.core.franca.FOperator
+import org.franca.core.franca.FStructType
 import org.franca.core.franca.FType
 import org.franca.core.franca.FTypeCollection
 import org.franca.core.franca.FrancaFactory
 
 import static org.franca.core.framework.TransformationIssue.*
-import org.eclipse.xtend.typesystem.emf.EcoreUtil2
-import com.google.eclipse.protobuf.scoping.ProtoDescriptorProvider
 
 @Data
 class TransformContext {
@@ -268,10 +268,11 @@ class Protobuf2FrancaTransformation {
 		types.put(null, it)
 	}
 
-	def private dispatch transformExtensibleType(Message message) {
+	def private dispatch FStructType transformExtensibleType(Message message) {
+		message.transformMessage
 	}
 
-	def private dispatch transformExtensibleType(Group group) {
+	def private dispatch FStructType transformExtensibleType(Group group) {
 		group.transformGroup
 	}
 

@@ -15,32 +15,29 @@ typeCollection {
 	struct Group1 polymorphic {
 	}
 
-	struct Request1_1 /*extends Request1*/ {
+	struct Request1_1 extends Request1 {
 		UInt32 [ ] uint321
 	}
 
-	struct Request1_2 /*extends Request1*/ {
+	struct Request1_2 extends Request1 {
 		UInt32 [ ] uint
 	}
 	
-	struct Request1_Test_oneOf_Group1{
+	struct Request1_Test_oneOf_Group1 {
 		UInt32 uint32_1
 		Scalar [] scalar1
 	}
  
-	struct Request1_Test_oneOf_Group2{
+	struct Request1_Test_oneOf_Group2 {
 		UInt32 uint32_1
 		Scalar [] scalar1
 		Request1_Test_oneOf_Group1 [] group1
 	}
 
-	union Request1_Test_oneOf{
+	union Request1_Test_oneOf {
 		String string1
 		Request1_Test_oneOf_Group1 group1
 		Request1_Test_oneOf_Group2 group2
 	}
+
 }
-
-
-
-
