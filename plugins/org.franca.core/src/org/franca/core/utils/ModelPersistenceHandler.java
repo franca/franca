@@ -156,8 +156,8 @@ public class ModelPersistenceHandler {
 		
 		if (resource == null) {
 			// create a resource containing the model
-			System.out.println("ModelPersistenceHandler: Creating new resource " + toSaveURI +
-					", #resources=" + resourceSet.getResources().size());
+//			System.out.println("ModelPersistenceHandler: Creating new resource " + toSaveURI +
+//					", #resources=" + resourceSet.getResources().size());
 			resource = resourceSet.createResource(toSaveURI);
 			resource.getContents().add(model);
 		}
@@ -170,11 +170,11 @@ public class ModelPersistenceHandler {
 			// resolve the relative path of the imports so that the correct path is obtained for loading the model
 			URI resolve = importFileURI.resolve(cwdURI);
 			String cwdNew = getCWDForImport(fileURI, cwdURI).toString();
-			System.out.println("  Handling model import:" +
-					" importURI=" + importURI +
-					" fileURI=" + importFileURI +
-					" cwdNew=" + cwdNew
-			);
+//			System.out.println("  Handling model import:" +
+//					" importURI=" + importURI +
+//					" fileURI=" + importFileURI +
+//					" cwdNew=" + cwdNew
+//			);
 			EObject importedModel = importedModels!=null ? importedModels.getModel(importURI) : null;
 			if (importedModel!=null) {
 				//System.out.println("importedModel will be created - " + importURI);
