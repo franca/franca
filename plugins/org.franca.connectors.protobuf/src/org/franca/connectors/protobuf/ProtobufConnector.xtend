@@ -56,7 +56,7 @@ public class ProtobufConnector extends AbstractFrancaConnector {
 		}
 		for(Protobuf unit : units.keySet()) {
 			val res = unit.eResource
-			out.println("loadModel: " + res.getURI() + " is " + units.get(unit));
+			//out.println("loadModel: " + res.getURI() + " is " + units.get(unit));
 		}
 		return new ProtobufModelContainer(units);
 	}
