@@ -159,9 +159,9 @@ class Protobuf2FrancaTransformation {
 							}
 						}
 					}
-//					case elem instanceof Package || elem instanceof Option: {
-//						// currently not mapped
-//					}
+					case elem instanceof Package || elem instanceof Option: {
+						// currently not mapped
+					}
 					default: {
 						addIssue(FEATURE_NOT_HANDLED_YET, elem, ProtobufPackage.PROTOBUF__ELEMENTS,
 							"Unsupported protobuf element '" + elem.class.name + "', will be ignored")
