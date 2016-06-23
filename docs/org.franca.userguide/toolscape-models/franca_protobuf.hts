@@ -1,0 +1,44 @@
+/** **************************************************************************
+ * FRANCA CONNECTORS: GOOGLE PROTOBUF
+ *
+ * 2016-04-26 kbirken, initial version
+ *
+ * ************************************************************************** */
+ 
+// relative path for generation of diagrams from this model
+generate_to = "../src/images-gen"
+
+
+// **************************************************************************
+
+// the Franca plugins
+plugin org.franca.core
+plugin org.franca.generators
+
+// Google Protobuf
+plugin protobuf_dt // com.google.eclipse.protobuf
+//plugin protobuf_generators_somewhere
+plugin org.franca.connectors.protobuf
+
+// **************************************************************************
+
+model Franca_IDL {
+	purpose "Central IDL model"
+	file franca.ecore
+	in org.franca.core
+}
+
+model Protobuf {
+	purpose "Google Protobuf"
+	file Protobuf.ecore
+	in protobuf_dt
+}
+
+transformation Protobuf2FrancaTrafo {
+	source Protobuf
+	target Franca_IDL
+	in org.franca.connectors.protobuf
+	//reverse Franca2ProtobufTrafo
+}
+
+// **************************************************************************

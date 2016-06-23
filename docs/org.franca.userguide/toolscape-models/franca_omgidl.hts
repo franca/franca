@@ -1,0 +1,44 @@
+/** **************************************************************************
+ * FRANCA CONNECTOR: OMG IDL
+ *
+ * 2016-04-26 kbirken, initial version
+ *
+ * ************************************************************************** */
+ 
+// relative path for generation of diagrams from this model
+generate_to = "../src/images-gen"
+
+
+// **************************************************************************
+
+// the Franca plugins
+plugin org.franca.core
+plugin org.franca.generators
+
+// OMG IDL (aka CORBA)
+plugin idl4emf // org.csu.idl
+//plugin omgidl_generators_somewhere
+plugin org.franca.connectors.omgidl
+
+
+// **************************************************************************
+
+model Franca_IDL {
+	purpose "Central IDL model"
+	file franca.ecore
+	in org.franca.core
+}
+
+model OMG_IDL {
+	purpose "OMG IDL (aka CORBA)"
+	file IDLMM.ecore
+	in idl4emf
+}
+
+transformation OMGIDLFrancaTrafo {
+	source OMG_IDL
+	target Franca_IDL
+	in org.franca.connectors.omgidl
+	//reverse Franca2OMGIDLTrafo
+}
+
