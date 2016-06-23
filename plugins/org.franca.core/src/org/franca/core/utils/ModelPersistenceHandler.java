@@ -13,13 +13,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.franca.core.framework.IImportedModelProvider;
-
-import com.google.common.collect.Maps;
 
 /**
  * Base class to deal with Eclipse mechanisms to load/save models.
@@ -28,6 +27,7 @@ import com.google.common.collect.Maps;
  * 
  */
 public class ModelPersistenceHandler {
+	static final Logger logger = Logger.getLogger(ModelPersistenceHandler.class);
 
 	/**
 	 * All models that have cross-references must exist in the same ResourceSet
@@ -138,7 +138,7 @@ public class ModelPersistenceHandler {
 	 * @return true if the model was saved
 	 */
 	public boolean saveModel(EObject model, String filename, String cwd, IImportedModelProvider importedModels) {
-		System.out.println("Saving Franca model: root file is " + filename + ", " +
+		logger.info("Saving Franca model: root file is " + filename + ", " +
 				(importedModels!=null ? importedModels.getNModels() : 0) + " imported models."
 		);
 		if (! initResourcesRecursively(model, filename, cwd, importedModels))
@@ -180,9 +180,9 @@ public class ModelPersistenceHandler {
 				//System.out.println("importedModel will be created - " + importURI);
 				initResourcesRecursively(importedModel, importURI, cwdNew, importedModels);
 			} else {
-				System.out.println("  Available resources:");
+				logger.info("  Available resources:");
 				for(Resource res : resourceSet.getResources()) {
-					System.out.println("    " + res.toString());
+					logger.info("    " + res.toString());
 				}
 				Resource actualResource = resourceSet.getResource(resolve, true);
 				initResourcesRecursively(actualResource.getContents().get(0), importURI, cwdNew, importedModels);
@@ -202,7 +202,7 @@ public class ModelPersistenceHandler {
 
 		// here we assume that each model has a proper resource 
 		if (resource== null) {
-			System.err.println("ModelPersistenceHandler: Model without resource, aborting (" + toSaveURI + ")");
+			logger.error("Model without resource, aborting (" + toSaveURI + ")");
 			return false;
 		}
 
@@ -213,7 +213,7 @@ public class ModelPersistenceHandler {
 		resource.setURI(toSaveURI);
 		//System.out.println("ModelPersistenceHandler: Saving model as resource " + toSaveURI);
 		if (! existingURI.equals(toSaveURI)) {
-			//System.out.println("    previous URI was different: " + existingURI);
+			//logger.info("    previous URI was different: " + existingURI);
 			resourceSet.getURIConverter().getURIMap().put(existingURI, toSaveURI);
 		}
 		

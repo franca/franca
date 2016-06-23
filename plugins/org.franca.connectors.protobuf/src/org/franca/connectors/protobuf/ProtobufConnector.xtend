@@ -11,16 +11,17 @@ import com.google.eclipse.protobuf.ProtobufStandaloneSetup
 import com.google.eclipse.protobuf.protobuf.Import
 import com.google.eclipse.protobuf.protobuf.Protobuf
 import com.google.eclipse.protobuf.scoping.IFileUriResolver
+import com.google.eclipse.protobuf.scoping.ProtoDescriptorProvider
 import com.google.inject.Guice
 import com.google.inject.Injector
 import java.util.ArrayList
 import java.util.List
 import java.util.Map
 import java.util.Set
+import org.apache.log4j.Logger
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.resource.Resource
-import org.eclipse.xtext.resource.XtextResource
 import org.eclipse.xtext.resource.XtextResourceSet
 import org.franca.core.dsl.FrancaPersistenceManager
 import org.franca.core.framework.AbstractFrancaConnector
@@ -32,9 +33,10 @@ import org.franca.core.franca.FModel
 import org.franca.core.franca.FType
 import org.franca.core.utils.FileHelper
 import org.franca.core.utils.digraph.Digraph
-import com.google.eclipse.protobuf.scoping.ProtoDescriptorProvider
 
 public class ProtobufConnector extends AbstractFrancaConnector {
+
+	static final Logger logger = Logger.getLogger(typeof(ProtobufConnector))
 
 	var Injector injector
 
@@ -50,13 +52,13 @@ public class ProtobufConnector extends AbstractFrancaConnector {
 	override IModelContainer loadModel(String filename) {
 		val Map<Protobuf, String> units = loadProtobufModel(filename);
 		if (units.isEmpty()) {
-			out.println("Error: Could not load Protobuf model from file " + filename);
+			logError("Error: Could not load Protobuf model from file " + filename);
 		} else {
-			out.println("Loaded Protobuf model from file " + filename + " (consists of " + units.size() + " files)");
+			logInfo("Loaded Protobuf model from file " + filename + " (consists of " + units.size() + " files)");
 		}
 		for(Protobuf unit : units.keySet()) {
 			val res = unit.eResource
-			//out.println("loadModel: " + res.getURI() + " is " + units.get(unit));
+			//logInfo("loadModel: " + res.getURI() + " is " + units.get(unit));
 		}
 		return new ProtobufModelContainer(units);
 	}
@@ -127,8 +129,11 @@ public class ProtobufConnector extends AbstractFrancaConnector {
 			}
 		}
 		
-		println(IssueReporter.getReportString(lastTransformationIssues))
-
+		val report = IssueReporter.getReportString(lastTransformationIssues).split("\n")
+		for(r : report) {
+			logger.info(r);
+		}
+		
 		return new FrancaModelContainer(rootModel, rootName, importedModels)
 	}
 
@@ -249,7 +254,7 @@ public class ProtobufConnector extends AbstractFrancaConnector {
 						modelURIs.putAll(pmodel.collectImportURIsAndLoadModels(importURI, resourceSet, fileUriResolver))
 					}
 				} else {
-					println("Warning: Cannot import resource '" + importURI + "'")
+					logError("Warning: Cannot import resource '" + importURI + "'")
 				}
 			}
 
@@ -260,5 +265,21 @@ public class ProtobufConnector extends AbstractFrancaConnector {
 	def private trimExtension(String filename, String ext) {
 		val dotIndex = filename.lastIndexOf(ext) - 1
 		filename.substring(0, dotIndex)
+	}
+	
+	def private logInfo(String msg) {
+		if (out==System.out) {
+			logger.info(msg)
+		} else {
+			out.println(msg)
+		}
+	}
+
+	def private logError(String msg) {
+		if (err==System.err) {
+			logger.error(msg)
+		} else {
+			err.println(msg)
+		}
 	}
 }
