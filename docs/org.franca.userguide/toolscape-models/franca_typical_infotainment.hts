@@ -20,7 +20,7 @@ plugin org.franca.core
 plugin org.franca.generators
 
 // DBus Introspection IDL
-plugin ics.lipci.metamodels.dbus.introspect
+plugin model.emf.dbusxml
 plugin dbus_generators_somewhere
 plugin org.franca.connectors.dbus
 
@@ -70,7 +70,7 @@ model Franca_IDL {
 model DBus_IDL {
 	purpose "D-Bus Introspection XML"
 	file introspec.ecore
-	in ics.lipci.metamodels.dbus.introspect
+	in model.emf.dbusxml
 }
 
 //model Telepathy_IDL {
