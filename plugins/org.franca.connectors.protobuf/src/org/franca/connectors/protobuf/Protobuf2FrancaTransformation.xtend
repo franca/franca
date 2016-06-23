@@ -33,10 +33,12 @@ import com.google.eclipse.protobuf.protobuf.Rpc
 import com.google.eclipse.protobuf.protobuf.ScalarTypeLink
 import com.google.eclipse.protobuf.protobuf.Service
 import com.google.eclipse.protobuf.protobuf.Stream
+import com.google.eclipse.protobuf.protobuf.StringLink
 import com.google.eclipse.protobuf.protobuf.TypeExtension
 import com.google.inject.Inject
 import java.math.BigInteger
 import java.util.Map
+import org.apache.log4j.Logger
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.util.EcoreUtil
@@ -65,6 +67,7 @@ class TransformContext {
  * Current scope: Support for Protobuf version proto2.  
  */
 class Protobuf2FrancaTransformation {
+	static final Logger logger = Logger.getLogger(typeof(Protobuf2FrancaTransformation))
 
 	val static OPTION_DEPRECATED = "deprecated"
 	val static DESCRIPTOR_BASENAME = "descriptor"
@@ -109,14 +112,15 @@ class Protobuf2FrancaTransformation {
 		this.externalTypes = externalTypes
 		
 		index = 0
+		types.clear
 		needsDescriptorImport = false
 		
-		val typeCollection = typeCollections.head ?: factory.createFTypeCollection
-		if (!types.empty) {
-			types.clear
-			addIssue(IMPORT_WARNING, src, ProtobufPackage.PROTOBUF,
-				"One instance may be executing two transformations")
+		val res = src.eResource
+		if (res!=null) {
+			logger.info("Transforming " + res.URI.toString)
 		}
+		
+		val typeCollection = typeCollections.head ?: factory.createFTypeCollection
 
 		val packages = src.elements.filter(Package)
 		name = packages.head?.name ?: "dummy_package"
@@ -152,15 +156,29 @@ class Protobuf2FrancaTransformation {
 					Import: {
 						// do not import descriptor.fidl exactly when descriptor.proto is imported
 						// instead, we apply a different, Franca-specific logic
-						if (! elem.importURI.endsWith("/" + DESCRIPTOR_BASENAME + ".proto")) {
+						if (! elem.importURI.endsWith(DESCRIPTOR_BASENAME + ".proto")) {
 							val importElement = elem.transformImport
 							if (!importElement.importURI.nullOrEmpty) {
 								it.imports += importElement
 							}
 						}
 					}
-					case elem instanceof Package || elem instanceof Option: {
+					case elem instanceof Package: {
 						// currently not mapped
+					}
+					case elem instanceof Option: {
+						// currently not mapped
+						if (elem instanceof NativeOption) {
+							val v = elem.value
+							val t = elem.source.target
+							if (v!=null && t!=null) {
+								if (v instanceof StringLink) {
+									if (t instanceof MessageField) {
+										logger.info("Option: " + t.name + " = " + v.target)
+									}
+								}
+							}
+						}
 					}
 					default: {
 						addIssue(FEATURE_NOT_HANDLED_YET, elem, ProtobufPackage.PROTOBUF__ELEMENTS,
@@ -191,22 +209,10 @@ class Protobuf2FrancaTransformation {
 			externalTypes.put(src, target)	
 	}
 	
-	def private needsInterface(Option option) {
-		if (option instanceof NativeOption) {
-			// we assume that all native options do not need an additional Franca interface
-			return false
-//			val opt = option.source.target
-//			if (opt instanceof MessageField) {
-//				...
-//			}
-		}
-		true
-	}
-
 	private def create factory.createImport transformImport(Import elem) {
 		val uri = URI.createURI(elem.importURI)
 		if (uri !== null) {
-			if (!uri.lastSegment.endsWith(".proto")) {
+			if (!uri.toString.endsWith(".proto")) {
 
 				//TODO
 				addIssue(FEATURE_NOT_HANDLED_YET, elem, ProtobufPackage.IMPORT__IMPORT_URI,
