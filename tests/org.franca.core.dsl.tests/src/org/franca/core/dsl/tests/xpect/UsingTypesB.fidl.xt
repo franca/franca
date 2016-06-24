@@ -22,7 +22,7 @@ typeCollection BTC2 {
 		// local reference to other type collection
 		BTC1.BTC1_Struct_1 e2
 
-		// XPECT errors --> "Type BIF1_Struct_1 can only be referenced inside interface BIF1 or derived interfaces" at "BIF1.BIF1_Struct_1" 
+		// XPECT errors --> "Type BIF1_Struct_1 is not public, thus it can only be referenced inside interface BIF1 or derived interfaces" at "BIF1.BIF1_Struct_1" 
 		// local reference to interface
 		BIF1.BIF1_Struct_1 e3
 	}
@@ -39,7 +39,7 @@ interface BIF2 {
 		// local reference to other type collection
 		BTC1.BTC1_Struct_1 e2
 
-		// XPECT errors --> "Type BIF1_Struct_1 can only be referenced inside interface BIF1 or derived interfaces" at "BIF1.BIF1_Struct_1" 
+		// XPECT errors --> "Type BIF1_Struct_1 is not public, thus it can only be referenced inside interface BIF1 or derived interfaces" at "BIF1.BIF1_Struct_1" 
 		// local reference to interface
 		BIF1.BIF1_Struct_1 e3
 	}

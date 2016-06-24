@@ -44,35 +44,35 @@ interface InterfaceWithPublic {
 		Boolean to Float
 	}
 
-	typedef privateTypeDef is String
+	typedef privateTypedef is String
 
 }
 
 interface ReferringInterface {
-	//  XPECT noIssues ---> "attribute is reference a type InterfaceWithPublic.publicUnion which is public"
-	 attribute InterfaceWithPublic.publicUnion noError
-	//  XPECT  errors  ---> "attribute is referencing a type InterfaceWithPublic.privateArray which is not public"
-	 attribute InterfaceWithPublic.privateArray errorArray
+	// XPECT noIssues ---> "attribute is referencing a type InterfaceWithPublic.publicUnion which is public"
+	attribute InterfaceWithPublic.publicUnion noError
+	// XPECT  errors  ---> "Type privateArray is not public, thus it can only be referenced inside interface InterfaceWithPublic or derived interfaces" at "InterfaceWithPublic.privateArray"
+	attribute InterfaceWithPublic.privateArray errorArray
 
-//  XPECT  errors  ---> "attribute is referencing a type InterfaceWithPublic.privateEnum which is not public"
-	 attribute InterfaceWithPublic.privateEnum errorEnum
+	// XPECT  errors  ---> "Type privateEnum is not public, thus it can only be referenced inside interface InterfaceWithPublic or derived interfaces" at "InterfaceWithPublic.privateEnum"
+	attribute InterfaceWithPublic.privateEnum errorEnum
 
 	 
-	 //  XPECT  errors  ---> "attribute is referencing a type InterfaceWithPublic.privateMap which is not public"
-	 attribute InterfaceWithPublic.privateMap errorMap
+	// XPECT  errors  ---> "Type privateMap is not public, thus it can only be referenced inside interface InterfaceWithPublic or derived interfaces" at "InterfaceWithPublic.privateMap"
+	attribute InterfaceWithPublic.privateMap errorMap
 	 
-	 //  XPECT  errors  ---> "attribute is referencing a type InterfaceWithPublic.privateStruct which is not public"
-	 attribute InterfaceWithPublic.privateStruct errorStruct
+	// XPECT  errors  ---> "Type privateStruct is not public, thus it can only be referenced inside interface InterfaceWithPublic or derived interfaces" at "InterfaceWithPublic.privateStruct"
+	attribute InterfaceWithPublic.privateStruct errorStruct
 	 
-	 //  XPECT  errors  ---> "attribute is referencing a type InterfaceWithPublic.privateTypeDef which is not public"
-	 attribute InterfaceWithPublic.privateTypeDef errorType
+	// XPECT  errors  ---> "Type privateTypedef is not public, thus it can only be referenced inside interface InterfaceWithPublic or derived interfaces" at "InterfaceWithPublic.privateTypedef"
+	attribute InterfaceWithPublic.privateTypedef errorType
 	 
 	
 	 
-	 //  XPECT  noIssues  ---> "attribute is referencing a type InterfaceWithPublic.publicEnum which is  public"
-	 attribute InterfaceWithPublic.publicEnum publicEnum
+	// XPECT  noIssues  ---> "attribute is referencing a type InterfaceWithPublic.publicEnum which is public"
+	attribute InterfaceWithPublic.publicEnum publicEnum
 	 
-	 //  XPECT  noIssues  ---> "attribute is referencing a type InterfaceWithPublic.publicArray which is  public"
-	 attribute InterfaceWithPublic.publicArray publicArray
+	// XPECT  noIssues  ---> "attribute is referencing a type InterfaceWithPublic.publicArray which is public"
+	attribute InterfaceWithPublic.publicArray publicArray
 	 
 }
