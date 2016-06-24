@@ -213,7 +213,7 @@ FEnumerator returns FEnumerator:
 FMapType returns FMapType:
 	{FMapType}
 	(comment=FAnnotationBlock)?
-	'map' name=ID '{'
+	(public?='public')? 'map' name=ID '{'
 		keyType=FTypeRef 'to' valueType=FTypeRef
 	'}';
 
