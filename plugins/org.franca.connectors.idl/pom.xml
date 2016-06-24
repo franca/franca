@@ -1,16 +1,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.franca</groupId>
 	<parent>
 		<groupId>org.franca</groupId>
 		<artifactId>org.franca.parent</artifactId>
-		<version>0.10.1-SNAPSHOT</version>
+		<version>0.11.0-SNAPSHOT</version>
 		<relativePath>../../releng/org.franca.parent/pom.xml</relativePath>
 	</parent>
 
 	<artifactId>org.franca.connectors.idl</artifactId>
 	<description>This Eclipse plug-in contains the Franca/IDL connector.</description>
 	<packaging>eclipse-plugin</packaging>
-
 	<build>
 		<sourceDirectory>src</sourceDirectory>
 		<plugins>
@@ -27,4 +27,7 @@
 			</plugin>
 		</plugins>
 	</build>
+	<properties>
+		<skip.deployment>false</skip.deployment>
+	</properties>
 </project>
