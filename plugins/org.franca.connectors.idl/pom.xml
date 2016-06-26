@@ -11,6 +11,7 @@
 	<artifactId>org.franca.connectors.idl</artifactId>
 	<description>This Eclipse plug-in contains the Franca/IDL connector.</description>
 	<packaging>eclipse-plugin</packaging>
+
 	<build>
 		<sourceDirectory>src</sourceDirectory>
 		<plugins>
