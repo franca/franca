@@ -412,6 +412,19 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 		}
 	}
 
+	@Check
+	public void checkPublicKeywordForType (FType type) {
+		 if (type.isPublic()) {
+			 FInterface owner = FrancaModelExtensions.getInterface(type);
+			 if (owner==null) {
+				 // this is a type collection, "public" is not allowed here
+				 error("Misplaced 'public', types are always visible in type collections",
+						 type, FrancaPackage.Literals.FTYPE__PUBLIC, -1);
+			 }
+		 }
+	}
+	
+	
 	// *****************************************************************************
 
 	@Check
