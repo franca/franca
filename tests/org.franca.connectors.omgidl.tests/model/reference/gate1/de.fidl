@@ -2,13 +2,13 @@ package de
 import model "evc_t.fidl"
 
 interface de {
-	enumeration state_t {
+	public enumeration state_t {
 		ded
 		nde
 		invalid
 	}
 
-	struct de_t {
+	public struct de_t {
 		String name
 		state_t deState
 		evc_t.timespec_t timeStamp
@@ -19,6 +19,7 @@ interface de {
 			evc_t.canNotAccessData canNotAccessData
 		}
 	}
+	
 	method getDeData {
 		out {
 			de_t _RESULT

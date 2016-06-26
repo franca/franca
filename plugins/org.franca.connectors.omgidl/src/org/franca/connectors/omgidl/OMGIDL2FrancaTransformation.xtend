@@ -336,8 +336,15 @@ class OMGIDL2FrancaTransformation {
 					OperationDef: methods.add(definition as FMethod)
 				}
 			}
+
+			// set all type definitions in the Franca interface to public,
+			// because in OMG IDL all data types are publicly visible
+			types.forEach[public = true] 
+				
+			// 
 			// reset the list
 			baseInterfaces = newArrayList()
+
 			// add resulting object to target model
 			target.interfaces.add(it)
 		]
@@ -616,12 +623,7 @@ class OMGIDL2FrancaTransformation {
 						]
 					}
 				}
-				// This case identifies that
-				// 1. src does not exist in IDL model, so it is loaded as a proxy InterfaceDef
-				// 2. the type is invisible in the given interface A, since its container interface B is neither A nor a base interface of A
-				case (src.interfaceContainer != null) && (!baseInterfaces.contains(src.interfaceContainer)): {
-					predefined = FBasicTypeId.UNDEFINED
-				}
+
 				case map_IDL_Franca.containsKey(src) : {
 					derived = map_IDL_Franca.get(src) as FType
 				}

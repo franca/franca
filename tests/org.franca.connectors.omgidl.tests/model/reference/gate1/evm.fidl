@@ -1,7 +1,7 @@
 package evm
 
 interface evm {
-	enumeration state_t {
+	public enumeration state_t {
 		state1
 		state2
 		state3
@@ -9,12 +9,12 @@ interface evm {
 		state4
 	}
 
-	enumeration type_t {
+	public enumeration type_t {
 		onState
 		offState
 	}
 
-	struct evm_t {
+	public struct evm_t {
 		String name
 		type_t type
 		state_t ^state
@@ -24,9 +24,9 @@ interface evm {
 }
 
 interface evmCollection {
-	array Sequence_0 of undefined
+	public array Sequence_0 of evm.evm_t
 
-	typedef evmCollection_t is Sequence_0
+	public typedef evmCollection_t is Sequence_0
 
 	method getAllevms {
 		out {

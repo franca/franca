@@ -6,7 +6,7 @@ import model "evs.fidl"
 interface de_ev extends evs.TypedPushConsumer {
 	method pushDe {
 		in {
-			undefined dEntity
+			de.de.de_t dEntity
 		}
 	}
 }
