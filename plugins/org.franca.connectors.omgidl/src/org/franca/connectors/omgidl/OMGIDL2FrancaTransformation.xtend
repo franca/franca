@@ -328,11 +328,12 @@ class OMGIDL2FrancaTransformation {
 			baseInterfaces = src.baseInterfaces
 			for (contained: src.contains) {
 				val definition = contained.transformDefinition()
-				switch contained {
-					case contained instanceof TypedefDef: types.add(definition as FType)
-					case contained instanceof ConstantDef: constants.add(definition as FConstantDef)
-					case contained instanceof AttributeDef: attributes.add(definition as FAttribute)
-					case contained instanceof OperationDef: methods.add(definition as FMethod)
+
+				switch (contained) {
+					TypedefDef: types.add(definition as FType)
+					ConstantDef: constants.add(definition as FConstantDef)
+					AttributeDef: attributes.add(definition as FAttribute)
+					OperationDef: methods.add(definition as FMethod)
 				}
 			}
 			// reset the list
@@ -372,6 +373,7 @@ class OMGIDL2FrancaTransformation {
 		}
 		return definition
 	}
+
 	
 	/* ----------------- dispatch transform Contained without container -------------------- */
 	
