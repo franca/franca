@@ -179,7 +179,10 @@ class OMGIDL2FrancaTransformation {
 			for (module: src.contains.filter(ModuleDef)){
 				for(d : module.contains) {
 					if(!map_IDL_Franca.containsKey(d)) {
-						map_IDL_Franca.put(d, d.transformDefinition(model))					
+						val transformed = d.transformDefinition(model)
+						if (transformed!=null) {
+							map_IDL_Franca.put(d, transformed)					
+						}
 					}
 				}
 			}
