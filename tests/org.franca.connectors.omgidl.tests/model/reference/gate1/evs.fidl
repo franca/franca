@@ -58,6 +58,32 @@ interface SupplierAdmin {
 }
 
 interface TypedProxyPushConsumer extends ProxyPushConsumer {
+	<**
+		@details : Member from original interface TypedPushConsumer (currently Franca IDL does not support multiple inheritance).
+	**>
+	method push {
+		in {
+			undefined data
+		}
+		error {
+			Disconnected
+		}
+	}
+
+	<**
+		@details : Member from original interface TypedPushConsumer (currently Franca IDL does not support multiple inheritance).
+	**>
+	method disconnect_push_consumer {
+	}
+
+	<**
+		@details : Member from original interface TypedPushConsumer (currently Franca IDL does not support multiple inheritance).
+	**>
+	method get_typed_consumer {
+		out {
+			undefined _RESULT
+		}
+	}
 }
 
 interface ConsumerAdmin {

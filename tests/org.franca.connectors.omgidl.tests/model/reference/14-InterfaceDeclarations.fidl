@@ -16,6 +16,8 @@ interface fooInterface1 {
 interface fooInterface2 {
 	public typedef L1 is Int16
 	
+	attribute Int32 a2
+
 	method opB {
 		in {
 			Int32 l
@@ -32,7 +34,22 @@ interface fooInterface3 extends fooInterface1 {
 	
 	const Int32 FooConstLong1 = 15
 	
+	<**
+		@details : Member from original interface fooInterface2 (currently Franca IDL does not support multiple inheritance).
+	**>
+	attribute Int32 a2
+
 	attribute Float FooAttributeFloat
 	attribute L2 FooAttributeL2
 	attribute Boolean FooReadonlyAttributeBoolean readonly
+
+	<** @details : Member from original interface fooInterface2 (currently Franca IDL does not support multiple inheritance). **>
+	method opB {
+		in {
+			Int32 l
+		}
+		out {
+			fooInterface2.L1 _RESULT
+		}
+	}
 }
