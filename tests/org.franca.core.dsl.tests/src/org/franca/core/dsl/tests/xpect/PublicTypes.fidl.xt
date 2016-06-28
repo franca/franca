@@ -48,6 +48,27 @@ interface InterfaceWithPublic {
 
 }
 
+typeCollection SomeTypeCollection {
+
+	// XPECT errors  --> "Misplaced 'public', types are always visible in type collections" at "public" 
+	public array ArrayInTC of String
+	
+	// XPECT errors  --> "Misplaced 'public', types are always visible in type collections" at "public" 
+	public struct StructInTC {
+		UInt16 elem1
+	}
+	
+	// XPECT errors  --> "Misplaced 'public', types are always visible in type collections" at "public" 
+	public union UnionInTC {
+		UInt16 elem1
+		String elem2
+	}
+	
+	// XPECT errors  --> "Misplaced 'public', types are always visible in type collections" at "public" 
+	public map MapInTC { String to UInt32 } 
+}
+
+
 interface ReferringInterface {
 	// XPECT noIssues ---> "attribute is referencing a type InterfaceWithPublic.publicUnion which is public"
 	attribute InterfaceWithPublic.publicUnion noError
