@@ -17,7 +17,8 @@ typeCollection {
 	}
 
 	struct db_t {
-		db_t NLT
+		// FIXME: This is a recursive reference, will lead to validation error if transformed to Franca.
+		//db_t NLT
 		dbBound_t NMT
 	}
 
