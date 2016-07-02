@@ -1,0 +1,1272 @@
+package Pkg.Ct.Ct_t;
+option java_package =  "Pkg.Ct";
+
+import "Common_t.proto";
+import "CtCommon_t.proto";
+import "Infrastructure_t.proto";
+
+
+enum aeGenericClassificationType_t
+{
+   eAeGenericClassification_Unknown = 0;
+   eAeGenericClassification_gen1 = 1;
+   eAeGenericClassification_gen2 = 2;
+   eAeGenericClassification_gen3 = 3;
+   eAeGenericClassification_gen4 = 4;
+}
+
+
+enum aeModeType_t
+{
+   eAeMode_Unknown = 0;
+   eAeMode_ae1 = 1;
+   eAeMode_ae2 = 2;
+   eAeMode_ae3 = 3;
+   eAeMode_ae4 = 4;
+   eAeMode_ae5 = 5;
+}
+
+
+enum aePCDType_t
+{
+   eAePCD_Unknown = 0;
+   eAePCD_Low = 1;
+   eAePCD_Medium = 2;
+   eAePCD_High = 3;
+}
+
+
+enum aeUpdateType_t
+{
+   eAeUpdateType_Unknown = 0;
+   eAeUpdateType_1 = 1;
+   eAeUpdateType_2 = 2;
+}
+
+
+enum asType_t
+{
+   eAutomationStatus_Unknown = 0;
+   eAutomationStatus_Available = 1;
+   eAutomationStatus_Handled = 2;
+   eAutomationStatus_Alert = 3;
+}
+
+enum FbInfoType_t
+{
+   eFb_Unknown = 0;
+   eFb_Default = 1;
+   eFb_Calculated = 2;
+   eFb_Unspecified = 3;
+}
+
+
+enum cInventoryType_t
+{
+   eCInventory_All = 0;
+   eInventory_System = 1;
+   eInventory_Extended = 2;
+}
+
+
+enum cLockType_t
+{
+   eCLockState_Locked = 0;
+   eCLockState_Unlocked = 1;
+}
+
+
+enum riskType_t
+{
+   eRisk_Unknown = 0;
+   eRisk_Low = 1;
+   eRisk_High = 2;
+}
+
+
+enum fChangeType_t
+{
+   eFChange_Fuse = 0;
+   eFChange_Unfuse = 1;
+}
+
+
+enum highlightType_t
+{
+   eHighlight_None = 0;
+   eHighlight_On = 1;
+   eHighlight_Emphasized = 2;
+}
+
+
+enum isMessageType_t
+{
+   eIsMessage_Unknown = 0;
+   eIsMessage_Normal = 1;
+}
+
+
+enum isType_t
+{
+   eIbs_Unknown = 0;
+   eIbs_1 = 1;
+   eIbs_2 = 2;
+   eIbs_3 = 3;
+   eIbs_4 = 4;
+   eIbs_5 = 5;
+   eIbs_6 = 6;
+   eIbs_7 = 7;
+   eIbs_8 = 8;
+   eIbs_9 = 9;
+   eIbs_10 = 10;
+}
+
+
+enum mdType_t
+{
+   eMd_Unknown = 0;
+   eMd_Generic = 1;
+}
+
+
+enum mscType_t
+{
+   eClassification_Unknown = 0;
+   eClassification_Type1 = 1;
+   eClassification_Type2 = 2;
+   eClassification_Type3 = 3;
+   eClassification_Type4 = 4;
+   eClassification_Type5 = 5;
+   eClassification_Type6 = 6;
+   eClassification_Type7 = 7;
+   eClassification_Type8 = 8;
+   eClassification_Type9 = 9;
+   eClassification_Type10 = 10;
+   eMClassification_Misc = 11;
+}
+
+
+enum notificationType_t
+{
+   eNotification_1 = 0;
+   eNotification_2 = 1;
+   eNotification_3 = 2;
+   eNotification_4 = 3;
+   eNotification_5 = 4;
+   eNotification_6 = 5;
+   eNotification_7 = 6;
+}
+
+
+enum pcType_t
+{
+   ePc_Unknown = 0;
+   ePc_1 = 1;
+   ePc_1 = 2;
+   ePc_1 = 3;
+   ePc_1 = 4;
+   ePc_1 = 5;
+   ePc_6 = 6;
+   ePc_7 = 7;
+   ePc_8 = 8;
+   ePc_9 = 9;
+   ePc_10 = 10;
+   ePc_11 = 11;
+   ePc_12 = 12;
+   ePc_13 = 13;
+   ePc_14 = 14;
+   ePc_15 = 15;
+   ePc_16 = 16;
+   ePc_17 = 17;
+   ePc_18 = 18;
+   ePc_19 = 19;
+   ePc_20 = 20;
+}
+
+
+enum ptType_t
+{
+   ePt_Unknown = 0;
+   ePt_1 = 1;
+   ePt_2 = 2;
+   ePt_3 = 3;
+   ePt_4 = 4;
+   ePt_5 = 5;
+   ePt_6 = 6;
+   ePt_7 = 7;
+   ePt_8 = 8;
+}
+
+
+enum qualityType_t
+{
+   eQuality_Low = 0;
+   eQuality_High = 1;
+}
+
+
+enum sttType_t
+{
+   eStt_Unknown = 0;
+   eStt_Current = 1;
+   eStt_Aged = 2;
+}
+
+
+enum sType_t
+{
+   eS_Type1 = 0;
+   eS_Type2 = 1;
+   eS_Type3 = 2;
+}
+
+
+enum tbaType_t
+{
+   eTba_AudioCut = 0;
+   eTba_ScreenCapture = 1;
+   eTba_CameraImage = 2;
+   eTba_OperAnnotation = 3;
+}
+		
+
+message activeAttributes_t
+{	
+
+   optional double attrib1 = 1;
+
+
+   optional double attrib2 = 2;
+
+
+   optional double attrib3 = 3;
+
+
+   optional double attrib4 = 4;
+
+
+   optional double attrib5 = 5;
+
+
+   optional aePCDType_t attrib6 = 6;
+
+
+   optional aeModeType_t attrib7 = 7;
+
+
+   optional aeGenericClassificationType_t attrib8 = 8;
+
+
+   optional aeUpdateType_t updateType = 9;
+
+
+   optional double attrib10 = 10;
+}
+
+
+message as_t
+{	
+
+   optional sint64 id1 = 1;
+
+
+   optional sint64 id2 = 2;
+
+
+   optional bool id3 = 3;
+
+
+   optional sint64 id4 = 4;
+
+   optional string id5 = 5;
+
+
+   optional string id6 = 6;
+
+
+   optional sint64 id7 = 7;
+
+
+   optional string id8 = 8;
+
+
+   optional sint64 id9 = 9;
+
+
+   optional sint64 id10 = 10;
+
+
+   optional sint64 id11 = 11;
+
+
+   optional sint64 id12 = 12;
+
+
+   optional sint64 id13 = 13;
+
+
+   optional sint64 id14 = 14;
+
+   optional sint64 id15 = 15;
+
+
+   optional string id16 = 16;
+}
+
+
+enum FbInfoType_t
+{
+   eFb_Unknown = 0;
+   eFb_Default = 1;
+   eFb_Calculated = 2;
+   eFb_Unspecified = 3;
+}
+
+
+
+message biInfp_t
+{	
+
+   optional Pkg.Ct.CtCommon_t.psInfoType_t type = 1;
+
+
+   optional double value = 2;
+
+
+   optional double stdDev = 3;
+
+
+   optional Pkg.Ct.CtCommon_t.cfType_t cfInfo = 4;
+}
+
+
+message carUpdate_t
+{	
+
+   repeated ctAR_t carUpdates = 1;
+
+
+   optional Pkg.Infrastructure.Common_t.sysType_t requestingSys = 2;
+}
+
+
+message ctAR_t
+{	
+
+  optional sint64 sequenceNumber = 1;
+
+
+   optional Pkg.Infrastructure.Infrastructure_t.timespec_t timestamp = 2;
+
+
+   optional Pkg.Ct.CtCommon_t.ctD_t designator = 3;
+
+
+   repeated Pkg.Ct.CtCommon_t.ctD_t fcc = 4;
+
+
+   optional string id = 5;
+
+
+   optional ptType_t data1 = 6;
+
+
+   optional pcType_t data2 = 7;
+
+
+   optional sint64 idc = 8;
+
+
+   optional sint64 tc = 9;
+
+
+   optional sint64 cc = 10;
+
+
+   optional sa_t data1 = 11;
+
+
+   repeated FbInfoType_t fbData = 13;
+
+
+   repeated snInfo_t assigned = 14;
+
+
+   optional bool flag1 = 15;
+
+
+   optional bool flag2 = 16;
+
+
+   optional bool flag3 = 17;
+
+
+   repeated sint64 comp = 18;
+
+
+   optional riskType_t risk = 19;
+
+   optional highlightType_t highlight = 20;
+
+
+   optional asType_t data1 = 21;
+
+
+   optional qualityType_t quality = 22;
+
+   repeated string userGroups = 23;
+}
+
+
+message ctDropTrial_t
+{	
+
+   optional Pkg.Ct.CtCommon_t.ctD_t cts = 1;
+
+
+   optional Pkg.Infrastructure.Common_t.sysType_t requestingSys = 2;
+
+   repeated Pkg.Ct.CtCommon_t.sSourceType_t requestedData = 3;
+}
+
+
+message ctDrop_t
+{	
+
+   repeated Pkg.Ct.CtCommon_t.ctD_t cts = 1;
+
+
+   optional Pkg.Infrastructure.Common_t.sysType_t requestingSys = 2;
+}
+
+
+message ctLock_t
+{	
+
+   repeated Pkg.Ct.CtCommon_t.ctD_t cts = 1;
+
+
+   optional Pkg.Infrastructure.Common_t.sysType_t requestingSubsystem = 2;
+
+
+   optional cLockType_t lockState = 3;
+}
+
+
+message ctServicesInformation_t
+{	
+
+   optional Pkg.Ct.CtCommon_t.ctD_t ctDesignator = 1;
+
+
+   optional fButtonFilterInfo_t fButtonFilterInfo = 3;
+}
+
+
+message ctLData_t
+{	
+
+   optional Pkg.Infrastructure.Infrastructure_t.timespan_t sTimeSpan = 1;
+
+
+   optional Pkg.Infrastructure.Infrastructure_t.timespan_t timelineTimeSpan = 2;
+
+
+   optional double solID = 3;
+
+
+   optional ctSourceReport_t lCSR = 4;
+
+
+   repeated sbfInfo_t sbfInfo = 5;
+
+
+   optional timeLineInfo_t startTimeLine = 6;
+
+
+   optional timeLineInfo_t stopTimeLine = 7;
+
+
+   optional trDescription_t description = 8;
+}
+
+
+message ctSourceReport_t
+{	
+
+   optional sint64 sequenceNumber = 1;
+
+
+   optional sType_t sType = 2;
+
+
+   optional Pkg.Ct.CtCommon_t.sSourceType_t sSource = 3;
+
+
+   optional string sSourceText = 4;
+
+
+   optional Pkg.Infrastructure.Infrastructure_t.timespec_t sTime = 5;
+
+   
+   optional Pkg.Infrastructure.Infrastructure_t.timespec_t sCreationTime = 6;
+
+   
+   optional Pkg.Ct.CtCommon_t.ctD_t ctDesignator = 7;
+
+   
+   optional latLongMisc_t latLongInfo = 8;
+
+   
+   optional rbType_t info = 9;
+
+   
+   repeated double cartesianCovarianceMatrix = 10;
+
+   
+   optional Pkg.Ct.CtCommon_t.cfType_t sConfidence = 11;
+
+   
+   optional bool isTraining = 12;
+
+   
+   optional cInfo_t cInformation = 13;
+
+   
+   optional Pkg.Ct.CtCommon_t.aobInfo_t aobInformation = 14;
+
+   
+   optional double ad = 15;
+
+   
+   optional Pkg.Ct.CtCommon_t.aouInfo_t aouInformation = 16;
+
+   
+   optional bool ctZig = 17;
+
+   
+   optional Pkg.Ct.CtCommon_t.aouPolygonInfo_t aouPolygon = 18;
+
+   
+   repeated sint64 measurementsUsedIndex = 19;
+}
+
+
+message cInfo_t
+{	
+   
+   optional double data1 = 1;
+
+   
+   optional double data2 = 2;
+
+   
+   optional Pkg.Infrastructure.Infrastructure_t.timespec_t cTime = 3;
+}
+
+
+message er_t
+{	
+   
+   optional isType_t ibsType = 1;
+
+   
+   optional isMessageType_t messageType = 2;
+
+   
+   optional sint64 sequentialCtNumber = 3;
+
+   
+   optional sint64 uniqueIdentifier = 4;
+
+   
+   optional double data1 = 5;
+
+   
+   optional double apri = 6;
+
+   
+   optional double data2 = 7;
+
+   
+   optional double data3 = 8;
+
+   
+   optional string data4 = 9;
+
+   
+   optional string data5 = 10;
+
+   
+   optional string data6 = 11;
+
+   
+   optional string data9 = 12;
+
+   
+   optional string data7 = 13;
+
+   
+   optional bool data8 = 14;
+}
+
+
+message eAttributes_t
+{	
+   
+   optional string data1 = 1;
+
+   
+   optional string elnot = 2;
+
+   
+   optional double pri = 3;
+
+   
+   optional double data2 = 4;
+
+   
+   optional double data3 = 5;
+
+   
+   optional string data4 = 6;
+
+   
+   optional double data5 = 7;
+
+   
+   optional sint64 data6 = 8;
+
+   
+   optional frInfo_t data7 = 9;
+}
+
+
+message fButtonFilterInfo_t
+{	
+   
+   optional string pkAlertString = 1;
+
+   
+   optional string defaultAlertString = 2;
+
+   
+   optional string ageString = 3;
+
+   
+   optional string sAgeString = 4;
+}
+
+
+message filterAttributes_t
+{	
+   
+   optional bool filterAlert = 1;
+
+   
+   optional bool filterDefaultAlert = 2;
+
+   
+   optional bool filterAgeAlert = 3;
+
+   
+   optional sint64 ageThreshold = 4;
+
+   
+   optional sint64 sAgeThreshold = 5;
+}
+
+
+message frInfo_t
+{	
+   
+   optional Pkg.Ct.CtCommon_t.psInfoType psInfo = 1;
+
+   
+   optional double data1 = 2;
+
+   
+   optional sint64 data2 = 3;
+
+   
+   optional biInfp_t data3 = 4;
+}
+
+
+message fusionChange_t
+{	
+   
+   optional fChangeType_t changeType = 1;
+
+   
+   optional Pkg.Ct.CtCommon_t.ctD_t parent = 2;
+
+   
+   repeated Pkg.Ct.CtCommon_t.ctD_t children = 3;
+
+   
+   optional Pkg.Infrastructure.Common_t.sysType_t source = 4;
+
+   
+   optional bool componentsInheritData = 5;
+}
+
+
+message imagingAttributes_t
+{	
+   
+   repeated lengthInfo_t lengthInfo = 2;
+
+   
+   repeated imagingHeadHeightInfo_t headHeightInfo = 1;
+}
+
+
+message imagingHeadHeightInfo_t
+{	
+   
+   optional Pkg.Infrastructure.Infrastructure_t.timespec_t timestamp = 1;
+
+   
+   optional sint64 headHeight = 2;
+}
+
+
+message lengthInfo_t
+{	
+   
+   optional Pkg.Infrastructure.Infrastructure_t.timespec_t timestamp = 1;
+
+   
+   optional sint64 length = 2;
+}
+
+
+message inventoryRequest_t
+{	
+   
+   optional cInventoryType_t ctType = 1;
+
+   
+   repeated Pkg.Ct.CtCommon_t.ctPrefixType_t excludePrefixes = 2;
+}
+
+
+message latLongMeasurement_t
+{	
+   
+   optional Pkg.Infrastructure.Infrastructure_t.timespec_t timestamp = 1;
+
+   
+   optional Pkg.Ct.CtCommon_t.ctD_t ctDesignator = 2;
+
+   
+   optional Pkg.Ct.CtCommon_t.sSourceType_t sSource = 3;
+
+   
+   optional Pkg.Ct.CtCommon_t.aouInfo_t aou = 4;
+}
+
+
+message latLongMisc_t
+{	
+   
+   optional double latitude = 1;
+
+   
+   optional double longitude = 2;
+
+   
+   optional Pkg.Ct.CtCommon_t.pInfo_t coGround = 3;
+
+   
+   optional Pkg.Ct.CtCommon_t.pInfo_t soGround = 4;
+}
+
+
+message measurementsUsed_t
+{	
+   
+   repeated rbType_t rngBrgMeasurements = 1;
+
+   
+   repeated latLongMeasurement_t latLongMeasurements = 2;
+}
+
+
+message ms_t
+{	
+   
+   optional mscType_t msClassification = 1;
+
+   
+   optional mdType_t msType = 2;
+
+   
+   optional bool data1 = 3;
+   optional string data2 = 4;
+   optional string data3 = 5;
+   optional string number = 8;
+}
+
+
+message nextAvailable_t
+{	
+   
+   optional Pkg.Ct.CtCommon_t.ctPrefixType_t requestedPrefix = 1;
+
+   
+   optional sint64 requestedNumber = 2;
+
+   
+   repeated Pkg.Ct.CtCommon_t.ctD_t preferredNumbers = 3;
+}
+
+
+message notifications_t
+{	
+   
+   optional Pkg.Infrastructure.Common_t.sysType_t notificationSource = 4;
+
+   
+   optional bool isReviewed = 5;
+
+   
+   optional Pkg.Infrastructure.Infrastructure_t.timespec_t timestamp = 1;
+
+   
+   optional string notificationString = 2;
+
+   
+   optional notificationType_t notificationType = 3;
+}
+
+
+message operatorInitiatedInfo_t
+{	
+   
+   optional Pkg.Ct.CtCommon_t.ctD_t ctDesignator = 1;
+
+   
+   optional bool isBrgRateFast = 8;
+
+   
+   optional timeBasedAttributes_t timeBasedInfo = 4;
+
+   
+   optional Pkg.Infrastructure.Common_t.sysType_t requestor = 6;
+
+   
+   optional bool isAutoBase = 2;
+
+   
+   repeated ssfInfo_t ssfInfo = 3;
+
+   
+   repeated sComparison_t sComparisons = 5;
+
+   
+   repeated notifications_t notifications = 7;
+}
+
+
+message other_t
+{	
+   
+   optional double a1Axis = 1;
+
+   
+   optional double a2Axis = 2;
+
+   
+   optional sint64 aouType = 3;
+
+   
+   optional string archived = 4;
+
+   
+   optional sint64 association = 5;
+
+   
+   optional string be = 6;
+
+   
+   optional string chXref = 7;
+
+   
+   optional sint64 datano = 8;
+
+   
+   optional string elnot = 9;
+
+   
+   optional string emt = 10;
+
+   
+   optional string ftn = 11;
+
+   
+   optional sint64 groupmask = 12;
+
+   
+   optional string ltn = 13;
+
+   
+   optional sint64 maxReports = 14;
+
+   
+   optional string mode1to4 = 15;
+
+   
+   optional sint64 numberReports = 16;
+
+   
+   optional string origXref = 17;
+
+   
+   optional string rdfRf = 18;
+
+   
+   optional string releasability = 19;
+
+   
+   optional string rtns = 20;
+
+   
+   optional string serial = 21;
+
+   
+   optional string source = 22;
+
+   
+   optional string stn = 23;
+
+   
+   optional string type = 24;
+
+   
+   optional sint64 tRec = 25;
+
+   
+   optional string xref = 26;
+}
+
+
+message rbType_t
+{	
+   
+   optional Pkg.Infrastructure.Infrastructure_t.timespec_t timestamp = 1;
+
+   
+   optional Pkg.Ct.CtCommon_t.ctD_t ctDesignator = 2;
+
+   
+   optional snInfo_t info = 3;
+
+   
+   optional Pkg.Infrastructure.Common_t.trType_t type = 4;
+
+   
+   optional Pkg.Ct.CtCommon_t.psInfoType_t bType = 5;
+
+   
+   optional double data5 = 6;
+
+   
+   optional double stdDev = 7;
+
+   
+   optional Pkg.Ct.CtCommon_t.psInfoType_t rangeType = 8;
+
+   
+   optional double data1 = 9;
+
+   
+   optional double rStdDev = 10;
+}
+
+
+message rbType_t
+{	
+   
+   optional Pkg.Ct.CtCommon_t.psInfoType range = 1;
+
+   
+   optional double data1 = 2;
+
+   
+   optional Pkg.Ct.CtCommon_t.psInfoType rbInfo = 3;
+
+   
+   optional double data2 = 4;
+
+   
+   optional Pkg.Ct.CtCommon_t.pInfo_t data3 = 5;
+
+   
+   optional Pkg.Ct.CtCommon_t.pInfo_t data4 = 6;
+
+   
+   optional Pkg.Ct.CtCommon_t.sttType_t bState = 7;
+
+   
+   optional Pkg.Ct.CtCommon_t.rateIndicatorType_t issndicator = 8;
+}
+
+
+message rInfo_t
+{	
+   
+   optional Pkg.Ct.CtCommon_t.psInfoType data1 = 1;
+   optional biInfp_t data2 = 2;
+   optional Pkg.Ct.CtCommon_t.sourceType_t data3 = 3;
+}
+
+
+message snInfo_t
+{	
+   
+   optional Pkg.Infrastructure.Common_t.snType_t id = 1;
+
+   
+   optional string name = 2;
+
+   
+   optional string desc = 3;
+
+   
+   optional sttType_t stInfo = 4;
+}
+
+
+message ssfInfo_t
+{	
+   
+   optional Pkg.Ct.CtCommon_t.ctD_t ct = 1;
+
+   
+   optional Pkg.Infrastructure.Common_t.snType_t data1 = 2;
+
+   
+   optional Pkg.Infrastructure.Common_t.trType_t data2 = 3;
+
+   
+   optional sint64 data3 = 4;
+
+   
+   optional bool data4 = 5;
+
+   
+   optional bool data5 = 6;
+
+   
+   optional bool data6 = 7;
+}
+
+
+message sa_t
+{	
+   
+   optional string name = 1;
+
+   
+   optional string number = 2;
+
+   
+   optional string type = 5;
+
+   
+   optional as_t as = 12;
+
+
+   optional er_t er = 14;
+
+   
+   optional other_t other = 15;
+
+   
+   optional activeAttributes_t activeAttributes = 16;
+
+   
+   optional eAttributes_t esmAttributes = 17;
+
+   
+   optional imagingAttributes_t imagingAttributes = 18;
+
+   
+   optional string abbreviation = 19;
+}
+
+
+message sbfInfo_t
+{	
+   
+   optional FbInfoType_t bfInfo = 1;
+
+   
+   optional Pkg.Ct.CtCommon_t.ctD_t ctDesignator = 2;
+
+   
+   optional sint64 bf = 3;
+}
+
+
+message sComparison_t
+{	
+   
+   optional bool isReviewed  = 3;
+
+   
+   optional Pkg.Infrastructure.Infrastructure_t.timespec_t timestamp = 1;
+
+   
+   optional Pkg.Ct.CtCommon_t.sSourceType_t sSource = 2;
+}
+
+
+message sLUpdate_t
+{	
+   
+   optional bool isTrialPromotion = 1;
+
+   
+   optional bool isReplacement = 2;
+
+   
+   repeated ctLData_t solData = 3;
+
+   
+   repeated measurementsUsed_t measurementsUsed = 4;
+
+   
+   optional trDescription_t description = 5;
+}
+
+
+message sPromotion_t
+{	
+   
+   optional string sSourceText = 1;
+
+   
+   optional Pkg.Ct.CtCommon_t.ctD_t ct = 2;
+
+   
+   optional Pkg.Ct.CtCommon_t.sSourceType_t sSource = 3;
+
+   
+   optional Pkg.Ct.CtCommon_t.ctD_t referenceCt = 4;
+}
+
+
+message sRequest_t
+{	
+   
+   optional sType_t sType = 2;
+
+   
+   repeated Pkg.Ct.CtCommon_t.sSourceType_t trialSources = 3;
+
+   
+   optional Pkg.Ct.CtCommon_t.ctD_t ctDesignator = 1;
+
+   
+   optional trDescription_t description = 4;
+}
+
+
+message sSourceDrop_t
+{	
+   
+   optional Pkg.Ct.CtCommon_t.sSourceType_t sSource = 1;
+
+   
+   optional Pkg.Ct.CtCommon_t.ctD_t ctDesignator = 2;
+}
+
+
+message timeBasedAttributesInfo_t
+{	
+
+   optional Pkg.Infrastructure.Infrastructure_t.timespec_t timestamp = 1;
+
+
+   optional tbaType_t attributeType = 2;
+
+
+   optional Pkg.Infrastructure.Common_t.sysType_t source = 3;
+
+
+   optional string reference = 4;
+
+
+   optional Pkg.Infrastructure.Infrastructure_t.timespec_t creationTime = 5;
+}
+
+
+message timeBasedAttributes_t
+{	
+
+   repeated timeBasedAttributesInfo_t imageDataArray = 1;
+
+
+   repeated timeBasedAttributesInfo_t dataArray = 2;
+
+
+   repeated timeBasedAttributesInfo_t operatorAnnotations = 3;
+}
+
+
+message timeBasedUpdates_t
+{	
+
+   optional Pkg.Infrastructure.Common_t.sysType_t subsystem = 1;
+
+
+   repeated timeBasedAttributesInfo_t operatorAnnotations = 2;
+
+
+   repeated timeBasedAttributesInfo_t imageDataArray = 3;
+
+
+   repeated timeBasedAttributesInfo_t sDataArray = 4;
+
+   optional bool isAnnotationDeleteRequest = 5;
+
+
+   optional bool isImageDataDeleteRequest = 6;
+
+
+   optional bool isSDataDeleteRequest = 7;
+}
+
+
+message timeLineInfo_t
+{	
+
+   optional Pkg.Infrastructure.Infrastructure_t.timespec_t timeLineTime = 1;
+
+
+   optional Pkg.Infrastructure.Common_t.snType_t snType = 2;
+
+
+   optional Pkg.Ct.CtCommon_t.sType_t type1 = 3;
+
+
+   optional Pkg.Ct.CtCommon_t.ctD_t timeLineHookedDesignator = 4;
+}
+
+
+message trDescription_t
+{	
+
+   optional string name = 1;
+
+
+   optional Pkg.Ct.CtCommon_t.sSourceType_t yype = 2;
+
+
+   optional sint64 id = 3;
+}
+
+	

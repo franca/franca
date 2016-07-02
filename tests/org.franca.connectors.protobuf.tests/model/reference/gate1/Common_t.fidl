@@ -1,0 +1,144 @@
+package Pkg.Infrastructure.Common_t
+
+typeCollection {
+	enumeration SbType_type_t {
+		eSb_Unknown = 0
+		eSb_1 = 1
+		eSb_2 = 2
+	}
+
+	enumeration DataType_t {
+		eData_Unknown = 0
+		eData_1 = 1
+		eData_2 = 2
+		eData_3 = 3
+		eData_4 = 4
+		eData_5 = 5
+		eData_6 = 6
+	}
+
+	enumeration SnType_t {
+		eSn_Unknown = 0
+		eSn_1 = 1
+		eSn_2 = 2
+		eSn_3 = 3
+		eSn_4 = 4
+		eSn_5 = 5
+		eSn_6 = 6
+		eSn_7 = 7
+		eSn_8 = 8
+		eSn_9 = 9
+		eSn_10 = 10
+		eSn_11 = 11
+		eSn_12 = 12
+		eSn_13 = 13
+		eSn_14 = 14
+		eSn_15 = 15
+		eSn_16 = 16
+		eSn_17 = 17
+		eSn_18 = 18
+		eSn_19 = 19
+		eSn_20 = 20
+		eSn_21 = 21
+		eSn_22 = 22
+		eSn_23 = 23
+		eSn_24 = 24
+		eSn_25 = 25
+		eSn_26 = 26
+		eSn_27 = 27
+		eSn_28 = 28
+		eSn_29 = 100
+		eSn_30 = 101
+		eSn_31 = 102
+		eSn_32 = 200
+		eSn_33 = 201
+		eSn_34 = 203
+		eSn_35 = 204
+		eSn_36 = 205
+	}
+
+	enumeration SysType_t {
+		eSys_1 = 0
+		eSys_2 = 1
+		eSys_3 = 2
+		eSys_4 = 3
+		eSys_5 = 5
+		eSys_6 = 6
+		eSys_7 = 7
+		eSys_8 = 8
+		eSys_9 = 9
+		eSys_10 = 10
+		eSys_11 = 11
+		eSys_12 = 12
+		eSys_13 = 13
+		eSys_14 = 14
+		eSys_15 = 15
+		eSys_16 = 16
+		eSys_17 = 17
+		eSys_18 = 18
+		eSys_19 = 19
+	}
+
+	enumeration TrType_t {
+		eTr_Unknown = 0
+		eTr_1 = 1
+		eTr_2 = 2
+		eTr_3 = 3
+		eTr_4 = 4
+		eTr_5 = 5
+		eTr_6 = 6
+		eTr_7 = 7
+		eTr_8 = 8
+		eTr_9 = 9
+		eTr_10 = 10
+		eTr_11 = 11
+		eTr_12 = 12
+		eTr_13 = 13
+		eTr_14 = 14
+		eTr_15 = 15
+	}
+
+	struct AType {
+		TypedData_t data1
+		TypedData_t data2
+		TypedData_t data3
+		TypedData_t data4
+	}
+
+	struct AuthenticationInfo_t {
+		ByteBuffer userToken
+		String [ ] userGroups
+	}
+
+	struct Color_t {
+		Int64 rvalue
+		Int64 gvalue
+		Int64 bvalue
+	}
+
+	struct Motion_t {
+		TypedData_t data1
+		TypedData_t data2
+		TypedData_t data3
+		TypedData_t data4
+		TypedData_t data5
+		TypedData_t data6
+	}
+
+	struct Position_t {
+		TypedData_t latitude
+		TypedData_t longitude
+	}
+
+	struct DaType {
+		TypedData_t daType1
+		TypedData_t daType2
+		Double daType3
+	}
+
+	struct TypedData_t {
+		Double data
+		DataType_t dataType
+	}
+
+}

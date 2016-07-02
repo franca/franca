@@ -1,0 +1,23 @@
+/**
+ * Generated from proto2 script.
+ */
+ 
+package dummy_package
+
+interface ExampleService1 {
+	method Search{
+		in{
+			Request1 request1
+		}
+		out{
+			Response1 response1
+		}
+	}
+}
+
+typeCollection{
+	struct Request1 polymorphic{
+	}
+	struct Response1 polymorphic{
+	}		
+}

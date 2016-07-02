@@ -1,0 +1,113 @@
+
+
+
+
+
+///////////////////////////////// Package Information //////////////////////////
+package Pkg.Misc.Overlay_Service.Overlay_rr;
+option java_package =  "Pkg.Misc.Overlay_Service";
+
+///////////////////////////////// Import Information ///////////////////////////
+import "Overlay_t.proto";
+
+///////////////////////////////// Enumerations /////////////////////////////////
+
+
+enum majorVersion
+{
+   eMajorVersion = 7;
+}
+
+
+enum minorVersion
+{
+   eMinorVersion = 0;
+}
+		
+///////////////////////////////// Messages /////////////////////////////////////
+
+
+message getGroupRequest
+{	
+   
+   repeated Pkg.Misc.Overlay_t.groupKey_t request = 1;
+}
+
+
+message getGroupReply
+{	
+   
+   repeated Pkg.Misc.Overlay_t.group_t info = 1;
+}
+
+
+message getOverlayRequest
+{	
+   
+   repeated Pkg.Misc.Overlay_t.overlayKey_t request = 1;
+}
+
+
+message getOverlayReply
+{	
+   
+   repeated Pkg.Misc.Overlay_t.overlay_t info = 1;
+}
+
+
+message groupDeleteRequest
+{	
+   
+   repeated Pkg.Misc.Overlay_t.groupKey_t request = 1;
+}
+
+
+message groupDeleteReply
+{	
+   
+   optional sint64 unused = 1;
+}
+
+
+message groupStoreRequest
+{	
+   
+   repeated Pkg.Misc.Overlay_t.group_t request = 1;
+}
+
+
+message groupStoreReply
+{	
+   
+   optional sint64 unused = 1;
+}
+
+
+message overlayDeleteRequest
+{	
+   
+   repeated Pkg.Misc.Overlay_t.overlayKey_t request = 1;
+}
+
+
+message overlayDeleteReply
+{	
+   
+   optional sint64 unused = 1;
+}
+
+
+message overlayStoreRequest
+{	
+   
+   repeated Pkg.Misc.Overlay_t.overlay_t request = 1;
+}
+
+
+message overlayStoreReply
+{	
+   
+   optional sint64 unused = 1;
+}
+
+	

@@ -1,0 +1,9 @@
+syntax = "proto2";
+
+package org.franca.connectors.protobuf.tests;
+
+/*
+ * @param : this is a comment for Request1
+ */
+message Request1 {}
+message Response1 {}

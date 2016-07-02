@@ -1,0 +1,39 @@
+syntax = "proto2";
+
+package org.franca.connectors.protobuf.tests;
+
+import "google/protobuf/descriptor.proto";
+
+option java_package = "asa";
+
+extend google.protobuf.EnumOptions {
+  optional bool my_enum_option = 50003;
+}
+
+
+enum Scalar {
+	myString = 0 [default = 2];
+	mylong = 123456789;
+	myhex = 0x1af;
+	option (my_enum_option) = "sojf";
+}
+
+message Request1 {
+	required string string1 = 1;
+	optional int32 int32_1 = 2;
+	repeated uint32 uint32_1 = 3;
+	optional Scalar scalar1 = 4;
+	optional string java_package = 5;
+
+}
+
+message Response1 {
+	required float float1 = 8;
+	optional int64 int64_1 = 9;
+	repeated sfixed32 sfixed32_1 = 10;
+	repeated sfixed64 sfixed64_1 = 11;
+	required sint32 sint32_1 = 12;
+	optional sint64 sint64_1 = 13 [default = 11];
+	repeated uint32 uint32_1 = 14;
+	optional uint64 uint64_1 = 15;
+}

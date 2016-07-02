@@ -1,0 +1,30 @@
+syntax = "proto2";
+
+package org.franca.connectors.protobuf.tests;
+
+enum Scalar {
+	myString = 0 [default = 2];
+	mylong = 123456789;
+	myhex = 0x1af;
+}
+
+message Request1 {
+	required string string1 = 1;
+	repeated oneof test_oneOf{
+	 	string string1 = 2;
+
+	 	group Group1 = 5[default = 3] {
+			optional uint32 uint32_1 = 3;
+	 		repeated Scalar scalar1 = 4;
+	 	}
+
+	 	group Group2 = 9[default = 3] {
+			optional uint32 uint32_1 = 3;
+	 		repeated Scalar scalar1 = 4;
+	 		repeated Group1 group1 = 999;
+	 	}
+	}
+}
+
+
+

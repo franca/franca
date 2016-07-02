@@ -1,0 +1,22 @@
+package Pkg.Misc.Overlay_Service.Overlay_ps
+
+import model "Overlay_t.fidl"
+
+typeCollection {
+	enumeration MajorVersion {
+		eMajorVersion = 7
+	}
+
+	enumeration MinorVersion {
+		eMinorVersion = 0
+	}
+
+	struct GroupChangePublish {
+		Pkg.Misc.Overlay_t.GroupChange_t [ ] info
+	}
+
+	struct OverlayChangePublish {
+		Pkg.Misc.Overlay_t.OverlayChange_t [ ] info
+	}
+
+}

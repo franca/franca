@@ -1,0 +1,30 @@
+package Pkg.Astronomy_rr
+
+import model "Astronomy_t.fidl"
+
+typeCollection {
+	enumeration MajorVersion {
+		eMajorVersion = 3
+	}
+
+	enumeration MinorVersion {
+		eMinorVersion = 0
+	}
+
+	struct GetSunMoonIlluminanceRequest {
+		Pkg.Astronomy_t.ObservationInfo_t [ ] observationInfo
+	}
+
+	struct GetSunMoonIlluminanceReply {
+		Pkg.Astronomy_t.SunMoonIlluminanceInfo_t [ ] sunMoonIlluminanceInfo
+	}
+
+	struct GetSunMoonRiseSetRequest {
+		Pkg.Astronomy_t.ObservationInfo_t [ ] observationInfo
+	}
+
+	struct GetSunMoonRiseSetReply {
+		Pkg.Astronomy_t.SunMoonRiseSetInfo_t [ ] riseSetInfo
+	}
+
+}

@@ -1,0 +1,11 @@
+// empty interfaces with includes 
+#include "orb.idl"
+#include "TypeCode.idl"
+
+module testcase11 {
+	interface ExampleInterface1 {
+	};
+	
+	interface ExampleInterface2 {
+	};
+};

@@ -225,6 +225,18 @@ table:DeploymentInterfaceHostsPart2[
 		td[all entities of code[FDeploy][integers] and code[FDeploy][floats] combined]
 		td[alignment]
 	]
+	tr[
+		td[code[FDeploy][booleans]]
+		td[Properties related to booleans]
+		td[all entities with predefined type code[Franca][Boolean]]
+		td[various flags (optional...)]
+	]
+	tr[
+		td[code[FDeploy][byte_buffers]]
+		td[Properties related to byte buffer variables]
+		td[all entities with predefined type code[Franca][ByteBuffer]]
+		td[maximal length of a buffer]
+	]
 ]
 
 table:DeploymentInterfaceHostsPart3[
@@ -409,6 +421,8 @@ define default values for properties. Note that the actual names of properties
 There are no predefined properties. However, the designer has to ensure that 
 property names will be unique (the deployment editor will take care of this
 by validating the property names online).
+For the detailed restrictions regarding property names refer to section
+ref:DeploymentModels_Specifications_Restrictions[Property naming restrictions]. 
 
 The specification name is fully qualified in order to allow a hierarchical 
 organization of specifications. Each property can be either defined as single
@@ -521,6 +535,78 @@ e[definitions], not interface e[instances]. If you are looking for a way to
 establish relations between interface instances, the code[Franca][manages] concept
 might be a proper solution (see section
 ref:FIDL_Interface_Manages[Interfaces managing interfaces]).
+
+
+section2:DeploymentModels_Specifications_Restrictions[Property naming restrictions]
+
+Property are identified by their name, which is defined in the deployment specification.
+As each property can be used in deployment definitions specifically depending on the
+property host, their names are in general not required to be unique.
+For example, the following specification is valid, although there are properties with
+the same name:
+ 
+code[FDeploy][
+specification SpecWithDuplicates {
+	for structs {
+		Property1: Integer;
+	}
+	for arguments {
+		Property1: String;
+	}
+}
+]
+
+This is valid because in a deployment definition the property can be identified
+from the context. The property type may be different as in the example or equal
+(however, the property type e[enumeration] is an exception from this rule, see below).
+
+The following counterexample shows a specification which is not valid, because 
+the two properties with the same name cannot be distinguished from the context:
+
+code[FDeploy][
+specification InvalidSpecWithDuplicates {
+	for numbers {
+		Property2: Integer; // invalid
+	}
+	for floats {
+		Property2: String; // invalid
+	}
+}
+]
+
+The hosts code[FDeploy][numbers] and code[FDeploy][floats] overlap, i.e., 
+in a deployment definition it cannot be decided which of the two properties
+code[FDeploy][Property2] is referred to. Thus, validation errors would be
+shown for this deployment specification. In this case, a meaningful
+interpretation could be defined for the special case of equal property
+types. However, as this would increase the redundancy of the specification
+the validation will reject it even if the property types are equal.
+
+The following list gives all restrictions in place for properties with same name.
+
+ul[ 
+	item[Properties with same name must not have the same property host.]
+	item[Properties with same name must not have property hosts with overlapping scope.
+		Example: code[FDeploy][arrays], code[FDeploy][numbers], code[FDeploy][integers]
+		code[FDeploy][floats], code[FDeploy][booleans] and code[FDeploy][strings] are
+		mutually exclusive. Another example: code[FDeploy][struct_fields] and
+		code[FDeploy][union_fields] are mutually exclusive.
+	]
+	item[A property with a property host which can be used in multiple contexts
+		cannot be combined with another property with the same name and a different
+		host, even if the scopes of the two hosts do not overlap. 
+		Example: A property with host code[FDeploy][numbers] blocks defining another
+		property with the same name and host code[FDeploy][structs], because the 
+		code[FDeploy][numbers]-property can be used in multiple contexts.
+	]
+	item[Properties with same name and ad-hoc e[enumeration] types are not allowed.]
+]
+
+The reason for the two latter restrictions is more subtle than for the other ones. Although
+the property might be identified uniquely by its context, the resulting Java code
+for the generated PropertyAccessor class would be ambiguous or not correct.
+See section ref:DeploymentModels_DeploymentAccessSupport_PropertyAccessor[PropertyAccessor classes]
+for details on the generated Java classes.
 
 
 section:DeploymentModels_Definitions[Defining deployment definitions]

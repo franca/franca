@@ -1,0 +1,20 @@
+import "../../src-gen/testcases/"
+import "../specification/ProtobufSpec.fdeplMessageWithMessageField.fidl"
+
+specification org.franca.connectors.protobuf.tests.MessageWithMessageFieldSpec extends org.franca.connectors.protobuf.ProtobufSpec {
+}
+
+define org.franca.connectors.protobuf.tests.MessageWithMessageFieldSpec for typeCollection org.franca.connectors.protobuf.tests{
+	struct Response1 {
+		uint32_1 {
+			Tag = 3
+			FieldRule = OPTIONAL
+		}
+	}
+	struct Request1 {
+		response1 {
+			Tag = 5
+			FieldRule = OPTIONAL
+		}
+	}
+}

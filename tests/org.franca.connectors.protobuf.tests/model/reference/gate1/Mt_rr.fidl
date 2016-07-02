@@ -1,0 +1,22 @@
+package Pkg.HME.M_Service.Mt_rr
+
+import model "Mt_t.fidl"
+
+typeCollection {
+	enumeration MajorVersion {
+		eMajorVersion = 2
+	}
+
+	enumeration MinorVersion {
+		eMinorVersion = 0
+	}
+
+	struct GetAllRequest {
+		Int64 unused
+	}
+
+	struct GetAllReply {
+		Pkg.HME.Mt_t.MtReport_t info
+	}
+
+}

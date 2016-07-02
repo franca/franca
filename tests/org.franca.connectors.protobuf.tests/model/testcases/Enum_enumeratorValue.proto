@@ -1,0 +1,9 @@
+syntax = "proto2";
+
+package org.franca.connectors.protobuf.tests;
+
+enum Scalar {
+	myString = 0 [default = 2];
+	mylong = -123456789;
+	myhex = 0x1af;
+}

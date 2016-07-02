@@ -1,0 +1,10 @@
+import "../../src-gen/testcases/"
+import "../specification/ProtobufSpec.fdeplEnum_enumeratorValue.fidl"
+
+specification org.franca.connectors.protobuf.tests.Enum_enumeratorValueSpec extends org.franca.connectors.protobuf.ProtobufSpec {
+	for enumerators {
+	}
+}
+
+define org.franca.connectors.protobuf.tests.Enum_enumeratorValueSpec for typeCollection org.franca.connectors.protobuf.tests{
+}

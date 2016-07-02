@@ -1,0 +1,20 @@
+package Pkg.Misc.SL_t
+
+import model "Infrastructure_t.fidl"
+
+typeCollection {
+	enumeration SLType_t {
+		eSL_1 = 0
+		eSL_2 = 1
+		eSL_3 = 2
+		eSL_4 = 3
+		eSL_5 = 4
+		eSL_6 = 5
+	}
+
+	struct SL_t {
+		SLType_t SLType
+		Pkg.Infrastructure.Infrastructure_t.Timespec_t time
+	}
+
+}

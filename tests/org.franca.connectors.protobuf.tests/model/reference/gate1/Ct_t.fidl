@@ -1,0 +1,623 @@
+package Pkg.Ct.Ct_t
+
+import model "Common_t.fidl"
+import model "CtCommon_t.fidl"
+import model "Infrastructure_t.fidl"
+
+typeCollection {
+	enumeration AeGenericClassificationType_t {
+		eAeGenericClassification_Unknown = 0
+		eAeGenericClassification_gen1 = 1
+		eAeGenericClassification_gen2 = 2
+		eAeGenericClassification_gen3 = 3
+		eAeGenericClassification_gen4 = 4
+	}
+
+	enumeration AeModeType_t {
+		eAeMode_Unknown = 0
+		eAeMode_ae1 = 1
+		eAeMode_ae2 = 2
+		eAeMode_ae3 = 3
+		eAeMode_ae4 = 4
+		eAeMode_ae5 = 5
+	}
+
+	enumeration AePCDType_t {
+		eAePCD_Unknown = 0
+		eAePCD_Low = 1
+		eAePCD_Medium = 2
+		eAePCD_High = 3
+	}
+
+	enumeration AeUpdateType_t {
+		eAeUpdateType_Unknown = 0
+		eAeUpdateType_1 = 1
+		eAeUpdateType_2 = 2
+	}
+
+	enumeration AsType_t {
+		eAutomationStatus_Unknown = 0
+		eAutomationStatus_Available = 1
+		eAutomationStatus_Handled = 2
+		eAutomationStatus_Alert = 3
+	}
+
+	enumeration FbInfoType_t {
+		eFb_Unknown = 0
+		eFb_Default = 1
+		eFb_Calculated = 2
+		eFb_Unspecified = 3
+	}
+
+	enumeration CInventoryType_t {
+		eCInventory_All = 0
+		eInventory_System = 1
+		eInventory_Extended = 2
+	}
+
+	enumeration CLockType_t {
+		eCLockState_Locked = 0
+		eCLockState_Unlocked = 1
+	}
+
+	enumeration RiskType_t {
+		eRisk_Unknown = 0
+		eRisk_Low = 1
+		eRisk_High = 2
+	}
+
+	enumeration FChangeType_t {
+		eFChange_Fuse = 0
+		eFChange_Unfuse = 1
+	}
+
+	enumeration HighlightType_t {
+		eHighlight_None = 0
+		eHighlight_On = 1
+		eHighlight_Emphasized = 2
+	}
+
+	enumeration IsMessageType_t {
+		eIsMessage_Unknown = 0
+		eIsMessage_Normal = 1
+	}
+
+	enumeration IsType_t {
+		eIbs_Unknown = 0
+		eIbs_1 = 1
+		eIbs_2 = 2
+		eIbs_3 = 3
+		eIbs_4 = 4
+		eIbs_5 = 5
+		eIbs_6 = 6
+		eIbs_7 = 7
+		eIbs_8 = 8
+		eIbs_9 = 9
+		eIbs_10 = 10
+	}
+
+	enumeration MdType_t {
+		eMd_Unknown = 0
+		eMd_Generic = 1
+	}
+
+	enumeration MscType_t {
+		eClassification_Unknown = 0
+		eClassification_Type1 = 1
+		eClassification_Type2 = 2
+		eClassification_Type3 = 3
+		eClassification_Type4 = 4
+		eClassification_Type5 = 5
+		eClassification_Type6 = 6
+		eClassification_Type7 = 7
+		eClassification_Type8 = 8
+		eClassification_Type9 = 9
+		eClassification_Type10 = 10
+		eMClassification_Misc = 11
+	}
+
+	enumeration NotificationType_t {
+		eNotification_1 = 0
+		eNotification_2 = 1
+		eNotification_3 = 2
+		eNotification_4 = 3
+		eNotification_5 = 4
+		eNotification_6 = 5
+		eNotification_7 = 6
+	}
+
+	enumeration PcType_t {
+		ePc_Unknown = 0
+		ePc_1 = 1
+		ePc_1 = 2
+		ePc_1 = 3
+		ePc_1 = 4
+		ePc_1 = 5
+		ePc_6 = 6
+		ePc_7 = 7
+		ePc_8 = 8
+		ePc_9 = 9
+		ePc_10 = 10
+		ePc_11 = 11
+		ePc_12 = 12
+		ePc_13 = 13
+		ePc_14 = 14
+		ePc_15 = 15
+		ePc_16 = 16
+		ePc_17 = 17
+		ePc_18 = 18
+		ePc_19 = 19
+		ePc_20 = 20
+	}
+
+	enumeration PtType_t {
+		ePt_Unknown = 0
+		ePt_1 = 1
+		ePt_2 = 2
+		ePt_3 = 3
+		ePt_4 = 4
+		ePt_5 = 5
+		ePt_6 = 6
+		ePt_7 = 7
+		ePt_8 = 8
+	}
+
+	enumeration QualityType_t {
+		eQuality_Low = 0
+		eQuality_High = 1
+	}
+
+	enumeration SttType_t {
+		eStt_Unknown = 0
+		eStt_Current = 1
+		eStt_Aged = 2
+	}
+
+	enumeration SType_t {
+		eS_Type1 = 0
+		eS_Type2 = 1
+		eS_Type3 = 2
+	}
+
+	enumeration TbaType_t {
+		eTba_AudioCut = 0
+		eTba_ScreenCapture = 1
+		eTba_CameraImage = 2
+		eTba_OperAnnotation = 3
+	}
+
+	struct ActiveAttributes_t {
+		Double attrib1
+		Double attrib2
+		Double attrib3
+		Double attrib4
+		Double attrib5
+		AePCDType_t attrib6
+		AeModeType_t attrib7
+		AeGenericClassificationType_t attrib8
+		AeUpdateType_t updateType
+		Double attrib10
+	}
+
+	struct As_t {
+		Int64 id1
+		Int64 id2
+		Boolean id3
+		Int64 id4
+		String id5
+		String id6
+		Int64 id7
+		String id8
+		Int64 id9
+		Int64 id10
+		Int64 id11
+		Int64 id12
+		Int64 id13
+		Int64 id14
+		Int64 id15
+		String id16
+	}
+
+	enumeration FbInfoType_t {
+		eFb_Unknown = 0
+		eFb_Default = 1
+		eFb_Calculated = 2
+		eFb_Unspecified = 3
+	}
+
+	struct BiInfp_t {
+		Pkg.Ct.CtCommon_t.PsInfoType_t type
+		Double value
+		Double stdDev
+		Pkg.Ct.CtCommon_t.CfType_t cfInfo
+	}
+
+	struct CarUpdate_t {
+		CtAR_t [ ] carUpdates
+		Pkg.Infrastructure.Common_t.SysType_t requestingSys
+	}
+
+	struct CtAR_t {
+		Int64 sequenceNumber
+		Pkg.Infrastructure.Infrastructure_t.Timespec_t timestamp
+		Pkg.Ct.CtCommon_t.CtD_t designator
+		Pkg.Ct.CtCommon_t.CtD_t [ ] fcc
+		String id
+		PtType_t data1
+		PcType_t data2
+		Int64 idc
+		Int64 tc
+		Int64 cc
+		Sa_t data1
+		FbInfoType_t [ ] fbData
+		SnInfo_t [ ] assigned
+		Boolean flag1
+		Boolean flag2
+		Boolean flag3
+		Int64 [ ] comp
+		RiskType_t risk
+		HighlightType_t highlight
+		AsType_t data1
+		QualityType_t quality
+		String [ ] userGroups
+	}
+
+	struct CtDropTrial_t {
+		Pkg.Ct.CtCommon_t.CtD_t cts
+		Pkg.Infrastructure.Common_t.SysType_t requestingSys
+		Pkg.Ct.CtCommon_t.SSourceType_t [ ] requestedData
+	}
+
+	struct CtDrop_t {
+		Pkg.Ct.CtCommon_t.CtD_t [ ] cts
+		Pkg.Infrastructure.Common_t.SysType_t requestingSys
+	}
+
+	struct CtLock_t {
+		Pkg.Ct.CtCommon_t.CtD_t [ ] cts
+		Pkg.Infrastructure.Common_t.SysType_t requestingSubsystem
+		CLockType_t lockState
+	}
+
+	struct CtServicesInformation_t {
+		Pkg.Ct.CtCommon_t.CtD_t ctDesignator
+		FButtonFilterInfo_t fButtonFilterInfo
+	}
+
+	struct CtLData_t {
+		Pkg.Infrastructure.Infrastructure_t.Timespan_t sTimeSpan
+		Pkg.Infrastructure.Infrastructure_t.Timespan_t timelineTimeSpan
+		Double solID
+		CtSourceReport_t lCSR
+		SbfInfo_t [ ] sbfInfo
+		TimeLineInfo_t startTimeLine
+		TimeLineInfo_t stopTimeLine
+		TrDescription_t description
+	}
+
+	struct CtSourceReport_t {
+		Int64 sequenceNumber
+		SType_t sType
+		Pkg.Ct.CtCommon_t.SSourceType_t sSource
+		String sSourceText
+		Pkg.Infrastructure.Infrastructure_t.Timespec_t sTime
+		Pkg.Infrastructure.Infrastructure_t.Timespec_t sCreationTime
+		Pkg.Ct.CtCommon_t.CtD_t ctDesignator
+		LatLongMisc_t latLongInfo
+		RbType_t info
+		Double [ ] cartesianCovarianceMatrix
+		Pkg.Ct.CtCommon_t.CfType_t sConfidence
+		Boolean isTraining
+		CInfo_t cInformation
+		Pkg.Ct.CtCommon_t.AobInfo_t aobInformation
+		Double ad
+		Pkg.Ct.CtCommon_t.AouInfo_t aouInformation
+		Boolean ctZig
+		Pkg.Ct.CtCommon_t.AouPolygonInfo_t aouPolygon
+		Int64 [ ] measurementsUsedIndex
+	}
+
+	struct CInfo_t {
+		Double data1
+		Double data2
+		Pkg.Infrastructure.Infrastructure_t.Timespec_t cTime
+	}
+
+	struct Er_t {
+		IsType_t ibsType
+		IsMessageType_t messageType
+		Int64 sequentialCtNumber
+		Int64 uniqueIdentifier
+		Double data1
+		Double apri
+		Double data2
+		Double data3
+		String data4
+		String data5
+		String data6
+		String data9
+		String data7
+		Boolean data8
+	}
+
+	struct EAttributes_t {
+		String data1
+		String elnot
+		Double pri
+		Double data2
+		Double data3
+		String data4
+		Double data5
+		Int64 data6
+		FrInfo_t data7
+	}
+
+	struct FButtonFilterInfo_t {
+		String pkAlertString
+		String defaultAlertString
+		String ageString
+		String sAgeString
+	}
+
+	struct FilterAttributes_t {
+		Boolean filterAlert
+		Boolean filterDefaultAlert
+		Boolean filterAgeAlert
+		Int64 ageThreshold
+		Int64 sAgeThreshold
+	}
+
+	struct FrInfo_t {
+		Pkg.Ct.CtCommon_t.PsInfoType psInfo
+		Double data1
+		Int64 data2
+		BiInfp_t data3
+	}
+
+	struct FusionChange_t {
+		FChangeType_t changeType
+		Pkg.Ct.CtCommon_t.CtD_t parent
+		Pkg.Ct.CtCommon_t.CtD_t [ ] children
+		Pkg.Infrastructure.Common_t.SysType_t source
+		Boolean componentsInheritData
+	}
+
+	struct ImagingAttributes_t {
+		LengthInfo_t [ ] lengthInfo
+		ImagingHeadHeightInfo_t [ ] headHeightInfo
+	}
+
+	struct ImagingHeadHeightInfo_t {
+		Pkg.Infrastructure.Infrastructure_t.Timespec_t timestamp
+		Int64 headHeight
+	}
+
+	struct LengthInfo_t {
+		Pkg.Infrastructure.Infrastructure_t.Timespec_t timestamp
+		Int64 length
+	}
+
+	struct InventoryRequest_t {
+		CInventoryType_t ctType
+		Pkg.Ct.CtCommon_t.CtPrefixType_t [ ] excludePrefixes
+	}
+
+	struct LatLongMeasurement_t {
+		Pkg.Infrastructure.Infrastructure_t.Timespec_t timestamp
+		Pkg.Ct.CtCommon_t.CtD_t ctDesignator
+		Pkg.Ct.CtCommon_t.SSourceType_t sSource
+		Pkg.Ct.CtCommon_t.AouInfo_t aou
+	}
+
+	struct LatLongMisc_t {
+		Double latitude
+		Double longitude
+		Pkg.Ct.CtCommon_t.PInfo_t coGround
+		Pkg.Ct.CtCommon_t.PInfo_t soGround
+	}
+
+	struct MeasurementsUsed_t {
+		RbType_t [ ] rngBrgMeasurements
+		LatLongMeasurement_t [ ] latLongMeasurements
+	}
+
+	struct Ms_t {
+		MscType_t msClassification
+		MdType_t msType
+		Boolean data1
+		String data2
+		String data3
+		String number
+	}
+
+	struct NextAvailable_t {
+		Pkg.Ct.CtCommon_t.CtPrefixType_t requestedPrefix
+		Int64 requestedNumber
+		Pkg.Ct.CtCommon_t.CtD_t [ ] preferredNumbers
+	}
+
+	struct Notifications_t {
+		Pkg.Infrastructure.Common_t.SysType_t notificationSource
+		Boolean isReviewed
+		Pkg.Infrastructure.Infrastructure_t.Timespec_t timestamp
+		String notificationString
+		NotificationType_t notificationType
+	}
+
+	struct OperatorInitiatedInfo_t {
+		Pkg.Ct.CtCommon_t.CtD_t ctDesignator
+		Boolean isBrgRateFast
+		TimeBasedAttributes_t timeBasedInfo
+		Pkg.Infrastructure.Common_t.SysType_t requestor
+		Boolean isAutoBase
+		SsfInfo_t [ ] ssfInfo
+		SComparison_t [ ] sComparisons
+		Notifications_t [ ] notifications
+	}
+
+	struct Other_t {
+		Double a1Axis
+		Double a2Axis
+		Int64 aouType
+		String archived
+		Int64 association
+		String be
+		String chXref
+		Int64 datano
+		String elnot
+		String emt
+		String ftn
+		Int64 groupmask
+		String ltn
+		Int64 maxReports
+		String mode1to4
+		Int64 numberReports
+		String origXref
+		String rdfRf
+		String releasability
+		String rtns
+		String serial
+		String source
+		String stn
+		String type
+		Int64 tRec
+		String xref
+	}
+
+	struct RbType_t {
+		Pkg.Infrastructure.Infrastructure_t.Timespec_t timestamp
+		Pkg.Ct.CtCommon_t.CtD_t ctDesignator
+		SnInfo_t info
+		Pkg.Infrastructure.Common_t.TrType_t type
+		Pkg.Ct.CtCommon_t.PsInfoType_t bType
+		Double data5
+		Double stdDev
+		Pkg.Ct.CtCommon_t.PsInfoType_t rangeType
+		Double data1
+		Double rStdDev
+	}
+
+	struct RbType_t {
+		Pkg.Ct.CtCommon_t.PsInfoType range
+		Double data1
+		Pkg.Ct.CtCommon_t.PsInfoType rbInfo
+		Double data2
+		Pkg.Ct.CtCommon_t.PInfo_t data3
+		Pkg.Ct.CtCommon_t.PInfo_t data4
+		Pkg.Ct.CtCommon_t.SttType_t bState
+		Pkg.Ct.CtCommon_t.RateIndicatorType_t issndicator
+	}
+
+	struct RInfo_t {
+		Pkg.Ct.CtCommon_t.PsInfoType data1
+		BiInfp_t data2
+		Pkg.Ct.CtCommon_t.SourceType_t data3
+	}
+
+	struct SnInfo_t {
+		Pkg.Infrastructure.Common_t.SnType_t id
+		String name
+		String desc
+		SttType_t stInfo
+	}
+
+	struct SsfInfo_t {
+		Pkg.Ct.CtCommon_t.CtD_t ct
+		Pkg.Infrastructure.Common_t.SnType_t data1
+		Pkg.Infrastructure.Common_t.TrType_t data2
+		Int64 data3
+		Boolean data4
+		Boolean data5
+		Boolean data6
+	}
+
+	struct Sa_t {
+		String name
+		String number
+		String type
+		As_t as
+		Er_t er
+		Other_t other
+		ActiveAttributes_t activeAttributes
+		EAttributes_t esmAttributes
+		ImagingAttributes_t imagingAttributes
+		String abbreviation
+	}
+
+	struct SbfInfo_t {
+		FbInfoType_t bfInfo
+		Pkg.Ct.CtCommon_t.CtD_t ctDesignator
+		Int64 bf
+	}
+
+	struct SComparison_t {
+		Boolean isReviewed
+		Pkg.Infrastructure.Infrastructure_t.Timespec_t timestamp
+		Pkg.Ct.CtCommon_t.SSourceType_t sSource
+	}
+
+	struct SLUpdate_t {
+		Boolean isTrialPromotion
+		Boolean isReplacement
+		CtLData_t [ ] solData
+		MeasurementsUsed_t [ ] measurementsUsed
+		TrDescription_t description
+	}
+
+	struct SPromotion_t {
+		String sSourceText
+		Pkg.Ct.CtCommon_t.CtD_t ct
+		Pkg.Ct.CtCommon_t.SSourceType_t sSource
+		Pkg.Ct.CtCommon_t.CtD_t referenceCt
+	}
+
+	struct SRequest_t {
+		SType_t sType
+		Pkg.Ct.CtCommon_t.SSourceType_t [ ] trialSources
+		Pkg.Ct.CtCommon_t.CtD_t ctDesignator
+		TrDescription_t description
+	}
+
+	struct SSourceDrop_t {
+		Pkg.Ct.CtCommon_t.SSourceType_t sSource
+		Pkg.Ct.CtCommon_t.CtD_t ctDesignator
+	}
+
+	struct TimeBasedAttributesInfo_t {
+		Pkg.Infrastructure.Infrastructure_t.Timespec_t timestamp
+		TbaType_t attributeType
+		Pkg.Infrastructure.Common_t.SysType_t source
+		String reference
+		Pkg.Infrastructure.Infrastructure_t.Timespec_t creationTime
+	}
+
+	struct TimeBasedAttributes_t {
+		TimeBasedAttributesInfo_t [ ] imageDataArray
+		TimeBasedAttributesInfo_t [ ] dataArray
+		TimeBasedAttributesInfo_t [ ] operatorAnnotations
+	}
+
+	struct TimeBasedUpdates_t {
+		Pkg.Infrastructure.Common_t.SysType_t subsystem
+		TimeBasedAttributesInfo_t [ ] operatorAnnotations
+		TimeBasedAttributesInfo_t [ ] imageDataArray
+		TimeBasedAttributesInfo_t [ ] sDataArray
+		Boolean isAnnotationDeleteRequest
+		Boolean isImageDataDeleteRequest
+		Boolean isSDataDeleteRequest
+	}
+
+	struct TimeLineInfo_t {
+		Pkg.Infrastructure.Infrastructure_t.Timespec_t timeLineTime
+		Pkg.Infrastructure.Common_t.SnType_t snType
+		Pkg.Ct.CtCommon_t.SType_t type1
+		Pkg.Ct.CtCommon_t.CtD_t timeLineHookedDesignator
+	}
+
+	struct TrDescription_t {
+		String name
+		Pkg.Ct.CtCommon_t.SSourceType_t yype
+		Int64 id
+	}
+
+}

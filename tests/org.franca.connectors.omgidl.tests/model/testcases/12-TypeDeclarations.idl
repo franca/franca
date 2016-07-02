@@ -1,0 +1,46 @@
+// empty interfaces with type declarations
+
+module testcase12 {
+	typedef testcase12::FooStruct FooTypeDef2;
+	struct FooStruct {
+		octet octet_member;
+		short short_member;
+		long long_member;
+		long long longlong_member;
+		unsigned short ushort_member;
+		unsigned long ulong_member;
+		unsigned long long ulonglong_member;
+		float float_member;
+		double double_member;
+		long double long_double_member;
+		char char_member;
+		wchar wchar_member;
+		string string_member;
+		wstring wstring_member;
+		boolean boolean_member;
+		any any_member;
+		Object object_member;
+		struct FooNestedStruct {
+			short short_member;
+			unsigned short ushort_member;
+		} struct_member;
+		FooUnion FooArray [4][2][3][1];
+	};
+	enum FooEnum {
+		EnumMember1,
+		EnumMember2,
+		EnumMember3
+	};
+	union FooUnion switch (short) {
+		case 0: long UnionMember1;
+		case 1: double UnionMember2;
+	};
+	typedef long FooTypeDef1;
+	
+	typedef unsigned short FooArray [4][2][3];
+	interface ExampleInterface1 {
+	};
+	
+	interface ExampleInterface2 {
+	};
+};

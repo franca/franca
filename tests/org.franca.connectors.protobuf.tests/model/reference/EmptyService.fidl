@@ -1,0 +1,4 @@
+package org.franca.connectors.protobuf.tests
+
+interface ExampleService1 {
+}

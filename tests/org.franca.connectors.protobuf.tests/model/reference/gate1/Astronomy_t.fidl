@@ -1,0 +1,58 @@
+package Pkg.Astronomy_t
+
+import model "Common_t.fidl"
+import model "Infrastructure_t.fidl"
+
+typeCollection {
+	enumeration ObjectType_t {
+		eObject_Sun = 0
+		eObject_Moon = 1
+	}
+
+	enumeration PhenomenonType_t {
+		ePhenomenon_BeginTwilight = 0
+		ePhenomenon_Rise = 1
+		ePhenomenon_Set = 2
+		ePhenomenon_EndTwilight = 3
+	}
+
+	enumeration PhenomonSpecialCondition_t {
+		ePhenomonSpecialCondition_None = 0
+		ePhenomonSpecialCondition_Condition1 = 1
+		ePhenomonSpecialCondition_Condition2 = 2
+	}
+
+	struct IlluminanceInfo_t {
+		Double data1
+		Double data2
+		Double data3
+	}
+
+	struct ObjectPhenomenaInfo_t {
+		PhenomenonInfo_t [ ] phenomena
+		PhenomonSpecialCondition_t specialCondition
+	}
+
+	struct ObservationInfo_t {
+		Pkg.Infrastructure.Infrastructure_t.Timespec_t observationTime
+		Pkg.Infrastructure.Common_t.Position_t observationLocation
+	}
+
+	struct PhenomenonInfo_t {
+		PhenomenonType_t phenomenonType
+		Pkg.Infrastructure.Infrastructure_t.Timespec_t time
+	}
+
+	struct SunMoonIlluminanceInfo_t {
+		IlluminanceInfo_t sunIlluminance
+		IlluminanceInfo_t moonIlluminance
+		ObservationInfo_t observationInfo
+	}
+
+	struct SunMoonRiseSetInfo_t {
+		ObjectPhenomenaInfo_t sunPhenomena
+		ObjectPhenomenaInfo_t moonPhenomena
+		ObservationInfo_t observationInfo
+	}
+
+}

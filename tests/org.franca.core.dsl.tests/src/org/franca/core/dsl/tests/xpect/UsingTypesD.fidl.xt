@@ -16,11 +16,11 @@ typeCollection DTC2 {
 		a.ATC.ATC_Struct_1 e3
 		ATC.ATC_Struct_1 e4
 
-		// XPECT errors --> "Type AIF_Struct_1 can only be referenced inside interface AIF or derived interfaces" at "a.AIF.AIF_Struct_1" 
+		// XPECT errors --> "Type AIF_Struct_1 is not public, thus it can only be referenced inside interface AIF or derived interfaces" at "a.AIF.AIF_Struct_1" 
 		// reference to interface in file A
 		a.AIF.AIF_Struct_1 e5
 
-		// XPECT errors --> "Type AIF_Struct_1 can only be referenced inside interface AIF or derived interfaces" at "AIF.AIF_Struct_1" 
+		// XPECT errors --> "Type AIF_Struct_1 is not public, thus it can only be referenced inside interface AIF or derived interfaces" at "AIF.AIF_Struct_1" 
 		// reference to interface in file A
 		AIF.AIF_Struct_1 e6
 	}
@@ -37,11 +37,11 @@ interface DIF2 {
 		a.ATC.ATC_Struct_1 e3
 		ATC.ATC_Struct_1 e4
 
-		// XPECT errors --> "Type AIF_Struct_1 can only be referenced inside interface AIF or derived interfaces" at "a.AIF.AIF_Struct_1" 
+		// XPECT errors --> "Type AIF_Struct_1 is not public, thus it can only be referenced inside interface AIF or derived interfaces" at "a.AIF.AIF_Struct_1" 
 		// reference to interface in file A
 		a.AIF.AIF_Struct_1 e5
 
-		// XPECT errors --> "Type AIF_Struct_1 can only be referenced inside interface AIF or derived interfaces" at "AIF.AIF_Struct_1" 
+		// XPECT errors --> "Type AIF_Struct_1 is not public, thus it can only be referenced inside interface AIF or derived interfaces" at "AIF.AIF_Struct_1" 
 		// reference to interface in file A
 		AIF.AIF_Struct_1 e6
 	}

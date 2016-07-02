@@ -1,0 +1,26 @@
+package org.franca.connectors.protobuf.tests
+
+typeCollection {
+	
+	enumeration Scalar{
+		myString = 0
+		mylong = 123456789
+		myhex = 431
+	}
+	
+	struct Request1 {
+		String string1
+		Int32 int32_1
+		UInt32 [] uint32_1
+		Scalar scalar1
+		Complex complex1
+	}
+	
+	enumeration Complex{
+		complexString = 0
+		complexLong = 12344
+		complexHex = 431
+	}
+}
+
+

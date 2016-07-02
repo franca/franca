@@ -1,0 +1,12 @@
+package de_ev
+
+import model "de.fidl"
+import model "evs.fidl"
+
+interface de_ev extends evs.TypedPushConsumer {
+	method pushDe {
+		in {
+			de.de.de_t dEntity
+		}
+	}
+}

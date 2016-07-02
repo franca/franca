@@ -1,0 +1,268 @@
+#ifndef _evc_t_idl 
+#define _evc_t_idl
+
+module evc_t 
+{
+	
+	
+	enum coordinateSelect_t 
+	{
+		geo, 
+		transverse
+		
+	}; //end enum coordinateSelect_t
+	
+	
+	typedef sequence<string> stringSeq;
+	
+	
+	typedef sequence<double> doubleSeq;
+	
+	
+	typedef sequence<octet> octetSeq;
+	
+	
+	typedef sequence<float> floatSeq;
+	
+	
+	typedef sequence<Object> objectSeq;
+	
+	
+	typedef sequence<long> longSeq;
+	
+	
+	typedef sequence<short> shortSeq;
+	
+	
+	typedef double Latitude_t;
+
+	// FIXED: missing Longitude_t
+	typedef double Longitude_t;
+	
+	
+	exception canNotAccessData 
+	{
+		
+		string reason;
+		
+	}; //end exception canNotAccessData
+	
+	
+	typedef float Depth_t;
+	
+	
+	exception writeFailed 
+	{
+		
+		string reason;
+		
+	}; //end exception writeFailed
+	
+	
+	typedef long evcData1_t;
+	
+	
+	typedef float evcData2_t;
+	
+	
+	typedef float evcData3_t;
+	
+	
+	typedef float evcData4_t;
+	
+	
+	typedef double evcData5_t;
+	
+	
+	struct timespec_t
+	{
+		
+		unsigned long tv_sec;
+		
+		long tv_nsec;
+		
+	}; //end struct timespec_t
+	
+	
+	exception notImplemented 
+	{
+		
+		string reason;
+		
+	}; //end exception notImplemented
+	
+	
+	typedef boolean validData_t;
+	
+	
+	struct flaggedDouble_t
+	{
+		
+		double data;
+		
+		validData_t valid;
+		
+	}; //end struct flaggedDouble_t
+	
+	
+	struct flaggedBoolean_t
+	{
+		
+		boolean data;
+		
+		validData_t valid;
+		
+	}; //end struct flaggedBoolean_t
+	
+	
+	struct flaggedUnsignedShort_t
+	{
+		
+		unsigned short data;
+		
+		validData_t valid;
+		
+	}; //end struct flaggedUnsignedShort_t
+	
+	
+	struct flaggedFloat_t
+	{
+		
+		float data;
+		
+		validData_t valid;
+		
+	}; //end struct flaggedFloat_t
+	
+	
+	struct flaggedShort_t
+	{
+		
+		short data;
+		
+		validData_t valid;
+		
+	}; //end struct flaggedShort_t
+	
+	
+	struct flaggedString_t
+	{
+		
+		string data;
+		
+		validData_t valid;
+		
+	}; //end struct flaggedString_t
+	
+	
+	struct flaggedUnsignedLong_t
+	{
+		
+		unsigned long data;
+		
+		validData_t valid;
+		
+	}; //end struct flaggedUnsignedLong_t
+	
+	
+	struct flaggedLong_t
+	{
+		
+		long data;
+		
+		validData_t valid;
+		
+	}; //end struct flaggedLong_t
+	
+	
+	struct flaggedStringSeq_t
+	{
+		
+		stringSeq data;
+		
+		validData_t valid;
+		
+	}; //end struct flaggedStringSeq_t
+	
+	
+	struct flaggedDoubleSeq_t
+	{
+		
+		doubleSeq data;
+		
+		validData_t valid;
+		
+	}; //end struct flaggedDoubleSeq_t
+	
+	
+	struct flaggedOctetSeq_t
+	{
+		
+		octetSeq data;
+		
+		validData_t valid;
+		
+	}; //end struct flaggedOctetSeq_t
+	
+	
+	struct flaggedfloatSeq_t
+	{
+		
+		floatSeq data;
+		
+		validData_t valid;
+		
+	}; //end struct flaggedfloatSeq_t
+	
+	struct flaggedObjectSeq_t
+	{
+		
+		objectSeq data;
+		
+		validData_t valid;
+		
+	}; //end struct flaggedObjectSeq_t
+	
+	
+	struct flaggedLongSeq_t
+	{
+		
+		longSeq data;
+		
+		validData_t valid;
+		
+	}; //end struct flaggedLongSeq_t
+	
+	
+	struct flaggedShortSeq_t
+	{
+		
+		shortSeq data;
+		
+		validData_t valid;
+		
+	}; //end struct flaggedShortSeq_t
+	
+	
+	typedef flaggedDouble_t flaggedData1_t;
+	
+	
+	typedef flaggedDouble_t flaggedData2_t;
+	
+	
+	typedef flaggedFloat_t flaggedData3_t;
+	
+	
+	typedef flaggedFloat_t flaggedData4_t;
+	
+	
+	typedef flaggedFloat_t flaggedData5_t;
+	
+	
+	typedef flaggedFloat_t flaggedData6_t;
+	
+	
+	typedef flaggedLong_t flaggedData7_t;
+	
+}; //end module evc_t
+#endif

@@ -1,0 +1,27 @@
+#ifndef _csm_t_idl 
+#define _csm_t_idl
+
+module csm_t 
+{
+	
+	enum statusTypes 
+	{
+		FAILED, 
+		OPERATIONAL
+		
+	}; //end enum statusType
+	
+	
+	struct cStatus_t
+	{
+		
+		string name;
+		
+		statusTypes newStatus;
+		
+		string amplifyingInfo;
+		
+	}; //end struct cStatus_t
+	
+}; //end module csm_t
+#endif

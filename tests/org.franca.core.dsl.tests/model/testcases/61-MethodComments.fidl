@@ -1,0 +1,50 @@
+// test interface definition with one method
+package testcases
+
+interface MyInterface {
+	<**
+		@description: This is a method comment.
+	**>
+	method callme {
+		in {
+			<**
+				@description: This is an input argument comment.
+			**>
+			Int8 param1
+		}
+		out {
+			<**
+				@description: This is an output argument comment.
+			**>
+			Int32 retcode
+		}
+	}
+
+	method withError1 {
+		<**
+			@description: This is an error enumeration comment.
+		**>
+		error {
+			<**
+				@description: This is an error enumerator comment.
+			**>
+			ERROR1
+		}
+	}
+
+	<**
+		@description: This is an enumeration comment.
+	**>
+	enumeration ErrorCodes {
+		EC1 EC2 EC3
+	}
+
+	method withError2 {
+		<**
+			@description: This is another error enumeration comment.
+		**>
+		error ErrorCodes
+	}
+
+}
+

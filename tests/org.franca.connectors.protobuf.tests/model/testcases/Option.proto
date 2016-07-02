@@ -1,0 +1,17 @@
+syntax = "proto2";
+
+package org.franca.connectors.protobuf.tests;
+
+option java_package = "org.eclipse";
+
+
+message Request1 {
+	option message_set_wire_format = true;
+	option no_standard_descriptor_accessor = true;
+	optional int32 int321 = 1 [deprecated = true ,default = 12, ctype = STRING, experimental_map_key = ""];
+	repeated int64 int641 = 2 [packed = true];
+	required int32 int322 = 3 [ctype = CORD, deprecated = false];
+	required int32 int323 = 4 [ctype = STRING_PIECE, deprecated = true];
+}
+
+

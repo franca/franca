@@ -1,0 +1,117 @@
+import "../../specification/ProtobufSpec.fdepl"
+import "../../../src-gen/testcases/gate1/Common_t.fidl"
+
+specification Pkg.Infrastructure.Common_t.Common_tSpec extends org.franca.connectors.protobuf.ProtobufSpec {
+	for interfaces {
+	}
+	for enumerators {
+	}
+}
+
+define Pkg.Infrastructure.Common_t.Common_tSpec for typeCollection Pkg.Infrastructure.Common_t{
+	struct AType {
+		data1 {
+			Tag = 1
+			FieldRule = OPTIONAL
+		}
+		data2 {
+			Tag = 2
+			FieldRule = OPTIONAL
+		}
+		data3 {
+			Tag = 3
+			FieldRule = OPTIONAL
+		}
+		data4 {
+			Tag = 4
+			FieldRule = OPTIONAL
+		}
+	}
+	struct Motion_t {
+		data1 {
+			Tag = 1
+			FieldRule = OPTIONAL
+		}
+		data2 {
+			Tag = 2
+			FieldRule = OPTIONAL
+		}
+		data3 {
+			Tag = 3
+			FieldRule = OPTIONAL
+		}
+		data4 {
+			Tag = 4
+			FieldRule = OPTIONAL
+		}
+		data5 {
+			Tag = 5
+			FieldRule = OPTIONAL
+		}
+		data6 {
+			Tag = 6
+			FieldRule = OPTIONAL
+		}
+	}
+	struct TypedData_t {
+		data {
+			Tag = 1
+			FieldRule = OPTIONAL
+		}
+		dataType {
+			Tag = 2
+			FieldRule = OPTIONAL
+		}
+	}
+	struct Color_t {
+		rvalue {
+			Tag = 1
+			FieldRule = OPTIONAL
+		}
+		gvalue {
+			Tag = 2
+			FieldRule = OPTIONAL
+		}
+		bvalue {
+			Tag = 3
+			FieldRule = OPTIONAL
+		}
+	}
+	struct AuthenticationInfo_t {
+		userToken {
+			Tag = 1
+			FieldRule = OPTIONAL
+		}
+		userGroups {
+			Tag = 2
+			FieldRule = REPEATED
+		}
+	}
+	struct Position_t {
+		latitude {
+			Tag = 1
+			FieldRule = OPTIONAL
+		}
+		longitude {
+			Tag = 2
+			FieldRule = OPTIONAL
+		}
+	}
+	struct DaType {
+		daType1 {
+			Tag = 1
+			FieldRule = OPTIONAL
+		}
+		daType2 {
+			Tag = 2
+			FieldRule = OPTIONAL
+		}
+		daType3 {
+			Tag = 3
+			FieldRule = OPTIONAL
+		}
+	}
+}
+define Pkg.Infrastructure.Common_t.Common_tSpec for interface Pkg.Infrastructure.Common_t.FileOption{
+	Java_package = Pkg.Infrastructure
+}

@@ -1,0 +1,282 @@
+/** **************************************************************************
+ * FRANCA ALL AVAILABLE CONNECTORS AND GENERATORS
+ *
+ * 2016-04-26 kbirken, initial version
+ *
+ * ************************************************************************** */
+ 
+// relative path for generation of diagrams from this model
+generate_to = "../src/images-gen"
+
+
+// **************************************************************************
+
+// the Franca plugins
+plugin org.franca.core
+plugin org.franca.generators
+
+// DBus Introspection IDL
+plugin model.emf.dbusxml
+//plugin dbus_generators_somewhere
+plugin org.franca.connectors.dbus
+
+// OMG IDL (aka CORBA)
+plugin idl4emf // org.csu.idl
+//plugin omgidl_generators_somewhere
+plugin org.franca.connectors.omgidl
+
+// Google Protobuf
+plugin protobuf_dt // com.google.eclipse.protobuf
+//plugin protobuf_generators_somewhere
+plugin org.franca.connectors.protobuf
+
+// UML integration (Yamaica...)
+plugin yamaica // some.uml.ea.bridge
+
+// WebIDL
+//plugin org.franca.connectors.webidl
+
+// IoNAS (for AUTOSAR)
+plugin org.artop.core
+plugin org.autosar.ionas
+
+// ROOM / eTrice integration 
+//plugin org.eclipse.etrice.core.room
+//plugin org.eclipse.etrice.generator
+//plugin org.franca.connectors.etrice
+
+// CommonAPI
+plugin org.genivi.commonapi.cpp
+plugin org.genivi.commonapi.c
+
+
+// **************************************************************************
+
+model Franca_IDL {
+	purpose "Central IDL model"
+	file franca.ecore
+	in org.franca.core
+}
+
+model DBus_IDL {
+	purpose "D-Bus Introspection XML"
+	file introspec.ecore
+	in model.emf.dbusxml
+}
+
+model OMG_IDL {
+	purpose "OMG IDL (aka CORBA)"
+	file IDLMM.ecore
+	in idl4emf
+}
+
+model Protobuf {
+	purpose "Google Protobuf"
+	file Protobuf.ecore
+	in protobuf_dt
+}
+
+model UML {
+	purpose "EA UML (with profile)"
+	file bridge_to_EA
+	in yamaica
+}
+
+//model WebIDL {
+//	purpose "W3C WebIDL"
+//	file org.waml.w3c.webidl
+//	in org.franca.connectors.webidl
+//}
+
+//model DSI_IDL {
+//	purpose "DSI IDL (hbsi format)"
+//	file serviceinterface.ecore
+//	in com.harmanbecker.sys.dsi.model.internal
+//}
+
+//model ROOM_IDL {
+//	purpose "ROOM model (eTrice format)"
+//	file serviceinterface.ecore
+//	in org.eclipse.etrice.core.room
+//}
+
+
+// **************************************************************************
+
+//model FIBEX_IDL {
+//	purpose "FIBEX IDL (Ethernet-based subset)"
+//	file fbex.ecore
+//	in ics.lipci.metamodels.fibex
+//}
+
+//model FIBEX_Services {
+//	purpose "FIBEX Services XML"
+//	file services.ecore
+//	in ics.lipci.metamodels.fibex
+//}
+
+//model FIBEX_IT {
+//	purpose "FIBEX IT"
+//	file it.ecore
+//	in ics.lipci.metamodels.fibex
+//}
+//
+//model FIBEX_XML {
+//	purpose "FIBEX XML"
+//	file xml.ecore
+//	in ics.lipci.metamodels.fibex
+//}
+
+
+// **************************************************************************
+
+model AUTOSAR {
+	purpose "ARXML model (artop.org)"
+	file autosar.ecore
+	in org.franca.connectors.autosar
+}
+
+// **************************************************************************
+
+transformation DBus2FrancaTrafo {
+	source DBus_IDL
+	target Franca_IDL
+	in org.franca.connectors.dbus
+	reverse Franca2DBusTrafo
+}
+
+transformation OMGIDLFrancaTrafo {
+	source OMG_IDL
+	target Franca_IDL
+	in org.franca.connectors.omgidl
+	//reverse Franca2OMGIDLTrafo
+}
+
+transformation Protobuf2FrancaTrafo {
+	source Protobuf
+	target Franca_IDL
+	in org.franca.connectors.protobuf
+	//reverse Franca2ProtobufTrafo
+}
+
+
+transformation UML2FrancaTrafo {
+	source UML
+	target Franca_IDL
+	in some.uml.ea.bridge
+	reverse Franca2UMLTrafo
+}
+
+//transformation WebIDL2FrancaTrafo {
+//	source WebIDL
+//	target Franca_IDL
+//	in org.franca.connectors.webidl
+//	reverse Franca2WebIDLTrafo
+//}
+
+//transformation DSI2FrancaTrafo {
+//	source DSI_IDL
+//	target Franca_IDL
+//	in org.franca.connectors.dsi
+//	reverse Franca2DSITrafo
+//}
+
+//transformation FIBEX2FrancaTrafo {
+//	source FIBEX_Services
+//	target Franca_IDL
+//	in org.franca.connectors.fibex
+//	reverse Franca2FIBEXTrafo
+//}
+
+transformation AUTOSAR2FrancaTrafo {
+	source AUTOSAR
+	target Franca_IDL
+	in org.franca.connectors.autosar
+	reverse Franca2AUTOSARTrafo
+}
+
+//transformation Franca2ETriceTrafo {
+//	source Franca_IDL
+//	target ROOM_IDL
+//	in org.franca.connectors.etrice
+//}
+
+
+// **************************************************************************
+
+generator CommonAPI_Cpp {
+	source Franca_IDL
+	output "CommonAPI C++"
+	in org.genivi.commonapi.cpp
+}
+
+generator CommonAPI_C {
+	source Franca_IDL
+	output "CommonAPI C"
+	in org.genivi.commonapi.c
+}
+
+//generator FrancaAPI_Java {
+//	source Franca_IDL
+//	output "Java API for Franca"
+//	in org.franca.generators
+//}
+
+generator FrancaAPI_JavaScript {
+	source Franca_IDL
+	output "HTML5 UIs: Websocket layer"
+	in org.franca.generators
+}
+
+generator FrancaAPI_joynr {
+	source Franca_IDL
+	output "Code for joynr platform"
+	in some.unknown.generators
+}
+
+//generator FrancaAPI_Cpp {
+//	source Franca_IDL
+//	output "C++ API for Franca"
+//	in org.franca.generators
+//}
+
+//generator FrancaAPI_SOME_IP {
+//	source Franca_IDL
+//	output "SOME/IP binding for Franca"
+//	in some.unknown.generators
+//}
+
+//generator INC_Cpp_Binding {
+//	source Franca_IDL
+//	output "INC/C++ Binding"
+//	in org.franca.generators
+//}
+
+//generator FrancaAPI_HTML {
+//	source Franca_IDL
+//	output "HTML documentation for API"
+//	in org.franca.generators
+//}
+//
+
+//generator DSI_API_MoCCA {
+//	source DSI_IDL
+//	output "MoCCA/C++ API for DSI"
+//	in com.harman.sys.dsi.generators
+//}
+//
+//generator DBus_Qt_Binding {
+//	source DBus_IDL
+//	output "Qt binding for DBus APIs"
+//	in dbus_generators_somewhere
+//}
+
+//generator ROOM_Projects {
+//	source ROOM_IDL
+//	output "Java/C/C++ code for executable eTrice models"
+//	in org.eclipse.etrice.generator
+//}
+
+
+
+// **************************************************************************

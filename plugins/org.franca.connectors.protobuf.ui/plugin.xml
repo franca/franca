@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            id="org.franca.connectors.protobuf.ui.gen_franca"
+            name="Franca generation handler">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="org.franca.connectors.protobuf.ui.UIExecutableExtensionFactory:org.franca.connectors.protobuf.ui.handlers.CreateFrancaFromProtobufHandler"
+            commandId="org.franca.connectors.protobuf.ui.gen_franca">
+      </handler>
+   </extension>
+	<extension
+         point="org.eclipse.core.expressions.definitions">
+      <definition
+            id="org.franca.connectors.protobuf.ui.proto">
+         <with
+               variable="selection">
+            <iterate
+                  ifEmpty="false">
+               <adapt
+                     type="org.eclipse.core.resources.IFile">
+                  <test
+                        property="org.eclipse.core.resources.name"
+                        value="*.proto">
+                  </test>
+               </adapt>
+            </iterate>
+         </with>
+      </definition>
+      </extension>
+ <extension
+       point="org.eclipse.ui.menus">
+    <menuContribution
+          allPopups="false"
+          locationURI="popup:org.franca.core.dsl.ui.francamenu?after=additions">
+          <command
+                commandId="org.franca.connectors.protobuf.ui.gen_franca"
+                label="Create Franca model from Protobuf file"
+                style="push">
+             <visibleWhen
+                   checkEnabled="false">
+                <reference
+                      definitionId="org.franca.connectors.protobuf.ui.proto">
+                </reference>
+             </visibleWhen>
+          </command>
+    </menuContribution>
+ </extension>
+
+</plugin>

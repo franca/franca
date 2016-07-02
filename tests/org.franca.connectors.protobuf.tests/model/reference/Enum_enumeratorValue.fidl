@@ -1,0 +1,10 @@
+package org.franca.connectors.protobuf.tests
+
+typeCollection {
+	enumeration Scalar {
+		myString = 0
+		mylong = -123456789
+		myhex = 431
+	}
+
+}

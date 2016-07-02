@@ -1,0 +1,99 @@
+// XPECT_SETUP org.franca.core.dsl.tests.xpect.FrancaIDLXpectTests END_SETUP
+package f
+
+interface InterfaceWithPublic {
+	public struct publicStruct {
+		Boolean someType
+	}
+
+	public union publicUnion {
+		Float someType
+	}
+
+	public array publicArray of Double
+
+	public enumeration publicEnum {
+		first
+		second
+		third
+	}
+
+	public map publicMap {
+		Boolean to Float
+	}
+
+	public typedef publicTypeDef is String
+
+	struct privateStruct {
+		Boolean someType
+	}
+
+	union privateUnion {
+		Float someType
+	}
+
+	array privateArray of Double
+
+	enumeration privateEnum {
+		first
+		second
+		third
+	}
+
+	map privateMap {
+		Boolean to Float
+	}
+
+	typedef privateTypedef is String
+
+}
+
+typeCollection SomeTypeCollection {
+
+	// XPECT errors  --> "Misplaced 'public', types are always visible in type collections" at "public" 
+	public array ArrayInTC of String
+	
+	// XPECT errors  --> "Misplaced 'public', types are always visible in type collections" at "public" 
+	public struct StructInTC {
+		UInt16 elem1
+	}
+	
+	// XPECT errors  --> "Misplaced 'public', types are always visible in type collections" at "public" 
+	public union UnionInTC {
+		UInt16 elem1
+		String elem2
+	}
+	
+	// XPECT errors  --> "Misplaced 'public', types are always visible in type collections" at "public" 
+	public map MapInTC { String to UInt32 } 
+}
+
+
+interface ReferringInterface {
+	// XPECT noIssues ---> "attribute is referencing a type InterfaceWithPublic.publicUnion which is public"
+	attribute InterfaceWithPublic.publicUnion noError
+	// XPECT  errors  ---> "Type privateArray is not public, thus it can only be referenced inside interface InterfaceWithPublic or derived interfaces" at "InterfaceWithPublic.privateArray"
+	attribute InterfaceWithPublic.privateArray errorArray
+
+	// XPECT  errors  ---> "Type privateEnum is not public, thus it can only be referenced inside interface InterfaceWithPublic or derived interfaces" at "InterfaceWithPublic.privateEnum"
+	attribute InterfaceWithPublic.privateEnum errorEnum
+
+	 
+	// XPECT  errors  ---> "Type privateMap is not public, thus it can only be referenced inside interface InterfaceWithPublic or derived interfaces" at "InterfaceWithPublic.privateMap"
+	attribute InterfaceWithPublic.privateMap errorMap
+	 
+	// XPECT  errors  ---> "Type privateStruct is not public, thus it can only be referenced inside interface InterfaceWithPublic or derived interfaces" at "InterfaceWithPublic.privateStruct"
+	attribute InterfaceWithPublic.privateStruct errorStruct
+	 
+	// XPECT  errors  ---> "Type privateTypedef is not public, thus it can only be referenced inside interface InterfaceWithPublic or derived interfaces" at "InterfaceWithPublic.privateTypedef"
+	attribute InterfaceWithPublic.privateTypedef errorType
+	 
+	
+	 
+	// XPECT  noIssues  ---> "attribute is referencing a type InterfaceWithPublic.publicEnum which is public"
+	attribute InterfaceWithPublic.publicEnum publicEnum
+	 
+	// XPECT  noIssues  ---> "attribute is referencing a type InterfaceWithPublic.publicArray which is public"
+	attribute InterfaceWithPublic.publicArray publicArray
+	 
+}

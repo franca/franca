@@ -1,40 +1,15 @@
-
 package org.example.idl
 
-
 typeCollection type {
-	
 	const Boolean bool = false
 }
+
 interface MQTT3 {
-	
 	attribute Boolean boolu 
 	
 	method CONNECT_CONNACK { 
-		
 		in { Flag req  }
-		
 	} 
 
-
-	
-
-	
-
 	typedef Flag is Integer(0,1)
-	
-	
-	
-	}
-		
-
-
-
-
-	
-	
-
-	
-	 
 }
-

@@ -1,0 +1,6 @@
+// empty interface testcase 
+
+module testcase10 {
+	interface ExampleInterface {
+	};
+};

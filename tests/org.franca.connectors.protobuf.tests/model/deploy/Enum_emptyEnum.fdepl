@@ -1,0 +1,8 @@
+import "../../src-gen/testcases/"
+import "../specification/ProtobufSpec.fdeplEnum_emptyEnum.fidl"
+
+specification org.franca.connectors.protobuf.tests.Enum_emptyEnumSpec extends org.franca.connectors.protobuf.ProtobufSpec {
+}
+
+define org.franca.connectors.protobuf.tests.Enum_emptyEnumSpec for typeCollection org.franca.connectors.protobuf.tests{
+}

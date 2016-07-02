@@ -1,0 +1,521 @@
+package Pkg.Misc.Overlay_t
+
+import model "Common_t.fidl"
+import model "CtCommon_t.fidl"
+import model "Infrastructure_t.fidl"
+
+typeCollection {
+	enumeration ApplyBoundaryType_t {
+		eApplyBoundary_Unknown = 0
+		eApplyBoundary_1 = 1
+		eApplyBoundary_2 = 2
+		eApplyBoundary_3 = 3
+	}
+
+	enumeration ChangeType_t {
+		eChange_Unknown = 0
+		eChange_New = 1
+		eChange_Update = 2
+		eChange_Delete = 3
+	}
+
+	enumeration ComponentType_t {
+		eComponent_Unknown = 0
+		eComponent_Arc = 1
+		eComponent_ConnectedVectors = 2
+		eComponent_ExpandingCircle = 3
+		eComponent_FourW = 4
+		eComponent_Image = 5
+		eComponent_LineSegments = 6
+		eComponent_Points = 8
+		eComponent_Polygon = 9
+		eComponent_Rectangle = 10
+		eComponent_Sector = 11
+		eComponent_Skylight = 12
+		eComponent_Stovepipe = 13
+		eComponent_Text = 14
+		eComponent_Tooltip = 15
+	}
+
+	enumeration DZoneType_t {
+		eDZone_Unknown = 0
+		eDZone_SM = 1
+		eDZone_MMn = 2
+		eDZone_MMx = 4
+		eDZone_DMn = 8
+		eDZone_DMx = 16
+	}
+
+	enumeration FillStyleType_t {
+		eFillStyle_Unknown = 0
+		eFillStyle_None = 1
+		eFillStyle_Solid = 2
+		eFillStyle_SmallDots = 3
+		eFillStyle_MediumDots = 4
+		eFillStyle_LargeDots = 5
+		eFillStyle_Vertical = 6
+		eFillStyle_Horizontal = 7
+		eFillStyle_DiagonalLeft = 8
+		eFillStyle_DiagonalRight = 9
+		eFillStyle_CrossHatched = 10
+		eFillStyle_Grid = 11
+		eFillStyle_EmptyCircle = 12
+		eFillStyle_SolidCircle = 13
+		eFillStyle_HookCircle = 14
+		eFillStyle_VCircle = 15
+		eFillStyle_Smile = 16
+	}
+
+	enumeration FontSizeType_t {
+		eFontSize_Unknown = 0
+		eFontSize_8 = 1
+		eFontSize_10 = 2
+		eFontSize_12 = 3
+		eFontSize_14 = 4
+		eFontSize_16 = 5
+		eFontSize_18 = 6
+		eFontSize_20 = 7
+	}
+
+	enumeration FontType_t {
+		eFont_Unknown = 0
+		eFont_Bitstream = 1
+		eFont_Courier = 2
+		eFont_Helvetica = 3
+		eFont_Lucida = 4
+		eFont_Schoolbook = 5
+		eFont_Times = 6
+		eFont_Standard = 7
+		eFont_StandardCaps = 8
+		eFont_Italic = 9
+		eFont_Bold = 10
+	}
+
+	enumeration GroupType_t {
+		eGroup_Unknown = 0
+		eGroup_Group = 1
+		eGroup_Overlay = 2
+	}
+
+	enumeration HorizontalAlignmentType_t {
+		eHorizontalAlignment_Unknown = 0
+		eHorizontalAlignment_Center = 1
+		eHorizontalAlignment_Left = 2
+		eHorizontalAlignment_Right = 3
+	}
+
+	enumeration ImagePointType_t {
+		eImagePoint_Unknown = 0
+		eImagePoint_Gridded = 1
+		eImagePoint_Geodetic = 2
+	}
+
+	enumeration LineStyleType_t {
+		eLineStyle_Unknown = 0
+		eLineStyle_None = 1
+		eLineStyle_Solid = 2
+		eLineStyle_Dashed = 3
+		eLineStyle_DoubleDashed = 4
+		eLineStyle_DashedDots = 5
+		eLineStyle_SmallDots = 6
+		eLineStyle_MediumDots = 7
+		eLineStyle_LargeDots = 8
+		eLineStyle_CrossHatched = 9
+		eLineStyle_DiagonalLeft = 10
+		eLineStyle_DiagonalRight = 11
+	}
+
+	enumeration PositionType_t {
+		ePosition_LatLon = 0
+		ePosition_Screen = 1
+		ePosition_Relative = 2
+	}
+
+	enumeration ReferenceType_t {
+		eReference_Unknown = 0
+		eReference_LatLon = 1
+		eReference_Screen = 2
+		eReference_Relative = 3
+	}
+
+	enumeration SourceType_t {
+		eSource_Unknown = 0
+		eSource_1 = 1
+		eSource_2 = 2
+		eSource_3 = 3
+		eSource_4 = 4
+		eSource_5 = 5
+		eSource_6 = 6
+		eSource_7 = 7
+		eSource_8 = 8
+		eSource_9 = 9
+		eSource_10 = 10
+		eSource_11 = 11
+		eSource_12 = 12
+		eSource_13 = 13
+		eSource_14 = 14
+		eSource_15 = 16
+		eSource_16 = 17
+	}
+
+	enumeration TiedToType_t {
+		eTiedTo_Unknown = 0
+		eTiedTo_1 = 1
+		eTiedTo_2 = 2
+		eTiedTo_3 = 3
+	}
+
+	enumeration TooltipBehaviorType_t {
+		eTooltipBehavior_Unknown = 0
+		eTooltipBehavior_Mouseover = 1
+		eTooltipBehavior_Selection = 2
+	}
+
+	enumeration TooltipType_t {
+		eTooltip_Unknown = 0
+		eTooltip_Text = 1
+		eTooltip_Image = 2
+	}
+
+	enumeration VerticalAlignmentType_t {
+		eVerticalAlignment_Unknown = 0
+		eVerticalAlignment_Center = 1
+		eVerticalAlignment_Top = 2
+		eVerticalAlignment_Bottom = 3
+	}
+
+	struct ArcData_t {
+		Double angleOne
+		Double angleTwo
+		Double length
+		Double width
+		PositionUnion_t centerPoint
+	}
+
+	struct ClosedShapeAttributes_t {
+		Pkg.Infrastructure.Common_t.Color_t color
+		LineAttributes_t lineAttributes
+		FillStyleType_t fillStyle
+	}
+
+	struct ComponentArc_t {
+		ArcData_t arcData
+		ClosedShapeAttributes_t attributes
+	}
+
+	struct ComponentConnectedVectors_t {
+		LineAttributes_t attributes
+		PositionUnion_t [ ] points
+	}
+
+	struct ComponentExpandingCircle_t {
+		Pkg.Infrastructure.Infrastructure_t.Timespec_t startTime
+		Double diameter
+		Double expansionRate
+		PositionUnion_t upperLeft
+		ClosedShapeAttributes_t attributes
+	}
+
+	struct ComponentGr_t {
+		LineAttributes_t attributes
+		TextAttributes_t textAttributes
+		Pkg.Infrastructure.Common_t.Position_t center
+		GrCellPosition_t referenceCell
+		Double cellDistance
+		Int64 numCells
+		GrAssignment_t [ ] assignments
+	}
+
+	struct ComponentHeader_t {
+		Int64 id
+		Int64 parentId
+		String name
+		Boolean isLocalOverride
+		PositionUnion_t localReference
+		Double orientation
+		Int64 tooltipId
+	}
+
+	struct ComponentImage_t {
+		ByteBuffer data
+		ImagePointType_t type
+		GriddedImagePoint_t griddedPoint
+		GeodeticImagePoint_t geodeticPoint
+	}
+
+	struct ComponentLineSegments_t {
+		LineAttributes_t attributes
+		LineSegmentData_t [ ] segments
+	}
+
+	struct CoArea_t {
+		PositionUnion_t [ ] points
+		ClosedShapeAttributes_t attributes
+		ApplyBoundaryType_t boundaryAppliesTo
+		Double boundaryDistance
+	}
+
+	struct ComponentPoints_t {
+		Pkg.Infrastructure.Common_t.Color_t color
+		PositionUnion_t [ ] points
+		Int64 size
+	}
+
+	struct ComponentPolygon_t {
+		ClosedShapeAttributes_t attributes
+		PositionUnion_t [ ] points
+	}
+
+	struct ComponentRectangle_t {
+		ClosedShapeAttributes_t attributes
+		Double length
+		Double width
+		PositionUnion_t centerPoint
+	}
+
+	struct ComponentSector_t {
+		ClosedShapeAttributes_t attributes
+		ArcData_t arcData
+		Double innerRadius
+	}
+
+	struct ComponentSkylight_t {
+		Boolean isInterior
+		PositionUnion_t upperLeft
+		PositionUnion_t lowerRight
+		ClosedShapeAttributes_t attributes
+		ApplyBoundaryType_t boundaryAppliesTo
+		Double boundaryDistance
+	}
+
+	struct ComponentStovepipe_t {
+		Boolean isInterior
+		PositionUnion_t point
+		Double diameter
+		ClosedShapeAttributes_t attributes
+		ApplyBoundaryType_t boundaryAppliesTo
+		Double boundaryDistance
+	}
+
+	struct ComponentText_t {
+		TextAttributes_t attributes
+		PositionUnion_t point
+		String text
+	}
+
+	struct ComponentTooltip_t {
+		TooltipBehaviorType_t behavior
+		TooltipType_t type
+		TooltipText_t [ ] textData
+		ByteBuffer imageData
+	}
+
+	struct ComponentType_t {
+		LineAttributes_t attributes
+		LData_t [ ] compData
+	}
+
+	struct Component_t {
+		ComponentHeader_t header
+		ComponentType_t type
+		ComponentArc_t arc
+		ComponentConnectedVectors_t vectors
+		ComponentExpandingCircle_t expandingCircle
+		ComponentGr_t data
+		ComponentImage_t image
+		ComponentLineSegments_t segments
+		CoArea_t area
+		ComponentSkylight_t skylight
+		ComponentStovepipe_t stovepipe
+		ComponentPoints_t points
+		ComponentPolygon_t polygon
+		ComponentRectangle_t rectangle
+		ComponentSector_t sector
+		ComponentText_t text
+		ComponentTooltip_t tooltip
+		ComponentType_t data1
+	}
+
+	struct GrAssignmentGeometry_t {
+		ClosedShapeAttributes_t attributes
+		GrLabel_t label
+		Double buffer
+		Pkg.Infrastructure.Common_t.Position_t [ ] points
+	}
+
+	struct GrAssignment_t {
+		String id
+		ClosedShapeAttributes_t attributes
+		Double buffer
+		String label
+		GrCellPosition_t lowerLeft
+		GrCellPosition_t upperRight
+	}
+
+	struct GrCellPosition_t {
+		String row
+		String column
+	}
+
+	struct GrGeometry_t {
+		LineAttributes_t attributes
+		LineSegmentData_t [ ] horizontalLines
+		GrLabel_t [ ] horizontalLabels
+		LineSegmentData_t [ ] verticalLines
+		GrLabel_t [ ] verticalLabels
+		GrAssignmentGeometry_t [ ] assignments
+	}
+
+	struct GrLabel_t {
+		String label
+		TextAttributes_t attributes
+		Pkg.Infrastructure.Common_t.Position_t position
+	}
+
+	struct GeodeticImagePoint_t {
+		Pkg.Infrastructure.Common_t.Position_t upperLeft
+		Pkg.Infrastructure.Common_t.Position_t lowerRight
+	}
+
+	struct GriddedImagePoint_t {
+		Pkg.Infrastructure.Common_t.Position_t center
+		Double yardsPerPixelX
+		Double yardsPerPixelY
+	}
+
+	struct GroupChange_t {
+		Group_t group
+		ChangeType_t changeType
+	}
+
+	struct GroupKey_t {
+		OverlayKey_t key
+		GroupType_t groupType
+		OverlayKey_t parentKey
+	}
+
+	struct Group_t {
+		GroupKey_t key
+		String category
+		Pkg.Infrastructure.Common_t.Color_t nameColor
+		Double rotation
+		Boolean isTeamTraining
+		Boolean isEditable
+	}
+
+	struct HvData_t {
+		Double boundary
+		Double distanceAhead
+		Double distanceBehind
+		Double distanceLeft
+		Double distanceRight
+		Double max
+		Double min
+		ClosedShapeAttributes_t attributes
+	}
+
+	struct HvGeometry_t {
+		Pkg.Infrastructure.Common_t.Position_t [ ] hvPoints
+		ClosedShapeAttributes_t hvAttributes
+		Pkg.Infrastructure.Common_t.Position_t [ ] boundaryPoints
+		LineAttributes_t boundaryAttributes
+	}
+
+	struct LData_t {
+		Pkg.Infrastructure.Common_t.Position_t startPosition
+		Pkg.Infrastructure.Common_t.Position_t endPosition
+		Pkg.Infrastructure.Infrastructure_t.Timespec_t startTime
+		Pkg.Infrastructure.Infrastructure_t.Timespec_t endTime
+		HvData_t hvData
+	}
+
+	struct LineAttributes_t {
+		Pkg.Infrastructure.Common_t.Color_t color
+		LineStyleType_t style
+		Int64 width
+	}
+
+	struct LineSegmentData_t {
+		PositionUnion_t startPosition
+		PositionUnion_t endPosition
+	}
+
+	struct OverlayChange_t {
+		Overlay_t overlay
+		ChangeType_t changeType
+	}
+
+	struct OverlayKey_t {
+		String name
+		SourceType_t source
+	}
+
+	struct Overlay_t {
+		Boolean flag1
+		Pkg.Infrastructure.Infrastructure_t.Timespec_t timestamp
+		Boolean isEditable
+		OverlayKey_t key
+		ReferenceType_t referenceType
+		Boolean isForced
+		Boolean isLocked
+		Boolean isDeletable
+		Boolean isTeamTraining
+		String category
+		String description
+		Pkg.Infrastructure.Common_t.Position_t reference
+		RelativePosition_t cartesianOffset
+		Pkg.Infrastructure.Common_t.Color_t nameColor
+		TiedToType_t tiedToType
+		Component_t [ ] component
+		String overlaySelectionName
+		TiedToInformation_t tiedToInformation
+	}
+
+	struct PositionUnion_t {
+		PositionType_t type
+		Pkg.Infrastructure.Common_t.Position_t latlon
+		RelativePosition_t relativeXY
+		ScreenPosition_t screen
+	}
+
+	struct RelativePosition_t {
+		Double xValue
+		Double yValue
+	}
+
+	struct ScreenPosition_t {
+		Int64 xValue
+		Int64 yValue
+	}
+
+	struct TextAttributes_t {
+		Pkg.Infrastructure.Common_t.Color_t color
+		FontType_t fontType
+		FontSizeType_t fontSize
+		HorizontalAlignmentType_t horizontalAlignment
+		Pkg.Infrastructure.Common_t.Color_t backgroundColor
+	}
+
+	struct TiedToCtInformation_t {
+		Pkg.Ct.CtCommon_t.CtPrefixType_t ctPrefix
+		Int64 ctNumber
+	}
+
+	struct TiedToInformation_t {
+		TiedToCtInformation_t tiedToCt
+		undefined tiedTo
+	}
+
+	struct TiedToInformation_t {
+		Int64 id
+		OverlayKey_t overlayKey
+	}
+
+	struct TooltipText_t {
+		TextAttributes_t attributes
+		String label
+		String title
+		String value
+	}
+
+}

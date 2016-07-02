@@ -1,0 +1,43 @@
+
+
+
+
+
+///////////////////////////////// Package Information //////////////////////////
+package Pkg.HME.M_Service.Mt_rr;
+option java_package =  "Pkg.HME.Mt_Service";
+
+///////////////////////////////// Import Information ///////////////////////////
+import "Mt_t.proto";
+
+///////////////////////////////// Enumerations /////////////////////////////////
+
+
+enum majorVersion
+{
+   eMajorVersion = 2;
+}
+
+
+enum minorVersion
+{
+   eMinorVersion = 0;
+}
+		
+///////////////////////////////// Messages /////////////////////////////////////
+
+
+message getAllRequest
+{	
+   
+   optional sint64 unused = 1;
+}
+
+
+message getAllReply
+{	
+   
+   optional Pkg.HME.Mt_t.mtReport_t info = 1;
+}
+
+	

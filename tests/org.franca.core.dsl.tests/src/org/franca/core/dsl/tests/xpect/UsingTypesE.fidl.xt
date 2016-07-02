@@ -11,7 +11,7 @@ interface EIF1 {
 		// type reference to derived interface
 		EIF2_Struct_2 e1
 
-		// XPECT errors --> "Type EIF2_Struct_2 can only be referenced inside interface EIF2 or derived interfaces" at "EIF2.EIF2_Struct_2" 
+		// XPECT errors --> "Type EIF2_Struct_2 is not public, thus it can only be referenced inside interface EIF2 or derived interfaces" at "EIF2.EIF2_Struct_2" 
 		// type reference to derived interface (via qualified name)
 		EIF2.EIF2_Struct_2 e2
 	}

@@ -1,0 +1,14 @@
+#ifndef _bn_ev_idl 
+#define _bn_ev_idl
+
+#include "bn_t.idl"
+#include "evs.idl"
+
+
+interface bn_ev : CosTypedEventComm::TypedPushConsumer
+{
+	oneway void dataUpdateEvent( in bn_t::os_t updateData );
+	
+}; //end interface bn_ev
+#endif
+

@@ -1,0 +1,11 @@
+package bn_ev
+import model "bn_t.fidl"
+import model "evs.fidl"
+
+interface bn_ev extends evs.TypedPushConsumer {
+	method dataUpdateEvent {
+		in {
+			bn_t.os_t updateData
+		}
+	}
+}

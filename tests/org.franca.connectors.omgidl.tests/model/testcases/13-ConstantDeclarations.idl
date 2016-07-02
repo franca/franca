@@ -1,0 +1,22 @@
+// constant declarations
+
+module testcase13 {
+	enum FooEnum {
+		EnumMember1,
+		EnumMember2,
+		EnumMember3
+	};
+	const long FooConstLong1 = 15;
+	const long FooConstLong2 = (-1+3)*2/(5-4);
+	const short FooConstHex = 0x23af;
+	const string FooConstString1 = "";
+	const string FooConstString2 = "Stringfoobar";
+	const wstring FooConstWString = L"WideStringfoobar";
+	const float FooConstFloat = 1.1d;
+	const double FooConstDouble = 2D;
+	const long double FooConstLongDouble = .52D;
+	const boolean FooConstBoolean1 = TRUE;
+	const boolean FooConstBoolean2 = FALSE;
+	const boolean FooConstBoolean3 = FooConstBoolean1 & (FooConstBoolean2 | FooConstBoolean1);
+	const FooEnum FooConstEnum = EnumMember3;
+};

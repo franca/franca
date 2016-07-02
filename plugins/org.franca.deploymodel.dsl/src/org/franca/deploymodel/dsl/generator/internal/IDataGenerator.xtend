@@ -27,7 +27,7 @@ class IDataGenerator extends AccessMethodGenerator {
 		public interface IDataPropertyAccessor
 			extends Enums«IF spec.base!=null», «spec.base.qualifiedClassname».IDataPropertyAccessor«ENDIF»
 		{
-			«spec.generateAccessMethods(false)»
+			«spec.generateAccessMethods(false, new CodeContext)»
 			
 			«genHelpForGetOverwriteAccessor("FField", "obj")»
 			«addNeededFrancaType("FField")»

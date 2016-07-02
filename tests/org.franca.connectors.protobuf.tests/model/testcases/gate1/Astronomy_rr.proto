@@ -1,0 +1,42 @@
+package Pkg.Astronomy_rr;
+option java_package =  "Pkg.Astronomy";
+
+import "Astronomy_t.proto";
+
+enum majorVersion
+{
+   eMajorVersion = 3;
+}
+
+enum minorVersion
+{
+   eMinorVersion = 0;
+}
+		
+///////////////////////////////// Messages /////////////////////////////////////
+
+
+message getSunMoonIlluminanceRequest
+{	
+   repeated Pkg.Astronomy_t.observationInfo_t observationInfo = 1;
+}
+
+message getSunMoonIlluminanceReply
+{	
+   
+   repeated Pkg.Astronomy_t.sunMoonIlluminanceInfo_t sunMoonIlluminanceInfo = 1;
+}
+
+
+message getSunMoonRiseSetRequest
+{	
+   repeated Pkg.Astronomy_t.observationInfo_t observationInfo = 1;
+}
+
+message getSunMoonRiseSetReply
+{	
+   
+   repeated Pkg.Astronomy_t.sunMoonRiseSetInfo_t riseSetInfo = 1;
+}
+
+	

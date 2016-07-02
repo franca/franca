@@ -1,0 +1,39 @@
+#ifndef _de_idl 
+#define _de_idl
+
+#include "evc_t.idl"
+
+
+interface de
+{
+	
+	enum state_t 
+	{
+		
+		ded, 
+		
+		nde, 
+		
+		invalid
+		
+	}; //end enum state_t
+	
+	struct de_t
+	{
+		
+		string name;
+		
+		de::state_t deState;
+		
+		evc_t::timespec_t timeStamp;
+		
+	}; //end struct de_t
+	
+	readonly attribute string name;
+	
+	readonly attribute de::state_t deState;
+	
+	de::de_t getDeData(  ) raises (evc_t::canNotAccessData);// raises ... is added to test the exception with at least one field
+	
+}; //end interface de
+#endif

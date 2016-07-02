@@ -1,0 +1,14 @@
+package org.franca.connectors.protobuf.tests
+
+typeCollection {
+	
+	struct Foo polymorphic {
+	}
+	
+	struct Baz polymorphic {
+	}
+	
+	struct Foo_0 extends Foo {
+		Baz foo_ext
+	}
+}

@@ -1,0 +1,76 @@
+import "../../src-gen/testcases/"
+import "../specification/ProtobufSpec.fdeplMessageWithComplexType.fidl"
+
+specification org.franca.connectors.protobuf.tests.MessageWithComplexTypeSpec extends org.franca.connectors.protobuf.ProtobufSpec {
+	for enumerators {
+	}
+}
+
+define org.franca.connectors.protobuf.tests.MessageWithComplexTypeSpec for typeCollection org.franca.connectors.protobuf.tests{
+	struct Request1_Group1 {
+		string1 {
+			Tag = 1
+			FieldRule = REQUIRED
+		}
+	}
+	struct Request1 {
+		string1 {
+			Tag = 1
+			FieldRule = REQUIRED
+		}
+		int32_1 {
+			Tag = 2
+			FieldRule = OPTIONAL
+		}
+		uint32_1 {
+			Tag = 3
+			FieldRule = REPEATED
+		}
+		scalar1 {
+			Tag = 4
+			FieldRule = OPTIONAL
+		}
+		response1 {
+			Tag = 5
+			FieldRule = OPTIONAL
+		}
+		group1 {
+			Tag = 10
+			FieldRule = REPEATED
+		}
+	}
+	struct Response2 {
+		request1 {
+			Tag = 4
+			FieldRule = REPEATED
+		}
+		uint32_1 {
+			Tag = 3
+			FieldRule = OPTIONAL
+		}
+	}
+	struct Response1 {
+		uint32_1 {
+			Tag = 3
+			FieldRule = OPTIONAL
+		}
+	}
+	struct Request1_Foo {
+		string1 {
+			Tag = 1
+			FieldRule = REQUIRED
+		}
+		int32_1 {
+			Tag = 2
+			FieldRule = OPTIONAL
+		}
+		uint32_1 {
+			Tag = 3
+			FieldRule = REPEATED
+		}
+		scalar1 {
+			Tag = 4
+			FieldRule = OPTIONAL
+		}
+	}
+}

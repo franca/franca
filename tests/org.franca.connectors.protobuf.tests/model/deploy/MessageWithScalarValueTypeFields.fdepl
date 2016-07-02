@@ -1,0 +1,76 @@
+import "../../src-gen/testcases/"
+import "../specification/ProtobufSpec.fdeplMessageWithScalarValueTypeFields.fidl"
+
+specification org.franca.connectors.protobuf.tests.MessageWithScalarValueTypeFieldsSpec extends org.franca.connectors.protobuf.ProtobufSpec {
+	for struct_fields {
+	}
+}
+
+define org.franca.connectors.protobuf.tests.MessageWithScalarValueTypeFieldsSpec for typeCollection org.franca.connectors.protobuf.tests{
+	struct Response1 {
+		float1 {
+			Tag = 8
+			FieldRule = REQUIRED
+		}
+		int64_1 {
+			Tag = 9
+			FieldRule = OPTIONAL
+		}
+		sfixed32_1 {
+			Tag = 10
+			FieldRule = REPEATED
+		}
+		sfixed64_1 {
+			Tag = 11
+			FieldRule = REPEATED
+		}
+		sint32_1 {
+			Tag = 12
+			FieldRule = REQUIRED
+		}
+		sint64_1 {
+			Tag = 13
+			FieldRule = OPTIONAL
+			DefaultValue = "11"
+		}
+		uint32_1 {
+			Tag = 14
+			FieldRule = REPEATED
+		}
+		uint64_1 {
+			Tag = 15
+			FieldRule = OPTIONAL
+		}
+	}
+	struct Request1 {
+		string1 {
+			Tag = 1
+			FieldRule = REQUIRED
+		}
+		int32_1 {
+			Tag = 2
+			FieldRule = OPTIONAL
+		}
+		bytes1 {
+			Tag = 3
+			FieldRule = OPTIONAL
+			DefaultValue = "bla"
+		}
+		bool1 {
+			Tag = 4
+			FieldRule = REQUIRED
+		}
+		double1 {
+			Tag = 5
+			FieldRule = OPTIONAL
+		}
+		fixed32_1 {
+			Tag = 6
+			FieldRule = OPTIONAL
+		}
+		fixed64_1 {
+			Tag = 7
+			FieldRule = REQUIRED
+		}
+	}
+}

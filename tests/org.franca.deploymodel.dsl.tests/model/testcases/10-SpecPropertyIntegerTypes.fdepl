@@ -1,0 +1,12 @@
+
+// deployment specification with property declarations of all possible types
+
+specification a.b.c.MySpec10Int {
+
+	for methods {
+		IntegerPropMandatory : Integer;
+		IntegerPropOptional  : Integer  (optional);
+		IntegerPropPosDefault   : Integer  (default: 123456);
+		IntegerPropNegDefault   : Integer  (default: -123456);
+	}
+}

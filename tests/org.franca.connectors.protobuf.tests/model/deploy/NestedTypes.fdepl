@@ -1,0 +1,54 @@
+import "../../src-gen/testcases/"
+import "../specification/ProtobufSpec.fdeplNestedTypes.fidl"
+
+specification org.franca.connectors.protobuf.tests.NestedTypesSpec extends org.franca.connectors.protobuf.ProtobufSpec {
+}
+
+define org.franca.connectors.protobuf.tests.NestedTypesSpec for typeCollection org.franca.connectors.protobuf.tests{
+	struct SomeOtherMessage {
+		result {
+			Tag = 1
+			FieldRule = OPTIONAL
+		}
+	}
+	struct SearchResponse_Result {
+		url {
+			Tag = 1
+			FieldRule = REQUIRED
+		}
+		title {
+			Tag = 2
+			FieldRule = OPTIONAL
+		}
+		snippets {
+			Tag = 3
+			FieldRule = REPEATED
+		}
+	}
+	struct Outer_MiddleBB_Inner {
+		ival {
+			Tag = 1
+			FieldRule = REQUIRED
+		}
+		booly {
+			Tag = 2
+			FieldRule = OPTIONAL
+		}
+	}
+	struct SearchResponse {
+		result {
+			Tag = 1
+			FieldRule = REPEATED
+		}
+	}
+	struct Outer_MiddleAA_Inner {
+		ival {
+			Tag = 1
+			FieldRule = REQUIRED
+		}
+		booly {
+			Tag = 2
+			FieldRule = OPTIONAL
+		}
+	}
+}

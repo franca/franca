@@ -1,0 +1,117 @@
+import "../../specification/ProtobufSpec.fdepl"
+import "../../../src-gen/testcases/gate1/Infrastructure_t.fidl"
+
+specification Pkg.Infrastructure.Infrastructure_t.Infrastructure_tSpec extends org.franca.connectors.protobuf.ProtobufSpec {
+	for interfaces {
+	}
+	for enumerators {
+	}
+}
+
+define Pkg.Infrastructure.Infrastructure_t.Infrastructure_tSpec for typeCollection Pkg.Infrastructure.Infrastructure_t{
+	struct Message_t {
+		messageCreationTime {
+			Tag = 8
+			FieldRule = OPTIONAL
+		}
+		messageOriginationInformation {
+			Tag = 9
+			FieldRule = OPTIONAL
+		}
+		encodedData {
+			Tag = 1
+			FieldRule = OPTIONAL
+		}
+		messageName {
+			Tag = 2
+			FieldRule = OPTIONAL
+		}
+		sysException {
+			Tag = 3
+			FieldRule = OPTIONAL
+		}
+		requestHeader {
+			Tag = 4
+			FieldRule = OPTIONAL
+		}
+		replyHeader {
+			Tag = 5
+			FieldRule = OPTIONAL
+		}
+		sequenceNumber {
+			Tag = 6
+			FieldRule = OPTIONAL
+		}
+		flag {
+			Tag = 7
+			FieldRule = OPTIONAL
+		}
+	}
+	struct BaseReplyHeader_t {
+		status {
+			Tag = 2
+			FieldRule = OPTIONAL
+		}
+		correlationID {
+			Tag = 1
+			FieldRule = OPTIONAL
+		}
+	}
+	struct BaseRequestHeader_t {
+		correlationID {
+			Tag = 1
+			FieldRule = OPTIONAL
+		}
+		maxResponseSize {
+			Tag = 2
+			FieldRule = OPTIONAL
+		}
+		userToken {
+			Tag = 3
+			FieldRule = OPTIONAL
+		}
+	}
+	struct Timespan_t {
+		startTime {
+			Tag = 1
+			FieldRule = OPTIONAL
+		}
+		stopTime {
+			Tag = 2
+			FieldRule = OPTIONAL
+		}
+	}
+	struct Timespec_t {
+		seconds {
+			Tag = 1
+			FieldRule = OPTIONAL
+		}
+		nanoseconds {
+			Tag = 2
+			FieldRule = OPTIONAL
+		}
+	}
+	struct Heartbeat_t {
+		timestamp {
+			Tag = 1
+			FieldRule = OPTIONAL
+		}
+	}
+	struct HistoryRequestHeader_t {
+		timeSpan {
+			Tag = 1
+			FieldRule = OPTIONAL
+		}
+		maxResponseSize {
+			Tag = 2
+			FieldRule = OPTIONAL
+		}
+		responseOrder {
+			Tag = 3
+			FieldRule = OPTIONAL
+		}
+	}
+}
+define Pkg.Infrastructure.Infrastructure_t.Infrastructure_tSpec for interface Pkg.Infrastructure.Infrastructure_t.FileOption{
+	Java_package = Pkg.Infrastructure
+}

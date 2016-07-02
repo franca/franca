@@ -1,0 +1,86 @@
+
+import "../specification/ProtobufSpec.fdepl"
+import "../reference/MessageWithScalarValueTypeFields.fidl"
+
+specification
+org.franca.connectors.protobuf.tests.messageWithScalarValueTypeFieldsSpec
+extends org.franca.connectors.protobuf.ProtobufSpec {
+
+//TODO file options
+
+}
+
+define
+org.franca.connectors.protobuf.tests.messageWithScalarValueTypeFieldsSpec
+for typeCollection org.franca.connectors.protobuf.tests {
+
+	struct Request1 {
+		Message_set_wire_format = true
+		No_standard_descriptor_accessor = true
+		string1 {
+			IsOptional = false
+			Tag = 0
+			DefaultValue = "123"
+		}
+		int32_1 {
+			IsOptional = false
+			Tag = 0
+		}
+		bytes1 {
+			IsOptional = false
+			Tag = 0
+		}
+		bool1 {
+			IsOptional = false
+			Tag = 0
+		}
+		double1 {
+			IsOptional = false
+			Tag = 0
+		}
+		fixed32_1 {
+			IsOptional = false
+			Tag = 0
+		}
+		fixed64_1 {
+			IsOptional = false
+			Tag = 0
+		}
+	}
+
+	struct Response1 {
+		float1 {
+			IsOptional = false
+			Tag = 0
+		}
+		int64_1 {
+			IsOptional = false
+			Tag = 0
+		}
+		sfixed32_1 {
+			IsOptional = false
+			Tag = 0
+		}
+		sfixed64_1 {
+			IsOptional = false
+			Tag = 0
+		}
+		sint32_1 {
+			IsOptional = false
+			Tag = 0
+		}
+		sint64_1 {
+			IsOptional = false
+			Tag = 0
+		}
+		uint32_1 {
+			IsOptional = false
+			Tag = 0
+		}
+		uint64_1 {
+			IsOptional = false
+			Tag = 0
+		}
+	}
+
+}

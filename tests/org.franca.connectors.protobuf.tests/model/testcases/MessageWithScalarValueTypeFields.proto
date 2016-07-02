@@ -1,0 +1,24 @@
+syntax = "proto2";
+
+package org.franca.connectors.protobuf.tests;
+
+message Request1 {
+	required string string1 = 1;
+	optional int32 int32_1 = 2 ;
+	optional bytes bytes1 = 3 [default = "bla"];
+	required bool bool1 = 4;
+	optional double double1 = 5;
+	optional fixed32 fixed32_1 = 6;
+	required fixed64 fixed64_1 = 7;
+}
+
+message Response1 {
+	required float float1 = 8;
+	optional int64 int64_1 = 9;
+	repeated sfixed32 sfixed32_1 = 10;
+	repeated sfixed64 sfixed64_1 = 11;
+	required sint32 sint32_1 = 12;
+	optional sint64 sint64_1 = 13 [default = 11];
+	repeated uint32 uint32_1 = 14;
+	optional uint64 uint64_1 = 15;
+}

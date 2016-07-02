@@ -1,0 +1,11 @@
+package csm_cs
+
+import model "csm_t.fidl"
+
+interface csm_cs {
+	method setStatus {
+		in {
+			csm_t.cStatus_t status
+		}
+	}
+}

@@ -34,6 +34,7 @@
       <genEnumLiterals ecoreEnumLiteral="franca.ecore#//FAnnotationType/source_uri"/>
       <genEnumLiterals ecoreEnumLiteral="franca.ecore#//FAnnotationType/source_alias"/>
       <genEnumLiterals ecoreEnumLiteral="franca.ecore#//FAnnotationType/details"/>
+      <genEnumLiterals ecoreEnumLiteral="franca.ecore#//FAnnotationType/return"/>
     </genEnums>
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="franca.ecore#//FOperator">
       <genEnumLiterals ecoreEnumLiteral="franca.ecore#//FOperator/Or"/>
@@ -99,6 +100,7 @@
       <genFeatures notify="false" createChild="false" propertyDescription="if this property is not null, it represents a definition of method error codes by explicitly specifying a list of enumerators. These enumerators are the error codes the method might return. The enumeration type specified here might reference a base enumeration. If this property is null, check the errorEnum property instead."
           propertySortChoices="true" ecoreFeature="ecore:EReference franca.ecore#//FMethod/errors"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute franca.ecore#//FMethod/selector"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FMethod/errorComment"/>
     </genClasses>
     <genClasses ecoreClass="franca.ecore#//FBroadcast">
       <genFeatures property="None" children="true" createChild="true" propertyDescription="the parameters of this broadcast"

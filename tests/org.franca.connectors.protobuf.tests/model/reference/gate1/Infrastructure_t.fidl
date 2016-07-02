@@ -1,0 +1,69 @@
+package Pkg.Infrastructure.Infrastructure_t
+
+typeCollection {
+	enumeration HistoryOrderType_t {
+		eHistoryOrder_Unknown = 0
+		eHistoryOrder_OldestFirst = 1
+		eHistoryOrder_NewestFirst = 2
+	}
+
+	enumeration ReplyStatusType_t {
+		eReplyStatus_InProgress = 0
+		eReplyStatus_Complete = 1
+	}
+
+	enumeration RequestStatusType_t {
+		eRequestStatus_Success = 0
+		eRequestStatus_Error = 1
+	}
+
+	enumeration SystemExceptionType_t {
+		eSystemException_Unknown = 0
+		eSystemException_1 = 1
+		eSystemException_2 = 2
+	}
+
+	struct BaseReplyHeader_t {
+		ReplyStatusType_t status
+		String correlationID
+	}
+
+	struct BaseRequestHeader_t {
+		String correlationID
+		Int64 maxResponseSize
+		ByteBuffer userToken
+	}
+
+	struct Heartbeat_t {
+		Timespec_t timestamp
+	}
+
+	struct HistoryRequestHeader_t {
+		Timespan_t timeSpan
+		Int64 maxResponseSize
+		HistoryOrderType_t responseOrder
+	}
+
+	struct Message_t {
+		Timespec_t messageCreationTime
+		String messageOriginationInformation
+		ByteBuffer encodedData
+		String messageName
+		SystemExceptionType_t sysException
+		BaseRequestHeader_t requestHeader
+		BaseReplyHeader_t replyHeader
+		Int64 sequenceNumber
+		Boolean flag
+	}
+
+	struct Timespan_t {
+		Timespec_t startTime
+		Timespec_t stopTime
+	}
+
+	struct Timespec_t {
+		Int64 seconds
+		Int64 nanoseconds
+	}
+
+}

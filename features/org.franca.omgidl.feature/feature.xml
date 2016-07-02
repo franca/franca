@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.franca.omgidl"
+      label="%featureName"
+      version="0.11.0.qualifier"
+      provider-name="%providerName">
+
+   <description>
+      %description
+   </description>
+
+   <copyright>
+      %copyright
+   </copyright>
+
+   <license url="%licenseURL">
+      %license
+   </license>
+
+   <url>
+      <update label="%updateSiteName" url="http://franca.org.codespot.com/git.distribution/releases"/>
+   </url>
+
+   <includes
+         id="org.franca.core"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.franca.connectors.omgidl"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

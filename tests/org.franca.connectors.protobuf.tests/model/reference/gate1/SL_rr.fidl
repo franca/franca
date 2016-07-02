@@ -1,0 +1,22 @@
+package Pkg.Misc.SL_Service.SL_rr
+
+import model "SL_t.fidl"
+
+typeCollection {
+	enumeration MajorVersion {
+		eMajorVersion = 1
+	}
+
+	enumeration MinorVersion {
+		eMinorVersion = 2
+	}
+
+	struct GetSLRequest {
+		Int64 unused
+	}
+
+	struct GetSLReply {
+		Pkg.Misc.SL_t.SL_t info
+	}
+
+}

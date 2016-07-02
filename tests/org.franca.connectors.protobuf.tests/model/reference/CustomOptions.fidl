@@ -1,0 +1,61 @@
+package dummy_package
+
+import model "descriptor.fidl"
+
+interface MyService {
+	method MyMethod {
+		in {
+			RequestType requestType
+		}
+		out {
+			ResponseType responseType
+		}
+	}
+}
+
+typeCollection {
+	struct FileOptions_1 extends google.protobuf.FileOptions {
+		String my_file_option
+	}
+
+	struct MessageOptions_2 extends google.protobuf.MessageOptions {
+		Int32 my_message_option
+	}
+
+	struct FieldOptions_3 extends google.protobuf.FieldOptions {
+		Float my_field_option
+	}
+
+	struct EnumOptions_4 extends google.protobuf.EnumOptions {
+		Boolean my_enum_option
+	}
+
+	struct EnumValueOptions_5 extends google.protobuf.EnumValueOptions {
+		UInt32 my_enum_value_option
+	}
+
+	struct ServiceOptions_6 extends google.protobuf.ServiceOptions {
+		MyEnum my_service_option
+	}
+
+	struct MethodOptions_7 extends google.protobuf.MethodOptions {
+		MyMessage my_method_option
+	}
+
+	struct MyMessage {
+		Int32 foo
+		String bar
+	}
+
+	enumeration MyEnum {
+		FOO = 1
+		BAR = 2
+	}
+
+	struct RequestType polymorphic {
+	}
+
+	struct ResponseType polymorphic {
+	}
+
+}

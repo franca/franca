@@ -1,0 +1,8 @@
+import "../../src-gen/testcases/"
+import "../specification/ProtobufSpec.fdeplEmptyService.fidl"
+
+specification org.franca.connectors.protobuf.tests.EmptyServiceSpec extends org.franca.connectors.protobuf.ProtobufSpec {
+}
+
+define org.franca.connectors.protobuf.tests.EmptyServiceSpec for typeCollection org.franca.connectors.protobuf.tests{
+}

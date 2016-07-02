@@ -1,0 +1,54 @@
+package org.franca.connectors.protobuf.tests
+
+typeCollection {
+	
+	enumeration Scalar{
+		myString = 0
+		myLong = 123456789
+		myHex = 431
+	}
+	
+	struct Request1 {
+		String string1
+		Int32 int32_1
+		UInt32 [] uint32_1
+		Request1_Scalar scalar1
+		Response1 response1
+		Request1_Group1 [] group1
+	}
+	
+	
+	struct Response1{
+		UInt32 uint32_1
+	}
+	
+	struct Response2{
+		Request1 [] request1
+		UInt32 uint32_1
+	}
+	
+	enumeration Request1_Scalar{
+		myString = 0
+		myLong = 13
+		myHex = 1
+	}
+	
+	enumeration Request1_Foo_Scalar{
+		myString = 0
+		myLong = 135
+		myHex = 1
+	}
+	
+	struct Request1_Foo{
+		String string1
+		Int32 int32_1
+		UInt32 [] uint32_1
+		Request1_Foo_Scalar scalar1
+	}
+
+	struct Request1_Group1{
+		String string1
+	}
+}
+
+

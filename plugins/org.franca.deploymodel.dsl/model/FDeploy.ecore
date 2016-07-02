@@ -60,6 +60,7 @@
     <eLiterals name="floats" value="18" literal="floats"/>
     <eLiterals name="booleans" value="19" literal="booleans"/>
     <eLiterals name="byte_buffers" value="20" literal="byte_buffers"/>
+    <eLiterals name="fields" value="21" literal="fields"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FDTypeRef">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="predefined" eType="#//FDPredefinedTypeId"/>

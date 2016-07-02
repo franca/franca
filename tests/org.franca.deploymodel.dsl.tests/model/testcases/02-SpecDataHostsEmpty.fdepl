@@ -19,4 +19,5 @@ specification a.b.c.MySpec02 {
 	for arrays { }
 	for struct_fields { }
 	for union_fields { }
+	for fields { }
 }

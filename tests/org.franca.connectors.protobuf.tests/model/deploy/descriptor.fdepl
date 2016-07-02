@@ -1,0 +1,370 @@
+import "../../src-gen/testcases/"
+import "../specification/ProtobufSpec.fdepldescriptor.fidl"
+
+specification google.protobuf1.descriptorSpec extends org.franca.connectors.protobuf.ProtobufSpec {
+	for interfaces {
+	}
+	for structs {
+	}
+	for struct_fields {
+	}
+}
+
+define google.protobuf1.descriptorSpec for typeCollection google.protobuf1{
+	struct EnumDescriptorProto {
+		name {
+			Tag = 1
+			FieldRule = OPTIONAL
+		}
+		value {
+			Tag = 2
+			FieldRule = REPEATED
+		}
+		options {
+			Tag = 3
+			FieldRule = OPTIONAL
+		}
+	}
+	struct SourceCodeInfo_Location {
+		path {
+			Tag = 1
+			FieldRule = REPEATED
+			Packed = true
+		}
+		span {
+			Tag = 2
+			FieldRule = REPEATED
+			Packed = true
+		}
+	}
+	struct EnumValueOptions {
+		Extensions = '1000 to max'
+		uninterpreted_option {
+			Tag = 999
+			FieldRule = REPEATED
+		}
+	}
+	struct EnumOptions {
+		Extensions = '1000 to max'
+		uninterpreted_option {
+			Tag = 999
+			FieldRule = REPEATED
+		}
+	}
+	struct ServiceOptions {
+		Extensions = '1000 to max'
+		uninterpreted_option {
+			Tag = 999
+			FieldRule = REPEATED
+		}
+	}
+	struct FileDescriptorSet {
+		file {
+			Tag = 1
+			FieldRule = REPEATED
+		}
+	}
+	struct ServiceDescriptorProto {
+		name {
+			Tag = 1
+			FieldRule = OPTIONAL
+		}
+		method {
+			Tag = 2
+			FieldRule = REPEATED
+		}
+		options {
+			Tag = 3
+			FieldRule = OPTIONAL
+		}
+	}
+	struct FieldOptions {
+		Extensions = '1000 to max'
+		ctype {
+			Tag = 1
+			FieldRule = OPTIONAL
+			DefaultValue = "0"
+		}
+		packed {
+			Tag = 2
+			FieldRule = OPTIONAL
+		}
+		deprecated {
+			Tag = 3
+			FieldRule = OPTIONAL
+			DefaultValue = "false"
+		}
+		experimental_map_key {
+			Tag = 9
+			FieldRule = OPTIONAL
+		}
+		uninterpreted_option {
+			Tag = 999
+			FieldRule = REPEATED
+		}
+	}
+	struct UninterpretedOption {
+		name {
+			Tag = 2
+			FieldRule = REPEATED
+		}
+		identifier_value {
+			Tag = 3
+			FieldRule = OPTIONAL
+		}
+		positive_int_value {
+			Tag = 4
+			FieldRule = OPTIONAL
+		}
+		negative_int_value {
+			Tag = 5
+			FieldRule = OPTIONAL
+		}
+		double_value {
+			Tag = 6
+			FieldRule = OPTIONAL
+		}
+		string_value {
+			Tag = 7
+			FieldRule = OPTIONAL
+		}
+		aggregate_value {
+			Tag = 8
+			FieldRule = OPTIONAL
+		}
+	}
+	struct FieldDescriptorProto {
+		name {
+			Tag = 1
+			FieldRule = OPTIONAL
+		}
+		number {
+			Tag = 3
+			FieldRule = OPTIONAL
+		}
+		label {
+			Tag = 4
+			FieldRule = OPTIONAL
+		}
+		type {
+			Tag = 5
+			FieldRule = OPTIONAL
+		}
+		type_name {
+			Tag = 6
+			FieldRule = OPTIONAL
+		}
+		extendee {
+			Tag = 2
+			FieldRule = OPTIONAL
+		}
+		default_value {
+			Tag = 7
+			FieldRule = OPTIONAL
+		}
+		options {
+			Tag = 8
+			FieldRule = OPTIONAL
+		}
+	}
+	struct EnumValueDescriptorProto {
+		name {
+			Tag = 1
+			FieldRule = OPTIONAL
+		}
+		number {
+			Tag = 2
+			FieldRule = OPTIONAL
+		}
+		options {
+			Tag = 3
+			FieldRule = OPTIONAL
+		}
+	}
+	struct MethodOptions {
+		Extensions = '1000 to max'
+		uninterpreted_option {
+			Tag = 999
+			FieldRule = REPEATED
+		}
+	}
+	struct MethodDescriptorProto {
+		name {
+			Tag = 1
+			FieldRule = OPTIONAL
+		}
+		input_type {
+			Tag = 2
+			FieldRule = OPTIONAL
+		}
+		output_type {
+			Tag = 3
+			FieldRule = OPTIONAL
+		}
+		options {
+			Tag = 4
+			FieldRule = OPTIONAL
+		}
+	}
+	struct UninterpretedOption_NamePart {
+		name_part {
+			Tag = 1
+			FieldRule = REQUIRED
+		}
+		is_extension {
+			Tag = 2
+			FieldRule = REQUIRED
+		}
+	}
+	struct MessageOptions {
+		Extensions = '1000 to max'
+		message_set_wire_format {
+			Tag = 1
+			FieldRule = OPTIONAL
+			DefaultValue = "false"
+		}
+		no_standard_descriptor_accessor {
+			Tag = 2
+			FieldRule = OPTIONAL
+			DefaultValue = "false"
+		}
+		uninterpreted_option {
+			Tag = 999
+			FieldRule = REPEATED
+		}
+	}
+	struct SourceCodeInfo {
+		location {
+			Tag = 1
+			FieldRule = REPEATED
+		}
+	}
+	struct DescriptorProto {
+		name {
+			Tag = 1
+			FieldRule = OPTIONAL
+		}
+		field {
+			Tag = 2
+			FieldRule = REPEATED
+		}
+		extension {
+			Tag = 6
+			FieldRule = REPEATED
+		}
+		nested_type {
+			Tag = 3
+			FieldRule = REPEATED
+		}
+		enum_type {
+			Tag = 4
+			FieldRule = REPEATED
+		}
+		extension_range {
+			Tag = 5
+			FieldRule = REPEATED
+		}
+		options {
+			Tag = 7
+			FieldRule = OPTIONAL
+		}
+	}
+	struct DescriptorProto_ExtensionRange {
+		start {
+			Tag = 1
+			FieldRule = OPTIONAL
+		}
+		end {
+			Tag = 2
+			FieldRule = OPTIONAL
+		}
+	}
+	struct FileDescriptorProto {
+		name {
+			Tag = 1
+			FieldRule = OPTIONAL
+		}
+		package {
+			Tag = 2
+			FieldRule = OPTIONAL
+		}
+		dependency {
+			Tag = 3
+			FieldRule = REPEATED
+		}
+		message_type {
+			Tag = 4
+			FieldRule = REPEATED
+		}
+		enum_type {
+			Tag = 5
+			FieldRule = REPEATED
+		}
+		service {
+			Tag = 6
+			FieldRule = REPEATED
+		}
+		extension {
+			Tag = 7
+			FieldRule = REPEATED
+		}
+		options {
+			Tag = 8
+			FieldRule = OPTIONAL
+		}
+		source_code_info {
+			Tag = 9
+			FieldRule = OPTIONAL
+		}
+	}
+	struct FileOptions {
+		Extensions = '1000 to max'
+		java_package {
+			Tag = 1
+			FieldRule = OPTIONAL
+		}
+		java_outer_classname {
+			Tag = 8
+			FieldRule = OPTIONAL
+		}
+		java_multiple_files {
+			Tag = 10
+			FieldRule = OPTIONAL
+			DefaultValue = "false"
+		}
+		java_generate_equals_and_hash {
+			Tag = 20
+			FieldRule = OPTIONAL
+			DefaultValue = "false"
+		}
+		optimize_for {
+			Tag = 9
+			FieldRule = OPTIONAL
+			DefaultValue = "1"
+		}
+		cc_generic_services {
+			Tag = 16
+			FieldRule = OPTIONAL
+			DefaultValue = "false"
+		}
+		java_generic_services {
+			Tag = 17
+			FieldRule = OPTIONAL
+			DefaultValue = "false"
+		}
+		py_generic_services {
+			Tag = 18
+			FieldRule = OPTIONAL
+			DefaultValue = "false"
+		}
+		uninterpreted_option {
+			Tag = 999
+			FieldRule = REPEATED
+		}
+	}
+}
+define google.protobuf1.descriptorSpec for interface google.protobuf1.FileOption{
+	Java_package = com.google.protobuf
+	Java_outer_classname = DescriptorProtos
+	Optimize_for = SPEED
+}

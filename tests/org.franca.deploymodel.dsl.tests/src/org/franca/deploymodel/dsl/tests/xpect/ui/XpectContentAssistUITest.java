@@ -16,10 +16,8 @@ import org.eclipse.xtext.resource.FileExtensionProvider;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.resource.XtextResourceSet;
 import org.eclipse.xtext.ui.editor.contentassist.ConfigurableCompletionProposal;
-import org.eclipse.xtext.xbase.junit.ui.AbstractContentAssistTest;
 import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.franca.deploymodel.dsl.ui.internal.FDeployActivator;
-import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.xpect.expectation.CommaSeparatedValuesExpectation;
 import org.xpect.expectation.ICommaSeparatedValuesExpectation;
@@ -112,8 +110,8 @@ public class XpectContentAssistUITest extends AbstractContentAssistProcessorTest
 				return FDeployActivator.getInstance().getInjector(FDeployActivator.ORG_FRANCA_DEPLOYMODEL_DSL_FDEPLOY);
 			}
 
-			public void register(Injector injector) {
-			}
+//			public void register(Injector injector) {
+//			}
 		};
 	}
 

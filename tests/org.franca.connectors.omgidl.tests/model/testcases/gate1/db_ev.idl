@@ -1,0 +1,13 @@
+#ifndef _db_ev_idl 
+#define _db_ev_idl
+
+#include "db_t.idl"
+#include "evs.idl"
+
+interface db_ev : CosTypedEventComm::TypedPushConsumer
+{
+	
+	oneway void db( in db::db_t arg );
+	
+}; //end interface db_ev
+#endif

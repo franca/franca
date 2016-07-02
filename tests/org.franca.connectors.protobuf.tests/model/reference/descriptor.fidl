@@ -1,0 +1,176 @@
+package google.protobuf
+
+typeCollection {
+	struct FileDescriptorSet {
+		FileDescriptorProto [ ] file
+	}
+
+	struct FileDescriptorProto {
+		String name
+		String ^package
+		String [ ] dependency
+		DescriptorProto [ ] message_type
+		EnumDescriptorProto [ ] enum_type
+		ServiceDescriptorProto [ ] service
+		FieldDescriptorProto [ ] extension
+		FileOptions options
+		SourceCodeInfo source_code_info
+	}
+
+	struct DescriptorProto {
+		String name
+		FieldDescriptorProto [ ] field
+		FieldDescriptorProto [ ] extension
+		undefined [ ] nested_type
+		EnumDescriptorProto [ ] enum_type
+		DescriptorProto_ExtensionRange [ ] extension_range
+		MessageOptions options
+	}
+
+	struct FieldDescriptorProto {
+		String name
+		Int32 number
+		FieldDescriptorProto_Label label
+		FieldDescriptorProto_Type type
+		String type_name
+		String extendee
+		String default_value
+		FieldOptions options
+	}
+
+	struct EnumDescriptorProto {
+		String name
+		EnumValueDescriptorProto [ ] value
+		EnumOptions options
+	}
+
+	struct EnumValueDescriptorProto {
+		String name
+		Int32 number
+		EnumValueOptions options
+	}
+
+	struct ServiceDescriptorProto {
+		String name
+		MethodDescriptorProto [ ] ^method
+		ServiceOptions options
+	}
+
+	struct MethodDescriptorProto {
+		String name
+		String input_type
+		String output_type
+		MethodOptions options
+	}
+
+	struct FileOptions {
+		String java_package
+		String java_outer_classname
+		Boolean java_multiple_files
+		Boolean java_generate_equals_and_hash
+		FileOptions_OptimizeMode optimize_for
+		Boolean cc_generic_services
+		Boolean java_generic_services
+		Boolean py_generic_services
+		UninterpretedOption [ ] uninterpreted_option
+	}
+
+	struct MessageOptions {
+		Boolean message_set_wire_format
+		Boolean no_standard_descriptor_accessor
+		UninterpretedOption [ ] uninterpreted_option
+	}
+
+	struct FieldOptions {
+		FieldOptions_CType ctype
+		Boolean packed
+		Boolean deprecated
+		String experimental_map_key
+		UninterpretedOption [ ] uninterpreted_option
+	}
+
+	struct EnumOptions {
+		UninterpretedOption [ ] uninterpreted_option
+	}
+
+	struct EnumValueOptions {
+		UninterpretedOption [ ] uninterpreted_option
+	}
+
+	struct ServiceOptions {
+		UninterpretedOption [ ] uninterpreted_option
+	}
+
+	struct MethodOptions {
+		UninterpretedOption [ ] uninterpreted_option
+	}
+
+	struct UninterpretedOption {
+		UninterpretedOption_NamePart [ ] name
+		String identifier_value
+		UInt64 positive_int_value
+		Int64 negative_int_value
+		Double double_value
+		ByteBuffer string_value
+		String aggregate_value
+	}
+
+	struct SourceCodeInfo {
+		SourceCodeInfo_Location [ ] location
+	}
+
+	enumeration FieldDescriptorProto_Type {
+		TYPE_DOUBLE = 1
+		TYPE_FLOAT = 2
+		TYPE_INT64 = 3
+		TYPE_UINT64 = 4
+		TYPE_INT32 = 5
+		TYPE_FIXED64 = 6
+		TYPE_FIXED32 = 7
+		TYPE_BOOL = 8
+		TYPE_STRING = 9
+		TYPE_GROUP = 10
+		TYPE_MESSAGE = 11
+		TYPE_BYTES = 12
+		TYPE_UINT32 = 13
+		TYPE_ENUM = 14
+		TYPE_SFIXED32 = 15
+		TYPE_SFIXED64 = 16
+		TYPE_SINT32 = 17
+		TYPE_SINT64 = 18
+	}
+
+	enumeration FieldDescriptorProto_Label {
+		LABEL_OPTIONAL = 1
+		LABEL_REQUIRED = 2
+		LABEL_REPEATED = 3
+	}
+
+	enumeration FieldOptions_CType {
+		STRING = 0
+		CORD = 1
+		STRING_PIECE = 2
+	}
+
+	struct UninterpretedOption_NamePart {
+		String name_part
+		Boolean is_extension
+	}
+
+	struct DescriptorProto_ExtensionRange {
+		Int32 start
+		Int32 end
+	}
+
+	enumeration FileOptions_OptimizeMode {
+		SPEED = 1
+		CODE_SIZE = 2
+		LITE_RUNTIME = 3
+	}
+
+	struct SourceCodeInfo_Location {
+		Int32 [ ] path
+		Int32 [ ] span
+	}
+
+}

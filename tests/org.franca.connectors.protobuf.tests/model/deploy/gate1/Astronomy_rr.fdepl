@@ -1,0 +1,39 @@
+import "../../specification/ProtobufSpec.fdepl"
+import "../../../src-gen/testcases/gate1/Astronomy_rr.fidl"
+
+specification Pkg.Astronomy_rr.Astronomy_rrSpec extends org.franca.connectors.protobuf.ProtobufSpec {
+	for interfaces {
+	}
+	for enumerators {
+	}
+}
+
+define Pkg.Astronomy_rr.Astronomy_rrSpec for typeCollection Pkg.Astronomy_rr{
+	struct GetSunMoonRiseSetReply {
+		riseSetInfo {
+			Tag = 1
+			FieldRule = REPEATED
+		}
+	}
+	struct GetSunMoonIlluminanceRequest {
+		observationInfo {
+			Tag = 1
+			FieldRule = REPEATED
+		}
+	}
+	struct GetSunMoonIlluminanceReply {
+		sunMoonIlluminanceInfo {
+			Tag = 1
+			FieldRule = REPEATED
+		}
+	}
+	struct GetSunMoonRiseSetRequest {
+		observationInfo {
+			Tag = 1
+			FieldRule = REPEATED
+		}
+	}
+}
+define Pkg.Astronomy_rr.Astronomy_rrSpec for interface Pkg.Astronomy_rr.FileOption{
+	Java_package = Pkg.Astronomy
+}

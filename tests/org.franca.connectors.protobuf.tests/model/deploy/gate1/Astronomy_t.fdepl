@@ -1,0 +1,87 @@
+import "../../specification/ProtobufSpec.fdepl"
+import "../../../src-gen/testcases/gate1/Astronomy_t.fidl"
+
+specification Pkg.Astronomy_t.Astronomy_tSpec extends org.franca.connectors.protobuf.ProtobufSpec {
+	for interfaces {
+	}
+	for enumerators {
+	}
+}
+
+define Pkg.Astronomy_t.Astronomy_tSpec for typeCollection Pkg.Astronomy_t{
+	struct IlluminanceInfo_t {
+		data1 {
+			Tag = 1
+			FieldRule = OPTIONAL
+		}
+		data2 {
+			Tag = 2
+			FieldRule = OPTIONAL
+		}
+		data3 {
+			Tag = 3
+			FieldRule = OPTIONAL
+		}
+	}
+	struct ObservationInfo_t {
+		observationTime {
+			Tag = 1
+			FieldRule = OPTIONAL
+		}
+		observationLocation {
+			Tag = 2
+			FieldRule = OPTIONAL
+		}
+	}
+	struct SunMoonIlluminanceInfo_t {
+		sunIlluminance {
+			Tag = 1
+			FieldRule = OPTIONAL
+		}
+		moonIlluminance {
+			Tag = 2
+			FieldRule = OPTIONAL
+		}
+		observationInfo {
+			Tag = 3
+			FieldRule = OPTIONAL
+		}
+	}
+	struct ObjectPhenomenaInfo_t {
+		phenomena {
+			Tag = 1
+			FieldRule = REPEATED
+		}
+		specialCondition {
+			Tag = 2
+			FieldRule = OPTIONAL
+		}
+	}
+	struct SunMoonRiseSetInfo_t {
+		sunPhenomena {
+			Tag = 1
+			FieldRule = OPTIONAL
+		}
+		moonPhenomena {
+			Tag = 2
+			FieldRule = OPTIONAL
+		}
+		observationInfo {
+			Tag = 3
+			FieldRule = OPTIONAL
+		}
+	}
+	struct PhenomenonInfo_t {
+		phenomenonType {
+			Tag = 1
+			FieldRule = OPTIONAL
+		}
+		time {
+			Tag = 2
+			FieldRule = OPTIONAL
+		}
+	}
+}
+define Pkg.Astronomy_t.Astronomy_tSpec for interface Pkg.Astronomy_t.FileOption{
+	Java_package = Pkg.Astronomy
+}

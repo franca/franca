@@ -1,0 +1,23 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Franca Google Protobuf Connector
+Bundle-SymbolicName: org.franca.connectors.protobuf
+Bundle-Version: 0.11.0.qualifier
+Bundle-Activator: org.franca.connectors.protobuf.Activator
+Bundle-Vendor: itemis AG
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.xtend.lib;bundle-version="2.5.0",
+ com.google.guava,
+ com.google.inject;bundle-version="3.0.0",
+ org.eclipse.xtext,
+ org.eclipse.xtext.xbase.lib,
+ org.eclipse.xtend.typesystem.emf;visibility:=reexport,
+ org.franca.core;bundle-version="0.11.0",
+ org.franca.core.dsl;bundle-version="0.11.0",
+ com.google.eclipse.protobuf;bundle-version="1.5.3"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
+Export-Package: org.franca.connectors.protobuf
+Import-Package: org.franca.deploymodel.core,
+ org.franca.deploymodel.dsl.fDeploy,
+ org.apache.log4j

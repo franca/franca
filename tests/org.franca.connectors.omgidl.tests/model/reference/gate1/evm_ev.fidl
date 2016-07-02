@@ -1,0 +1,24 @@
+package evm_ev
+import model "evc_t.fidl"
+import model "evs.fidl"
+import model "evm.fidl"
+
+interface evmEvent extends evs.TypedPushConsumer {
+	public struct evmEvent_t {
+		evc_t.timespec_t timestamp
+		String name
+		evm.evm.type_t type
+		evm.evm.state_t ^state
+		Int16 height
+	}
+
+	public array Sequence_0 of evmEvent_t
+
+	public typedef evmEventCollection_t is Sequence_0
+
+	method change {
+		in {
+			evmEventCollection_t events
+		}
+	}
+}

@@ -220,6 +220,8 @@ public class FDeployLabelProvider extends DefaultEObjectLabelProvider {
           return "field.gif";
       case UNION_FIELDS:
           return "field.gif";
+      case FIELDS:
+          return "field.gif";
       case ENUMERATIONS:
          return "enum.gif";
       case ENUMERATORS:

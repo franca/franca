@@ -48,6 +48,8 @@ class TransformContext {
 
 class DBus2FrancaTransformation {
 
+	val static DEFAULT_NODE_NAME = "default"
+	 
 	@Inject extension TransformationLogger
 
 	List<FType> newTypes
@@ -55,7 +57,17 @@ class DBus2FrancaTransformation {
 	def create FrancaFactory::eINSTANCE.createFModel transform (NodeType src) {
 		clearIssues
 
-		name = src.name.replace('/', '_')
+		// transform node name to Franca package
+		if (src.name==null) {
+			addIssue(IMPORT_WARNING,
+				src, DbusxmlPackage::NODE_TYPE__NAME,
+				"D-Bus node without name, using default name '" + DEFAULT_NODE_NAME + "'")
+			name = DEFAULT_NODE_NAME
+		} else {
+			name = src.name.replace('/', '_')
+		}
+
+		// transform all interfaces of this node
 		interfaces.addAll(src.interface.map [transformInterface])
 	}
 

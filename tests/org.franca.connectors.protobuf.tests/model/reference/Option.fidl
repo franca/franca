@@ -1,0 +1,20 @@
+package org.franca.connectors.protobuf.tests
+
+typeCollection {
+	
+	struct Request1 {
+
+		<** @deprecated : int321 **>
+		Int32 int321  
+
+		Int64[] int641
+
+		Int32 int322
+
+		<** @deprecated : int323 **>
+		Int32 int323
+	} 
+}
+
+
+

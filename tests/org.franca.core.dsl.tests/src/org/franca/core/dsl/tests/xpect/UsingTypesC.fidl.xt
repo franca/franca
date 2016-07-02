@@ -14,7 +14,7 @@ typeCollection CTC2 {
 		// reference to other type collection in file A
 		a.ATC.ATC_Struct_1 e2
 
-		// XPECT errors --> "Type AIF_Struct_1 can only be referenced inside interface AIF or derived interfaces" at "a.AIF.AIF_Struct_1" 
+		// XPECT errors --> "Type AIF_Struct_1 is not public, thus it can only be referenced inside interface AIF or derived interfaces" at "a.AIF.AIF_Struct_1" 
 		// reference to interface in file A
 		a.AIF.AIF_Struct_1 e3
 	}
@@ -29,7 +29,7 @@ interface CIF2 {
 		// reference to other type collection in file A
 		a.ATC.ATC_Struct_1 e2
 
-		// XPECT errors --> "Type AIF_Struct_1 can only be referenced inside interface AIF or derived interfaces" at "a.AIF.AIF_Struct_1" 
+		// XPECT errors --> "Type AIF_Struct_1 is not public, thus it can only be referenced inside interface AIF or derived interfaces" at "a.AIF.AIF_Struct_1" 
 		// reference to interface in file A
 		a.AIF.AIF_Struct_1 e3
 	}

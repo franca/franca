@@ -1,0 +1,62 @@
+package Pkg.Misc.Overlay_Service.Overlay_rr
+
+import model "Overlay_t.fidl"
+
+typeCollection {
+	enumeration MajorVersion {
+		eMajorVersion = 7
+	}
+
+	enumeration MinorVersion {
+		eMinorVersion = 0
+	}
+
+	struct GetGroupRequest {
+		Pkg.Misc.Overlay_t.GroupKey_t [ ] request
+	}
+
+	struct GetGroupReply {
+		Pkg.Misc.Overlay_t.Group_t [ ] info
+	}
+
+	struct GetOverlayRequest {
+		Pkg.Misc.Overlay_t.OverlayKey_t [ ] request
+	}
+
+	struct GetOverlayReply {
+		Pkg.Misc.Overlay_t.Overlay_t [ ] info
+	}
+
+	struct GroupDeleteRequest {
+		Pkg.Misc.Overlay_t.GroupKey_t [ ] request
+	}
+
+	struct GroupDeleteReply {
+		Int64 unused
+	}
+
+	struct GroupStoreRequest {
+		Pkg.Misc.Overlay_t.Group_t [ ] request
+	}
+
+	struct GroupStoreReply {
+		Int64 unused
+	}
+
+	struct OverlayDeleteRequest {
+		Pkg.Misc.Overlay_t.OverlayKey_t [ ] request
+	}
+
+	struct OverlayDeleteReply {
+		Int64 unused
+	}
+
+	struct OverlayStoreRequest {
+		Pkg.Misc.Overlay_t.Overlay_t [ ] request
+	}
+
+	struct OverlayStoreReply {
+		Int64 unused
+	}
+
+}

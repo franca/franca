@@ -1,0 +1,36 @@
+package de
+import model "evc_t.fidl"
+
+interface de {
+	public enumeration state_t {
+		ded
+		nde
+		invalid
+	}
+
+	public struct de_t {
+		String name
+		state_t deState
+		evc_t.timespec_t timeStamp
+	}
+
+	method getExceptionGetDeDataCanNotAccessData {
+		out {
+			evc_t.canNotAccessData canNotAccessData
+		}
+	}
+	
+	method getDeData {
+		out {
+			de_t _RESULT
+		}
+		error {
+			canNotAccessData
+		}
+	}
+
+	attribute String name readonly
+
+	attribute state_t deState readonly
+
+}

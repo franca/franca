@@ -1,14 +1,14 @@
 /* 
 XPECT_SETUP org.franca.deploymodel.dsl.tests.xpect.ui.FrancaDeploymodelXpectUITests
 Workspace{
-	JavaProject "libraryproject"{
+	org.xpect.xtext.lib.setup.workspace.JavaProject "libraryproject" {
 		nature = "org.eclipse.xtext.ui.shared.xtextNature"	
 		builder = "org.eclipse.xtext.ui.shared.xtextBuilder"
 		SrcFolder "model" {
 			File "d.fdepl" {}
 		}
 	}
-	org.franca.deploymodel.dsl.tests.xpect.JavaProject "sample"{
+	org.franca.deploymodel.dsl.tests.xpect.util.JavaProjectWithReferences "sample" {
 		projectReference = "libraryproject"
 		nature = "org.eclipse.xtext.ui.shared.xtextNature"	
 		builder = "org.eclipse.xtext.ui.shared.xtextBuilder"
@@ -53,7 +53,7 @@ specification org.example.spec.MySpec extends The_PlatformDeploySpec
 
 // XPECT proposals at 'org.example.spec.MySpec' --> The_PlatformDeploySpec, The_PlatformDeploySpec_WithAlias, org.example.spec.MySpec 
 define org.example.spec.MySpec 
-	// XPECT lineErrors at 'The_PlatformDeploySpec' --> "Couldn't resolve reference to FTypeCollection 'demo.MyTypeCollection'."
+	// XPECT errors --> "Couldn't resolve reference to FTypeCollection 'demo.MyTypeCollection'." at "demo.MyTypeCollection"
 	for typeCollection demo.MyTypeCollection as DeployedTypes {
 		
 	}

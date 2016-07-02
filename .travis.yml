@@ -1,8 +1,35 @@
-language: java
-script: cd releng/org.franca.parent && mvn clean install
-
 # use new travis infrastructure (container-based)
 sudo: false
+
+# currently we use Java 7
+language: java
+jdk: oraclejdk7
+
+# activate caching to speed up build
+cache:
+  directories:
+  - $HOME/.m2
+
+# this stuff is needed for allowing UI tests
+
+env: DISPLAY=:99.0
+
+install: true
+
+addons:
+  apt:
+    packages:
+    - metacity
+
+before_script:
+ - sh -e /etc/init.d/xvfb start
+ - metacity --sm-disable --replace 2> metacity.err &
+
+
+# run actual build
+script:
+- export
+- cd releng/org.franca.parent && mvn clean install
 
 # select branches per whitelist
 branches:

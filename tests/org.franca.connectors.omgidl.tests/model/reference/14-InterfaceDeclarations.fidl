@@ -1,0 +1,55 @@
+package testcase14
+
+interface fooInterface1 {
+	public typedef L1 is Int32
+	
+	method opA {
+		in {
+			L1 l_1
+		}
+		out {
+			Int16 _RESULT
+		}
+	}
+}
+
+interface fooInterface2 {
+	public typedef L1 is Int16
+	
+	attribute Int32 a2
+
+	method opB {
+		in {
+			Int32 l
+		}
+		out {
+			L1 _RESULT
+		}
+	}
+}
+
+interface fooInterface3 extends fooInterface1 {
+	public typedef L2 is L1 //test case is ok
+	public typedef L3 is fooInterface2.L1
+	
+	const Int32 FooConstLong1 = 15
+	
+	<**
+		@details : Member from original interface fooInterface2 (currently Franca IDL does not support multiple inheritance).
+	**>
+	attribute Int32 a2
+
+	attribute Float FooAttributeFloat
+	attribute L2 FooAttributeL2
+	attribute Boolean FooReadonlyAttributeBoolean readonly
+
+	<** @details : Member from original interface fooInterface2 (currently Franca IDL does not support multiple inheritance). **>
+	method opB {
+		in {
+			Int32 l
+		}
+		out {
+			fooInterface2.L1 _RESULT
+		}
+	}
+}

@@ -115,46 +115,40 @@ class Franca2IdlConverter {
 	def private transformTypes(FType type) {
 		switch (type) {
 			FArrayType: {
-					val fArrayType = type as FArrayType
-					'''typedef «fArrayType.elementType.transformType2TypeString»[ ] «fArrayType.name»;'''
+					'''typedef «type.elementType.transformType2TypeString»[ ] «type.name»;'''
 				}
 
 			FStructType: {
-					var struct = type as FStructType
-					val fieldContent = struct.elements.map[transformFields].join('\n')
-					var baseStruct = struct.base?.name
+					val fieldContent = type.elements.map[transformFields].join('\n')
+					var baseStruct = type.base?.name
 					'''
-					struct «struct.name» «IF baseStruct!=null»:«baseStruct» «ENDIF»{
+					struct «type.name» «IF baseStruct!=null»:«baseStruct» «ENDIF»{
 						«fieldContent»
 					};
 					''' 
 				}
 			FUnionType:{
-				
-					var union = type as FUnionType
-					var baseUnion = union.base?.name
-					val fieldContent = union.elements.map[transformFields].join('\n')
+					var baseUnion = type.base?.name
+					val fieldContent = type.elements.map[transformFields].join('\n')
 					
 					'''
-					union «union.name» «IF baseUnion!=null»:«baseUnion» «ENDIF»{
+					union «type.name» «IF baseUnion!=null»:«baseUnion» «ENDIF»{
 						«fieldContent»
 					};
 					''' 
 				}
 			FEnumerationType:{
-					var enumtype = type as FEnumerationType
-					var baseEnum = enumtype.base?.name
-					val Content = enumtype.enumerators.map[transformEnumerators].join(',\n')
+					var baseEnum = type.base?.name
+					val Content = type.enumerators.map[transformEnumerators].join(',\n')
 					
 					'''
-					enum «enumtype.name» «IF baseEnum!=null»:«baseEnum» «ENDIF»{
+					enum «type.name» «IF baseEnum!=null»:«baseEnum» «ENDIF»{
 						«Content»
 					};
 					''' 	
 				}
 			FMapType: {
-					var map = type as FMapType
-					'''map_«map.name» «map.keyType.transformType2TypeString»=>«map.valueType.transformType2TypeString»;'''
+					'''map_«type.name» «type.keyType.transformType2TypeString»=>«type.valueType.transformType2TypeString»;'''
 					}
 			FTypeDef: {
 					var typedef= type as FTypeDef
@@ -165,20 +159,6 @@ class Franca2IdlConverter {
 		}
 					
 					
-	def private isArray(FTypeRef ref) {
-		if 	(ref.derived == null) {
-			''' '''
-		}
-		else {
-			var type = ref.derived
-			switch (type) {
-				FArrayType: '''[ ]'''
-				FTypeDef: type.actualType.transformType2TypeString
-				default : ''' '''
-			}
-		}
-	}
-	
 	def private transformEnumerators(FEnumerator eumerator) {
 		var name = eumerator.name
 		var value = eumerator.value

@@ -86,8 +86,9 @@ public class IssueReporter {
 			ret = "Transformation issued unspecified problem (id=" + issue.getReason() + ") with feature";
 		}
 		String detail = issue.getDetail();
-		if (! detail.isEmpty())
-			detail = " (detail: '" + detail + "')";
+		if (! detail.isEmpty()) {
+			detail = " (" + detail + ")";
+		}
 		return ret + " '" + feature + "'" + detail + ".\n";
 	}
 

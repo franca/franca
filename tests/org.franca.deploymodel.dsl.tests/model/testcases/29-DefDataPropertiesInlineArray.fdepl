@@ -158,39 +158,46 @@ define a.b.c.MySpec03 for interface fidl.InlineArrayInterface {
 			PropInteger = 0
 			PropNumber = 0
 			PropStructField = 0
+			PropField = 0
 			PropArray = 0
 		}
 		someUInt32Array {
 			PropInteger = 0
 			PropNumber = 0
 			PropStructField = 0
+			PropField = 0
 			PropArray = 0
 		}
 		someBooleanArray {
 			PropBoolean = 0
 			PropStructField = 0
+			PropField = 0
 			PropArray = 0
 		}
 		someFloatArray {
 			PropFloat = 0
 			PropNumber = 0
 			PropStructField = 0
+			PropField = 0
 			PropArray = 0
 		}
 		someDoubleArray {
 			PropFloat = 0
 			PropNumber = 0
 			PropStructField = 0
+			PropField = 0
 			PropArray = 0
 		}
 		someStringArray {
 			PropString = 0
 			PropStructField = 0
+			PropField = 0
 			PropArray = 0
 		}
 		someBufferArray {
 			PropByteBuffer = 0
 			PropStructField = 0
+			PropField = 0
 			PropArray = 0
 		}
 	}
@@ -201,39 +208,46 @@ define a.b.c.MySpec03 for interface fidl.InlineArrayInterface {
 			PropInteger = 0
 			PropNumber = 0
 			PropUnionField = 0
+			PropField = 0
 			PropArray = 0
 		}
 		someUInt32Array {
 			PropInteger = 0
 			PropNumber = 0
 			PropUnionField = 0
+			PropField = 0
 			PropArray = 0
 		}
 		someBooleanArray {
 			PropBoolean = 0
 			PropUnionField = 0
+			PropField = 0
 			PropArray = 0
 		}
 		someFloatArray {
 			PropFloat = 0
 			PropNumber = 0
 			PropUnionField = 0
+			PropField = 0
 			PropArray = 0
 		}
 		someDoubleArray {
 			PropFloat = 0
 			PropNumber = 0
 			PropUnionField = 0
+			PropField = 0
 			PropArray = 0
 		}
 		someStringArray {
 			PropString = 0
 			PropUnionField = 0
+			PropField = 0
 			PropArray = 0
 		}
 		someBufferArray {
 			PropByteBuffer = 0
 			PropUnionField = 0
+			PropField = 0
 			PropArray = 0
 		}
 	}

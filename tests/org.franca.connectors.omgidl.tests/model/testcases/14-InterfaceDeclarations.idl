@@ -1,0 +1,28 @@
+// interface declarations
+
+module testcase14 {
+	interface fooInterface1 {
+		typedef long L1;
+		short opA(in L1 l_1);
+	};
+	
+	interface fooInterface2 {
+		typedef short L1;
+
+		attribute long a2;
+
+		L1 opB(in long l);
+	};
+
+	interface fooInterface3 : fooInterface1, fooInterface2 {
+		typedef fooInterface1::L1 L2;
+		typedef fooInterface2::L1 L3;
+
+		const long FooConstLong1 = 15;
+
+		attribute float FooAttributeFloat;
+		attribute L2 FooAttributeL2;
+		
+		readonly attribute boolean FooReadonlyAttributeBoolean;
+	};
+};

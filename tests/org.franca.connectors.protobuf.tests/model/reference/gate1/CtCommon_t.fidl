@@ -1,0 +1,281 @@
+package Pkg.Ct.CtCommon_t
+
+import model "Common_t.fidl"
+import model "Infrastructure_t.fidl"
+
+typeCollection {
+	enumeration PathType_t {
+		ePath_Unknown = 0
+		ePath_Type1 = 1
+		ePath_Type2 = 2
+	}
+
+	enumeration AmType_t {
+		eAm_Unknown = 0
+		eAmb_Type1 = 1
+		eAmb_Type2ss = 2
+	}
+
+	enumeration AobType_t {
+		eAOB_Unknown = 0
+		eAOB_None = 1
+		eAOB_Type1 = 2
+		eAOB_Type2 = 3
+	}
+
+	enumeration RateIndicatorType_t {
+		eRateIndicator_Undefined = 0
+		eRateIndicator_High = 1
+		eRateIndicator_Normal = 2
+		eRateIndicator_Zero = 3
+		eRateIndicator_ZeroUnread = 4
+	}
+
+	enumeration CfType_t {
+		eCf_Unknown = 0
+		eCf_Low = 1
+		eCf_Medium = 2
+		eCf_High = 3
+		eCf_None = 4
+	}
+
+	enumeration CtPrefixType_t {
+		eCtPrefix_Unknown = 0
+		eCtPrefix_i = 1
+		eCtPrefix_2 = 2
+		eCtPrefix_3 = 3
+		eCtPrefix_4 = 4
+		eCtPrefix_5 = 5
+		eCtPrefix_6 = 6
+		eCtPrefix_7 = 7
+		eCtPrefix_8 = 8
+		eCtPrefix_9 = 9
+		eCtPrefix_10 = 10
+		eCtPrefix_11 = 11
+		eCtPrefix_12 = 12
+		eCtPrefix_13 = 13
+		eCtPrefix_14 = 14
+	}
+
+	enumeration SttType_t {
+		eInfoState_Unknown = 0
+		eInfoState_Measured = 1
+		eInfoState_Calculated = 2
+		eInfoState_Default = 3
+	}
+
+	enumeration CModeType_t {
+		eConstraintsMode_Auto = 0
+		eConstraintsMode_Manual = 1
+		eocType_tff = 2
+	}
+
+	enumeration OcType_t {
+		eOc_Unknown = 0
+		eOc_1 = 1
+		eOc_2 = 2
+	}
+
+	enumeration PsInfoType_t {
+		ePsInfo_Unknown = 0
+		ePsInfo_1 = 1
+		ePsInfo_2 = 2
+		ePsInfo_3 = 3
+		ePsInfo_4 = 4
+		ePsInfo_5 = 5
+		ePsInfo_6 = 6
+		ePsInfo_7 = 7
+	}
+
+	enumeration InfoType_t {
+		eInfo_Unknown = 0
+		eInfo_1 = 1
+		eInfo_2 = 2
+	}
+
+	enumeration SourceType_t {
+		eSource_1 = 28
+		eSource_2 = 29
+		eSource_Unknown = 0
+		eSource_3 = 1
+		eSource_4 = 2
+		eSource_5 = 3
+		eSource_6 = 4
+		eSource_7 = 5
+		eSource_8 = 6
+		eSource_9 = 7
+		eSource_10 = 8
+		eSource_11 = 9
+		eSource_12 = 10
+		eSource_13 = 11
+		eSource_14 = 12
+		eSource_15 = 13
+		eSource_16 = 14
+		eSource_16 = 15
+		eSource_18 = 16
+		eSource_19 = 17
+		eSource_20 = 18
+		eSource_21 = 19
+		eSource_22 = 20
+		eSource_23 = 21
+		eSource_24 = 22
+		eSource_25 = 23
+		eSource_26 = 24
+		eSource_27 = 25
+		eSource_28 = 26
+		eSource_29 = 27
+		eSource_30 = 100
+	}
+
+	enumeration SType_t {
+		eSType_0 = 0
+		eSType_1 = 1
+		eSType_2 = 2
+	}
+
+	enumeration SModeType_t {
+		eSMode_Unknown = 0
+		eSMode_1 = 1
+		eSMode_2 = 2
+	}
+
+	enumeration SSourceType_t {
+		eSSource_Unknown = 0
+		eSSource_1 = 1
+		eSSource_2 = 2
+		eSSource_3 = 3
+		eSSource_4 = 4
+		eSSource_5 = 5
+		eSSource_6 = 6
+		eSSource_7 = 7
+		eSSource_8 = 9
+		eSSource_9 = 10
+		eSSource_10 = 11
+		eSSource_11 = 12
+		eSSource_12 = 13
+		eSSource_13 = 14
+		eSSource_14 = 15
+		eSSource_15 = 16
+		eSSource_16 = 17
+		eSSource_17 = 18
+		eSSource_18 = 19
+		eSSource_19 = 20
+		eSSource_20 = 21
+		eSSource_21 = 22
+		eSSource_22 = 23
+		eSSource_23 = 24
+		eSSource_33 = 25
+		eSSource_24 = 26
+		eSSource_25 = 27
+		eSSource_26 = 28
+		eSSource_27 = 29
+		eSSource_28 = 30
+		eSSource_29 = 31
+		eSSource_30 = 32
+		eSSource_31 = 33
+		eSSource_32 = 34
+		eSSource_34 = 35
+		eSSource_35 = 36
+		eSSource_36 = 37
+		eSSource_37 = 38
+		eSSource_38 = 39
+		eSSource_39 = 40
+		eSSource_40 = 41
+		eSSource_41 = 42
+		eSSource_42 = 43
+		eSSource_43 = 44
+		eSSource_44 = 100
+	}
+
+	struct AobInfo_t {
+		Double data1
+		AobType_t data2
+	}
+
+	struct AouInfo_t {
+		Int64 aou1
+		Int64 aou2
+		Double aou3
+		Double aou4
+	}
+
+	struct AouPolygonInfo_t {
+		Pkg.Infrastructure.Common_t.Position_t [ ] aouPolygon
+		Double info
+	}
+
+	struct HistoryRequest_t {
+		CtD_t [ ] ctList
+		Pkg.Infrastructure.Infrastructure_t.HistoryRequestHeader_t options
+	}
+
+	struct CtD_t {
+		Int64 ctNumber
+		CtPrefixType_t ctPrefix
+		String ctLabel
+		Pkg.Infrastructure.Common_t.Color_t ctColor
+		Int64 data1
+		Boolean ctIs
+		Int64 uniqueID
+		Int64 data2
+		Boolean ctIsC
+		Pkg.Infrastructure.Common_t.SysType_t sys
+	}
+
+	struct LConstraints_t {
+		Boolean data1
+		Boolean data2
+		Boolean data3
+		Boolean data4
+		Boolean data5
+		Boolean data6
+		Boolean data7
+		CfType_t data8
+		CfType_t data9
+		Double data10
+		Double data11
+		Double data12
+		CModeType_t data13
+		Int64 ID
+		CtD_t data14
+	}
+
+	struct OcType_t {
+		OcType_t value
+		Int64 data
+	}
+
+	struct PsInfoType {
+		Pkg.Infrastructure.Infrastructure_t.Timespec_t timestamp
+		PsInfoType_t infoType
+		Double minimum
+		Double best
+		Double maximum
+		SType_t info
+		Int64 index
+		PathType_t path
+		Double angle
+		Double std
+		CfType_t cfData
+		Boolean flag
+	}
+
+	struct PInfo_t {
+		Pkg.Infrastructure.Infrastructure_t.Timespec_t timestamp
+		InfoType_t infoType
+		Double minimum
+		Double best
+		Double maximum
+		SttType_t info
+		SModeType_t mode
+		Int64 index
+		CfType_t cfData
+		Boolean flag
+	}
+
+	struct StandardDeviatedInfo_t {
+		Double value
+		Double stdDev
+	}
+
+}

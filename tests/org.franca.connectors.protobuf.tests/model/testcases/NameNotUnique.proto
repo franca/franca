@@ -1,0 +1,14 @@
+syntax = "proto2";
+
+package org.franca.connectors.protobuf.tests;
+
+message Request {}
+message Request {}
+
+enum Scalar {
+	field = 1;
+}
+
+enum Scalar {
+	field = 2;
+}

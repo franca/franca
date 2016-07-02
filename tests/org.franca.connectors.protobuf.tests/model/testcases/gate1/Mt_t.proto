@@ -1,0 +1,96 @@
+
+
+
+
+
+///////////////////////////////// Package Information //////////////////////////
+package  Pkg.HME.Mt_t;
+option java_package =  "Pkg.HME";
+
+///////////////////////////////// Import Information ///////////////////////////
+import "Infrastructure_t.proto";
+
+///////////////////////////////// Enumerations /////////////////////////////////
+
+
+enum mtCRType_t
+{
+   eMCR_Unknown = 0;
+   eMCR_1 = 1;
+   eMCR_2 = 2;
+}
+
+
+enum mtIdentifierType_t
+{
+   eMtIdentifier_Unknown = 0;
+   eMtIdentifier_15 = 1;
+   eMtIdentifier_18 = 2;
+   eMtIdentifier_8 = 3;
+   eMtIdentifier_1 = 4;
+   eMtIdentifier_2 = 5;
+   eMtIdentifier_3 = 6;
+   eMtIdentifier_4 = 7;
+   eMtIdentifier_5 = 8;
+   eMtIdentifier_6 = 9;
+}
+
+
+enum mtstt
+{
+   eMtstt_Unknown = 0;
+   eMtstt_1 = 1;
+   eMtstt_2 = 2;
+   eMtstt_3 = 3;
+   eMtstt_4 = 4;
+   eMtstt_5 = 5;
+   eMtstt_6 = 6;
+   eMtstt_7 = 7;
+}
+
+
+enum mtType_t
+{
+   eMt_Unknown = 0;
+   eMt_1 = 1;
+   eMt_2 = 2;
+}
+		
+///////////////////////////////// Messages /////////////////////////////////////
+
+message mtControl_t
+{	
+   
+   optional Pkg.Infrastructure.Infrastructure_t.timespec_t timestamp = 1;
+
+   
+   optional mtCRType_t mtCR = 2;
+}
+
+
+message mtReport_t
+{	
+   
+   optional Pkg.Infrastructure.Infrastructure_t.timespec_t timestamp = 1;
+
+
+   repeated mt_t data = 2;
+}
+
+
+message mt_t
+{	
+   
+   optional mtIdentifierType_t identifier = 1;
+
+   
+   optional mtType_t type = 2;
+
+   
+   optional mtstt mtData1 = 3;
+
+   
+   optional double mtData2 = 4;
+}
+
+	

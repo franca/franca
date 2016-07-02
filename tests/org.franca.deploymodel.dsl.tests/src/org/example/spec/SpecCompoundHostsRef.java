@@ -171,7 +171,7 @@ public class SpecCompoundHostsRef {
 	public static class TypeCollectionPropertyAccessor
 		implements IDataPropertyAccessor
 	{
-		final private MappingGenericPropertyAccessor target;
+		private final MappingGenericPropertyAccessor target;
 		private final DataPropertyAccessorHelper helper;
 	
 		public TypeCollectionPropertyAccessor(FDeployedTypeCollection target) {
@@ -275,7 +275,7 @@ public class SpecCompoundHostsRef {
 	public static class InterfacePropertyAccessor
 		implements IDataPropertyAccessor
 	{
-		final private MappingGenericPropertyAccessor target;
+		private final MappingGenericPropertyAccessor target;
 		private final DataPropertyAccessorHelper helper;
 	
 		public InterfacePropertyAccessor(FDeployedInterface target) {
@@ -430,12 +430,8 @@ public class SpecCompoundHostsRef {
 	public static class ProviderPropertyAccessor
 		implements Enums
 	{
-		final private FDeployedProvider target;
-	
 		public ProviderPropertyAccessor(FDeployedProvider target) {
-			this.target = target;
 		}
-		
 	}
 
 	/**
@@ -450,7 +446,6 @@ public class SpecCompoundHostsRef {
 		private final FDTypeOverwrites overwrites;
 		private final Map<FField, FDField> mappedFields;
 		private final Map<FEnumerator, FDEnumValue> mappedEnumerators;
-		private final DataPropertyAccessorHelper helper;
 	
 		public OverwriteAccessor(
 				FDTypeOverwrites overwrites,
@@ -459,7 +454,6 @@ public class SpecCompoundHostsRef {
 		{
 			this.target = genericAccessor;
 			this.delegate = delegate;
-			this.helper = new DataPropertyAccessorHelper(genericAccessor, this);
 	
 			this.overwrites = overwrites;
 			this.mappedFields = Maps.newHashMap();

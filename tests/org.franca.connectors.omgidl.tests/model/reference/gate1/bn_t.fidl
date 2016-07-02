@@ -1,0 +1,114 @@
+package bn_t
+
+import model "evc_t.fidl"
+
+typeCollection {
+	version {
+		major 1
+		minor 0
+	}
+
+	enumeration dataOriginationType_t {
+		LIVE
+		OVERRIDDEN
+		DEGRADED
+		INVALID
+	}
+
+	enumeration appSource_t {
+		source1
+		source2
+		source3
+		source4
+		source5
+		source6
+		source7
+		source8
+		source9
+		OTHER
+	}
+
+	enumeration coordinateSelect_t {
+		GEO
+		TRANSVERSE
+	}
+
+	struct typedData1_t {
+		evc_t.evcData3_t data
+		dataOriginationType_t type
+	}
+
+	struct typedData2_t {
+		Float data
+		dataOriginationType_t type
+	}
+
+	struct typedData3_t {
+		Float data
+		dataOriginationType_t type
+	}
+
+	struct typedData4_t {
+		evc_t.evcData2_t data
+		dataOriginationType_t type
+	}
+
+	struct typedData5_t {
+		Float data
+		dataOriginationType_t type
+	}
+
+	struct typedLongitude_t {
+		evc_t.Longitude_t data
+		dataOriginationType_t type
+	}
+
+	struct typedLatitude_t {
+		evc_t.Latitude_t data
+		dataOriginationType_t type
+	}
+
+	struct typedData6_t {
+		Float data
+		dataOriginationType_t type
+	}
+
+	struct typedSpeed_t {
+		Float data
+		dataOriginationType_t type
+	}
+
+	struct typedData7_t {
+		typedData5_t typedDepth
+		appSource_t appSource
+	}
+
+	struct offsets_t {
+		typedLatitude_t latitudeOffset
+		typedLongitude_t longitudeOffset
+	}
+
+	struct attMoPo_t {
+		typedData4_t data1
+		typedData2_t data2
+		typedData6_t data3
+		typedData1_t data4
+		typedSpeed_t data5
+		typedData3_t data6
+		typedData3_t data7
+		typedData3_t data8
+		typedLatitude_t latitude
+		typedLongitude_t longitude
+		appSource_t source
+	}
+
+	struct os_t {
+		evc_t.timespec_t timeStamp
+		attMoPo_t attMoPo
+		typedData5_t data1
+		offsets_t offsets
+		coordinateSelect_t coordinateSelect
+		evc_t.validData_t validMessage
+	}
+
+}

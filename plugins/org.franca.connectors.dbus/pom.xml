@@ -5,12 +5,12 @@
 	<parent>
 		<groupId>org.franca</groupId>
 		<artifactId>org.franca.parent</artifactId>
-		<version>0.10.0-SNAPSHOT</version>
+		<version>0.11.0-SNAPSHOT</version>
 		<relativePath>../../releng/org.franca.parent/pom.xml</relativePath>
 	</parent>
 
 	<artifactId>org.franca.connectors.dbus</artifactId>
-	<description>This Eclipse plugin contains the Franca/D-Bus connector. It requires the dbus-emf-model plugin from Eclipse Labs.</description>
+	<description>This Eclipse plugin contains the Franca/D-Bus connector. It requires the dbus-emf-model plug-in.</description>
 	<packaging>eclipse-plugin</packaging>
 	<build>
 		<sourceDirectory>src</sourceDirectory>

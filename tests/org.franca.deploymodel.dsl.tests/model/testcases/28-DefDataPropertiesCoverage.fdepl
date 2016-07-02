@@ -267,63 +267,76 @@ define a.b.c.MySpec03 for interface fidl.CoverageInterface {
 			PropInteger = 0
 			PropNumber = 0
 			PropStructField = 0
+			PropField = 0
 		}
 		someUInt8 {
 			PropInteger = 0
 			PropNumber = 0
 			PropStructField = 0
+			PropField = 0
 		}
 		someInt16 {
 			PropInteger = 0
 			PropNumber = 0
 			PropStructField = 0
+			PropField = 0
 		}
 		someUInt16 {
 			PropInteger = 0
 			PropNumber = 0
 			PropStructField = 0
+			PropField = 0
 		}
 		someInt32 {
 			PropInteger = 0
 			PropNumber = 0
 			PropStructField = 0
+			PropField = 0
 		}
 		someUInt32 {
 			PropInteger = 0
 			PropNumber = 0
 			PropStructField = 0
+			PropField = 0
 		}
 		someInt64 {
 			PropInteger = 0
 			PropNumber = 0
 			PropStructField = 0
+			PropField = 0
 		}
 		someUInt64 {
 			PropInteger = 0
 			PropNumber = 0
 			PropStructField = 0
+			PropField = 0
 		}
 		someBoolean {
 			PropBoolean = 0
 			PropStructField = 0
+			PropField = 0
 		}
 		someFloat {
 			PropFloat = 0
 			PropNumber = 0
 			PropStructField = 0
+			PropField = 0
 		}
 		someDouble {
 			PropFloat = 0
 			PropNumber = 0
 			PropStructField = 0
+			PropField = 0
 		}
 		someString {
 			PropString = 0
 			PropStructField = 0
+			PropField = 0
 		}
 		someBuffer {
 			PropByteBuffer = 0
 			PropStructField = 0
+			PropField = 0
 		}
 	}
 
@@ -333,63 +346,76 @@ define a.b.c.MySpec03 for interface fidl.CoverageInterface {
 			PropInteger = 0
 			PropNumber = 0
 			PropUnionField = 0
+			PropField = 0
 		}
 		someUInt8 {
 			PropInteger = 0
 			PropNumber = 0
 			PropUnionField = 0
+			PropField = 0
 		}
 		someInt16 {
 			PropInteger = 0
 			PropNumber = 0
 			PropUnionField = 0
+			PropField = 0
 		}
 		someUInt16 {
 			PropInteger = 0
 			PropNumber = 0
 			PropUnionField = 0
+			PropField = 0
 		}
 		someInt32 {
 			PropInteger = 0
 			PropNumber = 0
 			PropUnionField = 0
+			PropField = 0
 		}
 		someUInt32 {
 			PropInteger = 0
 			PropNumber = 0
 			PropUnionField = 0
+			PropField = 0
 		}
 		someInt64 {
 			PropInteger = 0
 			PropNumber = 0
 			PropUnionField = 0
+			PropField = 0
 		}
 		someUInt64 {
 			PropInteger = 0
 			PropNumber = 0
 			PropUnionField = 0
+			PropField = 0
 		}
 		someBoolean {
 			PropBoolean = 0
 			PropUnionField = 0
+			PropField = 0
 		}
 		someFloat {
 			PropFloat = 0
 			PropNumber = 0
 			PropUnionField = 0
+			PropField = 0
 		}
 		someDouble {
 			PropFloat = 0
 			PropNumber = 0
 			PropUnionField = 0
+			PropField = 0
 		}
 		someString {
 			PropString = 0
 			PropUnionField = 0
+			PropField = 0
 		}
 		someBuffer {
 			PropByteBuffer = 0
 			PropUnionField = 0
+			PropField = 0
 		}
 	}
 
@@ -397,15 +423,19 @@ define a.b.c.MySpec03 for interface fidl.CoverageInterface {
 		PropStruct = 0
 		someEnum {
 			PropStructField = 0
+			PropField = 0
 		}
 		someArray {
 			PropStructField = 0
+			PropField = 0
 		}
 		someStruct {
 			PropStructField = 0
+			PropField = 0
 		}
 		someUnion {
 			PropStructField = 0
+			PropField = 0
 		}
 	}
 

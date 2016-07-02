@@ -1,0 +1,190 @@
+#ifndef _bn_t_idl 
+#define _bn_t_idl
+
+#include "evc_t.idl"
+
+module bn_t 
+{
+	
+	
+	enum dataOriginationType_t 
+	{
+		LIVE, 
+		OVERRIDDEN, 
+		DEGRADED, 
+		INVALID
+		
+	}; //end enum dataOriginationType_t
+	
+	
+	enum appSource_t 
+	{
+		source1, 
+		source2, 
+		source3, 
+		source4, 
+		source5, 
+		source6, 
+		source7, 
+		source8, 
+		source9, 
+		OTHER
+		
+	}; //end enum appSourceSource_t
+	
+	
+	enum coordinateSelect_t 
+	{
+		GEO, 
+		TRANSVERSE
+		
+	}; //end enum coordinateSelect_t
+	
+	
+	struct typedData1_t
+	{
+		// FIXED - invalid datatype evc_Data3
+		evc_t::evcData3_t data;
+		dataOriginationType_t type;
+		
+	}; //end struct typedData1_t
+	
+	
+	struct typedData2_t
+	{
+		
+		float data;
+		dataOriginationType_t type;
+		
+	}; //end struct typedData2_t
+	
+	
+	struct typedData3_t
+	{
+		
+		float data;
+		dataOriginationType_t type;
+		
+	}; //end struct typedData3_t
+	
+	
+	struct typedData4_t
+	{
+		
+		// FIXED - invalid datatype evc_Data2_t
+		evc_t::evcData2_t data;
+		dataOriginationType_t type;
+		
+	}; //end struct typedData4_t
+	
+	
+	struct typedData5_t
+	{
+		
+		float data;
+		dataOriginationType_t type;
+		
+	}; //end struct typedData5_t
+	
+	
+	struct typedLongitude_t
+	{
+		
+		evc_t::Longitude_t data;
+		dataOriginationType_t type;
+		
+	}; //end struct typedLongitude_t
+	
+	
+	struct typedLatitude_t
+	{
+		evc_t::Latitude_t data;
+		dataOriginationType_t type;
+		
+	}; //end struct typedLatitude_t
+	
+	
+	struct typedData6_t
+	{
+		
+		float data;
+		dataOriginationType_t type;
+		
+	}; //end struct typedData6_t
+	
+	
+	struct typedSpeed_t
+	{
+		
+		float data;
+		dataOriginationType_t type;
+		
+	}; //end struct typedSpeed_t
+	
+	
+	struct typedData7_t
+	{
+		
+		typedData5_t typedDepth;
+		appSource_t appSource;
+		
+	}; //end struct typedData7_t
+	
+	
+	struct offsets_t
+	{
+		
+		typedLatitude_t latitudeOffset;
+		
+		typedLongitude_t longitudeOffset;
+		
+	}; //end struct offsets_t
+	
+	
+	struct attMoPo_t
+	{
+		
+		typedData4_t data1;
+		
+		typedData2_t data2;
+		
+		typedData6_t data3;
+		
+		typedData1_t data4;
+		
+		typedSpeed_t data5;
+		
+		typedData3_t data6;
+		
+		typedData3_t data7;
+		
+		typedData3_t data8;
+		
+		typedLatitude_t latitude;
+		
+		typedLongitude_t longitude;
+		appSource_t source;
+		
+	}; //end struct attMoPo_t
+	
+	
+	struct os_t
+	{
+		
+		evc_t::timespec_t timeStamp;
+		
+		attMoPo_t attMoPo;
+		
+		typedData5_t data1;
+		
+		offsets_t offsets;
+		
+		coordinateSelect_t coordinateSelect;
+		
+		evc_t::validData_t validMessage;
+		
+	}; //end struct os_t
+	
+}; //end module bn_t
+#endif
+

@@ -1,0 +1,40 @@
+
+
+specification org.franca.connectors.protobuf.ProtobufSpec {
+	for struct_fields {
+		Tag : Integer (optional);
+		FieldRule : {OPTIONAL, REQUIRED, REPEATED} ; //( default: OPTIONAL )
+		DefaultValue : String (optional);
+		Ctype : {CORD, STRING, STRING_PIECE} (optional, default:STRING);
+		Packed : Boolean (optional);
+		Experimental_map_key : String (optional);
+		Deprecated:Boolean(optional);
+	}
+	
+	for structs {
+		Message_set_wire_format : Boolean (optional, default:false);
+		No_standard_descriptor_accessor : Boolean (optional, default:false);
+		Extensions: String(optional);
+	}
+	
+	for interfaces {
+		//TODO wait Franca to support File level option (for file)
+		Java_package : String (optional);
+		Java_outer_classname : String (optional);
+		Java_multiple_files : Boolean (optional, default:false);
+		Java_generate_equals_and_hash : Boolean (optional, default:false);
+		Optimize_for : {SPEED, CODE_SIZE, LITE_RUNTIME} (default:SPEED);
+		Cc_generic_services : Boolean (optional, default:false);
+		Java_generic_services : Boolean (optional, default:false);
+		Py_generic_services : Boolean (optional, default:false);
+	}
+	
+	for union_fields {
+		Tag : Integer (optional);
+		FieldRule : {OPTIONAL, REQUIRED, REPEATED} ( default: OPTIONAL, optional ); 
+		DefaultValue : String (optional);
+		Ctype : {CORD, STRING, STRING_PIECE} (optional, default:STRING);
+		Packed : Boolean (optional);
+		Experimental_map_key : String (optional);
+	}
+}

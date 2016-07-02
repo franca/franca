@@ -1,0 +1,36 @@
+#ifndef _db_t_idl 
+#define _db_t_idl
+
+#include "evc_t.idl"
+
+module db 
+{
+	
+	
+	struct dbBound_t
+	{
+		
+		evc_t::Latitude_t latitude;
+		
+		evc_t::Longitude_t longitude;
+		
+		float data1;
+		
+		float data2;
+		
+		evc_t::validData_t validityFlag;
+		
+	}; //end struct dbBound_t
+	
+	
+	struct db_t
+	{
+		// FIXME: This is a recursive reference, will lead to validation error if transformed to Franca.
+		//db_t NLT;
+		
+		dbBound_t NMT;
+		
+	}; //end struct db_t
+	
+}; //end module db
+#endif

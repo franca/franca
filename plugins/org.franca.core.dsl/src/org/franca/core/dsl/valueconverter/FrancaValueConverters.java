@@ -15,6 +15,7 @@ import org.eclipse.xtext.conversion.ValueConverter;
 import org.eclipse.xtext.conversion.ValueConverterException;
 import org.eclipse.xtext.conversion.impl.AbstractNullSafeConverter;
 import org.eclipse.xtext.nodemodel.INode;
+import org.franca.core.franca.impl.FAnnotationAuxImpl;
 
 public class FrancaValueConverters extends Ecore2XtextTerminalConverters {
 
@@ -29,7 +30,7 @@ public class FrancaValueConverters extends Ecore2XtextTerminalConverters {
 
 			@Override
 			protected String internalToString(Float value) {
-				return value.toString();
+				return value.toString() + "f";
 			}
 		};
 	}
@@ -44,7 +45,7 @@ public class FrancaValueConverters extends Ecore2XtextTerminalConverters {
 			}
              @Override
 			protected String internalToString(Double value) {
-				return value.toString();
+				return value.toString() + "d";
 			}
 		};
 	}
@@ -101,7 +102,6 @@ public class FrancaValueConverters extends Ecore2XtextTerminalConverters {
 			@Override
 			protected String internalToValue(String string, INode node) {
 				String value = string;
-				
 				// cut trailing whitespace or newlines
 				int j = string.length()-1;
 				while (j>=0 && Character.isWhitespace(string.charAt(j))) {

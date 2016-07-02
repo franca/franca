@@ -2,17 +2,13 @@
 <?eclipse version="3.0"?>
 
 <plugin>
-   <extension-point id="deploySpecProvider" name="France Deployment Specification Provider" schema="schema/deploySpecProvider.exsd"/>
+  <extension-point id="deploySpecProvider" name="Franca Deployment Specification Provider" schema="schema/deploySpecProvider.exsd"/>
+  <extension-point id="deploymentValidator" name="Franca Deployment Model Validator" schema="schema/deploymentValidator.exsd"/>
 
   <extension point="org.eclipse.emf.ecore.generated_package">
     <package 
        uri = "http://www.franca.org/deploymodel/dsl/FDeploy" 
        class = "org.franca.deploymodel.dsl.fDeploy.FDeployPackage"
        genModel = "model/FDeploy.genmodel" /> 
-	
   </extension>
-
-
-
-
 </plugin>

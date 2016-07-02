@@ -1,0 +1,12 @@
+package db_cs
+
+import model "db_t.fidl"
+import model "evs.fidl"
+
+interface db_cs {
+	method getDb {
+		out {
+			db.db_t _RESULT
+		}
+	}
+}

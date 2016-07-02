@@ -4,11 +4,83 @@
 specification a.b.c.MySpec14 {
 
 	for structs {
-		TheProp : Boolean  (default:false);
+		Prop01 : Boolean  (default: false);
+		Prop02 : Boolean;
+		Prop11 : Integer  (default: 0);
+		Prop12 : Integer; 
 	}
 	
-	for arrays {
-		TheProp : Integer  (default:0);
+	for unions {
+		Prop01 : Boolean  (default: false);
+		Prop02 : Boolean;
+		Prop11 : String   (default: "foo");
+		Prop12 : String; 
 	}
 
+	// properties from struct_fields, union_fields and fields are mutually exclusive 
+	for struct_fields {
+		Prop01 : Boolean  (default: false);
+		Prop02 : Boolean;
+		Prop11 : String   (default: "bar");
+		Prop12 : String; 
+	}
+
+	for enumerations {
+		Prop01 : Boolean  (default: false);
+		Prop02 : Boolean;
+		Prop11 : String   (default: "zip");
+		Prop12 : String; 
+	}
+
+	for enumerators {
+		Prop01 : Boolean  (default: false);
+		Prop02 : Boolean;
+		Prop11 : Integer  (default: 12);
+		Prop12 : Integer; 
+	}
+
+	for typedefs {
+		Prop01 : Boolean  (default: false);
+		Prop02 : Boolean;
+		Prop11 : Boolean  (default: true);
+		Prop12 : Boolean; 
+	}
+
+
+	for attributes {
+		Prop01 : Boolean  (default: false);
+		Prop02 : Boolean;
+		Prop11 : Interface  (optional);
+		Prop12 : Interface; 
+	}
+
+	for methods {
+		Prop01 : Boolean  (default: false);
+		Prop02 : Boolean;
+		Prop11 : Instance  (optional);
+		Prop12 : Instance; 
+	}
+
+	for broadcasts {
+		Prop01 : Boolean  (default: false);
+		Prop02 : Boolean;
+		Prop11 : Interface  (optional);
+		Prop12 : Interface; 
+	}
+
+	for arguments {
+		Prop01 : Boolean  (default: false);
+		Prop02 : Boolean;
+		Prop11 : String   (default: "bar");
+		Prop12 : String; 
+	}
+
+
+	// properties from type_collections and interfaces are mutually exclusive 
+	for type_collections {
+		Prop01 : Boolean  (default: false);
+		Prop02 : Boolean;
+		Prop11 : Integer  (default: 34);
+		Prop12 : Integer; 
+	}
 }

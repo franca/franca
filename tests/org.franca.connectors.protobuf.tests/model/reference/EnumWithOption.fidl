@@ -1,0 +1,35 @@
+package org.franca.connectors.protobuf.tests
+
+import model "descriptor.fidl"
+
+typeCollection {
+	struct EnumOptions_1 extends google.protobuf.EnumOptions {
+		Boolean my_enum_option
+	}
+
+	enumeration Scalar {
+		myString = 0
+		mylong = 123456789
+		myhex = 431
+	}
+
+	struct Request1 {
+		String string1
+		Int32 int32_1
+		UInt32 [ ] uint32_1
+		Scalar scalar1
+		String java_package
+	}
+	
+	struct Response1 {
+		Float float1
+		Int64 int64_1
+		Int32 [ ] sfixed32_1
+		Int64 [ ] sfixed64_1
+		Int32 sint32_1
+		Int64 sint64_1
+		UInt32 [ ] uint32_1
+		UInt64 uint64_1
+	}
+	
+}

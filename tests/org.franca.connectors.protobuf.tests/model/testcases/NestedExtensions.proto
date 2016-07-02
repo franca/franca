@@ -1,0 +1,12 @@
+syntax = "proto2";
+
+package org.franca.connectors.protobuf.tests;
+
+
+message Foo { }
+
+message Baz {
+  extend Foo {
+    optional Baz foo_ext = 127;
+  }
+}

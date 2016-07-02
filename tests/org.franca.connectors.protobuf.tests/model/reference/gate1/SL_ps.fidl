@@ -1,0 +1,18 @@
+package Pkg.Misc.SL_Service.SecurityLevel_ps
+
+import model "SL_t.fidl"
+
+typeCollection {
+	enumeration MajorVersion {
+		eMajorVersion = 1
+	}
+
+	enumeration MinorVersion {
+		eMinorVersion = 2
+	}
+
+	struct SLInfoPublish {
+		Pkg.Misc.SL_t.SL_t info
+	}
+
+}

@@ -1,0 +1,8 @@
+package testcase11
+import model "orb.fidl"
+import model "TypeCode.fidl"
+
+interface ExampleInterface1 {
+}
+interface ExampleInterface2 {
+}

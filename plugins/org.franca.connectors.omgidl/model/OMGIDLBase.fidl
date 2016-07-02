@@ -1,0 +1,16 @@
+package org.franca.omgidl
+
+<**
+	@description: This anonymous type collections provides some aliases for types
+	              which are used in OMG IDL files and their mapping to Franca IDL.
+	              Using these typedefs, a code generator (or any downstream tool)
+	              could detect the original types and evaluate these to generate
+	              specific code. 
+**>
+typeCollection {
+	typedef octet is UInt8
+	typedef char is UInt8
+	typedef wchar is UInt32
+	typedef wstring is String
+	typedef long_double is Double  	
+}

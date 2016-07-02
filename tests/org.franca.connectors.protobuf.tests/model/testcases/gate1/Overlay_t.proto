@@ -1,0 +1,1001 @@
+///////////////////////////////// Package Information //////////////////////////
+package Pkg.Misc.Overlay_t;
+option java_package =  "Pkg.Misc";
+
+///////////////////////////////// Import Information ///////////////////////////
+import "Common_t.proto";
+import "CtCommon_t.proto";
+import "Infrastructure_t.proto";
+
+///////////////////////////////// Enumerations /////////////////////////////////
+
+
+enum applyBoundaryType_t
+{
+   eApplyBoundary_Unknown = 0;
+   eApplyBoundary_1 = 1;
+   eApplyBoundary_2 = 2;
+   eApplyBoundary_3 = 3;
+}
+
+
+enum changeType_t
+{
+   eChange_Unknown = 0;
+   eChange_New = 1;
+   eChange_Update = 2;
+   eChange_Delete = 3;
+}
+
+
+enum componentType_t
+{
+   eComponent_Unknown = 0;
+   eComponent_Arc = 1;
+   eComponent_ConnectedVectors = 2;
+   eComponent_ExpandingCircle = 3;
+   eComponent_FourW = 4;
+   eComponent_Image = 5;
+   eComponent_LineSegments = 6;
+   eComponent_Points = 8;
+   eComponent_Polygon = 9;
+   eComponent_Rectangle = 10;
+   eComponent_Sector = 11;
+   eComponent_Skylight = 12;
+   eComponent_Stovepipe = 13;
+   eComponent_Text = 14;
+   eComponent_Tooltip = 15;
+}
+
+
+enum dZoneType_t
+{
+   eDZone_Unknown = 0x0;
+   eDZone_SM = 0x00001;
+   eDZone_MMn = 0x00002;
+   eDZone_MMx = 0x00004;
+   eDZone_DMn = 0x00008;
+   eDZone_DMx = 0x00010;
+}
+
+
+enum fillStyleType_t
+{
+   eFillStyle_Unknown = 0;
+   eFillStyle_None = 1;
+   eFillStyle_Solid = 2;
+   eFillStyle_SmallDots = 3;
+   eFillStyle_MediumDots = 4;
+   eFillStyle_LargeDots = 5;
+   eFillStyle_Vertical = 6;
+   eFillStyle_Horizontal = 7;
+   eFillStyle_DiagonalLeft = 8;
+   eFillStyle_DiagonalRight = 9;
+   eFillStyle_CrossHatched = 10;
+   eFillStyle_Grid = 11;
+   eFillStyle_EmptyCircle = 12;
+   eFillStyle_SolidCircle = 13;
+   eFillStyle_HookCircle = 14;
+   eFillStyle_VCircle = 15;
+   eFillStyle_Smile = 16;
+}
+
+
+enum fontSizeType_t
+{
+   eFontSize_Unknown = 0;
+   eFontSize_8 = 1;
+   eFontSize_10 = 2;
+   eFontSize_12 = 3;
+   eFontSize_14 = 4;
+   eFontSize_16 = 5;
+   eFontSize_18 = 6;
+   eFontSize_20 = 7;
+}
+
+
+enum fontType_t
+{
+   eFont_Unknown = 0;
+   eFont_Bitstream = 1;
+   eFont_Courier = 2;
+   eFont_Helvetica = 3;
+   eFont_Lucida = 4;
+   eFont_Schoolbook = 5;
+   eFont_Times = 6;
+   eFont_Standard = 7;
+   eFont_StandardCaps = 8;
+   eFont_Italic = 9;
+   eFont_Bold = 10;
+}
+
+
+enum groupType_t
+{
+   eGroup_Unknown = 0;
+   eGroup_Group = 1;
+   eGroup_Overlay = 2;
+}
+
+
+enum horizontalAlignmentType_t
+{
+   eHorizontalAlignment_Unknown = 0;
+   eHorizontalAlignment_Center = 1;
+   eHorizontalAlignment_Left = 2;
+   eHorizontalAlignment_Right = 3;
+}
+
+
+enum imagePointType_t
+{
+   eImagePoint_Unknown = 0;
+   eImagePoint_Gridded = 1;
+   eImagePoint_Geodetic = 2;
+}
+
+
+enum lineStyleType_t
+{
+   eLineStyle_Unknown = 0;
+   eLineStyle_None = 1;
+   eLineStyle_Solid = 2;
+   eLineStyle_Dashed = 3;
+   eLineStyle_DoubleDashed = 4;
+   eLineStyle_DashedDots = 5;
+   eLineStyle_SmallDots = 6;
+   eLineStyle_MediumDots = 7;
+   eLineStyle_LargeDots = 8;
+   eLineStyle_CrossHatched = 9;
+   eLineStyle_DiagonalLeft = 10;
+   eLineStyle_DiagonalRight = 11;
+}
+
+
+enum positionType_t
+{
+   ePosition_LatLon = 0;
+   ePosition_Screen = 1;
+   ePosition_Relative = 2;
+}
+
+
+enum referenceType_t
+{
+   eReference_Unknown = 0;
+   eReference_LatLon = 1;
+   eReference_Screen = 2;
+   eReference_Relative = 3;
+}
+
+
+enum sourceType_t
+{
+   eSource_Unknown = 0;
+   eSource_1 = 1;
+   eSource_2 = 2;
+   eSource_3 = 3;
+   eSource_4 = 4;
+   eSource_5 = 5;
+   eSource_6 = 6;
+   eSource_7 = 7;
+   eSource_8 = 8;
+   eSource_9 = 9;
+   eSource_10 = 10;
+   eSource_11 = 11;
+   eSource_12 = 12;
+   eSource_13 = 13;
+   eSource_14 = 14;
+   eSource_15 = 16;
+   eSource_16 = 17;
+}
+
+
+enum tiedToType_t
+{
+   eTiedTo_Unknown = 0;
+   eTiedTo_1 = 1;
+   eTiedTo_2 = 2;
+   eTiedTo_3 = 3;
+}
+
+
+enum tooltipBehaviorType_t
+{
+   eTooltipBehavior_Unknown = 0;
+   eTooltipBehavior_Mouseover = 1;
+   eTooltipBehavior_Selection = 2;
+}
+
+
+enum tooltipType_t
+{
+   eTooltip_Unknown = 0;
+   eTooltip_Text = 1;
+   eTooltip_Image = 2;
+}
+
+
+enum verticalAlignmentType_t
+{
+   eVerticalAlignment_Unknown = 0;
+   eVerticalAlignment_Center = 1;
+   eVerticalAlignment_Top = 2;
+   eVerticalAlignment_Bottom = 3;
+}
+		
+///////////////////////////////// Messages /////////////////////////////////////
+
+
+message arcData_t
+{	
+   
+   optional double angleOne = 1;
+
+   
+   optional double angleTwo = 2;
+
+   
+   optional double length = 3;
+
+   
+   optional double width = 4;
+
+   
+   optional positionUnion_t centerPoint = 5;
+}
+
+
+message closedShapeAttributes_t
+{	
+   
+   optional Pkg.Infrastructure.Common_t.color_t color = 1;
+
+   
+   optional lineAttributes_t lineAttributes = 2;
+
+   
+   optional fillStyleType_t fillStyle = 3;
+}
+
+
+message componentArc_t
+{	
+   
+   optional arcData_t arcData = 1;
+
+   
+   optional closedShapeAttributes_t attributes = 2;
+}
+
+
+message componentConnectedVectors_t
+{	
+   
+   optional lineAttributes_t attributes = 1;
+
+   
+   repeated positionUnion_t points = 2;
+}
+
+
+message componentExpandingCircle_t
+{	
+   
+   optional Pkg.Infrastructure.Infrastructure_t.timespec_t startTime = 1;
+
+   
+   optional double diameter = 2;
+
+   
+   optional double expansionRate = 3;
+
+   
+   optional positionUnion_t upperLeft = 4;
+
+   
+   optional closedShapeAttributes_t attributes = 5;
+}
+
+
+message componentGr_t
+{	
+   
+   optional lineAttributes_t attributes = 1;
+
+   
+   optional textAttributes_t textAttributes = 2;
+
+   
+   optional Pkg.Infrastructure.Common_t.position_t center = 3;
+
+   
+   optional grCellPosition_t referenceCell = 4;
+
+   
+   optional double cellDistance = 5;
+
+   
+   optional sint64 numCells = 6;
+
+   
+   repeated grAssignment_t assignments = 7;
+}
+
+
+message componentHeader_t
+{	
+   
+   optional sint64 id = 1;
+
+   
+   optional sint64 parentId = 2;
+
+   
+   optional string name = 3;
+
+   
+   optional bool isLocalOverride = 4;
+
+   
+   optional positionUnion_t localReference = 5;
+
+   
+   optional double orientation = 6;
+
+   
+   optional sint64 tooltipId = 7;
+}
+
+
+message componentImage_t
+{	
+   
+   optional bytes data = 1;
+
+   
+   optional imagePointType_t type = 2;
+
+   
+   optional griddedImagePoint_t griddedPoint = 3;
+
+   
+   optional geodeticImagePoint_t geodeticPoint = 4;
+}
+
+
+message componentLineSegments_t
+{	
+   
+   optional lineAttributes_t attributes = 1;
+
+   
+   repeated lineSegmentData_t segments = 2;
+}
+
+
+message coArea_t
+{	
+   
+   repeated positionUnion_t points = 1;
+
+   
+   optional closedShapeAttributes_t attributes = 2;
+
+   
+   optional applyBoundaryType_t boundaryAppliesTo = 3;
+
+   
+   optional double boundaryDistance = 4;
+}
+
+
+message componentPoints_t
+{	
+   
+   optional Pkg.Infrastructure.Common_t.color_t color = 1;
+
+   
+   repeated positionUnion_t points = 2;
+
+   
+   optional sint64 size = 3;
+}
+
+
+message componentPolygon_t
+{	
+   
+   optional closedShapeAttributes_t attributes = 1;
+
+   
+   repeated positionUnion_t points = 2;
+}
+
+
+message componentRectangle_t
+{	
+   
+   optional closedShapeAttributes_t attributes = 1;
+
+   
+   optional double length = 2;
+
+   
+   optional double width = 3;
+
+   
+   optional positionUnion_t centerPoint = 4;
+}
+
+
+message componentSector_t
+{	
+   
+   optional closedShapeAttributes_t attributes = 1;
+
+   
+   optional arcData_t arcData = 2;
+
+   
+   optional double innerRadius = 3;
+}
+
+
+message componentSkylight_t
+{	
+   
+   optional bool isInterior = 1;
+
+   
+   optional positionUnion_t upperLeft = 2;
+
+   
+   optional positionUnion_t lowerRight = 3;
+
+   
+   optional closedShapeAttributes_t attributes = 4;
+
+   
+   optional applyBoundaryType_t boundaryAppliesTo = 5;
+
+   
+   optional double boundaryDistance = 6;
+}
+
+
+message componentStovepipe_t
+{	
+   
+   optional bool isInterior = 1;
+
+   
+   optional positionUnion_t point = 2;
+
+   
+   optional double diameter = 3;
+
+   
+   optional closedShapeAttributes_t attributes = 4;
+
+   
+   optional applyBoundaryType_t boundaryAppliesTo = 5;
+
+   
+   optional double boundaryDistance = 6;
+}
+
+
+message componentText_t
+{	
+   
+   optional textAttributes_t attributes = 1;
+
+   
+   optional positionUnion_t point = 2;
+
+   
+   optional string text = 3;
+}
+
+
+message componentTooltip_t
+{	
+   
+   optional tooltipBehaviorType_t behavior = 1;
+
+   
+   optional tooltipType_t type = 2;
+
+   
+   repeated tooltipText_t textData = 3;
+
+   
+   optional bytes imageData = 4;
+}
+
+
+message componentType_t
+{	
+   
+   optional lineAttributes_t attributes = 1;
+
+   
+   repeated lData_t compData = 2;
+}
+
+
+message component_t
+{	
+   
+   optional componentHeader_t header = 1;
+
+   
+   optional componentType_t type = 2;
+
+   
+   optional componentArc_t arc = 3;
+
+   
+   optional componentConnectedVectors_t vectors = 4;
+
+   
+   optional componentExpandingCircle_t expandingCircle = 5;
+
+   
+   optional componentGr_t data = 6;
+
+   
+   optional componentImage_t image = 7;
+
+   
+   optional componentLineSegments_t segments = 8;
+
+   
+   optional coArea_t area = 9;
+
+   
+   optional componentSkylight_t skylight = 10;
+
+   
+   optional componentStovepipe_t stovepipe = 11;
+
+   
+   optional componentPoints_t points = 12;
+
+   
+   optional componentPolygon_t polygon = 13;
+
+   
+   optional componentRectangle_t rectangle = 14;
+
+   
+   optional componentSector_t sector = 15;
+
+   
+   optional componentText_t text = 16;
+
+   
+   optional componentTooltip_t tooltip = 17;
+
+   
+   optional componentType_t data1 = 18;
+}
+
+
+message grAssignmentGeometry_t
+{	
+   
+   optional closedShapeAttributes_t attributes = 1;
+
+   
+   optional grLabel_t label = 2;
+
+   
+   optional double buffer = 3;
+
+   
+   repeated Pkg.Infrastructure.Common_t.position_t points = 4;
+}
+
+
+message grAssignment_t
+{	
+   
+   optional string id = 1;
+
+   
+   optional closedShapeAttributes_t attributes = 2;
+
+   
+   optional double buffer = 3;
+
+   
+   optional string label = 4;
+
+   
+   optional grCellPosition_t lowerLeft = 5;
+
+   
+   optional grCellPosition_t upperRight = 6;
+}
+
+
+message grCellPosition_t
+{	
+   
+   optional string row = 2;
+
+   
+   optional string column = 1;
+}
+
+
+message grGeometry_t
+{	
+   
+   optional lineAttributes_t attributes = 1;
+
+   
+   repeated lineSegmentData_t horizontalLines = 2;
+
+   
+   repeated grLabel_t horizontalLabels = 3;
+
+   
+   repeated lineSegmentData_t verticalLines = 4;
+
+   
+   repeated grLabel_t verticalLabels = 5;
+
+   
+   repeated grAssignmentGeometry_t assignments = 6;
+}
+
+
+message grLabel_t
+{	
+   
+   optional string label = 3;
+
+   
+   optional textAttributes_t attributes = 1;
+
+   
+   optional Pkg.Infrastructure.Common_t.position_t position = 2;
+}
+
+
+message geodeticImagePoint_t
+{	
+   
+   optional Pkg.Infrastructure.Common_t.position_t upperLeft = 1;
+
+   
+   optional Pkg.Infrastructure.Common_t.position_t lowerRight = 2;
+}
+
+
+message griddedImagePoint_t
+{	
+   
+   optional Pkg.Infrastructure.Common_t.position_t center = 1;
+
+   
+   optional double yardsPerPixelX = 2;
+
+   
+   optional double yardsPerPixelY = 3;
+}
+
+
+message groupChange_t
+{	
+   
+   optional group_t group = 1;
+
+   
+   optional changeType_t changeType = 2;
+}
+
+
+message groupKey_t
+{	
+   
+   optional overlayKey_t key = 1;
+
+   
+   optional groupType_t groupType = 2;
+
+   
+   optional overlayKey_t parentKey = 3;
+}
+
+
+message group_t
+{	
+   
+   optional groupKey_t key = 1;
+
+   
+   optional string category = 2;
+
+   
+   optional Pkg.Infrastructure.Common_t.color_t nameColor = 3;
+
+   
+   optional double rotation = 4;
+
+   
+   optional bool isTeamTraining = 5;
+
+   
+   optional bool isEditable = 6;
+}
+
+
+message hvData_t
+{	
+   
+   optional double boundary = 7;
+
+   
+   optional double distanceAhead = 1;
+
+   
+   optional double distanceBehind = 2;
+
+   
+   optional double distanceLeft = 3;
+
+   
+   optional double distanceRight = 4;
+
+   
+   optional double max = 5;
+
+   
+   optional double min = 6;
+
+   
+   optional closedShapeAttributes_t attributes = 8;
+}
+
+
+message hvGeometry_t
+{	
+   
+   repeated Pkg.Infrastructure.Common_t.position_t hvPoints = 1;
+
+   
+   optional closedShapeAttributes_t hvAttributes = 2;
+
+   
+   repeated Pkg.Infrastructure.Common_t.position_t boundaryPoints = 3;
+
+   
+   optional lineAttributes_t boundaryAttributes = 4;
+}
+
+
+message lData_t
+{	
+   
+   optional Pkg.Infrastructure.Common_t.position_t startPosition = 1;
+
+   
+   optional Pkg.Infrastructure.Common_t.position_t endPosition = 2;
+
+   
+   optional Pkg.Infrastructure.Infrastructure_t.timespec_t startTime = 3;
+
+   
+   optional Pkg.Infrastructure.Infrastructure_t.timespec_t endTime = 4;
+
+   
+   optional hvData_t hvData = 5;
+}
+
+
+message lineAttributes_t
+{	
+   
+   optional Pkg.Infrastructure.Common_t.color_t color = 1;
+
+   
+   optional lineStyleType_t style = 2;
+
+   
+   optional sint64 width = 3;
+}
+
+
+message lineSegmentData_t
+{	
+   
+   optional positionUnion_t startPosition = 1;
+
+   
+   optional positionUnion_t endPosition = 2;
+}
+
+
+message overlayChange_t
+{	
+   
+   optional overlay_t overlay = 1;
+
+   
+   optional changeType_t changeType = 2;
+}
+
+
+message overlayKey_t
+{	
+   
+   optional string name = 1;
+
+   
+   optional sourceType_t source = 2;
+}
+
+
+message overlay_t
+{	
+   
+   optional bool flag1 = 18;
+
+   
+   optional Pkg.Infrastructure.Infrastructure_t.timespec_t timestamp = 1;
+
+   
+   optional bool isEditable = 2;
+
+   
+   optional overlayKey_t key = 3;
+
+   
+   optional referenceType_t referenceType = 4;
+
+   
+   optional bool isForced = 5;
+
+   
+   optional bool isLocked = 6;
+
+   
+   optional bool isDeletable = 7;
+
+   
+   optional bool isTeamTraining = 8;
+
+   
+   optional string category = 9;
+
+   
+   optional string description = 10;
+
+   
+   optional Pkg.Infrastructure.Common_t.position_t reference = 11;
+
+   
+   optional relativePosition_t cartesianOffset = 12;
+
+   
+   optional Pkg.Infrastructure.Common_t.color_t nameColor = 13;
+
+   
+   optional tiedToType_t tiedToType = 14;
+
+   
+   repeated component_t component = 15;
+
+   
+   optional string overlaySelectionName = 16;
+
+   
+   optional tiedToInformation_t tiedToInformation = 17;
+}
+
+
+message positionUnion_t
+{	
+   
+   optional positionType_t type = 1;
+
+   
+   optional Pkg.Infrastructure.Common_t.position_t latlon = 2;
+
+   
+   optional relativePosition_t relativeXY = 3;
+
+   
+   optional screenPosition_t screen = 4;
+}
+
+
+message relativePosition_t
+{	
+   
+   optional double xValue = 1;
+
+   
+   optional double yValue = 2;
+}
+
+
+message screenPosition_t
+{	
+   
+   optional sint64 xValue = 1;
+
+   
+   optional sint64 yValue = 2;
+}
+
+
+message textAttributes_t
+{	
+   
+   optional Pkg.Infrastructure.Common_t.color_t color = 1;
+
+   
+   optional fontType_t fontType = 2;
+
+   
+   optional fontSizeType_t fontSize = 3;
+
+   
+   optional horizontalAlignmentType_t horizontalAlignment = 4;
+
+   
+   optional Pkg.Infrastructure.Common_t.color_t backgroundColor = 5;
+}
+
+
+message tiedToCtInformation_t
+{	
+   
+   optional Pkg.Ct.CtCommon_t.ctPrefixType_t ctPrefix = 1;
+
+   
+   optional sint64 ctNumber = 2;
+}
+
+
+message tiedToInformation_t
+{	
+   
+   optional tiedToCtInformation_t tiedToCt = 1;
+
+   
+   optional tiedToInformation_t tiedTo = 2;
+}
+
+
+message tiedToInformation_t
+{	
+   
+   optional sint64 id = 1;
+
+   
+   optional overlayKey_t overlayKey = 2;
+}
+
+
+message tooltipText_t
+{	
+   
+   optional textAttributes_t attributes = 1;
+
+   
+   optional string label = 2;
+
+   
+   optional string title = 3;
+
+   
+   optional string value = 4;
+}
+
+	

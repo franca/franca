@@ -96,9 +96,11 @@ FMethod returns FMethod:
 	'{'
 		('in' '{' (inArgs+=FArgument)* '}' )?
 		('out' '{' (outArgs+=FArgument)* '}' )?
-		('error'
-			( errorEnum=[FEnumerationType|FQN] |
-			  errors=FEnumerationTypeBody )
+		(
+			(errorComment=FAnnotationBlock)?
+			'error'
+				( errorEnum=[FEnumerationType|FQN] |
+			  	errors=FEnumerationTypeBody )
 		)?
     '}';
 
@@ -158,18 +160,18 @@ FType returns FType:
 FArrayType returns FArrayType:
 	{FArrayType}
 	(comment=FAnnotationBlock)?
-	'array' name=ID 'of' elementType=FTypeRef;
+	(public?='public')? 'array' name=ID 'of' elementType=FTypeRef;
 
 FTypeDef returns FTypeDef:
 	{FTypeDef}
 	(comment=FAnnotationBlock)?
-	'typedef' name=ID 'is' actualType=FTypeRef
+	(public?='public')? 'typedef' name=ID 'is' actualType=FTypeRef
 	; 
 
 FStructType returns FStructType:
 	{FStructType}
 	(comment=FAnnotationBlock)?
-	'struct' name=ID
+	(public?='public')? 'struct' name=ID
 		(
 			('extends' base=[FStructType|FQN]) |
 			(polymorphic?='polymorphic')
@@ -181,7 +183,7 @@ FStructType returns FStructType:
 FUnionType returns FUnionType:
 	{FUnionType}
 	(comment=FAnnotationBlock)?
-	'union' name=ID ('extends' base=[FUnionType|FQN])?
+	(public?='public')? 'union' name=ID ('extends' base=[FUnionType|FQN])?
 	'{'
 		(elements+=FField)*
     '}';
@@ -189,7 +191,7 @@ FUnionType returns FUnionType:
 FEnumerationType returns FEnumerationType:
 	{FEnumerationType}
 	(comment=FAnnotationBlock)?
-	'enumeration' name=ID
+	(public?='public')? 'enumeration' name=ID
 	('extends' base=[FEnumerationType|FQN])?
 	'{'
 		(enumerators+=FEnumerator (','? enumerators+=FEnumerator)*)?
@@ -211,7 +213,7 @@ FEnumerator returns FEnumerator:
 FMapType returns FMapType:
 	{FMapType}
 	(comment=FAnnotationBlock)?
-	'map' name=ID '{'
+	(public?='public')? 'map' name=ID '{'
 		keyType=FTypeRef 'to' valueType=FTypeRef
 	'}';
 
@@ -470,7 +472,7 @@ terminal HEX :
 	
 terminal ANNOTATION_STRING returns ecore::EString:
 	'@' (('a'..'z')|'-')+ (' '|'\t')* ':'
-	( ('\\' ('b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\')) | !('\\'|'*'|'@') )*
+	( ('\\' ('b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\')) | ('\\*'|'\\@') | !('\\'|'*'|'@') )*
 ;
 
 

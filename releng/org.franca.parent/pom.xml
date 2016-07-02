@@ -8,7 +8,7 @@
 
 	<groupId>org.franca</groupId>
 	<artifactId>org.franca.parent</artifactId>
-	<version>0.10.0-SNAPSHOT</version>
+	<version>0.11.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<parent>
@@ -43,6 +43,10 @@
 			<module>../../plugins/org.franca.tools.contracts.tracevalidator</module>
             <module>../../plugins/org.franca.connectors.dbus</module>
             <module>../../plugins/org.franca.connectors.dbus.ui</module>
+            <module>../../plugins/org.franca.connectors.omgidl</module>
+            <module>../../plugins/org.franca.connectors.omgidl.ui</module>
+            <module>../../plugins/org.franca.connectors.protobuf</module>
+            <module>../../plugins/org.franca.connectors.protobuf.ui</module>
 			<module>../../plugins/org.franca.connectors.idl</module>
             <module>../../plugins/org.franca.product.ui</module>
     		<!-- test base modules -->
@@ -54,6 +58,8 @@
             <module>../../examples/org.franca.examples.reference</module>
             <module>../../tests/org.franca.tools.contracts.tracevalidator.tests</module>
             <module>../../tests/org.franca.connectors.dbus.tests</module>
+            <module>../../tests/org.franca.connectors.omgidl.tests</module>
+            <module>../../tests/org.franca.connectors.protobuf.tests</module>
 			<module>../../tests/org.franca.connectors.idl.tests</module>
     		<!-- documentation/help modules -->
             <module>../../docs/org.franca.userguide</module>
@@ -68,6 +74,10 @@
             <module>../../features/org.franca.dbus.feature.sdk</module>
             <module>../../features/org.franca.dbus.ui.feature</module>
             <module>../../features/org.franca.dbus.ui.feature.sdk</module>
+            <module>../../features/org.franca.omgidl.feature</module>
+            <module>../../features/org.franca.omgidl.feature.sdk</module>
+            <module>../../features/org.franca.omgidl.ui.feature</module>
+            <module>../../features/org.franca.omgidl.ui.feature.sdk</module>
 			<module>../../releng/org.franca.updatesite</module>
 			<module>../../releng/org.franca.product</module>
     </modules>
@@ -182,7 +192,7 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.6.3.201306030806</version>
+				<version>0.7.6.201602180812</version>
 				<configuration>
 					<excludes>
 						<exclude>**/*.ecore</exclude>
@@ -293,7 +303,7 @@
 									<pluginExecutionFilter>
 										<groupId>org.jacoco</groupId>
 										<artifactId>jacoco-maven-plugin</artifactId>
-										<versionRange>[0.1.0,)</versionRange>
+										<versionRange>[0.7.6,)</versionRange>
 										<goals>
 											<goal>prepare-agent</goal>
 										</goals>
@@ -417,7 +427,7 @@
 				<plugin>
 					<groupId>org.eclipse.xtend</groupId>
 					<artifactId>xtend-maven-plugin</artifactId>
-					<version>2.7.3</version>
+					<version>2.8.4</version>
 					<configuration>
 						<!-- need to prefix by basedir to generate to currently built module -->
 						<outputDirectory>${basedir}/xtend-gen</outputDirectory>
@@ -459,7 +469,7 @@
 		<repository>
 			<id>xdoc</id>
 			<layout>p2</layout>
-			<url>http://xdoc4franca-release.eclipselabs.org.codespot.com/git/update_site/releases/</url>
+			<url>http://franca.github.io/franca/update_site/thirdparty</url>
 		</repository>
 	</repositories>			
 

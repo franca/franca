@@ -1,0 +1,59 @@
+package Pkg.HME.Mt_t
+
+import model "Infrastructure_t.fidl"
+
+typeCollection {
+	enumeration MtCRType_t {
+		eMCR_Unknown = 0
+		eMCR_1 = 1
+		eMCR_2 = 2
+	}
+
+	enumeration MtIdentifierType_t {
+		eMtIdentifier_Unknown = 0
+		eMtIdentifier_15 = 1
+		eMtIdentifier_18 = 2
+		eMtIdentifier_8 = 3
+		eMtIdentifier_1 = 4
+		eMtIdentifier_2 = 5
+		eMtIdentifier_3 = 6
+		eMtIdentifier_4 = 7
+		eMtIdentifier_5 = 8
+		eMtIdentifier_6 = 9
+	}
+
+	enumeration Mtstt {
+		eMtstt_Unknown = 0
+		eMtstt_1 = 1
+		eMtstt_2 = 2
+		eMtstt_3 = 3
+		eMtstt_4 = 4
+		eMtstt_5 = 5
+		eMtstt_6 = 6
+		eMtstt_7 = 7
+	}
+
+	enumeration MtType_t {
+		eMt_Unknown = 0
+		eMt_1 = 1
+		eMt_2 = 2
+	}
+
+	struct MtControl_t {
+		Pkg.Infrastructure.Infrastructure_t.Timespec_t timestamp
+		MtCRType_t mtCR
+	}
+
+	struct MtReport_t {
+		Pkg.Infrastructure.Infrastructure_t.Timespec_t timestamp
+		Mt_t [ ] data
+	}
+
+	struct Mt_t {
+		MtIdentifierType_t identifier
+		MtType_t type
+		Mtstt mtData1
+		Double mtData2
+	}
+
+}

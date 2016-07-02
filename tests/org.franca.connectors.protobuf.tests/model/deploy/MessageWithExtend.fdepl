@@ -1,0 +1,73 @@
+import "../../src-gen/testcases/"
+import "../specification/ProtobufSpec.fdeplMessageWithExtend.fidl"
+
+specification org.franca.connectors.protobuf.tests.MessageWithExtendSpec extends org.franca.connectors.protobuf.ProtobufSpec {
+	for enumerators {
+	}
+}
+
+define org.franca.connectors.protobuf.tests.MessageWithExtendSpec for typeCollection org.franca.connectors.protobuf.tests{
+	struct Request1_2 {
+		uint {
+			Tag = 902
+			FieldRule = REPEATED
+		}
+	}
+	struct Request1 {
+		Extensions = '900 to 1000'
+		string1 {
+			Tag = 1
+			FieldRule = REQUIRED
+		}
+		test_oneOf {
+			FieldRule = REPEATED
+		}
+	}
+	struct Request1_1 {
+		uint321 {
+			Tag = 901
+			FieldRule = REPEATED
+		}
+	}
+	struct Request1_Test_oneOf_Group1 {
+		Extensions = '800 to 900'
+		uint32_1 {
+			Tag = 3
+			FieldRule = OPTIONAL
+		}
+		scalar1 {
+			Tag = 4
+			FieldRule = REPEATED
+		}
+	}
+	struct Request1_Test_oneOf_Group2 {
+		uint32_1 {
+			Tag = 3
+			FieldRule = OPTIONAL
+		}
+		scalar1 {
+			Tag = 4
+			FieldRule = REPEATED
+		}
+		group1 {
+			Tag = 999
+			FieldRule = REPEATED
+		}
+	}
+	union Request1_Test_oneOf {
+		string1 {
+			Tag = 2
+			FieldRule = OPTIONAL
+		}
+		group1 {
+			Tag = 5
+			FieldRule = OPTIONAL
+			DefaultValue = "3"
+		}
+		group2 {
+			Tag = 9
+			FieldRule = OPTIONAL
+			DefaultValue = "3"
+		}
+	}
+}

@@ -381,30 +381,50 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 		if (target == null) {
 			// referenced element is defined by a type collection, can be accessed freely
 		} else {
-			// referenced element is defined by an FInterface, check if reference is allowed
-			// by local access (same FInterface) or from a base interface via inheritance
-			FInterface referrerInterface = FrancaModelExtensions.getInterface(referrer);
-			boolean showError = false;
-			if (referrerInterface==null) {
-				// referrer is a type collection, it cannot reference a type from an interface
-				showError = true;
+			// referenced element is defined by an FInterface, can be accessed if it is a public type
+			boolean isFType = referenced instanceof FType;
+			if (isFType && ((FType)referenced).isPublic()) {
+				// public visibility, do not show an error
 			} else {
-				Set<FInterface> baseInterfaces =
-						FrancaModelExtensions.getInterfaceInheritationSet(referrerInterface);
-				if (! baseInterfaces.contains(target)) {
+				// referenced element is not a public type, thus reference is only allowed from
+				// the same FInterface (local access) or from on of its base interfaces (via inheritance)
+				FInterface referrerInterface = FrancaModelExtensions.getInterface(referrer);
+				boolean showError = false;
+				if (referrerInterface==null) {
+					// referrer is a type collection, it cannot reference a type from an interface
 					showError = true;
+				} else {
+					Set<FInterface> baseInterfaces =
+							FrancaModelExtensions.getInterfaceInheritationSet(referrerInterface);
+					if (! baseInterfaces.contains(target)) {
+						showError = true;
+					}
 				}
-			}
-			if (showError) {
-				error(what + " can only be referenced inside interface "
-					+ target.getName() + " or derived interfaces",
-					referrer,
-					referencingFeature, -1
-				);
+				if (showError) {
+					error(what + " " +
+							(isFType ? "is not public, thus it " : "") +
+							"can only be referenced inside interface "
+							+ target.getName() + " or derived interfaces",
+							referrer, referencingFeature, -1
+					);
+				}
 			}
 		}
 	}
 
+	@Check
+	public void checkPublicKeywordForType (FType type) {
+		 if (type.isPublic()) {
+			 FInterface owner = FrancaModelExtensions.getInterface(type);
+			 if (owner==null) {
+				 // this is a type collection, "public" is not allowed here
+				 error("Misplaced 'public', types are always visible in type collections",
+						 type, FrancaPackage.Literals.FTYPE__PUBLIC, -1);
+			 }
+		 }
+	}
+	
+	
 	// *****************************************************************************
 
 	@Check

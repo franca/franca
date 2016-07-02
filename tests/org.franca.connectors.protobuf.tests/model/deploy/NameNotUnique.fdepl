@@ -1,0 +1,10 @@
+import "../../src-gen/testcases/"
+import "../specification/ProtobufSpec.fdeplNameNotUnique.fidl"
+
+specification org.franca.connectors.protobuf.tests.NameNotUniqueSpec extends org.franca.connectors.protobuf.ProtobufSpec {
+	for enumerators {
+	}
+}
+
+define org.franca.connectors.protobuf.tests.NameNotUniqueSpec for typeCollection org.franca.connectors.protobuf.tests{
+}

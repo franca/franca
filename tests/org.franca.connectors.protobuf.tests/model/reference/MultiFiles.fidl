@@ -1,0 +1,10 @@
+package org.franca.connectors.protobuf.tests.multifiles
+
+import model "EmptyMessage.fidl"
+
+typeCollection {
+	struct Foo {
+		org.franca.connectors.protobuf.tests.Request1 [ ] request1
+		UInt32 uint32_1
+	}
+}

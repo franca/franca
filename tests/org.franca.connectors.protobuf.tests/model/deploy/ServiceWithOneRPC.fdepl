@@ -1,0 +1,10 @@
+import "../../src-gen/testcases/"
+import "../specification/ProtobufSpec.fdeplServiceWithOneRPC.fidl"
+
+specification dummy_package.ServiceWithOneRPCSpec extends org.franca.connectors.protobuf.ProtobufSpec {
+	for methods {
+	}
+}
+
+define dummy_package.ServiceWithOneRPCSpec for typeCollection dummy_package{
+}
