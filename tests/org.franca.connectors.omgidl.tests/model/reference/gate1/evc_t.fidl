@@ -1,5 +1,7 @@
 package evc_t
 
+import org.franca.omgidl.* from "OMGIDLBase.fidl"
+
 typeCollection {
 	version {
 		major 1
@@ -18,7 +20,7 @@ typeCollection {
 
 	typedef doubleSeq is Sequence_1
 
-	array Sequence_2 of UInt8
+	array Sequence_2 of octet
 
 	typedef octetSeq is Sequence_2
 

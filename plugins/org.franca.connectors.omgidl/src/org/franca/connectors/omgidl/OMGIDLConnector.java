@@ -16,6 +16,8 @@ import org.csu.idl.idlmm.TranslationUnit;
 import org.csu.idl.xtext.loader.ExtendedIDLLoader;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.xtext.xbase.lib.ListExtensions;
 import org.franca.core.dsl.FrancaPersistenceManager;
 import org.franca.core.framework.AbstractFrancaConnector;
@@ -24,6 +26,7 @@ import org.franca.core.framework.IModelContainer;
 import org.franca.core.framework.IssueReporter;
 import org.franca.core.framework.TransformationIssue;
 import org.franca.core.franca.FModel;
+import org.franca.core.franca.FTypeCollection;
 import org.franca.core.utils.FileHelper;
 
 import com.google.common.collect.Maps;
@@ -38,10 +41,18 @@ public class OMGIDLConnector extends AbstractFrancaConnector {
 //	private String fileExtension = "idl";
 
 	private Set<TransformationIssue> lastTransformationIssues = null;
+	
+	private FModel baseModel = null;
 		
 	/** constructor */
 	public OMGIDLConnector() {
-		injector = Guice.createInjector(new OMGIDLConnectorModule());
+		this.injector = Guice.createInjector(new OMGIDLConnectorModule());
+	}
+	
+	/** constructor */
+	public OMGIDLConnector(FModel baseModel) {
+		this.injector = Guice.createInjector(new OMGIDLConnectorModule());
+		this.baseModel = baseModel;
 	}
 	
 	@Override
@@ -84,7 +95,7 @@ public class OMGIDLConnector extends AbstractFrancaConnector {
 		if (! (model instanceof OMGIDLModelContainer)) {
 			return null;
 		}
-		
+
 		OMGIDL2FrancaTransformation trafo = injector.getInstance(OMGIDL2FrancaTransformation.class);
 		OMGIDLModelContainer omg = (OMGIDLModelContainer)model;
 		Map<String, EObject> importedModels = Maps.newLinkedHashMap();
@@ -96,9 +107,18 @@ public class OMGIDLConnector extends AbstractFrancaConnector {
 		String rootName = null;
 		for(TranslationUnit unit : inputModels) {
 			//out.println("transforming " + omg.getFilename(unit));
-			FModel fmodel = trafo.transformToSingleFModel(unit, transformationMap);
+			FModel fmodel = trafo.transformToSingleFModel(unit, transformationMap, getBaseTypes());
 			transformationMap = trafo.getTransformationMap();
 			lastTransformationIssues.addAll(trafo.getTransformationIssues());
+
+			if (trafo.isUsingBaseTypedefs() && baseModel!=null) {
+				if (! importedModels.containsKey("OMGIDLBase.fidl")) {
+					//FModel baseModelCopy = EcoreUtil.copy(baseModel);
+					baseModel.eResource().getContents().clear();
+					Resource rbm = baseModel.eResource();
+					importedModels.put("OMGIDLBase.fidl", baseModel);
+				}
+			}
 
 			if (inputModels.indexOf(unit)==inputModels.size()-1) {
 				// this is the last input model, i.e., the top-most one
@@ -114,6 +134,22 @@ public class OMGIDLConnector extends AbstractFrancaConnector {
 		out.println(IssueReporter.getReportString(lastTransformationIssues));
 
 		return new FrancaModelContainer(rootModel, rootName, importedModels);
+	}
+
+	private FTypeCollection getBaseTypes() {
+		if (baseModel==null) {
+			return null;
+		}
+		
+		if (baseModel.getTypeCollections() != null) {
+			for(FTypeCollection tc : baseModel.getTypeCollections()) {
+				if (tc.getName()==null || tc.getName().isEmpty()) {
+					// found anonymous type collection
+					return tc;
+				}
+			}
+		}
+		return null;
 	}
 
 	@Override

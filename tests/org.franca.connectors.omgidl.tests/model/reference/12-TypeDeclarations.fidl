@@ -1,5 +1,7 @@
 package testcase12
 
+import org.franca.omgidl.* from "OMGIDLBase.fidl"
+
 typeCollection 
 {
 	version { major 1 minor 0 }
@@ -22,7 +24,7 @@ typeCollection
 	array FooStruct_FooArray_4 of FooStruct_FooArray_3
 	
 	struct FooStruct {
-		UInt8 octet_member
+		octet octet_member
 		Int16 short_member
 		Int32 long_member
 		Int64 longlong_member
@@ -31,12 +33,13 @@ typeCollection
 		UInt64 ulonglong_member
 		Float float_member
 		Double double_member
-		Double long_double_member // no Long Double in Franca
-		undefined char_member // no char in Franca
-		undefined wchar_member // no wchar in Franca
+		long_double long_double_member
+		char char_member
+		wchar wchar_member
 		String string_member
-		String wstring_member // no Wide String in Franca
+		wstring wstring_member
 		Boolean boolean_member
+		
 		// undefined types in Franca
 		undefined any_member
 		undefined object_member

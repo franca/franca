@@ -7,6 +7,7 @@
  *******************************************************************************/
 package org.franca.connectors.omgidl.tests
 
+import org.eclipse.emf.common.util.URI
 import org.franca.connectors.omgidl.OMGIDLConnector
 import org.franca.connectors.omgidl.OMGIDLModelContainer
 import org.franca.core.dsl.tests.util.TransformationTestBase
@@ -19,8 +20,14 @@ class TestBase extends TransformationTestBase {
 	val OMG_IDL_EXT = ".idl"
 
 	def protected testTransformation(String inputfile, String modelDir, String genDir, String refDir) {
+		// prepare the Franca base model with basic typedefs
+		val url = getClass().getClassLoader().getResource("OMGIDLBase.fidl")
+		val location = URI.createURI(url.toString)
+		val root = URI.createURI("platform:/plugin/org.franca.connectors.omgidl/model/")
+		val baseModel = loadModel(location, root)
+
 		// load the OMG IDL input model (may consist of multiple files)
-		val conn = new OMGIDLConnector
+		val conn = new OMGIDLConnector(baseModel)
 		val omgidl = conn.loadModel(modelDir + inputfile + OMG_IDL_EXT) as OMGIDLModelContainer
 
 		// validate input model(s)

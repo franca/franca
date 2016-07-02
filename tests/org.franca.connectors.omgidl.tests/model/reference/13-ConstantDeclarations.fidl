@@ -1,25 +1,29 @@
 package testcase13
 
+import org.franca.omgidl.* from "OMGIDLBase.fidl"
+
 typeCollection 
 {
 	version {
 		major 1
 		minor 0
 	}
+	
 	enumeration FooEnum {
 		EnumMember1
 		EnumMember2
 		EnumMember3
 	}
+	
 	const Int32 FooConstLong1 = 15
 	const Int32 FooConstLong2 = 4
 	const Int16 FooConstHex = 9135
 	const String FooConstString1 = ''
 	const String FooConstString2 = 'Stringfoobar'
-	const String FooConstWString = 'WideStringfoobar'
+	const wstring FooConstWString = 'WideStringfoobar'
 	const Float FooConstFloat = 1.1f
 	const Double FooConstDouble = 2.0d
-	const Double FooConstLongDouble = 0.52d
+	const long_double FooConstLongDouble = 0.52d
 	const Boolean FooConstBoolean1 = true
 	const Boolean FooConstBoolean2 = false
 	const Boolean FooConstBoolean3 = true
