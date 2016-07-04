@@ -18,7 +18,7 @@
    </license>
 
    <url>
-      <update label="%updateSiteName" url="http://franca.org.codespot.com/git.distribution/releases"/>
+      <update label="%updateSiteName" url="http://franca.github.io/franca/update_site/releases"/>
    </url>
 
    <includes
