@@ -78,6 +78,10 @@
             <module>../../features/org.franca.omgidl.feature.sdk</module>
             <module>../../features/org.franca.omgidl.ui.feature</module>
             <module>../../features/org.franca.omgidl.ui.feature.sdk</module>
+            <module>../../features/org.franca.protobuf.feature</module>
+            <module>../../features/org.franca.protobuf.feature.sdk</module>
+            <module>../../features/org.franca.protobuf.ui.feature</module>
+            <module>../../features/org.franca.protobuf.ui.feature.sdk</module>
 			<module>../../releng/org.franca.updatesite</module>
 			<module>../../releng/org.franca.product</module>
     </modules>
