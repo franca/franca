@@ -45,6 +45,9 @@ public class FDeployFormatter extends AbstractDeclarativeFormatter {
 			c.setLinewrap(1).after(pair.getSecond());
 		}
 
+		// property declaration lists in deployment specification
+		c.setLinewrap(1).around(f.getFDPropertyDeclRule());
+
 		// property lists
 		c.setLinewrap(1).around(f.getFDPropertyRule());
 
