@@ -33,7 +33,8 @@ class ValidatorTestBase extends XtextTest {
 	}	
 
 	def protected check((List<FEventOnIf>)=>void traceFunc) {
-		TraceValidator::isValidTracePure(contract, buildTrace(traceFunc))
+		val t = buildTrace(traceFunc)
+		TraceValidator::isValidTracePure(contract, t)
 	}
 
 	def protected getState(String stateName) {
