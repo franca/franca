@@ -42,9 +42,10 @@ deploy:
   provider: releases
   api_key:
     secure: DhrWa4b0Hz+5otgSKvsWHlNdd5R2BP3GAxNDKf4paHEzBYFZ1sXaEe++R872yGK/JTwbIFEXJQYNeP671EhCnqvhm7WPyiBX1lmenLsrcBuoPQmOrIAgX4d1F7nJtiMRRLIA+sBcX5eRWF9jSjF1EfJZc6jP/b5U3JxmH7YlcR35lx/JkNskTm7Wj852x6e5Zjt8FTUZeBDWqj6jas7CuDr/sws5B4Akr1gZ6F2XhNfzFJzSV0hYteBMjWmSJoOnHXcNGLglhhgP4/7gAIxzFEEqtTuNDu8yzgTBuDMuHwTm4jkiZS/56vqGUV9+/izjjhJEWhanhJ5Fgq8bMkv/x2maXAhgqIFjnwuEl0rkfA3o3boGsmvSsGe+EXODj0l7y1CacBCKE4vmPMzlbUGosY3D1F+hnmV3JqHjycy5pDgnUGugCkVkL6pbF06euK7L79zMcNi2wgGMN0NYWwlAtHf/WQB3vd/MuMzF2InZrUBwuaAno2tUs//EpL/mXEXp5MEVueLkVAiF+cd1CcUz0ZjpLn5MVVPv8nsNXAAFGBRnpxDXlC2WbBXu8HIBx/Y21gzfA89pKUAtpAdSmCuFCBFISMfUsHxaFWh1t94w66G2ULZpuYq+99Q0LZTF/rKDtNOHcNxT34K6twxP74+bMp9dlEKiC9b5XZZmqyam+6s=
-  file: releng/org.franca.updatesite/target/site_franca_*.zip
+  file: "releng/org.franca.updatesite/target/site_franca_*.zip"
   skip_cleanup: true
   file_glob: true
   on:
     repo: franca/franca
     branch: develop
+    tags: true
