@@ -39,6 +39,7 @@ branches:
 
 # deploy to github releases (for tagged commits)
 before_deploy:
+  - ls
   - export FRANCA_P2_REPO_FILE=$(ls releng/org.franca.updatesite/target/site_franca_*.zip)
   - echo "Deploying $FRANCA_P2_REPO_FILE to GitHub releases"
 deploy:
