@@ -46,6 +46,4 @@ deploy:
   skip_cleanup: true
   file_glob: true
   on:
-    repo: franca/franca
-    branch: develop
     tags: true
