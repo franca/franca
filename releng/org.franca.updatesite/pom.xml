@@ -19,7 +19,7 @@
 				<version>${tycho-version}</version>
 				<configuration>
 					<includeAllDependencies>false</includeAllDependencies>
-					<finalName>site_franca_${unqualifiedVersion}-${buildQualifier}</finalName>
+					<finalName>site_franca_${unqualifiedVersion}.${buildQualifier}</finalName>
 				</configuration>
 			</plugin>
 		</plugins>
