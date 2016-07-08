@@ -29,7 +29,7 @@ before_script:
 # run actual build
 script:
 - export
-- cd releng/org.franca.parent && mvn clean install
+- cd releng/org.franca.parent && mvn clean install && cd ../..
 
 # select branches per whitelist
 branches:
