@@ -24,7 +24,7 @@ class OMGIDL2FrancaStandalone extends AbstractCommandLineTool {
 	
 	static final Logger logger = Logger.getLogger(typeof(OMGIDL2FrancaStandalone))
 
-	private static final String TOOL_VERSION = "0.1.0";
+	private static final String TOOL_VERSION = "0.2.0";
 
 	/**
 	 * The main function for this standalone tool.</p>
