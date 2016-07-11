@@ -11,9 +11,11 @@ import java.io.File
 import org.apache.commons.cli.CommandLine
 import org.apache.commons.cli.Options
 import org.apache.log4j.Logger
+import org.eclipse.emf.common.util.URI
 import org.franca.core.dsl.FrancaPersistenceManager
 import org.franca.core.dsl.cli.AbstractCommandLineTool
 import org.franca.core.dsl.cli.CommonOptions
+import org.franca.core.franca.FModel
 
 /**
  * The command-line tool for running the OMG IDL to Franca transformation.</p>
@@ -41,6 +43,9 @@ class OMGIDL2FrancaStandalone extends AbstractCommandLineTool {
 	override protected addOptions(Options options) {
 		// provide option for configuration of an output directory 
 		CommonOptions.createOutdirOption(options)
+		
+		// provide option for providing a basetype fidl file
+		StandaloneOptions.createBasetypesOption(options)
 	}
 
 	override protected boolean checkCommandLineValues(CommandLine line) {
@@ -59,7 +64,15 @@ class OMGIDL2FrancaStandalone extends AbstractCommandLineTool {
 				if (verbose)
 					logger.info("Processing input file " + filename)
 				
-				val conn = new OMGIDLConnector
+				// load basetypes model on demand
+				var FModel baseModel = null
+				if (line.hasOption(StandaloneOptions.BASETYPES)) {
+					// prepare the Franca base model with basic typedefs
+					val basetypeFidl = line.getOptionValue(StandaloneOptions.BASETYPES)
+					baseModel = persistenceManager.loadModel(basetypeFidl)
+				}
+				
+				val conn = new OMGIDLConnector(baseModel)
 				val omgidl = conn.loadModel(filename) as OMGIDLModelContainer
 				if (omgidl==null) {
 					logger.error("Couldn't load input model from file!")
