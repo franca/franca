@@ -1,3 +1,10 @@
+//
+// Use the "Target Platform Definition DSL" tool for working with this file.
+//
+// P2 Repository for installation: http://mbarbero.github.io/fr.obeo.releng.targetplatform/p2/
+// Homepage: https://github.com/mbarbero/fr.obeo.releng.targetplatform 
+//
+
 target "Franca Target Platform - Eclipse 4.4"
 
 with requirements source
@@ -41,7 +48,7 @@ location "http://download.eclipse.org/modeling/tmf/xtext/updates/composite/relea
 // KLighD from KIELER, needed for UI add-ons
 location "http://rtsys.informatik.uni-kiel.de/~kieler/updatesite" {
  	de.cau.cs.kieler.kiml.feature.feature.group lazy //[0.18.0,1.0.0)
- 	de.cau.cs.kieler.klighd.sdk.feature.feature.group lazy //[0.6.0.201505180202,1.0.0)
+ 	de.cau.cs.kieler.klighd.sdk.feature.feature.group [0.7.0,0.9.0) //[0.6.0.201505180202,1.0.0)
  	//de.cau.cs.kieler.kiml.graphviz.feature.feature.group
  	//de.cau.cs.kieler.kiml.ogdf.feature.feature.group
 }
