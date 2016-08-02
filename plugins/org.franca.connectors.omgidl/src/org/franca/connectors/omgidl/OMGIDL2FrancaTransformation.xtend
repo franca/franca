@@ -491,6 +491,7 @@ class OMGIDL2FrancaTransformation {
 		factory.createFMethod => [
 			map_IDL_Franca.put(src, it)
 			name = src.identifier
+			fireAndForget = src.isIsOneway
 			if (src.sharedType!=null || !src.containedType.isVoid) {
 				// add operation's return value as first out argument with name _RESULT 
 				outArgs.add(
