@@ -39,7 +39,8 @@
 						<phase>verify</phase>
 						<configuration>
 						<buildDirectory>${project.build.directory}</buildDirectory>
-						
+						<sourceDirectory>${project.basedir}/src</sourceDirectory>
+						<skipTocGen>true</skipTocGen>
 							<outputDirectory>${project.basedir}/help/api-docs/javadoc</outputDirectory>
 							
 							<javadocOptions>

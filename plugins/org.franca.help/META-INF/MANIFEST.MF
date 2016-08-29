@@ -4,6 +4,9 @@ Bundle-Name: Help
 Bundle-SymbolicName: org.franca.help
 Bundle-Version: 0.11.0.qualifier
 Bundle-Activator: org.franca.help.Activator
-Require-Bundle: org.eclipse.core.runtime
+Require-Bundle: org.eclipse.core.runtime,
+ org.franca.core;bundle-version="0.11.0",
+ org.franca.core.dsl;bundle-version="0.11.0",
+ org.franca.core.dsl.ui;bundle-version="0.11.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
