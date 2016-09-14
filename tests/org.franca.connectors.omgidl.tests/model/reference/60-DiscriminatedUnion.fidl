@@ -1,0 +1,19 @@
+package testcase60
+
+typeCollection {
+	version {
+		major 1
+		minor 0
+	}
+
+	enumeration PressureScale {
+		customary
+		metric
+	}
+
+	union BarometricPressure {
+		Float Inches
+		Int16 CCs
+	}
+
+}

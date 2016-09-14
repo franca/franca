@@ -51,6 +51,11 @@ class OMGIDL2FrancaBasicTests extends TestBase {
 		test("24-FixedType")
 	}
 	
+	@Test
+	def test_60() {
+		test("60-DiscriminatedUnion")
+	}
+	
 
 	/**
 	 * Utility method for executing one transformation and comparing the result with a reference model.
