@@ -1,0 +1,13 @@
+package testcase24
+
+typeCollection {
+	version {
+		major 1
+		minor 0
+	}
+
+	typedef Fixed_16_4 is UInt32
+
+	typedef bignum_t is Fixed_16_4
+
+}

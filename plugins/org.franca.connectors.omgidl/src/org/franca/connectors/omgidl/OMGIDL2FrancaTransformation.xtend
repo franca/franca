@@ -24,6 +24,7 @@ import org.csu.idl.idlmm.EnumMember
 import org.csu.idl.idlmm.ExceptionDef
 import org.csu.idl.idlmm.Expression
 import org.csu.idl.idlmm.Field
+import org.csu.idl.idlmm.FixedDef
 import org.csu.idl.idlmm.ForwardDef
 import org.csu.idl.idlmm.IDLType
 import org.csu.idl.idlmm.IdlmmPackage
@@ -433,7 +434,6 @@ class OMGIDL2FrancaTransformation {
 		]
 	}
 
-	// TODO: handle all kinds of OMG IDL definitions here
 	def private dispatch FModelElement transformDefinition(TypedefDef src, FModel target) {
 		val definition = src.transformDefinition as FType
 		target.getTypeCollection().addInTypeCollection(definition)
@@ -452,6 +452,12 @@ class OMGIDL2FrancaTransformation {
 //		target.mappedFrancaObject.typeCollection
 		target.getTypeCollection().addInTypeCollection(definition)
 //		addInAnonymousTypeCollection(definition)
+		return definition
+	}
+	
+	def private dispatch FModelElement transformDefinition(FixedDef src, FModel target) {
+		val definition = src.transformDefinition as FType
+		target.getTypeCollection().addInTypeCollection(definition)
 		return definition
 	}
 	
@@ -593,6 +599,19 @@ class OMGIDL2FrancaTransformation {
 		]
 	}
 	
+	def private dispatch FModelElement transformDefinition(FixedDef src) {
+		val digits = (src.digits as ValueExpression).value
+		val scale = (src.scale as ValueExpression).value
+		factory.createFTypeDef => [ alias |
+			map_IDL_Franca.put(src, alias)
+			alias.name = '''Fixed_«digits»_«scale»'''
+			alias.actualType = factory.createFTypeRef => [ ref |
+				// TODO: should fixed<..,..> be really mapped to UINT32?
+				ref.predefined = FBasicTypeId.UINT32
+			]
+		]
+	}
+		
 	def private dispatch FModelElement transformDefinition(ExceptionDef src) {
 		var FStructType element
 		if (src.members.isNullOrEmpty) {
@@ -761,6 +780,13 @@ class OMGIDL2FrancaTransformation {
 	
 	def private asTypeRef(FBasicTypeId id) {
 		factory.createFTypeRef => [ predefined = id ]
+	}
+	
+	def private dispatch FTypeRef transformIDLType(FixedDef src) {
+		factory.createFTypeRef => [
+			derived = src.transformDefinition as FType
+			src.mappedTypeCollection.addInTypeCollection(derived)
+		]
 	}
 	
 	def private dispatch FTypeRef transformIDLType(SequenceDef src) {

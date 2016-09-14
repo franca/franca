@@ -46,6 +46,11 @@ class OMGIDL2FrancaBasicTests extends TestBase {
 		test("14-InterfaceDeclarations")
 	}
 	
+	@Test
+	def test_24() {
+		test("24-FixedType")
+	}
+	
 
 	/**
 	 * Utility method for executing one transformation and comparing the result with a reference model.
