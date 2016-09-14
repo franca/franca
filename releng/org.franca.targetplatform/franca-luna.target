@@ -39,7 +39,7 @@
       <repository location="http://kbirken.github.io/dbus-emf-model/releases/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="org.csu.idl.feature.group" version="1.1.0.201604011521"/>
+      <unit id="org.csu.idl.feature.group" version="1.1.0.201609141744"/>
       <unit id="com.google.eclipse.protobuf.feature.group" version="1.5.3.201606231628"/>
       <unit id="org.eclipse.xtext.xdoc.feature.feature.group" version="0.1.5.201506301442"/>
       <unit id="org.eclipselabs.xtext.utils.unittesting.feature.feature.group" version="0.9.3.201204261440"/>
