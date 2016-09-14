@@ -1,0 +1,12 @@
+package ose
+
+import model "evs.fidl"
+import model "oe.fidl"
+
+interface ose extends evs.TypedPushConsumer {
+	method ^update fireAndForget {
+		in {
+			oe.oe.OseData_t data
+		}
+	}
+}
