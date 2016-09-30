@@ -41,7 +41,7 @@ typeCollection
 		Boolean boolean_member
 		
 		// undefined types in Franca
-		undefined any_member
+		any any_member
 		undefined object_member
 		FooNestedStruct struct_member
 		FooStruct_FooArray_4 FooArray

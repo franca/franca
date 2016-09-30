@@ -1,9 +1,11 @@
 package UntypedEventService
 
+import org.franca.omgidl.* from "OMGIDLBase.fidl"
+
 interface PushConsumer {
 	method push {
 		in {
-			undefined data
+			any data
 		}
 		error {
 			Disconnected

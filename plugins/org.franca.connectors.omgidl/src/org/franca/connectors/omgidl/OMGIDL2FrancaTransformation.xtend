@@ -763,6 +763,7 @@ class OMGIDL2FrancaTransformation {
 			case PK_STRING: FBasicTypeId.STRING.asTypeRef
 			case PK_WSTRING: getBaseTypeOrSubstitute("wstring", FBasicTypeId.STRING)
 			case PK_BOOLEAN: FBasicTypeId.BOOLEAN.asTypeRef
+			case PK_ANY: getBaseTypeOrSubstitute("any", FBasicTypeId.UNDEFINED)
 			default: FBasicTypeId.UNDEFINED.asTypeRef
 		}
 	}
