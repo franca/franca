@@ -73,6 +73,7 @@ import static org.franca.core.framework.TransformationIssue.*
 
 import static extension org.franca.core.FrancaModelExtensions.*
 import static extension org.franca.core.framework.FrancaHelpers.*
+import org.franca.core.franca.FAnnotationBlock
 
 /**
  * Model-to-model transformation from OMG IDL (aka CORBA) to Franca IDL. 
@@ -514,7 +515,7 @@ class OMGIDL2FrancaTransformation {
 			}
 			src.parameters.forEach[member | member.transformTyped(it)]
 			if (!src.canRaise.isNullOrEmpty) {
-				errors = factory.createFEnumerationType => [errorContainer|
+				errors = factory.createFEnumerationType => [ errorContainer |
 					// generate one enumerator for each exception
 					for (exception: src.canRaise) {
 						errorContainer.enumerators.add(
@@ -613,17 +614,16 @@ class OMGIDL2FrancaTransformation {
 	}
 		
 	def private dispatch FModelElement transformDefinition(ExceptionDef src) {
-		var FStructType element
 		if (src.members.isNullOrEmpty) {
-			element = null
+			null
 		} else {
-			element = factory.createFStructType => [
+			factory.createFStructType => [
 				map_IDL_Franca.put(src, it)
 				name = src.identifier
 				src.members.forEach[member | member.transformTyped(it)]
+				it.annotationBlock.createSourceAlias("OMG IDL exception '" + name + "'")
 			]
 		}
-		element
 	}
 	
 	/*------------------ transform Typed --------------------------------- */
@@ -1043,7 +1043,25 @@ class OMGIDL2FrancaTransformation {
 		]
 	}
 	
+	def private getAnnotationBlock(FModelElement elem) {
+		if(elem.comment==null) {
+			elem.comment = FrancaFactory::eINSTANCE.createFAnnotationBlock
+		}
+		elem.comment
+	}
+
+	def private createSourceAlias(FAnnotationBlock annos, String sourceAlias) {
+		annos.elements.add(
+			FrancaFactory::eINSTANCE.createFAnnotation => [
+				type = FAnnotationType::SOURCE_ALIAS
+				comment = sourceAlias
+			]	
+		)
+	}
+
+
 	def private factory() {
 		FrancaFactory::eINSTANCE
 	}
+	
 }
