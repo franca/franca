@@ -5,8 +5,10 @@ module testcase60 {
 	union BarometricPressure switch (PressureScale) {
 	  case customary:
 	    float Inches;
-	//  case metric :
-		
+	  
+	  case metric :
+		string CM;
+	
 	  default:
 	    short CCs;
 	};

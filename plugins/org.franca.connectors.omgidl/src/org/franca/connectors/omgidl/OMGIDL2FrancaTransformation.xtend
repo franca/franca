@@ -580,11 +580,15 @@ class OMGIDL2FrancaTransformation {
 	}
 	
 	def private dispatch FModelElement transformDefinition(UnionDef src) {
-		factory.createFUnionType => [
+		val result = factory.createFUnionType => [
 			map_IDL_Franca.put(src, it)
 			name = src.identifier
 			src.unionMembers.forEach[member | member.transformTyped(it)]
 		]
+		if (src.sharedDiscrim!=null) {
+			result.addSourceAnno("switch '" + src.sharedDiscrim.identifier + "'")
+		}
+		result
 	}
 	
 	def private dispatch FModelElement transformDefinition(ConstantDef src) {
@@ -621,7 +625,7 @@ class OMGIDL2FrancaTransformation {
 				map_IDL_Franca.put(src, it)
 				name = src.identifier
 				src.members.forEach[member | member.transformTyped(it)]
-				it.annotationBlock.createSourceAlias("OMG IDL exception '" + name + "'")
+				it.addSourceAnno("exception '" + name + "'")
 			]
 		}
 	}
@@ -663,7 +667,7 @@ class OMGIDL2FrancaTransformation {
 	}
 	
 	def private dispatch transformTyped(UnionField src, FUnionType target) {
-		factory.createFField => [
+		val result = factory.createFField => [
 			name = src.identifier
 			if (src.sharedType == null) {
 				type = src.containedType.transformIDLType
@@ -672,6 +676,17 @@ class OMGIDL2FrancaTransformation {
 			}
 			target.elements.add(it)
 		]
+		if (src.isIsDefault) {
+			result.addSourceAnno("default")
+		} else {
+			if (src.label!=null && !src.label.empty) {
+				val first = src.label.get(0)
+				if (first instanceof ConstantDefRef) {
+					result.addSourceAnno("case '" + first.constant.identifier + "'")
+				}
+			}
+		}
+		result
 	}
 	
 	def private dispatch transformTyped(ParameterDef src, FMethod target) {
@@ -1048,6 +1063,10 @@ class OMGIDL2FrancaTransformation {
 			elem.comment = FrancaFactory::eINSTANCE.createFAnnotationBlock
 		}
 		elem.comment
+	}
+
+	def private addSourceAnno(FModelElement elem, String source) {
+		elem.annotationBlock.createSourceAlias("OMG IDL " + source)
 	}
 
 	def private createSourceAlias(FAnnotationBlock annos, String sourceAlias) {
