@@ -2,10 +2,12 @@ package TypedEventService
 
 import model "UntypedEventService.fidl"
 
+import org.franca.omgidl.* from "OMGIDLBase.fidl"
+
 interface TypedPushConsumer extends UntypedEventService.PushConsumer {
 	method get_typed_consumer {
 		out {
-			undefined _RESULT
+			Object _RESULT
 		}
 	}
 }
@@ -18,7 +20,7 @@ interface TypedProxyPushConsumer extends UntypedEventService.ProxyPushConsumer
 	**>
 	method get_typed_consumer {
 		out {
-			undefined _RESULT
+			Object _RESULT
 		}
 	}
 

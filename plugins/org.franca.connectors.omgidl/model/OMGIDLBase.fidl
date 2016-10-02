@@ -14,4 +14,5 @@ typeCollection {
 	typedef wstring is String
 	typedef long_double is Double  
 	typedef any is undefined	
+	typedef Object is undefined
 }

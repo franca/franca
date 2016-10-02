@@ -29,7 +29,7 @@ typeCollection {
 
 	typedef floatSeq is Sequence_3
 
-	array Sequence_4 of undefined
+	array Sequence_4 of Object
 
 	typedef objectSeq is Sequence_4
 
