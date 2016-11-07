@@ -7,9 +7,12 @@
 *******************************************************************************/
 package org.franca.generators.websocket
 
-import org.franca.core.franca.FType
-import org.franca.core.franca.FEnumerationType
 import org.franca.core.franca.FArgument
+import org.franca.core.franca.FEnumerationType
+import org.franca.core.franca.FInterface
+import org.franca.core.franca.FType
+
+import static extension org.franca.core.FrancaModelExtensions.*
 
 class WebsocketGeneratorUtils {
 	
@@ -29,6 +32,15 @@ class WebsocketGeneratorUtils {
 
 		«ENDFOR»
 	'''
+	
+	def static getPackage(FInterface api) {
+		val fmodel = api.model
+		if (fmodel==null) {
+			""
+		} else {
+			fmodel.name
+		}
+	}
 	
 	def static genPathToRoot (String packageName) '''../«FOR t : packageName.split("\\.")»../«ENDFOR»'''
 

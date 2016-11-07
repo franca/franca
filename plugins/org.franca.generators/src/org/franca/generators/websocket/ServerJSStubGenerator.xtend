@@ -22,7 +22,7 @@ class ServerJSStubGenerator {
 	function «getFileName(api)»(port) {
 		this.wsio = require('websocket.io');
 		this.socket = this.wsio.listen(port);
-		this.server = new (require('«genPathToRoot(api.eContainer.eGet(FMODEL_ELEMENT__NAME).toString)»base/iowamp/server'))();
+		this.server = new (require('«genPathToRoot(api.package)»base/iowamp/server'))();
 		«FOR attribute : api.attributes»
 		this.«attribute.name» = null;
 		«ENDFOR»
