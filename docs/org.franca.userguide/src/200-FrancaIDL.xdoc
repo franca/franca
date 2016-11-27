@@ -691,8 +691,8 @@ Changes in the minor number indicate changes which are backward compatible.
 Example use cases for backward e[compatible] changes:
 ul[
 	item[add attribute, method or broadcast]
-	item[add an argument for a method or broadcast (*)]
-	item[add a field for a struct or union (*)]
+	item[add an argument to a method or broadcast (*)]
+	item[add a field to a struct or union (*)]
 	item[remove a contract from an interface]
 	item[ease restrictions on the dynamic behavior of an interface (i.e., its contract)]
 ] 
