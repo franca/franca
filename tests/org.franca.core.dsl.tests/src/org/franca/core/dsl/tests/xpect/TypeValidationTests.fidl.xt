@@ -59,6 +59,23 @@ typeCollection MyUnionTypes {
 		// XPECT errors --> "Element name collision with base element 'MyUnion1.x'" at "x"
 		String x
 	}
+
+	union MyUnion3 {
+		String asPlain
+		String[] asArray  // no collision between Int16 and Int16[]
+	}
+
+	union MyUnion4 {
+		// XPECT errors --> "Duplicate element type 'String[]'" at "String"
+		String[] array1
+		// XPECT errors --> "Duplicate element type 'String[]'" at "String"
+		String[] array2
+	}
+	
+	union MyUnion5 { Int16 x }
+	union MyUnion6 extends MyUnion5 {
+		Int16[] y   // no collision between Int16 and Int16[]
+	}
 }
 
 typeCollection EnumTypes {
