@@ -116,7 +116,9 @@
           ecoreFeature="ecore:EAttribute franca.ecore#//FAttribute/noSubscriptions"/>
     </genClasses>
     <genClasses ecoreClass="franca.ecore#//FArgument"/>
-    <genClasses ecoreClass="franca.ecore#//FType"/>
+    <genClasses ecoreClass="franca.ecore#//FType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute franca.ecore#//FType/public"/>
+    </genClasses>
     <genClasses ecoreClass="franca.ecore#//FModelElement">
       <genFeatures createChild="false" propertyCategory="" propertyDescription="the name of this element"
           ecoreFeature="ecore:EAttribute franca.ecore#//FModelElement/name"/>
