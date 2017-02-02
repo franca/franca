@@ -117,7 +117,7 @@ class Protobuf2FrancaBasicTests extends TestBase {
 	 */
 	def private test(String inputfile) {
 		println("----------------------- TEST Protobuf2FrancaBasic '" + inputfile + "' -----------------------")
-		testTransformation(inputfile, MODEL_DIR, GEN_DIR, REF_DIR)
+		testTransformation(inputfile, MODEL_DIR, GEN_DIR, REF_DIR, false)
 	}
 
 }

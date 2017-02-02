@@ -34,7 +34,7 @@ message Request1 {
 		}
 	}
 
-	repeated group group1 = 10{
+	repeated group Group1 = 10{
 		required string string1 = 1;
 	}
 

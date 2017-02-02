@@ -11,7 +11,7 @@ enum Scalar {
 message Request1 {
 	extensions 900 to 1000;
 	required string string1 = 1;
-	repeated oneof test_oneOf{
+	repeated oneof Test_oneOf {
 	 	extensions 700 to 800;
 
 	 	string string1 = 2;
@@ -30,7 +30,7 @@ message Request1 {
 	}
 }
 
-required group group1 = 1 {
+required group Group1 = 1 {
 }
 
 extend Request1 {

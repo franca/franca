@@ -18,9 +18,9 @@ class TestBase extends TransformationTestBase {
 
 	val PROTOBUF_EXT = ".proto"
 
-	def protected testTransformation(String inputfile, String modelDir, String genDir, String refDir) {
+	def protected testTransformation(String inputfile, String modelDir, String genDir, String refDir, boolean normalizeIds) {
 		// load the Protobuf input model (may consist of multiple files)
-		val conn = new ProtobufConnector
+		val conn = new ProtobufConnector(normalizeIds)
 		val proto = conn.loadModel(modelDir + inputfile + PROTOBUF_EXT) as ProtobufModelContainer
 
 		// validate input model(s)

@@ -111,7 +111,7 @@ class Protobuf2FrancaGate1Tests extends TestBase {
 	 */
 	def private void test(String inputfile) {
 		println("----------------------- TEST Protobuf2FrancaGate1 '" + inputfile + "' -----------------------")
-		testTransformation(inputfile, MODEL_DIR, GEN_DIR, REF_DIR)
+		testTransformation(inputfile, MODEL_DIR, GEN_DIR, REF_DIR, true)
 	}
 
 //	private def void test(String inputfile, String fidl_dir, String specificfile, String post_dir) {

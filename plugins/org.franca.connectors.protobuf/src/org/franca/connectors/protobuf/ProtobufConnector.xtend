@@ -38,15 +38,22 @@ public class ProtobufConnector extends AbstractFrancaConnector {
 
 	static final Logger logger = Logger.getLogger(typeof(ProtobufConnector))
 
-	var Injector injector
+	boolean normalizeIds
+	Injector injector
 
 	//private String fileExtension = "proto";
-	
+		
 	var Set<TransformationIssue> lastTransformationIssues = null
 
 	/** constructor */
 	new() {
-		injector = Guice.createInjector(new ProtobufConnectorModule())
+		this(false)
+	}
+
+	/** constructor */
+	new(boolean normalizeIds) {
+		this.normalizeIds = normalizeIds
+		this.injector = Guice.createInjector(new ProtobufConnectorModule())
 	}
 
 	override IModelContainer loadModel(String filename) {
@@ -88,6 +95,8 @@ public class ProtobufConnector extends AbstractFrancaConnector {
 		}
 
 		val Protobuf2FrancaTransformation trafo = injector.getInstance(Protobuf2FrancaTransformation)
+		trafo.normalizeIds = normalizeIds
+		
 		val ProtobufModelContainer proto = model as ProtobufModelContainer
 		val Map<String, EObject> importedModels = newLinkedHashMap
 
