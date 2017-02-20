@@ -11,7 +11,6 @@ import java.io.File
 import org.apache.commons.cli.CommandLine
 import org.apache.commons.cli.Options
 import org.apache.log4j.Logger
-import org.eclipse.emf.common.util.URI
 import org.franca.core.dsl.FrancaPersistenceManager
 import org.franca.core.dsl.cli.AbstractCommandLineTool
 import org.franca.core.dsl.cli.CommonOptions
