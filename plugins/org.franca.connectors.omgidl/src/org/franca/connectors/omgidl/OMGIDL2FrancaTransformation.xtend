@@ -210,23 +210,8 @@ class OMGIDL2FrancaTransformation {
 					}
 				}
 			}
-			// case: other contained (except interface and module) on top level of TranslationUnit
-			val others = src.contains.filter[
-				var isOther = true
-				if (it instanceof ModuleDef) {
-					isOther = false
-				} else if (it instanceof InterfaceDef) {
-					isOther = false 
-				} else if (it instanceof ForwardDef) {
-					isOther = false
-				}
-				isOther
-			]
-			if (!others.isNullOrEmpty) {
-				addIssue(IMPORT_ERROR,
-					src, IdlmmPackage::TRANSLATION_UNIT__CONTAINS,
-					"Members of OMG IDL translation unit should be of type either 'interface' or 'module'")
-			}
+
+			src.checkTopLevel
 		}
 		
 		if (usingBaseTypedefs) {
@@ -269,11 +254,12 @@ class OMGIDL2FrancaTransformation {
 				src.includes.forEach[include | include.transformIncludeDeclaration(model)]
 				for(^interface: interfaces) {
 					if(!map_IDL_Franca.containsKey(^interface)) {
-						map_IDL_Franca.put(^interface, ^interface.transformDefinition(model))					
+						map_IDL_Franca.put(^interface, ^interface.transformDefinition(model))
 					}
 				}
 				models.add(model)
 			}
+
 			// case: modules on top level of TranslationUnit
 			for (module: src.contains.filter(ModuleDef)){
 				val model = module.transformModule(src)
@@ -283,25 +269,21 @@ class OMGIDL2FrancaTransformation {
 					}
 				}
 			}
-			// case: other contained (except interface and module) on top level of TranslationUnit
-			val others = src.contains.filter[
-				var isOther = true
-				if (it instanceof ModuleDef) {
-					isOther = false
-				} else if (it instanceof InterfaceDef) {
-					isOther = false 
-				} else if (it instanceof ForwardDef) {
-					isOther = false
-				}
-				isOther
-			]
-			if (!others.isNullOrEmpty) {
-				addIssue(IMPORT_ERROR,
-					src, IdlmmPackage::TRANSLATION_UNIT__CONTAINS,
-					"Members of OMG IDL translation unit should be of type either 'interface' or 'module'")
-			}
+			
+			src.checkTopLevel
 		}
 		models
+	}
+	
+	def private checkTopLevel(TranslationUnit tu) {
+		val other = tu.contains.findFirst[
+			! ((it instanceof ModuleDef) || (it instanceof InterfaceDef) || (it instanceof ForwardDef))
+		]
+		if (other!=null) {
+			addIssue(IMPORT_ERROR,
+				tu, IdlmmPackage::TRANSLATION_UNIT__CONTAINS,
+				"Members of OMG IDL translation unit should be of type either 'interface' or 'module'")
+		}
 	}
 
 	def private FModel transformModule(ModuleDef module, TranslationUnit src) {
@@ -323,6 +305,7 @@ class OMGIDL2FrancaTransformation {
 		}
 		model
 	}
+	
 	/* ---------------------- dispatch transform Contained ------------------------- */
 	def private dispatch FModelElement transformDefinition(InterfaceDef src, FModel target) {
 		factory.createFInterface => [
