@@ -753,7 +753,7 @@ class OMGIDL2FrancaTransformation {
 						map_IDL_Franca.put(src, derived)
 					} else {
 						addIssue(FEATURE_NOT_HANDLED_YET,
-							translationUnit, IdlmmPackage::TRANSLATION_UNIT,
+							src.translationUnit, IdlmmPackage::TRANSLATION_UNIT__IDENTIFIER,
 							"OMG IDL Container '" + container.class.name + "' not handled yet (object '" + container + "')")
 					}
 				}
