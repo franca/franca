@@ -7,7 +7,12 @@
  */
 package org.franca.connectors.omgidl
 
+import com.google.common.collect.Maps
+import com.google.common.collect.Sets
+import com.google.inject.Guice
+import com.google.inject.Injector
 import java.util.Collections
+import java.util.LinkedHashMap
 import java.util.List
 import java.util.Map
 import java.util.Set
@@ -16,8 +21,7 @@ import org.csu.idl.xtext.loader.ExtendedIDLLoader
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.resource.Resource
-import org.eclipse.emf.ecore.util.EcoreUtil
-import org.eclipse.xtext.xbase.lib.ListExtensions
+import org.eclipse.xtext.util.EmfFormatter
 import org.franca.core.dsl.FrancaPersistenceManager
 import org.franca.core.framework.AbstractFrancaConnector
 import org.franca.core.framework.FrancaModelContainer
@@ -27,10 +31,7 @@ import org.franca.core.framework.TransformationIssue
 import org.franca.core.franca.FModel
 import org.franca.core.franca.FTypeCollection
 import org.franca.core.utils.FileHelper
-import com.google.common.collect.Maps
-import com.google.common.collect.Sets
-import com.google.inject.Guice
-import com.google.inject.Injector
+import org.franca.core.utils.digraph.Digraph
 
 class OMGIDLConnector extends AbstractFrancaConnector {
 	Injector injector
@@ -63,7 +64,8 @@ class OMGIDLConnector extends AbstractFrancaConnector {
 			out.println('''Loaded OMG IDL model from file «filename» (consists of «units.size()» files)''')
 		}
 		for (TranslationUnit unit : units.keySet()) {
-			out.println('''loadModel: «unit.eResource().getURI()» is «units.get(unit)»''')
+			//out.println('''loadModel: «unit.eResource().getURI()» is «units.get(unit)»''')
+			//println(EmfFormatter::objToStr(unit))
 		}
 		return new OMGIDLModelContainer(units)
 	}
@@ -95,7 +97,7 @@ class OMGIDLConnector extends AbstractFrancaConnector {
 		var FModel rootModel = null
 		var String rootName = null
 		for (TranslationUnit unit : inputModels) {
-			out.println('''transforming «omg.getFilename(unit)»''')
+			//out.println('''transforming «omg.getFilename(unit)»''')
 			var FModel fmodel = trafo.transformToSingleFModel(unit, transformationMap, getBaseTypes())
 			transformationMap = trafo.getTransformationMap()
 			lastTransformationIssues.addAll(trafo.getTransformationIssues())
@@ -166,7 +168,7 @@ class OMGIDLConnector extends AbstractFrancaConnector {
 	 * @param fileName the path and name of the top-level input file 
 	 * @return a list of TranslationUnit objects
 	 */
-	def private static Map<TranslationUnit, String> loadOMGIDLModel(String fileName) {
+	def private Map<TranslationUnit, String> loadOMGIDLModel(String fileName) {
 		var URI uri = FileHelper.createURI(fileName)
 		var String filePath = uri.toFileString()
 		// The preprocessing of IDLLoader will replace all "#include" statements and replace them by the contents of
@@ -180,7 +182,32 @@ class OMGIDLConnector extends AbstractFrancaConnector {
 			e.printStackTrace()
 			return Collections.emptyMap()
 		}
-		return loader.getModels()
+
+		val models = loader.models
+		val modelURIs = loader.dependencies
+		if (modelURIs.empty) {
+			models
+		} else {
+			val result = new LinkedHashMap<TranslationUnit, String>
+			val digraph = new Digraph => [
+				modelURIs.forEach [ p1, p2 |
+					p2.forEach [ importUri |
+						addEdge(p1, importUri.toString)
+					]
+				]
+			]
+			val topoModels = digraph.topoSort
+			val uri2model = models.keySet.toMap[it.eResource.URI.toString]
+			for(path : topoModels) {
+				if (uri2model.containsKey(path)) {
+					val trUnit = uri2model.get(path)
+					result.put(trUnit, models.get(trUnit))
+				} else {
+					err.println("Error: Cannot find loaded model for path " + path)
+				}
+			}
+			result
+		}
 	}
 
 }
