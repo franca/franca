@@ -1,0 +1,25 @@
+package acgTest2.acgSpringMsg
+
+import org.franca.omgidl.* from "OMGIDLBase.fidl"
+
+typeCollection {
+	version {
+		major 1
+		minor 0
+	}
+
+	struct CorbaMessage1 {
+		Boolean corba1Bool
+		octet corba1ByteBuf
+		Double corba1Dbl
+		Float corba1Float
+		Int32 corba1Int16
+		Int32 corba1Int32
+		Int64 corba1Int64
+		Int64 corba1Integer
+		String corba1Str
+		Int32 corba1UInt16
+		Int32 corba1UInt32
+		Int64 corba1UInt64
+	}
+}

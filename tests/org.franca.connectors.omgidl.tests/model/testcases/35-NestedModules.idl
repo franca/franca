@@ -1,0 +1,19 @@
+
+module acgTest2 {
+	module acgSpringMsg {
+		struct CorbaMessage1 {
+			boolean    corba1Bool;
+			octet    corba1ByteBuf;
+			double    corba1Dbl;
+			float    corba1Float;
+			long    corba1Int16;
+			long    corba1Int32;
+			long long    corba1Int64;
+			long long    corba1Integer;
+			string    corba1Str;
+			long    corba1UInt16;
+			long    corba1UInt32;
+			long long    corba1UInt64;
+		};
+	};
+};

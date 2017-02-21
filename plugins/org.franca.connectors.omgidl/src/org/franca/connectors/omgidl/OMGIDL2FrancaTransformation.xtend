@@ -125,40 +125,51 @@ class OMGIDL2FrancaTransformation {
 		map_IDL_Franca = map
 		val model = factory.createFModel
 		map_IDL_Franca.put(src, model)
-		for (module: src.contains.filter(ModuleDef)){
-				map_IDL_Franca.put(module, model)
-		}
-		if (src.contains.filter(ModuleDef).size == 1) {
-			model.name = src.contains.filter(ModuleDef).last.identifier
-		} else {
+
+		// get module which will be transformed (all others are ignored)		
+		val module = src.relevantModule
+		if (module==null) {
 			model.name = URI.createFileURI(src.eResource.URI.trimFileExtension.lastSegment).lastSegment
+		} else {
+			model.name = module.nestedModuleName
+			map_IDL_Franca.put(module, model)
 		}
-		src.includes.forEach[include | include.transformIncludeDeclaration(model)]
+
 		// handle src.includes
+		src.includes.forEach[include | include.transformIncludeDeclaration(model)]
+
 		if (src.contains.empty) {
 			addIssue(IMPORT_WARNING,
 				src, IdlmmPackage::TRANSLATION_UNIT__IDENTIFIER,
 				"Empty OMG IDL translation unit, created empty Franca model")
 		} else {
-			// case: interfaces on top level of TranslationUnit
-			for(^interface: src.contains.filter(InterfaceDef)) {
-				if(!map_IDL_Franca.containsKey(^interface)) {
-					map_IDL_Franca.put(^interface, ^interface.transformDefinition(model))					
+			if (module==null) {
+				// no module on top-level, or more than one module (special case)
+				val modules = src.contains.filter(ModuleDef)
+				if (modules.empty) {
+					// transform interfaces on top-level of TranslationUnit
+					val ifs = src.contains.filter(InterfaceDef)
+					ifs.filter(Contained).transformItems(model)
+				} else {
+					// special case: more than one module on top-level, transform their contents
+					// transform contents of modules, if any
+					val contents = modules.map[contains].flatten
+					contents.transformItems(model)
 				}
-			}
-			// case: modules on top level of TranslationUnit
-			for (module: src.contains.filter(ModuleDef)){
-				for(d : module.contains) {
-					if(!map_IDL_Franca.containsKey(d)) {
-						val transformed = d.transformDefinition(model)
-						if (transformed!=null) {
-							map_IDL_Franca.put(d, transformed)					
-						}
-					}
-				}
+			} else {
+				// found one module on top-level of TranslationUnit
+				module.contains.transformItems(model)
 			}
 
-			src.checkTopLevel
+			// sanity check on top-level elements
+			val other = src.contains.findFirst[
+				! ((it instanceof ModuleDef) || (it instanceof InterfaceDef) || (it instanceof ForwardDef))
+			]
+			if (other!=null) {
+				addIssue(IMPORT_ERROR,
+					src, IdlmmPackage::TRANSLATION_UNIT__CONTAINS,
+					"Members of OMG IDL translation unit should be of type either 'interface' or 'module'")
+			}
 		}
 		
 		if (usingBaseTypedefs) {
@@ -171,15 +182,105 @@ class OMGIDL2FrancaTransformation {
 
 		model
 	}
+
+	def private transformItems(Iterable<Contained> items, FModel model) {
+		for (i: items) {
+			if (! map_IDL_Franca.containsKey(i)) {
+				val transformed = i.transformDefinition(model)
+				if (transformed!=null) {
+					map_IDL_Franca.put(i, transformed)					
+				}
+			}
+		}
+	}
 	
-	def private checkTopLevel(TranslationUnit tu) {
-		val other = tu.contains.findFirst[
-			! ((it instanceof ModuleDef) || (it instanceof InterfaceDef) || (it instanceof ForwardDef))
-		]
-		if (other!=null) {
-			addIssue(IMPORT_ERROR,
-				tu, IdlmmPackage::TRANSLATION_UNIT__CONTAINS,
-				"Members of OMG IDL translation unit should be of type either 'interface' or 'module'")
+	/**
+	 * Get OMG IDL module which will be transformed.
+	 * 
+	 * Restriction: Only the first module is transformed. Others are ignored.
+	 * Another restriction: If there is a module, there should not be other elements.
+	 */
+	def private ModuleDef getRelevantModule(TranslationUnit unit) {
+		val modules = unit.contains.filter(ModuleDef)
+		if (modules.empty) {
+			// no module at all
+			null
+		} else {
+			if (unit.contains.size > modules.size) {
+				// no other elements next to a module are allowed
+				// (the resulting Franca model will get the module name as package name)
+				addIssue(FEATURE_NOT_SUPPORTED,
+					unit, IdlmmPackage::TRANSLATION_UNIT__CONTAINS,
+					"All top-level elements next to a module in an OMG IDL translation unit will be ignored")
+			}
+			if (modules.size > 1) {
+				// two or more modules, we do not use their name as package name
+				addIssue(FEATURE_NOT_SUPPORTED,
+					unit, IdlmmPackage::TRANSLATION_UNIT__CONTAINS,
+					"More than one module in OMG IDL translation unit, will use filename as Franca package name")
+					
+				// check if there are nested modules
+				for(m : modules) {
+					if (m.contains.filter(ModuleDef).size > 1) {
+						addIssue(FEATURE_NOT_SUPPORTED,
+							m, IdlmmPackage::CONTAINER__CONTAINS,
+							"Nested modules are ignored in a file with multiple OMG IDL modules")
+					}
+				} 
+				
+				// return null to indicate that the module name should not be used as Franca package name
+				null 
+			} else {
+				// dive into first module
+				modules.get(0).relevantSubModule
+			}
+		}
+	}
+	
+	/**
+	 * Get OMG IDL submodule which will be transformed.
+	 * 
+	 * We currently support nested modules, but there should be just one module on each level.
+	 * 
+	 * Restriction: Only the first submodule is transformed. Others are ignored.
+	 * Another restriction: If there is a submodule, there should not be other elements.
+	 */
+	def private ModuleDef getRelevantSubModule(ModuleDef module) {
+		val submodules = module.contains.filter(ModuleDef)
+		if (submodules.empty) {
+			// no submodule at all, return parent module
+			module
+		} else {
+			if (submodules.size > 1) {
+				// two or more modules, use first but issue warning
+				addIssue(FEATURE_NOT_SUPPORTED,
+					module, IdlmmPackage::CONTAINER__CONTAINS,
+					"Only the first sub-module in an OMG IDL module is transformed, others are ignored")
+			}
+			// no other elements next to the modules are allowed
+			// (the resulting Franca model will get the nested module name as package name)
+			if (module.contains.size > submodules.size) {
+				addIssue(FEATURE_NOT_SUPPORTED,
+					module, IdlmmPackage::CONTAINER__CONTAINS,
+					"All elements next to a submodule in an OMG IDL module will be ignored")
+			}
+
+			// dive into first submodule
+			submodules.get(0).relevantSubModule
+		}
+	}
+
+	/**
+	 * Compute a FQN for a module or submodule in the OMG IDL model.
+	 * 
+	 * The FQN will be used as Franca IDL model name (i.e. package).
+	 */
+	def private String getNestedModuleName(ModuleDef module) {
+		val parent = module.eContainer
+		if (parent instanceof ModuleDef) {
+			parent.nestedModuleName + "." + module.identifier
+		} else {
+			module.identifier
 		}
 	}
 
