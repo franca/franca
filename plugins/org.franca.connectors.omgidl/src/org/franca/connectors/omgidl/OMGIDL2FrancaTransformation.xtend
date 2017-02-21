@@ -172,56 +172,6 @@ class OMGIDL2FrancaTransformation {
 		model
 	}
 	
-	/**
-	 * Transform to a list of Franca models
-	 */
-	def List<FModel> transformToMultiFModel(TranslationUnit src, Map<EObject, EObject> map) {
-		clearIssues
-		// register global map IDL2Franca to local one 
-		map_IDL_Franca = map
-		map_Name_Module = newHashMap()
-		baseInterfaces = newLinkedList()
-		models = newLinkedList()
-		if (src.contains.empty) {
-			addIssue(IMPORT_WARNING,
-				src, IdlmmPackage::TRANSLATION_UNIT__IDENTIFIER,
-				"Empty OMG IDL translation unit, created empty Franca model")
-			val model = factory.createFModel
-			model.name = URI.createFileURI(src.eResource.URI.trimFileExtension.lastSegment).lastSegment
-			map_IDL_Franca.put(src, model)
-			src.includes.forEach[include | include.transformIncludeDeclaration(model)]
-			models.add(model)
-		} else {
-			// case: interfaces on top level of TranslationUnit
-			val interfaces = src.contains.filter(InterfaceDef)
-			if (interfaces.size > 0) {
-				val model = factory.createFModel
-				model.name = URI.createFileURI(src.eResource.URI.trimFileExtension.lastSegment).lastSegment
-				map_IDL_Franca.put(src, model)
-				src.includes.forEach[include | include.transformIncludeDeclaration(model)]
-				for(^interface: interfaces) {
-					if(!map_IDL_Franca.containsKey(^interface)) {
-						map_IDL_Franca.put(^interface, ^interface.transformDefinition(model))
-					}
-				}
-				models.add(model)
-			}
-
-			// case: modules on top level of TranslationUnit
-			for (module: src.contains.filter(ModuleDef)){
-				val model = module.transformModule(src)
-				for(d : module.contains) {
-					if(!map_IDL_Franca.containsKey(d)) {
-						map_IDL_Franca.put(d, d.transformDefinition(model))					
-					}
-				}
-			}
-			
-			src.checkTopLevel
-		}
-		models
-	}
-	
 	def private checkTopLevel(TranslationUnit tu) {
 		val other = tu.contains.findFirst[
 			! ((it instanceof ModuleDef) || (it instanceof InterfaceDef) || (it instanceof ForwardDef))
