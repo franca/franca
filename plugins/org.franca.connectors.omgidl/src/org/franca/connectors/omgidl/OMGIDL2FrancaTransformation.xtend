@@ -615,13 +615,13 @@ class OMGIDL2FrancaTransformation {
 	
 	/*------------------ transform Typed --------------------------------- */
 	
-	def private dispatch transformTyped(Typed src, FStructType target) {
+	def private dispatch void transformTyped(Typed src, FStructType target) {
 		addIssue(FEATURE_NOT_HANDLED_YET,
 			src, IdlmmPackage::TYPED,
 			"OMG IDL Typed '" + src.class.name + "' not handled yet (object '" + src.toString + "')")
 	}
 	
-	def private dispatch transformTyped (Typed src, FTypedElement target) {
+	def private dispatch void transformTyped (Typed src, FTypedElement target) {
 		if (src.sharedType == null) {
 			target.type = src.containedType.transformIDLType
 		} else {
@@ -632,24 +632,36 @@ class OMGIDL2FrancaTransformation {
 		}
 	}
 	
-	def private dispatch transformTyped(Field src, FStructType target) {
+	def private dispatch void transformTyped(Field src, FStructType target) {
 		factory.createFField => [
 			name = src.identifier
 			if (src.sharedType != null) {
 				type = src.sharedType.transformIDLType
-			} else if (src.containedType instanceof PrimitiveDef) {
-				type = (src.containedType as PrimitiveDef).transformIDLType
-			} else if (src.containedType instanceof StructDef) {
-				map_IDL_Franca.put(src.containedType, (src.containedType as StructDef).transformDefinition(map_IDL_Franca.get(src.container)))
-				type = src.containedType.transformIDLType
-			} else if (src.containedType instanceof ArrayDef) {
-				type = (src.containedType as ArrayDef).transformIDLType((src.eContainer as Contained).identifier + HYPHEN)
+			} else {
+				val ct = src.containedType
+				switch (ct) {
+					PrimitiveDef: type = ct.transformIDLType
+					StructDef: {
+						map_IDL_Franca.put(ct, ct.transformDefinition(map_IDL_Franca.get(src.container)))
+						type = src.containedType.transformIDLType
+					}
+					ArrayDef: {
+						type = ct.transformIDLType((src.eContainer as Contained).identifier + HYPHEN)
+					}
+					SequenceDef: {
+						ct.transformTyped(it)
+					}
+					default:
+						addIssue(FEATURE_NOT_HANDLED_YET,
+							ct, IdlmmPackage::IDL_TYPE,
+							"OMG IDL Typed '" + ct.class.name + "' used as field not handled yet (object '" + src.toString + "')")
+				}
 			}
 			target.elements.add(it)
 		]
 	}
 	
-	def private dispatch transformTyped(UnionField src, FUnionType target) {
+	def private dispatch void transformTyped(UnionField src, FUnionType target) {
 		val result = factory.createFField => [
 			name = src.identifier
 			if (src.sharedType == null) {
@@ -669,25 +681,24 @@ class OMGIDL2FrancaTransformation {
 				}
 			}
 		}
-		result
 	}
 	
-	def private dispatch transformTyped(ParameterDef src, FMethod target) {
+	def private dispatch void transformTyped(ParameterDef src, FMethod target) {
 		switch src.direction {
 			case PARAM_IN: {
-				target.inArgs.add(src.transformTyped)
+				target.inArgs.add(src.transformParameter)
 			}
 			case PARAM_OUT: {
-				target.outArgs.add(src.transformTyped)
+				target.outArgs.add(src.transformParameter)
 			}
 			case PARAM_INOUT: {
-				target.inArgs.add(src.transformTyped)
-				target.outArgs.add(src.transformTyped)
+				target.inArgs.add(src.transformParameter)
+				target.outArgs.add(src.transformParameter)
 			}
 		}
 	}
 	
-	def private transformTyped(ParameterDef src) {
+	def private transformParameter(ParameterDef src) {
 		factory.createFArgument => [
 			name = src.identifier
 			if (src.sharedType == null) {
