@@ -108,59 +108,6 @@ class OMGIDL2FrancaTransformation {
 		return usingBaseTypedefs
 	}
 	
-	/**
-	 * Transform to single Franca model
-	 */
-//	def FModel transform(TranslationUnit src, Map<EObject, EObject> map, FTypeCollection baseTypes) {
-//		clearIssues
-//
-//		// register global map IDL2Franca to local one 
-//		map_IDL_Franca = map
-//	
-//		usedBaseTypedefs = false
-//		baseTypedefs = if (baseTypes==null) null else baseTypes.types.filter(FTypeDef).toMap[name]
-//
-//		val it = factory.createFModel
-//		map_IDL_Franca.put(src, it)
-//
-//		// handle src.includes
-//		src.includes.forEach[include | include.transformIncludeDeclaration(it)]
-//		if (src.contains.empty) {
-//			addIssue(IMPORT_WARNING,
-//				src, IdlmmPackage::TRANSLATION_UNIT__IDENTIFIER,
-//				"Empty OMG IDL translation unit, created empty Franca model")
-//			
-//		} else {
-//			if (src.contains.size > 1) {
-//				addIssue(FEATURE_IS_IGNORED,
-//					src, IdlmmPackage::TRANSLATION_UNIT__IDENTIFIER,
-//					"OMG IDL translation unit with more than one definition, ignoring all but the first one")
-//			}
-//			// TODO: what should we do with TUs that have more than one definition?
-//			val first = src.contains.get(0)
-//			if (first instanceof ModuleDef) {
-//				map_IDL_Franca.put(first, it)
-//				// we expect that first definition is a ModuleDef, ignore all other ones
-//				// TODO: correct? or should we create several Franca files per OMG IDL TU?
-//				
-//				// OMG IDL's module name will be the package identifier in Franca  
-//				it.name = first.identifier
-//
-//				// map all definitions of this module to the Franca model
-//				for(d : first.contains) {
-//					if(!map_IDL_Franca.containsKey(d)) {
-//						map_IDL_Franca.put(d, d.transformDefinition(it))					
-//					}
-//				}
-//			} else {
-//				// TODO: check if this restriction is what we want
-//				addIssue(IMPORT_ERROR,
-//					first, IdlmmPackage::CONTAINED__IDENTIFIER,
-//					"First and only member of OMG IDL translation unit should be a 'module' definition")
-//			}
-//		}
-//		it
-//	}
 	
 	/**
 	 * Transform to a single Franca model
