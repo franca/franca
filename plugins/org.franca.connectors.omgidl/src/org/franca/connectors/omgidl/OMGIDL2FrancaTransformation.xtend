@@ -943,7 +943,19 @@ class OMGIDL2FrancaTransformation {
 			)
 			return ''
 		}
-		return uri.lastSegment.replace(uri.fileExtension, FRANCA_IDL_EXT)
+		
+		val orig = uri.lastSegment
+		val n = orig.lastIndexOf(uri.fileExtension)
+		if (n==-1) {
+			// something is wrong, uri has wrong file extension
+			addIssue(IMPORT_ERROR,
+				src, IdlmmPackage::INCLUDE__IMPORT_URI,
+				"The URI of imported IDL file '" + src + "' should have extension 'idl'"
+			)
+			return ''
+		} else {
+			orig.substring(0, n) + FRANCA_IDL_EXT
+		}
 	}
 	
 	def private dispatch addInTypeCollection (FTypeCollection target, FType type) {
