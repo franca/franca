@@ -72,7 +72,6 @@ class OMGIDL2FrancaStandalone extends AbstractCommandLineTool {
 				}
 				
 				val conn = new OMGIDLConnector(baseModel)
-				conn.setLogger(logger)
 				val omgidl = conn.loadModel(filename) as OMGIDLModelContainer
 				if (omgidl==null) {
 					logger.error("Couldn't load input model from file!")

@@ -16,12 +16,12 @@ import java.util.LinkedHashMap
 import java.util.List
 import java.util.Map
 import java.util.Set
+import org.apache.log4j.Logger
 import org.csu.idl.idlmm.TranslationUnit
 import org.csu.idl.xtext.loader.ExtendedIDLLoader
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.resource.Resource
-import org.eclipse.xtext.util.EmfFormatter
 import org.franca.core.dsl.FrancaPersistenceManager
 import org.franca.core.framework.AbstractFrancaConnector
 import org.franca.core.framework.FrancaModelContainer
@@ -34,6 +34,9 @@ import org.franca.core.utils.FileHelper
 import org.franca.core.utils.digraph.Digraph
 
 class OMGIDLConnector extends AbstractFrancaConnector {
+
+	static final Logger logger = Logger.getLogger(typeof(OMGIDLConnector))
+
 	Injector injector
 	
 	// private String fileExtension = "idl";
@@ -46,6 +49,9 @@ class OMGIDLConnector extends AbstractFrancaConnector {
 	 */
 	new() {
 		this.injector = Guice.createInjector(new OMGIDLConnectorModule())
+		
+		// use own logger as default
+		setLogger(logger)
 	}
 
 	/** 
@@ -54,6 +60,9 @@ class OMGIDLConnector extends AbstractFrancaConnector {
 	new(FModel baseModel) {
 		this.injector = Guice.createInjector(new OMGIDLConnectorModule())
 		this.baseModel = baseModel
+
+		// use own logger as default
+		setLogger(logger)
 	}
 
 	override IModelContainer loadModel(String filename) {
