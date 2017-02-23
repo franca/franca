@@ -59,7 +59,7 @@ class OMGIDLConnector extends AbstractFrancaConnector {
 	override IModelContainer loadModel(String filename) {
 		var Map<TranslationUnit, String> units = loadOMGIDLModel(filename)
 		if (units.isEmpty()) {
-			out.println('''Error: Could not load OMG IDL model from file «filename»''')
+			err.println('''Error: Could not load OMG IDL model from file «filename»''')
 		} else {
 			out.println('''Loaded OMG IDL model from file «filename» (consists of «units.size()» files)''')
 		}
@@ -119,7 +119,16 @@ class OMGIDLConnector extends AbstractFrancaConnector {
 				importedModels.put(importURI, fmodel)
 			}
 		}
-		out.println(IssueReporter.getReportString(lastTransformationIssues))
+		
+		val issues = IssueReporter.getReportString(lastTransformationIssues).split("\n")
+		if (issues.size==1)
+			out.println(issues.get(0))
+		else {
+			for(issue : issues) {
+				err.println(issue)
+			}
+		}
+
 		return new FrancaModelContainer(rootModel, rootName, importedModels)
 	}
 
