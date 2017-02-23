@@ -156,7 +156,7 @@ public class ModelPersistenceHandler {
 		
 		if (resource == null) {
 			// create a resource containing the model
-//			System.out.println("ModelPersistenceHandler: Creating new resource " + toSaveURI +
+//			logger.info("ModelPersistenceHandler: Creating new resource " + toSaveURI +
 //					", #resources=" + resourceSet.getResources().size());
 			resource = resourceSet.createResource(toSaveURI);
 			resource.getContents().add(model);
@@ -170,7 +170,7 @@ public class ModelPersistenceHandler {
 			// resolve the relative path of the imports so that the correct path is obtained for loading the model
 			URI resolve = importFileURI.resolve(cwdURI);
 			String cwdNew = getCWDForImport(fileURI, cwdURI).toString();
-//			System.out.println("  Handling model import:" +
+//			logger.info("  Handling model import:" +
 //					" importURI=" + importURI +
 //					" fileURI=" + importFileURI +
 //					" cwdNew=" + cwdNew
@@ -211,7 +211,7 @@ public class ModelPersistenceHandler {
 		URI existingURI = resource.getURI();
 		// and save the model using the new URI
 		resource.setURI(toSaveURI);
-		//System.out.println("ModelPersistenceHandler: Saving model as resource " + toSaveURI);
+//		logger.info("ModelPersistenceHandler: Saving model as resource " + toSaveURI);
 		if (! existingURI.equals(toSaveURI)) {
 			//logger.info("    previous URI was different: " + existingURI);
 			resourceSet.getURIConverter().getURIMap().put(existingURI, toSaveURI);
