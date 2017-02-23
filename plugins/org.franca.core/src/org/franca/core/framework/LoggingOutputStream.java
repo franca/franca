@@ -37,6 +37,8 @@ public class LoggingOutputStream extends OutputStream {
 
     /** Buffer which is written on next flush() call. */
     private String buffer = "";
+    
+    private String nl = System.getProperty("line.separator");
 
     /**
      * Accumulate bytes for writing them to the logger.
@@ -48,7 +50,7 @@ public class LoggingOutputStream extends OutputStream {
         singleByte[0] = (byte) (b & 0xff);
         String c = new String(singleByte);
         
-        if (c.equals("\n")) {
+        if (c.equals(nl)) {
             // automatically flush if end-of-line is detected
             flush();
         } else {
@@ -61,7 +63,10 @@ public class LoggingOutputStream extends OutputStream {
      */
     @Override
     public void flush() {
-        targetLogger.log(currentLogLevel, buffer);
-        buffer = "";
+    	// skip empty lines
+    	if (! buffer.isEmpty()) {
+            targetLogger.log(currentLogLevel, buffer);
+            buffer = "";
+    	}
     }
 }
