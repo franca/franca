@@ -1,0 +1,7 @@
+{
+  "name": "server",
+  "dependencies": {
+    "mime": "*",
+    "websocket.io": "git://github.com/LearnBoost/websocket.io#5f0b3799f50944bc4d1eb58acdef61c38883d6cf"
+  }
+}
