@@ -32,6 +32,10 @@ import org.franca.core.franca.FModel
 import org.franca.core.franca.FTypeCollection
 import org.franca.core.utils.FileHelper
 import org.franca.core.utils.digraph.Digraph
+import org.eclipse.xtext.util.EmfFormatter
+import org.eclipse.emf.ecore.util.EcoreUtil
+import org.eclipse.xtext.EcoreUtil2
+import org.csu.idl.idlmm.impl.StructDefImpl
 
 class OMGIDLConnector extends AbstractFrancaConnector {
 
@@ -72,6 +76,7 @@ class OMGIDLConnector extends AbstractFrancaConnector {
 		} else {
 			out.println('''Loaded OMG IDL model from file «filename» (consists of «units.size()» files)''')
 		}
+		
 		for (TranslationUnit unit : units.keySet()) {
 			//out.println('''loadModel: «unit.eResource().getURI()» is «units.get(unit)»''')
 			//println(EmfFormatter::objToStr(unit))
@@ -204,6 +209,7 @@ class OMGIDLConnector extends AbstractFrancaConnector {
 		val models = loader.models
 		val modelURIs = loader.dependencies
 		if (modelURIs.empty) {
+			// return a model consisting of just one file (without includes)
 			models
 		} else {
 			val result = new LinkedHashMap<TranslationUnit, String>
@@ -224,8 +230,26 @@ class OMGIDLConnector extends AbstractFrancaConnector {
 					err.println("Error: Cannot find loaded model for path " + path)
 				}
 			}
+			
+			// patch all include statements (they should contain URIs and not paths)
+			result.keySet.forEach[patchIncludeURIs]
+			
+			// return result, which is a multi-file model with includes
 			result
 		}
 	}
 
+	/**
+	 * Patch importURI elements of all include-statements in the TranslationUnit.
+	 * 
+	 * The preprocessor of the idl4emf library replaces all importURIs by absolute
+	 * paths for the file system of the current OS. However, the Xtext framework
+	 * expects importURIs to be actual URIs. This is corrected here.
+	 */
+	def private void patchIncludeURIs(TranslationUnit unit) {
+		for(include : unit.includes) {
+			val notAnURI = include.importURI
+			include.importURI = URI.createFileURI(notAnURI).toString
+		}
+	}
 }
