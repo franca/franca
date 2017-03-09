@@ -38,8 +38,6 @@ public class LoggingOutputStream extends OutputStream {
     /** Buffer which is written on next flush() call. */
     private String buffer = "";
     
-    private String nl = System.getProperty("line.separator");
-
     /**
      * Accumulate bytes for writing them to the logger.
      */
@@ -50,11 +48,14 @@ public class LoggingOutputStream extends OutputStream {
         singleByte[0] = (byte) (b & 0xff);
         String c = new String(singleByte);
         
-        if (c.equals(nl)) {
+        // do not check for property "line.separator" here, because c will be just one character
+        // (will not match "\r\n" on Windows)
+        if (c.equals("\n")) {
             // automatically flush if end-of-line is detected
             flush();
         } else {
-        	buffer += c;
+        	if (! c.equals("\r"))
+        		buffer += c;
         }
     }
 
