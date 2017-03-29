@@ -39,6 +39,8 @@ import org.csu.idl.idlmm.impl.StructDefImpl
 
 class OMGIDLConnector extends AbstractFrancaConnector {
 
+	static final boolean debug = false
+	
 	static final Logger logger = Logger.getLogger(typeof(OMGIDLConnector))
 
 	Injector injector
@@ -77,9 +79,11 @@ class OMGIDLConnector extends AbstractFrancaConnector {
 			out.println('''Loaded OMG IDL model from file «filename» (consists of «units.size()» files)''')
 		}
 		
-		for (TranslationUnit unit : units.keySet()) {
-			//out.println('''loadModel: «unit.eResource().getURI()» is «units.get(unit)»''')
-			//println(EmfFormatter::objToStr(unit))
+		if (debug) {
+			for (TranslationUnit unit : units.keySet()) {
+				out.println('''loadModel: «unit.eResource().getURI()» is «units.get(unit)»''')
+				//println(EmfFormatter::objToStr(unit))
+			}
 		}
 		return new OMGIDLModelContainer(units)
 	}
@@ -111,7 +115,8 @@ class OMGIDLConnector extends AbstractFrancaConnector {
 		var FModel rootModel = null
 		var String rootName = null
 		for (TranslationUnit unit : inputModels) {
-			//out.println('''transforming «omg.getFilename(unit)»''')
+			if (debug)
+				out.println('''transforming «omg.getFilename(unit)»''')
 			var FModel fmodel = trafo.transformToSingleFModel(unit, transformationMap, getBaseTypes())
 			transformationMap = trafo.getTransformationMap()
 			lastTransformationIssues.addAll(trafo.getTransformationIssues())
