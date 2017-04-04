@@ -1,4 +1,5 @@
 module TestCase {
+	/// @remark This has been generated from Franca interface 'TestAttribute'.
 	interface TestAttribute {
 		isSignal Boolean;
 		rpm Float;

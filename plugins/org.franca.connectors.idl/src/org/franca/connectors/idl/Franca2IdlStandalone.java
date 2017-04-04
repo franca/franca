@@ -25,7 +25,7 @@ public class Franca2IdlStandalone extends AbstractCommandLineTool {
 	// prepare class for logging....
 	private static final Logger logger = Logger.getLogger(Franca2IdlStandalone.class);
 
-	private static final String TOOL_VERSION = "0.2.0";
+	private static final String TOOL_VERSION = "0.7.0";
 
 	// specific option values
 	private static final String FIDLFILE = "f";

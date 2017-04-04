@@ -1,7 +1,10 @@
 module TestBroadcast {
+	/// @remark This has been generated from Franca interface 'TestBroadcastInterface'.
 	interface TestBroadcastInterface {
 	};
+	/// @remark This client interface has been generated from Franca interface 'TestBroadcastInterface'.
 	interface TestBroadcastInterface_client {
+		/** This is a Franca IDL broadcast.  */
 		void broad (in Float out1, in UInt16 out2);
 	};
 };

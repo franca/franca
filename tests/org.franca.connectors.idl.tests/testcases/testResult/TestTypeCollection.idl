@@ -1,4 +1,5 @@
 module testcases {
+	/// @remark This has been generated from Franca type collection 'MyTypes'.
 	interface MyTypes {
 		typedef Int8[ ] MyArray;
 		struct MyStruct {

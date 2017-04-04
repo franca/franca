@@ -1,0 +1,40 @@
+package TestCommentsPackage
+
+<** @description: This is the description of the type collection.
+    @author: Klaus Birken
+**>
+typeCollection TestCommentsTypeCollection {
+	
+	<** @description: This is the description of an enumeration.
+	    @deprecated: This enumeration should not be used anymore.
+	**>
+	enumeration MyEnums {
+		<** @description: Some enumerator C1. **>
+		C1  // without constant value
+		
+		<** @description : Some enumerator C2 (slightly different format of description). **>
+		C2 = 100
+		
+		<** @description : Enumerator C3 has a two-line description,
+		                   this is the second line. **>
+		C3 = 102
+
+		C4 = 110 // enumerator without structured comment
+		
+		<** @description: Enumerator C5, structured comment has other elements.
+		    @source: The additional element. **>
+		C5 = 120
+	}
+
+	<** @description: This is the description of a struct.
+	    @author: Gavrilo Princip.
+	**>
+	struct MyStruct {
+		<** @description: This is a description of element1. **>
+		UInt32 element1
+		<** @description: This is a multi-line description of element2.
+		                  This is the second line. **>
+		UInt32 element2
+		UInt32 element3 // without structured comment
+	}
+}

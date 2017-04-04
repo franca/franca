@@ -1,0 +1,30 @@
+module TestCommentsPackage {
+	/** 
+	 * This is the description of the type collection.
+	 * @author Klaus Birken
+	 */
+	/// @remark This has been generated from Franca type collection 'TestCommentsTypeCollection'.
+	interface TestCommentsTypeCollection {
+		/** 
+		 * This is the description of an enumeration.
+		 * @deprecated This enumeration should not be used anymore.
+		 */
+		enum MyEnums {
+			C1,  ///< Some enumerator C1. 
+			C2 = 100,  ///< Some enumerator C2 (slightly different format of description). 
+			C3 = 102,  ///< Enumerator C3 has a two-line description, this is the second line. 
+			C4 = 110,
+			C5 = 120  ///< Enumerator C5, structured comment has other elements. Source: The additional element.
+		};
+		
+		/** 
+		 * This is the description of a struct.
+		 * @author Gavrilo Princip.
+		 */
+		struct MyStruct {
+			UInt32 element1;  ///< This is a description of element1. 
+			UInt32 element2;  ///< This is a multi-line description of element2. This is the second line. 
+			UInt32 element3;
+		};
+	};
+};

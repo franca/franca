@@ -1,6 +1,10 @@
 package org.franca.connectors.idl
 
+import com.google.common.collect.Iterables
+import java.util.List
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
+import org.franca.core.franca.FAnnotation
+import org.franca.core.franca.FAnnotationType
 import org.franca.core.franca.FArgument
 import org.franca.core.franca.FArrayType
 import org.franca.core.franca.FAttribute
@@ -21,6 +25,8 @@ import org.franca.core.franca.FTypeCollection
 import org.franca.core.franca.FTypeDef
 import org.franca.core.franca.FTypeRef
 import org.franca.core.franca.FUnionType
+import java.util.Iterator
+import com.google.common.base.Joiner
 
 class Franca2IdlConverter {
 	
@@ -39,15 +45,13 @@ class Franca2IdlConverter {
 	}
 	
 	def private transformTypeCollection(FTypeCollection typeCollection) {
-		val types = typeCollection.types?.map[transformTypes].join('\n')
+		val types = typeCollection.types?.map[transformType].join('\n')
 		var typename = typeCollection.name
 		
-		var constants = typeCollection.constants?.map[transformConstants].join('\n')
-		val generateComment = typeCollection.generateComment
+		var constants = typeCollection.constants?.map[transformConstant].join('\n')
 		'''
-		«IF generateComment!=null && generateComment!=''»
-		/** «generateComment» 
-		*/«ENDIF»
+		«typeCollection.generateComment»
+		/// @remark This has been generated from Franca type collection '«typename»'.
 		interface «typename» {
 			«types»
 			«constants»
@@ -55,43 +59,32 @@ class Franca2IdlConverter {
 		'''
 	}
 	
-	def private transformConstants(FConstantDef constant){
-		val generateComment = constant.generateComment
-		
+	def private transformConstant(FConstantDef constant){
 		'''
-		«IF generateComment!=null && generateComment!=''»
-		/** «generateComment» 
-		*/«ENDIF»
+		«constant.generateComment»
 		const «constant.type.transformType2TypeString» «constant.name» = «NodeModelUtils.getTokenText(NodeModelUtils.getNode(constant.rhs))»;'''
 	}
 	
-	def private generateComment(FModelElement element){
-		val StringBuffer bufferText =new StringBuffer;
- 		element.comment?.elements?.forEach[bufferText.append(rawText)]
- 		var str = bufferText.toString.replaceAll("@description","#comment");
-		str
-	}
 	/***
 	* Mapping from Franca to IDL 
-	* Interface -- > Interface
+	* Interface --> Interface
 	*/ 
 	def private transformInterface(FInterface fInterface) {
-		val types = fInterface.types?.map[transformTypes].join('\n')
+		val types = fInterface.types?.map[transformType].join('\n')
 		var baseInterface = fInterface.base?.name
-		val generateComment = fInterface.generateComment
-		var constants = fInterface.constants?.map[transformConstants].join('\n')
-		var broadcasts = fInterface.broadcasts?.map[transformBroadcasts].join('\n')
+		var constants = fInterface.constants?.map[transformConstant].join('\n')
+		var broadcasts = fInterface.broadcasts?.map[transformBroadcast].join('\n')
 	'''
-		«IF generateComment!=null && generateComment!=''»
-		/** «generateComment»
-		*/«ENDIF»
+		«fInterface.generateComment»
+		/// @remark This has been generated from Franca interface '«fInterface.name»'.
 		interface «fInterface.name»«IF baseInterface!=null»:«baseInterface»«ENDIF» {
-			«fInterface.attributes?.map[transformAttributes].join('\n')»
-			«fInterface.methods?.map[transformMethods].join('\n')»
+			«fInterface.attributes?.map[transformAttribute].join('\n')»
+			«fInterface.methods?.map[transformMethod].join('\n')»
 			«types»
 			«constants»
 		};
 		«IF broadcasts!=null && broadcasts!=''»
+		/// @remark This client interface has been generated from Franca interface '«fInterface.name»'.
 		interface «fInterface.name»_client {
 			«broadcasts»
 		};
@@ -99,29 +92,17 @@ class Franca2IdlConverter {
 		'''
 	}
 	
-	def private transformBroadcasts(FBroadcast broadcast) {
-		val generateComment = broadcast.generateComment
-		var name = broadcast.name
-		var arguments = broadcast.outArgs?.map[transformArgument("in")].join(', ')
-		'''
-		«IF generateComment!=null && generateComment!=''»
-		/**broadcast 
-		*«generateComment» 
-		*/«ENDIF»
-		void «name» («arguments»);
-		'''
-	}
-	
-	def private transformTypes(FType type) {
+	def private transformType(FType type) {
 		switch (type) {
 			FArrayType: {
 					'''typedef «type.elementType.transformType2TypeString»[ ] «type.name»;'''
 				}
 
 			FStructType: {
-					val fieldContent = type.elements.map[transformFields].join('\n')
+					val fieldContent = type.elements.map[transformField].join('\n')
 					var baseStruct = type.base?.name
 					'''
+					«type.generateComment»
 					struct «type.name» «IF baseStruct!=null»:«baseStruct» «ENDIF»{
 						«fieldContent»
 					};
@@ -129,9 +110,10 @@ class Franca2IdlConverter {
 				}
 			FUnionType:{
 					var baseUnion = type.base?.name
-					val fieldContent = type.elements.map[transformFields].join('\n')
+					val fieldContent = type.elements.map[transformField].join('\n')
 					
 					'''
+					«type.generateComment»
 					union «type.name» «IF baseUnion!=null»:«baseUnion» «ENDIF»{
 						«fieldContent»
 					};
@@ -139,82 +121,128 @@ class Franca2IdlConverter {
 				}
 			FEnumerationType:{
 					var baseEnum = type.base?.name
-					val Content = type.enumerators.map[transformEnumerators].join(',\n')
+					val content = type.enumerators.map[transformEnumerator].joinPairs(',', '\n')
 					
 					'''
+					«type.generateComment»
 					enum «type.name» «IF baseEnum!=null»:«baseEnum» «ENDIF»{
-						«Content»
+						«content»
 					};
 					''' 	
 				}
 			FMapType: {
-					'''map_«type.name» «type.keyType.transformType2TypeString»=>«type.valueType.transformType2TypeString»;'''
+					'''
+					«type.generateComment»
+					map_«type.name» «type.keyType.transformType2TypeString»=>«type.valueType.transformType2TypeString»;
+					'''
 					}
 			FTypeDef: {
 					var typedef= type as FTypeDef
-					'''typedef «typedef.actualType.transformType2TypeString» «type.name»;'''
-					
+					'''
+					«type.generateComment»
+					typedef «typedef.actualType.transformType2TypeString» «type.name»;
+					'''
 				}
-			}
 		}
-					
-					
-	def private transformEnumerators(FEnumerator eumerator) {
-		var name = eumerator.name
-		var value = eumerator.value
-		'''«name»«IF value!=null» = «NodeModelUtils.getTokenText(NodeModelUtils.getNode(eumerator.value))»«ENDIF»'''
+	}
+
+	/**
+	 * Join pairs of strings. Except for the last pair, separator1 will be used between the strings of each pair.
+	 * Separator2 will be used as usual for extension method join().
+	 */					
+	def private static String joinPairs(Iterable<Pair<String, String>> iterable, CharSequence separator1, CharSequence separator2) {
+		val last = iterable.last
+		val joinedPairs = iterable.map[
+			if (it==last) joinPair("") else joinPair(separator1)
+		]
+		joinedPairs.join(separator2)
 	}
 	
-	def private transformFields(FField field) {
+	/**
+	 * Join a pair of strings. Use separator even if there is no second item of pair.
+	 */
+	def private static String joinPair(Pair<String, String> pair, CharSequence separator) {
+		val sep = if (separator==null) "" else separator
+		if (pair.value==null || pair.value.empty)
+			pair.key + sep
+		else
+			pair.key + sep + pair.value
+	}
+					
+	def private transformEnumerator(FEnumerator enumerator) {
+		var name = enumerator.name
+		var value = enumerator.value
+		val part1 = '''«name»«IF value!=null» = «NodeModelUtils.getTokenText(NodeModelUtils.getNode(enumerator.value))»«ENDIF»'''
+		
+		val comment = enumerator.transformCommentCompact
+		val part2 = if (comment==null || comment.empty) null else "  ///< " + comment 
+		Pair.of(part1, part2)
+	}
+	
+	def private transformField(FField field) {
 		var type = field.type.transformType2TypeString
 		var name = field.name
 		val isArray1 = field.array
 		
-//		var isArray = field.type.isArray
-		'''«type»«IF isArray1»[ ]«ENDIF» «name»;'''
+		val comment = field.transformCommentCompact
+		'''«type»«IF isArray1»[ ]«ENDIF» «name»;«IF comment!=null && !comment.empty»  ///< «comment»«ENDIF»'''
 	}
 		
 		
-	def private transformAttributes(FAttribute attribute) {
+	def private transformAttribute(FAttribute attribute) {
 		var name = attribute.name
 		var type = attribute.type?.transformType2TypeString
-		val generateComment = attribute.generateComment
 		'''
-		«IF generateComment!=null && generateComment!=''»
-		/** «generateComment» 
-		*/«ENDIF»
+		«attribute.generateComment»
 		«IF attribute.isReadonly»readonly«ENDIF»«name» «type»;'''
 		
 	}
 
-	def private transformMethods(FMethod method) {
-		val transformParameters1 = method.transformParameters
-		val generateComment = method.generateComment
+	def private transformMethod(FMethod method) {
+		val params = method.transformParameters
+		
+		val paramComments = Iterables.concat(
+			method.inArgs.map[transformParamComment("")],
+			method.outArgs.map[transformParamComment("out argument: ")]
+		).filterNull
 		
 		'''
-		«IF generateComment!=null && generateComment!=''»
-		/** «generateComment» 
-		*/«ENDIF»
-		void «method.name» («transformParameters1»);
+		«method.generateComment(paramComments)»
+		void «method.name» («params»);
 		'''
 
 	}
 
-	def private transformParameters(FMethod method) {
-		val parameters = newArrayList()
+	def private transformBroadcast(FBroadcast broadcast) {
+		var name = broadcast.name
+		var arguments = broadcast.outArgs?.map[transformArgument("in")].join(', ')
 
+		val paramComments = broadcast.outArgs?.map[transformParamComment("")].filterNull
+
+		'''
+		«broadcast.generateComment("This is a Franca IDL broadcast. ", paramComments)»
+		void «name» («arguments»);
+		'''
+	}
+	
+	def private transformParamComment(FArgument arg, String tag) {
+		val txt = arg.transformCommentCompact
+		if (txt==null || txt.empty)
+			null
+		else
+			"@param " + arg.name + " " + tag + txt.toFirstUpper
+	}
+	
+	def private transformParameters(FMethod method) {
+		val parameters = <String>newArrayList()
       	parameters.addAll(method.inArgs?.map[transformArgument("in")])
 		parameters.addAll(method.outArgs?.map[transformArgument("out")])
 		parameters.join(', ')
 	}
 
 	def private transformArgument(FArgument src, String paramType) {
-
-		var name = src.name
 		var type = transformType2TypeString(src.type)
-		if(paramType == "in") return '''in «type» «name»'''
-		return '''out «type» «name»'''
-
+		paramType + " " + type + " " + src.name
 	}
 
 	def private transformType2TypeString(FTypeRef ref) {
@@ -262,7 +290,90 @@ class Franca2IdlConverter {
 		}
 	}
 
-}
-		
-		
+	def private generateComment(FModelElement element) {
+		element.generateComment("", newArrayList)
+	}
+	
+	def private generateComment(FModelElement element, String tag) {
+		element.generateComment(tag, newArrayList)
+	}
+	
+	def private generateComment(FModelElement element, Iterable<String> additionalLines) {
+		element.generateComment("", additionalLines)
+	}
+	
+	def private generateComment(FModelElement element, String tag, Iterable<String> additionalLines) {
+		val lines = element?.transformComment
+		val all =
+			if (lines.empty || additionalLines.empty)
+				Iterables.concat(lines, additionalLines)
+			else {
+				val empty = <String>newArrayList
+				empty.add("")				
+				Iterables.concat(lines, empty, additionalLines)
+			}
 
+		'''
+			«IF ! all.empty»
+			/** «tag»
+			«FOR a : all»
+			«" * "»«a»
+			«ENDFOR»
+			 */«ELSEIF tag!=""»
+			/** «tag» */«ENDIF»
+		'''
+	}
+
+	/**
+	 * Create compact form of a structured comment (i.e., single line).
+	 */
+	def private transformCommentCompact(FModelElement element){
+		val description = element.comment?.elements?.findFirst[type==FAnnotationType.DESCRIPTION]
+		val desc = description?.toSingleLine
+
+		val others = element.comment?.elements?.filter[type!=FAnnotationType.DESCRIPTION]
+		val remainder = others?.map[
+			val t = type?.name()
+			if (t!=null)
+				t.toLowerCase + "='" + toSingleLine + "'"
+			else
+				rawText.toSingleLine.replace("@", "").toFirstUpper
+		]?.filterNull?.join(", ")
+		
+		#[desc, remainder].filterNull.join(" ")
+	}
+
+	def private toSingleLine(FAnnotation anno) {
+		anno?.comment?.toSingleLine
+	}
+
+	def private toSingleLine(String multiline) {
+		multiline?.split("\n")?.map[trim]?.join(' ')
+	}
+
+	/**
+	 * Transform Franca structured comment completely.
+	 * 
+	 * This will contain all elements of the comment, not only the first description.
+	 */
+	def private Iterable<String> transformComment(FModelElement element){
+ 		val result = element.comment?.elements?.map[plainText]?.flatten
+ 		if (result!=null)
+ 			result
+ 		else
+ 			newArrayList
+	}
+	
+	def private Iterable<String> plainText(FAnnotation annotation) {
+		val lines = annotation.comment.split("\n").map[trim]
+		val type = annotation.type
+		val tag = 
+			switch (type) {
+				case FAnnotationType.DESCRIPTION: ""
+				default: "@" + type.name().toLowerCase + " "
+			}
+		val tagged = newArrayList(tag + lines.head.toFirstUpper)
+		Iterables.concat(tagged, lines.tail)
+	}
+
+}

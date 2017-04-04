@@ -9,7 +9,7 @@ typeCollection MyTypes {
 		UInt16 aNumber
 		String aString
 	}
-		enumeration MyEnumeration {
+	enumeration MyEnumeration {
 		C1  // without constant value
 		C2 = "100"
 		C3 = "101"

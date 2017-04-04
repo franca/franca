@@ -1,4 +1,5 @@
 module TestUnion {
+	/// @remark This has been generated from Franca interface 'TestUnionInterface'.
 	interface TestUnionInterface {
 		union MyUnionType {
 			UInt32 first;

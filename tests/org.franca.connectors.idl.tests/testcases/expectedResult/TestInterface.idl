@@ -1,4 +1,5 @@
 module modelss {
-		interface ModelInterface {
-		};
+	/// @remark This has been generated from Franca interface 'ModelInterface'.
+	interface ModelInterface {
 	};
+};

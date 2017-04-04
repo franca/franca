@@ -1,0 +1,34 @@
+module TestCommentsPackage {
+	/** 
+	 * This is the description of the interface.
+	 * @author Klaus Birken
+	 */
+	/// @remark This has been generated from Franca interface 'TestCommentsInterface'.
+	interface TestCommentsInterface {
+		/** 
+		 * This is the description of a method.
+		 * @deprecated This method should not be used anymore.
+		 * 
+		 * @param param1 This is the description of the first parameter. 
+		 * @param param2 This is the description of the second parameter. 
+		 * @param retcode out argument: This is the description of a return value. 
+		 */
+		void firstMethod (in Int8 param1, in Int8 param2, out Float retcode);
+		
+		/** 
+		 * This is a multi-line description of another method,
+		 * and this is the second line. End of this comment.
+		 */
+		void secondMethod ();
+	};
+	/// @remark This client interface has been generated from Franca interface 'TestCommentsInterface'.
+	interface TestCommentsInterface_client {
+		/** This is a Franca IDL broadcast. 
+		 * This is a broadcast description, see 'broadcast' tag.
+		 */
+		void broadcastWithDescription ();
+		
+		/** This is a Franca IDL broadcast.  */
+		void broadcastWithoutDescription ();
+	};
+};
