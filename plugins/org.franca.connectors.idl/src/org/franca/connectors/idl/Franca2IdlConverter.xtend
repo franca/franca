@@ -1,7 +1,6 @@
 package org.franca.connectors.idl
 
 import com.google.common.collect.Iterables
-import java.util.List
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 import org.franca.core.franca.FAnnotation
 import org.franca.core.franca.FAnnotationType
@@ -25,8 +24,7 @@ import org.franca.core.franca.FTypeCollection
 import org.franca.core.franca.FTypeDef
 import org.franca.core.franca.FTypeRef
 import org.franca.core.franca.FUnionType
-import java.util.Iterator
-import com.google.common.base.Joiner
+import org.franca.core.franca.FVersion
 
 class Franca2IdlConverter {
 	
@@ -52,6 +50,9 @@ class Franca2IdlConverter {
 		'''
 		«typeCollection.generateComment»
 		/// @remark This has been generated from Franca type collection '«typename»'.
+		«IF typeCollection.version!=null»
+		«typeCollection.version.transformVersion»
+		«ENDIF»
 		interface «typename» {
 			«types»
 			«constants»
@@ -77,6 +78,9 @@ class Franca2IdlConverter {
 	'''
 		«fInterface.generateComment»
 		/// @remark This has been generated from Franca interface '«fInterface.name»'.
+		«IF fInterface.version!=null»
+		«fInterface.version.transformVersion»
+		«ENDIF»
 		interface «fInterface.name»«IF baseInterface!=null»:«baseInterface»«ENDIF» {
 			«fInterface.attributes?.map[transformAttribute].join('\n')»
 			«fInterface.methods?.map[transformMethod].join('\n')»
@@ -85,13 +89,20 @@ class Franca2IdlConverter {
 		};
 		«IF broadcasts!=null && broadcasts!=''»
 		/// @remark This client interface has been generated from Franca interface '«fInterface.name»'.
+		«IF fInterface.version!=null»
+		«fInterface.version.transformVersion»
+		«ENDIF»
 		interface «fInterface.name»_client {
 			«broadcasts»
 		};
 		«ENDIF»
 		'''
 	}
-	
+
+	def private transformVersion(FVersion version) '''
+		/// @version «version.major».«version.minor»
+	'''
+		
 	def private transformType(FType type) {
 		switch (type) {
 			FArrayType: {
