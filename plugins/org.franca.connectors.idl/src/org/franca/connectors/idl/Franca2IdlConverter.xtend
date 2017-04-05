@@ -205,8 +205,7 @@ class Franca2IdlConverter {
 		var type = attribute.type?.transformType2TypeString
 		'''
 		«attribute.generateComment»
-		«IF attribute.isReadonly»readonly«ENDIF»«name» «type»;'''
-		
+		«IF attribute.isReadonly»readonly «ENDIF»attribute «type» «name»;'''
 	}
 
 	def private transformMethod(FMethod method) {

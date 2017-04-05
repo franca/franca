@@ -1,7 +1,7 @@
 module TestCase {
 	/// @remark This has been generated from Franca interface 'TestAttribute'.
 	interface TestAttribute {
-		isSignal Boolean;
-		rpm Float;
+		attribute UInt32 aWriteableAttribute;
+		readonly attribute String aReadonlyAttribute;
 	};
 };
