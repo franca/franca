@@ -240,14 +240,13 @@ public class ProtobufConnector extends AbstractFrancaConnector {
 	) {
 		//val baseURI = importingURI.trimSegments(1)
 		val modelURIs = newHashMap
+		val key = model.eResource.URI.toString
 		for(import_ : model.elements.filter(Import)) {
 			if (import_.importURI != ProtoDescriptorProvider.PROTO_DESCRIPTOR_URI) {
 				val importURIOriginal = URI.createURI(import_.importURI)
 				fileUriResolver.resolveAndUpdateUri(import_)
 				val importURI = URI.createURI(import_.importURI)
 	
-				// TODO cycle detection
-				val key = model.eResource.URI.toString
 				var list = modelURIs.get(key)
 				if (list == null) {
 					list = <URI>newArrayList
@@ -259,8 +258,12 @@ public class ProtobufConnector extends AbstractFrancaConnector {
 					if (! importResource.contents.empty) {
 						val pmodel = importResource.contents.head as Protobuf
 						val trimmed = importURIOriginal.toFileString.trimExtension(importingURI.fileExtension)
-						part2import.put(pmodel, trimmed)
-						modelURIs.putAll(pmodel.collectImportURIsAndLoadModels(importURI, resourceSet, fileUriResolver))
+
+						// only recurse if not visited already (this will eliminate and duplicate imports cycles)
+						if (! part2import.containsKey(pmodel)) {
+							part2import.put(pmodel, trimmed)
+							modelURIs.putAll(pmodel.collectImportURIsAndLoadModels(importURI, resourceSet, fileUriResolver))
+						}
 					}
 				} else {
 					logError("Warning: Cannot import resource '" + importURI + "'")
