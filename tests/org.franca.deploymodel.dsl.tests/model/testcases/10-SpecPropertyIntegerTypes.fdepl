@@ -9,5 +9,6 @@ specification a.b.c.MySpec10Int {
 		IntegerPropPosDefault   : Integer  (default: 123456);
 		IntegerPropNegDefault   : Integer  (default: -123456);
 		IntegerPropHexDefault   : Integer  (default: 0x1234);
+		IntegerPropBinDefault   : Integer  (default: 0b010101);
 	}
 }

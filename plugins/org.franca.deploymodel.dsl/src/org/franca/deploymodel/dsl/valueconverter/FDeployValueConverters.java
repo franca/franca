@@ -80,11 +80,15 @@ public class FDeployValueConverters extends AbstractDeclarativeValueConverterSer
 					throws ValueConverterException {
 				Integer result;
 				try {
-					// support hexadecimal values
+					// support hexadecimal and binary literals
 					if (string.startsWith("0x") || string.startsWith("0X")) {
 						// note: negative hex values are not supported
 						String data = string.substring(2);
 						result = Integer.parseInt(data, 16);
+					} else if (string.startsWith("0b") || string.startsWith("0B")) {
+						// note: negative binary values are not supported
+						String data = string.substring(2);
+						result = Integer.parseInt(data, 2);
 					} else {
 						// this will handle positive and negative integer values
 						result = Integer.parseInt(string, 10);
