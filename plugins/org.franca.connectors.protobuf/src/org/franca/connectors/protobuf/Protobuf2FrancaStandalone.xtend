@@ -24,7 +24,7 @@ class Protobuf2FrancaStandalone extends AbstractCommandLineTool {
 	
 	static final Logger logger = Logger.getLogger(typeof(Protobuf2FrancaStandalone))
 
-	private static final String TOOL_VERSION = "0.2.0";
+	private static final String TOOL_VERSION = "0.2.1";
 
 	// specific option values
 	private static final String NORMALIZE_IDS = "n";
