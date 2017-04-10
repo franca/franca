@@ -9,8 +9,10 @@ package org.franca.deploymodel.dsl.valueconverter;
 
 import org.eclipse.xtext.conversion.IValueConverter;
 import org.eclipse.xtext.conversion.ValueConverter;
+import org.eclipse.xtext.conversion.ValueConverterException;
 import org.eclipse.xtext.conversion.impl.AbstractDeclarativeValueConverterService;
 import org.eclipse.xtext.conversion.impl.AbstractIDValueConverter;
+import org.eclipse.xtext.conversion.impl.AbstractNullSafeConverter;
 import org.eclipse.xtext.conversion.impl.AbstractValueConverter;
 import org.eclipse.xtext.conversion.impl.INTValueConverter;
 import org.eclipse.xtext.conversion.impl.STRINGValueConverter;
@@ -64,6 +66,37 @@ public class FDeployValueConverters extends AbstractDeclarativeValueConverterSer
 		return intValueConverter;
 	}
 
+
+	@ValueConverter(rule = "SignedInt")
+	public IValueConverter<Integer> SignedInt() {
+		return new AbstractNullSafeConverter<Integer>() {
+			@Override
+			protected String internalToString(Integer value) {
+				return Integer.toString(value);
+			}
+
+			@Override
+			protected Integer internalToValue(String string, INode node)
+					throws ValueConverterException {
+				Integer result;
+				try {
+					// support hexadecimal values
+					if (string.startsWith("0x") || string.startsWith("0X")) {
+						// note: negative hex values are not supported
+						String data = string.substring(2);
+						result = Integer.parseInt(data, 16);
+					} else {
+						// this will handle positive and negative integer values
+						result = Integer.parseInt(string, 10);
+					}
+					return result;
+				} catch (Exception e) {
+					throw new ValueConverterException("Not a proper integer value.", node, e);
+				}
+			}
+		};
+	}
+	
 
 	@Inject
 	private STRINGValueConverter stringValueConverter;

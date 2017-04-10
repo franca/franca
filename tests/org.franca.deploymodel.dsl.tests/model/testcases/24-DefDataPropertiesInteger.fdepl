@@ -9,5 +9,6 @@ define a.b.c.MySpec10Int for interface fidl.CoverageInterface {
 		IntegerPropOptional = 0
 		IntegerPropPosDefault = -123
 		IntegerPropNegDefault = -123
+		IntegerPropHexDefault = 0xABCD
 	}
 }
