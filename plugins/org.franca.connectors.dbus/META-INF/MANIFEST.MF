@@ -20,4 +20,4 @@ Bundle-ActivationPolicy: lazy
 Export-Package: org.franca.connectors.dbus,
  org.franca.connectors.dbus.util,
  org.franca.connectors.dbus.validators
-
+Import-Package: org.apache.log4j
