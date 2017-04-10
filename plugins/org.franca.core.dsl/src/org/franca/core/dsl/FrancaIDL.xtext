@@ -457,7 +457,7 @@ EBoolean returns ecore::EBoolean:
 	'false' | 'true';
 
 E_BigInteger returns ecore::EBigInteger:
-	INT | HEX
+	INT | HEX | BINARY
 ;
 
 terminal E_DOUBLE_OBJECT returns ecore::EDoubleObject :
@@ -469,6 +469,9 @@ terminal E_FLOAT_OBJECT returns ecore::EFloatObject :
 
 terminal HEX :
 	 ('0x'|'0X')(('0'..'9')|('a'..'f')|('A'..'F'))+;
+	
+terminal BINARY :
+	 ('0b'|'0B')('0'|'1')+;
 	
 terminal ANNOTATION_STRING returns ecore::EString:
 	'@' (('a'..'z')|'-')+ (' '|'\t')* ':'

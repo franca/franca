@@ -48,6 +48,11 @@ typeCollection MyTypes {
 	const UInt32 h02 = 0x10 // 16 in decimal
 	const UInt32 h03 = 0x2710 // 10000 in decimal 
 
+	// evaluation of binary values
+	const UInt32 y01 = 0b01
+	const UInt32 y02 = 0b10000 // 16 in decimal
+	const UInt32 y03 = 0b100111010011001000 // 160968 in decimal 
+
 	// complex integer operations (normal range)
 	const UInt32 i10 = 1 + 2 + 3 + 4 + 5
 	const UInt32 i11 = 8 * 90 - 12 / 4
