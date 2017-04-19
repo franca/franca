@@ -34,6 +34,11 @@ public class Franca2DBusTests {
 	@Inject	FrancaPersistenceManager loader;
 	
 	@Test
+	public void test_20() {
+		doTransformTest(LOCAL_FRANCA_MODELS, "20-MapKeyTypes");
+	}
+	
+	@Test
 	public void test_30() {
 		doTransformTest(LOCAL_FRANCA_MODELS, "30-SimpleAttribute");
 	}

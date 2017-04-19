@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="introspect.xsl"?>
+<!-- This D-Bus Introspection model has been created from a Franca IDL file. -->
+<!-- Input file: '20-MapKeyTypes.fidl' -->
+<node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="introspect.xsd" name="testcases">
+  <interface name="testcases.MyInterface">
+    <property access="readwrite" name="attr1" type="a{qs}"/>
+    <property access="readwrite" name="attr2" type="a{ss}"/>
+    <property access="readwrite" name="attr3" type="a{us}"/>
+    <property access="readwrite" name="attr4" type="a{us}"/>
+    <property access="readwrite" name="attr5" type="a{us}"/>
+  </interface>
+</node>

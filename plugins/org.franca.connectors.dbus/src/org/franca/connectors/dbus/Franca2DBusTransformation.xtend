@@ -45,6 +45,7 @@ import static org.franca.core.framework.FrancaModelMapper.*
 import static org.franca.core.framework.TransformationIssue.*
 
 import static extension org.franca.core.utils.ExpressionEvaluator.*
+import static extension org.franca.connectors.dbus.util.DBusLogic.*
 
 class Franca2DBusTransformation {
 
@@ -460,12 +461,6 @@ class Franca2DBusTransformation {
 			return '?'
 		}
 		'a{' + src.keyType.transformSingleType2TypeString + src.valueType.transformSingleType2TypeString + '}'
-	}
-
-	def private isProperDictKey(FTypeRef src) {
-
-		// enumeration types will be mapped to 'i', thus can be used as dict key 
-		src.derived == null || (src.derived instanceof FEnumerationType)
 	}
 
 	def private getLabel(FTypeRef src) {

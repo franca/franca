@@ -1,0 +1,39 @@
+// test interface definition with various map types
+package testcases
+
+interface MyInterface {
+
+	// use simple integer type as key
+	map MyMap1 {
+	   UInt16 to String
+	}
+	attribute MyMap1 attr1
+	
+	// use string type as key
+	map MyMap2 {
+	   String to String
+	}
+	attribute MyMap2 attr2
+	
+	// use typedef for simple integer type as key
+	typedef BaseTypeAlias is UInt32
+	map MyMap3 {
+	   BaseTypeAlias to String
+	}
+	attribute MyMap3 attr3
+
+	// use enumeration type as key
+	enumeration MyEnum { A B C }
+	map MyMap4 {
+	   MyEnum to String
+	}
+	attribute MyMap4 attr4
+
+	// use typedef for enumeration type as key
+	typedef MyEnumAlias is MyEnum
+	map MyMap5 {
+	   MyEnumAlias to String
+	}
+	attribute MyMap5 attr5
+}
+
