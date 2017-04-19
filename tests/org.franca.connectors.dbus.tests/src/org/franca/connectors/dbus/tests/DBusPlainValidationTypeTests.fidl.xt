@@ -24,7 +24,7 @@ interface TypesNotSupportedByPlainDBus {
 	// XPECT warnings --> "D-Bus compatibility: Inheritance for unions is not supported by D-Bus." at "MyUnion1"
 	union MyUnion2 extends MyUnion1 { }
 
-	// XPECT warnings --> "D-Bus compatibility: D-Bus dictionaries support only primitive key types." at "MyEnumeration"
+	// enumeration types will be mapped to some integer DBus type, hence they can be used as map-key
 	map Map1 { MyEnumeration to String }
 	// XPECT warnings --> "D-Bus compatibility: D-Bus dictionaries support only primitive key types." at "MyStruct1"
 	map Map2 { MyStruct1 to String }

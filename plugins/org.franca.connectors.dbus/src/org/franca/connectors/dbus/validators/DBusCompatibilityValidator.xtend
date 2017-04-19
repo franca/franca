@@ -120,9 +120,9 @@ class DBusCompatibilityValidator implements IFrancaExternalValidator {
 
 	def private dispatch checkItem (FMapType item, ValidationMessageAcceptor issues) {
 		val key = item.keyType
-		if (key.isProperDictKey) {
+		if (! key.isProperDictKey) {
 			issues.warning(
-				"D-Bus dictionaries support only basic key types",
+				"D-Bus dictionaries support only primitive key types",
 				item, FMAP_TYPE__KEY_TYPE)
 		}
 	}
