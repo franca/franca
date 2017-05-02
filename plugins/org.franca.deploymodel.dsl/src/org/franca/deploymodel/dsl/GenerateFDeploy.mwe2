@@ -89,7 +89,8 @@ Workflow {
 
             // scoping and exporting API
             fragment = scoping.ImportURIScopingFragment {
-            	generateXtendStub = true
+            	generateStub = false
+            	//generateXtendStub = true
             }
             //fragment = exporting.SimpleNamesFragment {}
 
