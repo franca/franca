@@ -105,13 +105,6 @@ class DefaultValueProvider {
 		}
 	}
 
-	def private static wrapComplex(FDValue v, FDValueArray a) {
-		FDeployFactory.eINSTANCE.createFDComplexValue => [
-			single = v
-			array = a
-		]
-	}
-	
 	def private static FDInterfaceInstance getFirstInstance(FDProvider providerDef) {
 		if (providerDef.instances.empty)
 			null
