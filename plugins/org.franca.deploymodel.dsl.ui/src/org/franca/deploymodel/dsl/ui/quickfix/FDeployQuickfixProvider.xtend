@@ -78,9 +78,9 @@ class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 	@Fix(FDeployJavaValidator.DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX)
 	def void applyRecursiveFix(Issue issue,
 		IssueResolutionAcceptor acceptor) {
-		val FrancaQuickFixConstants type = FrancaQuickFixConstants.valueOf(issue.getData().get(1))
-		val String elementName = if((type === FrancaQuickFixConstants.INTERFACE)) null else issue.getData().get(0)
-		val String description = '''Fix all issues for element '«issue.getData().get(0)»'«»'''
+		val FrancaQuickFixConstants type = valueOf(issue.data.get(1))
+		val elementName = if((type === INTERFACE)) null else issue.data.get(0)
+		val description = '''Fix all issues for element '«issue.data.get(0)»'«»'''
 		acceptor.accept(issue, description, description, "",
 			[ EObject obj, IModificationContext context |
 				if (obj instanceof FDInterface) {
@@ -96,9 +96,9 @@ class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 	@Fix(FDeployJavaValidator.DEPLOYMENT_ELEMENT_QUICKFIX)
 	def void applyFixForInterface(Issue issue,
 		IssueResolutionAcceptor acceptor) {
-		val String elementName = issue.getData().get(0)
-		val type = valueOf(issue.getData().get(1))
-		val String description = '''Add missing «type.toString().toLowerCase()» '«elementName»'«»'''
+		val elementName = issue.data.get(0)
+		val type = valueOf(issue.data.get(1))
+		val description = '''Add missing «type.toString().toLowerCase()» '«elementName»'«»'''
 		acceptor.accept(issue, description, description, "",
 			[ EObject obj, IModificationContext context |
 				if (obj instanceof FDInterface) {
@@ -112,8 +112,8 @@ class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 	@Fix(FDeployJavaValidator.MANDATORY_PROPERTY_QUICKFIX)
 	def void applyFixForElement(Issue issue,
 		IssueResolutionAcceptor acceptor) {
-		val String elementName = issue.getData().get(0)
-		val String description = '''Add all missing mandatory properties for element '«elementName»'«»'''
+		val elementName = issue.data.get(0)
+		val description = '''Add all missing mandatory properties for element '«elementName»'«»'''
 		acceptor.accept(issue, description, description, "",
 			[ EObject obj, IModificationContext context |
 				if (obj instanceof FDElement) {
@@ -125,9 +125,9 @@ class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 	@Fix(FDeployJavaValidator.METHOD_ARGUMENT_QUICKFIX)
 	def void applyFixForMethod(Issue issue,
 		IssueResolutionAcceptor acceptor) {
-		val String opName = issue.getData().get(0)
-		val String argumentName = issue.getData().get(1)
-		val String description = '''Add missing argument '«argumentName»' for method '«opName»'«»'''
+		val opName = issue.data.get(0)
+		val argumentName = issue.data.get(1)
+		val description = '''Add missing argument '«argumentName»' for method '«opName»'«»'''
 		acceptor.accept(issue, description, description, "",
 			[ EObject obj, IModificationContext context |
 				if (obj instanceof FDMethod) {
@@ -139,8 +139,8 @@ class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 	@Fix(FDeployJavaValidator.BROADCAST_ARGUMENT_QUICKFIX)
 	def void applyFixForBroadcast(Issue issue,
 		IssueResolutionAcceptor acceptor) {
-		val String opName = issue.getData().get(0)
-		val String argumentName = issue.getData().get(1)
+		val String opName = issue.data.get(0)
+		val String argumentName = issue.data.get(1)
 		val String description = '''Add missing argument '«argumentName»' for broadcast '«opName»'«»'''
 		acceptor.accept(issue, description, description, "",
 			[ EObject obj, IModificationContext context |
@@ -153,9 +153,9 @@ class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 	@Fix(FDeployJavaValidator.COMPOUND_FIELD_QUICKFIX)
 	def void applyFixForCompound(Issue issue,
 		IssueResolutionAcceptor acceptor) {
-		val String compoundName = issue.getData().get(0)
-		val String fieldName = issue.getData().get(1)
-		val String description = '''Add missing field '«fieldName»' for compound '«compoundName»'«»'''
+		val compoundName = issue.data.get(0)
+		val fieldName = issue.data.get(1)
+		val description = '''Add missing field '«fieldName»' for compound '«compoundName»'«»'''
 		acceptor.accept(issue, description, description, "",
 			[ EObject obj, IModificationContext context |
 				if (obj instanceof FDUnion) {
@@ -169,9 +169,9 @@ class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 	@Fix(FDeployJavaValidator.ENUMERATOR_ENUM_QUICKFIX)
 	def void applyFixForEnumeration(Issue issue,
 		IssueResolutionAcceptor acceptor) {
-		val String enumeratorName = issue.getData().get(0)
-		val String enumName = issue.getData().get(1)
-		val String description = '''Add all enumerator '«enumName»' for enumeration '«enumeratorName»'«»'''
+		val enumeratorName = issue.data.get(0)
+		val enumName = issue.data.get(1)
+		val description = '''Add all enumerator '«enumName»' for enumeration '«enumeratorName»'«»'''
 		acceptor.accept(issue, description, description, "",
 			[ EObject obj, IModificationContext context |
 				if (obj instanceof FDEnumeration) {
@@ -181,29 +181,29 @@ class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 	}
 
 	def private void applyFixForMethodInternal(FDMethod method, boolean isRecursive, String... args) {
-		if(method.getTarget().getInArgs().size() > 0 && method.getInArguments() === null) method.setInArguments(
-			FDeployFactory.eINSTANCE.createFDArgumentList())
-		applyFixForArgList(method.getInArguments(), method.getTarget().getInArgs(), isRecursive, args)
-		if(method.getTarget().getOutArgs().size() > 0 && method.getOutArguments() === null) method.setOutArguments(
-			FDeployFactory.eINSTANCE.createFDArgumentList())
-		applyFixForArgList(method.getOutArguments(), method.getTarget().getOutArgs(), isRecursive, args)
+		if (method.target.inArgs.size > 0 && method.getInArguments === null)
+			method.setInArguments(FDeployFactory.eINSTANCE.createFDArgumentList)
+		applyFixForArgList(method.getInArguments(), method.target.inArgs, isRecursive, args)
+		
+		if (method.target.outArgs.size > 0 && method.getOutArguments === null)
+			method.setOutArguments(FDeployFactory.eINSTANCE.createFDArgumentList)
+		applyFixForArgList(method.outArguments, method.target.outArgs, isRecursive, args)
 	}
 
 	def private void applyFixForBroadcastInternal(FDBroadcast broadcast, boolean isRecursive, String... args) {
-		if(broadcast.getTarget().getOutArgs().size() > 0 && broadcast.getOutArguments() === null) broadcast.
-			setOutArguments(FDeployFactory.eINSTANCE.createFDArgumentList())
-		applyFixForArgList(broadcast.getOutArguments(), broadcast.getTarget().getOutArgs(), isRecursive, args)
+		if(broadcast.target.outArgs.size > 0 && broadcast.getOutArguments() === null)
+			broadcast.setOutArguments(FDeployFactory.eINSTANCE.createFDArgumentList)
+		applyFixForArgList(broadcast.getOutArguments, broadcast.target.outArgs, isRecursive, args)
 	}
 
-	def private void applyFixForArgList(FDArgumentList fdArglist, List<FArgument> fArglist, boolean isRecursive,
-		String... args) {
+	def private void applyFixForArgList(FDArgumentList fdArglist, List<FArgument> fArglist, boolean isRecursive, String... args) {
 		for (FArgument arg : fArglist) {
-			if (args.length === 0 || Arrays.contains(args, arg.name)) {
+			if (args.length === 0 || args.contains(arg.name)) {
 				var fdArg = getArgument(fdArglist, arg)
 				if (fdArg === null) {
 					fdArg = FDeployFactory.eINSTANCE.createFDArgument.init
 					fdArg.setTarget(arg)
-					fdArglist.getArguments().add(fdArg)
+					fdArglist.arguments.add(fdArg)
 				}
 				if (isRecursive) {
 					applyFixForElementInternal(fdArg, isRecursive)
@@ -214,12 +214,12 @@ class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 
 	def private void applyFixForUnionInternal(FDUnion union, boolean isRecursive, String... fields) {
 		for (FField field : union.getTarget().getElements()) {
-			if (fields.length === 0 || Arrays.contains(fields, field.getName())) {
+			if (fields.length === 0 || fields.contains(field.name)) {
 				var fdField = getField(union.getFields(), field)
 				if (fdField === null) {
 					fdField = FDeployFactory.eINSTANCE.createFDField.init
 					fdField.setTarget(field)
-					union.getFields().add(fdField)
+					union.fields.add(fdField)
 				}
 				if (isRecursive) {
 					applyFixForElementInternal(fdField, isRecursive)
@@ -230,12 +230,12 @@ class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 
 	def private void applyFixForStructInternal(FDStruct struct, boolean isRecursive, String... fields) {
 		for (FField field : struct.getTarget().getElements()) {
-			if (fields.length === 0 || Arrays.contains(fields, field.name)) {
+			if (fields.length === 0 || fields.contains(field.name)) {
 				var fdField = getField(struct.getFields(), field)
 				if (fdField === null) {
 					fdField = FDeployFactory.eINSTANCE.createFDField.init
 					fdField.setTarget(field)
-					struct.getFields().add(fdField)
+					struct.fields.add(fdField)
 				}
 				if (isRecursive) {
 					applyFixForElementInternal(fdField, isRecursive)
@@ -246,12 +246,12 @@ class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 
 	def private void applyFixForEnumerationInternal(FDEnumeration enumeration, boolean isRecursive, String... enumerators) {
 		for (FEnumerator e : enumeration.getTarget().getEnumerators()) {
-			if (enumerators.length === 0 || Arrays.contains(enumerators, e.name)) {
-				var FDEnumValue fdEnum = getEnumerator(enumeration.enumerators, e)
+			if (enumerators.length === 0 || enumerators.contains(e.name)) {
+				var fdEnum = getEnumerator(enumeration.enumerators, e)
 				if (fdEnum === null) {
 					fdEnum = FDeployFactory.eINSTANCE.createFDEnumValue.init
 					fdEnum.setTarget(e)
-					enumeration.getEnumerators().add(fdEnum)
+					enumeration.enumerators.add(fdEnum)
 				}
 				if (isRecursive) {
 					applyFixForElementInternal(fdEnum, isRecursive)
@@ -275,7 +275,7 @@ class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 		val decls = PropertyMappings.getAllPropertyDecls(root.spec, element)
 		for (FDPropertyDecl decl : decls) {
 			if (!hasPropertyDeclaration(element.properties.items, decl) && PropertyMappings.isMandatory(decl)) {
-				var FDProperty prop = FDeployFactory.eINSTANCE.createFDProperty
+				var prop = FDeployFactory.eINSTANCE.createFDProperty
 				prop.setDecl(decl)
 				var FDComplexValue defaultVal = DefaultValueProvider.generateDefaultValue(element, decl.type)
 				if (defaultVal !== null) {
