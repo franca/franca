@@ -32,6 +32,7 @@ import org.franca.deploymodel.core.PropertyMappings;
 import org.franca.deploymodel.dsl.fDeploy.FDArgument;
 import org.franca.deploymodel.dsl.fDeploy.FDArgumentList;
 import org.franca.deploymodel.dsl.fDeploy.FDBroadcast;
+import org.franca.deploymodel.dsl.fDeploy.FDComplexValue;
 import org.franca.deploymodel.dsl.fDeploy.FDElement;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumValue;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumeration;
@@ -317,8 +318,14 @@ public class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 					element.getProperties().getItems(), decl) && PropertyMappings.isMandatory(decl)) {
 				FDProperty prop = FDeployFactory.eINSTANCE.createFDProperty();
 				prop.setDecl(decl);
-				prop.setValue(FDeployQuickfixProviderUtil.generateDefaultValue(element, decl.getType()));
-				element.getProperties().getItems().add(prop);
+				FDComplexValue defaultVal = DefaultValueProvider.generateDefaultValue(element, decl.getType());
+				if (defaultVal != null) {
+					prop.setValue(defaultVal);
+					element.getProperties().getItems().add(prop);
+				} else {
+					// if no default value could be generated, we skip setting this property
+					// note that the quickfix probably will not be successful (and the validation error will remain)
+				}
 			}
 		}
 		

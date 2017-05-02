@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2014 itemis AG (http://www.itemis.de).
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************/
 package org.franca.deploymodel.dsl.ui.quickfix;
 
 import java.util.List;
@@ -97,61 +104,6 @@ public class FDeployQuickfixProviderUtil {
 		return null;
 	}
 
-	public static FDComplexValue generateDefaultValue(FDElement element, FDTypeRef typeRef) {
-		FDValue simple = null;
-		if (typeRef.getComplex() == null) {
-			switch (typeRef.getPredefined().getValue()) {
-				case FDPredefinedTypeId.BOOLEAN_VALUE:
-					FDBoolean boolVal = FDeployFactory.eINSTANCE.createFDBoolean();
-					boolVal.setValue("false");
-					simple = boolVal;
-					break;
-				case FDPredefinedTypeId.INTEGER_VALUE:
-					FDInteger intVal = FDeployFactory.eINSTANCE.createFDInteger();
-					intVal.setValue(0);
-					simple = intVal;
-					break;
-				case FDPredefinedTypeId.STRING_VALUE:
-					FDString strVal = FDeployFactory.eINSTANCE.createFDString();
-					strVal.setValue("");
-					simple = strVal;
-					break;
-				case FDPredefinedTypeId.INTERFACE_VALUE:
-					FDInterfaceRef ifaceVal = FDeployFactory.eINSTANCE.createFDInterfaceRef();
-					ifaceVal.setValue(((FDInterface) element).getTarget());
-					simple = ifaceVal;
-					break;
-				case FDPredefinedTypeId.INSTANCE_VALUE:
-					FDGeneric instVal = FDeployFactory.eINSTANCE.createFDGeneric();
-					instVal.setValue(((FDInterfaceInstance) element).getTarget());
-					simple = instVal;
-					break;
-			}
-		} else {
-			if (typeRef.getComplex() instanceof FDEnumType) {
-				FDEnumType enumeration = (FDEnumType) typeRef.getComplex();
-				FDGeneric enumVal = FDeployFactory.eINSTANCE.createFDGeneric();
-				enumVal.setValue(enumeration.getEnumerators().get(0));
-				simple = enumVal;
-			}
-		}
-
-		if (simple != null) {
-			FDComplexValue ret = FDeployFactory.eINSTANCE
-					.createFDComplexValue();
-			if (typeRef.getArray() == null) {
-				ret.setSingle(simple);
-			} else {
-				FDValueArray arrayVal = FDeployFactory.eINSTANCE
-						.createFDValueArray();
-				arrayVal.getValues().add(simple);
-				ret.setArray(arrayVal);
-			}
-			return ret;
-		}
-
-		return null;
-	}
 
 	public static FDAttribute getOrCreateAttribute(
 			FDInterface deploymentInterface, String elementName) {
