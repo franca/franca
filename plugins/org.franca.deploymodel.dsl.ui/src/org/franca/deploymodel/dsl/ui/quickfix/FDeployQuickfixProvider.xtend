@@ -1,11 +1,16 @@
+/*******************************************************************************
+ * Copyright (c) 2014 itemis AG (http://www.itemis.de).
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************/
 package org.franca.deploymodel.dsl.ui.quickfix
 
-import java.util.HashSet
 import java.util.List
 import java.util.Set
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.ui.editor.model.edit.IModificationContext
-import org.eclipse.xtext.ui.editor.model.edit.ISemanticModification
 import org.eclipse.xtext.ui.editor.quickfix.DefaultQuickfixProvider
 import org.eclipse.xtext.ui.editor.quickfix.Fix
 import org.eclipse.xtext.ui.editor.quickfix.IssueResolutionAcceptor
@@ -28,19 +33,16 @@ import org.franca.core.franca.FTypeDef
 import org.franca.core.franca.FUnionType
 import org.franca.deploymodel.core.FDModelUtils
 import org.franca.deploymodel.core.PropertyMappings
-import org.franca.deploymodel.dsl.fDeploy.FDArgument
 import org.franca.deploymodel.dsl.fDeploy.FDArgumentList
 import org.franca.deploymodel.dsl.fDeploy.FDBroadcast
 import org.franca.deploymodel.dsl.fDeploy.FDComplexValue
 import org.franca.deploymodel.dsl.fDeploy.FDElement
 import org.franca.deploymodel.dsl.fDeploy.FDEnumValue
 import org.franca.deploymodel.dsl.fDeploy.FDEnumeration
-import org.franca.deploymodel.dsl.fDeploy.FDField
 import org.franca.deploymodel.dsl.fDeploy.FDInterface
 import org.franca.deploymodel.dsl.fDeploy.FDMethod
 import org.franca.deploymodel.dsl.fDeploy.FDProperty
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl
-import org.franca.deploymodel.dsl.fDeploy.FDRootElement
 import org.franca.deploymodel.dsl.fDeploy.FDStruct
 import org.franca.deploymodel.dsl.fDeploy.FDTypes
 import org.franca.deploymodel.dsl.fDeploy.FDUnion
@@ -48,30 +50,29 @@ import org.franca.deploymodel.dsl.fDeploy.FDeployFactory
 import org.franca.deploymodel.dsl.validation.FDeployJavaValidator
 import org.franca.deploymodel.dsl.validation.FrancaQuickFixConstants
 
+import static extension org.franca.deploymodel.dsl.ui.quickfix.FDeployQuickfixProviderUtil.*
+import static extension org.franca.deploymodel.dsl.validation.FrancaQuickFixConstants.*
+
 /** 
  * A collection of quick fixes for Franca Deployment Definitions.
  * 
- * @author Tamas Szabo (itemis AG)
+ * @author Tamas Szabo, Klaus Birken (itemis AG)
  */
 class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 	@Fix(FDeployJavaValidator.UPPERCASE_PROPERTYNAME_QUICKFIX)
-	def void setUppercasePropertyName(Issue issue,
-		IssueResolutionAcceptor acceptor) {
-		val String data = issue.getData().get(0)
-		acceptor.
-			accept(
-				issue, '''Set first character to uppercase for property «data»''', '''Set first character to uppercase for property «data»''',
-				"", [ EObject obj, IModificationContext context |
-					if (obj instanceof FDPropertyDecl) {
-						var FDPropertyDecl elem = obj as FDPropertyDecl
-						if ((obj as FDPropertyDecl).getType() !== null) {
-							var String newName = String.format("%c%s", Character.toUpperCase(elem.getName().charAt(0)),(
-								if(elem.getName().length() === 1) "" else elem.getName().substring(1) ))
-							elem.setName(newName)
-						}
-
+	def void setUppercasePropertyName(Issue issue, IssueResolutionAcceptor acceptor) {
+		val data = issue.getData().get(0)
+		val description = '''Set first character to uppercase for property «data»'''
+		acceptor.accept(issue, description, description, "",
+			[ EObject obj, IModificationContext context |
+				if (obj instanceof FDPropertyDecl) {
+					if (obj.type !== null) {
+						var newName = obj.name.toFirstUpper
+						obj.setName(newName)
 					}
-				])
+
+				}
+			])
 	}
 
 	@Fix(FDeployJavaValidator.DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX)
@@ -79,45 +80,46 @@ class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 		IssueResolutionAcceptor acceptor) {
 		val FrancaQuickFixConstants type = FrancaQuickFixConstants.valueOf(issue.getData().get(1))
 		val String elementName = if((type === FrancaQuickFixConstants.INTERFACE)) null else issue.getData().get(0)
-		val String description = '''Fix all issues for element '«»«issue.getData().get(0)»'«»'''
-		acceptor.accept(issue, description, description, "", [ EObject obj, IModificationContext context |
-			if (obj instanceof FDInterface) {
-				applyFixForInterfaceInternal(obj as FDInterface, type, elementName, true)
-			} else if (obj instanceof FDTypes) {
-				applyFixForTypesInternal(obj as FDTypes, type, elementName, true)
-			} else if (obj instanceof FDElement) {
-				applyFixForElementInternal(obj as FDElement, true)
-			}
-		])
+		val String description = '''Fix all issues for element '«issue.getData().get(0)»'«»'''
+		acceptor.accept(issue, description, description, "",
+			[ EObject obj, IModificationContext context |
+				if (obj instanceof FDInterface) {
+					applyFixForInterfaceInternal(obj, type, elementName, true)
+				} else if (obj instanceof FDTypes) {
+					applyFixForTypesInternal(obj, type, elementName, true)
+				} else if (obj instanceof FDElement) {
+					applyFixForElementInternal(obj, true)
+				}
+			])
 	}
 
 	@Fix(FDeployJavaValidator.DEPLOYMENT_ELEMENT_QUICKFIX)
 	def void applyFixForInterface(Issue issue,
 		IssueResolutionAcceptor acceptor) {
 		val String elementName = issue.getData().get(0)
-		val FrancaQuickFixConstants type = FrancaQuickFixConstants.valueOf(issue.getData().get(1))
-		val String description = '''Add missing «type.toString().toLowerCase()» '«»«elementName»'«»'''
-		acceptor.accept(issue, description, description, "", [ EObject obj, IModificationContext context |
-			if (obj instanceof FDInterface) {
-				var FDInterface deploymentInterface = obj as FDInterface
-				applyFixForInterfaceInternal(deploymentInterface, type, elementName, false)
-			} else if (obj instanceof FDTypes) {
-				applyFixForTypesInternal(obj as FDTypes, type, elementName, false)
-			}
-		])
+		val type = valueOf(issue.getData().get(1))
+		val String description = '''Add missing «type.toString().toLowerCase()» '«elementName»'«»'''
+		acceptor.accept(issue, description, description, "",
+			[ EObject obj, IModificationContext context |
+				if (obj instanceof FDInterface) {
+					applyFixForInterfaceInternal(obj, type, elementName, false)
+				} else if (obj instanceof FDTypes) {
+					applyFixForTypesInternal(obj, type, elementName, false)
+				}
+			])
 	}
 
 	@Fix(FDeployJavaValidator.MANDATORY_PROPERTY_QUICKFIX)
 	def void applyFixForElement(Issue issue,
 		IssueResolutionAcceptor acceptor) {
 		val String elementName = issue.getData().get(0)
-		val String description = '''Add all missing mandatory properties for element '«»«elementName»'«»'''
-		acceptor.accept(issue, description, description, "", [ EObject obj, IModificationContext context |
-			if (obj instanceof FDElement) {
-				var FDElement elem = obj as FDElement
-				applyFixForElementInternal(elem, false)
-			}
-		])
+		val String description = '''Add all missing mandatory properties for element '«elementName»'«»'''
+		acceptor.accept(issue, description, description, "",
+			[ EObject obj, IModificationContext context |
+				if (obj instanceof FDElement) {
+					applyFixForElementInternal(obj, false)
+				}
+			])
 	}
 
 	@Fix(FDeployJavaValidator.METHOD_ARGUMENT_QUICKFIX)
@@ -125,12 +127,13 @@ class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 		IssueResolutionAcceptor acceptor) {
 		val String opName = issue.getData().get(0)
 		val String argumentName = issue.getData().get(1)
-		val String description = '''Add missing argument '«»«argumentName»' for method '«»«opName»'«»'''
-		acceptor.accept(issue, description, description, "", [ EObject obj, IModificationContext context |
-			if (obj instanceof FDMethod) {
-				applyFixForMethodInternal(obj as FDMethod, false, argumentName)
-			}
-		])
+		val String description = '''Add missing argument '«argumentName»' for method '«opName»'«»'''
+		acceptor.accept(issue, description, description, "",
+			[ EObject obj, IModificationContext context |
+				if (obj instanceof FDMethod) {
+					applyFixForMethodInternal(obj, false, argumentName)
+				}
+			])
 	}
 
 	@Fix(FDeployJavaValidator.BROADCAST_ARGUMENT_QUICKFIX)
@@ -138,12 +141,13 @@ class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 		IssueResolutionAcceptor acceptor) {
 		val String opName = issue.getData().get(0)
 		val String argumentName = issue.getData().get(1)
-		val String description = '''Add missing argument '«»«argumentName»' for broadcast '«»«opName»'«»'''
-		acceptor.accept(issue, description, description, "", [ EObject obj, IModificationContext context |
-			if (obj instanceof FDBroadcast) {
-				applyFixForBroadcastInternal(obj as FDBroadcast, false, argumentName)
-			}
-		])
+		val String description = '''Add missing argument '«argumentName»' for broadcast '«opName»'«»'''
+		acceptor.accept(issue, description, description, "",
+			[ EObject obj, IModificationContext context |
+				if (obj instanceof FDBroadcast) {
+					applyFixForBroadcastInternal(obj, false, argumentName)
+				}
+			])
 	}
 
 	@Fix(FDeployJavaValidator.COMPOUND_FIELD_QUICKFIX)
@@ -151,14 +155,15 @@ class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 		IssueResolutionAcceptor acceptor) {
 		val String compoundName = issue.getData().get(0)
 		val String fieldName = issue.getData().get(1)
-		val String description = '''Add missing field '«»«fieldName»' for compound '«»«compoundName»'«»'''
-		acceptor.accept(issue, description, description, "", [ EObject obj, IModificationContext context |
-			if (obj instanceof FDUnion) {
-				applyFixForUnionInternal(obj as FDUnion, false, fieldName)
-			} else if (obj instanceof FDStruct) {
-				applyFixForStructInternal(obj as FDStruct, false, fieldName)
-			}
-		])
+		val String description = '''Add missing field '«fieldName»' for compound '«compoundName»'«»'''
+		acceptor.accept(issue, description, description, "",
+			[ EObject obj, IModificationContext context |
+				if (obj instanceof FDUnion) {
+					applyFixForUnionInternal(obj, false, fieldName)
+				} else if (obj instanceof FDStruct) {
+					applyFixForStructInternal(obj, false, fieldName)
+				}
+			])
 	}
 
 	@Fix(FDeployJavaValidator.ENUMERATOR_ENUM_QUICKFIX)
@@ -166,12 +171,13 @@ class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 		IssueResolutionAcceptor acceptor) {
 		val String enumeratorName = issue.getData().get(0)
 		val String enumName = issue.getData().get(1)
-		val String description = '''Add all enumerator '«»«enumName»' for enumeration '«»«enumeratorName»'«»'''
-		acceptor.accept(issue, description, description, "", [ EObject obj, IModificationContext context |
-			if (obj instanceof FDMethod) {
-				applyFixForEnumerationInternal(obj as FDEnumeration, false, enumName)
-			}
-		])
+		val String description = '''Add all enumerator '«enumName»' for enumeration '«enumeratorName»'«»'''
+		acceptor.accept(issue, description, description, "",
+			[ EObject obj, IModificationContext context |
+				if (obj instanceof FDEnumeration) {
+					applyFixForEnumerationInternal(obj, false, enumName)
+				}
+			])
 	}
 
 	def private void applyFixForMethodInternal(FDMethod method, boolean isRecursive, String... args) {
@@ -191,96 +197,67 @@ class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 
 	def private void applyFixForArgList(FDArgumentList fdArglist, List<FArgument> fArglist, boolean isRecursive,
 		String... args) {
-		if (fArglist.size() > 0) {
-			for (FArgument arg : fArglist) {
-				if (args.length === 0 || Arrays.contains(args, arg.getName())) {
-					var FDArgument fdArg = FDeployQuickfixProviderUtil.getArgument(fdArglist, arg)
-					if (fdArg === null) {
-						fdArg = FDeployFactory.eINSTANCE.createFDArgument()
-						init(fdArg)
-						fdArg.setTarget(arg)
-						fdArglist.getArguments().add(fdArg)
-					}
-					if (isRecursive) {
-						applyFixForElementInternal(fdArg, isRecursive)
-					}
-
+		for (FArgument arg : fArglist) {
+			if (args.length === 0 || Arrays.contains(args, arg.name)) {
+				var fdArg = getArgument(fdArglist, arg)
+				if (fdArg === null) {
+					fdArg = FDeployFactory.eINSTANCE.createFDArgument.init
+					fdArg.setTarget(arg)
+					fdArglist.getArguments().add(fdArg)
 				}
-
+				if (isRecursive) {
+					applyFixForElementInternal(fdArg, isRecursive)
+				}
 			}
-
 		}
-
 	}
 
 	def private void applyFixForUnionInternal(FDUnion union, boolean isRecursive, String... fields) {
-		if (union.getTarget().getElements().size() > 0) {
-			for (FField field : union.getTarget().getElements()) {
-				if (fields.length === 0 || Arrays.contains(fields, field.getName())) {
-					var FDField fdField = FDeployQuickfixProviderUtil.getField(union.getFields(), field)
-					if (fdField === null) {
-						fdField = FDeployFactory.eINSTANCE.createFDField()
-						init(fdField)
-						fdField.setTarget(field)
-						union.getFields().add(fdField)
-					}
-					if (isRecursive) {
-						applyFixForElementInternal(fdField, isRecursive)
-					}
-
+		for (FField field : union.getTarget().getElements()) {
+			if (fields.length === 0 || Arrays.contains(fields, field.getName())) {
+				var fdField = getField(union.getFields(), field)
+				if (fdField === null) {
+					fdField = FDeployFactory.eINSTANCE.createFDField.init
+					fdField.setTarget(field)
+					union.getFields().add(fdField)
 				}
-
+				if (isRecursive) {
+					applyFixForElementInternal(fdField, isRecursive)
+				}
 			}
-
 		}
-
 	}
 
 	def private void applyFixForStructInternal(FDStruct struct, boolean isRecursive, String... fields) {
-		if (struct.getTarget().getElements().size() > 0) {
-			for (FField field : struct.getTarget().getElements()) {
-				if (fields.length === 0 || Arrays.contains(fields, field.getName())) {
-					var FDField fdField = FDeployQuickfixProviderUtil.getField(struct.getFields(), field)
-					if (fdField === null) {
-						fdField = FDeployFactory.eINSTANCE.createFDField()
-						init(fdField)
-						fdField.setTarget(field)
-						struct.getFields().add(fdField)
-					}
-					if (isRecursive) {
-						applyFixForElementInternal(fdField, isRecursive)
-					}
-
+		for (FField field : struct.getTarget().getElements()) {
+			if (fields.length === 0 || Arrays.contains(fields, field.name)) {
+				var fdField = getField(struct.getFields(), field)
+				if (fdField === null) {
+					fdField = FDeployFactory.eINSTANCE.createFDField.init
+					fdField.setTarget(field)
+					struct.getFields().add(fdField)
 				}
-
+				if (isRecursive) {
+					applyFixForElementInternal(fdField, isRecursive)
+				}
 			}
-
 		}
-
 	}
 
-	def private void applyFixForEnumerationInternal(FDEnumeration enumeration, boolean isRecursive,
-		String... enumerators) {
-		if (enumeration.getTarget().getEnumerators().size() > 0) {
-			for (FEnumerator e : enumeration.getTarget().getEnumerators()) {
-				if (enumerators.length === 0 || Arrays.contains(enumerators, e.getName())) {
-					var FDEnumValue fdEnum = FDeployQuickfixProviderUtil.getEnumerator(enumeration.getEnumerators(), e)
-					if (fdEnum === null) {
-						fdEnum = FDeployFactory.eINSTANCE.createFDEnumValue()
-						init(fdEnum)
-						fdEnum.setTarget(e)
-						enumeration.getEnumerators().add(fdEnum)
-					}
-					if (isRecursive) {
-						applyFixForElementInternal(fdEnum, isRecursive)
-					}
-
+	def private void applyFixForEnumerationInternal(FDEnumeration enumeration, boolean isRecursive, String... enumerators) {
+		for (FEnumerator e : enumeration.getTarget().getEnumerators()) {
+			if (enumerators.length === 0 || Arrays.contains(enumerators, e.name)) {
+				var FDEnumValue fdEnum = getEnumerator(enumeration.enumerators, e)
+				if (fdEnum === null) {
+					fdEnum = FDeployFactory.eINSTANCE.createFDEnumValue.init
+					fdEnum.setTarget(e)
+					enumeration.getEnumerators().add(fdEnum)
 				}
-
+				if (isRecursive) {
+					applyFixForElementInternal(fdEnum, isRecursive)
+				}
 			}
-
 		}
-
 	}
 
 	/** 
@@ -291,20 +268,19 @@ class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 	 * @param isRecursive true if the fix should be applied recursively, false otherwise
 	 */
 	def private void applyFixForElementInternal(FDElement element, boolean isRecursive) {
-		var FDRootElement root = FDModelUtils.getRootElement(element)
+		val root = FDModelUtils.getRootElement(element)
 		if (root === null) {
 			throw new RuntimeException('''Cannot find root element for element «element»''')
 		}
-		var List<FDPropertyDecl> decls = PropertyMappings.getAllPropertyDecls(root.getSpec(), element)
+		val decls = PropertyMappings.getAllPropertyDecls(root.spec, element)
 		for (FDPropertyDecl decl : decls) {
-			if (!FDeployQuickfixProviderUtil.hasPropertyDeclaration(element.getProperties().getItems(), decl) &&
-				PropertyMappings.isMandatory(decl)) {
-				var FDProperty prop = FDeployFactory.eINSTANCE.createFDProperty()
+			if (!hasPropertyDeclaration(element.properties.items, decl) && PropertyMappings.isMandatory(decl)) {
+				var FDProperty prop = FDeployFactory.eINSTANCE.createFDProperty
 				prop.setDecl(decl)
-				var FDComplexValue defaultVal = DefaultValueProvider.generateDefaultValue(element, decl.getType())
+				var FDComplexValue defaultVal = DefaultValueProvider.generateDefaultValue(element, decl.type)
 				if (defaultVal !== null) {
 					prop.setValue(defaultVal)
-					element.getProperties().getItems().add(prop)
+					element.properties.items.add(prop)
 				} else {
 					// if no default value could be generated, we skip setting this property
 					// note that the quickfix probably will not be successful (and the validation error will remain)
@@ -313,21 +289,15 @@ class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 
 		}
 		if (isRecursive) {
-			if (element instanceof FDMethod) {
-				applyFixForMethodInternal(element as FDMethod, isRecursive)
+			switch(element) {
+				FDMethod: applyFixForMethodInternal(element, isRecursive)
+				FDBroadcast: applyFixForBroadcastInternal(element, isRecursive)
+				FDUnion: applyFixForUnionInternal(element, isRecursive)
+				FDStruct: applyFixForStructInternal(element, isRecursive)
+				FDEnumeration: applyFixForEnumerationInternal(element, isRecursive)
+				default: { } // ignore
 			}
-			if (element instanceof FDBroadcast) {
-				applyFixForBroadcastInternal(element as FDBroadcast, isRecursive)
-			} else if (element instanceof FDUnion) {
-				applyFixForUnionInternal(element as FDUnion, isRecursive)
-			} else if (element instanceof FDStruct) {
-				applyFixForStructInternal(element as FDStruct, isRecursive)
-			} else if (element instanceof FDEnumeration) {
-				applyFixForEnumerationInternal(element as FDEnumeration, isRecursive)
-			}
-
 		}
-
 	}
 
 	/** 
@@ -347,88 +317,84 @@ class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 	 */
 	def private void applyFixForInterfaceInternal(FDInterface deploymentInterface, FrancaQuickFixConstants type,
 		String elementName, boolean isRecursive) {
-		if (type === FrancaQuickFixConstants.INTERFACE) {
+		if (type === INTERFACE) {
 			// add mandatory properties for the interface itself
 			applyFixForElementInternal(deploymentInterface, true)
 		}
-		var Set<FDElement> elements = new HashSet<FDElement>()
+		val Set<FDElement> elements = newHashSet
 		// add all required elements for the deployment interface
-		var FInterface target = deploymentInterface.getTarget()
+		val FInterface target = deploymentInterface.target
 		// attributes
 		if (elementName === null) {
-			for (FAttribute tc : target.getAttributes()) {
-				elements.add(FDeployQuickfixProviderUtil.getOrCreateAttribute(deploymentInterface, tc.getName()))
+			for (FAttribute tc : target.attributes) {
+				elements.add(getOrCreateAttribute(deploymentInterface, tc.name))
 			}
 
-		} else if (type === FrancaQuickFixConstants.ATTRIBUTE) {
-			elements.add(FDeployQuickfixProviderUtil.getOrCreateAttribute(deploymentInterface, elementName))
+		} else if (type === ATTRIBUTE) {
+			elements.add(getOrCreateAttribute(deploymentInterface, elementName))
 		}
 		// methods
 		if (elementName === null) {
-			for (FMethod tc : target.getMethods()) {
-				var String name = FrancaModelExtensions.getUniqueName(tc)
-				elements.add(FDeployQuickfixProviderUtil.getOrCreateMethod(deploymentInterface, name))
+			for (FMethod tc : target.methods) {
+				val name = FrancaModelExtensions.getUniqueName(tc)
+				elements.add(getOrCreateMethod(deploymentInterface, name))
 			}
 
-		} else if (type === FrancaQuickFixConstants.METHOD) {
-			elements.add(FDeployQuickfixProviderUtil.getOrCreateMethod(deploymentInterface, elementName))
+		} else if (type === METHOD) {
+			elements.add(getOrCreateMethod(deploymentInterface, elementName))
 		}
 		// broadcasts
 		if (elementName === null) {
-			for (FBroadcast tc : target.getBroadcasts()) {
-				var String name = FrancaModelExtensions.getUniqueName(tc)
-				elements.add(FDeployQuickfixProviderUtil.getOrCreateBroadcast(deploymentInterface, name))
+			for (FBroadcast tc : target.broadcasts) {
+				val name = FrancaModelExtensions.getUniqueName(tc)
+				elements.add(getOrCreateBroadcast(deploymentInterface, name))
 			}
 
-		} else if (type === FrancaQuickFixConstants.BROADCAST) {
-			elements.add(FDeployQuickfixProviderUtil.getOrCreateBroadcast(deploymentInterface, elementName))
+		} else if (type === BROADCAST) {
+			elements.add(getOrCreateBroadcast(deploymentInterface, elementName))
 		}
-		for (FType tc : target.getTypes()) {
+		for (FType tc : target.types) {
 			if (tc instanceof FArrayType) {
 				if (elementName === null) {
-					elements.add(FDeployQuickfixProviderUtil.getOrCreateArray(deploymentInterface, tc.getName()))
-				} else if (type === FrancaQuickFixConstants.ARRAY && tc.getName().equals(elementName)) {
-					elements.add(FDeployQuickfixProviderUtil.getOrCreateArray(deploymentInterface, elementName))
+					elements.add(getOrCreateArray(deploymentInterface, tc.name))
+				} else if (type === ARRAY && tc.name.equals(elementName)) {
+					elements.add(getOrCreateArray(deploymentInterface, elementName))
 				}
 
 			} else if (tc instanceof FStructType) {
 				if (elementName === null) {
-					elements.add(FDeployQuickfixProviderUtil.getOrCreateStruct(deploymentInterface, tc.getName()))
-				} else if (type === FrancaQuickFixConstants.STRUCT && tc.getName().equals(elementName)) {
-					elements.add(FDeployQuickfixProviderUtil.getOrCreateStruct(deploymentInterface, elementName))
+					elements.add(getOrCreateStruct(deploymentInterface, tc.name))
+				} else if (type === STRUCT && tc.name.equals(elementName)) {
+					elements.add(getOrCreateStruct(deploymentInterface, elementName))
 				}
 
 			} else if (tc instanceof FUnionType) {
 				if (elementName === null) {
-					elements.add(FDeployQuickfixProviderUtil.getOrCreateUnion(deploymentInterface, tc.getName()))
-				} else if (type === FrancaQuickFixConstants.UNION && tc.getName().equals(elementName)) {
-					elements.add(FDeployQuickfixProviderUtil.getOrCreateUnion(deploymentInterface, elementName))
+					elements.add(getOrCreateUnion(deploymentInterface, tc.name))
+				} else if (type === UNION && tc.name.equals(elementName)) {
+					elements.add(getOrCreateUnion(deploymentInterface, elementName))
 				}
 
 			} else if (tc instanceof FEnumerationType) {
 				if (elementName === null) {
-					elements.add(FDeployQuickfixProviderUtil.getOrCreateEnumeration(deploymentInterface, tc.getName()))
-				} else if (type === FrancaQuickFixConstants.ENUMERATION && tc.getName().equals(elementName)) {
-					elements.add(FDeployQuickfixProviderUtil.getOrCreateEnumeration(deploymentInterface, elementName))
+					elements.add(getOrCreateEnumeration(deploymentInterface, tc.name))
+				} else if (type === ENUMERATION && tc.name.equals(elementName)) {
+					elements.add(getOrCreateEnumeration(deploymentInterface, elementName))
 				}
 
 			} else if (tc instanceof FTypeDef) {
 				if (elementName === null) {
-					elements.add(FDeployQuickfixProviderUtil.getOrCreateTypedef(deploymentInterface, tc.getName()))
-				} else if (type === FrancaQuickFixConstants.TYPEDEF && tc.getName().equals(elementName)) {
-					elements.add(FDeployQuickfixProviderUtil.getOrCreateTypedef(deploymentInterface, elementName))
+					elements.add(getOrCreateTypedef(deploymentInterface, tc.name))
+				} else if (type === TYPEDEF && tc.name.equals(elementName)) {
+					elements.add(getOrCreateTypedef(deploymentInterface, elementName))
 				}
 
 			}
 
 		}
 		if (isRecursive) {
-			for (FDElement element : elements) {
-				applyFixForElementInternal(element, isRecursive)
-			}
-
+			elements.forEach[applyFixForElementInternal(isRecursive)]
 		}
-
 	}
 
 	/** 
@@ -441,28 +407,26 @@ class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 	 * @param elementName the name of the corresponding {@link FModelElement}
 	 * @param isRecursive true if the fix should be applied recursively, false otherwise
 	 */
-	def private void applyFixForTypesInternal(FDTypes types, FrancaQuickFixConstants type, String elementName,
-		boolean isRecursive) {
-		var FDElement deploymentElement = null
-		if (type === FrancaQuickFixConstants.ARRAY) {
-			deploymentElement = FDeployQuickfixProviderUtil.getOrCreateArray(types, elementName)
-		} else if (type === FrancaQuickFixConstants.STRUCT) {
-			deploymentElement = FDeployQuickfixProviderUtil.getOrCreateStruct(types, elementName)
-		} else if (type === FrancaQuickFixConstants.ENUMERATION) {
-			deploymentElement = FDeployQuickfixProviderUtil.getOrCreateEnumeration(types, elementName)
-		} else if (type === FrancaQuickFixConstants.UNION) {
-			deploymentElement = FDeployQuickfixProviderUtil.getOrCreateUnion(types, elementName)
-		} else if (type === FrancaQuickFixConstants.TYPEDEF) {
-			deploymentElement = FDeployQuickfixProviderUtil.getOrCreateTypedef(types, elementName)
-		}
+	def private void applyFixForTypesInternal(FDTypes types, FrancaQuickFixConstants type, String elementName, boolean isRecursive) {
+		val FDElement deploymentElement = 
+			switch(type) {
+				case ARRAY: getOrCreateArray(types, elementName)
+				case STRUCT: getOrCreateStruct(types, elementName)
+				case ENUMERATION: getOrCreateEnumeration(types, elementName)
+				case UNION: getOrCreateUnion(types, elementName)
+				case TYPEDEF: getOrCreateTypedef(types, elementName)
+				default: null
+			}
+
 		if (isRecursive && deploymentElement !== null) {
 			applyFixForElementInternal(deploymentElement, isRecursive)
 		}
 
 	}
 
-	def private static void init(FDElement elem) {
-		elem.setProperties(FDeployFactory.eINSTANCE.createFDPropertySet())
+	def private static <T extends FDElement> init(T elem) {
+		elem.setProperties(FDeployFactory.eINSTANCE.createFDPropertySet)
+		elem
 	}
 
 }
