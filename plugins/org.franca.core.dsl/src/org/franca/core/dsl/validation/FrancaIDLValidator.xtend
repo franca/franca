@@ -8,7 +8,6 @@
 package org.franca.core.dsl.validation
 
 import java.util.Map
-import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.validation.Check
 import org.franca.core.franca.FCompoundInitializer
 import org.franca.core.franca.FCompoundType

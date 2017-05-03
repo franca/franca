@@ -14,7 +14,6 @@ import org.eclipse.xtext.ui.editor.model.edit.IModificationContext
 import org.eclipse.xtext.ui.editor.quickfix.DefaultQuickfixProvider
 import org.eclipse.xtext.ui.editor.quickfix.Fix
 import org.eclipse.xtext.ui.editor.quickfix.IssueResolutionAcceptor
-import org.eclipse.xtext.util.Arrays
 import org.eclipse.xtext.validation.Issue
 import org.franca.core.FrancaModelExtensions
 import org.franca.core.franca.FArgument
@@ -37,11 +36,9 @@ import org.franca.deploymodel.dsl.fDeploy.FDArgumentList
 import org.franca.deploymodel.dsl.fDeploy.FDBroadcast
 import org.franca.deploymodel.dsl.fDeploy.FDComplexValue
 import org.franca.deploymodel.dsl.fDeploy.FDElement
-import org.franca.deploymodel.dsl.fDeploy.FDEnumValue
 import org.franca.deploymodel.dsl.fDeploy.FDEnumeration
 import org.franca.deploymodel.dsl.fDeploy.FDInterface
 import org.franca.deploymodel.dsl.fDeploy.FDMethod
-import org.franca.deploymodel.dsl.fDeploy.FDProperty
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl
 import org.franca.deploymodel.dsl.fDeploy.FDStruct
 import org.franca.deploymodel.dsl.fDeploy.FDTypes

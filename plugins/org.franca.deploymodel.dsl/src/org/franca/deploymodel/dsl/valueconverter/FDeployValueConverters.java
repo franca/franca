@@ -121,7 +121,7 @@ public class FDeployValueConverters extends AbstractDeclarativeValueConverterSer
         public String toString(final String s) {
         	// first split string according to selector
             StringBuilder result = new StringBuilder();
-            String[] selarray = s.split(":");
+            String[] selarray = s.split(SELECTOR);
             for(int i=0; i<selarray.length; i++) {
                 if (i > 0) {
                     result.append(':');

@@ -16,7 +16,6 @@ import org.franca.deploymodel.dsl.fDeploy.FDProvider
 import org.franca.deploymodel.dsl.fDeploy.FDTypeRef
 import org.franca.deploymodel.dsl.fDeploy.FDTypes
 import org.franca.deploymodel.dsl.fDeploy.FDValue
-import org.franca.deploymodel.dsl.fDeploy.FDValueArray
 import org.franca.deploymodel.dsl.fDeploy.FDeployFactory
 
 import static org.franca.deploymodel.dsl.fDeploy.FDPredefinedTypeId.*
