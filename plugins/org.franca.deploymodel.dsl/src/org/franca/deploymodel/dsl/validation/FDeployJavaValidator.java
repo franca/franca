@@ -356,7 +356,8 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 			lowerLevelErrors++;
 		}
 		
-		if (lowerLevelErrors > 1) {
+		// show a global quickfix on the root element, if any error on the detail level occurred
+		if (lowerLevelErrors > 0) {
 			//Recursive quickfix can be added for the top level FDInterface element
 			error(DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE+"'" + spec.getName() + "'",
 					elem, FDeployPackage.Literals.FD_INTERFACE__TARGET,
@@ -644,9 +645,9 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 		}
 		
 		if (!missing.isEmpty()) {
-//			error(MANDATORY_PROPERTY_QUICKFIX_MESSAGE + "'" + elementName + "'", elem, feature, -1,
-//					MANDATORY_PROPERTY_QUICKFIX, elementName);
-			error(MANDATORY_PROPERTY_QUICKFIX_MESSAGE + "'" + elementName + "'", elem, feature, -1);
+			error(MANDATORY_PROPERTY_QUICKFIX_MESSAGE + "'" + elementName + "'", elem, feature, -1,
+					MANDATORY_PROPERTY_QUICKFIX, elementName);
+//			error(MANDATORY_PROPERTY_QUICKFIX_MESSAGE + "'" + elementName + "'", elem, feature, -1);
 			return true;
 		}
 		
