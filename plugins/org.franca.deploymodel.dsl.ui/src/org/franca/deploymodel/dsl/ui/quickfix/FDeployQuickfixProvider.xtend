@@ -270,6 +270,7 @@ class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 			throw new RuntimeException('''Cannot find root element for element «element»''')
 		}
 		val decls = PropertyMappings.getAllPropertyDecls(root.spec, element)
+		var changed = false
 		for (FDPropertyDecl decl : decls) {
 			if (!hasPropertyDeclaration(element.properties.items, decl) && PropertyMappings.isMandatory(decl)) {
 				var prop = FDeployFactory.eINSTANCE.createFDProperty
@@ -278,12 +279,18 @@ class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 				if (defaultVal !== null) {
 					prop.setValue(defaultVal)
 					element.properties.items.add(prop)
+					changed = true
 				} else {
 					// if no default value could be generated, we skip setting this property
 					// note that the quickfix probably will not be successful (and the validation error will remain)
 				}
 			}
-
+		}
+		if (changed) {
+			// force modification of FDRootElement, without this the replacement region will not be computed correctly
+			val orig = root.name
+			root.name = "dummy"
+			root.name = orig
 		}
 		if (isRecursive) {
 			switch(element) {
