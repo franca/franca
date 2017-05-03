@@ -27,7 +27,7 @@ class ExpressionEvaluator {
 	def static Boolean evaluateBoolean (FExpression expr) {
 		val obj = expr.evaluate
 		if (obj instanceof Boolean)
-			obj as Boolean
+			obj
 		else
 			null
 	}
@@ -35,7 +35,7 @@ class ExpressionEvaluator {
 	def static BigInteger evaluateInteger (FExpression expr) {
 		val obj = expr.evaluate
 		if (obj instanceof BigInteger)
-			obj as BigInteger
+			obj
 		else
 			null
 	}
@@ -61,7 +61,7 @@ class ExpressionEvaluator {
 	def static String evaluateString (FExpression expr) {
 		val obj = expr.evaluate
 		if (obj instanceof String)
-			obj as String
+			obj
 		else
 			null
 	}
@@ -133,9 +133,8 @@ class ExpressionEvaluator {
 //			println("field = " + qe.field.toString)
 			val q = qe.qualifier.eval
 			if (q instanceof FCompoundInitializer) {
-				val ci = q as FCompoundInitializer
 				val f = qe.field as FField
-				val fi = ci.elements.findFirst[element==f]
+				val fi = q.elements.findFirst[element==f]
 				fi.value.evalAux
 			} else
 				null
@@ -144,7 +143,7 @@ class ExpressionEvaluator {
 
 	def static private evalAux (FInitializerExpression expr) {
 		if (expr instanceof FExpression)
-			(expr as FExpression).eval
+			expr.eval
 		else 
 			expr
 	}

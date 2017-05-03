@@ -106,7 +106,7 @@ class Franca2DBusTransformation {
 	 */
 	def copyAttributes(EList<FAttribute> original) {
 		val copy = newArrayList
-		original.forEach[copy.add(EcoreUtil.copy(it) as FAttribute)]
+		original.forEach[copy.add(EcoreUtil.copy(it))]
 		copy
 	}
 
@@ -115,7 +115,7 @@ class Franca2DBusTransformation {
 	 */
 	def copyMethods(EList<FMethod> original) {
 		val copy = newArrayList
-		original.forEach[copy.add(EcoreUtil.copy(it) as FMethod)]
+		original.forEach[copy.add(EcoreUtil.copy(it))]
 		copy
 	}
 
@@ -124,7 +124,7 @@ class Franca2DBusTransformation {
 	 */
 	def copyBroadcasts(EList<FBroadcast> original) {
 		val copy = newArrayList
-		original.forEach[copy.add(EcoreUtil.copy(it) as FBroadcast)]
+		original.forEach[copy.add(EcoreUtil.copy(it))]
 		copy
 	}
 

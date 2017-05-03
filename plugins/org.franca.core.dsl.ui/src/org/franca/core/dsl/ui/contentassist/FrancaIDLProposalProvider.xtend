@@ -34,7 +34,7 @@ class FrancaIDLProposalProvider extends AbstractFrancaIDLProposalProvider {
 		var FModel fmodel = null
 		val modelUri = model.eResource.URI
 		if(model instanceof FModel){
-			fmodel = model as FModel
+			fmodel = model
 		}
 		else if(model instanceof Import)
 		{

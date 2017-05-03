@@ -274,7 +274,7 @@ class FrancaModelExtensions {
 		} else {
 			val obj = res.contents.get(0)
 			if (obj instanceof FModel) {
-				obj as FModel
+				obj
 			} else {
 				null
 			}
