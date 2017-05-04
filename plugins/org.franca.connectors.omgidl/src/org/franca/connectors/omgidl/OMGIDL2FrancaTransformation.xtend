@@ -24,6 +24,7 @@ import org.csu.idl.idlmm.EnumMember
 import org.csu.idl.idlmm.ExceptionDef
 import org.csu.idl.idlmm.Expression
 import org.csu.idl.idlmm.Field
+import org.csu.idl.idlmm.FixedDef
 import org.csu.idl.idlmm.ForwardDef
 import org.csu.idl.idlmm.IDLType
 import org.csu.idl.idlmm.IdlmmPackage
@@ -72,6 +73,7 @@ import static org.franca.core.framework.TransformationIssue.*
 
 import static extension org.franca.core.FrancaModelExtensions.*
 import static extension org.franca.core.framework.FrancaHelpers.*
+import org.franca.core.franca.FAnnotationBlock
 
 /**
  * Model-to-model transformation from OMG IDL (aka CORBA) to Franca IDL. 
@@ -106,59 +108,6 @@ class OMGIDL2FrancaTransformation {
 		return usingBaseTypedefs
 	}
 	
-	/**
-	 * Transform to single Franca model
-	 */
-//	def FModel transform(TranslationUnit src, Map<EObject, EObject> map, FTypeCollection baseTypes) {
-//		clearIssues
-//
-//		// register global map IDL2Franca to local one 
-//		map_IDL_Franca = map
-//	
-//		usedBaseTypedefs = false
-//		baseTypedefs = if (baseTypes==null) null else baseTypes.types.filter(FTypeDef).toMap[name]
-//
-//		val it = factory.createFModel
-//		map_IDL_Franca.put(src, it)
-//
-//		// handle src.includes
-//		src.includes.forEach[include | include.transformIncludeDeclaration(it)]
-//		if (src.contains.empty) {
-//			addIssue(IMPORT_WARNING,
-//				src, IdlmmPackage::TRANSLATION_UNIT__IDENTIFIER,
-//				"Empty OMG IDL translation unit, created empty Franca model")
-//			
-//		} else {
-//			if (src.contains.size > 1) {
-//				addIssue(FEATURE_IS_IGNORED,
-//					src, IdlmmPackage::TRANSLATION_UNIT__IDENTIFIER,
-//					"OMG IDL translation unit with more than one definition, ignoring all but the first one")
-//			}
-//			// TODO: what should we do with TUs that have more than one definition?
-//			val first = src.contains.get(0)
-//			if (first instanceof ModuleDef) {
-//				map_IDL_Franca.put(first, it)
-//				// we expect that first definition is a ModuleDef, ignore all other ones
-//				// TODO: correct? or should we create several Franca files per OMG IDL TU?
-//				
-//				// OMG IDL's module name will be the package identifier in Franca  
-//				it.name = first.identifier
-//
-//				// map all definitions of this module to the Franca model
-//				for(d : first.contains) {
-//					if(!map_IDL_Franca.containsKey(d)) {
-//						map_IDL_Franca.put(d, d.transformDefinition(it))					
-//					}
-//				}
-//			} else {
-//				// TODO: check if this restriction is what we want
-//				addIssue(IMPORT_ERROR,
-//					first, IdlmmPackage::CONTAINED__IDENTIFIER,
-//					"First and only member of OMG IDL translation unit should be a 'module' definition")
-//			}
-//		}
-//		it
-//	}
 	
 	/**
 	 * Transform to a single Franca model
@@ -176,51 +125,47 @@ class OMGIDL2FrancaTransformation {
 		map_IDL_Franca = map
 		val model = factory.createFModel
 		map_IDL_Franca.put(src, model)
-		for (module: src.contains.filter(ModuleDef)){
-				map_IDL_Franca.put(module, model)
-		}
-		if (src.contains.filter(ModuleDef).size == 1) {
-			model.name = src.contains.filter(ModuleDef).last.identifier
-		} else {
+
+		// get module which will be transformed (all others are ignored)		
+		val module = src.relevantModule
+		if (module==null) {
 			model.name = URI.createFileURI(src.eResource.URI.trimFileExtension.lastSegment).lastSegment
+		} else {
+			model.name = module.nestedModuleName
+			map_IDL_Franca.put(module, model)
 		}
-		src.includes.forEach[include | include.transformIncludeDeclaration(model)]
+
 		// handle src.includes
+		src.includes.forEach[include | include.transformIncludeDeclaration(model)]
+
 		if (src.contains.empty) {
 			addIssue(IMPORT_WARNING,
 				src, IdlmmPackage::TRANSLATION_UNIT__IDENTIFIER,
 				"Empty OMG IDL translation unit, created empty Franca model")
 		} else {
-			// case: interfaces on top level of TranslationUnit
-			for(^interface: src.contains.filter(InterfaceDef)) {
-				if(!map_IDL_Franca.containsKey(^interface)) {
-					map_IDL_Franca.put(^interface, ^interface.transformDefinition(model))					
+			if (module==null) {
+				// no module on top-level, or more than one module (special case)
+				val modules = src.contains.filter(ModuleDef)
+				if (modules.empty) {
+					// transform interfaces on top-level of TranslationUnit
+					val ifs = src.contains.filter(InterfaceDef)
+					ifs.filter(Contained).transformItems(model)
+				} else {
+					// special case: more than one module on top-level, transform their contents
+					// transform contents of modules, if any
+					val contents = modules.map[contains].flatten
+					contents.transformItems(model)
 				}
+			} else {
+				// found one module on top-level of TranslationUnit
+				module.contains.transformItems(model)
 			}
-			// case: modules on top level of TranslationUnit
-			for (module: src.contains.filter(ModuleDef)){
-				for(d : module.contains) {
-					if(!map_IDL_Franca.containsKey(d)) {
-						val transformed = d.transformDefinition(model)
-						if (transformed!=null) {
-							map_IDL_Franca.put(d, transformed)					
-						}
-					}
-				}
-			}
-			// case: other contained (except interface and module) on top level of TranslationUnit
-			val others = src.contains.filter[
-				var isOther = true
-				if (it instanceof ModuleDef) {
-					isOther = false
-				} else if (it instanceof InterfaceDef) {
-					isOther = false 
-				} else if (it instanceof ForwardDef) {
-					isOther = false
-				}
-				isOther
+
+			// sanity check on top-level elements
+			val other = src.contains.findFirst[
+				! ((it instanceof ModuleDef) || (it instanceof InterfaceDef) || (it instanceof ForwardDef))
 			]
-			if (!others.isNullOrEmpty) {
+			if (other!=null) {
 				addIssue(IMPORT_ERROR,
 					src, IdlmmPackage::TRANSLATION_UNIT__CONTAINS,
 					"Members of OMG IDL translation unit should be of type either 'interface' or 'module'")
@@ -237,69 +182,106 @@ class OMGIDL2FrancaTransformation {
 
 		model
 	}
-	
-	/**
-	 * Transform to a list of Franca models
-	 */
-	def List<FModel> transformToMultiFModel(TranslationUnit src, Map<EObject, EObject> map) {
-		clearIssues
-		// register global map IDL2Franca to local one 
-		map_IDL_Franca = map
-		map_Name_Module = newHashMap()
-		baseInterfaces = newLinkedList()
-		models = newLinkedList()
-		if (src.contains.empty) {
-			addIssue(IMPORT_WARNING,
-				src, IdlmmPackage::TRANSLATION_UNIT__IDENTIFIER,
-				"Empty OMG IDL translation unit, created empty Franca model")
-			val model = factory.createFModel
-			model.name = URI.createFileURI(src.eResource.URI.trimFileExtension.lastSegment).lastSegment
-			map_IDL_Franca.put(src, model)
-			src.includes.forEach[include | include.transformIncludeDeclaration(model)]
-			models.add(model)
-		} else {
-			// case: interfaces on top level of TranslationUnit
-			val interfaces = src.contains.filter(InterfaceDef)
-			if (interfaces.size > 0) {
-				val model = factory.createFModel
-				model.name = URI.createFileURI(src.eResource.URI.trimFileExtension.lastSegment).lastSegment
-				map_IDL_Franca.put(src, model)
-				src.includes.forEach[include | include.transformIncludeDeclaration(model)]
-				for(^interface: interfaces) {
-					if(!map_IDL_Franca.containsKey(^interface)) {
-						map_IDL_Franca.put(^interface, ^interface.transformDefinition(model))					
-					}
+
+	def private transformItems(Iterable<Contained> items, FModel model) {
+		for (i: items) {
+			if (! map_IDL_Franca.containsKey(i)) {
+				val transformed = i.transformDefinition(model)
+				if (transformed!=null) {
+					map_IDL_Franca.put(i, transformed)					
 				}
-				models.add(model)
-			}
-			// case: modules on top level of TranslationUnit
-			for (module: src.contains.filter(ModuleDef)){
-				val model = module.transformModule(src)
-				for(d : module.contains) {
-					if(!map_IDL_Franca.containsKey(d)) {
-						map_IDL_Franca.put(d, d.transformDefinition(model))					
-					}
-				}
-			}
-			// case: other contained (except interface and module) on top level of TranslationUnit
-			val others = src.contains.filter[
-				var isOther = true
-				if (it instanceof ModuleDef) {
-					isOther = false
-				} else if (it instanceof InterfaceDef) {
-					isOther = false 
-				} else if (it instanceof ForwardDef) {
-					isOther = false
-				}
-				isOther
-			]
-			if (!others.isNullOrEmpty) {
-				addIssue(IMPORT_ERROR,
-					src, IdlmmPackage::TRANSLATION_UNIT__CONTAINS,
-					"Members of OMG IDL translation unit should be of type either 'interface' or 'module'")
 			}
 		}
-		models
+	}
+	
+	/**
+	 * Get OMG IDL module which will be transformed.
+	 * 
+	 * Restriction: Only the first module is transformed. Others are ignored.
+	 * Another restriction: If there is a module, there should not be other elements.
+	 */
+	def private ModuleDef getRelevantModule(TranslationUnit unit) {
+		val modules = unit.contains.filter(ModuleDef)
+		if (modules.empty) {
+			// no module at all
+			null
+		} else {
+			if (unit.contains.size > modules.size) {
+				// no other elements next to a module are allowed
+				// (the resulting Franca model will get the module name as package name)
+				addIssue(FEATURE_NOT_SUPPORTED,
+					unit, IdlmmPackage::TRANSLATION_UNIT__CONTAINS,
+					"All top-level elements next to a module in an OMG IDL translation unit will be ignored")
+			}
+			if (modules.size > 1) {
+				// two or more modules, we do not use their name as package name
+				addIssue(FEATURE_NOT_SUPPORTED,
+					unit, IdlmmPackage::TRANSLATION_UNIT__CONTAINS,
+					"More than one module in OMG IDL translation unit, will use filename as Franca package name")
+					
+				// check if there are nested modules
+				for(m : modules) {
+					if (m.contains.filter(ModuleDef).size > 1) {
+						addIssue(FEATURE_NOT_SUPPORTED,
+							m, IdlmmPackage::CONTAINER__CONTAINS,
+							"Nested modules are ignored in a file with multiple OMG IDL modules")
+					}
+				} 
+				
+				// return null to indicate that the module name should not be used as Franca package name
+				null 
+			} else {
+				// dive into first module
+				modules.get(0).relevantSubModule
+			}
+		}
+	}
+	
+	/**
+	 * Get OMG IDL submodule which will be transformed.
+	 * 
+	 * We currently support nested modules, but there should be just one module on each level.
+	 * 
+	 * Restriction: Only the first submodule is transformed. Others are ignored.
+	 * Another restriction: If there is a submodule, there should not be other elements.
+	 */
+	def private ModuleDef getRelevantSubModule(ModuleDef module) {
+		val submodules = module.contains.filter(ModuleDef)
+		if (submodules.empty) {
+			// no submodule at all, return parent module
+			module
+		} else {
+			if (submodules.size > 1) {
+				// two or more modules, use first but issue warning
+				addIssue(FEATURE_NOT_SUPPORTED,
+					module, IdlmmPackage::CONTAINER__CONTAINS,
+					"Only the first sub-module in an OMG IDL module is transformed, others are ignored")
+			}
+			// no other elements next to the modules are allowed
+			// (the resulting Franca model will get the nested module name as package name)
+			if (module.contains.size > submodules.size) {
+				addIssue(FEATURE_NOT_SUPPORTED,
+					module, IdlmmPackage::CONTAINER__CONTAINS,
+					"All elements next to a submodule in an OMG IDL module will be ignored")
+			}
+
+			// dive into first submodule
+			submodules.get(0).relevantSubModule
+		}
+	}
+
+	/**
+	 * Compute a FQN for a module or submodule in the OMG IDL model.
+	 * 
+	 * The FQN will be used as Franca IDL model name (i.e. package).
+	 */
+	def private String getNestedModuleName(ModuleDef module) {
+		val parent = module.eContainer
+		if (parent instanceof ModuleDef) {
+			parent.nestedModuleName + "." + module.identifier
+		} else {
+			module.identifier
+		}
 	}
 
 	def private FModel transformModule(ModuleDef module, TranslationUnit src) {
@@ -321,6 +303,7 @@ class OMGIDL2FrancaTransformation {
 		}
 		model
 	}
+	
 	/* ---------------------- dispatch transform Contained ------------------------- */
 	def private dispatch FModelElement transformDefinition(InterfaceDef src, FModel target) {
 		factory.createFInterface => [
@@ -433,7 +416,6 @@ class OMGIDL2FrancaTransformation {
 		]
 	}
 
-	// TODO: handle all kinds of OMG IDL definitions here
 	def private dispatch FModelElement transformDefinition(TypedefDef src, FModel target) {
 		val definition = src.transformDefinition as FType
 		target.getTypeCollection().addInTypeCollection(definition)
@@ -452,6 +434,12 @@ class OMGIDL2FrancaTransformation {
 //		target.mappedFrancaObject.typeCollection
 		target.getTypeCollection().addInTypeCollection(definition)
 //		addInAnonymousTypeCollection(definition)
+		return definition
+	}
+	
+	def private dispatch FModelElement transformDefinition(FixedDef src, FModel target) {
+		val definition = src.transformDefinition as FType
+		target.getTypeCollection().addInTypeCollection(definition)
 		return definition
 	}
 	
@@ -491,6 +479,7 @@ class OMGIDL2FrancaTransformation {
 		factory.createFMethod => [
 			map_IDL_Franca.put(src, it)
 			name = src.identifier
+			fireAndForget = src.isIsOneway
 			if (src.sharedType!=null || !src.containedType.isVoid) {
 				// add operation's return value as first out argument with name _RESULT 
 				outArgs.add(
@@ -507,7 +496,7 @@ class OMGIDL2FrancaTransformation {
 			}
 			src.parameters.forEach[member | member.transformTyped(it)]
 			if (!src.canRaise.isNullOrEmpty) {
-				errors = factory.createFEnumerationType => [errorContainer|
+				errors = factory.createFEnumerationType => [ errorContainer |
 					// generate one enumerator for each exception
 					for (exception: src.canRaise) {
 						errorContainer.enumerators.add(
@@ -572,11 +561,15 @@ class OMGIDL2FrancaTransformation {
 	}
 	
 	def private dispatch FModelElement transformDefinition(UnionDef src) {
-		factory.createFUnionType => [
+		val result = factory.createFUnionType => [
 			map_IDL_Franca.put(src, it)
 			name = src.identifier
 			src.unionMembers.forEach[member | member.transformTyped(it)]
 		]
+		if (src.sharedDiscrim!=null) {
+			result.addSourceAnno("switch '" + src.sharedDiscrim.identifier + "'")
+		}
+		result
 	}
 	
 	def private dispatch FModelElement transformDefinition(ConstantDef src) {
@@ -592,29 +585,41 @@ class OMGIDL2FrancaTransformation {
 		]
 	}
 	
+	def private dispatch FModelElement transformDefinition(FixedDef src) {
+		val digits = (src.digits as ValueExpression).value
+		val scale = (src.scale as ValueExpression).value
+		factory.createFTypeDef => [ alias |
+			map_IDL_Franca.put(src, alias)
+			alias.name = '''Fixed_«digits»_«scale»'''
+			alias.actualType = factory.createFTypeRef => [ ref |
+				// TODO: should fixed<..,..> be really mapped to UINT32?
+				ref.predefined = FBasicTypeId.UINT32
+			]
+		]
+	}
+		
 	def private dispatch FModelElement transformDefinition(ExceptionDef src) {
-		var FStructType element
 		if (src.members.isNullOrEmpty) {
-			element = null
+			null
 		} else {
-			element = factory.createFStructType => [
+			factory.createFStructType => [
 				map_IDL_Franca.put(src, it)
 				name = src.identifier
 				src.members.forEach[member | member.transformTyped(it)]
+				it.addSourceAnno("exception '" + name + "'")
 			]
 		}
-		element
 	}
 	
 	/*------------------ transform Typed --------------------------------- */
 	
-	def private dispatch transformTyped(Typed src, FStructType target) {
+	def private dispatch void transformTyped(Typed src, FStructType target) {
 		addIssue(FEATURE_NOT_HANDLED_YET,
 			src, IdlmmPackage::TYPED,
 			"OMG IDL Typed '" + src.class.name + "' not handled yet (object '" + src.toString + "')")
 	}
 	
-	def private dispatch transformTyped (Typed src, FTypedElement target) {
+	def private dispatch void transformTyped (Typed src, FTypedElement target) {
 		if (src.sharedType == null) {
 			target.type = src.containedType.transformIDLType
 		} else {
@@ -625,25 +630,37 @@ class OMGIDL2FrancaTransformation {
 		}
 	}
 	
-	def private dispatch transformTyped(Field src, FStructType target) {
+	def private dispatch void transformTyped(Field src, FStructType target) {
 		factory.createFField => [
 			name = src.identifier
 			if (src.sharedType != null) {
 				type = src.sharedType.transformIDLType
-			} else if (src.containedType instanceof PrimitiveDef) {
-				type = (src.containedType as PrimitiveDef).transformIDLType
-			} else if (src.containedType instanceof StructDef) {
-				map_IDL_Franca.put(src.containedType, (src.containedType as StructDef).transformDefinition(map_IDL_Franca.get(src.container)))
-				type = src.containedType.transformIDLType
-			} else if (src.containedType instanceof ArrayDef) {
-				type = (src.containedType as ArrayDef).transformIDLType((src.eContainer as Contained).identifier + HYPHEN)
+			} else {
+				val ct = src.containedType
+				switch (ct) {
+					PrimitiveDef: type = ct.transformIDLType
+					StructDef: {
+						map_IDL_Franca.put(ct, ct.transformDefinition(map_IDL_Franca.get(src.container)))
+						type = src.containedType.transformIDLType
+					}
+					ArrayDef: {
+						type = ct.transformIDLType((src.eContainer as Contained).identifier + HYPHEN)
+					}
+					SequenceDef: {
+						ct.transformTyped(it)
+					}
+					default:
+						addIssue(FEATURE_NOT_HANDLED_YET,
+							ct, IdlmmPackage::IDL_TYPE,
+							"OMG IDL Typed '" + ct.class.name + "' used as field not handled yet (object '" + src.toString + "')")
+				}
 			}
 			target.elements.add(it)
 		]
 	}
 	
-	def private dispatch transformTyped(UnionField src, FUnionType target) {
-		factory.createFField => [
+	def private dispatch void transformTyped(UnionField src, FUnionType target) {
+		val result = factory.createFField => [
 			name = src.identifier
 			if (src.sharedType == null) {
 				type = src.containedType.transformIDLType
@@ -652,24 +669,34 @@ class OMGIDL2FrancaTransformation {
 			}
 			target.elements.add(it)
 		]
-	}
-	
-	def private dispatch transformTyped(ParameterDef src, FMethod target) {
-		switch src.direction {
-			case PARAM_IN: {
-				target.inArgs.add(src.transformTyped)
-			}
-			case PARAM_OUT: {
-				target.outArgs.add(src.transformTyped)
-			}
-			case PARAM_INOUT: {
-				target.inArgs.add(src.transformTyped)
-				target.outArgs.add(src.transformTyped)
+		if (src.isIsDefault) {
+			result.addSourceAnno("default")
+		} else {
+			if (src.label!=null && !src.label.empty) {
+				val first = src.label.get(0)
+				if (first instanceof ConstantDefRef) {
+					result.addSourceAnno("case '" + first.constant.identifier + "'")
+				}
 			}
 		}
 	}
 	
-	def private transformTyped(ParameterDef src) {
+	def private dispatch void transformTyped(ParameterDef src, FMethod target) {
+		switch src.direction {
+			case PARAM_IN: {
+				target.inArgs.add(src.transformParameter)
+			}
+			case PARAM_OUT: {
+				target.outArgs.add(src.transformParameter)
+			}
+			case PARAM_INOUT: {
+				target.inArgs.add(src.transformParameter)
+				target.outArgs.add(src.transformParameter)
+			}
+		}
+	}
+	
+	def private transformParameter(ParameterDef src) {
 		factory.createFArgument => [
 			name = src.identifier
 			if (src.sharedType == null) {
@@ -718,7 +745,7 @@ class OMGIDL2FrancaTransformation {
 						map_IDL_Franca.put(src, derived)
 					} else {
 						addIssue(FEATURE_NOT_HANDLED_YET,
-							translationUnit, IdlmmPackage::TRANSLATION_UNIT,
+							src.translationUnit, IdlmmPackage::TRANSLATION_UNIT__IDENTIFIER,
 							"OMG IDL Container '" + container.class.name + "' not handled yet (object '" + container + "')")
 					}
 				}
@@ -743,6 +770,8 @@ class OMGIDL2FrancaTransformation {
 			case PK_STRING: FBasicTypeId.STRING.asTypeRef
 			case PK_WSTRING: getBaseTypeOrSubstitute("wstring", FBasicTypeId.STRING)
 			case PK_BOOLEAN: FBasicTypeId.BOOLEAN.asTypeRef
+			case PK_ANY: getBaseTypeOrSubstitute("any", FBasicTypeId.UNDEFINED)
+			case PK_OBJREF: getBaseTypeOrSubstitute("Object", FBasicTypeId.UNDEFINED)
 			default: FBasicTypeId.UNDEFINED.asTypeRef
 		}
 	}
@@ -760,6 +789,13 @@ class OMGIDL2FrancaTransformation {
 	
 	def private asTypeRef(FBasicTypeId id) {
 		factory.createFTypeRef => [ predefined = id ]
+	}
+	
+	def private dispatch FTypeRef transformIDLType(FixedDef src) {
+		factory.createFTypeRef => [
+			derived = src.transformDefinition as FType
+			src.mappedTypeCollection.addInTypeCollection(derived)
+		]
 	}
 	
 	def private dispatch FTypeRef transformIDLType(SequenceDef src) {
@@ -907,7 +943,19 @@ class OMGIDL2FrancaTransformation {
 			)
 			return ''
 		}
-		return uri.lastSegment.replace(uri.fileExtension, FRANCA_IDL_EXT)
+		
+		val orig = uri.lastSegment
+		val n = orig.lastIndexOf(uri.fileExtension)
+		if (n==-1) {
+			// something is wrong, uri has wrong file extension
+			addIssue(IMPORT_ERROR,
+				src, IdlmmPackage::INCLUDE__IMPORT_URI,
+				"The URI of imported IDL file '" + src + "' should have extension 'idl'"
+			)
+			return ''
+		} else {
+			orig.substring(0, n) + FRANCA_IDL_EXT
+		}
 	}
 	
 	def private dispatch addInTypeCollection (FTypeCollection target, FType type) {
@@ -1015,7 +1063,29 @@ class OMGIDL2FrancaTransformation {
 		]
 	}
 	
+	def private getAnnotationBlock(FModelElement elem) {
+		if(elem.comment==null) {
+			elem.comment = FrancaFactory::eINSTANCE.createFAnnotationBlock
+		}
+		elem.comment
+	}
+
+	def private addSourceAnno(FModelElement elem, String source) {
+		elem.annotationBlock.createSourceAlias("OMG IDL " + source)
+	}
+
+	def private createSourceAlias(FAnnotationBlock annos, String sourceAlias) {
+		annos.elements.add(
+			FrancaFactory::eINSTANCE.createFAnnotation => [
+				type = FAnnotationType::SOURCE_ALIAS
+				comment = sourceAlias
+			]	
+		)
+	}
+
+
 	def private factory() {
 		FrancaFactory::eINSTANCE
 	}
+	
 }

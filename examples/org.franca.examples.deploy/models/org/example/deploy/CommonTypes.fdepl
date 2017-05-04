@@ -19,7 +19,7 @@ define org.example.spec.SampleDeploySpec
 		}
 		seconds {
 			RangeMin = 0
-			RangeMax = 59
+			RangeMax = 0x3b
 		}
 	}
 }

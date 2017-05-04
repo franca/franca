@@ -115,7 +115,9 @@ Workflow {
             fragment = outline.QuickOutlineFragment {}
 
             // quickfix API
-            fragment = quickfix.QuickfixProviderFragment {}
+            fragment = quickfix.QuickfixProviderFragment {
+            	generateXtendStub = true
+            }
 
             // content assist API
             fragment = contentAssist.JavaBasedContentAssistFragment {}

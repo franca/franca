@@ -1,0 +1,86 @@
+package TypedEventService
+
+import model "UntypedEventService.fidl"
+
+import org.franca.omgidl.* from "OMGIDLBase.fidl"
+
+interface TypedPushConsumer extends UntypedEventService.PushConsumer {
+	method get_typed_consumer {
+		out {
+			Object _RESULT
+		}
+	}
+}
+
+interface TypedProxyPushConsumer extends UntypedEventService.ProxyPushConsumer
+{
+
+	<**
+		@details : Member from original interface TypedPushConsumer (currently Franca IDL does not support multiple inheritance).
+	**>
+	method get_typed_consumer {
+		out {
+			Object _RESULT
+		}
+	}
+
+}
+
+interface TypedSupplierAdmin extends UntypedEventService.SupplierAdmin {
+	method obtain_typed_push_consumer {
+		in {
+			Key supported_interface
+		}
+		out {
+			TypedProxyPushConsumerReference _RESULT
+		}
+		error {
+			InterfaceNotSupported
+		}
+	}
+}
+
+interface TypedConsumerAdmin extends UntypedEventService.ConsumerAdmin {
+	method obtain_typed_push_supplier {
+		in {
+			Key uses_interface
+		}
+		out {
+			UntypedEventService.ProxyPushSupplierReference _RESULT
+		}
+		error {
+			NoSuchImplementation
+		}
+	}
+}
+
+interface TypedEventChannel {
+	method for_consumers {
+		out {
+			TypedConsumerAdminReference _RESULT
+		}
+	}
+	method for_suppliers {
+		out {
+			TypedSupplierAdminReference _RESULT
+		}
+	}
+	method destroy {
+	}
+}
+
+typeCollection {
+	version {
+		major 1
+		minor 0
+	}
+
+	typedef Key is String
+
+	typedef TypedProxyPushConsumerReference is String
+
+	typedef TypedConsumerAdminReference is String
+
+	typedef TypedSupplierAdminReference is String
+
+}

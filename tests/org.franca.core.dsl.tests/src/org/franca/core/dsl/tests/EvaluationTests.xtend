@@ -90,6 +90,13 @@ class EvaluationTests extends XtextTest {
 	}
 
 	@Test
+	def testBinaryValues() {
+		check("y01", 1)
+		check("y02", 16)
+		check("y03", 160968)
+	}
+
+	@Test
 	def testComplexIntegerOperations() {
 		check("i10", 15)
 		check("i11", 717)

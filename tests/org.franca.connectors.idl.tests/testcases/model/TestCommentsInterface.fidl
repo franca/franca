@@ -1,0 +1,37 @@
+package TestCommentsPackage
+
+<** @description: This is the description of the interface.
+    @author: Klaus Birken
+**>
+interface TestCommentsInterface {
+	
+	<** @description: This is the description of a method.
+	    @deprecated: This method should not be used anymore.
+	**>
+	method firstMethod {
+		in {
+			<** @description: This is the description of the first parameter. **>
+			Int8 param1
+			<** @description: This is the description of the second parameter. **>
+			Int8 param2
+		}
+		out {
+			<** @description: This is the description of a return value. **>
+			Float retcode
+		}
+	
+	}
+
+	<** @description: This is a multi-line description of another method,
+	                  and this is the second line. End of this comment.
+	**>
+	method secondMethod {
+	}
+
+	<** @description: This is a broadcast description, see 'broadcast' tag. **>
+	broadcast broadcastWithDescription {
+	}
+
+	broadcast broadcastWithoutDescription {
+	}
+}

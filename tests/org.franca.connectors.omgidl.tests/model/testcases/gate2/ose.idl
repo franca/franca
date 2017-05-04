@@ -1,0 +1,13 @@
+#ifndef _OSE_idl 
+#define _OSE_idl
+
+#include "evs.idl"
+#include "oe.idl"
+
+
+interface ose : CosTypedEventComm::TypedPushConsumer
+{
+	oneway void update( in oe::OseData_t data );
+	
+}; //end interface ose
+#endif

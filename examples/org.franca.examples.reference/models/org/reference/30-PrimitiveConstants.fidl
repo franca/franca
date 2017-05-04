@@ -17,6 +17,8 @@ typeCollection MyTypeCollection30 {
 	const UInt16 i14 = 0xabcd
 	const UInt16 i15 = 0xD0C0
 	const UInt32 i16 = 0Xfedcba98
+	const UInt32 i17 = 0b01010001
+	const UInt32 i18 = 0B01010001
 	const UInt32 i21 = 100000
 	const Int32  i22 = -100000
 	const UInt64 i31 = 10000000
@@ -52,7 +54,7 @@ typeCollection MyTypeCollection30 {
 	const Double d7 = f1
 
 	const ByteBuffer bb1 = [ ]
-	const ByteBuffer bb2 = [ 0, 1, 2, 3, 255 ]
+	const ByteBuffer bb2 = [ 0, 1, 2, 3, 0b10001, 255 ]
 	const ByteBuffer bb3 = [ 1+1, 100/20, 10*10, 1+2+3+5+8 ]
 	const ByteBuffer bb4 = [ i01, i11, i12, i02-i02 ]
 	

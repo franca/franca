@@ -1,4 +1,5 @@
 module TestEnum {
+	/// @remark This has been generated from Franca interface 'TestEnumInterface'.
 	interface TestEnumInterface {
 		enum MyEnumeration {
 			C1,

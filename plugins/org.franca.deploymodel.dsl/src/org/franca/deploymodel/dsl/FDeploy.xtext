@@ -300,10 +300,19 @@ FQN_WITH_SELECTOR:
 
 // positive or negative integer
 SignedInt returns ecore::EInt:
-	NEGATIVE_INT | INT;
+	NEGATIVE_INT | INT | HEX | BINARY;
 
 // terminal rule: negative integer
 terminal NEGATIVE_INT returns ecore::EInt:
 	'-' ('0'..'9')+;
+
+// terminal rule: hexadecimal literal
+terminal HEX:
+	 ('0x'|'0X')(('0'..'9')|('a'..'f')|('A'..'F'))+;
+
+// terminal rule: binary literal
+terminal BINARY:
+	 ('0b'|'0B')('0'|'1')+;
+	
 
 // **************************************************************

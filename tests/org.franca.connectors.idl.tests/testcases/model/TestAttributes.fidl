@@ -1,6 +1,6 @@
 package TestCase	
 
 interface TestAttribute {
-	attribute Boolean isSignal
-	attribute Float rpm
-	}
+	attribute UInt32 aWriteableAttribute
+	attribute String aReadonlyAttribute readonly
+}

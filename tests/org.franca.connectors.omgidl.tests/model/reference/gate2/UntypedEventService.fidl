@@ -1,0 +1,95 @@
+package UntypedEventService
+
+import org.franca.omgidl.* from "OMGIDLBase.fidl"
+
+interface PushConsumer {
+	method push {
+		in {
+			any data
+		}
+		error {
+			Disconnected
+		}
+	}
+	method disconnect_push_consumer {
+	}
+}
+
+interface PushSupplier {
+	method disconnect_push_supplier {
+	}
+}
+
+interface ProxyPushConsumer extends PushConsumer {
+	method connect_push_supplier {
+		in {
+			PushSupplierReference push_supplier
+		}
+		error {
+			AlreadyConnected
+		}
+	}
+}
+
+interface ProxyPushSupplier extends PushSupplier {
+	method connect_push_consumer {
+		in {
+			PushConsumerReference push_consumer
+		}
+		error {
+			AlreadyConnected
+			TypeError
+		}
+	}
+}
+
+interface ConsumerAdmin {
+	method obtain_push_supplier {
+		out {
+			ProxyPushSupplierReference _RESULT
+		}
+	}
+}
+
+interface SupplierAdmin {
+	method obtain_push_consumer {
+		out {
+			ProxyPushConsumerReference _RESULT
+		}
+	}
+}
+
+interface EventChannel {
+	method for_consumers {
+		out {
+			ConsumerAdminReference _RESULT
+		}
+	}
+	method for_suppliers {
+		out {
+			SupplierAdminReference _RESULT
+		}
+	}
+	method destroy {
+	}
+}
+
+typeCollection {
+	version {
+		major 1
+		minor 0
+	}
+
+	typedef PushSupplierReference is String
+
+	typedef PushConsumerReference is String
+
+	typedef ProxyPushSupplierReference is String
+
+	typedef ProxyPushConsumerReference is String
+
+	typedef ConsumerAdminReference is String
+
+	typedef SupplierAdminReference is String
+
+}

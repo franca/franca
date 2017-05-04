@@ -9,6 +9,7 @@ package org.franca.core.framework;
 
 import java.io.PrintStream;
 
+import org.apache.log4j.Logger;
 import org.franca.core.franca.FModel;
 
 /**
@@ -45,4 +46,12 @@ public interface IFrancaConnector extends IModelPersistenceManager {
 	 * @param err the error output stream which should be used by the connector 
 	 */
 	public void setOutputStreams(PrintStream out, PrintStream err);
+
+	/**
+	 * Use log4j logger instead of System.out and System.err.<p/>
+	 *  
+	 * @param logger the log4j logger which should be used by the connector
+	 */
+	public void setLogger(Logger logger);
+
 }

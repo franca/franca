@@ -209,6 +209,18 @@ enumeration ExampleEnumeration2 {
 }
 ]
 
+As the enumerator value can be any expression of type e[integer],
+it is also possible to specify it with a hexadecimal or binary literal:
+code[Franca][
+enumeration ExampleEnumeration2b {
+	VALUE_1 = 0xBADA
+	VALUE_2 = 0X89ab
+	VALUE_3 = 0b0001001
+	VALUE_4 = 0B10101
+	// ...
+}
+]
+
 Deprecated:
 It is also possible to use string constants as enumerator value definitions.
 However, this will result in a deprecated-warning by the Franca validator. 
@@ -424,6 +436,8 @@ Here are some examples of primitive constants:
 code[Franca][
 const Boolean b1 = true
 const UInt32 MAX_COUNT = 10000
+const UInt16 SOME_ID = 0xA00B
+const UInt8 BYTE_ME = 0b00110011
 const String foo = "bar"
 const Double pi = 3.1415d
 ]
@@ -567,6 +581,8 @@ true      // boolean
 false     // boolean
 100       // integer (positive)
 -273      // integer (negative)
+0x0ABC    // integer (hexadecimal)
+0b010101  // integer (binary)
 1.2f      // float
 6.022e23f // float
 3.1415d   // double
@@ -691,8 +707,8 @@ Changes in the minor number indicate changes which are backward compatible.
 Example use cases for backward e[compatible] changes:
 ul[
 	item[add attribute, method or broadcast]
-	item[add an argument for a method or broadcast (*)]
-	item[add a field for a struct or union (*)]
+	item[add an argument to a method or broadcast (*)]
+	item[add a field to a struct or union (*)]
 	item[remove a contract from an interface]
 	item[ease restrictions on the dynamic behavior of an interface (i.e., its contract)]
 ] 

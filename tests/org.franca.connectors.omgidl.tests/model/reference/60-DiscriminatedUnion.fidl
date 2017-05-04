@@ -1,0 +1,34 @@
+package testcase60
+
+typeCollection {
+	version {
+		major 1
+		minor 0
+	}
+
+	enumeration PressureScale {
+		customary
+		metric
+	}
+
+	<**
+		@source-alias : OMG IDL switch 'PressureScale'
+	**>
+	union BarometricPressure {
+		<**
+			@source-alias : OMG IDL case 'customary'
+		**>
+		Float Inches
+
+		<**
+			@source-alias : OMG IDL case 'metric'
+		**>
+		String CM
+
+		<**
+			@source-alias : OMG IDL default
+		**>
+		Int16 CCs
+	}
+
+}

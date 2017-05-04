@@ -9,5 +9,7 @@ define a.b.c.MySpec10Int for interface fidl.CoverageInterface {
 		IntegerPropOptional = 0
 		IntegerPropPosDefault = -123
 		IntegerPropNegDefault = -123
+		IntegerPropHexDefault = 0b00110011 // property with hex default and binary value
+		IntegerPropBinDefault = 0xABCD // property with binary default and hex value
 	}
 }

@@ -65,6 +65,8 @@ public class FrancaValueConverters extends Ecore2XtextTerminalConverters {
 				try {
 					if (string.startsWith("0x") || string.startsWith("0X")) {
 						result = new BigInteger(string.substring(2), 16);
+					} else if (string.startsWith("0b") || string.startsWith("0B")) {
+						result = new BigInteger(string.substring(2), 2);
 					} else {
 						result = new BigInteger(string, 10);
 					}

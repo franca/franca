@@ -1,4 +1,5 @@
 module TestConstant {
+	/// @remark This has been generated from Franca interface 'TestConstantInterface'.
 	interface TestConstantInterface {
 		const Int8 signalValue = 23;
 		const Float value = 1.3f;

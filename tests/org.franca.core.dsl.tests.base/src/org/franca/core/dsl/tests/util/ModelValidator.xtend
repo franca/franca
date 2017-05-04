@@ -27,6 +27,9 @@ class ModelValidator {
 		}
 
 		for(Resource res : toBeValidated) {
+			if (validator==null) {
+				throw new RuntimeException("ModelValidator not properly initialized, no ResourceValidator available")
+			}
 			try {
 				val List<Issue> validationErrors = validator.validate(res, CheckMode.ALL, null)
 				for (Issue issue : validationErrors) {

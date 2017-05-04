@@ -1,5 +1,7 @@
 package evs
 
+import org.franca.omgidl.* from "OMGIDLBase.fidl"
+
 interface PushSupplier {
 	method disconnect_push_supplier {
 	}
@@ -8,7 +10,7 @@ interface PushSupplier {
 interface PushConsumer {
 	method push {
 		in {
-			undefined data
+			any data
 		}
 		error {
 			Disconnected
@@ -21,7 +23,7 @@ interface PushConsumer {
 interface TypedPushConsumer extends PushConsumer {
 	method get_typed_consumer {
 		out {
-			undefined _RESULT
+			Object _RESULT
 		}
 	}
 }
@@ -64,7 +66,7 @@ interface TypedProxyPushConsumer extends ProxyPushConsumer {
 	**>
 	method get_typed_consumer {
 		out {
-			undefined _RESULT
+			Object _RESULT
 		}
 	}
 }

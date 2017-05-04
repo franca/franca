@@ -8,7 +8,7 @@
 
 	<groupId>org.franca</groupId>
 	<artifactId>org.franca.parent</artifactId>
-	<version>0.11.0-SNAPSHOT</version>
+	<version>0.11.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<parent>
@@ -49,6 +49,7 @@
             <module>../../plugins/org.franca.connectors.protobuf.ui</module>
 			<module>../../plugins/org.franca.connectors.idl</module>
             <module>../../plugins/org.franca.product.ui</module>
+            <module>../../plugins/org.franca.help</module>
     		<!-- test base modules -->
             <module>../../tests/org.franca.core.dsl.tests.base</module>
             <module>../../tests/org.franca.deploymodel.dsl.tests.base</module>
@@ -84,6 +85,7 @@
             <module>../../features/org.franca.protobuf.ui.feature.sdk</module>
 			<module>../../releng/org.franca.updatesite</module>
 			<module>../../releng/org.franca.product</module>
+			
     </modules>
 
 	<build>

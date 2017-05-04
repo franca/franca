@@ -6,8 +6,7 @@ This example Websocket server is implemented in JavaScript based on node.js and 
 
 INSTALLATION:
 1. Install node.js: Visit http://nodejs.org and click on the Install button to get started.
-2. Install websocket.io: Change to this folder and type "npm install websocket.io".
-2. Install mime: Again in this folder, type "npm install mime".
+2. Install node.js modules by "npm install" (will install mime and websocket.io).
 
 --------------------------------------------------------------------------------------------------
 

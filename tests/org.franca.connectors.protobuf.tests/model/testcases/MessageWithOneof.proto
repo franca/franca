@@ -10,7 +10,7 @@ enum Scalar {
 
 message Request1 {
 	required string string1 = 1;
-	repeated oneof test_oneOf{
+	repeated oneof Test_oneOf{
 	 	string string1 = 2;
 
 	 	group Group1 = 5[default = 3] {

@@ -1,0 +1,49 @@
+//#ifndef _TYPED_EVENT_SERVICE_H_
+//#define _TYPED_EVENT_SERVICE_H_
+
+#include "UntypedEventService.idl"
+
+module CosTypedEventComm
+{
+   interface TypedPushConsumer : CosEventComm::PushConsumer
+   {
+      Object get_typed_consumer();
+   };
+
+};
+
+module CosTypedEventChannelAdmin
+{
+   exception InterfaceNotSupported{};
+   exception NoSuchImplementation{};
+   typedef string Key;
+
+   interface TypedProxyPushConsumer:
+      CosEventChannelAdmin::ProxyPushConsumer,
+      CosTypedEventComm::TypedPushConsumer
+   {};
+
+   interface TypedSupplierAdmin : CosEventChannelAdmin::SupplierAdmin
+
+   {
+      TypedProxyPushConsumer obtain_typed_push_consumer
+         (in Key supported_interface) raises (InterfaceNotSupported);
+
+   };
+
+   interface TypedConsumerAdmin :
+      CosEventChannelAdmin::ConsumerAdmin
+   {
+      CosEventChannelAdmin::ProxyPushSupplier obtain_typed_push_supplier
+         (in Key uses_interface) raises (NoSuchImplementation);
+   };
+
+   interface TypedEventChannel
+   {
+      TypedConsumerAdmin for_consumers();
+      TypedSupplierAdmin for_suppliers();
+      void destroy();
+   };
+};
+
+//#endif // _TYPED_EVENT_SERVICE_H_

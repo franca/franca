@@ -4,7 +4,7 @@
  * 
  * Code changes: Tamas Szabo (itemis AG)
  ******************************************************************************/
-var EventEmitter = process.EventEmitter, protocol = require('./wamp_v1'), packets = protocol.packets, handlers = protocol.handlers;
+var EventEmitter = require('events'), protocol = require('./wamp_v1'), packets = protocol.packets, handlers = protocol.handlers;
 
 function Server() {
 	this.rpcClasses = {};

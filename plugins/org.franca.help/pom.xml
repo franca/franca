@@ -1,0 +1,59 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.franca.help</groupId>
+	<parent>
+		<groupId>org.franca</groupId>
+		<artifactId>org.franca.parent</artifactId>
+		<version>0.11.1-SNAPSHOT</version>
+		<relativePath>../../releng/org.franca.parent/pom.xml</relativePath>
+	</parent>
+	<artifactId>org.franca.help</artifactId>
+	<packaging>eclipse-plugin</packaging>
+
+	<build>
+	<sourceDirectory>src</sourceDirectory>
+		<!-- To define the plugin version in your parent POM -->
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.eclipse.tycho.extras</groupId>
+					<artifactId>tycho-document-bundle-plugin</artifactId>
+					<version>0.26.0</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<!-- To use the plugin goals in your POM or parent POM -->
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho.extras</groupId>
+				<artifactId>tycho-document-bundle-plugin</artifactId>
+
+				<executions>
+					<execution>
+					<id>gen-javadoc</id>
+								<goals>
+									<goal>javadoc</goal>
+								</goals>
+						<!-- Workaround for https://bugs.eclipse.org/bugs/show_bug.cgi?id=453601 -->
+						<phase>verify</phase>
+						<configuration>
+						<buildDirectory>${project.build.directory}</buildDirectory>
+						<sourceDirectory>${project.basedir}/src</sourceDirectory>
+						<skipTocGen>true</skipTocGen>
+							<outputDirectory>${project.basedir}/help/api-docs/javadoc</outputDirectory>
+							
+							<javadocOptions>
+								<includes>
+									<include>org.franca.*</include>
+								</includes>
+								
+							</javadocOptions>
+						</configuration>
+					</execution>
+
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>

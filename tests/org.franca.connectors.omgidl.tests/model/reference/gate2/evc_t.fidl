@@ -1,0 +1,165 @@
+package evc_t
+
+import org.franca.omgidl.* from "OMGIDLBase.fidl"
+
+typeCollection {
+	version {
+		major 1
+		minor 0
+	}
+
+	enumeration coordinateSelect_t {
+		geo
+		transverse
+	}
+
+	array Sequence_0 of String
+
+	typedef stringSeq is Sequence_0
+
+	array Sequence_1 of Double
+
+	typedef doubleSeq is Sequence_1
+
+	array Sequence_2 of octet
+
+	typedef octetSeq is Sequence_2
+
+	array Sequence_3 of Float
+
+	typedef floatSeq is Sequence_3
+
+	array Sequence_4 of Object
+
+	typedef objectSeq is Sequence_4
+
+	array Sequence_5 of Int32
+
+	typedef longSeq is Sequence_5
+
+	array Sequence_6 of Int16
+
+	typedef shortSeq is Sequence_6
+
+	typedef Latitude_t is Double
+
+	typedef Longitude_t is Double
+
+	<**
+		@source-alias : OMG IDL exception 'canNotAccessData'
+	**>
+	struct canNotAccessData {
+		String reason
+	}
+
+	typedef Depth_t is Float
+
+	<**
+		@source-alias : OMG IDL exception 'writeFailed'
+	**>
+	struct writeFailed {
+		String reason
+	}
+
+	typedef evcData1_t is Int32
+	typedef evcData2_t is Float
+	typedef evcData3_t is Float
+	typedef evcData4_t is Float
+	typedef evcData5_t is Double
+	struct timespec_t {
+		UInt32 tv_sec
+		Int32 tv_nsec
+	}
+
+	<**
+		@source-alias : OMG IDL exception 'notImplemented'
+	**>
+	struct notImplemented {
+		String reason
+	}
+
+	typedef validData_t is Boolean
+	struct flaggedDouble_t {
+		Double data
+		validData_t valid
+	}
+
+	struct flaggedBoolean_t {
+		Boolean data
+		validData_t valid
+	}
+
+	struct flaggedUnsignedShort_t {
+		UInt16 data
+		validData_t valid
+	}
+
+	struct flaggedFloat_t {
+		Float data
+		validData_t valid
+	}
+
+	struct flaggedShort_t {
+		Int16 data
+		validData_t valid
+	}
+
+	struct flaggedString_t {
+		String data
+		validData_t valid
+	}
+
+	struct flaggedUnsignedLong_t {
+		UInt32 data
+		validData_t valid
+	}
+
+	struct flaggedLong_t {
+		Int32 data
+		validData_t valid
+	}
+
+	struct flaggedStringSeq_t {
+		stringSeq data
+		validData_t valid
+	}
+
+	struct flaggedDoubleSeq_t {
+		doubleSeq data
+		validData_t valid
+	}
+
+	struct flaggedOctetSeq_t {
+		octetSeq data
+		validData_t valid
+	}
+
+	struct flaggedfloatSeq_t {
+		floatSeq data
+		validData_t valid
+	}
+
+	struct flaggedObjectSeq_t {
+		objectSeq data
+		validData_t valid
+	}
+
+	struct flaggedLongSeq_t {
+		longSeq data
+		validData_t valid
+	}
+
+	struct flaggedShortSeq_t {
+		shortSeq data
+		validData_t valid
+	}
+
+	typedef flaggedData1_t is flaggedDouble_t
+	typedef flaggedData2_t is flaggedDouble_t
+	typedef flaggedData3_t is flaggedFloat_t
+	typedef flaggedData4_t is flaggedFloat_t
+	typedef flaggedData5_t is flaggedFloat_t
+	typedef flaggedData6_t is flaggedFloat_t
+	typedef flaggedData7_t is flaggedLong_t
+
+}

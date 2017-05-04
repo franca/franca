@@ -7,6 +7,7 @@ typeCollection {
 		major 1
 		minor 0
 	}
+
 	enumeration coordinateSelect_t {
 		geo
 		transverse
@@ -28,7 +29,7 @@ typeCollection {
 
 	typedef floatSeq is Sequence_3
 
-	array Sequence_4 of undefined
+	array Sequence_4 of Object
 
 	typedef objectSeq is Sequence_4
 
@@ -41,39 +42,43 @@ typeCollection {
 	typedef shortSeq is Sequence_6
 
 	typedef Latitude_t is Double
+
 	typedef Longitude_t is Double
 
+	<**
+		@source-alias : OMG IDL exception 'canNotAccessData'
+	**>
 	struct canNotAccessData {
 		String reason
 	}
 
 	typedef Depth_t is Float
 
+	<**
+		@source-alias : OMG IDL exception 'writeFailed'
+	**>
 	struct writeFailed {
 		String reason
 	}
 
 	typedef evcData1_t is Int32
-
 	typedef evcData2_t is Float
-
 	typedef evcData3_t is Float
-
 	typedef evcData4_t is Float
-
 	typedef evcData5_t is Double
-
 	struct timespec_t {
 		UInt32 tv_sec
 		Int32 tv_nsec
 	}
 
+	<**
+		@source-alias : OMG IDL exception 'notImplemented'
+	**>
 	struct notImplemented {
 		String reason
 	}
 
 	typedef validData_t is Boolean
-
 	struct flaggedDouble_t {
 		Double data
 		validData_t valid
@@ -150,17 +155,11 @@ typeCollection {
 	}
 
 	typedef flaggedData1_t is flaggedDouble_t
-
 	typedef flaggedData2_t is flaggedDouble_t
-
 	typedef flaggedData3_t is flaggedFloat_t
-
 	typedef flaggedData4_t is flaggedFloat_t
-
 	typedef flaggedData5_t is flaggedFloat_t
-
 	typedef flaggedData6_t is flaggedFloat_t
-
 	typedef flaggedData7_t is flaggedLong_t
 
 }

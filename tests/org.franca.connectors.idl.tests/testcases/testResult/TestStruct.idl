@@ -1,6 +1,8 @@
 module TestStruct {
+	/// @remark This has been generated from Franca interface 'TestStructInterface'.
 	interface TestStructInterface {
 		typedef UInt8 MyArray;
+		
 		struct structvini {
 			Int8 field1;
 			String field2;

@@ -1,0 +1,16 @@
+
+module testcase60 {
+	enum PressureScale{customary,metric};
+	
+	union BarometricPressure switch (PressureScale) {
+	  case customary:
+	    float Inches;
+	  
+	  case metric :
+		string CM;
+	
+	  default:
+	    short CCs;
+	};
+	
+};

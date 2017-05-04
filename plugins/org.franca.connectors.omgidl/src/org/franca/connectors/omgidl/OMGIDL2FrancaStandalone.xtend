@@ -11,7 +11,6 @@ import java.io.File
 import org.apache.commons.cli.CommandLine
 import org.apache.commons.cli.Options
 import org.apache.log4j.Logger
-import org.eclipse.emf.common.util.URI
 import org.franca.core.dsl.FrancaPersistenceManager
 import org.franca.core.dsl.cli.AbstractCommandLineTool
 import org.franca.core.dsl.cli.CommonOptions
@@ -26,7 +25,7 @@ class OMGIDL2FrancaStandalone extends AbstractCommandLineTool {
 	
 	static final Logger logger = Logger.getLogger(typeof(OMGIDL2FrancaStandalone))
 
-	private static final String TOOL_VERSION = "0.2.0";
+	private static final String TOOL_VERSION = "0.4.3";
 
 	/**
 	 * The main function for this standalone tool.</p>

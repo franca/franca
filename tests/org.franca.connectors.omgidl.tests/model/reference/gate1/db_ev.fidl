@@ -3,7 +3,7 @@ import model "db_t.fidl"
 import model "evs.fidl"
 
 interface db_ev extends evs.TypedPushConsumer {
-	method db {
+	method db fireAndForget {
 		in {
 			db.db_t arg
 		}

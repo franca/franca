@@ -1,0 +1,37 @@
+package oe
+
+import model "evc_t.fidl"
+
+interface oe {
+	
+	public struct OseData_t {
+		evc_t.timespec_t timeStamp
+		Float ocn
+		Float oce
+		Float gs
+		Float ts
+		Float ocm
+		evc_t.coordinateSelect_t coordinateSelect
+		evc_t.validData_t validMessage
+	}
+
+	method getExceptionGetoseNotImplemented {
+		out {
+			evc_t.notImplemented notImplemented
+		}
+	}
+	method getExceptionGetoseCanNotAccessData {
+		out {
+			evc_t.canNotAccessData canNotAccessData
+		}
+	}
+	method getose {
+		out {
+			OseData_t _RESULT
+		}
+		error {
+			notImplemented
+			canNotAccessData
+		}
+	}
+}

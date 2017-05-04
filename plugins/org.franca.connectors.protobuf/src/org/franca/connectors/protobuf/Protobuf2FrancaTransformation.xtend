@@ -83,6 +83,17 @@ class Protobuf2FrancaTransformation {
 	var int index
 	var needsDescriptorImport = false
 	
+	var normalizeIds = false
+
+	/**
+	 * Configure if first letter of ids should be enforced to be uppercase.
+	 * 
+	 * The default is false, i.e., uppercase is not enforced.
+	 */	
+	def setNormalizeIds(boolean enforce) {
+		normalizeIds = enforce
+	}
+	
 	def getTransformationIssues() {
 		return getIssues
 	}
@@ -139,7 +150,7 @@ class Protobuf2FrancaTransformation {
 					Service:
 						interfaces += elem.transformService
 					Message: {
-						currentContext = new TransformContext(elem.name.toFirstUpper)
+						currentContext = new TransformContext(elem.name.normalizeId)
 						typeCollection.add(elem, elem.transformMessage)
 					}
 					Enum: {
@@ -254,7 +265,7 @@ class Protobuf2FrancaTransformation {
 			if (target.isFromDescriptorProto) {
 				needsDescriptorImport = true
 			}
-			name = target.name.toFirstUpper + "_" + index
+			name = target.name.normalizeId + "_" + index
 			base = transformExtensibleType(target)
 		}
 		
@@ -283,14 +294,14 @@ class Protobuf2FrancaTransformation {
 	}
 
 	def private create factory.createFEnumerationType transformEnum(Enum enum1) {
-		name = enum1.name.toFirstUpper
+		name = enum1.name.normalizeId
 		enumerators += enum1.elements.filter[element|!(element instanceof Option)].map[transformEnumElement]
 	}
 
 	def private create factory.createFStructType transformMessage(Message message) {
 
 		//TODO add comments if necessary
-		name = message.name.toFirstUpper
+		name = message.name.normalizeId
 		elements += message.elements.map[transformMessageElement].filterNull
 		if (elements.empty)
 			polymorphic = true
@@ -337,7 +348,7 @@ class Protobuf2FrancaTransformation {
 				return elem.transformMessageField
 			OneOf: {
 				val union = factory.createFUnionType
-				union.name = currentContext.contextNameSpacePrefix + elem.name.toFirstUpper
+				union.name = currentContext.contextNameSpacePrefix + elem.name.normalizeId
 				union.elements += elem.elements.map [ element |
 					transformField(union.name, [element.transformMessageElement])
 				].filterNull
@@ -351,11 +362,11 @@ class Protobuf2FrancaTransformation {
 			}
 			Enum: {
 				val enum1 = elem.transformEnum
-				enum1.name = currentContext.contextNameSpacePrefix + elem.name.toFirstUpper
+				enum1.name = currentContext.contextNameSpacePrefix + elem.name.normalizeId
 				types.put(elem, enum1)
 			}
 			Message: {
-				val nameSpace = currentContext.contextNameSpacePrefix + elem.name.toFirstUpper
+				val nameSpace = currentContext.contextNameSpacePrefix + elem.name.normalizeId
 				val struct = transform(nameSpace, [elem.transformMessage])
 				struct.name = nameSpace
 				types.put(elem, struct) // TODO: correct?
@@ -443,7 +454,7 @@ class Protobuf2FrancaTransformation {
 	}
 
 	def private create factory.createFTypeRef transformComplexType(ComplexType complexType) {
-		val key = complexType.eResource.URI.trimFileExtension.toString + "_" + complexType.name.toFirstUpper
+		val key = complexType.eResource.URI.trimFileExtension.toString + "_" + complexType.name.normalizeId
 		if (externalTypes.containsKey(key)) {
 			derived = externalTypes.get(key)
 		} else
@@ -478,7 +489,7 @@ class Protobuf2FrancaTransformation {
 	}
 
 	def private create factory.createFStructType transformGroup(Group group) {
-		name = currentContext.contextNameSpacePrefix + group.name.toFirstUpper
+		name = currentContext.contextNameSpacePrefix + group.name.normalizeId
 		elements += group.elements.map [ element |
 			transformField(name, [(element as MessageElement).transformMessageElement])
 		].filterNull
@@ -518,5 +529,23 @@ class Protobuf2FrancaTransformation {
 
 	def private factory() {
 		FrancaFactory.eINSTANCE
+	}
+	
+	/**
+	 * Helper method which normalizes ids.
+	 * 
+	 * The behavior can be configured. Currently the following ids will be normalized:
+	 * <li>
+	 *     <item>name of Franca struct which is transformed from a Protobuf message</item>
+	 * </li>
+	 * </p>
+	 * 
+	 * @param id the id which should be normalized
+	 */
+	def private String normalizeId(String id) {
+		if (normalizeIds)
+			id.toFirstUpper
+		else
+			id
 	}
 }

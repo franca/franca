@@ -61,6 +61,11 @@ public class ValidationHelpers {
          this.object = object;
          this.name = name;
       }
+
+      @Override
+      public String toString() {
+         return "'" + name + "'";
+      }
    }
 
    public static class NameList {
@@ -72,6 +77,11 @@ public class ValidationHelpers {
 
       public Iterable<Entry> iterable() {
          return list;
+      }
+
+      @Override
+      public String toString() {
+         return list.toString();
       }
    }
 

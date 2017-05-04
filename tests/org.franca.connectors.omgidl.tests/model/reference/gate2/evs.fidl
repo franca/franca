@@ -1,0 +1,167 @@
+package evs
+
+import org.franca.omgidl.* from "OMGIDLBase.fidl"
+
+interface PushSupplier {
+	method disconnect_push_supplier {
+	}
+}
+
+interface PushConsumer {
+	method push {
+		in {
+			any data
+		}
+		error {
+			Disconnected
+		}
+	}
+	method disconnect_push_consumer {
+	}
+}
+
+interface TypedPushConsumer extends PushConsumer {
+	method get_typed_consumer {
+		out {
+			Object _RESULT
+		}
+	}
+}
+
+interface ProxyPushConsumer extends PushConsumer {
+	method connect_push_supplier {
+		in {
+			PushSupplierReference push_supplier
+		}
+		error {
+			AlreadyConnected
+		}
+	}
+}
+
+interface ProxyPushSupplier extends PushSupplier {
+	method connect_push_consumer {
+		in {
+			PushConsumerReference push_consumer
+		}
+		error {
+			AlreadyConnected
+			TypeError
+		}
+	}
+}
+
+interface SupplierAdmin {
+	method obtain_push_consumer {
+		out {
+			ProxyPushConsumerReference _RESULT
+		}
+	}
+}
+
+interface TypedProxyPushConsumer extends ProxyPushConsumer {
+
+	<**
+		@details : Member from original interface TypedPushConsumer (currently Franca IDL does not support multiple inheritance).
+	**>
+	method get_typed_consumer {
+		out {
+			Object _RESULT
+		}
+	}
+
+}
+
+interface ConsumerAdmin {
+	method obtain_push_supplier {
+		out {
+			ProxyPushSupplierReference _RESULT
+		}
+	}
+}
+
+interface TypedSupplierAdmin extends SupplierAdmin {
+	method obtain_typed_push_consumer {
+		in {
+			Key supported_interface
+		}
+		out {
+			TypedProxyPushConsumerReference _RESULT
+		}
+		error {
+			InterfaceNotSupported
+		}
+	}
+}
+
+interface TypedConsumerAdmin extends ConsumerAdmin {
+	method obtain_typed_push_supplier {
+		in {
+			Key uses_interface
+		}
+		out {
+			ProxyPushSupplierReference _RESULT
+		}
+		error {
+			NoSuchImplementation
+		}
+	}
+}
+
+interface EventChannel {
+	method for_consumers {
+		out {
+			ConsumerAdminReference _RESULT
+		}
+	}
+	method for_suppliers {
+		out {
+			SupplierAdminReference _RESULT
+		}
+	}
+	method destroy {
+	}
+}
+
+interface TypedEventChannel {
+	method for_consumers {
+		out {
+			TypedConsumerAdminReference _RESULT
+		}
+	}
+	method for_suppliers {
+		out {
+			TypedSupplierAdminReference _RESULT
+		}
+	}
+	method destroy {
+	}
+}
+
+typeCollection {
+	version {
+		major 1
+		minor 0
+	}
+
+	typedef Key is String
+
+	typedef PushSupplierReference is String
+
+	typedef PushConsumerReference is String
+
+	typedef ProxyPushConsumerReference is String
+
+	typedef ProxyPushSupplierReference is String
+
+	typedef TypedProxyPushConsumerReference is String
+
+	typedef ConsumerAdminReference is String
+
+	typedef SupplierAdminReference is String
+
+	typedef TypedConsumerAdminReference is String
+
+	typedef TypedSupplierAdminReference is String
+
+}

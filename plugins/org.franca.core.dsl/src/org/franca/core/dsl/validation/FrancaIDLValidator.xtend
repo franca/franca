@@ -8,7 +8,6 @@
 package org.franca.core.dsl.validation
 
 import java.util.Map
-import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.validation.Check
 import org.franca.core.franca.FCompoundInitializer
 import org.franca.core.franca.FCompoundType
@@ -125,7 +124,7 @@ class FrancaIDLValidator extends FrancaIDLJavaValidator {
 		val elements = type.elements
 		checkDuplicates(this, elements, FMODEL_ELEMENT__NAME, "element name")
 
-		val baseNames = getBaseElementNames(type, [it])
+		val baseNames = getBaseElementNames(type, [name])
 		for (f : elements) {
 			val n = f.name
 			if (baseNames.containsKey(n)) {
@@ -137,15 +136,18 @@ class FrancaIDLValidator extends FrancaIDLJavaValidator {
 
 	@Check
 	def checkUnionElementTypesUnique(FUnionType type) {
+		// check types of this union locally
 		val names = createNameList
 		for (f : type.elements) {
-			names.add(f, getResolvedName(f.type))
+			val rn = getResolvedName(f.type, f.array)
+			names.add(f, rn)
 		}
 		checkDuplicates(this, names, FTYPED_ELEMENT__TYPE, "element type")
 
-		val baseNames = getBaseElementNames(type, [it.type])
+		// check inherited types vs. local types
+		val baseNames = getBaseElementNames(type, [it.type.getResolvedName(it.array)])
 		for (f : type.elements) {
-			val n = f.type.name
+			val n = f.type.getResolvedName(f.array)
 			if (baseNames.containsKey(n)) {
 				error("Element type collision with base element '" + baseNames.get(n) + "'", f,
 					FTYPED_ELEMENT__TYPE);
@@ -153,16 +155,15 @@ class FrancaIDLValidator extends FrancaIDLJavaValidator {
 		}
 	}
 
-	def String getResolvedName(FTypeRef ref) {
-
-		if(ref.predefined != null) ref.name
-
-		if (ref.derived instanceof FTypeDef) {
-			var defs = ref.derived as FTypeDef;
-			defs.actualType.resolvedName
-		} else {
-			ref.name
-		}
+	def String getResolvedName(FTypeRef ref, boolean isArray) {
+		val rn =
+			if (ref.derived instanceof FTypeDef) {
+				var defs = ref.derived as FTypeDef;
+				defs.actualType.getResolvedName(false)
+			} else {
+				ref.name
+			}
+		if (isArray) rn + "[]" else rn
 	}
 
 	@Check
@@ -189,14 +190,14 @@ class FrancaIDLValidator extends FrancaIDLJavaValidator {
 		checkDuplicates(this, names, FFIELD_INITIALIZER__ELEMENT, "initializer field");
 	}
 
-	def private Map<String, String> getBaseElementNames(FCompoundType type, (FField)=>EObject nameProvider) {
+	def private Map<String, String> getBaseElementNames(FCompoundType type, (FField)=>String nameProvider) {
 		val Map<String, String> baseNames = newHashMap
 		val base = type.getBase
 		if (base != null) {
 			for (me : base.getAllElements) {
 				val f = me as FField
 				val owner = f.eContainer.name + "." + f.name
-				val n = nameProvider.apply(f).name
+				val n = nameProvider.apply(f)
 				baseNames.put(n, owner)
 			}
 		}

@@ -87,9 +87,8 @@ class FrancaIDLScopeProvider extends AbstractDeclarativeScopeProvider {
 		// add inherited constant definitions to the scope
 		val baseScopeWithInherited =
 			if (context instanceof FInterface) {
-				val _interface = context as FInterface
-				if (_interface.base!=null) {
-					val items = getAllElements(_interface.base).filter(FConstantDef)
+				if (context.base!=null) {
+					val items = getAllElements(context.base).filter(FConstantDef)
 					items.scopeFor(baseScope)
 				} else {
 					baseScope
@@ -121,9 +120,8 @@ class FrancaIDLScopeProvider extends AbstractDeclarativeScopeProvider {
 		// add inherited constant definitions to the scope
 		val baseScopeWithInherited =
 			if (context instanceof FInterface) {
-				val _interface = context as FInterface
-				if (_interface.base!=null) {
-					val items = getAllElements(_interface.base).filter(FConstantDef)
+				if (context.base!=null) {
+					val items = getAllElements(context.base).filter(FConstantDef)
 					items.scopeFor(baseScope)
 				} else {
 					baseScope

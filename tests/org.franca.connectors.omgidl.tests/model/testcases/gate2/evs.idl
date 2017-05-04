@@ -1,0 +1,191 @@
+#ifndef _evs_idl 
+#define _evs_idl
+
+module CosTypedEventChannelAdmin 
+{
+	
+	
+	typedef string Key;
+	
+	exception InterfaceNotSupported 
+	{
+		
+	}; //end exception InterfaceNotSupported
+	
+}; //end module CosTypedEventChannelAdmin
+module CosEventChannelAdmin 
+{
+	
+	exception TypeError 
+	{
+		
+	}; //end exception TypeError
+	
+	
+	exception AlreadyConnected 
+	{
+		
+	}; //end exception AlreadyConnected
+	
+}; //end module CosEventChannelAdmin
+module CosEventComm 
+{
+	
+	
+	exception Disconnected 
+	{
+		
+	}; //end exception Disconnected
+	
+}; //end module CosEventComm
+module CosTypedEventChannelAdmin 
+{
+	
+	
+	exception NoSuchImplementation 
+	{
+		
+	}; //end exception NoSuchImplementation
+	
+}; //end module CosTypedEventChannelAdmin
+module CosEventComm 
+{
+	
+	interface PushSupplier
+	{
+		
+		void disconnect_push_supplier(  );
+		
+	}; //end interface PushSupplier
+	
+	
+	interface PushConsumer
+	{
+		
+		void push( in any data )
+		   raises( Disconnected );
+		
+		void disconnect_push_consumer(  );
+		
+	}; //end interface PushConsumer
+	
+}; //end module CosEventComm
+module CosTypedEventComm 
+{
+	
+	interface TypedPushConsumer : CosEventComm::PushConsumer
+	{
+		
+		Object get_typed_consumer(  );
+		
+	}; //end interface TypedPushConsumer
+	
+}; //end module CosTypedEventComm
+module CosEventChannelAdmin 
+{
+	
+	
+	interface ProxyPushConsumer : CosEventComm::PushConsumer
+	{
+		
+		void connect_push_supplier( in CosEventComm::PushSupplier push_supplier )
+				    raises( AlreadyConnected );
+		
+	}; //end interface ProxyPushConsumer
+	
+	
+	interface ProxyPushSupplier : CosEventComm::PushSupplier
+	{
+		
+		void connect_push_consumer( in CosEventComm::PushConsumer push_consumer )
+				    raises( AlreadyConnected,
+					    TypeError );
+		
+	}; //end interface ProxyPushSupplier
+	
+	
+	interface SupplierAdmin
+	{
+		
+		ProxyPushConsumer obtain_push_consumer(  );
+		
+	}; //end interface SupplierAdmin
+	
+}; //end module CosEventChannelAdmin
+module CosTypedEventChannelAdmin 
+{
+	
+	
+	interface TypedProxyPushConsumer : CosEventChannelAdmin::ProxyPushConsumer, CosTypedEventComm::TypedPushConsumer
+	{
+		
+	}; //end interface TypedProxyPushConsumer
+	
+}; //end module CosTypedEventChannelAdmin
+module CosEventChannelAdmin 
+{
+	
+	
+	interface ConsumerAdmin
+	{
+		
+		ProxyPushSupplier obtain_push_supplier(  );
+		
+	}; //end interface ConsumerAdmin
+	
+}; //end module CosEventChannelAdmin
+module CosTypedEventChannelAdmin 
+{
+	
+	
+	interface TypedSupplierAdmin : CosEventChannelAdmin::SupplierAdmin
+	{
+		
+		TypedProxyPushConsumer obtain_typed_push_consumer( in Key supported_interface )
+							   raises( InterfaceNotSupported );
+		
+	}; //end interface TypedSupplierAdmin
+	
+	
+	interface TypedConsumerAdmin : CosEventChannelAdmin::ConsumerAdmin
+	{
+		
+		CosEventChannelAdmin::ProxyPushSupplier obtain_typed_push_supplier( in Key uses_interface )
+									    raises( NoSuchImplementation );
+		
+	}; //end interface TypedConsumerAdmin
+	
+}; //end module CosTypedEventChannelAdmin
+module CosEventChannelAdmin 
+{
+	
+	
+	interface EventChannel
+	{
+		
+		ConsumerAdmin for_consumers(  );
+		
+		SupplierAdmin for_suppliers(  );
+		
+		void destroy(  );
+		
+	}; //end interface EventChannel
+	
+}; //end module CosEventChannelAdmin
+module CosTypedEventChannelAdmin 
+{
+	
+	
+	interface TypedEventChannel
+	{
+		
+		TypedConsumerAdmin for_consumers(  );
+		
+		TypedSupplierAdmin for_suppliers(  );
+		
+		void destroy(  );
+		
+	}; //end interface TypedEventChannel
+	
+}; //end module CosTypedEventChannelAdmin
+#endif

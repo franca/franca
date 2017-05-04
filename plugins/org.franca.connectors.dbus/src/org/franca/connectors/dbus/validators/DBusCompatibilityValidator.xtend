@@ -29,6 +29,8 @@ import static org.franca.core.franca.FrancaPackage.Literals.*
 import static extension org.franca.core.framework.FrancaHelpers.*
 import static extension org.franca.core.utils.ExpressionEvaluator.*
 
+import static extension org.franca.connectors.dbus.util.DBusLogic.*
+
 /**
  * External Franca IDL validator for compatibility with plain D-Bus.
  * 
@@ -118,7 +120,7 @@ class DBusCompatibilityValidator implements IFrancaExternalValidator {
 
 	def private dispatch checkItem (FMapType item, ValidationMessageAcceptor issues) {
 		val key = item.keyType
-		if (key.actualPredefined==null) {
+		if (! key.isProperDictKey) {
 			issues.warning(
 				"D-Bus dictionaries support only primitive key types",
 				item, FMAP_TYPE__KEY_TYPE)

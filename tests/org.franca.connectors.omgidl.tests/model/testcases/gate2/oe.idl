@@ -1,0 +1,33 @@
+#ifndef _OE_idl 
+#define _OE_idl
+
+#include "evc_t.idl"
+
+interface oe
+{	
+	struct OseData_t
+	{
+		evc_t::timespec_t timeStamp;
+		
+		float ocn;
+		
+		float oce;
+
+		float gs;
+		
+		float ts;
+		
+		float ocm;
+		
+		evc_t::coordinateSelect_t coordinateSelect;
+		
+		evc_t::validData_t validMessage;
+		
+	}; //end struct OseData_t
+	
+		oe::OseData_t getose(  )
+						    raises( evc_t::notImplemented,
+							    evc_t::canNotAccessData );
+	
+}; //end interface OE
+#endif
