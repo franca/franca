@@ -10,6 +10,6 @@
       <child location='0.9.1'/>
       <child location='0.10.0'/>
       <child location='0.11.0'/>
-      <child location='0.11.2'/>
+      <child location='0.11.1'/>
   </children>
 </repository>
