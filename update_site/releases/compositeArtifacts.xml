@@ -3,12 +3,13 @@
 <repository name='&quot;Franca update site (releases)&quot;'
     type='org.eclipse.equinox.internal.p2.artifact.repository.CompositeArtifactRepository' version='1.0.0'>
   <properties size='1'>
-    <property name='p2.timestamp' value='1247702450'/>
+    <property name='p2.timestamp' value='1247702452'/>
   </properties>
-  <children size='4'>
+  <children size='5'>
       <child location='0.9.0'/>
       <child location='0.9.1'/>
       <child location='0.10.0'/>
       <child location='0.11.0'/>
+      <child location='0.11.1'/>
   </children>
 </repository>
