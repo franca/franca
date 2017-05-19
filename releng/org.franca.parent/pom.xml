@@ -659,7 +659,7 @@
 	
 	<name>Franca IDL</name>
 	<description>Franca IDL is a textual language which allows to define software interfaces and APIs in a consistent, user-friendly way. Franca includes a framework for IDL transformation and building code generators from API specifications.</description>
-	<url>http://code.google.com/a/eclipselabs.org/p/franca/</url>
+	<url>https://github.com/franca/franca</url>
 	<licenses>
 		<license>
 			<name>Eclipse Public License v1.0</name>
