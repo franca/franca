@@ -25,5 +25,5 @@ Require-Bundle: org.eclipse.ui,
  org.franca.core.dsl.tests.base;bundle-version="0.10.1",
  com.google.eclipse.protobuf;bundle-version="1.5.3",
  org.franca.deploymodel.dsl;bundle-version="0.10.1"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy

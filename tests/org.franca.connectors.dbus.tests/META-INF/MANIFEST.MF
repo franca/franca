@@ -24,5 +24,5 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.emf.mwe2.language;bundle-version="2.4.0",
  org.xpect;bundle-version="0.1.0",
  org.xpect.xtext.lib;bundle-version="0.1.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy

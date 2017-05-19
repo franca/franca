@@ -7,7 +7,7 @@ Bundle-ClassPath: .
 Bundle-Activator: org.franca.core.franca.provider.FrancaEditPlugin$Implementation
 Bundle-Vendor: itemis AG
 Bundle-Localization: plugin
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.franca.core.franca.provider
 Require-Bundle: org.eclipse.core.runtime,
  org.franca.core;visibility:=reexport,
