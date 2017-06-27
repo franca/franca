@@ -1,0 +1,91 @@
+//
+// Use the "Target Platform Definition DSL" tool for working with this file.
+//
+// P2 Repository for installation: http://mbarbero.github.io/fr.obeo.releng.targetplatform/p2/
+// Homepage: https://github.com/mbarbero/fr.obeo.releng.targetplatform 
+//
+
+target "Franca Target Platform - Eclipse 4.6"
+
+with requirements source
+
+environment en
+
+// required installable units from the Neon platform 
+location neon "http://download.eclipse.org/releases/neon" {
+	org.eclipse.sdk.feature.group
+	org.eclipse.pde.feature.group
+	
+	org.eclipse.emf.transaction.sdk.feature.group [1.10.0,2.0.0)
+	org.eclipse.emf.eef.sdk-feature.feature.group [1.5.1,1.6.0)
+	org.eclipse.gef.sdk.feature.group [3.11.0,3.12.0)
+	org.eclipse.zest.sdk.feature.group [1.7.0,2.0.0)
+	org.eclipse.swt [3.105.3,4.0.0)
+
+	org.eclipse.equinox.executable.feature.group [3.6.300,4.0.0)
+	org.eclipse.emf.common [2.12.0,3.0.0)
+	org.eclipse.emf.sdk.feature.group [2.12.0,3.0.0)
+	org.eclipse.emf.compare.feature.group [3.2.1,4.0.0)
+}
+
+// ANTLR parser, needed for Xtext
+location "http://download.itemis.com/updates/releases/" {
+	de.itemis.xtext.antlr.sdk.feature.group [2.1.1,3.0.0)
+	de.itemis.xtext.antlr.feature.feature.group [2.1.1,3.0.0)
+}
+
+// Xtext and Xtend and related EMF stuff
+location "http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/" {
+	org.eclipse.xtext.sdk.feature.group [2.11.0,2.12.0)
+	org.eclipse.xtend.sdk.feature.group [2.11.0,2.12.0)
+	
+	org.eclipse.emf.mwe2.language.sdk.feature.group [2.9.0,3.0.0)
+	org.eclipse.emf.mwe2.runtime.sdk.feature.group [2.9.0,3.0.0)
+}
+
+
+// KLighD from KIELER, needed for UI add-ons
+location "http://rtsys.informatik.uni-kiel.de/~kieler/updatesite/release_pragmatics_2016-02" {
+ 	de.cau.cs.kieler.kiml.feature.feature.group lazy //[0.18.0,1.0.0)
+ 	de.cau.cs.kieler.klighd.sdk.feature.feature.group [0.7.0,0.9.0) //[0.6.0.201505180202,1.0.0)
+ 	//de.cau.cs.kieler.kiml.graphviz.feature.feature.group
+ 	//de.cau.cs.kieler.kiml.ogdf.feature.feature.group
+}
+
+
+// dbusxml, needed for D-Bus connector
+location "http://kbirken.github.io/dbus-emf-model/releases/" {
+	model.emf.dbusxml.feature.feature.group [0.8.0,1.0.0)
+}
+
+location "http://franca.github.io/franca/update_site/thirdparty" {
+	// idl4emf, needed for OMG IDL connector
+	org.csu.idl.feature.group [1.1.0,2.0.0)	
+
+	// protobuf-dt, needed for Google Protobuf connector
+	com.google.eclipse.protobuf.feature.group [1.5.2,2.0.0)
+	
+	// xdoc, needed for documentation (xdoc4franca fork)
+//TODO	org.eclipse.xtext.xdoc.feature.feature.group [0.1.5,1.0.0)
+
+	// xtext-utils, needed for tests
+	// we temporarily host this on franca-thirdparty until xtext-utils finds a new home
+	org.eclipselabs.xtext.utils.unittesting.feature.feature.group [0.9.3,0.10.0)	
+}
+
+// etrice, needed for eTrice connector
+//location "http://download.eclipse.org/etrice/updates/releases/0.2.0" {
+//	org.eclipse.etrice.feature.feature.group [0.2.0,0.3.0)
+//}
+
+
+// Xpect, needed for tests
+location "http://www.xpect-tests.org/updatesite/nightly/" {
+	org.eclipse.jdt.junit.runners.feature.feature.group [0.1.0,1.0.0)
+	org.xpect.sdk.feature.group [0.2.0,1.0.0)
+}
+
+// eclemma, needed for test coverage check 
+location "http://update.eclemma.org/" {
+	com.mountainminds.eclemma.feature.feature.group [2.3.3,3.0.0)
+}
