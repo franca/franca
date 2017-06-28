@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/mbarbero/fr.obeo.releng.targetplatform -->
-<target name="Franca Target Platform - Eclipse 4.6" sequenceNumber="1498564403">
+<target name="Franca Target Platform - Eclipse 4.6" sequenceNumber="1498581768">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.sdk.feature.group" version="4.6.3.v20170301-0400"/>
@@ -14,8 +14,11 @@
       <unit id="org.eclipse.equinox.executable.feature.group" version="3.6.300.v20161122-1740"/>
       <unit id="org.eclipse.emf.common" version="2.12.0.v20160420-0247"/>
       <unit id="org.eclipse.emf.sdk.feature.group" version="2.12.0.v20160526-0356"/>
-      <unit id="org.eclipse.emf.compare.feature.group" version="3.2.1.201608311750"/>
       <repository id="neon" location="http://download.eclipse.org/releases/neon"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.eclipse.emf.compare.feature.group" version="3.0.1.201408191310"/>
+      <repository location="http://download.eclipse.org/modeling/emf/compare/updates/releases/3.0"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="de.itemis.xtext.antlr.sdk.feature.group" version="2.1.1.v201405091103"/>
