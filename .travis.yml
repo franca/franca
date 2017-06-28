@@ -1,9 +1,9 @@
 # use new travis infrastructure (container-based)
 sudo: false
 
-# currently we use Java 7
+# currently we use Java 8
 language: java
-jdk: oraclejdk7
+jdk: oraclejdk8
 
 # activate caching to speed up build
 cache:
