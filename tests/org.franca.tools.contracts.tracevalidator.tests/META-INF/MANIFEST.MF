@@ -30,4 +30,4 @@ Import-Package: org.apache.commons.logging,
  org.junit.runners.model;version="4.5.0",
  org.hamcrest;core=split,
  org.hamcrest.core
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8

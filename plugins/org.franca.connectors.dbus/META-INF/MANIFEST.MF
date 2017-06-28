@@ -15,7 +15,7 @@ Require-Bundle: org.eclipse.core.runtime,
  model.emf.dbusxml;bundle-version="0.8.0";visibility:=reexport,
  org.franca.core;bundle-version="0.9.1",
  org.franca.core.dsl;bundle-version="0.9.1"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: org.franca.connectors.dbus,
  org.franca.connectors.dbus.util,
