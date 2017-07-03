@@ -49,7 +49,7 @@
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.jdt.junit.runners.feature.feature.group" version="0.1.0.201411181552"/>
-      <unit id="org.xpect.sdk.feature.group" version="0.2.0.201611211350"/>
+      <unit id="org.xpect.sdk.feature.group" version="0.2.0.201706301756"/>
       <repository location="http://www.xpect-tests.org/updatesite/nightly/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
