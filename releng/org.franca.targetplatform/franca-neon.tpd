@@ -76,7 +76,8 @@ location "http://franca.github.io/franca/update_site/thirdparty" {
 	com.google.eclipse.protobuf.feature.group [1.5.2,2.0.0)
 	
 	// xdoc, needed for documentation (xdoc4franca fork)
-//TODO	org.eclipse.xtext.xdoc.feature.feature.group [0.1.5,1.0.0)
+	// we use 0.2.0, which has been built against Xtext 2.11 and Neon
+	org.eclipse.xtext.xdoc.feature.feature.group [0.2.0,1.0.0)
 
 	// xtext-utils, needed for tests
 	// we temporarily host this on franca-thirdparty until xtext-utils finds a new home
