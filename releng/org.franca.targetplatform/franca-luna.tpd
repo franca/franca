@@ -88,5 +88,5 @@ location "http://www.xpect-tests.org/updatesite/nightly/" {
 
 // eclemma, needed for test coverage check 
 location "http://update.eclemma.org/" {
-	com.mountainminds.eclemma.feature.feature.group [2.3.3,3.0.0)
+	org.eclipse.eclemma.feature.feature.group [3.0.0,4.0.0)
 }
