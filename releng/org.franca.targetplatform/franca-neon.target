@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/mbarbero/fr.obeo.releng.targetplatform -->
-<target name="Franca Target Platform - Eclipse 4.6" sequenceNumber="1498581768">
+<target name="Franca Target Platform - Eclipse 4.6" sequenceNumber="1499085215">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.sdk.feature.group" version="4.6.3.v20170301-0400"/>
@@ -53,7 +53,7 @@
       <repository location="http://www.xpect-tests.org/updatesite/nightly/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="com.mountainminds.eclemma.feature.feature.group" version="2.3.3.201602231923"/>
+      <unit id="org.eclipse.eclemma.feature.feature.group" version="3.0.0.201706140232"/>
       <repository location="http://update.eclemma.org/"/>
     </location>
   </locations>
