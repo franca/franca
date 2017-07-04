@@ -44,7 +44,7 @@
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.csu.idl.feature.group" version="1.1.0.201703291002"/>
       <unit id="com.google.eclipse.protobuf.feature.group" version="1.6.0.201705261156"/>
-      <unit id="org.eclipse.xtext.xdoc.feature.feature.group" version="0.2.0.201707031145"/>
+      <unit id="org.eclipse.xtext.xdoc.feature.feature.group" version="0.2.0.201707041454"/>
       <unit id="org.eclipselabs.xtext.utils.unittesting.feature.feature.group" version="0.9.3.201204261440"/>
       <repository location="http://franca.github.io/franca/update_site/thirdparty"/>
     </location>
