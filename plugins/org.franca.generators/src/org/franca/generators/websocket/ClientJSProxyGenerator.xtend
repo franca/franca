@@ -10,7 +10,7 @@ package org.franca.generators.websocket
 import org.franca.core.franca.FInterface
 import static extension org.franca.generators.websocket.WebsocketGeneratorUtils.*
 
-class ClientJSStubGenerator {
+class ClientJSProxyGenerator {
 
 	def getFileName(FInterface api) {
 		api.name.toFirstUpper + "Proxy"
