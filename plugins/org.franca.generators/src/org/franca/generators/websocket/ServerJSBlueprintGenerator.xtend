@@ -9,8 +9,9 @@ package org.franca.generators.websocket
 
 import org.franca.core.franca.FInterface
 
-import static org.franca.core.franca.FrancaPackage$Literals.*
 import static org.franca.generators.websocket.WebsocketGeneratorUtils.*
+
+import static extension org.franca.core.FrancaModelExtensions.*
 
 class ServerJSBlueprintGenerator {
 
@@ -33,9 +34,9 @@ class ServerJSBlueprintGenerator {
 	
 	// create http server and listen to port 8080
 	// we need this to serve index.html and other files to the client
-	var HttpServer = require('«genPathToRoot(api.eContainer.eGet(FMODEL_ELEMENT__NAME).toString)»base/util/HttpServer');
+	var HttpServer = require('«genPathToRoot(api.model.name)»base/util/HttpServer');
 	var http = new HttpServer();
-	http.init(8080, '«genPathToRoot(api.eContainer.eGet(FMODEL_ELEMENT__NAME).toString)»../client');
+	http.init(8080, '«genPathToRoot(api.model.name)»../client');
 
 	// create websocket stub for SimpleUI interface and listen to websocket port.
 	var «getStubName(api)» = require('./«getStubName(api)»');
