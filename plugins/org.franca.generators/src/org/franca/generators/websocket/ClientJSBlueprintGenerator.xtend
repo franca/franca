@@ -31,9 +31,20 @@ class ClientJSBlueprintGenerator {
 	};
 	
 	/**
+	 * The function will be called when there is an error on the connection.
+	 *
+	 * After this handler has been called, usually onClosed will be called with a proper CloseEvent.
+	 */
+	proxy.onError = function() {
+		// your code goes here
+	};
+	
+	/**
 	 * The function will be called when the connection to the server has been terminated.
+	 *
+	 * The event parameter will be of type CloseEvent.
 	 */ 
-	proxy.onClosed = function() {
+	proxy.onClosed = function(event) {
 		// your code goes here
 	};
 	

@@ -82,12 +82,18 @@ class ClientJSStubGenerator {
 			}
 		};
 
+		_this.socket.onerror = function () {
+			if (typeof(_this.onError) === "function") {
+				_this.onError();
+			}
+		};
+	
 		// store reference for this proxy in the WebSocket object
 		_this.socket.proxy = _this;
 		
-		_this.socket.onclose = function() {
+		_this.socket.onclose = function(event) {
 			if (typeof(_this.onClosed) === "function") {
-				_this.onClosed();
+				_this.onClosed(event);
 			}
 		};
 		
