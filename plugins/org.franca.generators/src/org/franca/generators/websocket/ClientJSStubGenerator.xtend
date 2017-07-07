@@ -139,14 +139,15 @@ class ClientJSStubGenerator {
 				// handling of EVENT messages
 				else if (messageType === 8) {
 					var topicURI = message.shift();
+					var data = message.shift();
 					«FOR attribute : api.attributes»
 					if (topicURI === "signal:«attribute.name»" && typeof(_this.onChanged«attribute.name.toFirstUpper») === "function") {
-						_this.onChanged«attribute.name.toFirstUpper»(message);
+						_this.onChanged«attribute.name.toFirstUpper»(data);
 					}
 					«ENDFOR»
 					«FOR broadcast : api.broadcasts»
 					if (topicURI === "broadcast:«broadcast.name»" && typeof(_this.signal«broadcast.name.toFirstUpper») === "function") {
-						_this.signal«broadcast.name.toFirstUpper»(message);
+						_this.signal«broadcast.name.toFirstUpper»(data);
 					}
 					«ENDFOR»
 				}
