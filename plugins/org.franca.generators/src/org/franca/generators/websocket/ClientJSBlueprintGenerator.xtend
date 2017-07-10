@@ -8,6 +8,7 @@
 package org.franca.generators.websocket
 
 import org.franca.core.franca.FInterface
+import static extension org.franca.core.FrancaModelExtensions.*
 
 class ClientJSBlueprintGenerator {
 
@@ -94,8 +95,20 @@ class ClientJSBlueprintGenerator {
 	proxy.reply«method.name.toFirstUpper» = function(cid«IF !method.outArgs.empty», «FOR arg : method.outArgs SEPARATOR ", "»«arg.name»«ENDFOR»«ENDIF») {
 		// your code goes here
 	};
-	«ENDFOR»
 	
+	«IF method.hasErrorResponse»
+	/**
+	 * Async callback if an error occurs instead of a normal response to a '«method.name»' call.
+	 * 
+	 * @param cid the call id
+	 * @param error the error code, one of «FOR ee : method.allErrorEnumerators SEPARATOR ", "»'«ee.name»'«ENDFOR»
+	 */
+	proxy.error«method.name.toFirstUpper» = function(cid, error) {
+		// your code goes here
+	};
+	
+	«ENDIF»
+	«ENDFOR»
 	«FOR broadcast : api.broadcasts»
 	/**
 	 * The callback is called when the '«broadcast.name»' broadcast is called on the server side. 
@@ -108,8 +121,8 @@ class ClientJSBlueprintGenerator {
 	};
 
 	«ENDFOR»
-	// These functions are provided by the proxy
 	«FOR attribute : api.attributes»
+	// API functions provided by the proxy for usage of attribute «attribute.name»
 	proxy.get«attribute.name.toFirstUpper»();
 	«IF !attribute.readonly»
 	proxy.set«attribute.name.toFirstUpper»(null);
@@ -118,10 +131,17 @@ class ClientJSBlueprintGenerator {
 	proxy.subscribe«attribute.name.toFirstUpper»Changed();
 	proxy.unsubscribe«attribute.name.toFirstUpper»Changed();
 	«ENDIF»
+
 	«ENDFOR»
 	
 	«FOR method : api.methods»
-	proxy.«method.name»(«FOR arg : method.inArgs SEPARATOR ", "»null«ENDFOR»);
+	/**
+	 * API function provided by the proxy for calling method '«method.name»'.
+	 «FOR arg : method.inArgs»
+	 * @param «arg.name»
+	 «ENDFOR»
+	 */
+	proxy.«method.name»(«FOR arg : method.inArgs SEPARATOR ", "»«arg.name»«ENDFOR»);
 	
 	«ENDFOR»
 	'''
