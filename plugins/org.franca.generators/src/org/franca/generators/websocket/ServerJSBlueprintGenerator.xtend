@@ -7,6 +7,8 @@
 *******************************************************************************/
 package org.franca.generators.websocket
 
+import java.util.List
+import org.franca.core.franca.FArgument
 import org.franca.core.franca.FInterface
 
 import static org.franca.generators.websocket.WebsocketGeneratorUtils.*
@@ -82,9 +84,44 @@ class ServerJSBlueprintGenerator {
 	
 	/**
 	 * The function carries out the async invocation of method '«method.name»'.
+	 *
+	 * You should either define this function or the synchronous counterpart (see below).
 	 * 
 	 «IF method.outArgs.size > 1»
-	 * The returned value must be a Javascript Map, with keys «FOR arg : method.outArgs SEPARATOR ", "»«arg.name»«ENDFOR».
+	 * The returned value must be a Javascript map, with keys «method.outArgs.join(', ')».
+	 *
+	 «ENDIF»
+	 «FOR arg : method.inArgs»
+	 * @param «arg.name»
+	 «ENDFOR»
+	 * @param reply the callback function for sending a normal response for '«method.name»'
+	 «IF method.hasErrorResponse»
+	 * @param error the callback function for indicating an error for '«method.name»'
+	 «ENDIF»
+	 */
+	stub.«method.name» = function(«method.inArgs.map[name+', '].join»reply«IF method.hasErrorResponse», error«ENDIF») {
+		// here goes your code
+		«IF method.hasErrorResponse»
+		 
+		if (errorOccured) {
+			/* code is one of «method.allErrorEnumerators.map["'" + name + "'"].join(', ')» */
+			error(code);
+		} else {
+			reply(«method.outArgs.join(', ')»);
+		}
+		«ELSE»
+		 
+		reply(«method.outArgs.join(', ')»);
+		«ENDIF» 
+	};
+
+	/**
+	 * The function carries out the synchronous invocation of method '«method.name»'.
+	 *
+	 * You should either define this function or the async counterpart (see above).
+	 * 
+	 «IF method.outArgs.size > 1»
+	 * The returned value must be a Javascript map, with keys «method.outArgs.map[name].join(', ')».
 	 *
 	 «ENDIF»
 	 «FOR arg : method.inArgs»
@@ -94,8 +131,12 @@ class ServerJSBlueprintGenerator {
 	 * @return the value that should be returned to the client
 	 «ENDIF» 
 	 */
-	stub.«method.name» = function(«FOR arg : method.inArgs SEPARATOR ", "»«arg.name»«ENDFOR») {
+	stub.«method.name»Sync = function(«method.inArgs.map[name].join(', ')») {
 		// here goes your code
+		«IF method.outArgs.size > 0»
+
+		return result;
+		«ENDIF»
 	};
 	«ENDFOR»
 	
@@ -116,4 +157,5 @@ class ServerJSBlueprintGenerator {
 	
 	«ENDFOR»
 	'''
+
 }
