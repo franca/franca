@@ -7,10 +7,12 @@
 *******************************************************************************/
 package org.franca.generators.websocket
 
+import java.util.List
+import org.franca.core.franca.FArgument
 import org.franca.core.franca.FInterface
 
 import static extension org.franca.generators.websocket.WebsocketGeneratorUtils.*
-import static org.franca.core.franca.FrancaPackage$Literals.*
+import static extension org.franca.core.FrancaModelExtensions.*
 
 class ServerJSStubGenerator {
 
@@ -100,10 +102,21 @@ class ServerJSStubGenerator {
 		// RPC stub for method «method.name»
 		_this.server.rpc('invoke', function() {
 			this.register('«method.name»', function(client, cb, args) {
-				// fireAndForget = «method.fireAndForget»
-				var result = _this.«method.name»(«FOR arg : method.inArgs SEPARATOR ", "»args["«arg.name»"]«ENDFOR»);
-				«IF !method.fireAndForget»
-				cb(null, JSON.stringify(result));
+				«IF method.fireAndForget»
+					_this.«method.name»Sync(«method.inArgs.genArgs»);
+				«ELSE»
+					if (typeof(_this.«method.name»Sync) === "function") {
+						var result = _this.«method.name»Sync(«method.inArgs.genArgs»);
+						// TODO: How to handle error responses in the synchronous case?
+						cb(null, JSON.stringify(result));
+					} else if (typeof(_this.«method.name») === "function") {
+						_this.«method.name»(«method.inArgs.genArgs»«IF !method.inArgs.empty»,«ENDIF»
+							function(result) { cb(null, JSON.stringify(result)); }«IF method.hasErrorResponse»,«ENDIF»
+							«IF method.hasErrorResponse»
+								function(error) { cb(error, null); }
+							«ENDIF»
+						);
+					}
 				«ENDIF»
 			});
 		});
@@ -118,4 +131,6 @@ class ServerJSStubGenerator {
 	
 	«api.types.genEnumerations(true)»
 	'''
+
+	def private genArgs(List<FArgument> args) '''«FOR arg : args SEPARATOR ", "»args["«arg.name»"]«ENDFOR»'''
 }

@@ -8,7 +8,9 @@
 package org.franca.generators.websocket
 
 import org.franca.core.franca.FInterface
+
 import static extension org.franca.generators.websocket.WebsocketGeneratorUtils.*
+import static extension org.franca.core.FrancaModelExtensions.*
 
 class ClientJSProxyGenerator {
 
@@ -103,7 +105,7 @@ class ClientJSProxyGenerator {
 				var messageType = message.shift();
 				
 				// handling of CALLRESULT messages
-				if (messageType === 3) {
+				if (messageType === 3 || messageType === 4) {
 					var tokens = message.shift().split(":");
 					var mode = tokens[0];
 					var name = tokens[1];
@@ -126,12 +128,19 @@ class ClientJSProxyGenerator {
 					}
 					else if (mode === "invoke") {
 						«FOR method : api.methods»
-						if (name === "«method.name»" && typeof(_this.reply«method.name.toFirstUpper») === "function") {
-							«IF method.outArgs.size > 1»
-							// needs to parse the map which contains the multiple output parameters
-							message = JSON.parse(message);
-							«ENDIF»
-							_this.reply«method.name.toFirstUpper»(cid«IF !method.outArgs.empty», «IF method.outArgs.size == 1»message«ELSE»«FOR arg : method.outArgs SEPARATOR ", "»message["«arg.name»"]«ENDFOR»«ENDIF»«ENDIF»);
+						if (name === "«method.name»") {
+							if (messageType === 3 && typeof(_this.reply«method.name.toFirstUpper») === "function") {
+								«IF method.outArgs.size > 1»
+								// needs to parse the map which contains the multiple output parameters
+								message = JSON.parse(message);
+								«ENDIF»
+								_this.reply«method.name.toFirstUpper»(cid«IF !method.outArgs.empty», «IF method.outArgs.size == 1»message«ELSE»«FOR arg : method.outArgs SEPARATOR ", "»message["«arg.name»"]«ENDFOR»«ENDIF»«ENDIF»);
+							«IF method.hasErrorResponse»
+							} else if (messageType === 4 && typeof(_this.error«method.name.toFirstUpper») === "function") {
+								var error = message[1];
+								_this.error«method.name.toFirstUpper»(cid, error);
+							«ENDIF»	
+							}
 						}
 						«ENDFOR»
 					}
