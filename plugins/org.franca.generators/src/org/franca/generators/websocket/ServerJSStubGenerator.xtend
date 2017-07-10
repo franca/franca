@@ -21,11 +21,19 @@ class ServerJSStubGenerator {
 	}
 
 	def generate(FInterface api) '''
+	'use strict';
 	var log4js = require('log4js');
-	log4js.loadAppender('file');
-	log4js.addAppender(log4js.appenders.file('logs/«api.fileName».log'), '«api.fileName»');
+	log4js.configure({
+	  appenders: {
+	    «api.fileName»Logs: { type: 'file', filename: 'logs/«api.fileName».log' },
+			console: { type: 'console' }
+	  },
+	  categories: {
+	    «api.fileName»: { appenders: ['«api.fileName»Logs'], level: 'debug' },
+			default: { appenders: ['console', '«api.fileName»Logs'], level: 'debug' }
+	  }
+	});
 	var logger = log4js.getLogger('«api.fileName»');
-	logger.setLevel('DEBUG');
 
 	function «getFileName(api)»(port) {
 		this.wsio = require('websocket.io');
