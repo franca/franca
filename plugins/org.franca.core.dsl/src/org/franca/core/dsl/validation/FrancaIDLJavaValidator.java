@@ -148,7 +148,7 @@ public class FrancaIDLJavaValidator extends AbstractFrancaIDLJavaValidator
 						method,
 						FrancaPackage.Literals.FMETHOD__FIRE_AND_FORGET, -1);
 			}
-			if (method.getErrorEnum() != null || method.getErrors() != null) {
+			if (FrancaModelExtensions.hasErrorResponse(method)) {
 				error("Fire-and-forget methods cannot have error return codes",
 						method,
 						FrancaPackage.Literals.FMETHOD__FIRE_AND_FORGET, -1);

@@ -76,6 +76,10 @@ class FrancaModelExtensions {
 			elem.name + ":" + elem.selector
 	}
 	
+	def static hasErrorResponse(FMethod elem) {
+		elem.errorEnum!=null || elem.errors!=null
+	}
+
 	def static getUniqueName(FBroadcast elem) {
 		if (elem.selector==null)
 			elem.name
