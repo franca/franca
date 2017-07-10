@@ -21,6 +21,12 @@ class ServerJSStubGenerator {
 	}
 
 	def generate(FInterface api) '''
+	var log4js = require('log4js');
+	log4js.loadAppender('file');
+	log4js.addAppender(log4js.appenders.file('logs/«api.fileName».log'), '«api.fileName»');
+	var logger = log4js.getLogger('«api.fileName»');
+	logger.setLevel('DEBUG');
+
 	function «getFileName(api)»(port) {
 		this.wsio = require('websocket.io');
 		this.socket = this.wsio.listen(port);
@@ -90,6 +96,7 @@ class ServerJSStubGenerator {
 				
 				// events will only be sent to subscribed clients if the value has changed
 				if (newValue !== this.«attribute.name») {
+					logger.info('«attribute.name»: ' + newValue);
 					_this.«attribute.name» = newValue;
 					_this.server.emit('publishExcludeSingle', client, "signal:«attribute.name»", newValue);
 				}
@@ -107,15 +114,24 @@ class ServerJSStubGenerator {
 				«ELSE»
 					if (typeof(_this.«method.name»Sync) === "function") {
 						var result = _this.«method.name»Sync(«method.inArgs.genArgs»);
+						logger.info('request: «method.name»');
 						// TODO: How to handle error responses in the synchronous case?
 						cb(null, JSON.stringify(result));
+						logger.info('response: «method.name» = ' + JSON.stringify(result));
 					} else if (typeof(_this.«method.name») === "function") {
 						_this.«method.name»(«method.inArgs.genArgs»«IF !method.inArgs.empty»,«ENDIF»
-							function(result) { cb(null, JSON.stringify(result)); }«IF method.hasErrorResponse»,«ENDIF»
+							function(result) {
+								cb(null, JSON.stringify(result));
+								logger.info('response: «method.name» = ' + JSON.stringify(result));
+							}«IF method.hasErrorResponse»,«ENDIF»
 							«IF method.hasErrorResponse»
-								function(error) { cb(error, null); }
+								function(error) {
+									cb(error, null);
+									logger.info('error: «method.name» = ' + error);
+								}
 							«ENDIF»
 						);
+						logger.info('request: «method.name»');
 					}
 				«ENDIF»
 			});
@@ -126,6 +142,7 @@ class ServerJSStubGenerator {
 	«FOR broadcast : api.broadcasts»
 	«getFileName(api)».prototype.«broadcast.name» = function(data) {
 		this.server.emit('publishAll', "broadcast:«broadcast.name»", data);
+		logger.info('signal: «broadcast.name» ' + JSON.stringify(data));
 	};
 	«ENDFOR»
 	
