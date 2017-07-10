@@ -20,19 +20,10 @@ class ServerJSStubGenerator {
 		api.name.toFirstUpper + "Stub"
 	}
 
-	def generate(FInterface api) '''
+	def generate(FInterface api) '''	
 	'use strict';
 	var log4js = require('log4js');
-	log4js.configure({
-	  appenders: {
-	    «api.fileName»Logs: { type: 'file', filename: 'logs/«api.fileName».log' },
-			console: { type: 'console' }
-	  },
-	  categories: {
-	    «api.fileName»: { appenders: ['«api.fileName»Logs'], level: 'debug' },
-			default: { appenders: ['console', '«api.fileName»Logs'], level: 'debug' }
-	  }
-	});
+	log4js.configure('log4js-conf.json');
 	var logger = log4js.getLogger('«api.fileName»');
 
 	function «getFileName(api)»(port) {
