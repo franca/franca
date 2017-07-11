@@ -21,6 +21,11 @@ class ClientJSBlueprintGenerator {
 	}
 	
 	def generate(FInterface api) '''
+	/**
+	 * This is an example websocket clent which uses the JS-proxy as generated
+	 * by Franca's WAMP/Websocket generator in org.franca.generators.websocket. 
+	 */
+	
 	var proxy = new «getStubName(api)»();
 	proxy.connect('ws://localhost:8081');
 
