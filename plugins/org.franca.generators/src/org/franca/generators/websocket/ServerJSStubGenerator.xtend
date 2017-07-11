@@ -20,7 +20,7 @@ class ServerJSStubGenerator {
 		api.name.toFirstUpper + "Stub"
 	}
 
-	def generate(FInterface api) '''	
+	def generate(FInterface api) '''
 	'use strict';
 	var log4js = require('log4js');
 	log4js.configure('log4js-conf.json');
@@ -44,6 +44,7 @@ class ServerJSStubGenerator {
 	
 	«FOR attribute : api.attributes»
 	«getFileName(api)».prototype.set«attribute.name.toFirstUpper» = function(newValue) {
+		logger.info(JSON.stringify({type: "attribute", name:'«attribute.name»', params:newValue}));
 		this.«attribute.name» = newValue;
 		this.server.emit('publishAll', "signal:«attribute.name»", newValue);
 	};
@@ -108,6 +109,7 @@ class ServerJSStubGenerator {
 		// RPC stub for method «method.name»
 		_this.server.rpc('invoke', function() {
 			this.register('«method.name»', function(client, cb, args) {
+				logger.info(JSON.stringify({type: "request", name:'«method.name»', params:args}));						
 				«IF method.fireAndForget»
 					_this.«method.name»(«method.inArgs.genArgs»);
 				«ELSE»
@@ -116,21 +118,20 @@ class ServerJSStubGenerator {
 						logger.info('request: «method.name»');
 						// TODO: How to handle error responses in the synchronous case?
 						cb(null, JSON.stringify(result));
-						logger.info('response: «method.name» = ' + JSON.stringify(result));
+						logger.info(JSON.stringify({type: "response", name:'«method.name»', params:result}));						
 					} else if (typeof(_this.«method.name») === "function") {
 						_this.«method.name»(«method.inArgs.genArgs»«IF !method.inArgs.empty»,«ENDIF»
 							function(result) {
 								cb(null, JSON.stringify(result));
-								logger.info('response: «method.name» = ' + JSON.stringify(result));
+								logger.info(JSON.stringify({type: "response", name:'«method.name»', params:result}));						
 							}«IF method.hasErrorResponse»,«ENDIF»
 							«IF method.hasErrorResponse»
 								function(error) {
 									cb(error, null);
-									logger.info('error: «method.name» = ' + error);
+									logger.error(JSON.stringify({type: "error", name:'«method.name»', params:error}));						
 								}
 							«ENDIF»
 						);
-						logger.info('request: «method.name»');
 					}
 				«ENDIF»
 			});
