@@ -14,6 +14,7 @@ import org.franca.core.franca.FInterface
 import static org.franca.generators.websocket.WebsocketGeneratorUtils.*
 
 import static extension org.franca.core.FrancaModelExtensions.*
+import static extension org.franca.core.framework.FrancaHelpers.*
 
 class ServerJSBlueprintGenerator {
 
@@ -107,11 +108,11 @@ class ServerJSBlueprintGenerator {
 			/* code is one of «method.allErrorEnumerators.map["'" + name + "'"].join(', ')» */
 			error(code);
 		} else {
-			reply(«method.outArgs.join(', ')»);
+			reply(«method.outArgs.map[name].join(', ')»);
 		}
 		«ELSE»
 		 
-		reply(«method.outArgs.join(', ')»);
+		reply(«method.outArgs.map[name].join(', ')»);
 		«ENDIF» 
 	};
 
@@ -142,18 +143,18 @@ class ServerJSBlueprintGenerator {
 	
 	// The following attributes are defined
 	«FOR attribute : api.attributes»
-	stub.«attribute.name» = null;
+	stub.«attribute.name» = <«attribute.type.typeString»>;
 	«ENDFOR»
 	
 	// These functions are provided by the stub
 	stub.getClients();
 
 	«FOR attribute : api.attributes»
-	stub.set«attribute.name.toFirstUpper»(null);
+	stub.set«attribute.name.toFirstUpper»(<«attribute.type.typeString»>);
 	
 	«ENDFOR»
 	«FOR broadcast : api.broadcasts»
-	stub.«broadcast.name»(null);
+	stub.«broadcast.name»(«broadcast.outArgs.map[name].join(', ')»);
 	
 	«ENDFOR»
 	'''
