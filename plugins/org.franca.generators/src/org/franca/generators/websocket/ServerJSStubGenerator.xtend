@@ -109,7 +109,7 @@ class ServerJSStubGenerator {
 		_this.server.rpc('invoke', function() {
 			this.register('«method.name»', function(client, cb, args) {
 				«IF method.fireAndForget»
-					_this.«method.name»Sync(«method.inArgs.genArgs»);
+					_this.«method.name»(«method.inArgs.genArgs»);
 				«ELSE»
 					if (typeof(_this.«method.name»Sync) === "function") {
 						var result = _this.«method.name»Sync(«method.inArgs.genArgs»);
