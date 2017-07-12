@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
+import org.franca.core.contracts.FEventUtils;
 import org.franca.core.franca.FContract;
 import org.franca.core.franca.FEventOnIf;
 import org.franca.core.franca.FState;
@@ -131,7 +132,15 @@ public class TraceValidator {
 				Set<EventWrapper> events = wrap(trace[0]);
 				if (initialTraceGroup == null) {
 					for (EventWrapper event : events) {
-						traceGroups.add(guessMap.get(event));
+						Set<FTransition> guess = guessMap.get(event);
+						if (guess==null) {
+							System.err.println("TraceValidator warning 001: " +
+									"Event " + FEventUtils.getEventID(event.event) + " not found in guessMap!");
+							System.out.println("GuessMap: #cached_maps: " + guessMapCache.size() +
+									" #events in current: " + guessMap.size());
+						} else {
+							traceGroups.add(guess);
+						}
 					}
 					// if the trace contains only one element and 
 					// the initial trace group is null, then the trace is
@@ -192,17 +201,26 @@ public class TraceValidator {
 			Set<FTransition> expected, Set<Set<FTransition>> traceGroups,
 			Set<Set<FTransition>> temporaryTraceGroups) {
 		Set<FTransition> guess = guessMap.get(event);
+		if (guess==null) {
+			System.err.println("TraceValidator warning 002: " +
+					"Event " + FEventUtils.getEventID(event.event) + " not found in guessMap!");
+			System.out.println("GuessMap: #cached_maps: " + guessMapCache.size() +
+					" #events in current: " + guessMap.size());
+		}
 		
 		// check whether we can follow the execution on any path
 		for (Set<FTransition> transitions : traceGroups) {
 			for (FTransition transition : transitions) {
 				expected.addAll(transition.getTo().getTransitions());
-				Set<FTransition> isect = intersection(transition.getTo()
-						.getTransitions(), guess);
-				// only add the new element if it contains at least one element
-				// empty set indicates that the path cannot be followed
-				if (!isect.isEmpty()) {
-					temporaryTraceGroups.add(isect);
+				if (guess!=null) {
+					// if guess==null, the intersection will always be empty
+					Set<FTransition> isect = intersection(transition.getTo()
+							.getTransitions(), guess);
+					// only add the new element if it contains at least one element
+					// empty set indicates that the path cannot be followed
+					if (!isect.isEmpty()) {
+						temporaryTraceGroups.add(isect);
+					}
 				}
 			}
 		}
