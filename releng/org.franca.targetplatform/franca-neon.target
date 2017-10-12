@@ -37,7 +37,7 @@
       <repository location="http://rtsys.informatik.uni-kiel.de/~kieler/updatesite/release_pragmatics_2017-02-04"/>
     </location>
     <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-      <unit id="org.eclipse.elk.sdk.feature.feature.group" version="0.2.2.201709110807"/>
+      <unit id="org.eclipse.elk.sdk.feature.feature.group" version="0.2.2.201709150813"/>
       <repository location="http://build.eclipse.org/modeling/elk/updates/0.2.2"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
