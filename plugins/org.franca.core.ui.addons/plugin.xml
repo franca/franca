@@ -8,14 +8,6 @@
          id="org.franca.core.ui.addons.contractviewer.FrancaPSMDiagramSynthesis">
    </diagramSynthesis>
    </extension>
-   <extension
-         point="de.cau.cs.kieler.core.kivi.combinations">
-      <combination
-            active="true"
-            class="org.franca.core.ui.addons.contractviewer.FrancaPSMDiagramCombination"
-            name="Show Franca contract">
-      </combination>
-   </extension>
 
    <extension
          point="org.eclipse.ui.newWizards">

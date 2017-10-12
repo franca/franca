@@ -32,10 +32,13 @@
       <unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="2.9.0.v201605261103"/>
       <repository location="http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/"/>
     </location>
-    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="de.cau.cs.kieler.kiml.feature.feature.group" version="0.0.0"/>
-      <unit id="de.cau.cs.kieler.klighd.sdk.feature.feature.group" version="0.8.0.201602161004"/>
-      <repository location="http://rtsys.informatik.uni-kiel.de/~kieler/updatesite/release_pragmatics_2016-02"/>
+    <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+      <unit id="de.cau.cs.kieler.klighd.sdk.feature.feature.group" version="0.42.2.201708311633"/>
+      <repository location="http://rtsys.informatik.uni-kiel.de/~kieler/updatesite/release_pragmatics_2017-02-04"/>
+    </location>
+    <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+      <unit id="org.eclipse.elk.sdk.feature.feature.group" version="0.2.2.201709110807"/>
+      <repository location="http://build.eclipse.org/modeling/elk/updates/0.2.2"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="model.emf.dbusxml.feature.feature.group" version="0.8.1.201606031239"/>

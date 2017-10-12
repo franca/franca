@@ -54,12 +54,14 @@ location "http://download.eclipse.org/modeling/tmf/xtext/updates/composite/relea
 }
 
 
-// KLighD from KIELER, needed for UI add-ons
-location "http://rtsys.informatik.uni-kiel.de/~kieler/updatesite/release_pragmatics_2016-02" {
- 	de.cau.cs.kieler.kiml.feature.feature.group lazy //[0.18.0,1.0.0)
- 	de.cau.cs.kieler.klighd.sdk.feature.feature.group [0.7.0,0.9.0) //[0.6.0.201505180202,1.0.0)
- 	//de.cau.cs.kieler.kiml.graphviz.feature.feature.group
- 	//de.cau.cs.kieler.kiml.ogdf.feature.feature.group
+// KIELER klighd, needed for UI add-ons (PSM diagrams)
+location "http://rtsys.informatik.uni-kiel.de/~kieler/updatesite/release_pragmatics_2017-02-04" {
+	de.cau.cs.kieler.klighd.sdk.feature.feature.group [0.42.2,1.0.0)
+}
+
+// ELK (Eclipse Layout Kernel), needed for UI add-ons (base for klighd)
+location "http://build.eclipse.org/modeling/elk/updates/0.2.2" {
+	org.eclipse.elk.sdk.feature.feature.group [0.2.2,0.3.0)
 }
 
 
