@@ -9,6 +9,7 @@ package org.franca.core.dsl.validation
 
 import java.util.Map
 import org.eclipse.xtext.validation.Check
+import org.franca.core.franca.FAttribute
 import org.franca.core.franca.FCompoundInitializer
 import org.franca.core.franca.FCompoundType
 import org.franca.core.franca.FEnumerationType
@@ -260,6 +261,16 @@ class FrancaIDLValidator extends FrancaIDLJavaValidator {
 					}
 				}
 			}
+		}
+	}
+	
+	@Check
+	def checkAttributeFlags(FAttribute attribute) {
+		if (attribute.isNoRead && attribute.isReadonly) {
+			error(
+				"Attribute '" + attribute.name + "' " +
+				"has conflicting flags 'readonly' and 'noRead'",
+				attribute, FMODEL_ELEMENT__NAME)
 		}
 	}
 }

@@ -112,6 +112,8 @@
     <genClasses ecoreClass="franca.ecore#//FAttribute">
       <genFeatures createChild="false" propertyDescription="indicates if this attribute is read-only. If false, clients are granted write access to the attribute."
           ecoreFeature="ecore:EAttribute franca.ecore#//FAttribute/readonly"/>
+      <genFeatures createChild="false" propertyDescription="indicates if this attribute is readable. If false, clients will not have a getter for the attribute's value."
+          ecoreFeature="ecore:EAttribute franca.ecore#//FAttribute/noRead"/>
       <genFeatures createChild="false" propertyDescription="indicates if clients can subscribe to update events for this attribute. If false, subscribing is possible. The reverse logic of this flag is to ensure a proper default in the IDL: if the keyword &quot;noSubscriptions&quot; is not given, subscription is possible."
           ecoreFeature="ecore:EAttribute franca.ecore#//FAttribute/noSubscriptions"/>
     </genClasses>

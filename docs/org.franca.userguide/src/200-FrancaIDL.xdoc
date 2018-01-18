@@ -848,6 +848,25 @@ interface ExampleInterface {
 In the example, attribute e[throttle] can be written, while attribute e[speed] can only
 by read by the clients.
 
+section3:FIDL_Interface_Attribute_noRead[Write-only attributes]
+
+It is also possible to disallow the read access to the value of an attribute
+by specifying the per-attribute flag e[noRead]. When the flag is given,
+the clients of the corresponding interface are not allowed to explicitly 
+read the attribute's value. I.e., code generators will not provide a getter
+function for the generated attibute. However, the attribute's value might still
+be retrieved using the subscription mechanism as described below.
+Example for the e[noRead]-flag:
+
+code[Franca][
+interface ExampleInterface {
+	attribute UInt32 controlRegister noRead
+}
+]
+  
+In the example, attribute e[controlRegister] cannot be explicitly read by the clients.
+However, it can be written, and updates might be received using the subscription mechanism.
+
 section3:FIDL_Interface_Attribute_NoSubscriptions[Client subscriptions]
 
 As mentioned above, clients of an interface might register for updates of

@@ -16,6 +16,9 @@ interface MyInterface60 {
 	attribute UInt16 a3 readonly noSubscriptions
 	attribute UInt16 a4 readonly
 
+	attribute UInt16 a5 noRead noSubscriptions
+	attribute UInt16 a6 noRead
+
 	method method1 {
 		in {
 			UInt16 arg1			
