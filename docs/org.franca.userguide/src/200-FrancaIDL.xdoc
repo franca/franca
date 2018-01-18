@@ -851,9 +851,9 @@ by read by the clients.
 section3:FIDL_Interface_Attribute_noRead[Write-only attributes]
 
 It is also possible to disallow the read access to the value of an attribute
-by specifying the per-attribute flag e[noRead]. When the flag is given,
-the clients of the corresponding interface are not allowed to explicitly 
-read the attribute's value. I.e., code generators will not provide a getter
+by specifying the per-attribute flag e[noRead] (available since Franca 0.12.0).
+When the flag is given, the clients of the corresponding interface are not allowed to
+explicitly read the attribute's value. I.e., code generators will not provide a getter
 function for the generated attibute. However, the attribute's value might still
 be retrieved using the subscription mechanism as described below.
 Example for the e[noRead]-flag:
