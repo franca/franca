@@ -11,6 +11,8 @@ typeCollection MyTypes {
 	struct S2 {
 		S1 f1
 	}
+	
+	typedef T1 is Integer(1,10)
 
 	
 	// simple boolean operations
@@ -69,6 +71,9 @@ typeCollection MyTypes {
 
 	// simple string constants
 	const String s10 = "foo"
+	
+	// constant of ranged integer typedef
+	const T1 t01 = 7
 
 	// reference to other ConstantDefs
 	const Boolean r10 = b01 && b02 
