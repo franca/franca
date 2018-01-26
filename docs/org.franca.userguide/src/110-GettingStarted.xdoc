@@ -37,7 +37,7 @@ ol[
 ] 
 
 The example project will be part of your Eclipse workspace now.
-Open the Franca IDL example file e[examples/franca/demo1.fidl] by locating it
+Open the Franca IDL example file e[models/org/example/MediaPlayer.fidl] by locating it
 in the Package Explorer and double-click it.
 The Franca IDL textual editor will open, allowing you to review the example 
 and also do some changes.   
