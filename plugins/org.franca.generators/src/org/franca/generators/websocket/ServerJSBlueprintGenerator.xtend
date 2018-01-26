@@ -7,10 +7,14 @@
 *******************************************************************************/
 package org.franca.generators.websocket
 
+import java.util.List
+import org.franca.core.franca.FArgument
 import org.franca.core.franca.FInterface
 
-import static org.franca.core.franca.FrancaPackage$Literals.*
 import static org.franca.generators.websocket.WebsocketGeneratorUtils.*
+
+import static extension org.franca.core.FrancaModelExtensions.*
+import static extension org.franca.core.framework.FrancaHelpers.*
 
 class ServerJSBlueprintGenerator {
 
@@ -33,9 +37,9 @@ class ServerJSBlueprintGenerator {
 	
 	// create http server and listen to port 8080
 	// we need this to serve index.html and other files to the client
-	var HttpServer = require('«genPathToRoot(api.eContainer.eGet(FMODEL_ELEMENT__NAME).toString)»base/util/HttpServer');
+	var HttpServer = require('«genPathToRoot(api.model.name)»base/util/HttpServer');
 	var http = new HttpServer();
-	http.init(8080, '«genPathToRoot(api.eContainer.eGet(FMODEL_ELEMENT__NAME).toString)»../client');
+	http.init(8080, '«genPathToRoot(api.model.name)»../client');
 
 	// create websocket stub for SimpleUI interface and listen to websocket port.
 	var «getStubName(api)» = require('./«getStubName(api)»');
@@ -81,9 +85,44 @@ class ServerJSBlueprintGenerator {
 	
 	/**
 	 * The function carries out the async invocation of method '«method.name»'.
+	 *
+	 * You should either define this function or the synchronous counterpart (see below).
 	 * 
 	 «IF method.outArgs.size > 1»
-	 * The returned value must be a Javascript Map, with keys «FOR arg : method.outArgs SEPARATOR ", "»«arg.name»«ENDFOR».
+	 * The returned value must be a Javascript map, with keys «method.outArgs.join(', ')».
+	 *
+	 «ENDIF»
+	 «FOR arg : method.inArgs»
+	 * @param «arg.name»
+	 «ENDFOR»
+	 * @param reply the callback function for sending a normal response for '«method.name»'
+	 «IF method.hasErrorResponse»
+	 * @param error the callback function for indicating an error for '«method.name»'
+	 «ENDIF»
+	 */
+	stub.«method.name» = function(«method.inArgs.map[name+', '].join»reply«IF method.hasErrorResponse», error«ENDIF») {
+		// here goes your code
+		«IF method.hasErrorResponse»
+		 
+		if (errorOccured) {
+			/* code is one of «method.allErrorEnumerators.map["'" + name + "'"].join(', ')» */
+			error(code);
+		} else {
+			reply(«method.outArgs.map[name].join(', ')»);
+		}
+		«ELSE»
+		 
+		reply(«method.outArgs.map[name].join(', ')»);
+		«ENDIF» 
+	};
+
+	/**
+	 * The function carries out the synchronous invocation of method '«method.name»'.
+	 *
+	 * You should either define this function or the async counterpart (see above).
+	 * 
+	 «IF method.outArgs.size > 1»
+	 * The returned value must be a Javascript map, with keys «method.outArgs.map[name].join(', ')».
 	 *
 	 «ENDIF»
 	 «FOR arg : method.inArgs»
@@ -93,26 +132,31 @@ class ServerJSBlueprintGenerator {
 	 * @return the value that should be returned to the client
 	 «ENDIF» 
 	 */
-	stub.«method.name» = function(«FOR arg : method.inArgs SEPARATOR ", "»«arg.name»«ENDFOR») {
+	stub.«method.name»Sync = function(«method.inArgs.map[name].join(', ')») {
 		// here goes your code
+		«IF method.outArgs.size > 0»
+
+		return result;
+		«ENDIF»
 	};
 	«ENDFOR»
 	
 	// The following attributes are defined
 	«FOR attribute : api.attributes»
-	stub.«attribute.name» = null;
+	stub.«attribute.name» = <«attribute.type.typeString»>;
 	«ENDFOR»
 	
 	// These functions are provided by the stub
 	stub.getClients();
 
 	«FOR attribute : api.attributes»
-	stub.set«attribute.name.toFirstUpper»(null);
+	stub.set«attribute.name.toFirstUpper»(<«attribute.type.typeString»>);
 	
 	«ENDFOR»
 	«FOR broadcast : api.broadcasts»
-	stub.«broadcast.name»(null);
+	stub.«broadcast.name»(«broadcast.outArgs.map[name].join(', ')»);
 	
 	«ENDFOR»
 	'''
+
 }

@@ -14,7 +14,7 @@ import org.franca.core.utils.FileHelper;
 import org.franca.generators.html.HTMLGenerator;
 import org.franca.generators.java.JavaAPIGenerator;
 import org.franca.generators.websocket.ClientJSBlueprintGenerator;
-import org.franca.generators.websocket.ClientJSStubGenerator;
+import org.franca.generators.websocket.ClientJSProxyGenerator;
 import org.franca.generators.websocket.ServerJSBlueprintGenerator;
 import org.franca.generators.websocket.ServerJSStubGenerator;
 
@@ -54,7 +54,7 @@ public class FrancaGenerators {
 	}
 	
 	public boolean genWebsocket (FModel model, String serverGenDir, String clientGenDir) {
-		ClientJSStubGenerator genClientStub = new ClientJSStubGenerator();
+		ClientJSProxyGenerator genClientProxy = new ClientJSProxyGenerator();
 		ServerJSStubGenerator genServerStub = new ServerJSStubGenerator();
 		ServerJSBlueprintGenerator genServerBlueprint = new ServerJSBlueprintGenerator();
 		ClientJSBlueprintGenerator genClientBlueprint = new ClientJSBlueprintGenerator();
@@ -65,12 +65,12 @@ public class FrancaGenerators {
 		String clientGenPath = clientGenDir + "/" + createPath(model);
 		String serverGenPath = serverGenDir + "/" + createPath(model);
 		
-		String clientStubContent = genClientStub.generate(api).toString();
+		String clientStubContent = genClientProxy.generate(api).toString();
 		String serverStubContent = genServerStub.generate(api).toString();
 		String clientBlueprintContent = genClientBlueprint.generate(api).toString();
 		String serverBlueprintContent = genServerBlueprint.generate(api).toString();
 		
-		return FileHelper.save(clientGenPath, genClientStub.getFileName(api) + ".js", clientStubContent)
+		return FileHelper.save(clientGenPath, genClientProxy.getFileName(api) + ".js", clientStubContent)
 			&& FileHelper.save(serverGenPath, genServerStub.getFileName(api) + ".js", serverStubContent)
 			&& FileHelper.save(serverGenPath, genServerBlueprint.getFileName(api) + ".js", serverBlueprintContent)
 			&& FileHelper.save(clientGenPath, genClientBlueprint.getFileName(api) + ".js", clientBlueprintContent);

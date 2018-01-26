@@ -131,6 +131,9 @@ Workflow {
 			// quickfix API 
 			fragment = quickfix.QuickfixProviderFragment {}
 
+			// rename refactoring
+			fragment = refactoring.RefactorElementNameFragment {}
+			
             // generates junit test support classes into Generator#pathTestProject
             fragment = junit.Junit4Fragment {}
 		}

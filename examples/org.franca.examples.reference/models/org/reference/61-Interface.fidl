@@ -12,7 +12,7 @@ package org.reference
 interface MyInterface61 {
 	version { major 1 minor 0 }
 
-	<** @description: Method m1 description (findmedoc) **>
+	<** @description: Attribute m1 description (findmedoc) **>
 	attribute Int32 attrSubscrRW
 	attribute Int32 attrSubscrRO readonly
 	attribute Int32 attrNoSubscrRW noSubscriptions

@@ -7,10 +7,12 @@
 *******************************************************************************/
 package org.franca.generators.websocket
 
+import java.util.List
+import org.franca.core.franca.FArgument
 import org.franca.core.franca.FInterface
 
 import static extension org.franca.generators.websocket.WebsocketGeneratorUtils.*
-import static org.franca.core.franca.FrancaPackage$Literals.*
+import static extension org.franca.core.FrancaModelExtensions.*
 
 class ServerJSStubGenerator {
 
@@ -19,6 +21,11 @@ class ServerJSStubGenerator {
 	}
 
 	def generate(FInterface api) '''
+	'use strict';
+	var log4js = require('log4js');
+	log4js.configure('log4js-conf.json');
+	var logger = log4js.getLogger('«api.fileName»');
+
 	function «getFileName(api)»(port) {
 		this.wsio = require('websocket.io');
 		this.socket = this.wsio.listen(port);
@@ -37,6 +44,7 @@ class ServerJSStubGenerator {
 	
 	«FOR attribute : api.attributes»
 	«getFileName(api)».prototype.set«attribute.name.toFirstUpper» = function(newValue) {
+		logger.info(JSON.stringify({type: "attribute", name:'«attribute.name»', params:newValue}));
 		this.«attribute.name» = newValue;
 		this.server.emit('publishAll', "signal:«attribute.name»", newValue);
 	};
@@ -88,6 +96,7 @@ class ServerJSStubGenerator {
 				
 				// events will only be sent to subscribed clients if the value has changed
 				if (newValue !== this.«attribute.name») {
+					logger.info('«attribute.name»: ' + newValue);
 					_this.«attribute.name» = newValue;
 					_this.server.emit('publishExcludeSingle', client, "signal:«attribute.name»", newValue);
 				}
@@ -100,10 +109,30 @@ class ServerJSStubGenerator {
 		// RPC stub for method «method.name»
 		_this.server.rpc('invoke', function() {
 			this.register('«method.name»', function(client, cb, args) {
-				// fireAndForget = «method.fireAndForget»
-				var result = _this.«method.name»(«FOR arg : method.inArgs SEPARATOR ", "»args["«arg.name»"]«ENDFOR»);
-				«IF !method.fireAndForget»
-				cb(null, JSON.stringify(result));
+				logger.info(JSON.stringify({type: "request", name:'«method.name»', params:args}));						
+				«IF method.fireAndForget»
+					_this.«method.name»(«method.inArgs.genArgs»);
+				«ELSE»
+					if (typeof(_this.«method.name»Sync) === "function") {
+						var result = _this.«method.name»Sync(«method.inArgs.genArgs»);
+						logger.info('request: «method.name»');
+						// TODO: How to handle error responses in the synchronous case?
+						cb(null, JSON.stringify(result));
+						logger.info(JSON.stringify({type: "response", name:'«method.name»', params:result}));						
+					} else if (typeof(_this.«method.name») === "function") {
+						_this.«method.name»(«method.inArgs.genArgs»«IF !method.inArgs.empty»,«ENDIF»
+							function(result) {
+								cb(null, JSON.stringify(result));
+								logger.info(JSON.stringify({type: "response", name:'«method.name»', params:result}));						
+							}«IF method.hasErrorResponse»,«ENDIF»
+							«IF method.hasErrorResponse»
+								function(error) {
+									cb(error, null);
+									logger.error(JSON.stringify({type: "error", name:'«method.name»', params:error}));						
+								}
+							«ENDIF»
+						);
+					}
 				«ENDIF»
 			});
 		});
@@ -113,9 +142,12 @@ class ServerJSStubGenerator {
 	«FOR broadcast : api.broadcasts»
 	«getFileName(api)».prototype.«broadcast.name» = function(data) {
 		this.server.emit('publishAll', "broadcast:«broadcast.name»", data);
+		logger.info('signal: «broadcast.name» ' + JSON.stringify(data));
 	};
 	«ENDFOR»
 	
 	«api.types.genEnumerations(true)»
 	'''
+
+	def private genArgs(List<FArgument> args) '''«FOR arg : args SEPARATOR ", "»args["«arg.name»"]«ENDFOR»'''
 }

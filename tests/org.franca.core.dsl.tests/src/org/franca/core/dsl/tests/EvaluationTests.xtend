@@ -116,6 +116,11 @@ class EvaluationTests extends XtextTest {
 	}
 
 	@Test
+	def testRangedIntegerTypedef() {
+		check("t01", 7)
+	}
+
+	@Test
 	def testConstantDefRefs() {
 		check("r10", false)
 		check("r20", 6)

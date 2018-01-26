@@ -47,7 +47,7 @@ abstract class AbstractCommandLineTool {
 		
 		// create instance using injector and call its executeInstance method
 		val instance = injector.getInstance(concreteClass)
-		val retval = instance.executeInstance(toolVersion, concreteClass.simpleName, args)
+		val retval = (instance as AbstractCommandLineTool).executeInstance(toolVersion, concreteClass.simpleName, args)
 		exit(retval)
 	}
 

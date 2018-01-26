@@ -2,10 +2,10 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Franca Product
 Bundle-SymbolicName: org.franca.product.ui;singleton:=true
-Bundle-Version: 0.11.1.qualifier
+Bundle-Version: 0.12.0.qualifier
 Bundle-Activator: org.franca.product.Activator
 Bundle-Vendor: itemis AG
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy

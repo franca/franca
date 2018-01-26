@@ -257,7 +257,7 @@ public class FrancaHelpers {
 		if (typeRef == null)
 			return false;
 		FBasicTypeId bt = getActualPredefined(typeRef);
-		return isBasicIntegerId(bt) || typeRef.getInterval() != null;
+		return isBasicIntegerId(bt) || getActualInterval(typeRef) != null;
 	}
 
 	/** Returns true if the referenced type is any kind of integer. */
@@ -382,7 +382,12 @@ public class FrancaHelpers {
 	public static String getTypeString (/*@NonNull*/ FTypeRef typeRef) {
 		FType derived = getActualDerived(typeRef);
 		if (derived == null) {
-			return getActualPredefined(typeRef).getName();
+			FIntegerInterval interval = getActualInterval(typeRef);
+			if (interval == null) {
+				return getActualPredefined(typeRef).getName();
+			} else {
+				return "Integer()";
+			}
 		} else {
 			FType type = getActualDerived(typeRef);
 			if (type instanceof FEnumerationType) {

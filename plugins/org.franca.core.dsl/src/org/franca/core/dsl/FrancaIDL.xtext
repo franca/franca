@@ -81,7 +81,7 @@ FVersion returns FVersion:
 FAttribute:
 	(comment=FAnnotationBlock)?
 	'attribute'	type=FTypeRef (array?='[' ']')? name=ID
-		(readonly?='readonly')?
+		(readonly?='readonly' | noRead?='noRead')?
 		(noSubscriptions?='noSubscriptions')?
 	;
 

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde?>
+<!-- generated with https://github.com/mbarbero/fr.obeo.releng.targetplatform -->
+<target name="Franca Target Platform - Eclipse 4.6" sequenceNumber="1499085215">
+  <locations>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.eclipse.sdk.feature.group" version="4.6.3.v20170301-0400"/>
+      <unit id="org.eclipse.pde.feature.group" version="3.12.3.v20170301-0400"/>
+      <unit id="org.eclipse.emf.transaction.sdk.feature.group" version="1.10.0.201606071900"/>
+      <unit id="org.eclipse.emf.eef.sdk-feature.feature.group" version="1.5.1.201601141612"/>
+      <unit id="org.eclipse.gef.sdk.feature.group" version="3.11.0.201606061308"/>
+      <unit id="org.eclipse.zest.sdk.feature.group" version="1.7.0.201606061308"/>
+      <unit id="org.eclipse.swt" version="3.105.3.v20170228-0512"/>
+      <unit id="org.eclipse.equinox.executable.feature.group" version="3.6.300.v20161122-1740"/>
+      <unit id="org.eclipse.emf.common" version="2.12.0.v20160420-0247"/>
+      <unit id="org.eclipse.emf.sdk.feature.group" version="2.12.0.v20160526-0356"/>
+      <repository id="neon" location="http://download.eclipse.org/releases/neon"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.eclipse.emf.compare.feature.group" version="3.0.1.201408191310"/>
+      <repository location="http://download.eclipse.org/modeling/emf/compare/updates/releases/3.0"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="de.itemis.xtext.antlr.sdk.feature.group" version="2.1.1.v201405091103"/>
+      <unit id="de.itemis.xtext.antlr.feature.feature.group" version="2.1.1.v201405091103"/>
+      <repository location="http://download.itemis.com/updates/releases/"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.eclipse.xtext.sdk.feature.group" version="2.11.0.v20170201-0242"/>
+      <unit id="org.eclipse.xtend.sdk.feature.group" version="2.11.0.v20170201-0242"/>
+      <unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.9.0.v201605261103"/>
+      <unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="2.9.0.v201605261103"/>
+      <repository location="http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/"/>
+    </location>
+    <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+      <unit id="de.cau.cs.kieler.klighd.sdk.feature.feature.group" version="0.42.2.201708311633"/>
+      <repository location="http://rtsys.informatik.uni-kiel.de/~kieler/updatesite/release_pragmatics_2017-02-04"/>
+    </location>
+    <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+      <unit id="org.eclipse.elk.sdk.feature.feature.group" version="0.2.2.201709150813"/>
+      <repository location="http://build.eclipse.org/modeling/elk/updates/0.2.2"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="model.emf.dbusxml.feature.feature.group" version="0.8.1.201606031239"/>
+      <repository location="http://kbirken.github.io/dbus-emf-model/releases/"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.csu.idl.feature.group" version="1.1.0.201703291002"/>
+      <unit id="com.google.eclipse.protobuf.feature.group" version="1.6.0.201705261156"/>
+      <unit id="org.eclipse.xtext.xdoc.feature.feature.group" version="0.2.0.201707041454"/>
+      <unit id="org.eclipselabs.xtext.utils.unittesting.feature.feature.group" version="0.9.3.201204261440"/>
+      <repository location="http://franca.github.io/franca/update_site/thirdparty"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.eclipse.jdt.junit.runners.feature.feature.group" version="0.1.0.201411181552"/>
+      <unit id="org.xpect.sdk.feature.group" version="0.2.0.201706301756"/>
+      <repository location="http://www.xpect-tests.org/updatesite/nightly/"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.eclipse.eclemma.feature.feature.group" version="3.0.1.201711142128"/>
+      <repository location="http://update.eclemma.org/"/>
+    </location>
+  </locations>
+  <environment>
+    <nl>en</nl>
+  </environment>
+</target>

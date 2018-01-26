@@ -16,9 +16,13 @@ import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.resource.Resource
 import org.franca.core.franca.FArrayType
+import org.franca.core.franca.FBroadcast
+import org.franca.core.franca.FCompoundType
 import org.franca.core.franca.FContract
 import org.franca.core.franca.FEnumerationType
+import org.franca.core.franca.FEnumerator
 import org.franca.core.franca.FEventOnIf
+import org.franca.core.franca.FField
 import org.franca.core.franca.FInterface
 import org.franca.core.franca.FMethod
 import org.franca.core.franca.FModel
@@ -30,10 +34,6 @@ import org.franca.core.franca.FTypeCollection
 import org.franca.core.franca.FTypeDef
 import org.franca.core.franca.FUnionType
 import org.franca.core.franca.Import
-
-import org.franca.core.franca.FField
-import org.franca.core.franca.FCompoundType
-import org.franca.core.franca.FBroadcast
 
 class FrancaModelExtensions {
 	
@@ -74,6 +74,20 @@ class FrancaModelExtensions {
 			elem.name
 		else
 			elem.name + ":" + elem.selector
+	}
+	
+	def static hasErrorResponse(FMethod elem) {
+		elem.errorEnum!=null || elem.errors!=null
+	}
+
+	def static Iterable<FEnumerator> getAllErrorEnumerators(FMethod m) {
+		if (m.errorEnum!=null) {
+			m.errorEnum.allElements.filter(typeof(FEnumerator))
+		} else if (m.errors!=null) {
+			m.errors.allElements.filter(typeof(FEnumerator))
+		} else {
+			newArrayList()
+		}
 	}
 	
 	def static getUniqueName(FBroadcast elem) {

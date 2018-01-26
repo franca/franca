@@ -1,37 +1,39 @@
 package org.franca.core.ui.addons.contractviewer
 
 import com.google.common.collect.ImmutableList
-import de.cau.cs.kieler.core.kgraph.KNode
-import de.cau.cs.kieler.core.krendering.extensions.KColorExtensions
-import de.cau.cs.kieler.core.krendering.extensions.KContainerRenderingExtensions
-import de.cau.cs.kieler.core.krendering.extensions.KEdgeExtensions
-import de.cau.cs.kieler.core.krendering.extensions.KLabelExtensions
-import de.cau.cs.kieler.core.krendering.extensions.KNodeExtensions
-import de.cau.cs.kieler.core.krendering.extensions.KPolylineExtensions
-import de.cau.cs.kieler.core.krendering.extensions.KRenderingExtensions
-import de.cau.cs.kieler.kiml.options.Direction
-import de.cau.cs.kieler.kiml.options.EdgeRouting
-import de.cau.cs.kieler.kiml.options.LayoutOptions
+import org.eclipse.elk.core.options.Direction
+import org.eclipse.elk.core.options.CoreOptions
+import de.cau.cs.kieler.klighd.krendering.extensions.KColorExtensions
+import de.cau.cs.kieler.klighd.krendering.extensions.KContainerRenderingExtensions
+import de.cau.cs.kieler.klighd.krendering.extensions.KEdgeExtensions
+import de.cau.cs.kieler.klighd.krendering.extensions.KLabelExtensions
+import de.cau.cs.kieler.klighd.krendering.extensions.KNodeExtensions
+import de.cau.cs.kieler.klighd.krendering.extensions.KPolylineExtensions
+import de.cau.cs.kieler.klighd.krendering.extensions.KRenderingExtensions
+import de.cau.cs.kieler.klighd.kgraph.KNode
 import de.cau.cs.kieler.klighd.KlighdConstants
 import de.cau.cs.kieler.klighd.SynthesisOption
 import de.cau.cs.kieler.klighd.syntheses.AbstractDiagramSynthesis
+import de.cau.cs.kieler.klighd.syntheses.DiagramLayoutOptions
 import javax.inject.Inject
 import org.franca.core.franca.FModel
 import org.franca.core.franca.FState
 import org.franca.core.franca.FTransition
 
 import static extension org.franca.core.contracts.FEventUtils.*
+import org.eclipse.elk.graph.properties.IProperty
+import org.eclipse.elk.graph.properties.Property
 
 class FrancaPSMDiagramSynthesis extends AbstractDiagramSynthesis<FModel> {
-    
-    @Inject extension KNodeExtensions
-    @Inject extension KEdgeExtensions
-//    @Inject extension KPortExtensions
-    @Inject extension KLabelExtensions
-    @Inject extension KRenderingExtensions
-    @Inject extension KContainerRenderingExtensions
-    @Inject extension KPolylineExtensions
-    @Inject extension KColorExtensions
+
+	@Inject extension KNodeExtensions
+	@Inject extension KEdgeExtensions
+//	@Inject extension KPortExtensions
+	@Inject extension KLabelExtensions
+	@Inject extension KRenderingExtensions
+	@Inject extension KContainerRenderingExtensions
+	@Inject extension KPolylineExtensions
+	@Inject extension KColorExtensions
 //    extension KRenderingFactory = KRenderingFactory.eINSTANCE
     
 	// styling
@@ -46,30 +48,37 @@ class FrancaPSMDiagramSynthesis extends AbstractDiagramSynthesis<FModel> {
 
  	override getDisplayedLayoutOptions() {
 		ImmutableList.of(
-			specifyLayoutOption(LayoutOptions.DIRECTION, ImmutableList.of(Direction.RIGHT, Direction.DOWN)),
-//			specifyLayoutOption(LayoutOptions.EDGE_ROUTING, EdgeRouting.values.sortBy[name]),
-//			specifyLayoutOption(LayoutOptions.ALGORITHM, null),
-			specifyLayoutOption(LayoutOptions.SPACING, ImmutableList.of(5, 80))
+			specifyLayoutOption(CoreOptions.DIRECTION, ImmutableList.of(Direction.RIGHT, Direction.DOWN)),
+			specifyLayoutOption(DiagramLayoutOptions.SPACING, ImmutableList.of(5.0, 80.0))
 		)
 	}
+//			specifyLayoutOption(CoreOptions.EDGE_ROUTING, EdgeRouting.values.sortBy[name]),
+//			specifyLayoutOption(CoreOptions.ALGORITHM, null),
     
     
     override KNode transform(FModel model) {
     	val root = model.createNode
+    	root.setLayoutOption(CoreOptions.DIRECTION, Direction.RIGHT)
+    	
     	root.associateWith(model) => [
     		// check if model contains interfaces
-    		if (! model.interfaces.empty) {
+    		if (model.interfaces.empty) {
+    			children += createWarningNode(model, "Model without interfaces!")
+    		} else {
     			// we display only the first one
 		    	val first = model.interfaces.get(0)
 		    	
 		    	// check if the interface has a contract
-	    		if (first.contract!=null) {
-		        	val psm = first.contract.stateGraph
+	        	val psm = first.contract?.stateGraph
+	    		if (psm !== null) {
 		        	children += psm.states.map[createStateNode]
 		        	children += psm.initial.createInitialStateNode
 		        	psm.states.forEach[s |
 		        		s.transitions.forEach[createTransitionEdge]
 		        	]
+	    		} else {
+	    			// this interface does not have a PSM
+	    			children += createWarningNode(model, "Interface without contract!")
 	    		}
     		}
     	]
@@ -119,5 +128,27 @@ class FrancaPSMDiagramSynthesis extends AbstractDiagramSynthesis<FModel> {
 			}
 		]
 	}   
+
+	/**
+	 * Create a diagram node which represents a warning.</p>
+	 * 
+	 * This is used if there is no graph which can be rendered.
+	 */
+	def private createWarningNode(KNode it, Object loc, String text) {
+		val bg = "lightgray".color
+		return createNode.associateWith(loc) => [
+			setNodeSize(80, 20)
+			addRoundedRectangle(4, 4) => [
+				foreground = "black".color
+				background = bg
+					addText(text).associateWith(loc) => [
+						setSurroundingSpace(2, 0.05f)
+						background = bg
+					]
+			]
+		]
+	} 
+	
+
 }
 

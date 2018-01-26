@@ -1,10 +1,13 @@
 /*******************************************************************************
  * iowamp - WAMP(TM) server in NodeJS Copyright (c) 2013 Pascal Mathis
  * <dev@snapserv.net>
- * 
+ *
  * Code changes: Tamas Szabo (itemis AG)
  ******************************************************************************/
 var EventEmitter = require('events'), protocol = require('./wamp_v1'), packets = protocol.packets, handlers = protocol.handlers;
+var log4js = require('log4js');
+log4js.configure('log4js-conf.json');
+var logger = log4js.getLogger('WampServer');
 
 function Server() {
 	this.rpcClasses = {};
@@ -26,16 +29,16 @@ Server.prototype.publishAll = function(topicURI, event) {
 };
 
 Server.prototype.publishExcludeSingle = function(client, topicURI, event) {
-	handlers['PUBLISH'].apply(this, [ this, client, [topicURI, event, true] ]);		
+	handlers['PUBLISH'].apply(this, [ this, client, [topicURI, event, true] ]);
 };
 
 Server.prototype.publishEligibleList = function(topicURI, event, eligible) {
-	handlers['PUBLISH'].apply(this, [ this, null, [topicURI, event, null, eligible] ]);		
+	handlers['PUBLISH'].apply(this, [ this, null, [topicURI, event, null, eligible] ]);
 };
 
 /**
  * Handles new connections
- * 
+ *
  * @param {wsio.Socket} client Client instance
  * @return {Server} Own instance for chaining
  */
@@ -51,7 +54,7 @@ Server.prototype.onConnection = function(client) {
 	// Add client to client list and send welcome message
 	_this.clients[client.id] = client;
 
-	console.log('[' + client.sid + '] New connection');
+	logger.info('[' + client.sid + '] New connection');
 	client.send(packets.WELCOME(client.id, 'iowamp'));
 
 	// React if client sends a message
@@ -73,18 +76,18 @@ Server.prototype.onConnection = function(client) {
 };
 
 Server.prototype.onError = function(client, error) {
-	console.log('[' + client.sid + '] ' + error.toString());
+	logger.info('[' + client.sid + '] ' + error.toString());
 };
 
 Server.prototype.onClose = function(client) {
 	var _this = this;
-	console.log('[' + client.sid + '] Closed connection');
+	logger.info('[' + client.sid + '] Closed connection');
 	if (!client.id)
 		return;
 
 	// Remove client in all topics and the client list
 	for ( var i in client.topics) {
-		console.log('Client ' + client + ' has unsubscribed from topic '
+		logger.info('Client ' + client + ' has unsubscribed from topic '
 				+ client.topics[i]);
 		var id = _this.topics[client.topics[i]].indexOf(client.id);
 		if (id > -1) {
@@ -99,17 +102,17 @@ Server.prototype.onClose = function(client) {
 Server.prototype.onMessage = function(client, data) {
 	var _this = this;
 	// Try to parse the received data as JSON
-	console.log('[' + client.sid + '] Data received: ' + data);
+	logger.info('[' + client.sid + '] Data received: ' + data);
 	try {
 		var msg = JSON.parse(data);
 	} catch (e) {
-		console.log('[' + client.sid + '] Can not parse as JSON');
+		logger.info('[' + client.sid + '] Can not parse as JSON');
 		return;
 	}
 
 	// The parsed JSON data should be an array
 	if (!Array.isArray(msg)) {
-		console.log('[' + client.sid
+		logger.info('[' + client.sid
 				+ '] Invalid packet (should be an array)');
 		return;
 	}
@@ -117,7 +120,7 @@ Server.prototype.onMessage = function(client, data) {
 	// Checks if an handler exists
 	var messageType = protocol.getMessageType(msg.shift());
 	if (!handlers.hasOwnProperty(messageType)) {
-		console.log('[' + client.sid
+		logger.info('[' + client.sid
 				+ '] No handler implemented for message type: '
 				+ messageType);
 		return;
@@ -132,7 +135,7 @@ Server.prototype.rpc = function(baseURI, rpcClass) {
 
 	var rpcClassConstructor = {
 		register : function(name, method) {
-			console.log('Registered new rcp method: ' + baseURI + ":" + name);
+			logger.info('Registered new rcp method: ' + baseURI + ":" + name);
 			_this.rpcClasses[baseURI][name] = method;
 		}
 	};
@@ -140,7 +143,7 @@ Server.prototype.rpc = function(baseURI, rpcClass) {
 	// Validate parameters
 	var baseURIPattern = /^(http|https):\/\/\S+\/[\w_-]+$/;
 	var curiePattern =  /^[\w_-]+$/;
-	
+
 	if (!(baseURIPattern.test(baseURI) || curiePattern.test(baseURI))) {
 		throw new Error('Invalid URI specified. (CURIE is not allowed)');
 	}
@@ -157,7 +160,7 @@ Server.prototype.rpc = function(baseURI, rpcClass) {
 
 /**
  * Module exports
- * 
+ *
  * @type Server
  */
 module.exports = Server;

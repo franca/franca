@@ -14,6 +14,11 @@
 	the websocket.io library.
 */
 
+// initialize logger
+var log4js = require('log4js');
+log4js.configure('log4js-conf.json');
+var logger = log4js.getLogger('Application');
+
 // create http server and listen to port 8080
 // we need this to serve index.html and other files to the client
 var HttpServer = require('./base/util/HttpServer');
@@ -30,11 +35,11 @@ stub.clock = getTime();
 stub.init();
 
 stub.onClientConnected = function(clientID) {
-	console.log('The ID of the newly connected client is ' + clientID);
+	logger.info('The ID of the newly connected client is ' + clientID);
 };
 
 stub.onClientDisconnected = function(clientID) {
-	console.log('The client with ID ' + clientID + ' has disconnected');
+	logger.info('The client with ID ' + clientID + ' has disconnected');
 }
 
 var currentOperation = -1;
@@ -43,7 +48,7 @@ stub.setOperation = function (operation) {
 	currentOperation = operation;
 }
 
-stub.compute = function (a, b) {
+stub.computeSync = function (a, b) {
 	if (currentOperation<0) {
 		stub.userMessage("Please select an operation first!");
 		return 0;

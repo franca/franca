@@ -68,6 +68,10 @@ typeCollection MyTypeCollection32 {
 	map M3 { A1 to Boolean }
 	map M4 { UInt16 to S1 }
 
+	typedef T1 is UInt16
+	typedef T2 is Integer(1,10)
+	typedef T3 is A1
+
 
 	// constant definitions using the above types
 
@@ -132,4 +136,8 @@ typeCollection MyTypeCollection32 {
 	const M3 m3 = [ [] => true, [1, 2, 3] => false ]
 	const M4 m4 = [ 3 => str1, 5 => { e1 : true, e2 : 1, e3 : "foo" } ]
 
+	// typedef constants
+	const T1 t1 = 42
+	const T2 t2 = 7
+	const T3 t3 = [ 1, 2, 3 ]
 }

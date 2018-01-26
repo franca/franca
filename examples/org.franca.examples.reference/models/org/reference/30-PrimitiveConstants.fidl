@@ -24,7 +24,7 @@ typeCollection MyTypeCollection30 {
 	const UInt64 i31 = 10000000
 	const Int64  i32 = -10000000
 
-//	const Integer(1,10) i40 = 5
+	const Integer(1,10) i40 = 5
 
 	const String s1 = "abc"
 	
