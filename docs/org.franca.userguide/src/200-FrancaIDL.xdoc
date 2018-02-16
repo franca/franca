@@ -294,6 +294,14 @@ struct ExampleStruct1 {
 ]
 
 Any communication implementation should respect the element order given by the Franca IDL type definition.
+This is relevant only for usecases where an implicit agreement on the element order is required.
+E.g., for binary serialization and deserialization the element names will not be part of the serialized message.
+Thus, sender and receiver of a message have to agree on the element order.
+In other contexts this might not be relevant, e.g., when using a JSON-style serialization or for Franca IDL
+ref:FIDL_Constants_Complex[struct initializer expressions].
+
+However, as it is not known at interface definition time in which context the interface will be used,
+the interface designer has to take the element order into account. 
 
 section3:FIDL_Types_Struct_Inheritance[Struct inheritance]
 
@@ -479,10 +487,12 @@ struct Struct1 {
 const Struct1 s1 = { e1: true, e2: 1, e3: "foo" }
 ]
 
-If struct types get more complex (i.e., with nested struct types or arrays),
+If struct types are getting more complex (i.e., with nested struct types or arrays),
 the initializer expression is not easy to understand. Therefore, each struct
 element in the initializer expression has to be uniquely identified by the
 element name (e.g., code[e1] in the example).
+Note that explicitly naming the elements in the struct initializer allows
+to initialize the elements in any order. Each element has to occur exactly once.
 
 The syntax for union type constants is similar to struct types. However,
 as a union represents exactly one of its elements, the initializer expression
