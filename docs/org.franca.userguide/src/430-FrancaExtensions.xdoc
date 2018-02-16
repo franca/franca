@@ -151,7 +151,7 @@ code[Config][
 The registration in the standalone case (without the Eclipse IDE) is done using
 e[ExternalValidatorRegistry] in the package e[org.franca.deploymodel.dsl.validation].
 It provides static methods for registering external validators,
-e.g. the method e[ExternalValidatorRegistry.addValidator()].
+e.g., the method e[ExternalValidatorRegistry.addValidator()].
 Note that two different registration classes for IDL and deployment validators are used.
 They share a common name and common method names, but are located in different packages. 
 
