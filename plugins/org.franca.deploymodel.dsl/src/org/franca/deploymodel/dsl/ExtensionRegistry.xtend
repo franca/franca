@@ -98,4 +98,14 @@ class ExtensionRegistry {
 		}
 		result
 	}
+
+	def static Map<IFDeployExtension.Root, IFDeployExtension> getRoots() {
+		val result = newHashMap
+		for(ext : getExtensions()) {
+			for(root : ext.roots) {
+				result.put(root, ext)
+			} 
+		}
+		result
+	}
 }

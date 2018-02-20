@@ -99,6 +99,9 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="overwrites" eType="#//FDTypeOverwrites"
         containment="true"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDExtensionRoot" eSuperTypes="#//FDRootElement">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FDProvider" eSuperTypes="#//FDRootElement">
     <eStructuralFeatures xsi:type="ecore:EReference" name="instances" upperBound="-1"
         eType="#//FDInterfaceInstance" containment="true"/>

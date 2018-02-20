@@ -39,6 +39,7 @@ import org.franca.core.utils.FrancaIDLUtils;
 import org.franca.deploymodel.core.FDModelUtils;
 import org.franca.deploymodel.dsl.ExtensionRegistry;
 import org.franca.deploymodel.dsl.IFDeployExtension;
+import org.franca.deploymodel.dsl.IFDeployExtension.Root;
 import org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost;
 import org.franca.deploymodel.dsl.fDeploy.FDDeclaration;
 import org.franca.deploymodel.dsl.fDeploy.FDModel;
@@ -274,7 +275,17 @@ public class FDeployProposalProvider extends AbstractFDeployProposalProvider {
 			acceptor.accept(createCompletionProposal(host, displayString, null, context));
 		}
 	}
-	
+
+	@Override
+	public void completeFDExtensionRoot_Type(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		Map<Root, IFDeployExtension> roots = ExtensionRegistry.getRoots();
+		for(Root root : roots.keySet()) {
+			String displayString = root.getName() + " (" + roots.get(root).getShortDescription() + ")";
+			acceptor.accept(createCompletionProposal(root.getName(), displayString, null, context));
+		}
+		completeRuleCall(((RuleCall)assignment.getTerminal()), context, acceptor);
+	}
+
 	@Override
 	public void complete_FDTypeOverwrites(EObject elem, RuleCall ruleCall,
 			ContentAssistContext context, ICompletionProposalAcceptor acceptor) {

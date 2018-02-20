@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 itemis AG (http://www.itemis.de).
+ * Copyright (c) 2013 itemis AG (http://www.itemis.de).
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,6 +8,7 @@
 package org.franca.deploymodel.dsl.validation;
 
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
@@ -36,6 +37,7 @@ import org.franca.deploymodel.dsl.ExtensionRegistry;
 import org.franca.deploymodel.dsl.FDMapper;
 import org.franca.deploymodel.dsl.FDSpecificationExtender;
 import org.franca.deploymodel.dsl.IFDeployExtension;
+import org.franca.deploymodel.dsl.IFDeployExtension.Root;
 import org.franca.deploymodel.dsl.fDeploy.FDArgument;
 import org.franca.deploymodel.dsl.fDeploy.FDArray;
 import org.franca.deploymodel.dsl.fDeploy.FDAttribute;
@@ -50,6 +52,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDEnumValue;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumeration;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumerationOverwrites;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumerator;
+import org.franca.deploymodel.dsl.fDeploy.FDExtensionRoot;
 import org.franca.deploymodel.dsl.fDeploy.FDField;
 import org.franca.deploymodel.dsl.fDeploy.FDInteger;
 import org.franca.deploymodel.dsl.fDeploy.FDInterface;
@@ -83,15 +86,8 @@ import org.franca.deploymodel.dsl.fDeploy.FDeployFactory;
 import org.franca.deploymodel.dsl.fDeploy.FDeployPackage;
 import org.franca.deploymodel.dsl.validation.internal.ValidatorRegistry;
 
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-
-/*******************************************************************************
- * Copyright (c) 2013 itemis AG (http://www.itemis.de).
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *******************************************************************************/
 
 public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 	implements ValidationMessageReporter {
@@ -156,6 +152,18 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 						decl, FDeployPackage.Literals.FD_DECLARATION__HOST, -1);
 			}
 		}
+	}
+
+	@Check
+	public void checkExtensionRoot(FDExtensionRoot root) {
+		Set<Root> roots = ExtensionRegistry.getRoots().keySet();
+		for(Root r : roots) {
+			if (r.getName().equals(root.getType()))
+				return;
+		}
+		// didn't find type for this root
+		error("Invalid type '" + root.getType() + "', no matching deployment extension has been configured",
+				root, FDeployPackage.Literals.FD_EXTENSION_ROOT__TYPE, -1);
 	}
 
 	@Check

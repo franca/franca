@@ -81,7 +81,7 @@ FDEnumerator:
 // content definition (model part)
 
 FDRootElement:
-	FDProvider | FDTypes | FDInterface;
+	FDExtensionRoot | FDProvider | FDTypes | FDInterface;
 
 FDElement:
 	FDRootElement | FDInterfaceInstance |
@@ -104,6 +104,19 @@ FDProvider:
 FDInterfaceInstance:
 	'instance' target=[fidl::FInterface|FQN] ('as' name=FQN)? '{'
 		properties=FDPropertySet
+	'}';
+
+FDExtensionRoot:
+	'define' spec=[FDSpecification|FQN]
+	'for' type=ID name=FQN
+	'{'
+		('use' use+=[FDRootElement|FQN])*
+
+		// the own properties of this root element
+		properties=FDPropertySet
+		
+//		// instances of interfaces
+//		instances+=FDInterfaceInstance*
 	'}';
 
 FDTypes:

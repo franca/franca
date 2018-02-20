@@ -92,6 +92,9 @@
     <genClasses ecoreClass="FDeploy.ecore#//FDOverwriteElement">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDOverwriteElement/overwrites"/>
     </genClasses>
+    <genClasses ecoreClass="FDeploy.ecore#//FDExtensionRoot">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute FDeploy.ecore#//FDExtensionRoot/type"/>
+    </genClasses>
     <genClasses ecoreClass="FDeploy.ecore#//FDProvider">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDProvider/instances"/>
     </genClasses>
