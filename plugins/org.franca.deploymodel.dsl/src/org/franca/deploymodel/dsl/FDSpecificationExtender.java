@@ -10,9 +10,10 @@ package org.franca.deploymodel.dsl;
 import java.util.List;
 import java.util.Map;
 
+import org.franca.deploymodel.core.FDPropertyHost;
 import org.franca.deploymodel.core.PropertyMappings;
+import org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost;
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl;
-import org.franca.deploymodel.dsl.fDeploy.FDPropertyHost;
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification;
 
 import com.google.common.collect.Maps;
@@ -41,6 +42,15 @@ public class FDSpecificationExtender {
 	 */
 	public FDSpecificationExtender (FDSpecification spec) {
 		this.spec = spec;
+	}
+
+	/**
+	 * Check if a built-in property host has mandatory properties in this specification.
+	 * 
+	 * @param host  the built-in property host which should be checked
+	 */
+	public boolean isMandatory (FDBuiltInPropertyHost host) {
+		return isMandatory(FDPropertyHost.builtIn(host));
 	}
 
 	/**

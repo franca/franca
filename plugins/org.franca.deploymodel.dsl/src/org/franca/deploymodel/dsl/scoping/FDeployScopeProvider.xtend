@@ -7,6 +7,7 @@
  *******************************************************************************/
 package org.franca.deploymodel.dsl.scoping
 
+import com.google.common.collect.Lists
 import com.google.inject.Inject
 import java.util.List
 import org.eclipse.emf.ecore.EObject
@@ -53,6 +54,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDProperty
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyFlag
 import org.franca.deploymodel.dsl.fDeploy.FDProvider
+import org.franca.deploymodel.dsl.fDeploy.FDSpecification
 import org.franca.deploymodel.dsl.fDeploy.FDStruct
 import org.franca.deploymodel.dsl.fDeploy.FDTypeOverwrites
 import org.franca.deploymodel.dsl.fDeploy.FDTypedef
@@ -63,6 +65,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDeployPackage
 import static extension org.eclipse.xtext.scoping.Scopes.*
 import static extension org.franca.core.FrancaModelExtensions.*
 import static extension org.franca.deploymodel.core.FDModelUtils.*
+import org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost
 
 class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 
@@ -101,7 +104,6 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 		return new SimpleScope(scope,fdSpecsScopeImports,false)
 	}
 
-	
 	def scope_FDTypes_target(FDTypes ctxt, EReference ref) {	
 		return new FTypeCollectionScope(IScope::NULLSCOPE, false, importUriGlobalScopeProvider, ctxt.eResource, qualifiedNameProvider);
 	} 

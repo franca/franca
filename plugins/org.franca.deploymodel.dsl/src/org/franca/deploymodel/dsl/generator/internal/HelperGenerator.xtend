@@ -8,10 +8,10 @@
 package org.franca.deploymodel.dsl.generator.internal
 
 import com.google.inject.Inject
+import org.franca.deploymodel.core.FDPropertyHost
 import org.franca.deploymodel.dsl.fDeploy.FDDeclaration
 import org.franca.deploymodel.dsl.fDeploy.FDEnumType
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl
-import org.franca.deploymodel.dsl.fDeploy.FDPropertyHost
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification
 
 class HelperGenerator {
@@ -64,7 +64,7 @@ class HelperGenerator {
 	'''
 	
 	def private genEnumConverter(FDPropertyDecl it) {
-		if (type.complex!=null && type.complex instanceof FDEnumType) {
+		if (type.complex!==null && type.complex instanceof FDEnumType) {
 			val etname = name.toFirstUpper
 			val enumerator = type.complex as FDEnumType
 			 

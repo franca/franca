@@ -11,9 +11,9 @@ import com.google.inject.Inject
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.generator.IFileSystemAccess
 import org.eclipse.xtext.generator.IGenerator
+import org.franca.deploymodel.core.FDPropertyHost
 import org.franca.deploymodel.dsl.fDeploy.FDEnumType
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl
-import org.franca.deploymodel.dsl.fDeploy.FDPropertyHost
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification
 import org.franca.deploymodel.dsl.generator.internal.HelperGenerator
 import org.franca.deploymodel.dsl.generator.internal.IDataGenerator

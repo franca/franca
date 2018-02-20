@@ -8,10 +8,11 @@
 package org.franca.deploymodel.dsl.generator.internal
 
 import com.google.inject.Inject
+import org.franca.deploymodel.core.FDPropertyHost
+import org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost
 import org.franca.deploymodel.dsl.fDeploy.FDDeclaration
 import org.franca.deploymodel.dsl.fDeploy.FDEnumType
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl
-import org.franca.deploymodel.dsl.fDeploy.FDPropertyHost
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification
 
 import static extension org.franca.deploymodel.dsl.generator.internal.GeneratorHelper.*
@@ -44,7 +45,7 @@ abstract class AccessMethodGenerator {
 
 
 	def private genProperties(FDDeclaration decl, boolean forInterfaces, ICodeContext context) '''
-		«IF decl.properties.size > 0 && decl.host.getFrancaType(forInterfaces)!=null»
+		«IF decl.properties.size > 0 && decl.host.getFrancaType(forInterfaces)!==null»
 			// host '«decl.host.getName»'
 			«FOR p : decl.properties»
 			«p.genProperty(decl.host, forInterfaces, context)»
@@ -54,7 +55,7 @@ abstract class AccessMethodGenerator {
 	'''
 	
 	def private genProperty(FDPropertyDecl pd, FDPropertyHost host, boolean forInterfaces, ICodeContext context) {
-		if (host==FDPropertyHost::ARRAYS) {
+		if (host.isBuiltIn(FDBuiltInPropertyHost::ARRAYS)) {
 			// special handling for ARRAYS,
 			// might be explicit array types or inline arrays
 			'''
@@ -81,12 +82,12 @@ abstract class AccessMethodGenerator {
 	) {
 		addNeededFrancaType(francaType)
 		val isOnlyForInterface = forceInterfaceOnly || host.isInterfaceOnly 
-		if (francaType!=null) {
+		if (francaType!==null) {
 			context.requireTargetMember
 			if (isEnum) {
 				val enumType = name.toFirstUpper
 				val retType =
-					if (type.array==null) {
+					if (type.array===null) {
 						enumType
 					} else {
 						enumType.genListType.toString

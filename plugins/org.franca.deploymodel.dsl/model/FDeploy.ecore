@@ -21,10 +21,12 @@
         eType="#//FDDeclaration" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FDDeclaration">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="host" eType="#//FDPropertyHost"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="host" eType="#//FDPropertyHostType"
+        defaultValueLiteral=""/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="properties" upperBound="-1"
         eType="#//FDPropertyDecl" containment="true"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="FDPropertyHostType" instanceClassName="org.franca.deploymodel.core.FDPropertyHost"/>
   <eClassifiers xsi:type="ecore:EClass" name="FDPropertyDecl">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//FDTypeRef"
@@ -37,23 +39,21 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="default" eType="#//FDComplexValue"
         containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EEnum" name="FDPropertyHost">
-    <eLiterals name="providers" literal="providers"/>
-    <eLiterals name="instances" value="1" literal="instances"/>
-    <eLiterals name="type_collections" value="2" literal="type_collections"/>
-    <eLiterals name="interfaces" value="3" literal="interfaces"/>
-    <eLiterals name="attributes" value="4" literal="attributes"/>
-    <eLiterals name="methods" value="5" literal="methods"/>
-    <eLiterals name="broadcasts" value="6" literal="broadcasts"/>
-    <eLiterals name="arguments" value="7" literal="arguments"/>
-    <eLiterals name="struct_fields" value="8" literal="struct_fields"/>
-    <eLiterals name="union_fields" value="9" literal="union_fields"/>
-    <eLiterals name="arrays" value="10" literal="arrays"/>
-    <eLiterals name="structs" value="11" literal="structs"/>
-    <eLiterals name="unions" value="12" literal="unions"/>
-    <eLiterals name="enumerations" value="13" literal="enumerations"/>
-    <eLiterals name="enumerators" value="14" literal="enumerators"/>
-    <eLiterals name="typedefs" value="21"/>
+  <eClassifiers xsi:type="ecore:EEnum" name="FDBuiltInPropertyHost">
+    <eLiterals name="type_collections" value="1" literal="type_collections"/>
+    <eLiterals name="interfaces" value="2" literal="interfaces"/>
+    <eLiterals name="attributes" value="3" literal="attributes"/>
+    <eLiterals name="methods" value="4" literal="methods"/>
+    <eLiterals name="broadcasts" value="5" literal="broadcasts"/>
+    <eLiterals name="arguments" value="6" literal="arguments"/>
+    <eLiterals name="struct_fields" value="7" literal="struct_fields"/>
+    <eLiterals name="union_fields" value="8" literal="union_fields"/>
+    <eLiterals name="arrays" value="9" literal="arrays"/>
+    <eLiterals name="structs" value="10" literal="structs"/>
+    <eLiterals name="unions" value="11" literal="unions"/>
+    <eLiterals name="enumerations" value="12" literal="enumerations"/>
+    <eLiterals name="enumerators" value="13" literal="enumerators"/>
+    <eLiterals name="typedefs" value="14" literal="typedefs"/>
     <eLiterals name="strings" value="15" literal="strings"/>
     <eLiterals name="numbers" value="16" literal="numbers"/>
     <eLiterals name="integers" value="17" literal="integers"/>
@@ -61,6 +61,8 @@
     <eLiterals name="booleans" value="19" literal="booleans"/>
     <eLiterals name="byte_buffers" value="20" literal="byte_buffers"/>
     <eLiterals name="fields" value="21" literal="fields"/>
+    <eLiterals name="providers" value="22" literal="providers"/>
+    <eLiterals name="instances" value="23" literal="instances"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FDTypeRef">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="predefined" eType="#//FDPredefinedTypeId"/>

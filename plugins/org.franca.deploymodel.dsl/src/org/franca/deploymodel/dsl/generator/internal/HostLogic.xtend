@@ -20,7 +20,7 @@ import org.franca.core.franca.FStructType
 import org.franca.core.franca.FTypeCollection
 import org.franca.core.franca.FTypeDef
 import org.franca.core.franca.FUnionType
-import org.franca.deploymodel.dsl.fDeploy.FDPropertyHost
+import org.franca.deploymodel.core.FDPropertyHost
 
 /**
  * This class defines how deployment properties are mapped to Franca IDL objects
@@ -43,7 +43,14 @@ class HostLogic {
 	 * Get the argument type for the property accessor method for a given deployment host.
 	 */
 	def static Class<? extends EObject> getFrancaType(FDPropertyHost host, boolean forInterfaces) {
-		switch (host) {
+		val builtIn = host.builtIn
+		if (builtIn===null) {
+			// this is an extension host, it cannot refer to a Franca metamodel object
+			// but it has to be some EObject nevertheless	
+			return typeof(EObject)
+		}
+			
+		switch (builtIn) {
 			case PROVIDERS:        null  // ignore
 			case INSTANCES:        null  // ignore
 			case TYPE_COLLECTIONS: typeof(FTypeCollection)
@@ -84,8 +91,15 @@ class HostLogic {
 	}
 
 
+	// TODO: adapt this when extracting PROVIDERS/INSTANCES into a deployment extension
 	def static String getFrancaTypeProvider(FDPropertyHost host) {
-		switch (host) {
+		val builtIn = host.builtIn
+		if (builtIn===null) {
+			// this is an extension host, it cannot refer to a Franca metamodel object
+			return null
+		}
+			
+		switch (builtIn) {
 			case PROVIDERS:  "FDProvider"
 			case INSTANCES:  "FDInterfaceInstance"
 			default:         null // ignore all other hosts

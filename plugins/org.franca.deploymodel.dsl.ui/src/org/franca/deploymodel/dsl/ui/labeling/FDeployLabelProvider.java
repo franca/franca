@@ -8,6 +8,7 @@ import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 import org.eclipse.xtext.ui.label.DefaultEObjectLabelProvider;
 import org.franca.core.franca.FType;
 import org.franca.deploymodel.core.FDModelUtils;
+import org.franca.deploymodel.core.FDPropertyHost;
 import org.franca.deploymodel.core.GenericPropertyAccessor;
 import org.franca.deploymodel.core.PropertyMappings;
 import org.franca.deploymodel.dsl.fDeploy.FDArgument;
@@ -15,6 +16,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDArray;
 import org.franca.deploymodel.dsl.fDeploy.FDAttribute;
 import org.franca.deploymodel.dsl.fDeploy.FDBoolean;
 import org.franca.deploymodel.dsl.fDeploy.FDBroadcast;
+import org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost;
 import org.franca.deploymodel.dsl.fDeploy.FDDeclaration;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumerator;
 import org.franca.deploymodel.dsl.fDeploy.FDField;
@@ -124,7 +126,7 @@ public class FDeployLabelProvider extends DefaultEObjectLabelProvider {
    }
 
    public String text(FDDeclaration element) {
-      String name = element.getHost().getLiteral();
+      String name = element.getHost().getName();
 
       return name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
    }
@@ -209,7 +211,15 @@ public class FDeployLabelProvider extends DefaultEObjectLabelProvider {
    }
 
    public String image(FDDeclaration element) {
-      switch (element.getHost()) {
+	  FDPropertyHost host = element.getHost();
+	  FDBuiltInPropertyHost builtin = host.getBuiltIn();
+	  if (builtin==null) {
+		  // this is a host from a deployment extension
+		  // TODO: provide sensible default, or icon from extension 
+		  return null;
+	  }
+	  
+      switch (builtin) {
       case INTERFACES:
          return "interface.png";
       case ATTRIBUTES:

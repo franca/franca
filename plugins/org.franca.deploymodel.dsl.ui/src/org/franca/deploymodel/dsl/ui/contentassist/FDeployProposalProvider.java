@@ -3,7 +3,6 @@
  */
 package org.franca.deploymodel.dsl.ui.contentassist;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -37,6 +36,10 @@ import org.franca.core.franca.FTypeCollection;
 import org.franca.core.franca.FUnionType;
 import org.franca.core.utils.FrancaIDLUtils;
 import org.franca.deploymodel.core.FDModelUtils;
+import org.franca.deploymodel.dsl.ExtensionRegistry;
+import org.franca.deploymodel.dsl.IFDeployExtension;
+import org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost;
+import org.franca.deploymodel.dsl.fDeploy.FDDeclaration;
 import org.franca.deploymodel.dsl.fDeploy.FDModel;
 import org.franca.deploymodel.dsl.fDeploy.FDOverwriteElement;
 import org.franca.deploymodel.dsl.fDeploy.FDeployPackage;
@@ -254,6 +257,24 @@ public class FDeployProposalProvider extends AbstractFDeployProposalProvider {
 		super.completeKeyword(keyword, contentAssistContext, acceptor);
 	}
 
+	@Override
+	public void complete_PROPERTY_HOST(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		// collect built-in property hosts
+		for(FDBuiltInPropertyHost host : FDBuiltInPropertyHost.values()) {
+			String proposal = host.getLiteral();
+			String displayString = proposal + " (built-in)";
+			acceptor.accept(createCompletionProposal(proposal, displayString, null, context));
+		}
+		
+		// collect hosts from all registered deployment extensions
+		for(IFDeployExtension ext : ExtensionRegistry.getExtensions()) {
+			for(String host : ext.getHosts()) {
+				String displayString = host + " (" + ext.getShortDescription() + ")";
+				acceptor.accept(createCompletionProposal(host, displayString, null, context));
+			}
+		}
+	}
+	
 	@Override
 	public void complete_FDTypeOverwrites(EObject elem, RuleCall ruleCall,
 			ContentAssistContext context, ICompletionProposalAcceptor acceptor) {

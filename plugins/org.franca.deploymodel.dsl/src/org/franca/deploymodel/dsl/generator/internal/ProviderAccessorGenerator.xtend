@@ -7,15 +7,15 @@
 *******************************************************************************/
 package org.franca.deploymodel.dsl.generator.internal
 
+import com.google.inject.Inject
+import org.franca.deploymodel.core.FDPropertyHost
 import org.franca.deploymodel.dsl.fDeploy.FDDeclaration
 import org.franca.deploymodel.dsl.fDeploy.FDEnumType
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl
-import org.franca.deploymodel.dsl.fDeploy.FDPropertyHost
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification
 
 import static extension org.franca.deploymodel.dsl.generator.internal.GeneratorHelper.*
 import static extension org.franca.deploymodel.dsl.generator.internal.HostLogic.*
-import com.google.inject.Inject
 
 class ProviderAccessorGenerator {
 
@@ -37,7 +37,7 @@ class ProviderAccessorGenerator {
 			 * according to the '«spec.name»' specification.
 			 */
 			public static class ProviderPropertyAccessor
-				«IF spec.base!=null»extends «spec.base.qualifiedClassname».ProviderPropertyAccessor«ENDIF»
+				«IF spec.base!==null»extends «spec.base.qualifiedClassname».ProviderPropertyAccessor«ENDIF»
 				implements Enums
 			{
 				«IF context.targetNeeded»
@@ -46,7 +46,7 @@ class ProviderAccessorGenerator {
 			
 				«addNeededFrancaType("FDeployedProvider")»
 				public ProviderPropertyAccessor(FDeployedProvider target) {
-					«IF spec.base!=null»
+					«IF spec.base!==null»
 					super(target);
 					«ENDIF»
 					«IF context.targetNeeded»
@@ -72,12 +72,12 @@ class ProviderAccessorGenerator {
 	def private genProperty(FDPropertyDecl it, FDPropertyHost host, ICodeContext context) {
 		val francaType = host.getFrancaTypeProvider
 		addNeededFrancaType(francaType)
-		if (francaType!=null) {
+		if (francaType!==null) {
 			context.requireTargetMember
 			if (isEnum) {
 				val enumType = name.toFirstUpper
 				val retType =
-					if (type.array==null) {
+					if (type.array===null) {
 						enumType
 					} else {
 						enumType.genListType.toString

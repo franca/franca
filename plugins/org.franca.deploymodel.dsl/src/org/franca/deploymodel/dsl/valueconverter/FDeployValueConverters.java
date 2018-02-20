@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2012 Harman International (http://www.harman.com).
+* Copyright (c) 2015 itemis AG (http://www.itemis.de).
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -17,6 +17,8 @@ import org.eclipse.xtext.conversion.impl.AbstractValueConverter;
 import org.eclipse.xtext.conversion.impl.INTValueConverter;
 import org.eclipse.xtext.conversion.impl.STRINGValueConverter;
 import org.eclipse.xtext.nodemodel.INode;
+import org.franca.deploymodel.core.FDPropertyHost;
+import org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost;
 
 import com.google.inject.Inject;
 
@@ -50,7 +52,7 @@ public class FDeployValueConverters extends AbstractDeclarativeValueConverterSer
 	/**
 	 * Create a converter for the FQN_WITH_SELECTOR rule.
 	 * 
-	 * @return a value converter for FQN
+	 * @return a value converter for FQN_WITH_SELECTOR
 	 */
 	@ValueConverter(rule = "FQN_WITH_SELECTOR")
 	public IValueConverter<String> FQN_WITH_SELECTOR() {
@@ -147,5 +149,24 @@ public class FDeployValueConverters extends AbstractDeclarativeValueConverterSer
             return string.replace("^", "");
         }
     }
+
+	@ValueConverter(rule = "PROPERTY_HOST")
+	public AbstractNullSafeConverter<FDPropertyHost> PROPERTY_HOST() {
+		return new AbstractNullSafeConverter<FDPropertyHost>() {
+			@Override
+			protected FDPropertyHost internalToValue(String string, INode node) {
+				FDBuiltInPropertyHost host = FDBuiltInPropertyHost.get(string);
+				if (host!=null)
+					return new FDPropertyHost(host);
+				else
+					return new FDPropertyHost(string);
+			}
+
+			@Override
+			protected String internalToString(FDPropertyHost value) {
+				return value.getName();
+			}
+		};
+	}
 
 }

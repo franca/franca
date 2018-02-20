@@ -30,15 +30,20 @@ import org.franca.core.franca.FType;
 import org.franca.core.franca.FTypeDef;
 import org.franca.core.franca.FUnionType;
 import org.franca.deploymodel.core.FDModelUtils;
+import org.franca.deploymodel.core.FDPropertyHost;
 import org.franca.deploymodel.core.PropertyMappings;
+import org.franca.deploymodel.dsl.ExtensionRegistry;
 import org.franca.deploymodel.dsl.FDMapper;
 import org.franca.deploymodel.dsl.FDSpecificationExtender;
+import org.franca.deploymodel.dsl.IFDeployExtension;
 import org.franca.deploymodel.dsl.fDeploy.FDArgument;
 import org.franca.deploymodel.dsl.fDeploy.FDArray;
 import org.franca.deploymodel.dsl.fDeploy.FDAttribute;
 import org.franca.deploymodel.dsl.fDeploy.FDBoolean;
 import org.franca.deploymodel.dsl.fDeploy.FDBroadcast;
+import org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost;
 import org.franca.deploymodel.dsl.fDeploy.FDComplexValue;
+import org.franca.deploymodel.dsl.fDeploy.FDDeclaration;
 import org.franca.deploymodel.dsl.fDeploy.FDElement;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumType;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumValue;
@@ -58,7 +63,6 @@ import org.franca.deploymodel.dsl.fDeploy.FDPredefinedTypeId;
 import org.franca.deploymodel.dsl.fDeploy.FDProperty;
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl;
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyFlag;
-import org.franca.deploymodel.dsl.fDeploy.FDPropertyHost;
 import org.franca.deploymodel.dsl.fDeploy.FDPropertySet;
 import org.franca.deploymodel.dsl.fDeploy.FDProvider;
 import org.franca.deploymodel.dsl.fDeploy.FDRootElement;
@@ -75,6 +79,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDUnion;
 import org.franca.deploymodel.dsl.fDeploy.FDUnionOverwrites;
 import org.franca.deploymodel.dsl.fDeploy.FDValue;
 import org.franca.deploymodel.dsl.fDeploy.FDValueArray;
+import org.franca.deploymodel.dsl.fDeploy.FDeployFactory;
 import org.franca.deploymodel.dsl.fDeploy.FDeployPackage;
 import org.franca.deploymodel.dsl.validation.internal.ValidatorRegistry;
 
@@ -138,6 +143,24 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 	public void checkSpecNamesUnique(FDModel model) {
 		ValidationHelpers.checkDuplicates(this, model.getSpecifications(),
 				FDeployPackage.Literals.FD_SPECIFICATION__NAME, "specification name");
+	}
+	
+	@Check
+	public void checkPropertyHosts(FDDeclaration decl) {
+		FDPropertyHost host = decl.getHost();
+		if (host.getBuiltIn() == null) {
+			// this is a host from an extension, check if it is valid
+			for(IFDeployExtension ext : ExtensionRegistry.getExtensions()) {
+				if (ext.getHosts().contains(host.getName())) {
+					// found it, we're done
+					return;
+				}
+			}
+			
+			// didn't find name for this host
+			error("Invalid property host '" + host.getName() + "'",
+					decl, FDeployPackage.Literals.FD_DECLARATION__HOST, -1);
+		}
 	}
 
 	@Check
@@ -608,7 +631,7 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 		for(FEnumerator tc : enumerators) {
 			FDEnumValue c = (FDEnumValue) mapper.getFDElement(tc);
 			if (c==null) {
-				if (specHelper.isMandatory(FDPropertyHost.ENUMERATORS)) {
+				if (specHelper.isMandatory(FDPropertyHost.builtIn(FDBuiltInPropertyHost.ENUMERATORS))) {
 					error("Mandatory enumerator '" + tc.getName() + "' is missing for enumeration '" + ((FDEnumeration) parent).getTarget().getName() + "'", 
 							parent, feature, -1, ENUMERATOR_ENUM_QUICKFIX, ((FDEnumeration) parent).getTarget().getName(), tc.getName());
 					hasError |= true;
