@@ -150,16 +150,11 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 		FDPropertyHost host = decl.getHost();
 		if (host.getBuiltIn() == null) {
 			// this is a host from an extension, check if it is valid
-			for(IFDeployExtension ext : ExtensionRegistry.getExtensions()) {
-				if (ext.getHosts().contains(host.getName())) {
-					// found it, we're done
-					return;
-				}
+			if (! ExtensionRegistry.getHosts().keySet().contains(host.getName())) {
+				// didn't find name for this host
+				error("Invalid property host '" + host.getName() + "'",
+						decl, FDeployPackage.Literals.FD_DECLARATION__HOST, -1);
 			}
-			
-			// didn't find name for this host
-			error("Invalid property host '" + host.getName() + "'",
-					decl, FDeployPackage.Literals.FD_DECLARATION__HOST, -1);
 		}
 	}
 

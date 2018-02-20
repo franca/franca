@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.emf.common.util.EList;
@@ -267,11 +268,10 @@ public class FDeployProposalProvider extends AbstractFDeployProposalProvider {
 		}
 		
 		// collect hosts from all registered deployment extensions
-		for(IFDeployExtension ext : ExtensionRegistry.getExtensions()) {
-			for(String host : ext.getHosts()) {
-				String displayString = host + " (" + ext.getShortDescription() + ")";
-				acceptor.accept(createCompletionProposal(host, displayString, null, context));
-			}
+		Map<String, IFDeployExtension> extensionHosts = ExtensionRegistry.getHosts();
+		for(String host : extensionHosts.keySet()) {
+			String displayString = host + " (" + extensionHosts.get(host).getShortDescription() + ")";
+			acceptor.accept(createCompletionProposal(host, displayString, null, context));
 		}
 	}
 	

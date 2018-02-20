@@ -7,15 +7,16 @@
  */
 package org.franca.deploymodel.dsl
 
+import com.google.common.collect.Lists
 import java.util.Collection
 import java.util.List
+import java.util.Map
 import org.eclipse.core.runtime.CoreException
 import org.eclipse.core.runtime.IConfigurationElement
 import org.eclipse.core.runtime.IExtension
 import org.eclipse.core.runtime.IExtensionPoint
 import org.eclipse.core.runtime.IExtensionRegistry
 import org.eclipse.core.runtime.Platform
-import com.google.common.collect.Lists
 
 /** 
  * This is the registry for deployment extensions.</p>
@@ -87,4 +88,14 @@ class ExtensionRegistry {
 		extensions.add(^extension)
 	}
 
+
+	def static Map<String, IFDeployExtension> getHosts() {
+		val result = newHashMap
+		for(ext : getExtensions()) {
+			for(host : ext.hosts) {
+				result.put(host, ext)
+			} 
+		}
+		result
+	}
 }
