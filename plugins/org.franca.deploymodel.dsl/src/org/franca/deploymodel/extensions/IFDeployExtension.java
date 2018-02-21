@@ -17,15 +17,27 @@ import java.util.Collection;
  */
 public interface IFDeployExtension {
 
+	class Host {
+		private String name;
+		
+		public Host(String name) {
+			this.name = name;
+		}
+		
+		public String getName() {
+			return name;
+		}
+	}
+
 	public String getShortDescription();
 	
-	public Collection<String> getHosts();
+	public Collection<Host> getHosts();
 	
 	class Root {
 		private String name;
-		private Collection<String> hosts;
+		private Collection<Host> hosts;
 		
-		public Root(String name, Collection<String> hosts) {
+		public Root(String name, Collection<Host> hosts) {
 			this.name = name;
 			this.hosts = hosts;
 		}
@@ -34,7 +46,7 @@ public interface IFDeployExtension {
 			return name;
 		}
 		
-		public Collection<String> getHosts() {
+		public Collection<Host> getHosts() {
 			return hosts;
 		}
 	}

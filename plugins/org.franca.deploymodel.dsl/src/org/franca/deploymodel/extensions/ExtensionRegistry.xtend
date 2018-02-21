@@ -89,7 +89,7 @@ class ExtensionRegistry {
 	}
 
 
-	def static Map<String, IFDeployExtension> getHosts() {
+	def static Map<IFDeployExtension.Host, IFDeployExtension> getHosts() {
 		val result = newHashMap
 		for(ext : getExtensions()) {
 			for(host : ext.hosts) {
@@ -97,6 +97,11 @@ class ExtensionRegistry {
 			} 
 		}
 		result
+	}
+
+	def static IFDeployExtension.Host findHost(String hostname) {
+		val hosts = getExtensions().map[hosts].flatten
+		hosts.findFirst[it.name==hostname]
 	}
 
 	def static Map<IFDeployExtension.Root, IFDeployExtension> getRoots() {

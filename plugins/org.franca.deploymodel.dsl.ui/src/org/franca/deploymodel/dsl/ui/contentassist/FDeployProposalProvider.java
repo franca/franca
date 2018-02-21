@@ -268,10 +268,11 @@ public class FDeployProposalProvider extends AbstractFDeployProposalProvider {
 		}
 		
 		// collect hosts from all registered deployment extensions
-		Map<String, IFDeployExtension> extensionHosts = ExtensionRegistry.getHosts();
-		for(String host : extensionHosts.keySet()) {
-			String displayString = host + " (" + extensionHosts.get(host).getShortDescription() + ")";
-			acceptor.accept(createCompletionProposal(host, displayString, null, context));
+		Map<IFDeployExtension.Host, IFDeployExtension> extensionHosts = ExtensionRegistry.getHosts();
+		for(IFDeployExtension.Host host : extensionHosts.keySet()) {
+			String proposal = host.getName();
+			String displayString = proposal + " (" + extensionHosts.get(host).getShortDescription() + ")";
+			acceptor.accept(createCompletionProposal(proposal, displayString, null, context));
 		}
 	}
 

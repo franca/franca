@@ -45,6 +45,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDTypes;
 import org.franca.deploymodel.dsl.fDeploy.FDUnion;
 import org.franca.deploymodel.dsl.fDeploy.FDUnionOverwrites;
 import org.franca.deploymodel.extensions.ExtensionRegistry;
+import org.franca.deploymodel.extensions.IFDeployExtension;
 import org.franca.deploymodel.extensions.IFDeployExtension.Root;
 
 import com.google.common.collect.Lists;
@@ -144,8 +145,8 @@ public class PropertyMappings {
 		if (rootElement instanceof FDExtensionRoot) {
 			String rootType = ((FDExtensionRoot) rootElement).getType();
 			Root root = ExtensionRegistry.findRoot(rootType);
-			for(String rh : root.getHosts()) {
-				hosts.add(new FDPropertyHost(rh));
+			for(IFDeployExtension.Host rh : root.getHosts()) {
+				hosts.add(new FDPropertyHost(rh.getName()));
 			}
 		}
 

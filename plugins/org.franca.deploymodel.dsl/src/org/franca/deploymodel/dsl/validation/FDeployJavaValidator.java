@@ -141,8 +141,8 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 		FDPropertyHost host = decl.getHost();
 		if (host.getBuiltIn() == null) {
 			// this is a host from an extension, check if it is valid
-			if (! ExtensionRegistry.getHosts().keySet().contains(host.getName())) {
-				// didn't find name for this host
+			if (ExtensionRegistry.findHost(host.getName())==null) {
+				// didn't find host by name
 				error("Invalid property host '" + host.getName() + "'",
 						decl, FDeployPackage.Literals.FD_DECLARATION__HOST, -1);
 			}
@@ -153,7 +153,7 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 	public void checkExtensionRoot(FDExtensionRoot root) {
 		String rootType = root.getType();
 		if (ExtensionRegistry.findRoot(rootType)==null) {
-			// didn't find type for this root
+			// didn't find root by type name
 			error("Invalid type '" + rootType + "', no matching deployment extension has been configured",
 					root, FDeployPackage.Literals.FD_EXTENSION_ROOT__TYPE, -1);
 		}
