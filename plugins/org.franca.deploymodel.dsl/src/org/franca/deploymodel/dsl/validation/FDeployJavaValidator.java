@@ -156,14 +156,12 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 
 	@Check
 	public void checkExtensionRoot(FDExtensionRoot root) {
-		Set<Root> roots = ExtensionRegistry.getRoots().keySet();
-		for(Root r : roots) {
-			if (r.getName().equals(root.getType()))
-				return;
+		String rootType = root.getType();
+		if (ExtensionRegistry.findRoot(rootType)==null) {
+			// didn't find type for this root
+			error("Invalid type '" + rootType + "', no matching deployment extension has been configured",
+					root, FDeployPackage.Literals.FD_EXTENSION_ROOT__TYPE, -1);
 		}
-		// didn't find type for this root
-		error("Invalid type '" + root.getType() + "', no matching deployment extension has been configured",
-				root, FDeployPackage.Literals.FD_EXTENSION_ROOT__TYPE, -1);
 	}
 
 	@Check
@@ -249,6 +247,13 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 	
 	// *****************************************************************************
 	// check for missing properties
+	
+	@Check
+	public void checkPropertiesComplete(FDExtensionRoot elem) {
+		// check own properties
+		FDSpecification spec = FDModelUtils.getRootElement(elem).getSpec();
+		checkSpecificationElementProperties(spec, elem, FDeployPackage.Literals.FD_ROOT_ELEMENT__NAME, spec.getName());
+	}
 	
 	@Check
 	public void checkPropertiesComplete(FDProvider elem) {

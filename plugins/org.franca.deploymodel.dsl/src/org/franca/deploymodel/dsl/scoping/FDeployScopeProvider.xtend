@@ -66,6 +66,7 @@ import static extension org.eclipse.xtext.scoping.Scopes.*
 import static extension org.franca.core.FrancaModelExtensions.*
 import static extension org.franca.deploymodel.core.FDModelUtils.*
 import org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost
+import org.franca.deploymodel.dsl.fDeploy.FDExtensionRoot
 
 class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 
@@ -245,6 +246,11 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 	}
 
 	// *****************************************************************************
+
+	def scope_FDProperty_decl(FDExtensionRoot owner, EReference ref) {
+		owner.getPropertyDecls
+	}
+
 	def scope_FDProperty_decl(FDProvider owner, EReference ref) {
 		owner.getPropertyDecls
 	}

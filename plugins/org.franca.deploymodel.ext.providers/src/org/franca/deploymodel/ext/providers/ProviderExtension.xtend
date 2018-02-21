@@ -15,7 +15,7 @@ class ProviderExtension implements IFDeployExtension {
 
 	override Collection<Root> getRoots() {
 		#[
-			new Root("providerX")
+			new Root("providerX", #[ "host1" ])
 		]
 	}
 

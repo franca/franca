@@ -72,9 +72,16 @@ class FDPropertyHost {
 	override int hashCode() {
 		var result = 17
 		if (builtinHost!==null)
-			result = 31 * result + builtinHost.hashCode
+			result = 31 * result + builtinHost.literal.hashCode
 		if (extensionHost!==null)
 			result = 37 * result + extensionHost.hashCode
-		result
+		result 
+	}
+	
+	override String toString() {
+		if (builtinHost!==null)
+			builtinHost.getName
+		else
+			extensionHost + "!"
 	}
 }

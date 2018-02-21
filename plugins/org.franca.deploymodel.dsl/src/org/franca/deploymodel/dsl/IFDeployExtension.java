@@ -23,13 +23,19 @@ public interface IFDeployExtension {
 	
 	class Root {
 		private String name;
+		private Collection<String> hosts;
 		
-		public Root(String name) {
+		public Root(String name, Collection<String> hosts) {
 			this.name = name;
+			this.hosts = hosts;
 		}
 		
 		public String getName() {
 			return name;
+		}
+		
+		public Collection<String> getHosts() {
+			return hosts;
 		}
 	}
 	

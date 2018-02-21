@@ -19,6 +19,8 @@ import org.franca.core.franca.FType;
 import org.franca.core.franca.FTypeRef;
 import org.franca.core.franca.FTypedElement;
 import org.franca.core.franca.FUnionType;
+import org.franca.deploymodel.dsl.ExtensionRegistry;
+import org.franca.deploymodel.dsl.IFDeployExtension.Root;
 import org.franca.deploymodel.dsl.fDeploy.FDArgument;
 import org.franca.deploymodel.dsl.fDeploy.FDArray;
 import org.franca.deploymodel.dsl.fDeploy.FDAttribute;
@@ -28,6 +30,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDDeclaration;
 import org.franca.deploymodel.dsl.fDeploy.FDElement;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumValue;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumeration;
+import org.franca.deploymodel.dsl.fDeploy.FDExtensionRoot;
 import org.franca.deploymodel.dsl.fDeploy.FDField;
 import org.franca.deploymodel.dsl.fDeploy.FDInterface;
 import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance;
@@ -35,6 +38,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDMethod;
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl;
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyFlag;
 import org.franca.deploymodel.dsl.fDeploy.FDProvider;
+import org.franca.deploymodel.dsl.fDeploy.FDRootElement;
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification;
 import org.franca.deploymodel.dsl.fDeploy.FDStruct;
 import org.franca.deploymodel.dsl.fDeploy.FDStructOverwrites;
@@ -45,6 +49,8 @@ import org.franca.deploymodel.dsl.fDeploy.FDUnionOverwrites;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+
+import static org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost.*;
 
 public class PropertyMappings {
 
@@ -80,54 +86,69 @@ public class PropertyMappings {
 	 * @return the list of relevant property declarations for this element  
 	 */
 	public static final List<FDPropertyDecl> getAllPropertyDecls(FDSpecification spec, FDElement elem) {
-		Set<FDBuiltInPropertyHost> builtinHosts = Sets.newHashSet(getMainHost(elem));
-
-		FTypeRef typeRef = null;
-		boolean isInlineArray = false;
-		if (elem instanceof FDAttribute) {
-			FTypedElement te = ((FDAttribute) elem).getTarget();
-			typeRef = te.getType();
-			if (te.isArray())
-				isInlineArray = true;
-		} else if (elem instanceof FDArgument) {
-			FTypedElement te = ((FDArgument) elem).getTarget();
-			typeRef = te.getType();
-			if (te.isArray())
-				isInlineArray = true;
-		} else if (elem instanceof FDField) {
-			FTypedElement te = ((FDField) elem).getTarget();
-			typeRef = te.getType();
-			if (te.isArray())
-				isInlineArray = true;
-		}
-		if (typeRef != null) {
-			if (FrancaHelpers.isInteger(typeRef))
-				builtinHosts.add(FDBuiltInPropertyHost.INTEGERS);
-			else if (FrancaHelpers.isFloatingPoint(typeRef))
-				builtinHosts.add(FDBuiltInPropertyHost.FLOATS);
-			else if (FrancaHelpers.isString(typeRef))
-				builtinHosts.add(FDBuiltInPropertyHost.STRINGS);
-			else if (FrancaHelpers.isBoolean(typeRef))
-				builtinHosts.add(FDBuiltInPropertyHost.BOOLEANS);
-			else if (FrancaHelpers.isByteBuffer(typeRef))
-				builtinHosts.add(FDBuiltInPropertyHost.BYTE_BUFFERS);
-		}
-		if (isInlineArray) {
-			builtinHosts.add(FDBuiltInPropertyHost.ARRAYS);
-		}
-
-		// if looking for INTEGERS or FLOATS, we also look for NUMBERS
-		if (builtinHosts.contains(FDBuiltInPropertyHost.INTEGERS) || builtinHosts.contains(FDBuiltInPropertyHost.FLOATS))
-			builtinHosts.add(FDBuiltInPropertyHost.NUMBERS);
-
-		// if looking for STRUCT_FIELDS or UNION_FIELDS, we also look for FIELDS
-		if (builtinHosts.contains(FDBuiltInPropertyHost.STRUCT_FIELDS) || builtinHosts.contains(FDBuiltInPropertyHost.UNION_FIELDS))
-			builtinHosts.add(FDBuiltInPropertyHost.FIELDS);
-		
 		Set<FDPropertyHost> hosts = Sets.newHashSet();
-		for(FDBuiltInPropertyHost h : builtinHosts) {
-			hosts.add(new FDPropertyHost(h));
+
+		FDBuiltInPropertyHost builtInMainHost = getBuiltInMainHost(elem);
+		if (builtInMainHost!=null) {
+			Set<FDBuiltInPropertyHost> builtinHosts = Sets.newHashSet(builtInMainHost);
+
+			FTypeRef typeRef = null;
+			boolean isInlineArray = false;
+			if (elem instanceof FDAttribute) {
+				FTypedElement te = ((FDAttribute) elem).getTarget();
+				typeRef = te.getType();
+				if (te.isArray())
+					isInlineArray = true;
+			} else if (elem instanceof FDArgument) {
+				FTypedElement te = ((FDArgument) elem).getTarget();
+				typeRef = te.getType();
+				if (te.isArray())
+					isInlineArray = true;
+			} else if (elem instanceof FDField) {
+				FTypedElement te = ((FDField) elem).getTarget();
+				typeRef = te.getType();
+				if (te.isArray())
+					isInlineArray = true;
+			}
+			if (typeRef != null) {
+				if (FrancaHelpers.isInteger(typeRef))
+					builtinHosts.add(INTEGERS);
+				else if (FrancaHelpers.isFloatingPoint(typeRef))
+					builtinHosts.add(FLOATS);
+				else if (FrancaHelpers.isString(typeRef))
+					builtinHosts.add(STRINGS);
+				else if (FrancaHelpers.isBoolean(typeRef))
+					builtinHosts.add(BOOLEANS);
+				else if (FrancaHelpers.isByteBuffer(typeRef))
+					builtinHosts.add(BYTE_BUFFERS);
+			}
+			if (isInlineArray) {
+				builtinHosts.add(ARRAYS);
+			}
+
+			// if looking for INTEGERS or FLOATS, we also look for NUMBERS
+			if (builtinHosts.contains(INTEGERS) || builtinHosts.contains(FLOATS))
+				builtinHosts.add(NUMBERS);
+
+			// if looking for STRUCT_FIELDS or UNION_FIELDS, we also look for FIELDS
+			if (builtinHosts.contains(STRUCT_FIELDS) || builtinHosts.contains(UNION_FIELDS))
+				builtinHosts.add(FIELDS);
+			
+			for(FDBuiltInPropertyHost h : builtinHosts) {
+				hosts.add(new FDPropertyHost(h));
+			}
 		}
+		
+		// check hosts from extensions
+		FDRootElement rootElement = FDModelUtils.getRootElement(elem);
+		if (rootElement instanceof FDExtensionRoot) {
+			String rootType = ((FDExtensionRoot) rootElement).getType();
+			Root root = ExtensionRegistry.findRoot(rootType);
+			for(String rh : root.getHosts()) {
+				hosts.add(new FDPropertyHost(rh));
+			}
+		}
+
 		return getAllPropertyDeclsHelper(spec, hosts);
 	}
 
@@ -194,48 +215,49 @@ public class PropertyMappings {
 	}
 
 	/**
-	 * Get the main host for a given deployment element.
+	 * Get the built-in main host for a given deployment element.
 	 * 
 	 * @param elem a deployment element
 	 * @return the main host for the type of this deployment element.
 	 */
-	private static FDBuiltInPropertyHost getMainHost(FDElement elem) {
+	private static FDBuiltInPropertyHost getBuiltInMainHost(FDElement elem) {
+		// check built-in elements first
 		if (elem instanceof FDProvider) {
-			return FDBuiltInPropertyHost.PROVIDERS;
+			return PROVIDERS;
 		} else if (elem instanceof FDInterfaceInstance) {
-			return FDBuiltInPropertyHost.INSTANCES;
+			return INSTANCES;
 		} else if (elem instanceof FDInterface) {
-			return FDBuiltInPropertyHost.INTERFACES;
+			return INTERFACES;
 		} else if (elem instanceof FDTypes) {
-			return FDBuiltInPropertyHost.TYPE_COLLECTIONS;
+			return TYPE_COLLECTIONS;
 		} else if (elem instanceof FDAttribute) {
-			return FDBuiltInPropertyHost.ATTRIBUTES;
+			return ATTRIBUTES;
 		} else if (elem instanceof FDMethod) {
-			return FDBuiltInPropertyHost.METHODS;
+			return METHODS;
 		} else if (elem instanceof FDBroadcast) {
-			return FDBuiltInPropertyHost.BROADCASTS;
+			return BROADCASTS;
 		} else if (elem instanceof FDArgument) {
-			return FDBuiltInPropertyHost.ARGUMENTS;
+			return ARGUMENTS;
 		} else if (elem instanceof FDArray) {
-			return FDBuiltInPropertyHost.ARRAYS;
+			return ARRAYS;
 		} else if (elem instanceof FDStruct || elem instanceof FDStructOverwrites) {
-			return FDBuiltInPropertyHost.STRUCTS;
+			return STRUCTS;
 		} else if (elem instanceof FDUnion || elem instanceof FDUnionOverwrites) {
-			return FDBuiltInPropertyHost.UNIONS;
+			return UNIONS;
 		} else if (elem instanceof FDField) {
 			EObject p = elem.eContainer();
 			if (p instanceof FDStruct || p instanceof FDStructOverwrites)
-				return FDBuiltInPropertyHost.STRUCT_FIELDS;
+				return STRUCT_FIELDS;
 			else if (p instanceof FDUnion || p instanceof FDUnionOverwrites)
-				return FDBuiltInPropertyHost.UNION_FIELDS;
+				return UNION_FIELDS;
 			else
 				return null;
 		} else if (elem instanceof FDEnumeration) {
-			return FDBuiltInPropertyHost.ENUMERATIONS;
+			return ENUMERATIONS;
 		} else if (elem instanceof FDEnumValue) {
-			return FDBuiltInPropertyHost.ENUMERATORS;
+			return ENUMERATORS;
 		} else if (elem instanceof FDTypedef) {
-			return FDBuiltInPropertyHost.TYPEDEFS;
+			return TYPEDEFS;
 		}
 
 		return null;
@@ -249,13 +271,13 @@ public class PropertyMappings {
 	 */
 	private static FDBuiltInPropertyHost getMainHost(FType type) {
 		if (type instanceof FArrayType) {
-			return FDBuiltInPropertyHost.ARRAYS;
+			return ARRAYS;
 		} else if (type instanceof FStructType) {
-			return FDBuiltInPropertyHost.STRUCTS;
+			return STRUCTS;
 		} else if (type instanceof FUnionType) {
-			return FDBuiltInPropertyHost.UNIONS;
+			return UNIONS;
 		} else if (type instanceof FEnumerationType) {
-			return FDBuiltInPropertyHost.ENUMERATIONS;
+			return ENUMERATIONS;
 		}
 		return null;
 	}
