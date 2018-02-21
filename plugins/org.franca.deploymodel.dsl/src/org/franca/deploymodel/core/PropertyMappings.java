@@ -19,8 +19,6 @@ import org.franca.core.franca.FType;
 import org.franca.core.franca.FTypeRef;
 import org.franca.core.franca.FTypedElement;
 import org.franca.core.franca.FUnionType;
-import org.franca.deploymodel.dsl.ExtensionRegistry;
-import org.franca.deploymodel.dsl.IFDeployExtension.Root;
 import org.franca.deploymodel.dsl.fDeploy.FDArgument;
 import org.franca.deploymodel.dsl.fDeploy.FDArray;
 import org.franca.deploymodel.dsl.fDeploy.FDAttribute;
@@ -46,6 +44,8 @@ import org.franca.deploymodel.dsl.fDeploy.FDTypedef;
 import org.franca.deploymodel.dsl.fDeploy.FDTypes;
 import org.franca.deploymodel.dsl.fDeploy.FDUnion;
 import org.franca.deploymodel.dsl.fDeploy.FDUnionOverwrites;
+import org.franca.deploymodel.extensions.ExtensionRegistry;
+import org.franca.deploymodel.extensions.IFDeployExtension.Root;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;

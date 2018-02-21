@@ -58,7 +58,7 @@
                   
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn=":org.franca.deploymodel.dsl.IFDeployExtension"/>
+                  <meta.attribute kind="java" basedOn=":org.franca.deploymodel.extensions.IFDeployExtension"/>
                </appInfo>
             </annotation>
          </attribute>

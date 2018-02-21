@@ -25,7 +25,7 @@ Export-Package: org.franca.deploymodel.core,org.franca.deploymodel.dsl
  ymodel.dsl.parseTreeConstruction,org.franca.deploymodel.dsl.parser.an
  tlr,org.franca.deploymodel.dsl.parser.antlr.internal,org.franca.deplo
  ymodel.dsl.scoping,org.franca.deploymodel.dsl.services,org.franca.dep
- loymodel.dsl.validation
+ loymodel.dsl.validation,org.franca.deploymodel.extensions
 Import-Package: org.apache.log4j,
  org.eclipse.xtend.lib,
  org.eclipse.xtext.xbase.lib

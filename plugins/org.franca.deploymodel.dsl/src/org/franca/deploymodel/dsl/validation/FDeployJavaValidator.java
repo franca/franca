@@ -8,7 +8,6 @@
 package org.franca.deploymodel.dsl.validation;
 
 import java.util.List;
-import java.util.Set;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
@@ -33,11 +32,8 @@ import org.franca.core.franca.FUnionType;
 import org.franca.deploymodel.core.FDModelUtils;
 import org.franca.deploymodel.core.FDPropertyHost;
 import org.franca.deploymodel.core.PropertyMappings;
-import org.franca.deploymodel.dsl.ExtensionRegistry;
 import org.franca.deploymodel.dsl.FDMapper;
 import org.franca.deploymodel.dsl.FDSpecificationExtender;
-import org.franca.deploymodel.dsl.IFDeployExtension;
-import org.franca.deploymodel.dsl.IFDeployExtension.Root;
 import org.franca.deploymodel.dsl.fDeploy.FDArgument;
 import org.franca.deploymodel.dsl.fDeploy.FDArray;
 import org.franca.deploymodel.dsl.fDeploy.FDAttribute;
@@ -82,11 +78,10 @@ import org.franca.deploymodel.dsl.fDeploy.FDUnion;
 import org.franca.deploymodel.dsl.fDeploy.FDUnionOverwrites;
 import org.franca.deploymodel.dsl.fDeploy.FDValue;
 import org.franca.deploymodel.dsl.fDeploy.FDValueArray;
-import org.franca.deploymodel.dsl.fDeploy.FDeployFactory;
 import org.franca.deploymodel.dsl.fDeploy.FDeployPackage;
 import org.franca.deploymodel.dsl.validation.internal.ValidatorRegistry;
+import org.franca.deploymodel.extensions.ExtensionRegistry;
 
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 public class FDeployJavaValidator extends AbstractFDeployJavaValidator
