@@ -108,7 +108,7 @@ FDInterfaceInstance:
 
 FDExtensionRoot:
 	'define' spec=[FDSpecification|FQN]
-	'for' type=ID name=FQN
+	'for' tag=ID name=FQN
 	'{'
 		('use' use+=[FDRootElement|FQN])*
 

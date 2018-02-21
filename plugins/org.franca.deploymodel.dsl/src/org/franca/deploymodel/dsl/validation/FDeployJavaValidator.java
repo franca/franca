@@ -151,11 +151,11 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 
 	@Check
 	public void checkExtensionRoot(FDExtensionRoot root) {
-		String rootType = root.getType();
-		if (ExtensionRegistry.findRoot(rootType)==null) {
-			// didn't find root by type name
-			error("Invalid type '" + rootType + "', no matching deployment extension has been configured",
-					root, FDeployPackage.Literals.FD_EXTENSION_ROOT__TYPE, -1);
+		String rootTag = root.getTag();
+		if (ExtensionRegistry.findRoot(rootTag)==null) {
+			// didn't find root by tag
+			error("Invalid root '" + rootTag + "', no matching deployment extension has been configured",
+					root, FDeployPackage.Literals.FD_EXTENSION_ROOT__TAG, -1);
 		}
 	}
 

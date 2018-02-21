@@ -143,8 +143,8 @@ public class PropertyMappings {
 		// check hosts from extensions
 		FDRootElement rootElement = FDModelUtils.getRootElement(elem);
 		if (rootElement instanceof FDExtensionRoot) {
-			String rootType = ((FDExtensionRoot) rootElement).getType();
-			Root root = ExtensionRegistry.findRoot(rootType);
+			String rootTag = ((FDExtensionRoot) rootElement).getTag();
+			Root root = ExtensionRegistry.findRoot(rootTag);
 			for(IFDeployExtension.Host rh : root.getHosts()) {
 				hosts.add(new FDPropertyHost(rh.getName()));
 			}

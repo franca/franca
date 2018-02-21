@@ -277,7 +277,7 @@ public class FDeployProposalProvider extends AbstractFDeployProposalProvider {
 	}
 
 	@Override
-	public void completeFDExtensionRoot_Type(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+	public void completeFDExtensionRoot_Tag(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		Map<Root, IFDeployExtension> roots = ExtensionRegistry.getRoots();
 		for(Root root : roots.keySet()) {
 			String displayString = root.getName() + " (" + roots.get(root).getShortDescription() + ")";
