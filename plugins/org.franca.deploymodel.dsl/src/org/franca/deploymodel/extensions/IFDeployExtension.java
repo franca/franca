@@ -34,16 +34,16 @@ public interface IFDeployExtension {
 	public Collection<Host> getHosts();
 	
 	class Root {
-		private String name;
+		private String tag;
 		private Collection<Host> hosts;
 		
-		public Root(String name, Collection<Host> hosts) {
-			this.name = name;
+		public Root(String tag, Collection<Host> hosts) {
+			this.tag = tag;
 			this.hosts = hosts;
 		}
 		
-		public String getName() {
-			return name;
+		public String getTag() {
+			return tag;
 		}
 		
 		public Collection<Host> getHosts() {

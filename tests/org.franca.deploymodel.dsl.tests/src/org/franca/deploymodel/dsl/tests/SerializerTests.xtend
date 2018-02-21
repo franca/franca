@@ -11,9 +11,10 @@ import com.google.inject.Inject
 import org.eclipse.xtext.junit4.InjectWith
 import org.eclipse.xtext.serializer.ISerializer
 import org.eclipselabs.xtext.utils.unittesting.XtextRunner2
+import org.franca.deploymodel.core.FDPropertyHost
 import org.franca.deploymodel.dsl.FDeployTestsInjectorProvider
+import org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost
 import org.franca.deploymodel.dsl.fDeploy.FDPredefinedTypeId
-import org.franca.deploymodel.dsl.fDeploy.FDPropertyHost
 import org.franca.deploymodel.dsl.fDeploy.FDeployFactory
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -35,7 +36,7 @@ class SerializerTests {
 					name = "Spec1"
 					declarations.add(
 						f.createFDDeclaration => [
-							host = FDPropertyHost.STRINGS
+							host = FDPropertyHost.builtIn(FDBuiltInPropertyHost.STRINGS)
 							properties.add(
 								f.createFDPropertyDecl => [
 									name = "attribute"

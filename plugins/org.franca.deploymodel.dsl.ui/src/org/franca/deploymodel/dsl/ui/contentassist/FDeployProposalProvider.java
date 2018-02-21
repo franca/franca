@@ -280,8 +280,8 @@ public class FDeployProposalProvider extends AbstractFDeployProposalProvider {
 	public void completeFDExtensionRoot_Tag(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		Map<Root, IFDeployExtension> roots = ExtensionRegistry.getRoots();
 		for(Root root : roots.keySet()) {
-			String displayString = root.getName() + " (" + roots.get(root).getShortDescription() + ")";
-			acceptor.accept(createCompletionProposal(root.getName(), displayString, null, context));
+			String displayString = root.getTag() + " (" + roots.get(root).getShortDescription() + ")";
+			acceptor.accept(createCompletionProposal(root.getTag(), displayString, null, context));
 		}
 		completeRuleCall(((RuleCall)assignment.getTerminal()), context, acceptor);
 	}

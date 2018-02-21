@@ -114,8 +114,8 @@ class ExtensionRegistry {
 		result
 	}
 
-	def static IFDeployExtension.Root findRoot(String type) {
+	def static IFDeployExtension.Root findRoot(String rootTag) {
 		val roots = getExtensions().map[roots].flatten
-		roots.findFirst[name==type]
+		roots.findFirst[tag==rootTag]
 	}
 }
