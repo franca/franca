@@ -21,12 +21,12 @@ class ProviderExtension implements IFDeployExtension {
 		"providers and instances"
 	}
 
-	override Collection<Root> getRoots() {
-		val root1 = new Root(this, "providerX", #[ host1 ]) => [
-			addChild(new Element("instanceX", #[ host2, host23 ]) => [
-				addChild(new Element("level2", #[ host23 ]))
+	override Collection<RootDef> getRoots() {
+		val root1 = new RootDef(this, "providerX", #[ host1 ]) => [
+			addChild(new ElementDef("instanceX", #[ host2, host23 ]) => [
+				addChild(new ElementDef("level2", #[ host23 ]))
 			])
-			addChild(new Element("instanceY", #[ host3, host23 ]))
+			addChild(new ElementDef("instanceY", #[ host3, host23 ]))
 		]
 		#[ root1 ]
 	}

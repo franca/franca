@@ -109,7 +109,7 @@ class ExtensionRegistry {
 		hosts.findFirst[it.name==hostname]
 	}
 
-	def static Map<IFDeployExtension.Root, IFDeployExtension> getRoots() {
+	def static Map<IFDeployExtension.RootDef, IFDeployExtension> getRoots() {
 		val result = newHashMap
 		for(ext : getExtensions()) {
 			for(root : ext.roots) {
@@ -119,13 +119,13 @@ class ExtensionRegistry {
 		result
 	}
 
-	def static IFDeployExtension.Root findRoot(String rootTag) {
+	def static IFDeployExtension.RootDef findRoot(String rootTag) {
 		val roots = getExtensions().map[roots].flatten
 		roots.findFirst[tag==rootTag]
 	}
 
-	// get metamodel Element from model FDAbstractExtensionElement (which is an EObject)	
-	def static IFDeployExtension.AbstractElement getElement(FDAbstractExtensionElement elem) {
+	// get metamodel ElementDef from model FDAbstractExtensionElement (which is an EObject)	
+	def static IFDeployExtension.AbstractElementDef getElement(FDAbstractExtensionElement elem) {
 		switch (elem) {
 			FDExtensionRoot: {
 				findRoot(elem.tag)

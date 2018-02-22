@@ -47,9 +47,9 @@ import org.franca.deploymodel.dsl.scoping.DeploySpecProvider;
 import org.franca.deploymodel.dsl.scoping.DeploySpecProvider.DeploySpecEntry;
 import org.franca.deploymodel.extensions.ExtensionRegistry;
 import org.franca.deploymodel.extensions.IFDeployExtension;
-import org.franca.deploymodel.extensions.IFDeployExtension.AbstractElement;
-import org.franca.deploymodel.extensions.IFDeployExtension.Element;
-import org.franca.deploymodel.extensions.IFDeployExtension.Root;
+import org.franca.deploymodel.extensions.IFDeployExtension.AbstractElementDef;
+import org.franca.deploymodel.extensions.IFDeployExtension.ElementDef;
+import org.franca.deploymodel.extensions.IFDeployExtension.RootDef;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
@@ -280,9 +280,13 @@ public class FDeployProposalProvider extends AbstractFDeployProposalProvider {
 	}
 
 	@Override
-	public void completeFDExtensionRoot_Tag(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		Map<Root, IFDeployExtension> roots = ExtensionRegistry.getRoots();
-		for(Root root : roots.keySet()) {
+	public void completeFDExtensionRoot_Tag(
+			EObject model,
+			Assignment assignment,
+			ContentAssistContext context,
+			ICompletionProposalAcceptor acceptor) {
+		Map<RootDef, IFDeployExtension> roots = ExtensionRegistry.getRoots();
+		for(RootDef root : roots.keySet()) {
 			String proposal = root.getTag();
 			String displayString = proposal + " (" + roots.get(root).getShortDescription() + ")";
 			acceptor.accept(createCompletionProposal(proposal, displayString, null, context));
@@ -293,9 +297,9 @@ public class FDeployProposalProvider extends AbstractFDeployProposalProvider {
 	@Override
 	public void complete_FDExtensionElement(EObject elem, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		if (elem instanceof FDAbstractExtensionElement) {
-			AbstractElement element = ExtensionRegistry.getElement((FDAbstractExtensionElement)elem);
+			AbstractElementDef elementDef = ExtensionRegistry.getElement((FDAbstractExtensionElement)elem);
 			// add one proposal for each child
-			for(Element child : element.getChildren()) {
+			for(ElementDef child : elementDef.getChildren()) {
 				String proposal = child.getTag();
 				String displayString = proposal + " (from extension)";
 				acceptor.accept(createCompletionProposal(proposal, displayString, null, context));

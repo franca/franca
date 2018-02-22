@@ -45,7 +45,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDUnion;
 import org.franca.deploymodel.dsl.fDeploy.FDUnionOverwrites;
 import org.franca.deploymodel.extensions.ExtensionRegistry;
 import org.franca.deploymodel.extensions.IFDeployExtension;
-import org.franca.deploymodel.extensions.IFDeployExtension.AbstractElement;
+import org.franca.deploymodel.extensions.IFDeployExtension.AbstractElementDef;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -141,7 +141,7 @@ public class PropertyMappings {
 		
 		// check hosts from extensions
 		if (elem instanceof FDAbstractExtensionElement) {
-			AbstractElement elementDef = ExtensionRegistry.getElement((FDAbstractExtensionElement)elem);
+			AbstractElementDef elementDef = ExtensionRegistry.getElement((FDAbstractExtensionElement)elem);
 			for(IFDeployExtension.Host rh : elementDef.getHosts()) {
 				hosts.add(new FDPropertyHost(rh.getName()));
 			}

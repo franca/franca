@@ -34,18 +34,18 @@ public interface IFDeployExtension {
 
 	public String getShortDescription();
 	
-	abstract class AbstractElement {
+	abstract class AbstractElementDef {
 		private String tag;
 		private Collection<Host> hosts;
-		private Collection<Element> children;
+		private Collection<ElementDef> children;
 		
-		public AbstractElement(String tag, Collection<Host> hosts) {
+		public AbstractElementDef(String tag, Collection<Host> hosts) {
 			this.tag = tag;
 			this.hosts = hosts;
 			this.children = Lists.newArrayList();
 		}
 		
-		public void addChild(Element child) {
+		public void addChild(ElementDef child) {
 			children.add(child);
 			child.setParent(this);
 		}
@@ -58,29 +58,29 @@ public interface IFDeployExtension {
 			return hosts;
 		}
 		
-		public Collection<Element> getChildren() {
+		public Collection<ElementDef> getChildren() {
 			return children;
 		}
 	}
 	
-	class Element extends AbstractElement {
+	class ElementDef extends AbstractElementDef {
 
-		private AbstractElement parent;
+		private AbstractElementDef parent;
 		
-		public Element(String tag, Collection<Host> hosts) {
+		public ElementDef(String tag, Collection<Host> hosts) {
 			super(tag, hosts);
 		}
 		
-		public void setParent(AbstractElement parent) {
+		public void setParent(AbstractElementDef parent) {
 			this.parent = parent;
 		}
 	}
 	
-	class Root extends AbstractElement {
+	class RootDef extends AbstractElementDef {
 		// the extension which owns this root
 		private IFDeployExtension extension;
 		
-		public Root(IFDeployExtension extension, String tag, Collection<Host> hosts) {
+		public RootDef(IFDeployExtension extension, String tag, Collection<Host> hosts) {
 			super(tag, hosts);
 			this.extension = extension;
 		}
@@ -90,5 +90,5 @@ public interface IFDeployExtension {
 		}
 	}
 	
-	public Collection<Root> getRoots();
+	public Collection<RootDef> getRoots();
 }

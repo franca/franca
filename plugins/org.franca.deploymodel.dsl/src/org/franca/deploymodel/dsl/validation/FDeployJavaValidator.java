@@ -166,8 +166,8 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 	public void checkExtensionElement(FDExtensionElement elem) {
 		String tag = elem.getTag();
 		FDAbstractExtensionElement parent = (FDAbstractExtensionElement)elem.eContainer();
-		IFDeployExtension.AbstractElement parentDef = ExtensionRegistry.getElement(parent);
-		for(IFDeployExtension.AbstractElement c : parentDef.getChildren()) {
+		IFDeployExtension.AbstractElementDef parentDef = ExtensionRegistry.getElement(parent);
+		for(IFDeployExtension.AbstractElementDef c : parentDef.getChildren()) {
 			if (c.getTag().equals(tag))
 				return;
 		}

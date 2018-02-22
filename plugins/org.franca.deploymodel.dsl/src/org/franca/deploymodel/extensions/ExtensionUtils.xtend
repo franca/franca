@@ -10,7 +10,7 @@ package org.franca.deploymodel.extensions
 import com.google.common.collect.Lists
 import java.util.Collection
 import java.util.List
-import org.franca.deploymodel.extensions.IFDeployExtension.AbstractElement
+import org.franca.deploymodel.extensions.IFDeployExtension.AbstractElementDef
 import org.franca.deploymodel.extensions.IFDeployExtension.Host
 
 class ExtensionUtils {
@@ -21,7 +21,7 @@ class ExtensionUtils {
 		result
 	}
 
-	def private static getHosts(AbstractElement elem, IFDeployExtension ext, List<Host> result) {
+	def private static getHosts(AbstractElementDef elem, IFDeployExtension ext, List<Host> result) {
 		result.addAll(elem.hosts)
 		
 		// traverse children recursively
