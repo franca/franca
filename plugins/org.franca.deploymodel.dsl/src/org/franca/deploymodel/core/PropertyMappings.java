@@ -19,6 +19,7 @@ import org.franca.core.franca.FType;
 import org.franca.core.franca.FTypeRef;
 import org.franca.core.franca.FTypedElement;
 import org.franca.core.franca.FUnionType;
+import org.franca.deploymodel.dsl.fDeploy.FDAbstractExtensionElement;
 import org.franca.deploymodel.dsl.fDeploy.FDArgument;
 import org.franca.deploymodel.dsl.fDeploy.FDArray;
 import org.franca.deploymodel.dsl.fDeploy.FDAttribute;
@@ -28,7 +29,6 @@ import org.franca.deploymodel.dsl.fDeploy.FDDeclaration;
 import org.franca.deploymodel.dsl.fDeploy.FDElement;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumValue;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumeration;
-import org.franca.deploymodel.dsl.fDeploy.FDExtensionRoot;
 import org.franca.deploymodel.dsl.fDeploy.FDField;
 import org.franca.deploymodel.dsl.fDeploy.FDInterface;
 import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance;
@@ -36,7 +36,6 @@ import org.franca.deploymodel.dsl.fDeploy.FDMethod;
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl;
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyFlag;
 import org.franca.deploymodel.dsl.fDeploy.FDProvider;
-import org.franca.deploymodel.dsl.fDeploy.FDRootElement;
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification;
 import org.franca.deploymodel.dsl.fDeploy.FDStruct;
 import org.franca.deploymodel.dsl.fDeploy.FDStructOverwrites;
@@ -46,7 +45,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDUnion;
 import org.franca.deploymodel.dsl.fDeploy.FDUnionOverwrites;
 import org.franca.deploymodel.extensions.ExtensionRegistry;
 import org.franca.deploymodel.extensions.IFDeployExtension;
-import org.franca.deploymodel.extensions.IFDeployExtension.Root;
+import org.franca.deploymodel.extensions.IFDeployExtension.AbstractElement;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -141,11 +140,9 @@ public class PropertyMappings {
 		}
 		
 		// check hosts from extensions
-		FDRootElement rootElement = FDModelUtils.getRootElement(elem);
-		if (rootElement instanceof FDExtensionRoot) {
-			String rootTag = ((FDExtensionRoot) rootElement).getTag();
-			Root root = ExtensionRegistry.findRoot(rootTag);
-			for(IFDeployExtension.Host rh : root.getHosts()) {
+		if (elem instanceof FDAbstractExtensionElement) {
+			AbstractElement elementDef = ExtensionRegistry.getElement((FDAbstractExtensionElement)elem);
+			for(IFDeployExtension.Host rh : elementDef.getHosts()) {
 				hosts.add(new FDPropertyHost(rh.getName()));
 			}
 		}

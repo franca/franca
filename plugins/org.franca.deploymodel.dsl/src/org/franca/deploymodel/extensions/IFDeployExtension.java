@@ -9,6 +9,9 @@ package org.franca.deploymodel.extensions;
 
 import java.util.Collection;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
+
 /**
  * TODO: Document deployment extensions.
  * 
@@ -31,23 +34,59 @@ public interface IFDeployExtension {
 
 	public String getShortDescription();
 	
-	public Collection<Host> getHosts();
-	
-	class Root {
+	abstract class AbstractElement {
 		private String tag;
 		private Collection<Host> hosts;
+		private Collection<Element> children;
 		
-		public Root(String tag, Collection<Host> hosts) {
+		public AbstractElement(String tag, Collection<Host> hosts) {
 			this.tag = tag;
 			this.hosts = hosts;
+			this.children = Lists.newArrayList();
 		}
 		
+		public void addChild(Element child) {
+			children.add(child);
+			child.setParent(this);
+		}
+
 		public String getTag() {
 			return tag;
 		}
 		
 		public Collection<Host> getHosts() {
 			return hosts;
+		}
+		
+		public Collection<Element> getChildren() {
+			return children;
+		}
+	}
+	
+	class Element extends AbstractElement {
+
+		private AbstractElement parent;
+		
+		public Element(String tag, Collection<Host> hosts) {
+			super(tag, hosts);
+		}
+		
+		public void setParent(AbstractElement parent) {
+			this.parent = parent;
+		}
+	}
+	
+	class Root extends AbstractElement {
+		// the extension which owns this root
+		private IFDeployExtension extension;
+		
+		public Root(IFDeployExtension extension, String tag, Collection<Host> hosts) {
+			super(tag, hosts);
+			this.extension = extension;
+		}
+
+		public IFDeployExtension getExtension() {
+			return extension;
 		}
 	}
 	

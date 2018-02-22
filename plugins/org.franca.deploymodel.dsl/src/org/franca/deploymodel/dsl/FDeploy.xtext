@@ -85,6 +85,7 @@ FDRootElement:
 
 FDElement:
 	FDRootElement | FDInterfaceInstance |
+	FDExtensionElement |
 	FDAttribute | FDOperation | FDArgument |
 	FDTypeDefinition | FDField | FDEnumeration | FDEnumValue;
 
@@ -115,8 +116,17 @@ FDExtensionRoot:
 		// the own properties of this root element
 		properties=FDPropertySet
 		
-//		// instances of interfaces
-//		instances+=FDInterfaceInstance*
+		// child elements of this root
+		elements+=FDExtensionElement*
+	'}';
+
+FDExtensionElement:
+	tag=ID '{'
+		// own properties
+		properties=FDPropertySet
+		
+		// child elements
+		elements+=FDExtensionElement*
 	'}';
 
 FDTypes:

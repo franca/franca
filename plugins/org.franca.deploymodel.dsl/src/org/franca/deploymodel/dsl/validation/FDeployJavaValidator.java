@@ -34,6 +34,7 @@ import org.franca.deploymodel.core.FDPropertyHost;
 import org.franca.deploymodel.core.PropertyMappings;
 import org.franca.deploymodel.dsl.FDMapper;
 import org.franca.deploymodel.dsl.FDSpecificationExtender;
+import org.franca.deploymodel.dsl.fDeploy.FDAbstractExtensionElement;
 import org.franca.deploymodel.dsl.fDeploy.FDArgument;
 import org.franca.deploymodel.dsl.fDeploy.FDArray;
 import org.franca.deploymodel.dsl.fDeploy.FDAttribute;
@@ -48,6 +49,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDEnumValue;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumeration;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumerationOverwrites;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumerator;
+import org.franca.deploymodel.dsl.fDeploy.FDExtensionElement;
 import org.franca.deploymodel.dsl.fDeploy.FDExtensionRoot;
 import org.franca.deploymodel.dsl.fDeploy.FDField;
 import org.franca.deploymodel.dsl.fDeploy.FDInteger;
@@ -81,6 +83,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDValueArray;
 import org.franca.deploymodel.dsl.fDeploy.FDeployPackage;
 import org.franca.deploymodel.dsl.validation.internal.ValidatorRegistry;
 import org.franca.deploymodel.extensions.ExtensionRegistry;
+import org.franca.deploymodel.extensions.IFDeployExtension;
 
 import com.google.common.collect.Lists;
 
@@ -151,11 +154,36 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 
 	@Check
 	public void checkExtensionRoot(FDExtensionRoot root) {
+		String tag = root.getTag();
+		if (ExtensionRegistry.findRoot(tag)==null) {
+			// didn't find root by tag
+			error("Invalid root '" + tag + "', no matching deployment extension has been configured",
+					root, FDeployPackage.Literals.FD_ABSTRACT_EXTENSION_ELEMENT__TAG, -1);
+		}
+	}
+
+	@Check
+	public void checkExtensionElement(FDExtensionElement elem) {
+		String tag = elem.getTag();
+		FDAbstractExtensionElement parent = (FDAbstractExtensionElement)elem.eContainer();
+		IFDeployExtension.AbstractElement parentDef = ExtensionRegistry.getElement(parent);
+		for(IFDeployExtension.AbstractElement c : parentDef.getChildren()) {
+			if (c.getTag().equals(tag))
+				return;
+		}
+		
+		// didn't find root by tag
+		error("Invalid element tag '" + tag + "' for parent '" + parentDef.getTag() + "'",
+			elem, FDeployPackage.Literals.FD_ABSTRACT_EXTENSION_ELEMENT__TAG, -1);
+	}
+
+	@Check
+	public void checkExtensionElement(FDExtensionRoot root) {
 		String rootTag = root.getTag();
 		if (ExtensionRegistry.findRoot(rootTag)==null) {
 			// didn't find root by tag
 			error("Invalid root '" + rootTag + "', no matching deployment extension has been configured",
-					root, FDeployPackage.Literals.FD_EXTENSION_ROOT__TAG, -1);
+					root, FDeployPackage.Literals.FD_ABSTRACT_EXTENSION_ELEMENT__TAG, -1);
 		}
 	}
 

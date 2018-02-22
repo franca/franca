@@ -17,6 +17,12 @@ import org.eclipse.core.runtime.IExtension
 import org.eclipse.core.runtime.IExtensionPoint
 import org.eclipse.core.runtime.IExtensionRegistry
 import org.eclipse.core.runtime.Platform
+import org.franca.deploymodel.dsl.fDeploy.FDAbstractExtensionElement
+import org.franca.deploymodel.dsl.fDeploy.FDExtensionElement
+import org.franca.deploymodel.dsl.fDeploy.FDExtensionRoot
+import org.franca.deploymodel.extensions.IFDeployExtension.Host
+
+import static extension org.franca.deploymodel.extensions.ExtensionUtils.*
 
 /** 
  * This is the registry for deployment extensions.</p>
@@ -89,18 +95,17 @@ class ExtensionRegistry {
 	}
 
 
-	def static Map<IFDeployExtension.Host, IFDeployExtension> getHosts() {
+	def static Map<Host, IFDeployExtension> getHosts() {
 		val result = newHashMap
 		for(ext : getExtensions()) {
-			for(host : ext.hosts) {
-				result.put(host, ext)
-			} 
+			val extHosts = ext.allHosts.toInvertedMap[ext]
+			result.putAll(extHosts)
 		}
 		result
 	}
-
+	
 	def static IFDeployExtension.Host findHost(String hostname) {
-		val hosts = getExtensions().map[hosts].flatten
+		val hosts = getHosts().keySet
 		hosts.findFirst[it.name==hostname]
 	}
 
@@ -117,5 +122,23 @@ class ExtensionRegistry {
 	def static IFDeployExtension.Root findRoot(String rootTag) {
 		val roots = getExtensions().map[roots].flatten
 		roots.findFirst[tag==rootTag]
+	}
+
+	// get metamodel Element from model FDAbstractExtensionElement (which is an EObject)	
+	def static IFDeployExtension.AbstractElement getElement(FDAbstractExtensionElement elem) {
+		switch (elem) {
+			FDExtensionRoot: {
+				findRoot(elem.tag)
+			}
+			FDExtensionElement: {
+				// recursive call to find Element for parent
+				val parent = (elem.eContainer as FDAbstractExtensionElement).getElement
+				
+				// use tag to find child element
+				parent.children.findFirst[it.tag==elem.tag]
+			}
+			default:
+				return null
+		}
 	}
 }
