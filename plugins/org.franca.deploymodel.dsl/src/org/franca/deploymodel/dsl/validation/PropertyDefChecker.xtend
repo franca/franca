@@ -47,8 +47,8 @@ class PropertyDefChecker {
 		if (specHelper.isMandatory(METHODS)) return true
 		if (inArgs.empty && outArgs.empty) return false
 		if (specHelper.isMandatory(ARGUMENTS)) return true
-		if (inArgs.findFirst[mustBeDefined()]!=null) return true
-		if (outArgs.findFirst[mustBeDefined()]!=null) return true
+		if (inArgs.findFirst[mustBeDefined()]!==null) return true
+		if (outArgs.findFirst[mustBeDefined()]!==null) return true
 		false
 	}
 	
@@ -56,7 +56,7 @@ class PropertyDefChecker {
 		if (specHelper.isMandatory(BROADCASTS)) return true
 		if (outArgs.empty) return false
 		if (specHelper.isMandatory(ARGUMENTS)) return true
-		if (outArgs.findFirst[mustBeDefined()]!=null) return true
+		if (outArgs.findFirst[mustBeDefined()]!==null) return true
 		false
 	}
 	
@@ -77,7 +77,7 @@ class PropertyDefChecker {
 	def mustBeDefined (List<FField> it, FDPropertyHost host) {
 		if (empty) return false
 		if (specHelper.isMandatory(host)) return true
-		if (findFirst[mustBeDefined]!=null) return true
+		if (findFirst[mustBeDefined]!==null) return true
 		false
 	}
 	
