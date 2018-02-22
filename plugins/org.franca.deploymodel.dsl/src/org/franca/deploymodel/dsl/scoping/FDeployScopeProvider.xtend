@@ -90,12 +90,12 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 	 * and adds the belonging <i>FDSpecification</i>s to the given scope. */
 	def joinImportedDeploySpecs(IScope scope, EObject ctxt){
 		val model = EcoreUtil2::getContainerOfType(ctxt, typeof(FDModel))
-		val importedAliases = model.imports.filter[importedSpec!=null].map[importedSpec]
+		val importedAliases = model.imports.filter[importedSpec!==null].map[importedSpec]
 		val List<IEObjectDescription> fdSpecsScopeImports = <IEObjectDescription>newArrayList();
 		try { 
 			for(a:importedAliases){
 				val entry = deploySpecProvider.getEntry(a)
-				if(entry?.FDSpecification != null){
+				if(entry?.FDSpecification !== null){
 					fdSpecsScopeImports.add(new EObjectDescription(qnConverter.toQualifiedName(a),entry.FDSpecification,null));
 				}
 			}
@@ -213,7 +213,7 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 	def scope_FDField_target(FDCompoundOverwrites ctxt, EReference ref) {
 		val parent = ctxt.eContainer as FDOverwriteElement
 		val type = parent.getOverwriteTargetType
-		if (type!=null) {
+		if (type!==null) {
 			if (type instanceof FCompoundType) {
 				return type.elements.scopeFor
 			}
@@ -235,7 +235,7 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 	def scope_FDEnumValue_target(FDEnumerationOverwrites ctxt, EReference ref) {
 		val parent = ctxt.eContainer as FDOverwriteElement
 		val type = parent.getOverwriteTargetType
-		if (type!=null) {
+		if (type!==null) {
 			if (type instanceof FEnumerationType) {
 				return type.enumerators.scopeFor
 			}
@@ -327,7 +327,7 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 	def scope_FDProperty_decl(FDTypeOverwrites owner, EReference ref) {
 		val parent = owner.eContainer as FDOverwriteElement
 		val type = parent.getOverwriteTargetType
-		if (type!=null) {
+		if (type!==null) {
 			parent.getPropertyDecls(type)
 		} else {
 			IScope::NULLSCOPE
@@ -362,7 +362,7 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 		EReference ref
 	) {
 		val typeRef = decl.getType
-		if (typeRef.getComplex != null) {
+		if (typeRef.getComplex !== null) {
 			val type = typeRef.getComplex
 			if (type instanceof FDEnumType) {
 				return type.getEnumerators.scopeFor
