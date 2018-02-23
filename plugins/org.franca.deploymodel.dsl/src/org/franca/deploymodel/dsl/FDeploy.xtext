@@ -107,6 +107,9 @@ FDInterfaceInstance:
 		properties=FDPropertySet
 	'}';
 
+FDAbstractExtensionElement:
+	FDExtensionRoot | FDExtensionElement;
+	
 FDExtensionRoot:
 	'define' spec=[FDSpecification|FQN]
 	'for' tag=ID name=FQN

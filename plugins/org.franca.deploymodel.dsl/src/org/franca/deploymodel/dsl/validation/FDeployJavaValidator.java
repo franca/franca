@@ -275,9 +275,33 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 	public void checkPropertiesComplete(FDExtensionRoot elem) {
 		// check own properties
 		FDSpecification spec = FDModelUtils.getRootElement(elem).getSpec();
-		checkSpecificationElementProperties(spec, elem, FDeployPackage.Literals.FD_ROOT_ELEMENT__NAME, spec.getName());
+		checkSpecificationElementProperties(
+			spec, elem,
+			FDeployPackage.Literals.FD_ROOT_ELEMENT__NAME,
+			spec.getName()
+		);
+
+		// check child elements recursively
+		FDSpecificationExtender specHelper = new FDSpecificationExtender(spec);
+		for(FDExtensionElement child : elem.getElements()) {
+			checkExtensionElement(spec, child);
+		}
 	}
-	
+
+	private void checkExtensionElement(FDSpecification spec, FDExtensionElement elem) {
+		// check own properties
+		checkSpecificationElementProperties(
+			spec, elem,
+			FDeployPackage.Literals.FD_ABSTRACT_EXTENSION_ELEMENT__TAG,
+			spec.getName()
+		);
+
+		// check child elements recursively
+		for(FDExtensionElement child : elem.getElements()) {
+			checkExtensionElement(spec, child);
+		}
+	}	
+
 	@Check
 	public void checkPropertiesComplete(FDProvider elem) {
 		// check own properties
