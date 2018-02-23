@@ -23,7 +23,7 @@ import com.google.common.collect.Maps;
  * specifications. When used, it computes detail information about properties
  * defined in this specification and caches the results for later usage.
  * 
- * This classes uses the deployment mappings as defined by the PropertyMappings
+ * This class uses the deployment mappings as defined by the PropertyMappings
  * class and caches the results.
  * 
  * @see PropertyMappings
