@@ -8,15 +8,18 @@ Bundle-SymbolicName: org.franca.deploymodel.dsl.tests.base;singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.xtext,
- org.eclipse.xtext.junit4,
+ org.eclipse.xtext.testing,
  org.eclipse.ui.workbench;resolution:=optional,
- org.franca.core;bundle-version="0.10.0",
- org.franca.core.dsl;bundle-version="0.10.0",
- org.franca.core.dsl.ui;bundle-version="0.10.0",
- org.franca.deploymodel.dsl;bundle-version="0.10.0",
- org.franca.deploymodel.dsl.ui;bundle-version="0.10.0",
+ org.franca.core;bundle-version="0.12.0",
+ org.franca.core.dsl;bundle-version="0.12.0",
+ org.franca.core.dsl.ui;bundle-version="0.12.0",
+ org.franca.deploymodel.dsl;bundle-version="0.12.0",
+ org.franca.deploymodel.dsl.ui;bundle-version="0.12.0",
  org.eclipse.core.resources;bundle-version="3.7.100",
- org.eclipse.xtext.xbase.lib;bundle-version="2.4.0"
+ org.eclipse.xtext.xbase.lib;bundle-version="2.11.0",
+ org.eclipse.xtext.xbase.testing,
+ org.eclipse.xtext.xbase.junit,
+ org.eclipse.xtext.junit4
 Import-Package: org.apache.commons.logging,
  org.apache.log4j,
  org.junit;version="4.5.0",
@@ -28,4 +31,6 @@ Import-Package: org.apache.commons.logging,
  org.hamcrest;core=split,
  org.hamcrest.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Export-Package: org.franca.deploymodel.dsl
+Export-Package: org.franca.deploymodel.dsl,
+ org.franca.deploymodel.dsl.tests;x-internal=true,
+ org.franca.deploymodel.dsl.ui.tests;x-internal=true
