@@ -1,5 +1,7 @@
 package org.franca.core.dsl;
 
+import org.franca.core.dsl.tests.FrancaIDLInjectorProvider;
+
 import com.google.inject.Injector;
 
 /**
