@@ -10,7 +10,7 @@ package org.franca.deploymodel.dsl.generator
 import com.google.inject.Inject
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.generator.IFileSystemAccess
-import org.eclipse.xtext.generator.IGenerator
+import org.eclipse.xtext.generator.IGenerator2
 import org.franca.deploymodel.dsl.fDeploy.FDEnumType
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyHost
@@ -24,6 +24,8 @@ import org.franca.deploymodel.dsl.generator.internal.ProviderAccessorGenerator
 import org.franca.deploymodel.dsl.generator.internal.TypeCollectionAccessorGenerator
 
 import static extension org.franca.deploymodel.dsl.generator.internal.GeneratorHelper.*
+import org.eclipse.xtext.generator.IFileSystemAccess2
+import org.eclipse.xtext.generator.IGeneratorContext
 
 /**
  * Generator for PropertyAccessor class from deployment specification.
@@ -33,7 +35,7 @@ import static extension org.franca.deploymodel.dsl.generator.internal.GeneratorH
  * traversing a fidl model and getting the deployment properties for this
  * model.
  */
-class FDeployGenerator implements IGenerator {
+class FDeployGenerator implements IGenerator2 {
 	
 	@Inject extension ImportManager
 	
@@ -49,8 +51,11 @@ class FDeployGenerator implements IGenerator {
 	final static String PA_INTERFACE = "Interface"
 	final static String PA_TYPE_COLLECTION = "TypeCollection"
 	
+	override beforeGenerate(Resource input, IFileSystemAccess2 fsa, IGeneratorContext context) {
+	}
+
 	// the main function for this generator, will be called by Xtend framework
-	override void doGenerate(Resource resource, IFileSystemAccess fsa) {
+	override void doGenerate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
 		for(m : resource.allContents.toIterable.filter(typeof(FDSpecification))) {
 			// generate compound accessor class with several nested classes
 			fsa.generateAll(m)
@@ -61,6 +66,9 @@ class FDeployGenerator implements IGenerator {
 			fsa.generateLegacy(m, PA_INTERFACE)
 			fsa.generateLegacy(m, PA_TYPE_COLLECTION)
 		}
+	}
+
+	override afterGenerate(Resource input, IFileSystemAccess2 fsa, IGeneratorContext context) {
 	}
 	
 	
@@ -199,4 +207,5 @@ class FDeployGenerator implements IGenerator {
 			default: ""
 		}
 	}
+	
 }
