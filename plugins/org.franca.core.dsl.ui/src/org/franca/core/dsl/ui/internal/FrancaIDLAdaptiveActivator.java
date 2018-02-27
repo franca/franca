@@ -12,7 +12,7 @@ import com.google.inject.Module;
 /*
  * Plug-in activator which can adapt to JDT vs. non-JDT environments. 
  */
-public class FrancaIDLAdaptiveActivator extends FrancaIDLActivator {
+public class FrancaIDLAdaptiveActivator extends DslActivator {
 
 	protected Module getUiModule(String grammar) {
 		if (ORG_FRANCA_CORE_DSL_FRANCAIDL.equals(grammar)) {
