@@ -3,31 +3,50 @@
  */
 package org.franca.core.dsl
 
+import com.google.inject.Binder
+import com.google.inject.name.Names
 import org.eclipse.xtext.conversion.IValueConverterService
+import org.eclipse.xtext.formatting.IFormatter
 import org.eclipse.xtext.resource.IDefaultResourceDescriptionStrategy
+import org.eclipse.xtext.scoping.IGlobalScopeProvider
+import org.eclipse.xtext.scoping.IScopeProvider
+import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
+import org.eclipse.xtext.scoping.impl.ImportUriGlobalScopeProvider
+import org.eclipse.xtext.scoping.impl.ImportedNamespaceAwareLocalScopeProvider
+import org.franca.core.dsl.formatting.FrancaIDLFormatter
 import org.franca.core.dsl.resource.FrancaCoreResourceDescriptionStrategy
 import org.franca.core.dsl.valueconverter.FrancaValueConverters
-import com.google.inject.Binder
 
 /** 
  * Use this class to register components to be used at runtime / without the Equinox extension registry.
  */
-class FrancaIDLRuntimeModule extends org.franca.core.dsl.AbstractFrancaIDLRuntimeModule {
+class FrancaIDLRuntimeModule extends AbstractFrancaIDLRuntimeModule {
+
+	// support importURI global scoping
+	override Class<? extends IGlobalScopeProvider> bindIGlobalScopeProvider() {
+		return ImportUriGlobalScopeProvider
+	}
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.etrice.core.AbstractRoomRuntimeModule#configureIScopeProviderDelegate(com.google.inject.Binder)
 	 */
 	override void configureIScopeProviderDelegate(Binder binder) {
-		binder.bind(org.eclipse.xtext.scoping.IScopeProvider).annotatedWith(
-			com.google.inject.name.Names.named(
-				org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider.NAMED_DELEGATE)).to(
-			org.eclipse.xtext.scoping.impl.ImportedNamespaceAwareLocalScopeProvider)
+		binder.bind(IScopeProvider).annotatedWith(
+			Names.named(
+				AbstractDeclarativeScopeProvider.NAMED_DELEGATE)).to(
+			ImportedNamespaceAwareLocalScopeProvider)
 	}
 
 	override Class<? extends IValueConverterService> bindIValueConverterService() {
 		return FrancaValueConverters
 	}
 
+	override Class<? extends IFormatter> bindIFormatter() {
+		return FrancaIDLFormatter
+	}
+
 	def Class<? extends IDefaultResourceDescriptionStrategy> bindIDefaultResourceDescriptionStrategy() {
 		return FrancaCoreResourceDescriptionStrategy
 	}
+
 }

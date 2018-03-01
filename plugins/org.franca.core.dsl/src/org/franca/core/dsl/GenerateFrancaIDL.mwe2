@@ -53,9 +53,6 @@ Workflow {
 			// use an XtextResourceSet throughout the process, which is able to resolve classpath:/ URIs.
 			resourceSet = org.eclipse.xtext.resource.XtextResourceSet:theResourceSet {}
 
-//			serializer = {
-//				generateStub = false
-//			}
 		}
 	}
 
