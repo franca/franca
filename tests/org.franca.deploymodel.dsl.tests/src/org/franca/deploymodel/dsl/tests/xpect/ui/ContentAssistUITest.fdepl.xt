@@ -35,7 +35,7 @@ END_SETUP
  "platform:/resource/libraryproject/model/d.fdepl", 
  "a.fdepl", 
  "b.fidl",
- "../anotherModel/c.fdepl", 
+ "../anotherModel/c.fdepl",
  The_PlatformDeploySpec, 
  The_PlatformDeploySpec_WithAlias
 --- 

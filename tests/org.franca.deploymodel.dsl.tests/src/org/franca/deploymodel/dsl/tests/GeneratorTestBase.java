@@ -4,9 +4,10 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-import org.eclipselabs.xtext.utils.unittesting.XtextTest;
 import org.franca.core.dsl.tests.util.FileComparer;
 import org.franca.core.dsl.tests.util.JavaFileComparer;
+
+import com.itemis.xtext.testing.XtextTest;
 
 public class GeneratorTestBase extends XtextTest {
 

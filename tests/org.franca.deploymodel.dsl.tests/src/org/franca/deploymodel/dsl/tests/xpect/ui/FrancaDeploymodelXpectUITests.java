@@ -18,7 +18,7 @@ import org.eclipse.xtext.resource.XtextResourceSet;
 import org.eclipse.xtext.ui.editor.contentassist.ConfigurableCompletionProposal;
 import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.franca.deploymodel.dsl.tests.xpect.FrancaDeploymodelXpectTests;
-import org.franca.deploymodel.dsl.ui.internal.FDeployActivator;
+import org.franca.deploymodel.dsl.ui.internal.FDeployAdaptiveActivator;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.xpect.Environment;
@@ -32,7 +32,6 @@ import org.xpect.runner.XpectTestFiles;
 import org.xpect.setup.XpectSetup;
 import org.xpect.util.EnvironmentUtil;
 import org.xpect.xtext.lib.setup.ThisModel;
-import org.xpect.xtext.lib.setup.ThisOffset;
 import org.xpect.xtext.lib.setup.ThisResource;
 import org.xpect.xtext.lib.setup.XtextWorkspaceSetup;
 
@@ -66,7 +65,7 @@ public class FrancaDeploymodelXpectUITests extends AbstractContentAssistProcesso
 		return new ISetup() {
 			@Override
 			public Injector createInjectorAndDoEMFRegistration() {
-				return FDeployActivator.getInstance().getInjector(FDeployActivator.ORG_FRANCA_DEPLOYMODEL_DSL_FDEPLOY);
+				return FDeployAdaptiveActivator.getInstance().getInjector(FDeployAdaptiveActivator.ORG_FRANCA_DEPLOYMODEL_DSL_FDEPLOY);
 			}
 		};
 	}

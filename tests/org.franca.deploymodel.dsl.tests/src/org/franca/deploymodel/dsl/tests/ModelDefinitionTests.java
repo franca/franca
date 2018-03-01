@@ -1,14 +1,15 @@
 package org.franca.deploymodel.dsl.tests;
 
-import org.eclipse.xtext.junit4.InjectWith;
-import org.eclipselabs.xtext.utils.unittesting.XtextRunner2;
-import org.eclipselabs.xtext.utils.unittesting.XtextTest;
+import org.eclipse.xtext.testing.InjectWith;
+import org.franca.core.dsl.tests.util.XtextRunner2_Franca;
 import org.franca.deploymodel.dsl.FDeployTestsInjectorProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-@RunWith(XtextRunner2.class)
+import com.itemis.xtext.testing.XtextTest;
+
+@RunWith(XtextRunner2_Franca.class)
 @InjectWith(FDeployTestsInjectorProvider.class)
 public class ModelDefinitionTests extends XtextTest {
 
@@ -76,7 +77,8 @@ public class ModelDefinitionTests extends XtextTest {
     public void test_45_DefInterfaceWithUse() {
     	testFile("testcases/45-DefInterfaceWithUse.fdepl",
     			"testcases/40-SpecSimple.fdepl",
-    			"fidl/20-InterfaceUsingTC.fidl");
+    			"fidl/20-InterfaceUsingTC.fidl",
+    			"testcases/42-DefTypeCollection.fdepl");
     }
 
     @Test
@@ -90,6 +92,7 @@ public class ModelDefinitionTests extends XtextTest {
     public void test_52_DefInterfaceWithUseAnon() {
     	testFile("testcases/52-DefInterfaceWithUseAnon.fdepl",
     			"testcases/40-SpecSimple.fdepl",
+    			"testcases/50-DefAnonTypeCollection.fdepl",
     			"fidl/25-InterfaceUsingAnonTC.fidl");
     }
 

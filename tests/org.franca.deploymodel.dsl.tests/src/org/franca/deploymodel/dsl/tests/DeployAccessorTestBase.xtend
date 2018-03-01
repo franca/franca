@@ -7,12 +7,12 @@
  *******************************************************************************/
 package org.franca.deploymodel.dsl.tests
 
+import com.itemis.xtext.testing.XtextTest
 import java.util.ArrayList
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
-import org.eclipselabs.xtext.utils.unittesting.XtextTest
-import org.example.spec.SpecCompoundHostsRef.IDataPropertyAccessor
 import org.example.spec.SpecCompoundHostsRef.Enums.StringProp
+import org.example.spec.SpecCompoundHostsRef.IDataPropertyAccessor
 import org.franca.core.franca.FStructType
 
 import static org.junit.Assert.*
@@ -68,7 +68,7 @@ abstract class DeployAccessorTestBase extends XtextTest {
 		assertEquals(StringProp.u, accessor.getStringProp(f3))
 		assertEquals(0, accessor.getArrayProp(f3))
 		
-		if (acc!=null) {
+		if (acc!==null) {
 			// access including overwrites (if any)
 			assertEquals(pSField1, acc.getSFieldProp(f1))
 			assertEquals(pSField2, acc.getSFieldProp(f2))

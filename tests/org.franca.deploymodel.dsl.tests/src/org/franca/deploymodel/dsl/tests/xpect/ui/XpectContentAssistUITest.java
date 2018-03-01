@@ -17,7 +17,7 @@ import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.resource.XtextResourceSet;
 import org.eclipse.xtext.ui.editor.contentassist.ConfigurableCompletionProposal;
 import org.eclipse.xtext.xbase.lib.Exceptions;
-import org.franca.deploymodel.dsl.ui.internal.FDeployActivator;
+import org.franca.deploymodel.dsl.ui.internal.FDeployAdaptiveActivator;
 import org.junit.runner.RunWith;
 import org.xpect.expectation.CommaSeparatedValuesExpectation;
 import org.xpect.expectation.ICommaSeparatedValuesExpectation;
@@ -107,7 +107,7 @@ public class XpectContentAssistUITest extends AbstractContentAssistProcessorTest
 		return new ISetup() {
 			@Override
 			public Injector createInjectorAndDoEMFRegistration() {
-				return FDeployActivator.getInstance().getInjector(FDeployActivator.ORG_FRANCA_DEPLOYMODEL_DSL_FDEPLOY);
+				return FDeployAdaptiveActivator.getInstance().getInjector(FDeployAdaptiveActivator.ORG_FRANCA_DEPLOYMODEL_DSL_FDEPLOY);
 			}
 
 //			public void register(Injector injector) {
