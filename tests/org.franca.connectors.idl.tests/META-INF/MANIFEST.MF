@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.franca.connectors.idl.tests
 Bundle-Version: 0.12.0.qualifier
 Bundle-Activator: org.franca.connectors.idl.tests.Activator
 Require-Bundle: org.eclipse.core.runtime,
- org.franca.connectors.idl;bundle-version="0.9.1",
+ org.franca.connectors.idl;bundle-version="0.12.0",
  org.junit;bundle-version="4.11.0",
  com.google.guava;bundle-version="15.0.0",
  org.franca.core,
