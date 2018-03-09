@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/mbarbero/fr.obeo.releng.targetplatform -->
-<target name="Franca Target Platform - Eclipse 4.6" sequenceNumber="1499086000">
+<target name="Franca Target Platform - Eclipse 4.6" sequenceNumber="1499086010">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.sdk.feature.group" version="4.6.3.v20170301-0400"/>
@@ -30,6 +30,7 @@
       <unit id="org.eclipse.xtend.sdk.feature.group" version="2.11.0.v20170201-0242"/>
       <unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.9.0.v201605261103"/>
       <unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="2.9.0.v201605261103"/>
+      <unit id="org.eclipse.xtext.ui.testing" version="2.12.0.v20170519-0809"/>
       <repository location="http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/"/>
     </location>
     <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">

@@ -3,9 +3,9 @@
  */
 package org.franca.deploymodel.dsl.ui.contentassist
 
-import java.io.File
-import java.util.ArrayList
-import java.util.Arrays
+import com.google.common.collect.Lists
+import com.google.common.collect.Sets
+import com.google.inject.Inject
 import java.util.Collection
 import java.util.Iterator
 import java.util.List
@@ -14,8 +14,6 @@ import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.jdt.internal.core.JavaProject
-import org.eclipse.jface.text.contentassist.ICompletionProposal
-import org.eclipse.xtend2.lib.StringConcatenation
 import org.eclipse.xtext.Assignment
 import org.eclipse.xtext.GrammarUtil
 import org.eclipse.xtext.Keyword
@@ -25,10 +23,8 @@ import org.eclipse.xtext.resource.IEObjectDescription
 import org.eclipse.xtext.resource.IResourceDescription
 import org.eclipse.xtext.resource.XtextResourceSet
 import org.eclipse.xtext.scoping.IScope
-import org.eclipse.xtext.ui.editor.contentassist.ConfigurableCompletionProposal
 import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext
 import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor
-import org.eclipse.xtext.ui.editor.contentassist.ReplacementTextApplier
 import org.franca.core.franca.FEnumerationType
 import org.franca.core.franca.FStructType
 import org.franca.core.franca.FType
@@ -42,10 +38,6 @@ import org.franca.deploymodel.dsl.fDeploy.FDeployPackage
 import org.franca.deploymodel.dsl.fDeploy.Import
 import org.franca.deploymodel.dsl.scoping.DeploySpecProvider
 import org.franca.deploymodel.dsl.scoping.DeploySpecProvider.DeploySpecEntry
-import com.google.common.base.Joiner
-import com.google.common.collect.Lists
-import com.google.common.collect.Sets
-import com.google.inject.Inject
 
 /** 
  * see
@@ -57,13 +49,8 @@ import com.google.inject.Inject
 class FDeployProposalProvider extends AbstractFDeployProposalProvider {
 	@Inject package DeploySpecProvider deploySpecProvider
 	@Inject package ContainerUtil containerUtil
-	protected final static String[] extensionsForImportURIScope = (#["fidl", "fdepl"] as String[])
-	static final Void static_initializer = {
-		{
-			Arrays::sort(extensionsForImportURIScope)
-		}
-		null
-	}
+
+	val final static extensionsForImportURIScope = #["fidl", "fdepl"]
 
 	/** 
 	 * Avoid generic proposal "importURI". 
@@ -71,20 +58,20 @@ class FDeployProposalProvider extends AbstractFDeployProposalProvider {
 	override void complete_STRING(EObject model, RuleCall ruleCall, ContentAssistContext context,
 		ICompletionProposalAcceptor acceptor) {
 		var Assignment ass = GrammarUtil::containingAssignment(ruleCall)
-		if (ass === null || !"importURI".equals(ass.getFeature())) {
+		if (ass === null || !"importURI".equals(ass.feature)) {
 			super.complete_STRING(model, ruleCall, context, acceptor)
 		}
 	}
 
 	override void completeFDTypes_Target(EObject model, Assignment assignment, ContentAssistContext context,
 		ICompletionProposalAcceptor acceptor) {
-		var IScope scope = this.getScopeProvider().getScope(model, FDeployPackage::Literals::FD_TYPES__TARGET)
+		var IScope scope = this.getScopeProvider().getScope(model, FDeployPackage.Literals::FD_TYPES__TARGET)
 		for (IEObjectDescription description : scope.getAllElements()) {
 			// only FTypeCollection instances will be in the scope
 			var FTypeCollection collection = (description.getEObjectOrProxy() as FTypeCollection)
 			var String qualifiedName = description.getQualifiedName().toString()
 			var String uri = collection.eResource().getURI().toString()
-			if (collection.getName() === null || collection.getName().isEmpty()) {
+			if (collection.name === null || collection.name.isEmpty()) {
 				acceptor.accept(
 					this.createCompletionProposal(qualifiedName, '''«qualifiedName» (anonymous) - «uri»'''.toString,
 						null, context))
@@ -103,14 +90,14 @@ class FDeployProposalProvider extends AbstractFDeployProposalProvider {
 	 */
 	override void completeImport_ImportURI(EObject model, Assignment assignment, ContentAssistContext context,
 		ICompletionProposalAcceptor acceptor) {
-		var List<IContainer> visibleContainers = containerUtil.getVisibleContainers(model.eResource())
-		var URI fromURI = model.eResource().getURI()
-		var List<URI> proposedURIs = new ArrayList<URI>()
+		val List<IContainer> visibleContainers = containerUtil.getVisibleContainers(model.eResource)
+		val URI fromURI = model.eResource.URI
+		val List<URI> proposedURIs = newArrayList
 		var FDModel fdmodel = null
 		if (model instanceof FDModel) {
 			fdmodel = model as FDModel
 		} else if (model instanceof Import) {
-			fdmodel = model.eContainer() as FDModel
+			fdmodel = model.eContainer as FDModel
 		}
 		var EList<Import> imports = fdmodel.getImports()
 		var List<String> importedUris = Lists::newArrayList()
@@ -122,8 +109,7 @@ class FDeployProposalProvider extends AbstractFDeployProposalProvider {
 			for (var Iterator<IResourceDescription> iterator = resourceDescriptions.iterator(); iterator.hasNext();) {
 				var IResourceDescription desc = (iterator.next() as IResourceDescription)
 				var URI uri = desc.getURI()
-				if (!uri.equals(fromURI) &&
-					Arrays::binarySearch(extensionsForImportURIScope, uri.fileExtension()) > -1) {
+				if (!uri.equals(fromURI) && extensionsForImportURIScope.contains(uri.fileExtension)) {
 					proposedURIs.add(desc.getURI())
 				}
 			}
@@ -135,36 +121,43 @@ class FDeployProposalProvider extends AbstractFDeployProposalProvider {
 				acceptor.accept(createCompletionProposal('''"«result»"'''.toString, displayString, null, context))
 			}
 		}
-		var List<URI> classpathResources = Lists::newArrayList()
-		var XtextResourceSet resourceSet = (model.eResource().getResourceSet() as XtextResourceSet)
-		var Object classpathURIContext = resourceSet.getClasspathURIContext()
+
+		val List<URI> classpathResources = newArrayList
+		val resourceSet = model.eResource.resourceSet as XtextResourceSet
+		val Object classpathURIContext = resourceSet.getClasspathURIContext()
 		if (classpathURIContext instanceof JavaProject) {
 			for (IContainer iContainer : visibleContainers) {
 				var Iterable<IResourceDescription> resourceDescriptions = iContainer.getResourceDescriptions()
-				for (IResourceDescription iResourceDescription : resourceDescriptions) {
-					if (iResourceDescription.getURI().toString() !== model.eResource().getURI().toString() &&
-						(Arrays::binarySearch(extensionsForImportURIScope,
-							iResourceDescription.getURI().fileExtension()) > -1)) {
-						classpathResources.add(iResourceDescription.getURI())
+				for (IResourceDescription rd : resourceDescriptions) {
+					val uri = rd.URI
+					val uriModel = model.eResource.URI.toString
+					if (uri.toString !== uriModel && extensionsForImportURIScope.contains(uri.fileExtension)) {
+						classpathResources.add(uri)
 					}
 				}
 			}
 		}
-		if (context.getPrefix() === "\"classpath:") {
-			createProposals(context, acceptor, classpathResources, fromURI, importedUris)
-		} else {
-			createProposals(context, acceptor, classpathResources, fromURI, importedUris)
-		}
+
+		// TODO: why is this conditional if both pathes execute the same function call?		
+//		if (context.getPrefix() === "\"classpath:") {
+//			createProposals(context, acceptor, classpathResources, fromURI, importedUris)
+//		} else {
+//			createProposals(context, acceptor, classpathResources, fromURI, importedUris)
+//		}
+		createProposals(context, acceptor, classpathResources, fromURI, importedUris)
+
 		super.completeImport_ImportURI(model, assignment, context, acceptor)
 	}
 
 	def private void createProposals(ContentAssistContext context, ICompletionProposalAcceptor acceptor,
 		List<URI> classpathResources, URI fromURI, List<String> importedUris) {
-		for (URI path : classpathResources) {
-			var String result = toClassPathString(path)
-			if (!importedUris.contains(result)) {
-				var String displayString = '''«path.lastSegment()» - «result»'''.toString
-				createProposal(result, displayString, context, acceptor)
+		for (path : classpathResources) {
+			val classpathString = path.toClassPathString 
+			if (! importedUris.contains(classpathString)) {
+				val result = '''"«classpathString»"'''
+				val displayString = '''«path.lastSegment» - «classpathString»'''.toString
+				acceptor.accept(
+					createCompletionProposal(result, displayString, null, context))
 			}
 		}
 	}
@@ -172,62 +165,19 @@ class FDeployProposalProvider extends AbstractFDeployProposalProvider {
 	override void completeImport_ImportedSpec(EObject model, Assignment assignment, ContentAssistContext context,
 		ICompletionProposalAcceptor acceptor) {
 		var Collection<DeploySpecEntry> entries = deploySpecProvider.getEntries()
-		for (var Iterator<DeploySpecEntry> iterator = entries.iterator(); iterator.hasNext();) {
-			var DeploySpecEntry dse = iterator.next()
+		for(dse : entries) {
 			acceptor.accept(
 				createCompletionProposal(dse.alias, '''«dse.alias» - «dse.resourceId»'''.toString, null, context))
 		}
 	}
 
-	def String toClassPathString(URI uri) {
-		var String _xblockexpression = null
-		{
-			var List<String> _segmentsList = uri.segmentsList()
-			val List<String> segments = this.classPathSegments(_segmentsList)
-			var StringConcatenation _builder = new StringConcatenation()
-			_builder.append("classpath:/")
-			var Joiner _on = Joiner::on("/")
-			var String _join = _on.join(segments)
-			_builder.append(_join, "")
-			_xblockexpression = _builder.toString()
-		}
-		return _xblockexpression
+	def private String toClassPathString(URI uri) {
+		val segments = classPathSegments(uri.segmentsList)
+		'''classpath:/«segments.join("/")»'''
 	}
 
-	def List<String> classPathSegments(List<String> list) {
-		var List<String> _xblockexpression = null
-		{
-			var int _size = list.size()
-			var List<String> sublist = list.subList(3, _size)
-			_xblockexpression = sublist
-		}
-		return _xblockexpression
-	}
-
-	def void createProposal(String name, String substring, ContentAssistContext context,
-		ICompletionProposalAcceptor acceptor) {
-		var StringConcatenation _builder = new StringConcatenation()
-		var String _string = name.toString()
-		_builder.append(_string, "")
-		var ICompletionProposal proposal = this.createCompletionProposal(_builder.toString(), substring, null, context)
-		if ((proposal instanceof ConfigurableCompletionProposal)) {
-			var ConfigurableCompletionProposal c = ((proposal as ConfigurableCompletionProposal))
-			c.setTextApplier(([ConfigurableCompletionProposal prop|
-				var String _xblockexpression = null
-				{
-					var int _replaceContextLength = prop.getReplaceContextLength()
-					prop.setReplacementLength(_replaceContextLength)
-					var StringConcatenation _builder1 = new StringConcatenation()
-					_builder1.append("\"")
-					var String _string1 = name.toString()
-					_builder1.append(_string1, "")
-					_builder1.append("\"")
-					_xblockexpression = _builder1.toString()
-				}
-				return _xblockexpression
-			] as ReplacementTextApplier))
-		}
-		acceptor.accept(proposal)
+	def private List<String> classPathSegments(List<String> list) {
+		list.subList(3, list.size)
 	}
 
 	/** 

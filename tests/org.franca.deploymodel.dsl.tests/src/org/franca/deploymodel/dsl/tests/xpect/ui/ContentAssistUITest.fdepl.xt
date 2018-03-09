@@ -1,6 +1,6 @@
 /* 
-XPECT_SETUP org.franca.deploymodel.dsl.tests.xpect.ui.FrancaDeploymodelXpectUITests
-Workspace{
+XPECT_SETUP org.franca.deploymodel.dsl.tests.xpect.util.ProposalProviderTest
+Workspace {
 	org.xpect.xtext.lib.setup.workspace.JavaProject "libraryproject" {
 		nature = "org.eclipse.xtext.ui.shared.xtextNature"	
 		builder = "org.eclipse.xtext.ui.shared.xtextBuilder"
@@ -20,7 +20,6 @@ Workspace{
 		SrcFolder "anotherModel" {
 			File "c.fdepl" {}
 		}
-
 	}
 } 
 END_SETUP
@@ -36,6 +35,10 @@ END_SETUP
  "a.fdepl", 
  "b.fidl",
  "../anotherModel/c.fdepl",
+ "classpath:/a.fdepl",
+ "classpath:/b.fidl",
+ "classpath:/c.fdepl",
+ "classpath:/d.fdepl",
  The_PlatformDeploySpec, 
  The_PlatformDeploySpec_WithAlias
 --- 
@@ -47,13 +50,13 @@ import The_PlatformDeploySpec
 specification org.example.spec.MySpec extends The_PlatformDeploySpec
 {
 	for providers {
-		ProcessName:     String;
+		ProcessName2:     String;
 	}
 }
 
 // XPECT proposals at 'org.example.spec.MySpec' --> The_PlatformDeploySpec, The_PlatformDeploySpec_WithAlias, org.example.spec.MySpec 
 define org.example.spec.MySpec 
-	// XPECT errors --> "Couldn't resolve reference to FTypeCollection 'demo.MyTypeCollection'." at "demo.MyTypeCollection"
-	for typeCollection demo.MyTypeCollection as DeployedTypes {
-		
+	for provider SomeProvider {
+		ProcessName = "foobar"
+		ProcessName2 = "foobar"
 	}
