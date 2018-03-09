@@ -21,8 +21,6 @@ import org.franca.core.franca.FState
 import org.franca.core.franca.FTransition
 
 import static extension org.franca.core.contracts.FEventUtils.*
-import org.eclipse.elk.graph.properties.IProperty
-import org.eclipse.elk.graph.properties.Property
 
 class FrancaPSMDiagramSynthesis extends AbstractDiagramSynthesis<FModel> {
 

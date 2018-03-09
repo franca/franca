@@ -116,7 +116,7 @@ class FDeployGenerator implements IGenerator2 {
 		 * Enumerations for deployment specification «spec.name».
 		 */
 		public interface Enums
-			«IF spec.base!=null»extends «spec.base.qualifiedClassname».Enums«ENDIF»
+			«IF spec.base!==null»extends «spec.base.qualifiedClassname».Enums«ENDIF»
 		{
 			«FOR d : spec.declarations»
 				«FOR p : d.properties»
@@ -163,7 +163,7 @@ class FDeployGenerator implements IGenerator2 {
 		package «spec.getPackage»;
 		
 		«ENDIF»
-		«IF type!=null»
+		«IF type!==null»
 		import org.franca.deploymodel.core.«getSupportingClass(type)»;
 		«ELSE»
 		«genImports»

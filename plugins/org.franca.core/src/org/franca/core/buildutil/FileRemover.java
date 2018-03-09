@@ -1,7 +1,6 @@
 package org.franca.core.buildutil;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -12,8 +11,6 @@ import org.eclipse.emf.mwe.core.monitor.ProgressMonitor;
 
 public class FileRemover extends AbstractWorkflowComponent2 {
 
-	private static final String COMPONENT_NAME = "File Remover";
-	
 	private static final Log LOG = LogFactory.getLog(FileRemover.class);
 	
 	private String filename = null;

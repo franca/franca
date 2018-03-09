@@ -85,7 +85,7 @@ class ExpressionEvaluator {
 
 	def static private dispatch Object eval (FUnaryOperation it) {
 		val e = operand.eval
-		if (e==null)
+		if (e===null)
 			return null
 			
 		switch (op) {
@@ -99,7 +99,7 @@ class ExpressionEvaluator {
 	def static private dispatch Object eval (FBinaryOperation it) {
 		val e1 = left.eval
 		val e2 = right.eval
-		if (e1==null || e2==null)
+		if (e1===null || e2===null)
 			return null
 		
 		switch (op) {
@@ -122,7 +122,7 @@ class ExpressionEvaluator {
 	}
 
 	def static private dispatch Object eval (FQualifiedElementRef qe) {
-		if (qe.qualifier==null) {
+		if (qe.qualifier===null) {
 			val te = qe.element
 			// TODO: support array types
 			switch(te) {

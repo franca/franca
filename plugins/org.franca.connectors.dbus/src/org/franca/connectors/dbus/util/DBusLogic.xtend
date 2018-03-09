@@ -11,8 +11,6 @@ class DBusLogic {
 	 */
 	def static isProperDictKey(FTypeRef src) {
 		// enumeration types will be mapped to 'i' (or another integer type), thus can be used as dict key 
-		src.actualPredefined != null || (src.actualDerived instanceof FEnumerationType)
+		src.actualPredefined !== null || (src.actualDerived instanceof FEnumerationType)
 	}
-
-	
 }

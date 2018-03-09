@@ -46,11 +46,11 @@ class IntegerTypeConverter {
 		val all = EcoreUtil2::allContents(model)
 		val typerefs = all.filter(typeof(FTypeRef))
 		for(tref : typerefs) {
-			if (tref.interval!=null) {
+			if (tref.interval!==null) {
 				val range = tref.interval
 				//println("typeref range: " + range.lowerBound + " .. " + range.upperBound)
 				var basicType = range.computeNextBasicType(haveUnsigned)
-				if (basicType==null) {
+				if (basicType===null) {
 					// the range doesn't fit into a 64-bit type
 					// as a fallback, we choose the biggest basic type which is available
 					basicType = computeBiggestBasicType(range.lowerBound, haveUnsigned)
@@ -73,9 +73,9 @@ class IntegerTypeConverter {
 		val all = EcoreUtil2::allContents(model)
 		val typerefs = all.filter(typeof(FTypeRef))
 		for(tref : typerefs) {
-			if (tref.predefined!=null) {
+			if (tref.predefined!==null) {
 				val interval = createInterval(tref.predefined)
-				if (interval!=null) {
+				if (interval!==null) {
 					// actually manipulate FTypeRef and convert basic type to interval
 					tref.predefined = null
 					tref.interval = interval
@@ -93,7 +93,7 @@ class IntegerTypeConverter {
 	 * @result the smallest predefined type which can represent the interval 
 	 */
 	def private static FBasicTypeId computeNextBasicType (FIntegerInterval iv, boolean haveUnsigned) {
-		if (iv.lowerBound==null || iv.upperBound==null) {
+		if (iv.lowerBound===null || iv.upperBound===null) {
 			// lower bound is minInt and/or upper bound is maxInt
 			return null
 		}
@@ -133,7 +133,7 @@ class IntegerTypeConverter {
 	 * doesn't fit into any available predefined type.
 	 */
 	def private static FBasicTypeId computeBiggestBasicType(BigInteger lowerBound, boolean haveUnsigned) {
-		if (haveUnsigned && lowerBound!=null && lowerBound.compareTo(BigInteger.ZERO)>=0) {
+		if (haveUnsigned && lowerBound!==null && lowerBound.compareTo(BigInteger.ZERO)>=0) {
 			// lower bound is >=0 and we may use unsigned types
 			getUnsignedBasicType(64)
 		} else {

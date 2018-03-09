@@ -44,7 +44,7 @@ abstract class AccessMethodGenerator {
 
 
 	def private genProperties(FDDeclaration decl, boolean forInterfaces, ICodeContext context) '''
-		«IF decl.properties.size > 0 && decl.host.getFrancaType(forInterfaces)!=null»
+		«IF decl.properties.size > 0 && decl.host.getFrancaType(forInterfaces)!==null»
 			// host '«decl.host.getName»'
 			«FOR p : decl.properties»
 			«p.genProperty(decl.host, forInterfaces, context)»
@@ -81,12 +81,12 @@ abstract class AccessMethodGenerator {
 	) {
 		addNeededFrancaType(francaType)
 		val isOnlyForInterface = forceInterfaceOnly || host.isInterfaceOnly 
-		if (francaType!=null) {
+		if (francaType!==null) {
 			context.requireTargetMember
 			if (isEnum) {
 				val enumType = name.toFirstUpper
 				val retType =
-					if (type.array==null) {
+					if (type.array===null) {
 						enumType
 					} else {
 						enumType.genListType.toString
