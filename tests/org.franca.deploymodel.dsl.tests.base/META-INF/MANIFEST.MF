@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-Vendor: itemis AG
 Bundle-Localization: plugin
-Bundle-Version: 0.12.0.qualifier
+Bundle-Version: 0.13.0.qualifier
 Bundle-SymbolicName: org.franca.deploymodel.dsl.tests.base;singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.core.runtime,

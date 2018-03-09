@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Franca basic examples
 Bundle-SymbolicName: org.franca.examples.reference
-Bundle-Version: 0.12.0.qualifier
+Bundle-Version: 0.13.0.qualifier
 Bundle-Vendor: itemis AG
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.franca.core.utils.digraph,
