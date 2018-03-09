@@ -1,5 +1,5 @@
 /* 
-XPECT_SETUP org.franca.deploymodel.dsl.tests.xpect.util.ProposalProviderTest
+XPECT_SETUP org.franca.deploymodel.dsl.tests.xpect.ui.ContentAssistUITest
 Workspace {
 	org.xpect.xtext.lib.setup.workspace.JavaProject "libraryproject" {
 		nature = "org.eclipse.xtext.ui.shared.xtextNature"	

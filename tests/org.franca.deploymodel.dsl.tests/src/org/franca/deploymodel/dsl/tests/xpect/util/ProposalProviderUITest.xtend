@@ -40,7 +40,7 @@ import org.xpect.xtext.lib.tests.XtextTests
 	XtextStandaloneSetup,
 	XtextWorkspaceSetup
 ])
-class ProposalProviderTest extends XtextTests {
+class ProposalProviderUITest extends XtextTests {
 	@Inject package IResourceScopeCache cache
 	@Inject package Injector injector
 	@Inject package XpectContentAssistProcessorTestBuilder.Factory factory
