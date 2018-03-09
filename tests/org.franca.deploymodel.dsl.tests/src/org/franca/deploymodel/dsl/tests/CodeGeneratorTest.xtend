@@ -12,26 +12,25 @@ import java.util.ArrayList
 import java.util.Arrays
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
-import org.eclipse.xtext.generator.IGenerator
+import org.eclipse.xtext.generator.IGenerator2
 import org.eclipse.xtext.generator.InMemoryFileSystemAccess
-import org.eclipse.xtext.junit4.InjectWith
-import org.eclipselabs.xtext.utils.unittesting.XtextRunner2
+import org.eclipse.xtext.testing.InjectWith
+import org.franca.core.dsl.tests.util.XtextRunner2_Franca
 import org.franca.deploymodel.dsl.FDeployTestsInjectorProvider
 import org.franca.deploymodel.dsl.tests.memcompiler.ClassAnalyzer
 import org.franca.deploymodel.dsl.tests.memcompiler.InMemoryFileSystemAccessCompiler
 import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.franca.deploymodel.dsl.tests.GeneratorTestBase
 
 import static org.junit.Assert.*
 
-@RunWith(typeof(XtextRunner2))
+@RunWith(typeof(XtextRunner2_Franca))
 @InjectWith(typeof(FDeployTestsInjectorProvider))
 class CodeGeneratorTest extends GeneratorTestBase {
 
 	@Inject
-	IGenerator generator;
+	IGenerator2 generator;
 	
 	def private loadModel(String fileToTest, String... referencedResources) {
 		val resList = new ArrayList(referencedResources);
@@ -65,7 +64,7 @@ class CodeGeneratorTest extends GeneratorTestBase {
 		*/
 		val nameOfTheClassUnderTest = "SpecSimple40TypeCollectionPropertyAccessor"
 		val fsa = new InMemoryFileSystemAccess
-		generator.doGenerate(root.eResource, fsa)
+		generator.doGenerate(root.eResource, fsa, null)
 		val compiler = new InMemoryFileSystemAccessCompiler(fsa);
 		val expectedJavaClasses = compiler.expectedJavaClasses
 		assertTrue("Missing generated java-file for " + nameOfTheClassUnderTest, expectedJavaClasses.contains(nameOfTheClassUnderTest))
@@ -83,7 +82,7 @@ class CodeGeneratorTest extends GeneratorTestBase {
 
 		// generate code in memory
 		val fsa = new InMemoryFileSystemAccess
-		generator.doGenerate(root.eResource, fsa)
+		generator.doGenerate(root.eResource, fsa, null)
 
 		assertEquals(4, fsa.textFiles.size)
 //		for(f : fsa.textFiles.keySet) {
@@ -108,7 +107,7 @@ class CodeGeneratorTest extends GeneratorTestBase {
 
 		// generate code in memory
 		val fsa = new InMemoryFileSystemAccess
-		generator.doGenerate(root.eResource, fsa)
+		generator.doGenerate(root.eResource, fsa, null)
 
 		assertEquals(4, fsa.textFiles.size)
 //		for(f : fsa.textFiles.keySet) {

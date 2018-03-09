@@ -8,14 +8,14 @@
 package org.franca.core.dsl.tests
 
 import com.google.inject.Inject
+import com.itemis.xtext.testing.XtextTest
 import java.math.BigInteger
 import java.util.Map
 import org.eclipse.emf.common.util.URI
-import org.eclipse.xtext.junit4.InjectWith
-import org.eclipselabs.xtext.utils.unittesting.XtextRunner2
-import org.eclipselabs.xtext.utils.unittesting.XtextTest
+import org.eclipse.xtext.testing.InjectWith
 import org.franca.core.dsl.FrancaIDLTestsInjectorProvider
 import org.franca.core.dsl.FrancaPersistenceManager
+import org.franca.core.dsl.tests.util.XtextRunner2_Franca
 import org.franca.core.franca.FConstantDef
 import org.franca.core.franca.FExpression
 import org.franca.core.utils.ExpressionEvaluator
@@ -25,7 +25,7 @@ import org.junit.runner.RunWith
 
 import static org.junit.Assert.*
 
-@RunWith(typeof(XtextRunner2))
+@RunWith(typeof(XtextRunner2_Franca))
 @InjectWith(typeof(FrancaIDLTestsInjectorProvider))
 class EvaluationTests extends XtextTest {
 

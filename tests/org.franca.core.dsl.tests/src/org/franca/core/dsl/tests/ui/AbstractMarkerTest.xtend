@@ -1,6 +1,7 @@
 package org.franca.core.dsl.tests.ui
 
 import org.eclipse.core.resources.IFile
+import org.eclipse.core.resources.IMarker
 import org.eclipse.core.resources.IProject
 import org.eclipse.core.resources.IResource
 import org.eclipse.core.runtime.CoreException
@@ -9,7 +10,7 @@ import org.eclipse.xtext.junit4.ui.util.JavaProjectSetupUtil
 import org.eclipse.xtext.ui.XtextProjectHelper
 import org.junit.AfterClass
 import org.junit.BeforeClass
-import org.eclipse.core.resources.IMarker
+
 import static org.junit.Assert.*
 
 class AbstractMarkerTest {

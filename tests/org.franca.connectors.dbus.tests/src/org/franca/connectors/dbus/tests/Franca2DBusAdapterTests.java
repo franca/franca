@@ -9,20 +9,14 @@ package org.franca.connectors.dbus.tests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import model.emf.dbusxml.ArgType;
-import model.emf.dbusxml.InterfaceType;
-import model.emf.dbusxml.MethodType;
-import model.emf.dbusxml.NodeType;
-import model.emf.dbusxml.PropertyType;
-import model.emf.dbusxml.SignalType;
 
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.xtext.junit4.InjectWith;
-import org.eclipselabs.xtext.utils.unittesting.XtextRunner2;
+import org.eclipse.xtext.testing.InjectWith;
 import org.franca.connectors.dbus.DBusConnector;
 import org.franca.connectors.dbus.DBusModelContainer;
 import org.franca.core.dsl.FrancaIDLTestsInjectorProvider;
 import org.franca.core.dsl.FrancaPersistenceManager;
+import org.franca.core.dsl.tests.util.XtextRunner2_Franca;
 import org.franca.core.framework.FrancaModelMapper;
 import org.franca.core.franca.FArgument;
 import org.franca.core.franca.FAttribute;
@@ -35,7 +29,14 @@ import org.junit.runner.RunWith;
 
 import com.google.inject.Inject;
 
-@RunWith(XtextRunner2.class)
+import model.emf.dbusxml.ArgType;
+import model.emf.dbusxml.InterfaceType;
+import model.emf.dbusxml.MethodType;
+import model.emf.dbusxml.NodeType;
+import model.emf.dbusxml.PropertyType;
+import model.emf.dbusxml.SignalType;
+
+@RunWith(XtextRunner2_Franca.class)
 @InjectWith(FrancaIDLTestsInjectorProvider.class)
 public class Franca2DBusAdapterTests {
 

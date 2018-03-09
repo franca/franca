@@ -8,18 +8,18 @@
 package org.franca.deploymodel.dsl.tests
 
 import com.google.inject.Inject
-import org.eclipse.xtext.junit4.InjectWith
-import org.eclipse.xtext.junit4.util.ParseHelper
-import org.eclipselabs.xtext.utils.unittesting.XtextRunner2
+import org.eclipse.xtext.testing.InjectWith
+import org.eclipse.xtext.testing.util.ParseHelper
+import org.franca.core.dsl.tests.util.XtextRunner2_Franca
 import org.franca.deploymodel.dsl.FDeployTestsInjectorProvider
+import org.franca.deploymodel.dsl.FDeployValidationTestHelper
 import org.franca.deploymodel.dsl.fDeploy.FDModel
 import org.junit.Test
 import org.junit.runner.RunWith
 
 import static org.junit.Assert.*
-import org.franca.deploymodel.dsl.FDeployValidationTestHelper
 
-@RunWith(typeof(XtextRunner2))
+@RunWith(typeof(XtextRunner2_Franca))
 @InjectWith(typeof(FDeployTestsInjectorProvider))
 class SpecValidationTests {
 

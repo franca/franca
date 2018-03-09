@@ -9,7 +9,7 @@ package org.franca.core.dsl;
 
 import java.util.List;
 
-import org.eclipse.xtext.junit4.validation.ValidationTestHelper;
+import org.eclipse.xtext.testing.validation.ValidationTestHelper;
 import org.eclipse.xtext.validation.Issue;
 import org.franca.core.franca.FModel;
 import org.franca.core.utils.ValidationIssueConverter;

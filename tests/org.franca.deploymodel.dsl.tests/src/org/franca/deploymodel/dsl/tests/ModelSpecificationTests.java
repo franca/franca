@@ -1,14 +1,15 @@
 package org.franca.deploymodel.dsl.tests;
 
-import org.eclipse.xtext.junit4.InjectWith;
-import org.eclipselabs.xtext.utils.unittesting.XtextRunner2;
-import org.eclipselabs.xtext.utils.unittesting.XtextTest;
+import org.eclipse.xtext.testing.InjectWith;
+import org.franca.core.dsl.tests.util.XtextRunner2_Franca;
 import org.franca.deploymodel.dsl.FDeployTestsInjectorProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-@RunWith(XtextRunner2.class)
+import com.itemis.xtext.testing.XtextTest;
+
+@RunWith(XtextRunner2_Franca.class)
 @InjectWith(FDeployTestsInjectorProvider.class)
 public class ModelSpecificationTests extends XtextTest {
 

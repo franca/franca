@@ -7,14 +7,13 @@
  *******************************************************************************/
 package org.franca.connectors.protobuf.tests
 
-import org.eclipse.xtext.junit4.InjectWith
-import org.eclipselabs.xtext.utils.unittesting.XtextRunner2
+import org.eclipse.xtext.testing.InjectWith
 import org.franca.core.dsl.FrancaIDLTestsInjectorProvider
+import org.franca.core.dsl.tests.util.XtextRunner2_Franca
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.junit.Ignore
 
-@RunWith(typeof(XtextRunner2))
+@RunWith(typeof(XtextRunner2_Franca))
 @InjectWith(typeof(FrancaIDLTestsInjectorProvider))
 class Protobuf2FrancaBasicTests extends TestBase {
 

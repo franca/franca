@@ -40,7 +40,7 @@
 				<configuration>
 					<skip>false</skip>
 					<testSuite>org.franca.deploymodel.dsl.tests</testSuite>
-					<testClass>org.franca.deploymodel.dsl.tests.xpect.ui.FrancaDeploymodelXpectUITests</testClass>
+					<testClass>org.franca.deploymodel.dsl.tests.xpect.ui.ContentAssistUITest</testClass>
 					<!-- MacOS specific option to run an SWT application from the command line.
 							See http://www.eclipse.org/swt/faq.php#carbonapp
 					-->

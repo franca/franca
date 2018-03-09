@@ -35,9 +35,11 @@
             <module>../../plugins/org.franca.core</module>
             <module>../../plugins/org.franca.core.edit</module>
             <module>../../plugins/org.franca.core.dsl</module>
+            <module>../../plugins/org.franca.core.dsl.ide</module>
             <module>../../plugins/org.franca.core.dsl.ui</module>
             <module>../../plugins/org.franca.core.ui.addons</module>
             <module>../../plugins/org.franca.deploymodel.dsl</module>
+            <module>../../plugins/org.franca.deploymodel.dsl.ide</module>
             <module>../../plugins/org.franca.deploymodel.dsl.ui</module>
 			<module>../../plugins/org.franca.generators</module>
 			<module>../../plugins/org.franca.tools.contracts.tracevalidator</module>

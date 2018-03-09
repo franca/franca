@@ -8,7 +8,7 @@ Bundle-SymbolicName: org.franca.core.dsl.tests.base;singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.xtext,
- org.eclipse.xtext.junit4,
+ org.eclipse.xtext.testing,
  org.eclipse.ui.workbench;resolution:=optional,
  org.franca.core;bundle-version="0.10.0",
  org.franca.core.dsl;bundle-version="0.10.0",
@@ -18,7 +18,10 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.xtext.xbase.lib,
  org.eclipse.xtend.lib,
  org.eclipse.xtend.lib.macro,
- org.eclipse.emf.compare;bundle-version="3.0.1"
+ org.eclipse.emf.compare;bundle-version="3.0.1",
+ org.eclipse.xtext.junit4,
+ org.eclipse.xtext.xbase.testing,
+ org.eclipse.xtext.xbase.junit
 Import-Package: org.apache.commons.logging,
  org.apache.log4j,
  org.junit;version="4.5.0",
@@ -32,4 +35,6 @@ Import-Package: org.apache.commons.logging,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.franca.core.dsl,
  org.franca.core.dsl.tests.compare,
- org.franca.core.dsl.tests.util
+ org.franca.core.dsl.tests.util,
+ org.franca.core.dsl.tests;x-internal=true,
+ org.franca.core.dsl.ui.tests;x-internal=true
