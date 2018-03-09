@@ -18,12 +18,12 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.emf.mwe2.language;bundle-version="2.4.0",
  org.xpect;bundle-version="0.1.0",
  org.xpect.xtext.lib;bundle-version="0.1.0",
- org.franca.core;bundle-version="0.10.1",
- org.franca.core.dsl;bundle-version="0.10.1",
- org.franca.core.dsl.ui;bundle-version="0.10.1",
- org.franca.connectors.protobuf;bundle-version="0.10.1",
- org.franca.core.dsl.tests.base;bundle-version="0.10.1",
+ org.franca.core;bundle-version="0.13.0",
+ org.franca.core.dsl;bundle-version="0.13.0",
+ org.franca.core.dsl.ui;bundle-version="0.13.0",
+ org.franca.connectors.protobuf;bundle-version="0.13.0",
+ org.franca.core.dsl.tests.base;bundle-version="0.13.0",
  com.google.eclipse.protobuf;bundle-version="1.5.3",
- org.franca.deploymodel.dsl;bundle-version="0.10.1"
+ org.franca.deploymodel.dsl;bundle-version="0.13.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy

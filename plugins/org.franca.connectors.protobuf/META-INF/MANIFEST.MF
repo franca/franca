@@ -12,8 +12,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.xtext,
  org.eclipse.xtext.xbase.lib,
  org.eclipse.xtend.typesystem.emf;visibility:=reexport,
- org.franca.core;bundle-version="0.11.0",
- org.franca.core.dsl;bundle-version="0.11.0",
+ org.franca.core;bundle-version="0.13.0",
+ org.franca.core.dsl;bundle-version="0.13.0",
  com.google.eclipse.protobuf;bundle-version="1.5.3"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
