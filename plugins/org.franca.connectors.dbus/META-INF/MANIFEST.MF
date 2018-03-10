@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Franca D-Bus Connector
 Bundle-SymbolicName: org.franca.connectors.dbus
-Bundle-Version: 0.12.0.qualifier
+Bundle-Version: 0.13.0.qualifier
 Bundle-Activator: org.franca.connectors.dbus.Activator
 Bundle-Vendor: itemis AG
 Require-Bundle: org.eclipse.core.runtime,
@@ -13,8 +13,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.xtext.xbase.lib,
  org.eclipse.xtend.typesystem.emf;visibility:=reexport,
  model.emf.dbusxml;bundle-version="0.8.0";visibility:=reexport,
- org.franca.core;bundle-version="0.9.1",
- org.franca.core.dsl;bundle-version="0.9.1"
+ org.franca.core;bundle-version="0.13.0",
+ org.franca.core.dsl;bundle-version="0.13.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: org.franca.connectors.dbus,

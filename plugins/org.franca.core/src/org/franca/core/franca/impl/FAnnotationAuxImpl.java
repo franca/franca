@@ -1,6 +1,5 @@
 package org.franca.core.franca.impl;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.franca.core.franca.FAnnotation;
 import org.franca.core.franca.FAnnotationType;
 

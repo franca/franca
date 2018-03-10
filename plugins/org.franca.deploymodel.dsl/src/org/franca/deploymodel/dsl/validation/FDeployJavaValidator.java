@@ -87,7 +87,7 @@ import org.franca.deploymodel.extensions.IFDeployExtension;
 
 import com.google.common.collect.Lists;
 
-public class FDeployJavaValidator extends AbstractFDeployJavaValidator
+public class FDeployJavaValidator extends AbstractFDeployValidator
 	implements ValidationMessageReporter {
 
 	public static final String UPPERCASE_PROPERTYNAME_QUICKFIX = "UPPERCASE_PROPERTYNAME_QUICKFIX";
@@ -114,7 +114,7 @@ public class FDeployJavaValidator extends AbstractFDeployJavaValidator
 	public static final String DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE = "There are multiple issues with element ";
 	
 	// delegate to FDeployValidator
-	FDeployValidator deployValidator = new FDeployValidator(this);
+	FDeployValidatorAux deployValidator = new FDeployValidatorAux(this);
 
 	// *****************************************************************************
 	

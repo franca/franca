@@ -58,7 +58,7 @@ class DBus2FrancaTransformation {
 		clearIssues
 
 		// transform node name to Franca package
-		if (src.name==null) {
+		if (src.name===null) {
 			addIssue(IMPORT_WARNING,
 				src, DbusxmlPackage::NODE_TYPE__NAME,
 				"D-Bus node without name, using default name '" + DEFAULT_NODE_NAME + "'")
@@ -77,7 +77,7 @@ class DBus2FrancaTransformation {
 
 	def create FrancaFactory::eINSTANCE.createFInterface transformInterface (InterfaceType src) {
 		name = src.name.split ("\\.").last
-		if (src.version != null)
+		if (src.version !== null)
 			version = src.version.transformVersion
 		if(src.doc.hasLines) {
 			comment = src.doc.transformAnnotationBlock
@@ -136,7 +136,7 @@ class DBus2FrancaTransformation {
 	}
 
 	def create FrancaFactory::eINSTANCE.createFArgument transformArg (ArgType src, String namespace, String dfltName) {
-		if (src.name!=null)
+		if (src.name!==null)
 			name = src.name.normalizeId
 		else
 			name = dfltName
@@ -151,11 +151,11 @@ class DBus2FrancaTransformation {
 
 	// ANNOTATIONS 
 	def private hasLines (DocType doc) {
-		doc!=null && doc.line!=null && (!doc.line.empty)
+		doc!==null && doc.line!==null && (!doc.line.empty)
 	}
 	
 	def private create FrancaFactory::eINSTANCE.createFAnnotationBlock transformAnnotationBlock(DocType doc) {
-		if (doc.line!=null && !doc.line.empty)				
+		if (doc.line!==null && !doc.line.empty)				
 			elements.add(transformAnnotation(doc))				
 	}
 
@@ -174,7 +174,7 @@ class DBus2FrancaTransformation {
 
 		// as DBus doesn't have a detailed typesystem, we have to use an artificial typesystem here
 		val srcType = new DBusTypeParser().parseSingleType(typeSig)
-		if (srcType==null) {
+		if (srcType===null) {
 			throw new RuntimeException("Couldn't parse type signature '" + typeSig + "'")
 		}
 		

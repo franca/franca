@@ -8,25 +8,27 @@
 package org.franca.core.dsl.tests
 
 import com.google.inject.Inject
-import org.eclipse.xtext.junit4.InjectWith
+import java.math.BigInteger
+import org.eclipse.xtext.resource.SaveOptions
 import org.eclipse.xtext.serializer.ISerializer
-import org.eclipselabs.xtext.utils.unittesting.XtextRunner2
+import org.eclipse.xtext.testing.InjectWith
 import org.franca.core.dsl.FrancaIDLTestsInjectorProvider
+import org.franca.core.dsl.tests.util.XtextRunner2_Franca
 import org.franca.core.franca.FBasicTypeId
+import org.franca.core.franca.FOperator
 import org.franca.core.franca.FrancaFactory
 import org.junit.Test
 import org.junit.runner.RunWith
 
 import static org.junit.Assert.*
-import java.math.BigInteger
-import org.franca.core.franca.FOperation
-import org.franca.core.franca.FOperator
 
-@RunWith(typeof(XtextRunner2))
+@RunWith(typeof(XtextRunner2_Franca))
 @InjectWith(typeof(FrancaIDLTestsInjectorProvider))
 class SerializerTests {
 	
 	@Inject ISerializer serializer
+	
+	val SaveOptions options = SaveOptions.newBuilder.format.options
 	
 	@Test
 	def void testFloatConst() {
@@ -48,7 +50,7 @@ class SerializerTests {
 		] 
 		
 		// serialize to string
-		val result = serializer.serialize(fmodel)
+		val result = serializer.serialize(fmodel, options)
 		//println(result)
 		
 		// compare with expected
@@ -82,7 +84,7 @@ class SerializerTests {
 		] 
 		
 		// serialize to string
-		val result = serializer.serialize(fmodel)
+		val result = serializer.serialize(fmodel, options)
 		//println(result)
 		
 		// compare with expected
@@ -124,7 +126,7 @@ class SerializerTests {
 		] 
 		
 		// serialize to string
-		val result = serializer.serialize(fmodel)
+		val result = serializer.serialize(fmodel, options)
 		//println(result)
 		
 		// compare with expected
@@ -170,7 +172,7 @@ class SerializerTests {
 		] 
 		
 		// serialize to string
-		val result = serializer.serialize(fmodel)
+		val result = serializer.serialize(fmodel, options)
 		//println(result)
 		
 		// compare with expected
@@ -215,7 +217,7 @@ class SerializerTests {
 		] 
 		
 		// serialize to string
-		val result = serializer.serialize(fmodel)
+		val result = serializer.serialize(fmodel, options)
 		//println(result)
 		
 		// compare with expected

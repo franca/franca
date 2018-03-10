@@ -77,7 +77,7 @@ class HostLogic {
 	}
 
 	def static isInterfaceOnly(FDPropertyHost host) {
-		host.getFrancaType(false)==null
+		host.getFrancaType(false)===null
 	}
 
 	/**
@@ -107,7 +107,7 @@ class HostLogic {
 	}
 
 	def static isProviderHost(FDPropertyHost host) {
-		host.getFrancaTypeProvider!=null
+		host.getFrancaTypeProvider!==null
 	}
 
 }

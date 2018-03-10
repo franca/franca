@@ -12,7 +12,7 @@ import com.google.inject.Module;
 /*
  * Plug-in activator which can adapt to JDT vs. non-JDT environments. 
  */
-public class FDeployAdaptiveActivator extends FDeployActivator {
+public class FDeployAdaptiveActivator extends DslActivator {
 
 	protected Module getUiModule(String grammar) {
 		if (ORG_FRANCA_DEPLOYMODEL_DSL_FDEPLOY.equals(grammar)) {

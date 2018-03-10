@@ -71,7 +71,7 @@ class Franca2DBusTransformation {
 		val parentInterfaces = newHashSet
 		parentInterfaces.add(src)
 		var source = src
-		while (source.base != null && !parentInterfaces.contains(source.base)) {
+		while (source.base!==null && !parentInterfaces.contains(source.base)) {
 			var base = source.base
 			if (!parentInterfaces.contains(base)) {
 				parentInterfaces.add(base)
@@ -80,7 +80,7 @@ class Franca2DBusTransformation {
 		}
 
 		name = mInterfaceName = src.model.name + "." + src.name
-		if (src.version != null)
+		if (src.version !== null)
 			version = "" + src.version.major + "." + src.version.minor
 
 		//doc = src.comment
@@ -143,7 +143,7 @@ class Franca2DBusTransformation {
 		doc = src.createDoc
 		arg.addAll(src.inArgs.map[transformArgument(DirectionType::IN)])
 		arg.addAll(src.outArgs.map[transformArgument(DirectionType::OUT)])
-		if(src.errors != null) error.addAll(src.errors.createErrors)
+		if(src.errors !== null) error.addAll(src.errors.createErrors)
 		addBacklink(it, src)
 	}
 
@@ -164,7 +164,7 @@ class Franca2DBusTransformation {
 
 	def create DbusxmlFactory::eINSTANCE.createDocType createDoc(FArgument src) {
 
-		if (src.type.derived != null && src.type.derived.comment != null) {
+		if (src.type.derived !== null && src.type.derived.comment !== null) {
 			line.addLines(src.name + " (of type " + src.type.derived.name + ")", src.description)
 			line.addAll(src.type.derived.lineComment)
 		} else {
@@ -173,7 +173,7 @@ class Franca2DBusTransformation {
 	}
 
 	def private DocType createDoc(FModelElement src) {
-		if (src.comment != null) {
+		if (src.comment !== null) {
 			val it = DbusxmlFactory::eINSTANCE.createDocType
 			line.addLines(src.name, src.description)
 			it
@@ -200,14 +200,14 @@ class Franca2DBusTransformation {
 
 	def dispatch List<String> lineComment(FArrayType src) {
 		val s = newArrayList(src.name + " = array[" + src.elementType.label + "]")
-		if (src.elementType.derived != null)
+		if (src.elementType.derived !== null)
 			s.addAll(src.elementType.derived.lineComment)
 		s
 	}
 
 	def dispatch List<String> lineComment(FMapType src) {
 		val s = newArrayList(src.name + " = dictionary(key=" + src.keyType.label + ",value=" + src.valueType.label + ")")
-		if (src.keyType.derived != null && src.valueType.derived != null)
+		if (src.keyType.derived !== null && src.valueType.derived !== null)
 			s.addAll(lineCommentForDictionary(src.keyType.derived, src.valueType.derived))
 		s
 	}
@@ -254,26 +254,26 @@ class Franca2DBusTransformation {
 	}
 
 	def annotationComments(FModelElement src, FAnnotationType annotationType) {
-		if (src.comment != null) {
+		if (src.comment !== null) {
 			src.comment.elements.filter([FAnnotation a|a.type == annotationType])
 		}
 	}
 
 	def description(FModelElement src) {
 		val c = src.annotationComments(FAnnotationType::DESCRIPTION)
-		if(c != null && c.size > 0) c.head.comment else "Description missing"
+		if(c !== null && c.size > 0) c.head.comment else "Description missing"
 	}
 
 	def details(FModelElement src) {
 		val c = src.annotationComments(FAnnotationType::DETAILS)
-		if(c != null && c.size > 0) c.head.comment else "NO DETAILS AVAILABLE"
+		if(c !== null && c.size > 0) c.head.comment else "NO DETAILS AVAILABLE"
 	}
 
 	def List<FEnumerator> allEnumerators(FEnumerationType e) {
 
 		val List<FEnumerator> ret = newArrayList()
 
-		if (e.base != null) {
+		if (e.base !== null) {
 			ret.addAll(e.base.allEnumerators)
 		}
 
@@ -293,7 +293,7 @@ class Franca2DBusTransformation {
 		var i = 0
 		for (e : src.enumerators) {
 			val v = e.computeEnumValue
-			if (v != null) {
+			if (v !== null) {
 				if (v <= i) {
 					addIssue(IMPORT_WARNING, e, FrancaPackage::FENUMERATOR__VALUE,
 						"Enumerator values must be increasing, ignoring value of '" + e.name + "'.")
@@ -308,11 +308,11 @@ class Franca2DBusTransformation {
 	}
 
 	def private Integer computeEnumValue(FEnumerator e) {
-		if (e.value == null) {
+		if (e.value === null) {
 			null
 		} else {
 			val v = e.value.evaluateIntegerOrParseString
-			if (v == null) {
+			if (v === null) {
 				addIssue(IMPORT_WARNING, e, FrancaPackage::FENUMERATOR__VALUE,
 					"Invalid value for enumerator '" + e.name + "', must be integer.")
 				null
@@ -343,7 +343,7 @@ class Franca2DBusTransformation {
 	}
 
 	def String transformSingleType2TypeString(FTypeRef src) {
-		if (src.derived == null) {
+		if (src.derived === null) {
 			src.transformBasicType
 		} else {
 			var type = src.derived
@@ -410,7 +410,7 @@ class Franca2DBusTransformation {
 	}
 
 	private def boolean isPolymorphicTree(FStructType src) {
-		if (src.base != null)
+		if (src.base !== null)
 			src.base.isPolymorphicTree
 		else
 			src.isPolymorphic
@@ -420,7 +420,7 @@ class Franca2DBusTransformation {
 		var ts = ""
 
 		// get type string of base struct (recursive call)
-		if (src.base != null) {
+		if (src.base !== null) {
 			ts = ts + src.base.getStructTypeString
 		}
 
@@ -433,7 +433,7 @@ class Franca2DBusTransformation {
 	}
 
 	def String transformEnumType(FEnumerationType src) {
-		if (src.base != null) {
+		if (src.base !== null) {
 
 			// TODO: handle src.base
 			addIssue(FEATURE_NOT_HANDLED_YET, src, FrancaPackage::FENUMERATION_TYPE__BASE,
@@ -444,7 +444,7 @@ class Franca2DBusTransformation {
 	}
 
 	def String transformVariantType(FUnionType src) {
-		if (src.base != null) {
+		if (src.base !== null) {
 
 			// TODO: handle src.base
 			addIssue(FEATURE_NOT_HANDLED_YET, src, FrancaPackage::FUNION_TYPE__BASE,
@@ -464,7 +464,7 @@ class Franca2DBusTransformation {
 	}
 
 	def private getLabel(FTypeRef src) {
-		if (src.derived != null)
+		if (src.derived !== null)
 			src.derived.name
 		else
 			src.predefined.getName()

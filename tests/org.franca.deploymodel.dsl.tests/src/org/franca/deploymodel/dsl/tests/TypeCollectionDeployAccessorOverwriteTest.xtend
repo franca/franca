@@ -7,10 +7,10 @@
  *******************************************************************************/
 package org.franca.deploymodel.dsl.tests
 
-import org.eclipse.xtext.junit4.InjectWith
-import org.eclipselabs.xtext.utils.unittesting.XtextRunner2
+import org.eclipse.xtext.testing.InjectWith
 import org.example.spec.SpecCompoundHostsRef.Enums.StringProp
 import org.example.spec.SpecCompoundHostsRef.TypeCollectionPropertyAccessor
+import org.franca.core.dsl.tests.util.XtextRunner2_Franca
 import org.franca.core.franca.FStructType
 import org.franca.core.franca.FTypeCollection
 import org.franca.core.franca.FUnionType
@@ -26,7 +26,7 @@ import static org.junit.Assert.*
 
 import static extension org.franca.core.framework.FrancaHelpers.*
 
-@RunWith(typeof(XtextRunner2))
+@RunWith(typeof(XtextRunner2_Franca))
 @InjectWith(typeof(FDeployTestsInjectorProvider))
 class TypeCollectionDeployAccessorOverwriteTest extends DeployAccessorTestBase {
 

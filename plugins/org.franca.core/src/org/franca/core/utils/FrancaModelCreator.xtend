@@ -16,9 +16,9 @@ class FrancaModelCreator {
 		val trigger = containingTransition.trigger
 		val event = trigger.event
 		val method = event.error
-		if (method != null) {
+		if (method !== null) {
 			val errors = method.errors
-			if (errors != null) it.derived = errors else it.derived = method.errorEnum
+			if (errors !== null) it.derived = errors else it.derived = method.errorEnum
 		} else {
 			it.predefined = FBasicTypeId::UNDEFINED
 		}

@@ -32,7 +32,7 @@ class ContractDotGenerator {
 
 
 	def private generate (FInterface api) '''
-		«IF api.contract?.stateGraph != null»
+		«IF api.contract?.stateGraph !== null»
 		«FOR it : api.contract.stateGraph.states»
 			«name»
 		«ENDFOR»
@@ -46,7 +46,7 @@ class ContractDotGenerator {
 	
 	def public String genLabel (FTransition it) {
 		trigger.event.getEventLabel + 
-		if (guard==null)
+		if (guard===null)
 			''
 		else
 			"\n" + guard.genGuard
@@ -62,7 +62,7 @@ class ContractDotGenerator {
 	}
 
 	def dispatch private String gen (FQualifiedElementRef it) {
-		if (qualifier==null) {
+		if (qualifier===null) {
 			element.name
 		} else {
 			qualifier.gen + "." + field.name

@@ -1,9 +1,9 @@
 package org.franca.tools.contracts.tracevalidator.tests
 
+import com.itemis.xtext.testing.XtextTest
 import java.util.List
 import javax.inject.Inject
 import org.eclipse.emf.common.util.URI
-import org.eclipselabs.xtext.utils.unittesting.XtextTest
 import org.franca.core.dsl.FrancaPersistenceManager
 import org.franca.core.franca.FContract
 import org.franca.core.franca.FEventOnIf
