@@ -106,8 +106,7 @@ The property is of e[enumeration] type, with enum values e[none], e[medium] and
 e[substantial]. It has the flag e[optional].
 
 code[FDeploy][
-specification MySpec
-{
+specification MySpec {
 	for methods {
 		PerformanceImpact: {none, medium, substantial}   (optional);
 	}
@@ -180,7 +179,7 @@ table:DeploymentInterfaceHostsPart2[
 	caption[Franca deployment: Property hosts related to primitive data types.]
 	tf[
 		professional
-		tcol[2] tcol[5] tcol[4] tcol[4]
+		tcol[2] tcol[5] tcol[5] tcol[4]
 	]
 	tr[
 		td[e[Host]]
@@ -328,7 +327,7 @@ table:DeploymentProviderHosts[
 	caption[Franca deployment: Property hosts related to providers and interface instances.]
 	tf[
 		professional
-		tcol[1] tcol[3] tcol[2] tcol[2]
+		tcol[2] tcol[6] tcol[3] tcol[4]
 	]
 	tr[
 		td[e[Host]]
@@ -352,7 +351,7 @@ table:DeploymentProviderHosts[
 ]
 
 
-section:DeploymentModels_Specifications[Defining deployment specifications]
+section:DeploymentModels_Specifications[Deployment specifications]
 
 This section explains how deployment specifications for a concrete target platform
 are defined.
@@ -377,16 +376,14 @@ and if the method has to be implemented by the server or not (property e[IsOptio
 code[FDeploy][
 import "PlayerAPI.fidl"
 
-specification MySpec
-{
+specification MySpec {
 	for methods {
 		CallSemantics: {synchronous, asynchronous};
 		IsOptional:    Boolean;
 	}
 }
 
-define MySpec for interface PlayerAPI
-{
+define MySpec for interface PlayerAPI {
 	method setActivePlayer {
 		CallSemantics = synchronous
 		IsOptional = false
@@ -433,8 +430,7 @@ values g1, g2, g3 and g4. Thus, values for this property might be an arbitrary s
 of this enumeration.
 
 code[FDeploy][
-specification org.deployspecs.SampleDeploySpec
-{
+specification org.deployspecs.SampleDeploySpec {
 	for methods {
 		CallSemantics: {synchronous, asynchronous} (default: asynchronous);
 		Priority:      {low, medium, high}         (default: low);		
@@ -466,8 +462,7 @@ example, an actual deployment specification for IP-based stacks will have to tak
 into account more platform-specific details.
 
 code[FDeploy][
-specification org.deployspecs.IPBasedIPC
-{
+specification org.deployspecs.IPBasedIPC {
 	for providers {
 		ProcessName:     String;
 	}
@@ -492,14 +487,16 @@ section2:DeploymentModels_Specifications_SpecificationInheritance[Specification 
 Specifications can inherit from base specifications. Example:
 
 code[FDeploy][
-specification org.deployspecs.DerivedSpec
-	extends org.deployspecs.IPBasedIPC
-{
+specification org.deployspecs.DerivedSpec extends org.deployspecs.IPBasedIPC {
 	// put specification details here
 }
 ]
 
-This allows to build a hierarchy of specifications (i.e., a specification ontology).
+The properties defined in a specification and its base specification will be aggregated.
+This applies recursively, such that a specification will consist of an accumulation of all 
+its own properties and the properties of all base specifications along the chain.
+ 
+This concept allows to build a hierarchy of specifications (i.e., a specification ontology).
 
 
 section2:DeploymentModels_Specifications_InterfaceAsDatatype[The property datatype 'Interface']
@@ -520,8 +517,7 @@ The example also defines a specific interface reference e[&org.example.idl.Contr
 as a default value.
   
 code[FDeploy][
-specification org.deployspecs.Channel
-{
+specification org.deployspecs.Channel {
 	for interfaces {
 		Master:   Interface (default: &org.example.idl.Controller);
 	}
@@ -609,7 +605,7 @@ See section ref:DeploymentModels_DeploymentAccessSupport_PropertyAccessor[Proper
 for details on the generated Java classes.
 
 
-section:DeploymentModels_Definitions[Defining deployment definitions]
+section:DeploymentModels_Definitions[Deployment definitions]
 
 This section describes how deployment definitions are created based on 
 deployment specifications.
@@ -632,8 +628,7 @@ code[FDeploy][
 import "deployspecs/SampleDeploySpec.fdepl"
 import "../franca/demo1.fidl"
 
-define SampleDeploySpec for interface org.franca.examples.demo.PlayerAPI
-{
+define SampleDeploySpec for interface org.franca.examples.demo.PlayerAPI {
 	attribute activePlayer {
 		IsReadOnly = true
 		Groups = { g1, g2 }
@@ -687,8 +682,7 @@ code[FDeploy][
 import "deployspecs/SampleDeploySpec.fdepl"
 import "../franca/demo1.fidl"
 
-define SampleDeploySpec for provider ExampleServer
-{
+define SampleDeploySpec for provider ExampleServer {
 	ProcessName = "server1.exe"
 	
 	instance org.franca.examples.demo.PlayerAPI {
@@ -715,7 +709,212 @@ difference between actual interface definitions and their instances.
 
 section2:DeploymentModels_Definitions_Overwriting[Overwriting deployment properties]
 
-todo[This section will describe how overwriting of deployment properties works (since Franca 0.9.2).]
+In general, each user-defined datatype from a type collection or an interface 
+has to be deployed once. I.e., a deployment definition for the type collection or interface
+has to contain a section for the data type, containing at least the mandatory deployment
+properties and (if desired) some of the optional properties.
+
+There are various locations where a user-defined datatype might be used in
+a type collection or an interface definition:
+
+ul[
+	item[as type of an attribute]
+	item[as type of an in/out argument of a method]
+	item[as type of an out argument of a broadcast]
+	item[by another datatype (via containment or inheritance)]
+	item[as type of a constant]
+]
+     
+By default, all these usages of a deployed datatype do not require any further deployment data 
+aside from the deployment definition mentioned above. This is usually a proper approach, as it
+ensures that the deployment of a user-defined type is the same for all its usages.
+
+However, for some usecases it is needed to overwrite the initial datatype deployment and provide
+different deployment data depending on how the datatype is used. Currently this e[overwriting] of
+deployment properties is supported for compound-like datatypes, i.e., for struct and union types.
+The remainder of this section will explain how overwriting can be used when creating
+deployment definitions.     
+
+The overwriting-feature is available since Franca 0.10.0.
+
+
+section3:DeploymentModels_Definitions_Overwriting_ExampleNormal[Example using normal deployment without overwrites]
+
+This section will introduce a running example which will be used to explain all variants of
+the overwriting-feature. We will start with a simple deployment specification:
+   
+code[FDeploy][
+specification examples.SimpleSpec {
+	for strings {
+		Encoding : {utf8, utf16, unicode}   (default: utf8);
+	}
+}
+]
+
+This specification contains only one property, which is applied to string types.
+It can be used to define string encodings, which can be one of code[FDeploy][utf8],
+code[FDeploy][utf16] and code[FDeploy][unicode].
+Note that a default value has been defined, which relieves us of defining a value
+of the code[FDeploy][Encoding] property for each usage of datatype code[FDeploy][String].
+
+In the remainder of this section, we will deploy different parts of the following Franca interface:
+
+code[Franca][
+interface MediaPlayer {
+	struct Person {
+		String firstname
+		String surname
+	}
+	
+	struct TrackInfo {
+		String title
+		String album
+		Person composer
+		Person interpret
+	}
+
+	attribute TrackInfo currentTrack
+	
+	method play {
+		in { TrackInfo track }
+	}
+}
+]
+
+The interface defines two struct datatypes (and one is used by the other), as well as one attribute
+and a method. Both the attribute and the method are using the struct type code[Franca][TrackInfo].
+
+A deployment definition for this interface could look like the following example.
+For the struct-types code[Franca][Person] and code[Franca][TrackInfo], some elements of type
+code[Franca][String] will not be deployed with the default code[FDeploy][Encoding utf8]
+(which is defined in the deployment specification), but with code[FDeploy][Encoding unicode] instead.
+ 
+code[FDeploy][
+define examples.SimpleSpec for interface examples.MediaPlayer {
+	struct Person {
+		firstname { Encoding = unicode }
+		surname   { Encoding = unicode }
+	}
+	struct TrackInfo {
+		album     { Encoding = unicode }
+	}
+}
+]
+
+This is the standard way of using deployment definitions.
+In the next section we will explain how overwrites can be used.
+  
+
+section3:DeploymentModels_Definitions_Overwriting_ExampleOverwriting1[Example using deployment overwrites: Attribute]
+
+In some environments, it might be necessary to use a different encoding for the code[Franca][album]
+element of the code[Franca][TrackInfo] struct-type, but only when used as a Franca attribute.
+This can be defined by overwriting the deployment properties given when the code[Franca][TrackInfo]
+struct was deployed. In the example, the code[FDeploy][Encoding] property of the struct element
+code[Franca][album] will be overwritten with code[FDeploy][utf16].
+
+code[FDeploy][
+define examples.SimpleSpec for interface examples.MediaPlayer {
+	attribute currentTrack {
+		#struct {
+			album { Encoding = utf16 }
+		}
+	}
+}
+]
+
+The syntax for overwriting a struct-type deployment is the hash-character followed by the
+keyword e[struct], resulting in code[FDeploy][#struct]. This and all following deployment
+overwrite examples will work also with code[Franca][union]-types, using the keyword code[FDeploy][#union].
+The overwrite keyword always refers to the type of the containing deployment element. 
+In the example, this is the code[FDeploy][attribute currentTrack].
+ 
+ref:DeploymentOverwriteLayers[The following table] lists the different "layers" of values for 
+property code[FDeploy][Encoding] in the example above. 
+
+table:DeploymentOverwriteLayers[
+	caption[Franca deployment overwrites: Layered values in example.]
+	tf[
+		professional
+		tcol[3] tcol[3] tcol[1] tcol[2]
+	]
+	tr[
+		td[e[Layer]]
+		td[e[Source]]
+		td[e[Value]]
+		td[e[]]
+		---
+	]
+	tr[
+		td[Default value]
+		td[specification]
+		td[code[FDeploy][utf8]]
+		td[overridden by...]
+	]
+	tr[
+		td[Standard deployment]
+		td[deployment for code[Franca][TrackInfo]]
+		td[code[FDeploy][unicode]]
+		td[overwritten by...]
+	]
+	tr[
+		td[Deployment overwrite]
+		td[deployment for code[Franca][currentTrack]]
+		td[code[FDeploy][utf16]]
+		td[actual value!]
+	]
+]
+
+
+section3:DeploymentModels_Definitions_Overwriting_ExampleOverwriting2[Example using deployment overwrites: Method]
+
+code[FDeploy][
+define examples.SimpleSpec for interface examples.MediaPlayer {
+	method play {
+		in {
+			track {
+				#struct {
+					album { Encoding = utf16 }
+				}
+			}
+		}
+	}
+}
+]
+
+section3:DeploymentModels_Definitions_Overwriting_ExampleOverwriting3[Example using deployment overwrites: Nested struct]
+
+code[FDeploy][
+define examples.SimpleSpec for interface examples.MediaPlayer {
+	struct TrackInfo {
+		title { Encoding = utf8 }
+		album { Encoding = utf8 }
+		composer {
+			#struct {
+				firstname { Encoding = unicode }
+				surname   { Encoding = unicode }
+			}
+		}
+	}
+}
+]
+
+section3:DeploymentModels_Definitions_Overwriting_ExampleOverwriting4[Example using deployment overwrites: Nested struct in attribute]
+
+code[FDeploy][
+define examples.SimpleSpec for interface examples.MediaPlayer {
+	attribute currentTrack {
+		#struct {
+			composer {
+				#struct {
+					firstname { Encoding = unicode }
+					surname   { Encoding = unicode }
+				}
+			}
+		}
+	}
+}
+]
 
 
 section:DeploymentModels_DeploymentAccessSupport[Support for accessing deployment properties]

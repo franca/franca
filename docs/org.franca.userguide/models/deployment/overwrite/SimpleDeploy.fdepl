@@ -1,0 +1,63 @@
+import "SimpleSpec.fdepl"
+import "MediaPlayer.fidl"
+
+// standard deployment for elements of struct type
+define examples.SimpleSpec for interface examples.MediaPlayer {
+	struct Person {
+		firstname { Encoding = unicode }
+		surname   { Encoding = unicode }
+	}
+	struct TrackInfo {
+		album     { Encoding = unicode }
+	}
+}
+
+// overwrite of struct deployment for attribute
+define examples.SimpleSpec for interface examples.MediaPlayer {
+	attribute currentTrack {
+		#struct {
+			album { Encoding = utf16 }
+		}
+	}
+}
+
+// overwrite of struct deployment for method argument
+define examples.SimpleSpec for interface examples.MediaPlayer {
+	method play {
+		in {
+			track {
+				#struct {
+					album { Encoding = utf16 }
+				}
+			}
+		}
+	}
+}
+
+// overwrite of struct deployment for nested struct element
+define examples.SimpleSpec for interface examples.MediaPlayer {
+	struct TrackInfo {
+		title { Encoding = utf8 }
+		album { Encoding = utf8 }
+		composer {
+			#struct {
+				firstname { Encoding = utf16 }
+				surname   { Encoding = utf8 }
+			}
+		}
+	}
+}
+
+// overwrite of struct deployment for nested struct in attribute
+define examples.SimpleSpec for interface examples.MediaPlayer {
+	attribute currentTrack {
+		#struct {
+			composer {
+				#struct {
+					firstname { Encoding = utf16 }
+					surname   { Encoding = utf8 }
+				}
+			}
+		}
+	}
+}

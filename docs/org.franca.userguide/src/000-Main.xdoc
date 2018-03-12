@@ -66,7 +66,7 @@ codelanguage-def[FDeploy]
 
 	define,provider,instance,interface, 
 	attribute,method,broadcast,in,out,
-	array,struct,enumeration,
+	array,struct,union,enumeration,
 	
 	false,true
 ]
