@@ -121,8 +121,8 @@ public class FDeployQuickfixProviderUtil {
 			}
 		}
 		if (attributeTarget != null) {
-			FDAttribute attribute = FDeployFactory.eINSTANCE
-					.createFDAttribute();
+			FDAttribute attribute = FDeployFactory.eINSTANCE.createFDAttribute();
+			init(attribute);
 			attribute.setTarget(attributeTarget);
 			deploymentInterface.getAttributes().add(attribute);
 			return attribute;
@@ -167,8 +167,7 @@ public class FDeployQuickfixProviderUtil {
 
 		FBroadcast broadcastTarget = null;
 
-		for (FBroadcast broadcast : deploymentInterface.getTarget()
-				.getBroadcasts()) {
+		for (FBroadcast broadcast : deploymentInterface.getTarget().getBroadcasts()) {
 			if (FrancaModelExtensions.getUniqueName(broadcast).equals(elementName)) {
 				broadcastTarget = broadcast;
 			}
