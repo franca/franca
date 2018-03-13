@@ -939,6 +939,19 @@ interface LetterCount {
 }
 ]
 
+Argument names must be unique. This also applies across the e[in] and e[out] sections.
+Thus, the following example will not be valid:
+
+code[Franca][
+	method play {
+		// validation error: "Duplicate argument name 'track' used for in and out"
+		in { TrackInfo track }
+		out { UInt16 track }
+	}
+] 
+
+section3:FIDL_Interface_Method_RuntimeBehavior[Runtime semantics of method calls]
+
 The runtime behavior of a method call (e.g., blocking vs. non-blocking) is subject to
 implementation by the underlying target IPC stack. Thus, it will not be specified as part
 of the interface definition in the IDL. This information will be stored in an additional
