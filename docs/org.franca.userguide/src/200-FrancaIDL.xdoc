@@ -785,8 +785,8 @@ table:InheritanceSemantics[
 		td[All methods of the base interface are inherited by the derived interface.
 		   Methods can be overloaded, either in the same interface or via inheritance.
 		   I.e., methods with the same name can be defined as long as the signature
-		   of those methods is different. Both out- and in-arguments are taken into
-		   account to determine the method's signature. 
+		   of those methods is different. See ref:FIDL_Interface_Method_Overloading
+		   for more details on overloading.
 		   In versions prior to Franca 0.7.4, overloading of methods was not allowed.
 		]
 	]
@@ -1063,6 +1063,56 @@ interface Watchdog {
 
 This can be used to implement lightweight communication patterns.
 
+section3:FIDL_Interface_Method_Overloading[Method overloading]
+
+Franca IDL also allows method overloading, i.e., interfaces with two or more methods
+with the same name. This is allowed as long as the method signatures are different,
+i.e., the sets of combined e[in]- and e[out]-argument types must be different for each
+overloaded method. Note that only the types will be part of the signature, not the
+argument names. The following example shows a valid case of overloading:
+
+code[Franca][
+interface SomeInterface {
+  method callMe {
+    in { Boolean b }
+  }  
+
+  method callMe {
+    in { Boolean b }
+    out { String s }
+  }  
+}]
+
+Note that although the set of e[in]-arguments is identical, the second version of 
+method code[Franca][callMe] has an additional e[out]-argument. This is a sufficient
+distinction to allow overloading. It is also sufficient to have a difference in 
+
+In Franca contracts and deployment models it is necessary to uniquely reference
+single methods. In order to tell apart several overloaded methods with the same name,
+the method names can be extended by e[selectors], which are not part of the method name,
+but which can be used to discriminate overloaded methods.
+This is shown in the following example.
+
+code[Franca][
+interface SomeInterface {
+  method callMe:a {
+    in { Boolean b }
+  }  
+
+  method callMe:b {
+    in { Boolean b }
+    out { String s }
+  }  
+}]
+
+The selectors for each group of overloaded methods must be unique, which is essential
+for their purpose to discriminate the methods which otherwise have an identical name. 
+
+Overloading is also relevant in the context of interface inheritance. For methods
+of derived interfaces which overload methods from base interfaces the same rules
+apply as described previously. See ref:FIDL_Interface_Basic_Inheritance for more
+information on interface inheritance. 
+ 
 
 section2:FIDL_Interface_Broadcast[Broadcasts]
 
