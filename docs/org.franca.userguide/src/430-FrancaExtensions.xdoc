@@ -162,6 +162,52 @@ and prevent initialization problems due to the on-demand loading of plug-ins.
 
 section:FrancaExtensions_ImplicitDeploymentSpecs[Providing deployment specifications]
 
+Some downstream tools (e.g., code generators for Franca models) might use Franca deployment models
+as additional input format. These tools will usually bring their own deployment specification
+which defines the deployment properties needed as additional input by the tool.
 
+Usually these tool are packaged as Eclipse plug-ins. The deployment specification file
+then is just another resource in the plug-in jar. In order to allow users to refer to the
+deployment specification without knowing its exact URI, Franca provides an extension 
+point which can be used by the tool's plug-in to register the deployment specification
+with an abstract (logical) name. Franca will then take care via scoping to allow 
+importing this deployment specification. 
 
+Here is an example of using the e[deploySpecProvider] extension point in order 
+to register the deployment specification from file e[PlatformDeploySpec.fdepl]
+with the logical name e[CoolSpec]:
+
+code[Config][
+<plugin>
+   <extension point="org.franca.deploymodel.dsl.deploySpecProvider">
+      <model
+            FDSpecification="org.example.spec.PlatformDeploySpec"
+            alias="CoolSpec"
+            resource="model/platform/PlatformDeploySpec.fdepl">
+      </model>
+   </extension>
+</plugin>
+]
+
+The registration of the extension can be done either by using the e[Extensions] dialog
+in the Eclipse IDE or by manually editing the e[plugin.xml] file of the plug-in
+which wants to register the deployment specification.
+
+This deployment specification can then be imported in any deployment model by the 
+following import statement:
+
+code[FDeploy][
+import CoolSpec
+
+specification MySpec extends org.example.spec.PlatformDeploySpec {
+	// ...
+}
+
+define org.example.spec.PlatformDeploySpec for interface SomeAPI {
+	// ...
+}
+]
+
+In the example, the deployment specification imported by its alias is used as a
+base specification for code[FDeploy][MySpec] and for a deployment definition.
 
