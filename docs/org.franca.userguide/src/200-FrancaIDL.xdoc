@@ -1184,7 +1184,39 @@ code[Franca][
 
 section2:FIDL_Interface_Manages[Interfaces managing interfaces]
 
-todo[In this section the manages-concept will be documented.]
+In some IPC mechanisms, e.g. D-Bus, we have the concept of linked interfaces.
+This usually takes the form that there is a root interface, for example a bluetooth 
+service. Then there are many interfaces which are controlled by the root interface.
+E.g., each physical bluetooth adapter provides some interface which has to be 
+controlled by the root bluetooth service. 
+
+Franca IDL allows to define this association between interfaces using the
+keyword code[Franca][manages]. A downstream tool (e.g., a code generator)
+could then generate appropriate code for being informed about the "children" in
+the implementation of the root.
+
+The following example shows two interfaces which specify the services code[Franca][SomeService]
+and code[Franca][OtherService]. The third interface code[Franca][BluetoothMaster] will
+control all connections based on one of the two former interface types. This relationship
+is modeled by the keyword code[Franca][manages] and a list of managed services.
+ 
+code[Franca][
+interface SomeService {
+	method getDirectory { }
+	method getFile { }
+} 
+
+interface OtherService {
+	method playMusic { }
+} 
+
+interface BluetoothMaster manages SomeService, OtherService {
+	attribute UInt16 connectedClients
+	method disconnectAll { }
+}
+]
+
+The code[Franca][manages]-keyword was introduced in Franca 0.8.8.
 
 
 section:FIDL_Contracts[Contracts]

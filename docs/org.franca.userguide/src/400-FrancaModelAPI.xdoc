@@ -76,7 +76,7 @@ todo[The IntegerTypeConverter will be described here.]
 section:FrancaModelAPIReference_Section_FModel[API for Franca models, interfaces and type collections]
 
 %% ------------------------------------------------------------
-todo[The ModelAPI reference section will be updated soon.]
+todo[The ModelAPI reference section will be updated.]
 
 
 This section describes the FModel class, which is the root class for each Franca model.

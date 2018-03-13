@@ -1,0 +1,15 @@
+package examples
+
+interface SomeService {
+	method getDirectory { }
+	method getFile { }
+} 
+
+interface OtherService {
+	method playMusic { }
+} 
+
+interface BluetoothMaster manages SomeService, OtherService {
+	attribute UInt16 connectedClients
+	method disconnectAll { }
+}
