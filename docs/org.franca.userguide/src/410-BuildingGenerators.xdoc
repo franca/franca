@@ -42,7 +42,7 @@ to Java: Groovy, Scala and Xtend are some examples. All those languages can
 be used to implement generators for Franca.
 
 For developers already used to Java we recommend using
-link[http://xtend-lang.org][Xtend] for this task.
+link[http://www.xtend-lang.org][Xtend] for this task.
 Xtend offers a seamless integration with Java allowing the generator 
 being implemented as a proper mix of Java (where necessary) and Xtend.
 We fill focus on Xtend in this and later chapters; the examples being
@@ -189,7 +189,7 @@ ul[
 ]
 
 There are some more nice features of Xtend which help in implementing generators. 
-See the link[http://xtend-lang.org][documentation on Xtend] for more details on this.
+See the link[http://www.xtend-lang.org][documentation on Xtend] for more details on this.
 It is available online and as printable pdf. 
 
 section2:BuildingGenerators_TraversingFrancaModels_NextSteps[Next steps]

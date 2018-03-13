@@ -16,8 +16,9 @@ now in order to get some fundamental information about Franca.
 section:GettingStarted_InstallBinary[Install Eclipse-based Franca tooling]
 
 The installation instructions for the Franca tooling are not part of this 
-User Guide. You will find them online at the Franca EclipseLabs page (Wiki section):
-link[http://code.google.com/a/eclipselabs.org/p/franca/wiki/FrancaQuickInstallGuide][Franca Quick Install
+User Guide. You will find them online at the Franca EclipseLabs page 
+(Wiki section):
+link[https://github.com/franca/franca/wiki/Franca-Quick-Install-Guide][Franca Quick Install
 Guide].
 
 
