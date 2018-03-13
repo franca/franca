@@ -66,9 +66,9 @@ In order to understand the structure of the protocol state machine of a contract
 quickly, Franca comes with a e[Contract Viewer]. In order to use it,
 the Franca e[User Interface Add-Ons] feature has to be installed in the IDE.
 
-section2:FrancaTooling_ContractViewer_kieler[Contract Viewer in Franca 0.9.2 and later]
+section2:FrancaTooling_ContractViewer_kieler[Contract Viewer in Franca 0.10.0 and later]
 
-Since Franca 0.9.2, the contract viewer implementation is based on the KIELER framework.
+Since Franca 0.10.0, the contract viewer implementation is based on the KIELER framework.
 After installing KIELER and the Franca User Interface Add-Ons feature
 (see section ref:GettingStarted_InstallBinary[Install Eclipse-based Franca tooling] for
 more information on installation), the Eclipse toolbar will offer a green/yellow button
