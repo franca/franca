@@ -785,7 +785,7 @@ The interface defines two struct datatypes (and one is used by the other), as we
 and a method. Both the attribute and the method are using the struct type code[Franca][TrackInfo].
 
 A deployment definition for this interface could look like the following example.
-For the struct-types code[Franca][Person] and code[Franca][TrackInfo], some elements of type
+For the struct types code[Franca][Person] and code[Franca][TrackInfo], some elements of type
 code[Franca][String] will not be deployed with the default code[FDeploy][Encoding utf8]
 (which is defined in the deployment specification), but with code[FDeploy][Encoding unicode] instead.
  
@@ -808,7 +808,7 @@ In the next section we will explain how overwrites can be used.
 section3:DeploymentModels_Definitions_Overwriting_ExampleOverwriting1[Example using deployment overwrites: Attribute]
 
 In some environments, it might be necessary to use a different encoding for the code[Franca][album]
-element of the code[Franca][TrackInfo] struct-type, but only when used as a Franca attribute.
+element of the code[Franca][TrackInfo] struct type, but only when used as a Franca attribute.
 This can be defined by overwriting the deployment properties given when the code[Franca][TrackInfo]
 struct was deployed. In the example, the code[FDeploy][Encoding] property of the struct element
 code[Franca][album] will be overwritten with code[FDeploy][utf16].
@@ -823,7 +823,7 @@ define examples.SimpleSpec for interface examples.MediaPlayer {
 }
 ]
 
-The syntax for overwriting a struct-type deployment is the hash-character followed by the
+The syntax for overwriting a struct type deployment is the hash-character followed by the
 keyword e[struct], resulting in code[FDeploy][#struct]. This and all following deployment
 overwrite examples will work also with code[Franca][union]-types, using the keyword code[FDeploy][#union].
 The overwrite keyword always refers to the type of the containing deployment element. 
@@ -868,6 +868,14 @@ table:DeploymentOverwriteLayers[
 
 section3:DeploymentModels_Definitions_Overwriting_ExampleOverwriting2[Example using deployment overwrites: Method]
 
+Overwriting deployment properties for elements of struct and union types is not only possible
+for attribute types, but also for arguments of methods and broadcasts. The following example
+shows how to overwrite the deployment of the code[Franca][album] element of the
+code[Franca][TrackInfo] struct type, but only when used as the type of the in argument
+code[Franca][track] of method code[Franca][play].
+In the example, the code[FDeploy][Encoding] property of the struct element
+code[Franca][album] will be overwritten with code[FDeploy][utf16].
+  
 code[FDeploy][
 define examples.SimpleSpec for interface examples.MediaPlayer {
 	method play {
@@ -884,6 +892,12 @@ define examples.SimpleSpec for interface examples.MediaPlayer {
 
 section3:DeploymentModels_Definitions_Overwriting_ExampleOverwriting3[Example using deployment overwrites: Nested struct]
 
+If struct and union types are built from other struct or union types, it is also possible to overwrite
+the deployment properties of the child structs. The following example overwrites the
+code[FDeploy][Encoding] properties of the elements code[Franca][firstname] and code[Franca][surname]
+of the code[Franca][Person] struct type, but only if it is used as type of element code[Franca][composer]
+of the code[Franca][TrackInfo] struct type.
+ 
 code[FDeploy][
 define examples.SimpleSpec for interface examples.MediaPlayer {
 	struct TrackInfo {
@@ -899,8 +913,18 @@ define examples.SimpleSpec for interface examples.MediaPlayer {
 }
 ]
 
+Note the difference between the keywords code[FDeploy][struct] (without hash) and
+code[FDeploy][#struct] (with hash). The former starts the original deployment
+of struct type code[Franca][TrackInfo], the latter triggers the overwriting of 
+its element code[Franca][composer].
+It is also possible to overwrite struct types which are more deeply nested in
+hierarchies of struct and union types. 
+
 section3:DeploymentModels_Definitions_Overwriting_ExampleOverwriting4[Example using deployment overwrites: Nested struct in attribute]
 
+The following example shows overwriting of nested structs in the context of attributes.
+The same could be done for methods or broadcasts.
+  
 code[FDeploy][
 define examples.SimpleSpec for interface examples.MediaPlayer {
 	attribute currentTrack {
@@ -916,6 +940,11 @@ define examples.SimpleSpec for interface examples.MediaPlayer {
 }
 ]
 
+In the above example, all elements of struct type code[Franca][TrackInfo] except
+its element code[Franca][composer] are deployed in a standard way.
+The deployment for element code[Franca][composer] is overwritten and set
+to property values specifically for the context of the attribute code[Franca][currentTrack].
+ 
 
 section:DeploymentModels_DeploymentAccessSupport[Support for accessing deployment properties]
 
