@@ -112,7 +112,7 @@ FDAbstractExtensionElement:
 	
 FDExtensionRoot:
 	'define' spec=[FDSpecification|FQN]
-	'for' tag=ID name=FQN
+	'for' tag=ID (target=[ecore::EObject|FQN])? ('as' name=FQN)?
 	'{'
 		('use' use+=[FDRootElement|FQN])*
 
@@ -124,7 +124,7 @@ FDExtensionRoot:
 	'}';
 
 FDExtensionElement:
-	tag=ID '{'
+	tag=ID (target=[ecore::EObject|FQN])? ('as' name=FQN)? '{'
 		// own properties
 		properties=FDPropertySet
 		

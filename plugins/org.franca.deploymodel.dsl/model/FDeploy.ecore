@@ -103,9 +103,12 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="tag" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="elements" upperBound="-1"
         eType="#//FDExtensionElement" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FDExtensionRoot" eSuperTypes="#//FDRootElement #//FDAbstractExtensionElement"/>
-  <eClassifiers xsi:type="ecore:EClass" name="FDExtensionElement" eSuperTypes="#//FDElement #//FDAbstractExtensionElement"/>
+  <eClassifiers xsi:type="ecore:EClass" name="FDExtensionElement" eSuperTypes="#//FDElement #//FDAbstractExtensionElement">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FDProvider" eSuperTypes="#//FDRootElement">
     <eStructuralFeatures xsi:type="ecore:EReference" name="instances" upperBound="-1"
         eType="#//FDInterfaceInstance" containment="true"/>

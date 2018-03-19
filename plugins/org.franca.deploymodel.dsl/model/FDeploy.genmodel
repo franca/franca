@@ -95,9 +95,12 @@
     <genClasses image="false" ecoreClass="FDeploy.ecore#//FDAbstractExtensionElement">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute FDeploy.ecore#//FDAbstractExtensionElement/tag"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDAbstractExtensionElement/elements"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDAbstractExtensionElement/target"/>
     </genClasses>
     <genClasses ecoreClass="FDeploy.ecore#//FDExtensionRoot"/>
-    <genClasses ecoreClass="FDeploy.ecore#//FDExtensionElement"/>
+    <genClasses ecoreClass="FDeploy.ecore#//FDExtensionElement">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute FDeploy.ecore#//FDExtensionElement/name"/>
+    </genClasses>
     <genClasses ecoreClass="FDeploy.ecore#//FDProvider">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDProvider/instances"/>
     </genClasses>

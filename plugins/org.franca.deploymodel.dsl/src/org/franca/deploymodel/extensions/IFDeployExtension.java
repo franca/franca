@@ -9,7 +9,8 @@ package org.franca.deploymodel.extensions;
 
 import java.util.Collection;
 
-import com.google.common.collect.ImmutableList;
+import org.eclipse.emf.ecore.EClass;
+
 import com.google.common.collect.Lists;
 
 /**
@@ -36,11 +37,17 @@ public interface IFDeployExtension {
 	
 	abstract class AbstractElementDef {
 		private String tag;
+		private EClass targetClass;
 		private Collection<Host> hosts;
 		private Collection<ElementDef> children;
 		
 		public AbstractElementDef(String tag, Collection<Host> hosts) {
+			this(tag, null, hosts);
+		}
+		
+		public AbstractElementDef(String tag, EClass targetClass, Collection<Host> hosts) {
 			this.tag = tag;
+			this.targetClass = targetClass;
 			this.hosts = hosts;
 			this.children = Lists.newArrayList();
 		}
@@ -52,6 +59,10 @@ public interface IFDeployExtension {
 
 		public String getTag() {
 			return tag;
+		}
+		
+		public EClass getTargetClass() {
+			return targetClass;
 		}
 		
 		public Collection<Host> getHosts() {
@@ -71,6 +82,10 @@ public interface IFDeployExtension {
 			super(tag, hosts);
 		}
 		
+		public ElementDef(String tag, EClass targetClass, Collection<Host> hosts) {
+			super(tag, targetClass, hosts);
+		}
+		
 		public void setParent(AbstractElementDef parent) {
 			this.parent = parent;
 		}
@@ -81,7 +96,11 @@ public interface IFDeployExtension {
 		private IFDeployExtension extension;
 		
 		public RootDef(IFDeployExtension extension, String tag, Collection<Host> hosts) {
-			super(tag, hosts);
+			this(extension, tag, null, hosts);
+		}
+
+		public RootDef(IFDeployExtension extension, String tag, EClass targetClass, Collection<Host> hosts) {
+			super(tag, targetClass, hosts);
 			this.extension = extension;
 		}
 

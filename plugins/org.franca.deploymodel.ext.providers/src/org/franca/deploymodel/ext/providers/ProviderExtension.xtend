@@ -9,6 +9,7 @@ package org.franca.deploymodel.ext.providers
 
 import org.franca.deploymodel.extensions.IFDeployExtension
 import java.util.Collection
+import org.franca.core.franca.FrancaPackage
 
 class ProviderExtension implements IFDeployExtension {
 	
@@ -23,7 +24,7 @@ class ProviderExtension implements IFDeployExtension {
 
 	override Collection<RootDef> getRoots() {
 		val root1 = new RootDef(this, "providerX", #[ host1 ]) => [
-			addChild(new ElementDef("instanceX", #[ host2, host23 ]) => [
+			addChild(new ElementDef("instanceX", FrancaPackage.eINSTANCE.FInterface, #[ host2, host23 ]) => [
 				addChild(new ElementDef("level2", #[ host23 ]))
 			])
 			addChild(new ElementDef("instanceY", #[ host3, host23 ]))

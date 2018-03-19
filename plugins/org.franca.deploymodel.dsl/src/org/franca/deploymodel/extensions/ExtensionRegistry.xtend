@@ -23,6 +23,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDExtensionRoot
 import org.franca.deploymodel.extensions.IFDeployExtension.Host
 
 import static extension org.franca.deploymodel.extensions.ExtensionUtils.*
+import org.eclipse.emf.ecore.EClass
 
 /** 
  * This is the registry for deployment extensions.</p>
@@ -120,9 +121,14 @@ class ExtensionRegistry {
 	}
 
 	def static IFDeployExtension.RootDef findRoot(String rootTag) {
-		val roots = getExtensions().map[roots].flatten
+		val roots = getExtensions().map[roots].flatten//.filter[tag!==null]
 		roots.findFirst[tag==rootTag]
 	}
+
+//	def static IFDeployExtension.RootDef findRoot(EClass clazz) {
+//		val roots = getExtensions().map[roots].flatten.filter[it.EClass!==null]
+//		roots.findFirst[it.EClass==clazz]
+//	}
 
 	// get metamodel ElementDef from model FDAbstractExtensionElement (which is an EObject)	
 	def static IFDeployExtension.AbstractElementDef getElement(FDAbstractExtensionElement elem) {

@@ -20,6 +20,7 @@ import org.eclipse.xtext.resource.IEObjectDescription
 import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.Scopes
 import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
+import org.eclipse.xtext.scoping.impl.FilteringScope
 import org.eclipse.xtext.scoping.impl.ImportUriGlobalScopeProvider
 import org.eclipse.xtext.scoping.impl.SimpleScope
 import org.franca.core.franca.FArrayType
@@ -31,6 +32,7 @@ import org.franca.core.franca.FTypeDef
 import org.franca.core.franca.FUnionType
 import org.franca.deploymodel.core.FDModelUtils
 import org.franca.deploymodel.core.PropertyMappings
+import org.franca.deploymodel.dsl.fDeploy.FDAbstractExtensionElement
 import org.franca.deploymodel.dsl.fDeploy.FDArgument
 import org.franca.deploymodel.dsl.fDeploy.FDArgumentList
 import org.franca.deploymodel.dsl.fDeploy.FDArray
@@ -61,6 +63,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDTypedef
 import org.franca.deploymodel.dsl.fDeploy.FDTypes
 import org.franca.deploymodel.dsl.fDeploy.FDUnion
 import org.franca.deploymodel.dsl.fDeploy.FDeployPackage
+import org.franca.deploymodel.extensions.ExtensionRegistry
 
 import static extension org.eclipse.xtext.scoping.Scopes.*
 import static extension org.franca.core.FrancaModelExtensions.*
@@ -101,6 +104,19 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 			}
 		} catch(Exception e) { e.printStackTrace}
 		return new SimpleScope(scope,fdSpecsScopeImports,false)
+	}
+
+	def scope_FDAbstractExtensionElement_target(FDAbstractExtensionElement ctxt, EReference ref) {
+		val elemDef = ExtensionRegistry.getElement(ctxt)
+		if (elemDef.targetClass===null) {
+			// no target class, skip reference to target object
+			IScope::NULLSCOPE
+		} else {
+			// target class has been configured, collect all EObjects of that class which are visible from here
+			val root = EcoreUtil2::getContainerOfType(ctxt, typeof(FDExtensionRoot))
+			val delegate = root.delegateGetScope(ref)
+			new FilteringScope(delegate, [EcoreUtil2.isAssignableFrom(elemDef.targetClass, it.EClass)])
+		}
 	}
 
 	def scope_FDTypes_target(FDTypes ctxt, EReference ref) {	
