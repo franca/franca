@@ -178,16 +178,6 @@ public class FDeployJavaValidator extends AbstractFDeployValidator
 	}
 
 	@Check
-	public void checkExtensionElement(FDExtensionRoot root) {
-		String rootTag = root.getTag();
-		if (ExtensionRegistry.findRoot(rootTag)==null) {
-			// didn't find root by tag
-			error("Invalid root '" + rootTag + "', no matching deployment extension has been configured",
-					root, FDeployPackage.Literals.FD_ABSTRACT_EXTENSION_ELEMENT__TAG, -1);
-		}
-	}
-
-	@Check
 	public void checkRootElementNamesUnique(FDModel model) {
 		ValidationHelpers.checkDuplicates(this, model.getDeployments(),
 				FDeployPackage.Literals.FD_ROOT_ELEMENT__NAME, "definition name");
