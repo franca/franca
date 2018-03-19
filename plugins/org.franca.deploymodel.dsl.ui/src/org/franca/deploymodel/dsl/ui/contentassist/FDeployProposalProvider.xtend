@@ -205,7 +205,7 @@ class FDeployProposalProvider extends AbstractFDeployProposalProvider {
 				if (! elementDef.mayHaveName)
 					return
 			}
-		}		
+		}
 		
 		super.completeKeyword(keyword, contentAssistContext, acceptor)
 	}
