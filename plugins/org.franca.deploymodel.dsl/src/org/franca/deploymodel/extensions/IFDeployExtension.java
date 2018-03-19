@@ -36,18 +36,27 @@ public interface IFDeployExtension {
 	public String getShortDescription();
 	
 	abstract class AbstractElementDef {
+		
+		public enum Nameable {
+			NO_NAME,
+			OPTIONAL_NAME,
+			MANDATORY_NAME
+		}
+		
 		private String tag;
 		private EClass targetClass;
+		private Nameable isNameable;
 		private Collection<Host> hosts;
 		private Collection<ElementDef> children;
 		
-		public AbstractElementDef(String tag, Collection<Host> hosts) {
-			this(tag, null, hosts);
+		public AbstractElementDef(String tag, Nameable isNameable, Collection<Host> hosts) {
+			this(tag, null, isNameable, hosts);
 		}
 		
-		public AbstractElementDef(String tag, EClass targetClass, Collection<Host> hosts) {
+		public AbstractElementDef(String tag, EClass targetClass, Nameable isNameable, Collection<Host> hosts) {
 			this.tag = tag;
 			this.targetClass = targetClass;
+			this.isNameable = isNameable;
 			this.hosts = hosts;
 			this.children = Lists.newArrayList();
 		}
@@ -61,6 +70,14 @@ public interface IFDeployExtension {
 			return tag;
 		}
 		
+		public boolean mayHaveName() {
+			return isNameable != Nameable.NO_NAME;
+		}
+
+		public boolean mustHaveName() {
+			return isNameable == Nameable.MANDATORY_NAME;
+		}
+
 		public EClass getTargetClass() {
 			return targetClass;
 		}
@@ -78,12 +95,12 @@ public interface IFDeployExtension {
 
 		private AbstractElementDef parent;
 		
-		public ElementDef(String tag, Collection<Host> hosts) {
-			super(tag, hosts);
+		public ElementDef(String tag, Nameable isNameable, Collection<Host> hosts) {
+			super(tag, isNameable, hosts);
 		}
 		
-		public ElementDef(String tag, EClass targetClass, Collection<Host> hosts) {
-			super(tag, targetClass, hosts);
+		public ElementDef(String tag, EClass targetClass, Nameable isNameable, Collection<Host> hosts) {
+			super(tag, targetClass, isNameable, hosts);
 		}
 		
 		public void setParent(AbstractElementDef parent) {
@@ -95,12 +112,12 @@ public interface IFDeployExtension {
 		// the extension which owns this root
 		private IFDeployExtension extension;
 		
-		public RootDef(IFDeployExtension extension, String tag, Collection<Host> hosts) {
-			this(extension, tag, null, hosts);
+		public RootDef(IFDeployExtension extension, String tag, Nameable isNameable, Collection<Host> hosts) {
+			this(extension, tag, null, isNameable, hosts);
 		}
 
-		public RootDef(IFDeployExtension extension, String tag, EClass targetClass, Collection<Host> hosts) {
-			super(tag, targetClass, hosts);
+		public RootDef(IFDeployExtension extension, String tag, EClass targetClass, Nameable isNameable, Collection<Host> hosts) {
+			super(tag, targetClass, isNameable, hosts);
 			this.extension = extension;
 		}
 

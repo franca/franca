@@ -194,7 +194,19 @@ class FDeployProposalProvider extends AbstractFDeployProposalProvider {
 
 	override void completeKeyword(Keyword keyword, ContentAssistContext contentAssistContext,
 		ICompletionProposalAcceptor acceptor) {
-		if(filteredKeywords.contains(keyword.getValue())) return;
+		if (filteredKeywords.contains(keyword.getValue()))
+			return;
+
+		// don't show "as" keyword for extension elements if they must not have a name
+		if (keyword.value=="as") {
+			val obj = contentAssistContext.previousModel
+			if (obj instanceof FDAbstractExtensionElement) {
+				val elementDef = ExtensionRegistry.getElement(obj)
+				if (! elementDef.mayHaveName)
+					return
+			}
+		}		
+		
 		super.completeKeyword(keyword, contentAssistContext, acceptor)
 	}
 
@@ -231,7 +243,8 @@ class FDeployProposalProvider extends AbstractFDeployProposalProvider {
 
 	override void complete_FDExtensionElement(EObject elem, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		if (elem instanceof FDAbstractExtensionElement) {
-			val elementDef = ExtensionRegistry.getElement(elem as FDAbstractExtensionElement)
+			val elementDef = ExtensionRegistry.getElement(elem)
+			
 			// add one proposal for each child
 			for(ElementDef child : elementDef.getChildren()) {
 				val proposal = child.tag

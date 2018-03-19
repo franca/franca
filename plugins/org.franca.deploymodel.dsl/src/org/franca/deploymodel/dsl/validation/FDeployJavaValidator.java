@@ -155,28 +155,58 @@ public class FDeployJavaValidator extends AbstractFDeployValidator
 	@Check
 	public void checkExtensionRoot(FDExtensionRoot root) {
 		String tag = root.getTag();
-		if (ExtensionRegistry.findRoot(tag)==null) {
+		IFDeployExtension.RootDef rootDef = ExtensionRegistry.findRoot(tag);
+		if (rootDef==null) {
 			// didn't find root by tag
 			error("Invalid root '" + tag + "', no matching deployment extension has been configured",
 					root, FDeployPackage.Literals.FD_ABSTRACT_EXTENSION_ELEMENT__TAG, -1);
+		} else {
+			if (root.getName()!=null && !rootDef.mayHaveName()) {
+				error("Root '" + tag + "' must not have a name",
+						root, FDeployPackage.Literals.FD_ROOT_ELEMENT__NAME, -1);
+			}
+			if (rootDef.mustHaveName() && root.getName()==null) {
+				error("Root '" + tag + "' must have a name",
+						root, FDeployPackage.Literals.FD_ABSTRACT_EXTENSION_ELEMENT__TAG, -1);
+			}
 		}
 	}
 
 	@Check
 	public void checkExtensionElement(FDExtensionElement elem) {
+		// check if this element is structurally allowed below its parent element
 		String tag = elem.getTag();
 		FDAbstractExtensionElement parent = (FDAbstractExtensionElement)elem.eContainer();
 		IFDeployExtension.AbstractElementDef parentDef = ExtensionRegistry.getElement(parent);
-		for(IFDeployExtension.AbstractElementDef c : parentDef.getChildren()) {
-			if (c.getTag().equals(tag))
-				return;
+		if (! hasChild(parentDef, tag)) {
+			// didn't find root by tag
+			error("Invalid element tag '" + tag + "' for parent '" + parentDef.getTag() + "'",
+				elem, FDeployPackage.Literals.FD_ABSTRACT_EXTENSION_ELEMENT__TAG, -1);
+			
+			// do no further checks
+			return;
 		}
 		
-		// didn't find root by tag
-		error("Invalid element tag '" + tag + "' for parent '" + parentDef.getTag() + "'",
-			elem, FDeployPackage.Literals.FD_ABSTRACT_EXTENSION_ELEMENT__TAG, -1);
+		// this element is structurally allowed, check name
+		IFDeployExtension.AbstractElementDef elemDef = ExtensionRegistry.getElement(elem);
+		if (elem.getName()!=null && !elemDef.mayHaveName()) {
+			error("Element '" + tag + "' must not have a name",
+					elem, FDeployPackage.Literals.FD_EXTENSION_ELEMENT__NAME, -1);
+		}
+		if (elemDef.mustHaveName() && elem.getName()==null) {
+			error("Element '" + tag + "' must have a name",
+					elem, FDeployPackage.Literals.FD_ABSTRACT_EXTENSION_ELEMENT__TAG, -1);
+		}
 	}
 
+	private boolean hasChild(IFDeployExtension.AbstractElementDef elemDef, String tag) {
+		for(IFDeployExtension.AbstractElementDef c : elemDef.getChildren()) {
+			if (c.getTag().equals(tag))
+				return true;
+		}
+		return false;
+	}
+	
 	@Check
 	public void checkRootElementNamesUnique(FDModel model) {
 		ValidationHelpers.checkDuplicates(this, model.getDeployments(),
