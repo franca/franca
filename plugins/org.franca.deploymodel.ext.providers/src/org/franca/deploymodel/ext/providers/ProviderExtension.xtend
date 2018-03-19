@@ -26,7 +26,7 @@ class ProviderExtension implements IFDeployExtension {
 
 	override Collection<RootDef> getRoots() {
 		val root1 = new RootDef(this, "providerX", MANDATORY_NAME, #[ host1 ]) => [
-			addChild(new ElementDef("instanceX", FrancaPackage.eINSTANCE.FInterface, NO_NAME, #[ host2, host23 ]) => [
+			addChild(new ElementDef("instanceX", FrancaPackage.eINSTANCE.FInterface, OPTIONAL_NAME, #[ host2, host23 ]) => [
 				addChild(new ElementDef("level2", NO_NAME, #[ host23 ]))
 			])
 			addChild(new ElementDef("instanceY", OPTIONAL_NAME, #[ host3, host23 ]))
