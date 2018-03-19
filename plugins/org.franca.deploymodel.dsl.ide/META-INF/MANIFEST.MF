@@ -12,5 +12,6 @@ Require-Bundle: org.franca.deploymodel.dsl;visibility:=reexport,
  org.antlr.runtime
 Import-Package: org.apache.log4j
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Export-Package: org.franca.deploymodel.dsl.ide.contentassist.antlr.internal,
- org.franca.deploymodel.dsl.ide.contentassist.antlr
+Export-Package: org.franca.deploymodel.dsl.ide.contentassist.antlr,
+ org.franca.deploymodel.dsl.ide.contentassist.antlr.internal,
+ org.franca.deploymodel.dsl.ide.highlighting
