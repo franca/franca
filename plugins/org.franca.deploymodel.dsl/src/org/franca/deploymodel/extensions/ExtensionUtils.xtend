@@ -17,11 +17,17 @@ class ExtensionUtils {
 
 	def static Collection<Host> getAllHosts(IFDeployExtension ext) {
 		val List<Host> result = Lists.newArrayList
+		
+		// add all hosts from the root definitions 
 		ext.roots.forEach[getHosts(ext, result)]
+		
+		// add all additional hosts
+		result.addAll(ext.additionalHosts.values.flatten)
+
 		result
 	}
 
-	def private static getHosts(AbstractElementDef elem, IFDeployExtension ext, List<Host> result) {
+	def private static void getHosts(AbstractElementDef elem, IFDeployExtension ext, List<Host> result) {
 		result.addAll(elem.hosts)
 		
 		// traverse children recursively

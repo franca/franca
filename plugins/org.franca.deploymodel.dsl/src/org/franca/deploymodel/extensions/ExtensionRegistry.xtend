@@ -17,13 +17,14 @@ import org.eclipse.core.runtime.IExtension
 import org.eclipse.core.runtime.IExtensionPoint
 import org.eclipse.core.runtime.IExtensionRegistry
 import org.eclipse.core.runtime.Platform
+import org.eclipse.emf.ecore.EClass
 import org.franca.deploymodel.dsl.fDeploy.FDAbstractExtensionElement
 import org.franca.deploymodel.dsl.fDeploy.FDExtensionElement
 import org.franca.deploymodel.dsl.fDeploy.FDExtensionRoot
 import org.franca.deploymodel.extensions.IFDeployExtension.Host
 
 import static extension org.franca.deploymodel.extensions.ExtensionUtils.*
-import org.eclipse.emf.ecore.EClass
+import static extension com.google.common.collect.Iterables.*
 
 /** 
  * This is the registry for deployment extensions.</p>
@@ -91,8 +92,23 @@ class ExtensionRegistry {
 		}
 	}
 
+	static Map<EClass, Iterable<Host>> allAdditionalHosts = newHashMap
+	
 	def private static void register(IFDeployExtension ^extension) {
+		// add extension to the list of all extensions
 		extensions.add(^extension)
+		
+		// add to global table of additional hosts
+		val addHosts = extension.additionalHosts
+		for(clazz : addHosts.keySet) {
+			if (allAdditionalHosts.containsKey(clazz)) {
+				val previousHosts = allAdditionalHosts.get(clazz)
+				val joined = previousHosts.concat(addHosts.get(clazz)).unmodifiableIterable
+				allAdditionalHosts.put(clazz, joined)
+			} else {
+				allAdditionalHosts.put(clazz, addHosts.get(clazz))
+			}
+		}
 	}
 
 
@@ -147,4 +163,12 @@ class ExtensionRegistry {
 				return null
 		}
 	}
+	
+	def static Iterable<Host> getAdditionalHosts(EClass clazz) {
+		val result = allAdditionalHosts.get(clazz)
+		if (result!==null)
+			result
+		else
+			newArrayList
+	} 
 }

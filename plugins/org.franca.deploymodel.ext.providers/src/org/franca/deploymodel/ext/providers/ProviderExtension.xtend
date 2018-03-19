@@ -7,9 +7,11 @@
  *******************************************************************************/
 package org.franca.deploymodel.ext.providers
 
-import org.franca.deploymodel.extensions.IFDeployExtension
 import java.util.Collection
+import java.util.Map
+import org.eclipse.emf.ecore.EClass
 import org.franca.core.franca.FrancaPackage
+import org.franca.deploymodel.extensions.IFDeployExtension
 
 import static org.franca.deploymodel.extensions.IFDeployExtension.AbstractElementDef.Nameable.*
 
@@ -32,6 +34,10 @@ class ProviderExtension implements IFDeployExtension {
 			addChild(new ElementDef("instanceY", OPTIONAL_NAME, #[ host3, host23 ]))
 		]
 		#[ root1 ]
+	}
+
+	override Map<EClass, Collection<Host>> getAdditionalHosts() {
+		newHashMap
 	}
 
 }

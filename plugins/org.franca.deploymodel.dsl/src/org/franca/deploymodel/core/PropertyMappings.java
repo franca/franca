@@ -145,6 +145,11 @@ public class PropertyMappings {
 			for(IFDeployExtension.Host rh : elementDef.getHosts()) {
 				hosts.add(new FDPropertyHost(rh.getName()));
 			}
+		} else {
+			Iterable<IFDeployExtension.Host> additionalHosts = ExtensionRegistry.getAdditionalHosts(elem.eClass());
+			for(IFDeployExtension.Host rh : additionalHosts) {
+				hosts.add(new FDPropertyHost(rh.getName()));
+			}
 		}
 
 		return getAllPropertyDeclsHelper(spec, hosts);

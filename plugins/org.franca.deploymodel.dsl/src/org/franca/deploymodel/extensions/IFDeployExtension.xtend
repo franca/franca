@@ -8,6 +8,7 @@
 package org.franca.deploymodel.extensions
 
 import java.util.Collection
+import java.util.Map
 import org.eclipse.emf.ecore.EClass
 
 /** 
@@ -94,4 +95,6 @@ interface IFDeployExtension {
 
 	def Collection<RootDef> getRoots()
 
+	def Map<EClass, Collection<Host>> getAdditionalHosts()
+	
 }
