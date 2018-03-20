@@ -44,8 +44,8 @@ class FDeploySemanticHighlightingCalculator implements ISemanticHighlightingCalc
 			}
 		}
 		// highlight all tags of extension roots and extension elements as normal keywords
-		val model = resource.contents.get(0)
-		if (model instanceof FDModel) {
+		val model = resource.parseResult.rootASTElement
+		if (model!==null && model instanceof FDModel) {
 			val elements = EcoreUtil2.getAllContentsOfType(model, FDAbstractExtensionElement)
 			for(elem : elements) {
 				for(INode node : NodeModelUtils.findNodesForFeature(elem,
