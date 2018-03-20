@@ -43,6 +43,7 @@
     </genEnums>
     <genDataTypes ecoreDataType="FDeploy.ecore#//FDPropertyHostType"/>
     <genClasses ecoreClass="FDeploy.ecore#//FDModel">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute FDeploy.ecore#//FDModel/name"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDModel/imports"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDModel/specifications"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDModel/deployments"/>
