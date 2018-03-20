@@ -7,6 +7,7 @@
  */
 package org.franca.deploymodel.dsl.ide.highlighting
 
+import com.google.inject.Inject
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.RuleCall
@@ -19,8 +20,12 @@ import org.eclipse.xtext.util.CancelIndicator
 import org.franca.deploymodel.dsl.fDeploy.FDAbstractExtensionElement
 import org.franca.deploymodel.dsl.fDeploy.FDModel
 import org.franca.deploymodel.dsl.fDeploy.FDeployPackage
+import org.franca.deploymodel.dsl.services.FDeployGrammarAccess
 
 class FDeploySemanticHighlightingCalculator implements ISemanticHighlightingCalculator {
+
+	@Inject
+	FDeployGrammarAccess ga
 
 	// @Override
 	override void provideHighlightingFor(
@@ -37,7 +42,7 @@ class FDeploySemanticHighlightingCalculator implements ISemanticHighlightingCalc
 			val EObject ruleCall = node.grammarElement
 			if (ruleCall instanceof RuleCall) {
 				val String name = ruleCall.rule.name
-				if (name == "PROPERTY_HOST") {
+				if (name == ga.PROPERTY_HOSTRule.name) {
 					//println("Highlighting node " + node.offset + ", length " + node.length)
 					acceptor.addPosition(node.offset, node.length, FDeployHighlightingStyles.KEYWORD_ID)
 				}
