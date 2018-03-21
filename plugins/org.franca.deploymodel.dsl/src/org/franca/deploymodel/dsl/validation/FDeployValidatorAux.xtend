@@ -49,7 +49,7 @@ class FDeployValidatorAux {
 	def checkRootElement (FDRootElement it) {
 		// ensure that use-relation is non-cyclic 
 		val path = isReferenced[e | e.use] 
-		if (path!=null) {
+		if (path!==null) {
 			val idx = use.indexOf(path.get(0))
 			reporter.reportError("Cyclic use-relation in element '" + name + "'",
 				it, FD_ROOT_ELEMENT__USE, idx)
@@ -69,7 +69,7 @@ class FDeployValidatorAux {
 	// compatible means either same spec or a derived (i.e. more detailed) spec
 	def private isCompatible (FDSpecification spec1, FDSpecification spec2) {
 		// we cannot do this check if there are cycles in the extend-relation
-		if (spec2.cyclicBaseSpec != null) {
+		if (spec2.cyclicBaseSpec !== null) {
 			// return true to avoid an additional error message, the cyclic-check
 			// will issue an error.
 			return true
@@ -80,7 +80,7 @@ class FDeployValidatorAux {
 			if (spec1 == check)
 				return true
 			check = check.base
-		} while (check!=null)
+		} while (check!==null)
 		
 		return false
 	}
@@ -99,10 +99,10 @@ class FDeployValidatorAux {
 			visited.add(s)
 			last = s
 			s = s.base
-			if (s!=null && visited.contains(s)) {
+			if (s!==null && visited.contains(s)) {
 				return last
 			}
-		} while (s != null)
+		} while (s !== null)
 		return null
 	}
 
@@ -214,7 +214,7 @@ class FDeployValidatorAux {
 	
 	def private isEnumType(FDPropertyDecl decl) {
 		val t = decl.type.complex
-		t!=null && (t instanceof FDEnumType)
+		t!==null && (t instanceof FDEnumType)
 	}
 	
 	def private getHost(FDPropertyDecl decl) {
