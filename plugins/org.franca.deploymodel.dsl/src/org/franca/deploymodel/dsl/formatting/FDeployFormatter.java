@@ -7,6 +7,7 @@
  *******************************************************************************/
 package org.franca.deploymodel.dsl.formatting;
 
+import org.eclipse.xtext.IGrammarAccess;
 import org.eclipse.xtext.Keyword;
 import org.eclipse.xtext.formatting.impl.AbstractDeclarativeFormatter;
 import org.eclipse.xtext.formatting.impl.FormattingConfig;
@@ -25,7 +26,11 @@ public class FDeployFormatter extends AbstractDeclarativeFormatter {
 	
 	@Override
 	protected void configureFormatting(FormattingConfig c) {
-		FDeployGrammarAccess f = (FDeployGrammarAccess) getGrammarAccess();
+		IGrammarAccess ga = getGrammarAccess();
+		if (! (ga instanceof FDeployGrammarAccess))
+			return;
+		
+		FDeployGrammarAccess f = (FDeployGrammarAccess)ga;
 		
 		// add newlines around comments
 		c.setLinewrap(0, 1, 2).before(f.getSL_COMMENTRule());
