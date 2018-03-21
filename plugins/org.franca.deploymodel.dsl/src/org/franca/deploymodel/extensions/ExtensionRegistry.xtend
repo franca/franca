@@ -165,6 +165,7 @@ class ExtensionRegistry {
 	}
 	
 	def static Iterable<Host> getAdditionalHosts(EClass clazz) {
+		if(extensions === null) initializeValidators()
 		val result = allAdditionalHosts.get(clazz)
 		if (result!==null)
 			result
