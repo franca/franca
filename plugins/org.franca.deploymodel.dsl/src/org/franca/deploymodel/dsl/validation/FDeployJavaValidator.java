@@ -255,7 +255,11 @@ public class FDeployJavaValidator extends AbstractFDeployValidator
 	public void checkDuplicateProperties(FDPropertySet properties) {
 		ValidationHelpers.NameList names = ValidationHelpers.createNameList();
 		for(FDProperty p : properties.getItems()) {
-			names.add(p, p.getDecl().getName());
+			if (p.getDecl().eIsProxy()) {
+				// ignore unresolved properties
+			} else {
+				names.add(p, p.getDecl().getName());
+			}
 		}
 		ValidationHelpers.checkDuplicates(this, names,
 				FDeployPackage.Literals.FD_PROPERTY__DECL, "property");
