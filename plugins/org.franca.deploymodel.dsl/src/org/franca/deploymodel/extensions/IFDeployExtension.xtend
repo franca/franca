@@ -22,7 +22,11 @@ interface IFDeployExtension {
 		String name
 		new(String name) { this.name = name }
 		def String getName() { name }
-	}
+		
+		override String toString() {
+			"§" + name + "§"
+		}
+ 	}
 
 	def String getShortDescription()
 
