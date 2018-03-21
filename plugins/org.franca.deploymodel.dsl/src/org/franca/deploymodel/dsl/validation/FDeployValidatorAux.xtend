@@ -57,11 +57,13 @@ class FDeployValidatorAux {
 		
 		// ensure that all use-relations are covered by a compatible deployment spec
 		for(other : use) {
-			if (! spec.isCompatible(other.spec)) {
-				reporter.reportError("Use-relation '" + other.name + "' " +
-					"refers to deployment with incompatible specification " +
-					"'" + other.spec.name + "'",
-					it, FD_ROOT_ELEMENT__USE, use.indexOf(other))
+			if (spec!==null && other.spec!==null) {
+				if (! spec.isCompatible(other.spec)) {
+					reporter.reportError("Use-relation '" + other.name + "' " +
+						"refers to deployment with incompatible specification " +
+						"'" + other.spec.name + "'",
+						it, FD_ROOT_ELEMENT__USE, use.indexOf(other))
+				}
 			}
 		}
 	}
