@@ -31,7 +31,7 @@ class ImportManager {
 
 	def getJavaType (FDTypeRef typeRef) {
 		val single =
-			if (typeRef.complex==null) {
+			if (typeRef.complex===null) {
 				switch (typeRef.predefined) {
 					case FDPredefinedTypeId::BOOLEAN:    "Boolean"
 					case FDPredefinedTypeId::INTEGER:    "Integer"
@@ -51,7 +51,7 @@ class ImportManager {
 					FDEnumType: "String"
 				}
 			}
-		if (typeRef.array==null)
+		if (typeRef.array===null)
 			single
 		else {
 			needList = true

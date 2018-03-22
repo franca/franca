@@ -25,7 +25,7 @@ class IDataGenerator extends AccessMethodGenerator {
 		 * This is the data types related part only.
 		 */
 		public interface IDataPropertyAccessor
-			extends Enums«IF spec.base!=null», «spec.base.qualifiedClassname».IDataPropertyAccessor«ENDIF»
+			extends Enums«IF spec.base!==null», «spec.base.qualifiedClassname».IDataPropertyAccessor«ENDIF»
 		{
 			«spec.generateAccessMethods(false, new CodeContext)»
 			

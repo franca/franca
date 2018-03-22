@@ -26,7 +26,7 @@ class TypeCollectionAccessorGenerator extends CommonAccessorMethodGenerator {
 			 * to deployment specification '«spec.name»'.
 			 */		
 			public static class TypeCollectionPropertyAccessor
-				«IF spec.base!=null»extends «spec.base.qualifiedClassname».TypeCollectionPropertyAccessor«ENDIF»
+				«IF spec.base!==null»extends «spec.base.qualifiedClassname».TypeCollectionPropertyAccessor«ENDIF»
 				implements IDataPropertyAccessor
 			{
 				«IF context.targetNeeded»
@@ -36,7 +36,7 @@ class TypeCollectionAccessorGenerator extends CommonAccessorMethodGenerator {
 			
 				«addNeededFrancaType("FDeployedTypeCollection")»
 				public TypeCollectionPropertyAccessor(FDeployedTypeCollection target) {
-					«IF spec.base!=null»
+					«IF spec.base!==null»
 					super(target);
 					«ENDIF»
 					«IF context.targetNeeded»

@@ -26,7 +26,7 @@ class InterfaceAccessorGenerator extends CommonAccessorMethodGenerator {
 			 * deployment specification '«spec.name»'.
 			 */
 			public static class InterfacePropertyAccessor
-				«IF spec.base!=null»extends «spec.base.qualifiedClassname».InterfacePropertyAccessor«ENDIF»
+				«IF spec.base!==null»extends «spec.base.qualifiedClassname».InterfacePropertyAccessor«ENDIF»
 				implements IDataPropertyAccessor
 			{
 				«IF context.targetNeeded»
@@ -36,7 +36,7 @@ class InterfaceAccessorGenerator extends CommonAccessorMethodGenerator {
 			
 				«addNeededFrancaType("FDeployedInterface")»
 				public InterfacePropertyAccessor(FDeployedInterface target) {
-					«IF spec.base!=null»
+					«IF spec.base!==null»
 					super(target);
 					«ENDIF»
 					«IF context.targetNeeded»

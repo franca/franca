@@ -60,7 +60,7 @@ class CommonAccessorMethodGenerator extends AccessMethodGenerator {
 		public «returnType» «methodName»(«francaType» obj) {
 			«type.javaType» e = target.get«type.getter»(obj, "«enumType»");
 			if (e==null) return null;
-			«IF type.array!=null»
+			«IF type.array!==null»
 			List<«enumType»> es = new ArrayList<«enumType»>();
 			for(String ev : e) {
 				«enumType» v = DataPropertyAccessorHelper.convert«enumType»(ev);

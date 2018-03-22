@@ -23,7 +23,7 @@ class OverwriteAccessorGenerator extends AccessMethodGenerator {
 		 * Accessor for getting overwritten property values.
 		 */		
 		public static class OverwriteAccessor
-			«IF spec.base!=null»extends «spec.base.qualifiedClassname».OverwriteAccessor«ENDIF»
+			«IF spec.base!==null»extends «spec.base.qualifiedClassname».OverwriteAccessor«ENDIF»
 			implements IDataPropertyAccessor
 		{
 			«addNeededFrancaType("MappingGenericPropertyAccessor")»
@@ -42,7 +42,7 @@ class OverwriteAccessorGenerator extends AccessMethodGenerator {
 					IDataPropertyAccessor delegate,
 					MappingGenericPropertyAccessor genericAccessor)
 			{
-				«IF spec.base!=null»
+				«IF spec.base!==null»
 				super(overwrites, delegate, genericAccessor);
 				«ENDIF»
 				this.target = genericAccessor;
@@ -205,7 +205,7 @@ class OverwriteAccessorGenerator extends AccessMethodGenerator {
 	) '''
 		«type.javaType» e = target.get«type.getter»(«objname», "«enumType»");
 		if (e!=null) {
-			«IF type.array!=null»
+			«IF type.array!==null»
 				List<«enumType»> es = new ArrayList<«enumType»>();
 				for(String ev : e) {
 					«enumType» v = DataPropertyAccessorHelper.convert«name»(ev);

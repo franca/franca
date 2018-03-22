@@ -20,7 +20,7 @@ class GeneratorHelper {
 
 	def static getGetter(FDTypeRef typeRef) {
 		val single =
-			if (typeRef.complex==null) {
+			if (typeRef.complex===null) {
 				switch (typeRef.predefined) {
 					case FDPredefinedTypeId::BOOLEAN:   "Boolean"
 					case FDPredefinedTypeId::INTEGER:   "Integer"
@@ -33,7 +33,7 @@ class GeneratorHelper {
 					FDEnumType: "Enum"
 				}
 			}
-		if (typeRef.array==null)
+		if (typeRef.array===null)
 			single
 		else
 			single + "Array"
@@ -41,11 +41,11 @@ class GeneratorHelper {
 	
 	def static hasEnumType(FDPropertyDecl decl) {
 		val t = decl.type.complex
-		t!=null && (t instanceof FDEnumType)
+		t!==null && (t instanceof FDEnumType)
 	}
 
 	def static isEnum(FDPropertyDecl it) {
-		type.complex!=null && type.complex instanceof FDEnumType
+		type.complex!==null && type.complex instanceof FDEnumType
 	}
 
 	def static genListType(String type) '''List<«type»>'''
