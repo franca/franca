@@ -13,7 +13,9 @@ import org.franca.deploymodel.dsl.fDeploy.FDEnumType
 import org.franca.deploymodel.dsl.fDeploy.FDPredefinedTypeId
 import org.franca.deploymodel.dsl.fDeploy.FDTypeRef
 import org.franca.deploymodel.dsl.fDeploy.FDeployPackage
+import com.google.inject.Singleton
 
+@Singleton
 class ImportManager {
 
 	Set<String> neededFrancaTypes
