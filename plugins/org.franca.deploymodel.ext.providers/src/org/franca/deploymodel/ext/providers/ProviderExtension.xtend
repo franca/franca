@@ -8,36 +8,35 @@
 package org.franca.deploymodel.ext.providers
 
 import java.util.Collection
-import java.util.Map
-import org.eclipse.emf.ecore.EClass
-import org.franca.core.franca.FrancaPackage
-import org.franca.deploymodel.extensions.IFDeployExtension
+import org.franca.deploymodel.extensions.AbstractFDeployExtension
 
 import static org.franca.deploymodel.extensions.IFDeployExtension.AbstractElementDef.Nameable.*
 
-class ProviderExtension implements IFDeployExtension {
-	
-	val host1 = new Host("host1")
-	val host2 = new Host("host2")
-	val host3 = new Host("host3")
-	val host23 = new Host("host23")
+/**
+ * Implementation of provider/instance deployment extension.</p>
+ * 
+ * This class registers new deployment hosts and generic deployment definition elements.
+ * It also implies some logic for glueing the hosts and the new elements.</p>
+ * 
+ * It will be registered at the IDE via a normal Eclipse extension point.</p>
+ * 
+ * @author Klaus Birken (itemis AG) 
+ */
+class ProviderExtension extends AbstractFDeployExtension {
 	
 	override getShortDescription() {
 		"providers and instances"
 	}
 
+	val providers = new Host("providersX")
+	val instances = new Host("instancesX")
+	
 	override Collection<RootDef> getRoots() {
-		val root1 = new RootDef(this, "providerX", MANDATORY_NAME, #[ host1 ]) => [
-			addChild(new ElementDef("instanceX", FrancaPackage.eINSTANCE.FInterface, OPTIONAL_NAME, #[ host2, host23 ]) => [
-				addChild(new ElementDef("level2", NO_NAME, #[ host23 ]))
-			])
-			addChild(new ElementDef("instanceY", OPTIONAL_NAME, #[ host3, host23 ]))
-		]
+		val root1 =
+			new RootDef(this, "providerX", MANDATORY_NAME, #[ providers ]) => [
+				addChild(new ElementDef("instanceX", fidl.FInterface, OPTIONAL_NAME, #[ instances ]))
+			]
+
 		#[ root1 ]
 	}
-
-	override Map<EClass, Collection<Host>> getAdditionalHosts() {
-		newHashMap
-	}
-
 }

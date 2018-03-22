@@ -22,6 +22,8 @@ import org.franca.core.franca.FTypeDef
 import org.franca.core.franca.FUnionType
 import org.franca.deploymodel.core.FDPropertyHost
 
+import static extension org.franca.deploymodel.extensions.ExtensionRegistry.*
+
 /**
  * This class defines how deployment properties are mapped to Franca IDL objects
  * by the PropertyAccessor generator.<p/>
@@ -44,35 +46,58 @@ class HostLogic {
 	 */
 	def static Class<? extends EObject> getFrancaType(FDPropertyHost host, boolean forInterfaces) {
 		val builtIn = host.builtIn
-		if (builtIn===null) {
-			// this is an extension host, it cannot refer to a Franca metamodel object
-			// but it has to be some EObject nevertheless	
-			return typeof(EObject)
-		}
+		if (builtIn!==null) {
+			// this is a built-in host, decide using a hard-coded mapping table 
+			switch (builtIn) {
+				case PROVIDERS:        null  // ignore
+				case INSTANCES:        null  // ignore
+				case TYPE_COLLECTIONS: typeof(FTypeCollection)
+				case INTERFACES:       forInterfaces.use(typeof(FInterface))
+				case ATTRIBUTES:       forInterfaces.use(typeof(FAttribute))
+				case METHODS:          forInterfaces.use(typeof(FMethod))
+				case BROADCASTS:       forInterfaces.use(typeof(FBroadcast))
+				case ARGUMENTS:        forInterfaces.use(typeof(FArgument))
+				case STRUCTS:          typeof(FStructType)
+				case UNIONS:     	   typeof(FUnionType)
+				case STRUCT_FIELDS:    typeof(FField)
+				case UNION_FIELDS:     typeof(FField)
+				case FIELDS:           typeof(FField)
+				case ENUMERATIONS:     typeof(FEnumerationType)
+				case ENUMERATORS:      typeof(FEnumerator)
+				case TYPEDEFS:         typeof(FTypeDef)
+				//case NUMBERS:        // generic handling
+				//case FLOATS:         // generic handling
+				//case INTEGERS:       // generic handling
+				//case STRINGS:        // generic handling
+				//case ARRAYS:         // generic handling
+				default:               typeof(EObject)  // reasonable default
+			}
+		} else {
+			// this is an extension host, it's argument type will be it cannot refer to a Franca metamodel object
+			// but it has to be some EObject nevertheless
+			val hostDef = host.name.findHost
+			if (hostDef!==null) {
+				// get classes (aka grammar rules) which host properties of this hostDef 
+				val classes = getHostingClasses(hostDef)
 			
-		switch (builtIn) {
-			case PROVIDERS:        null  // ignore
-			case INSTANCES:        null  // ignore
-			case TYPE_COLLECTIONS: typeof(FTypeCollection)
-			case INTERFACES:       forInterfaces.use(typeof(FInterface))
-			case ATTRIBUTES:       forInterfaces.use(typeof(FAttribute))
-			case METHODS:          forInterfaces.use(typeof(FMethod))
-			case BROADCASTS:       forInterfaces.use(typeof(FBroadcast))
-			case ARGUMENTS:        forInterfaces.use(typeof(FArgument))
-			case STRUCTS:          typeof(FStructType)
-			case UNIONS:     	   typeof(FUnionType)
-			case STRUCT_FIELDS:    typeof(FField)
-			case UNION_FIELDS:     typeof(FField)
-			case FIELDS:           typeof(FField)
-			case ENUMERATIONS:     typeof(FEnumerationType)
-			case ENUMERATORS:      typeof(FEnumerator)
-			case TYPEDEFS:         typeof(FTypeDef)
-			//case NUMBERS:        // generic handling
-			//case FLOATS:         // generic handling
-			//case INTEGERS:       // generic handling
-			//case STRINGS:        // generic handling
-			//case ARRAYS:         // generic handling
-			default:               typeof(EObject)  // reasonable default
+				// get the property-accessor argument types for each of these classes
+				val targetClasses = classes.map[getAccessorArgumentType]
+
+				// if there are multiple argument types, we select a common super-class
+				// see SuperclassFinder for details on this algorithm	
+				if (! targetClasses.empty) {
+					val sd = new SuperclassFinder
+					val superclass = sd.findCommonSuperclass(targetClasses)
+					if (superclass!==null) {
+						val instClass = superclass.instanceClass
+						if (EObject.isAssignableFrom(instClass))
+							return instClass as Class<? extends EObject>
+					}
+				}
+			}
+			
+			// catch-all (everything is an EObject)
+			typeof(EObject)
 		}
 	}
 

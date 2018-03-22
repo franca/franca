@@ -101,4 +101,11 @@ interface IFDeployExtension {
 
 	def Map<EClass, Collection<Host>> getAdditionalHosts()
 	
+	public enum AccessorArgumentStyle {
+		BY_RULE_CLASS, // default
+		BY_TARGET_FEATURE
+	}
+	
+	def Map<EClass, AccessorArgumentStyle> getAccessorArgumentTypes()
+	
 }

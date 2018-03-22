@@ -11,6 +11,7 @@ import com.google.common.collect.Lists
 import java.util.Collection
 import java.util.List
 import java.util.Map
+import java.util.Set
 import org.eclipse.core.runtime.CoreException
 import org.eclipse.core.runtime.IConfigurationElement
 import org.eclipse.core.runtime.IExtension
@@ -18,13 +19,15 @@ import org.eclipse.core.runtime.IExtensionPoint
 import org.eclipse.core.runtime.IExtensionRegistry
 import org.eclipse.core.runtime.Platform
 import org.eclipse.emf.ecore.EClass
+import org.eclipse.emf.ecore.EClassifier
 import org.franca.deploymodel.dsl.fDeploy.FDAbstractExtensionElement
 import org.franca.deploymodel.dsl.fDeploy.FDExtensionElement
 import org.franca.deploymodel.dsl.fDeploy.FDExtensionRoot
 import org.franca.deploymodel.extensions.IFDeployExtension.Host
 
-import static extension org.franca.deploymodel.extensions.ExtensionUtils.*
 import static extension com.google.common.collect.Iterables.*
+import static extension org.franca.deploymodel.extensions.ExtensionUtils.*
+import org.franca.deploymodel.extensions.IFDeployExtension.AccessorArgumentStyle
 
 /** 
  * This is the registry for deployment extensions.</p>
@@ -40,9 +43,11 @@ class ExtensionRegistry {
 	static List<IFDeployExtension> extensions = null
 
 	/** 
-	 * Add extension to registry.
+	 * Add extension to registry.</p>
+	 * 
 	 * This should only be used in standalone mode. For the IDE,
-	 * use the extension point (see above) for registration.
+	 * use the extension point (see above) for registration.</p>
+	 * 
 	 * @param ^extension the Franca deployment extension to be registered
 	 */
 	def static void addExtension(IFDeployExtension ^extension) {
@@ -54,7 +59,9 @@ class ExtensionRegistry {
 
 	/** 
 	 * Get all registered extensions.</p>
-	 * This will initialize the registry on demand.
+	 * 
+	 * This will initialize the registry on demand.</p>
+	 * 
 	 * @return list of all registered extensions
 	 */
 	def static Collection<IFDeployExtension> getExtensions() {
@@ -94,20 +101,68 @@ class ExtensionRegistry {
 
 	static Map<EClass, Iterable<Host>> allAdditionalHosts = newHashMap
 	
+	static Map<Host, Set<EClass>> hostingClasses = newHashMap
+
+	static Map<EClass, EClassifier> accessorArgumentType = newHashMap
+		
 	def private static void register(IFDeployExtension ^extension) {
 		// add extension to the list of all extensions
 		extensions.add(^extension)
 		
-		// add to global table of additional hosts
 		val addHosts = extension.additionalHosts
 		for(clazz : addHosts.keySet) {
+			val hosts = addHosts.get(clazz)
+
+			// add to global table of additional hosts
 			if (allAdditionalHosts.containsKey(clazz)) {
 				val previousHosts = allAdditionalHosts.get(clazz)
-				val joined = previousHosts.concat(addHosts.get(clazz)).unmodifiableIterable
+				val joined = previousHosts.concat(hosts).unmodifiableIterable
 				allAdditionalHosts.put(clazz, joined)
 			} else {
-				allAdditionalHosts.put(clazz, addHosts.get(clazz))
+				allAdditionalHosts.put(clazz, hosts)
 			}
+
+			// add to reverse mapping of hosts to hosting classes			
+			for(host : hosts) {
+				if (! hostingClasses.containsKey(host)) {
+					hostingClasses.put(host, newHashSet)
+				}
+				hostingClasses.get(host).add(clazz)
+			}
+		}
+		
+		// add entries to map of argument-types for property accessors
+		val argumentTypes = extension.accessorArgumentTypes
+		for(clazz : argumentTypes.keySet) {
+			// determine target type by calling the function from the extension
+			val func = argumentTypes.get(clazz)
+			if (func===AccessorArgumentStyle.BY_TARGET_FEATURE) {
+				val targetType = clazz.classOfTargetFeature
+				if (accessorArgumentType.containsKey(clazz)) {
+					val targetType0 = accessorArgumentType.get(clazz)
+					if (targetType0!==targetType) {
+						System.err.println("ERROR: Duplicate argument type definition for class '" + clazz.name + "'")
+					}
+				} else {
+					accessorArgumentType.put(clazz, targetType)
+				}
+				
+			}
+		}
+	}
+
+	/**
+	 * Helper to get the classifier type from EMF feature "target".</p>
+	 */
+	def private static EClassifier getClassOfTargetFeature(EClass clazz) {
+		val targetFeature = clazz.EAllReferences.findFirst[name=="target"]
+		if (targetFeature!==null) {
+			if (targetFeature.EType instanceof EClassifier)
+				targetFeature.EType
+			else
+				null
+		} else {
+			null
 		}
 	}
 
@@ -141,11 +196,6 @@ class ExtensionRegistry {
 		roots.findFirst[tag==rootTag]
 	}
 
-//	def static IFDeployExtension.RootDef findRoot(EClass clazz) {
-//		val roots = getExtensions().map[roots].flatten.filter[it.EClass!==null]
-//		roots.findFirst[it.EClass==clazz]
-//	}
-
 	// get metamodel ElementDef from model FDAbstractExtensionElement (which is an EObject)	
 	def static IFDeployExtension.AbstractElementDef getElement(FDAbstractExtensionElement elem) {
 		switch (elem) {
@@ -166,10 +216,31 @@ class ExtensionRegistry {
 	
 	def static Iterable<Host> getAdditionalHosts(EClass clazz) {
 		if(extensions === null) initializeValidators()
+		
 		val result = allAdditionalHosts.get(clazz)
 		if (result!==null)
 			result
 		else
 			newArrayList
-	} 
+	}
+	
+	def static Set<EClass> getHostingClasses(Host host) {
+		if(extensions === null) initializeValidators()
+		
+		val result = hostingClasses.get(host)
+		if (result!==null)
+			result
+		else
+			newHashSet
+	}
+	
+	def static EClassifier getAccessorArgumentType(EClass clazz) {
+		if (accessorArgumentType.containsKey(clazz)) {
+			// we have an entry in the argumentType mapping table, use it
+			accessorArgumentType.get(clazz)
+		} else {
+			// there is no mapping for this clazz, use it directly as argument type
+			clazz
+		}
+	}
 }
