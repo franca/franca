@@ -7,11 +7,14 @@
 *******************************************************************************/
 package org.franca.deploymodel.dsl.generator.internal
 
+import java.util.List
+import org.eclipse.xtext.EcoreUtil2
 import org.franca.deploymodel.dsl.fDeploy.FDEnumType
+import org.franca.deploymodel.dsl.fDeploy.FDModel
 import org.franca.deploymodel.dsl.fDeploy.FDPredefinedTypeId
-import org.franca.deploymodel.dsl.fDeploy.FDTypeRef
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification
+import org.franca.deploymodel.dsl.fDeploy.FDTypeRef
 
 class GeneratorHelper {
 
@@ -50,11 +53,21 @@ class GeneratorHelper {
 	def static getMethodName(FDPropertyDecl it) '''get«name.toFirstUpper»'''
 
 	def static getPackage (FDSpecification it) {
+		val List<String> parts = newArrayList
+		
+		// first part of package FQN is (optional) package specification on FDModel level
+		val model = EcoreUtil2.getContainerOfType(it, FDModel)
+		if (model!==null && model.name!==null) {
+			parts.add(model.name)
+		}
+		
+		// second part of package FQN is the prefix of the actual specification FQN
 		val sep = name.lastIndexOf(".")
 		if (sep>0)
-			name.substring(0, sep)
-		else
-			""
+			parts.add(name.substring(0, sep))
+			
+		// result is the concatenation of both parts
+		parts.join(".")
 	}
 
 	def static classname (FDSpecification it) {
