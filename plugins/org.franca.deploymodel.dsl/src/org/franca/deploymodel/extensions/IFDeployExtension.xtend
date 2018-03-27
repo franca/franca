@@ -8,7 +8,6 @@
 package org.franca.deploymodel.extensions
 
 import java.util.Collection
-import java.util.Map
 import org.eclipse.emf.ecore.EClass
 
 /** 
@@ -99,13 +98,35 @@ interface IFDeployExtension {
 
 	def Collection<RootDef> getRoots()
 
-	def Map<EClass, Collection<Host>> getAdditionalHosts()
 	
-	public enum AccessorArgumentStyle {
-		BY_RULE_CLASS, // default
-		BY_TARGET_FEATURE
+	static class HostMixinDef {
+		public enum AccessorArgumentStyle {
+			BY_RULE_CLASS,
+			BY_TARGET_FEATURE
+		}
+	
+		EClass clazz
+		AccessorArgumentStyle argumentStyle
+		Collection<Host> hosts
+		
+		new(EClass clazz, AccessorArgumentStyle argumentStyle, Collection<Host> hosts) {
+			this.clazz = clazz
+			this.argumentStyle = argumentStyle
+			this.hosts = hosts
+		}
+		
+		def EClass getHostingClass() {
+			clazz
+		}		
+		
+		def AccessorArgumentStyle getAccessorArgument() {
+			argumentStyle
+		} 
+
+		def Collection<Host> getHosts() {
+			hosts
+		}
 	}
 	
-	def Map<EClass, AccessorArgumentStyle> getAccessorArgumentTypes()
-	
+	def Collection<HostMixinDef> getMixins()
 }

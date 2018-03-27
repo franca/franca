@@ -23,7 +23,7 @@ class ExtensionUtils {
 			ext.roots.map[allHostsAux].flatten,
 
 			// all additional hosts
-			ext.additionalHosts.values.flatten
+			ext.mixins.map[hosts].flatten
 		).toSet
 	}
 

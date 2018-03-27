@@ -24,8 +24,8 @@ import org.franca.deploymodel.dsl.fDeploy.FDAbstractExtensionElement
 import org.franca.deploymodel.dsl.fDeploy.FDExtensionElement
 import org.franca.deploymodel.dsl.fDeploy.FDExtensionRoot
 import org.franca.deploymodel.dsl.fDeploy.FDeployPackage
-import org.franca.deploymodel.extensions.IFDeployExtension.AccessorArgumentStyle
 import org.franca.deploymodel.extensions.IFDeployExtension.Host
+import org.franca.deploymodel.extensions.IFDeployExtension.HostMixinDef.AccessorArgumentStyle
 
 import static extension com.google.common.collect.Iterables.*
 import static extension org.franca.deploymodel.extensions.ExtensionUtils.*
@@ -114,9 +114,9 @@ class ExtensionRegistry {
 			root.hosts.forEach[addHostingClass(FDeployPackage.eINSTANCE.FDExtensionRoot)]
 			root.hostsOnlyInSubtree.forEach[addHostingClass(FDeployPackage.eINSTANCE.FDExtensionElement)]
 		}
-		val addHosts = extension.additionalHosts
-		for(clazz : addHosts.keySet) {
-			val hosts = addHosts.get(clazz)
+		for(mixin : extension.mixins) {
+			val clazz = mixin.hostingClass
+			val hosts = mixin.hosts
 
 			// add to global table of additional hosts
 			if (allAdditionalHosts.containsKey(clazz)) {
@@ -132,11 +132,10 @@ class ExtensionRegistry {
 		}
 		
 		// add entries to map of argument-types for property accessors
-		val argumentTypes = extension.accessorArgumentTypes
-		for(clazz : argumentTypes.keySet) {
-			// determine target type by calling the function from the extension
-			val func = argumentTypes.get(clazz)
-			if (func===AccessorArgumentStyle.BY_TARGET_FEATURE) {
+		for(mixin : extension.mixins) {
+			// determine argument type
+			if (mixin.accessorArgument === AccessorArgumentStyle.BY_TARGET_FEATURE) {
+				val clazz = mixin.hostingClass
 				val targetType = clazz.classOfTargetFeature
 				if (accessorArgumentType.containsKey(clazz)) {
 					val targetType0 = accessorArgumentType.get(clazz)

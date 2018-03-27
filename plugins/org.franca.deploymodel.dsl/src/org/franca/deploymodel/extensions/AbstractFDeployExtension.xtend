@@ -10,9 +10,9 @@ package org.franca.deploymodel.extensions
 import java.util.Collection
 import java.util.Map
 import org.eclipse.emf.ecore.EClass
-import org.eclipse.emf.ecore.EClassifier
 import org.franca.core.franca.FrancaPackage
 import org.franca.deploymodel.dsl.fDeploy.FDeployPackage
+import org.franca.deploymodel.extensions.IFDeployExtension.HostMixinDef.AccessorArgumentStyle
 
 /**
  * Abstract base class for deployment extension implementations.
@@ -31,15 +31,8 @@ abstract class AbstractFDeployExtension implements IFDeployExtension {
 	/**
 	 * Empty default implementation of interface method.</p>
 	 */
-	override Map<EClass, Collection<Host>> getAdditionalHosts() {
-		newHashMap
-	}
-
-	/**
-	 * Empty default implementation of interface method.</p>
-	 */
-	override Map<EClass, AccessorArgumentStyle> getAccessorArgumentTypes() {
-		newHashMap
+	override Collection<HostMixinDef> getMixins() {
+		#[ ]
 	}
 
 	/**
@@ -52,4 +45,10 @@ abstract class AbstractFDeployExtension implements IFDeployExtension {
 	 */
 	def protected fdeploy() { FDeployPackage.eINSTANCE }
 
+	/**
+	 * Helper to create a new HostMixinDef descriptor.
+	 */
+	def protected mixin(EClass clazz, AccessorArgumentStyle argStyle, Collection<Host> hosts) {
+		new HostMixinDef(clazz, argStyle, hosts)
+	}
 }
