@@ -1,5 +1,6 @@
 /*******************************************************************************
-* Copyright (c) 2015 itemis AG (http://www.itemis.de).
+* Copyright (c) 2018 itemis AG (http://www.itemis.de).
+* 
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -9,44 +10,54 @@ package org.franca.deploymodel.dsl.generator.internal
 
 import com.google.inject.Inject
 import org.franca.deploymodel.core.FDPropertyHost
-import org.franca.deploymodel.core.FDeployedProvider
+import org.franca.deploymodel.core.FDeployedRootElement
 import org.franca.deploymodel.dsl.fDeploy.FDDeclaration
 import org.franca.deploymodel.dsl.fDeploy.FDEnumType
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification
+import org.franca.deploymodel.extensions.IFDeployExtension
 
 import static extension org.franca.deploymodel.dsl.generator.internal.GeneratorHelper.*
 import static extension org.franca.deploymodel.dsl.generator.internal.HostLogic.*
 
-class ProviderAccessorGenerator {
+/**
+ * Generates a specific PropertyAccessor class for a root element definition
+ * from a deployment extension.</p>
+ * 
+ * @author Klaus Birken (itemis AG)  
+ */
+class RootElementAccessorGenerator {
 
 	@Inject extension ImportManager
 	@Inject CommonAccessorMethodGenerator helper
 
-	def generate(FDSpecification spec) {
+	def generate(FDSpecification spec, IFDeployExtension.RootDef rootDef) {
 		val context = new CodeContext
+		val rootTag = rootDef.tag.toFirstUpper
+		val deployed = 'FDeployedRootElement<FDExtensionRoot>'
 		val methods =
 			'''
 				«FOR d : spec.declarations»
-					«d.genProperties(context)»
+					«d.genProperties(rootDef, context)»
 				«ENDFOR»
 			'''
 
 		'''
 			/**
-			 * Accessor for deployment properties for providers and interface instances
+			 * Accessor for deployment properties for '«rootDef.tag»' roots
+			 * (which are defined by the '«rootDef.extension.shortDescription»' extension)
 			 * according to the '«spec.name»' specification.
 			 */
-			public static class ProviderPropertyAccessor
-				«IF spec.base!==null»extends «spec.base.qualifiedClassname».ProviderPropertyAccessor«ENDIF»
+			public static class «rootTag»PropertyAccessor
+				«IF spec.base!==null»extends «spec.base.qualifiedClassname».«rootTag»PropertyAccessor«ENDIF»
 				implements Enums
 			{
 				«IF context.targetNeeded»
-				final private FDeployedProvider target;
+				final private «deployed» target;
 				«ENDIF»				
 			
-				«addNeededOtherType(FDeployedProvider)»
-				public ProviderPropertyAccessor(FDeployedProvider target) {
+				«addNeededOtherType(FDeployedRootElement)»
+				public ProviderPropertyAccessor(«deployed» target) {
 					«IF spec.base!==null»
 					super(target);
 					«ENDIF»
@@ -60,8 +71,8 @@ class ProviderAccessorGenerator {
 		'''
 	}
 	
-	def private genProperties(FDDeclaration decl, ICodeContext context) '''
-		«IF decl.properties.size > 0 && decl.host.isProviderHost»
+	def private genProperties(FDDeclaration decl, IFDeployExtension.RootDef rootDef, ICodeContext context) '''
+		«IF decl.properties.size > 0 && decl.host.isHostFor(rootDef)»
 			// host '«decl.host.getName»'
 			«FOR p : decl.properties»
 			«p.genProperty(decl.host, context)»
@@ -71,9 +82,9 @@ class ProviderAccessorGenerator {
 	'''
 	
 	def private genProperty(FDPropertyDecl it, FDPropertyHost host, ICodeContext context) {
-		val argumentType = host.getFrancaTypeProvider
+		val argumentType = host.getArgumentType(false)
+		addNeededFrancaType(argumentType)
 		if (argumentType!==null) {
-			addNeededFrancaType(argumentType)
 			context.requireTargetMember
 			if (isEnum) {
 				val enumType = name.toFirstUpper
@@ -91,5 +102,7 @@ class ProviderAccessorGenerator {
 		} else
 			""
 	}
+	
+
 }
 

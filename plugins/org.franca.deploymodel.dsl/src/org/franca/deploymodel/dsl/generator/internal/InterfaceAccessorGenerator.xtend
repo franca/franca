@@ -8,6 +8,11 @@
 package org.franca.deploymodel.dsl.generator.internal
 
 import com.google.inject.Inject
+import org.franca.core.franca.FArgument
+import org.franca.core.franca.FArrayType
+import org.franca.core.franca.FAttribute
+import org.franca.core.franca.FField
+import org.franca.deploymodel.core.FDeployedInterface
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification
 
 import static extension org.franca.deploymodel.dsl.generator.internal.GeneratorHelper.*
@@ -34,7 +39,7 @@ class InterfaceAccessorGenerator extends CommonAccessorMethodGenerator {
 				«ENDIF»
 				private final DataPropertyAccessorHelper helper;
 			
-				«addNeededFrancaType("FDeployedInterface")»
+				«addNeededOtherType(FDeployedInterface)»
 				public InterfacePropertyAccessor(FDeployedInterface target) {
 					«IF spec.base!==null»
 					super(target);
@@ -47,26 +52,26 @@ class InterfaceAccessorGenerator extends CommonAccessorMethodGenerator {
 				
 				«methods»
 				
-				«genHelpForGetOverwriteAccessor("FAttribute", "obj")»
-				«addNeededFrancaType("FAttribute")»
+				«genHelpForGetOverwriteAccessor(FAttribute, "obj")»
+				«addNeededFrancaType(FAttribute)»
 				public IDataPropertyAccessor getOverwriteAccessor(FAttribute obj) {
 					return helper.getOverwriteAccessorAux(obj);
 				}
 			
-				«genHelpForGetOverwriteAccessor("FArgument", "obj")»
-				«addNeededFrancaType("FArgument")»
+				«genHelpForGetOverwriteAccessor(FArgument, "obj")»
+				«addNeededFrancaType(FArgument)»
 				public IDataPropertyAccessor getOverwriteAccessor(FArgument obj) {
 					return helper.getOverwriteAccessorAux(obj);
 				}
 			
 				@Override
-				«addNeededFrancaType("FField")»
+				«addNeededFrancaType(FField)»
 				public IDataPropertyAccessor getOverwriteAccessor(FField obj) {
 					return helper.getOverwriteAccessorAux(obj);
 				}
 			
 				@Override
-				«addNeededFrancaType("FArrayType")»
+				«addNeededFrancaType(FArrayType)»
 				public IDataPropertyAccessor getOverwriteAccessor(FArrayType obj) {
 					return helper.getOverwriteAccessorAux(obj);
 				}

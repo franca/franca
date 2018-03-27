@@ -8,6 +8,8 @@
 package org.franca.deploymodel.dsl.generator.internal
 
 import com.google.inject.Inject
+import org.franca.core.franca.FArrayType
+import org.franca.deploymodel.core.FDeployedTypeCollection
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification
 
 import static extension org.franca.deploymodel.dsl.generator.internal.GeneratorHelper.*
@@ -34,7 +36,7 @@ class TypeCollectionAccessorGenerator extends CommonAccessorMethodGenerator {
 				«ENDIF»
 				private final DataPropertyAccessorHelper helper;
 			
-				«addNeededFrancaType("FDeployedTypeCollection")»
+				«addNeededOtherType(FDeployedTypeCollection)»
 				public TypeCollectionPropertyAccessor(FDeployedTypeCollection target) {
 					«IF spec.base!==null»
 					super(target);
@@ -53,7 +55,7 @@ class TypeCollectionAccessorGenerator extends CommonAccessorMethodGenerator {
 				}
 			
 				@Override
-				«addNeededFrancaType("FArrayType")»
+				«addNeededFrancaType(FArrayType)»
 				public IDataPropertyAccessor getOverwriteAccessor(FArrayType obj) {
 					return helper.getOverwriteAccessorAux(obj);
 				}

@@ -8,9 +8,11 @@
 package org.franca.deploymodel.dsl.generator.internal
 
 import com.google.inject.Inject
+import org.franca.core.franca.FModelElement
 import org.franca.deploymodel.core.FDPropertyHost
 import org.franca.deploymodel.dsl.fDeploy.FDDeclaration
 import org.franca.deploymodel.dsl.fDeploy.FDEnumType
+import org.franca.deploymodel.dsl.fDeploy.FDOverwriteElement
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification
 
@@ -39,9 +41,9 @@ class HelperGenerator {
 				«d.genProperties»
 			«ENDFOR»
 			
-			«addNeededFrancaType("FModelElement")»
+			«addNeededFrancaType(FModelElement)»
 			protected IDataPropertyAccessor getOverwriteAccessorAux(FModelElement obj) {
-				«addNeededFrancaType("FDOverwriteElement")»
+				«addNeededFrancaType(FDOverwriteElement)»
 				FDOverwriteElement fd = (FDOverwriteElement)target.getFDElement(obj);
 				FDTypeOverwrites overwrites = fd.getOverwrites();
 				if (overwrites==null)

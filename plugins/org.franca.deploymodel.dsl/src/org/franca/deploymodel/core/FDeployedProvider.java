@@ -11,26 +11,26 @@ import org.franca.deploymodel.dsl.fDeploy.FDProvider;
 
 /**
  * This class provides type-safe access to deployment properties which are
- * related to interface providers and interface instances.
+ * related to interface providers and interface instances.</p>
+ * 
  * The actual get-functions for reading property values are provided
  * by the base class GenericPropertyAccessor in a generic, but 
  * nevertheless type-safe way. The returned value will be the actual
- * property value or the default value as defined in the specification.
+ * property value or the default value as defined in the specification.</p>
  *    
  * @author KBirken
  * @see FDeployedInterface, GenericPropertyAccessor
+ * 
+ * @deprecated Will not be used anymore when switching to new deployment extension concept.
  */
-public class FDeployedProvider extends GenericPropertyAccessor {
+// TODO: Move this to org.franca.deploymodel.ext.providers as a wrapper for FDeployedRootElement
+public class FDeployedProvider extends FDeployedRootElement<FDProvider> {
 
-	private FDProvider provider;
-	
-	public FDeployedProvider (FDProvider provider) {
-		super(provider.getSpec());
-		this.provider = provider;
+	public FDeployedProvider(FDProvider provider) {
+		super(provider);
 	}
 	
 	public FDProvider getProvider() {
-		return provider;
+		return getRootElement();
 	}
 }
-

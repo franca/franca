@@ -8,9 +8,18 @@
 package org.franca.deploymodel.dsl.generator.internal
 
 import com.google.inject.Inject
+import org.eclipse.emf.ecore.EObject
+import org.franca.core.franca.FEnumerator
+import org.franca.core.franca.FField
+import org.franca.deploymodel.core.MappingGenericPropertyAccessor
+import org.franca.deploymodel.dsl.fDeploy.FDCompoundOverwrites
 import org.franca.deploymodel.dsl.fDeploy.FDEnumType
+import org.franca.deploymodel.dsl.fDeploy.FDEnumValue
+import org.franca.deploymodel.dsl.fDeploy.FDEnumerationOverwrites
+import org.franca.deploymodel.dsl.fDeploy.FDField
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification
+import org.franca.deploymodel.dsl.fDeploy.FDTypeOverwrites
 
 import static extension org.franca.deploymodel.dsl.generator.internal.GeneratorHelper.*
 
@@ -26,17 +35,17 @@ class OverwriteAccessorGenerator extends AccessMethodGenerator {
 			«IF spec.base!==null»extends «spec.base.qualifiedClassname».OverwriteAccessor«ENDIF»
 			implements IDataPropertyAccessor
 		{
-			«addNeededFrancaType("MappingGenericPropertyAccessor")»
+			«addNeededOtherType(MappingGenericPropertyAccessor)»
 			private final MappingGenericPropertyAccessor target;
 			private final IDataPropertyAccessor delegate;
 			
 			private final FDTypeOverwrites overwrites;
-			«addNeededFrancaType("FField")»
+			«addNeededFrancaType(FField)»
 			private final Map<FField, FDField> mappedFields;
-			«addNeededFrancaType("FEnumerator")»
+			«addNeededFrancaType(FEnumerator)»
 			private final Map<FEnumerator, FDEnumValue> mappedEnumerators;
 		
-			«addNeededFrancaType("FDTypeOverwrites")»
+			«addNeededFrancaType(FDTypeOverwrites)»
 			public OverwriteAccessor(
 					FDTypeOverwrites overwrites,
 					IDataPropertyAccessor delegate,
@@ -54,16 +63,16 @@ class OverwriteAccessorGenerator extends AccessMethodGenerator {
 				if (overwrites!=null) {
 					if (overwrites instanceof FDCompoundOverwrites) {
 						// build mapping for compound fields
-						«addNeededFrancaType("FDField")»
-						«addNeededFrancaType("FDCompoundOverwrites")»
+						«addNeededFrancaType(FDField)»
+						«addNeededFrancaType(FDCompoundOverwrites)»
 						for(FDField f : ((FDCompoundOverwrites)overwrites).getFields()) {
 							this.mappedFields.put(f.getTarget(), f);
 						}
 					}
 					if (overwrites instanceof FDEnumerationOverwrites) {
 						// build mapping for enumerators
-						«addNeededFrancaType("FDEnumValue")»
-						«addNeededFrancaType("FDEnumerationOverwrites")»
+						«addNeededFrancaType(FDEnumValue)»
+						«addNeededFrancaType(FDEnumerationOverwrites)»
 						for(FDEnumValue e : ((FDEnumerationOverwrites)overwrites).getEnumerators()) {
 							this.mappedEnumerators.put(e.getTarget(), e);
 						}
@@ -104,26 +113,26 @@ class OverwriteAccessorGenerator extends AccessMethodGenerator {
 
 	override genMethod(
 		FDPropertyDecl it,
-		String francaType,
+		Class<? extends EObject> argumentType,
 		boolean isData
 	) '''
 		«IF isData»
 		@Override
 		«ENDIF»
-		public «type.javaType» «methodName»(«francaType» obj) {
-			«IF francaType=="FEnumerator"»
+		public «type.javaType» «methodName»(«argumentType.simpleName» obj) {
+			«IF argumentType==FEnumerator»
 				// check if this enumerator is overwritten
 				if (mappedEnumerators.containsKey(obj)) {
 					FDEnumValue fo = mappedEnumerators.get(obj);
 					«genOverwriteAccess("fo")»
 				}
-			«ELSEIF francaType=="FField"»
+			«ELSEIF argumentType==FField»
 				// check if this field is overwritten
 				if (mappedFields.containsKey(obj)) {
 					FDField fo = mappedFields.get(obj);
 					«genOverwriteAccess("fo")»
 				}
-			«ELSEIF francaType=="EObject"»
+			«ELSEIF argumentType==EObject»
 				if (obj instanceof FField) {
 					// check if this field is overwritten
 					if (mappedFields.containsKey(obj)) {
@@ -154,7 +163,7 @@ class OverwriteAccessorGenerator extends AccessMethodGenerator {
 
 	override genEnumMethod(
 		FDPropertyDecl it,
-		String francaType,
+		Class<? extends EObject> argumentType,
 		String enumType,
 		String returnType,
 		FDEnumType enumerator,
@@ -163,20 +172,20 @@ class OverwriteAccessorGenerator extends AccessMethodGenerator {
 		«IF isData»
 		@Override
 		«ENDIF»
-		public «returnType» «methodName»(«francaType» obj) {
-			«IF francaType=="FEnumerator"»
+		public «returnType» «methodName»(«argumentType.simpleName» obj) {
+			«IF argumentType==FEnumerator»
 				// check if this enumerator is overwritten
 				if (mappedEnumerators.containsKey(obj)) {
 					FDEnumValue fo = mappedEnumerators.get(obj);
 					«genEnumOverwriteAccess(enumType, "fo")»
 				}
-			«ELSEIF francaType=="FField"»
+			«ELSEIF argumentType==FField»
 				// check if this field is overwritten
 				if (mappedFields.containsKey(obj)) {
 					FDField fo = mappedFields.get(obj);
 					«genEnumOverwriteAccess(enumType, "fo")»
 				}
-			«ELSEIF francaType=="EObject"»
+			«ELSEIF argumentType==EObject»
 				if (obj instanceof FField) {
 					// check if this field is overwritten
 					if (mappedFields.containsKey(obj)) {

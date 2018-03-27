@@ -162,7 +162,7 @@ class FDeployValidatorAux {
 	 */
 	def private checkGroupArgumentType(Iterable<FDPropertyDecl> items) {
 		// group items according to the type of the accessor argument
-		val argtypeGroups = items.groupBy[HostLogic.getFrancaType(host, true)]
+		val argtypeGroups = items.groupBy[HostLogic.getArgumentType(host, true)]
 		
 		// report errors for properties with same of conflicting argument type 
 		val Map<Class<? extends EObject>, Iterable<Class<? extends EObject>>> colliding = newHashMap

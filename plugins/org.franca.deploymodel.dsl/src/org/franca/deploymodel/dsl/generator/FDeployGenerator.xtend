@@ -10,7 +10,9 @@ package org.franca.deploymodel.dsl.generator
 import com.google.inject.Inject
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.generator.IFileSystemAccess
+import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGenerator2
+import org.eclipse.xtext.generator.IGeneratorContext
 import org.franca.deploymodel.core.FDPropertyHost
 import org.franca.deploymodel.dsl.fDeploy.FDEnumType
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl
@@ -21,11 +23,12 @@ import org.franca.deploymodel.dsl.generator.internal.ImportManager
 import org.franca.deploymodel.dsl.generator.internal.InterfaceAccessorGenerator
 import org.franca.deploymodel.dsl.generator.internal.OverwriteAccessorGenerator
 import org.franca.deploymodel.dsl.generator.internal.ProviderAccessorGenerator
+import org.franca.deploymodel.dsl.generator.internal.RootElementAccessorGenerator
 import org.franca.deploymodel.dsl.generator.internal.TypeCollectionAccessorGenerator
 
+import static org.franca.deploymodel.extensions.ExtensionRegistry.*
+
 import static extension org.franca.deploymodel.dsl.generator.internal.GeneratorHelper.*
-import org.eclipse.xtext.generator.IFileSystemAccess2
-import org.eclipse.xtext.generator.IGeneratorContext
 
 /**
  * Generator for PropertyAccessor class from deployment specification.
@@ -44,6 +47,7 @@ class FDeployGenerator implements IGenerator2 {
 	@Inject TypeCollectionAccessorGenerator genTCAcc
 	@Inject InterfaceAccessorGenerator genInterfaceAcc
 	@Inject ProviderAccessorGenerator genProviderAcc
+	@Inject RootElementAccessorGenerator genRootElementAcc
 	@Inject OverwriteAccessorGenerator genOverwriteAcc
 	
 	// the types of PropertyAccessor classes we can generate
@@ -62,7 +66,6 @@ class FDeployGenerator implements IGenerator2 {
 			
 			// generate some legacy classes for backward-compatibility
 			// (this is needed for Franca 0.9.1 and earlier)
-			fsa.generateLegacy(m, PA_PROVIDER)
 			fsa.generateLegacy(m, PA_INTERFACE)
 			fsa.generateLegacy(m, PA_TYPE_COLLECTION)
 		}
@@ -105,6 +108,10 @@ class FDeployGenerator implements IGenerator2 {
 			«genInterfaceAcc.generate(spec)»
 
 			«genProviderAcc.generate(spec)»
+
+			«FOR root : roots.keySet»
+				«genRootElementAcc.generate(spec, root)»
+			«ENDFOR»
 
 			«genOverwriteAcc.generate(spec)»
 		}

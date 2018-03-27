@@ -8,6 +8,7 @@
 package org.franca.deploymodel.dsl.generator.internal
 
 import com.google.inject.Inject
+import org.eclipse.emf.ecore.EObject
 import org.franca.deploymodel.dsl.fDeploy.FDEnumType
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl
 
@@ -19,17 +20,17 @@ class CommonAccessorMethodGenerator extends AccessMethodGenerator {
 	
 	override genMethod(
 		FDPropertyDecl it,
-		String francaType,
+		Class<? extends EObject> argumentType,
 		boolean isData
 	) '''
 		«IF isData»
 		@Override
 		«ENDIF»
-		«generateMethod(francaType)»
+		«generateMethod(argumentType)»
 	'''
 
-	def generateMethod(FDPropertyDecl it, String francaType) '''
-		public «type.javaType» «methodName»(«francaType» obj) {
+	def generateMethod(FDPropertyDecl it, Class<? extends EObject> argumentType) '''
+		public «type.javaType» «methodName»(«argumentType.simpleName» obj) {
 			return target.get«type.getter»(obj, "«name»");
 		}
 	'''
@@ -37,7 +38,7 @@ class CommonAccessorMethodGenerator extends AccessMethodGenerator {
 
 	override genEnumMethod(
 		FDPropertyDecl it,
-		String francaType,
+		Class<? extends EObject> argumentType,
 		String enumType,
 		String returnType,
 		FDEnumType enumerator,
@@ -46,18 +47,18 @@ class CommonAccessorMethodGenerator extends AccessMethodGenerator {
 		«IF isData»
 		@Override
 		«ENDIF»
-		«generateEnumMethod(francaType, enumType, returnType, enumerator)»
+		«generateEnumMethod(argumentType, enumType, returnType, enumerator)»
 	'''
 	
 	
 	def generateEnumMethod(
 		FDPropertyDecl it,
-		String francaType,
+		Class<? extends EObject> argumentType,
 		String enumType,
 		String returnType,
 		FDEnumType enumerator
 	) '''
-		public «returnType» «methodName»(«francaType» obj) {
+		public «returnType» «methodName»(«argumentType.simpleName» obj) {
 			«type.javaType» e = target.get«type.getter»(obj, "«enumType»");
 			if (e==null) return null;
 			«IF type.array!==null»

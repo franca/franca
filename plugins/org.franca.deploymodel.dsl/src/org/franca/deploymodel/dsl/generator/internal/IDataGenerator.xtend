@@ -8,6 +8,9 @@
 package org.franca.deploymodel.dsl.generator.internal
 
 import com.google.inject.Inject
+import org.eclipse.emf.ecore.EObject
+import org.franca.core.franca.FArrayType
+import org.franca.core.franca.FField
 import org.franca.deploymodel.dsl.fDeploy.FDEnumType
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification
@@ -29,33 +32,33 @@ class IDataGenerator extends AccessMethodGenerator {
 		{
 			«spec.generateAccessMethods(false, new CodeContext)»
 			
-			«genHelpForGetOverwriteAccessor("FField", "obj")»
-			«addNeededFrancaType("FField")»
+			«genHelpForGetOverwriteAccessor(FField, "obj")»
+			«addNeededFrancaType(FField)»
 			public IDataPropertyAccessor getOverwriteAccessor(FField obj);
 
-			«genHelpForGetOverwriteAccessor("FArrayType", "obj")»
-			«addNeededFrancaType("FArrayType")»
+			«genHelpForGetOverwriteAccessor(FArrayType, "obj")»
+			«addNeededFrancaType(FArrayType)»
 			public IDataPropertyAccessor getOverwriteAccessor(FArrayType obj);
 		}
 	'''
 
 	override genMethod(
 		FDPropertyDecl it,
-		String francaType,
+		Class<? extends EObject> francaType,
 		boolean isData
 	) '''
-		public «type.javaType» «methodName»(«francaType» obj);
+		public «type.javaType» «methodName»(«francaType.simpleName» obj);
 	'''
 
 	override genEnumMethod(
 		FDPropertyDecl it,
-		String francaType,
+		Class<? extends EObject> francaType,
 		String enumType,
 		String returnType,
 		FDEnumType enumerator,
 		boolean isData
 	) '''
-		public «returnType» «methodName»(«francaType» obj);
+		public «returnType» «methodName»(«francaType.simpleName» obj);
 	'''
 		
 }

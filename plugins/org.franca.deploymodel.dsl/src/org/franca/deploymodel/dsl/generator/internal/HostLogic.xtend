@@ -7,6 +7,7 @@
 *******************************************************************************/
 package org.franca.deploymodel.dsl.generator.internal
 
+import java.util.Set
 import org.eclipse.emf.ecore.EObject
 import org.franca.core.franca.FArgument
 import org.franca.core.franca.FAttribute
@@ -21,6 +22,9 @@ import org.franca.core.franca.FTypeCollection
 import org.franca.core.franca.FTypeDef
 import org.franca.core.franca.FUnionType
 import org.franca.deploymodel.core.FDPropertyHost
+import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance
+import org.franca.deploymodel.dsl.fDeploy.FDProvider
+import org.franca.deploymodel.extensions.IFDeployExtension
 
 import static extension org.franca.deploymodel.extensions.ExtensionRegistry.*
 
@@ -34,90 +38,102 @@ import static extension org.franca.deploymodel.extensions.ExtensionRegistry.*
  */
 class HostLogic {
 	
-	/**
-	 * Get the argument type name for the property accessor method for a given deployment host.
-	 */
-	def static String getFrancaTypeName(FDPropertyHost host, boolean forInterfaces) {
-		host.getFrancaType(forInterfaces)?.simpleName
-	}
+	val static Set<Class<? extends EObject>> interfaceSpecificClasses = #{ FInterface, FAttribute, FMethod, FBroadcast, FArgument }
 	
 	/**
 	 * Get the argument type for the property accessor method for a given deployment host.
 	 */
-	def static Class<? extends EObject> getFrancaType(FDPropertyHost host, boolean forInterfaces) {
+	def static Class<? extends EObject> getArgumentType(FDPropertyHost host, boolean forInterfaces) {
 		val builtIn = host.builtIn
-		if (builtIn!==null) {
-			// this is a built-in host, decide using a hard-coded mapping table 
-			switch (builtIn) {
-				case PROVIDERS:        null  // ignore
-				case INSTANCES:        null  // ignore
-				case TYPE_COLLECTIONS: typeof(FTypeCollection)
-				case INTERFACES:       forInterfaces.use(typeof(FInterface))
-				case ATTRIBUTES:       forInterfaces.use(typeof(FAttribute))
-				case METHODS:          forInterfaces.use(typeof(FMethod))
-				case BROADCASTS:       forInterfaces.use(typeof(FBroadcast))
-				case ARGUMENTS:        forInterfaces.use(typeof(FArgument))
-				case STRUCTS:          typeof(FStructType)
-				case UNIONS:     	   typeof(FUnionType)
-				case STRUCT_FIELDS:    typeof(FField)
-				case UNION_FIELDS:     typeof(FField)
-				case FIELDS:           typeof(FField)
-				case ENUMERATIONS:     typeof(FEnumerationType)
-				case ENUMERATORS:      typeof(FEnumerator)
-				case TYPEDEFS:         typeof(FTypeDef)
-				//case NUMBERS:        // generic handling
-				//case FLOATS:         // generic handling
-				//case INTEGERS:       // generic handling
-				//case STRINGS:        // generic handling
-				//case ARRAYS:         // generic handling
-				default:               typeof(EObject)  // reasonable default
-			}
-		} else {
-			// this is an extension host, it's argument type will be it cannot refer to a Franca metamodel object
-			// but it has to be some EObject nevertheless
-			val hostDef = host.name.findHost
-			if (hostDef!==null) {
-				// get classes (aka grammar rules) which host properties of this hostDef 
-				val classes = getHostingClasses(hostDef)
-			
-				// get the property-accessor argument types for each of these classes
-				val targetClasses = classes.map[getAccessorArgumentType]
-
-				// if there are multiple argument types, we select a common super-class
-				// see SuperclassFinder for details on this algorithm	
-				if (! targetClasses.empty) {
-					val sd = new SuperclassFinder
-					val superclass = sd.findCommonSuperclass(targetClasses)
-					if (superclass!==null) {
-						val instClass = superclass.instanceClass
-						if (EObject.isAssignableFrom(instClass))
-							return instClass as Class<? extends EObject>
-					}
+		val Class<? extends EObject> result =
+			if (builtIn!==null) {
+				// this is a built-in host, decide using a hard-coded mapping table 
+				switch (builtIn) {
+					case PROVIDERS:        null  // ignore
+					case INSTANCES:        null  // ignore
+					case TYPE_COLLECTIONS: FTypeCollection
+					case INTERFACES:       FInterface
+					case ATTRIBUTES:       FAttribute
+					case METHODS:          FMethod
+					case BROADCASTS:       FBroadcast
+					case ARGUMENTS:        FArgument
+					case STRUCTS:          FStructType
+					case UNIONS:     	   FUnionType
+					case STRUCT_FIELDS:    FField
+					case UNION_FIELDS:     FField
+					case FIELDS:           FField
+					case ENUMERATIONS:     FEnumerationType
+					case ENUMERATORS:      FEnumerator
+					case TYPEDEFS:         FTypeDef
+					//case NUMBERS:        // generic handling
+					//case FLOATS:         // generic handling
+					//case INTEGERS:       // generic handling
+					//case STRINGS:        // generic handling
+					//case ARRAYS:         // generic handling
+					default:               EObject  // reasonable default
 				}
+			} else {
+				// this is an extension host
+				host.getArgumentTypeForExtensionHost
 			}
-			
-			// catch-all (everything is an EObject)
-			typeof(EObject)
+		
+		if (result===null)
+			null
+		else {
+			// filter non-interface results
+			if ((!forInterfaces) && interfaceSpecificClasses.contains(result)) {
+				null
+			} else {
+				result
+			}
 		}
 	}
+	
+	def static private Class<? extends EObject> getArgumentTypeForExtensionHost(FDPropertyHost host) {
+		val hostDef = host.name.findHost
+		if (hostDef!==null) {
+			// get classes (aka grammar rules) which host properties of this hostDef 
+			val classes = getHostingClasses(hostDef)
+		
+			// get the property-accessor argument types for each of these classes
+			val targetClasses = classes.map[getAccessorArgumentType]
+
+			// if there are multiple argument types, we select a common super-class
+			// see SuperclassFinder for details on this algorithm	
+
+			if (! targetClasses.empty) {
+				val sd = new SuperclassFinder
+				val superclass = sd.findCommonSuperclass(targetClasses)
+				if (superclass!==null) {
+					val instClass = superclass.instanceClass
+					if (EObject.isAssignableFrom(instClass))
+						return instClass as Class<? extends EObject>
+				}
+			}
+		}
+		
+		// catch-all (everything is an EObject)
+		typeof(EObject)
+	} 
 
 	def static isInterfaceOnly(FDPropertyHost host) {
-		host.getFrancaType(false)===null
+		host.getArgumentType(false)===null
 	}
 
-	/**
-	 * Helper function which simplifies the implementation of getFrancaType.
-	 */
-	def static private use(boolean forInterfaces, Class<? extends EObject> type) {
-		if (forInterfaces)
-			type
-		else
-			null
+	def static boolean isHostFor(FDPropertyHost host, IFDeployExtension.AbstractElementDef elementDef) {
+		if (host.builtIn!==null) {
+			// there are no RootDefs for built-in hosts
+			false
+		} else {
+			// check if host is relevant for elementDef or one of its sub-elements 
+			val hostDef = host.name.findHost
+			elementDef.hasHostSubtree(hostDef)
+		}
 	}
 
 
 	// TODO: adapt this when extracting PROVIDERS/INSTANCES into a deployment extension
-	def static String getFrancaTypeProvider(FDPropertyHost host) {
+	def static Class<? extends EObject> getFrancaTypeProvider(FDPropertyHost host) {
 		val builtIn = host.builtIn
 		if (builtIn===null) {
 			// this is an extension host, it cannot refer to a Franca metamodel object
@@ -125,11 +141,11 @@ class HostLogic {
 		}
 			
 		switch (builtIn) {
-			case PROVIDERS:  "FDProvider"
-			case INSTANCES:  "FDInterfaceInstance"
+			case PROVIDERS:  FDProvider
+			case INSTANCES:  FDInterfaceInstance
 			default:         null // ignore all other hosts
-		}
-	}
+ 		}
+ 	}
 
 	def static isProviderHost(FDPropertyHost host) {
 		host.getFrancaTypeProvider!==null

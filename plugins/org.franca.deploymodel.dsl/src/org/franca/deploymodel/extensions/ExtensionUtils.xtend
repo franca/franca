@@ -7,33 +7,55 @@
  *******************************************************************************/
 package org.franca.deploymodel.extensions
 
-import com.google.common.collect.Lists
-import java.util.Collection
-import java.util.List
+import com.google.common.collect.Iterables
+import java.util.Set
 import org.franca.deploymodel.extensions.IFDeployExtension.AbstractElementDef
 import org.franca.deploymodel.extensions.IFDeployExtension.Host
 
 class ExtensionUtils {
 
-	def static Collection<Host> getAllHosts(IFDeployExtension ext) {
-		val List<Host> result = Lists.newArrayList
-		
-		// add all hosts from the root definitions 
-		ext.roots.forEach[getHosts(ext, result)]
-		
-		// add all additional hosts
-		result.addAll(ext.additionalHosts.values.flatten)
+	/**
+	 * Get all hosts defined by a deployment extension.</p>
+	 */
+	def static Set<Host> getAllHosts(IFDeployExtension ext) {
+		Iterables.concat(
+			// all hosts from the root definitions 
+			ext.roots.map[allHostsAux].flatten,
 
-		result
+			// all additional hosts
+			ext.additionalHosts.values.flatten
+		).toSet
 	}
 
-	def private static void getHosts(AbstractElementDef elem, IFDeployExtension ext, List<Host> result) {
-		result.addAll(elem.hosts)
-		
-		// traverse children recursively
-		for(child : elem.children) {
-			child.getHosts(ext, result)
-		} 
+	/**
+	 * Get the set of all hosts only for an element's children and their subtrees.<p>
+	 */
+	def static Set<Host> getHostsOnlyInSubtree(AbstractElementDef elem) {
+		elem.hostsOnlyInSubtreeAux.toSet
+	}
+
+	/**
+	 * Get the set of all hosts relevant for an element or its element subtree.</p>
+	 */
+	def static Set<Host> getAllHosts(AbstractElementDef elem) {
+		elem.allHostsAux.toSet
+	}
+
+	/**
+	 * Helper: Get all hosts only for an element's children and their subtrees.<p>
+	 */
+	def private static Iterable<Host> getHostsOnlyInSubtreeAux(AbstractElementDef elem) {
+		elem.children.map[allHostsAux].flatten
+	}
+
+	/**
+	 * Helper: Get all hosts relevant for an element or its element subtree.</p>
+	 */
+	def private static Iterable<Host> getAllHostsAux(AbstractElementDef elem) {
+		Iterables.concat(
+			elem.hosts,
+			elem.getHostsOnlyInSubtreeAux
+		)
 	}
 
 	 

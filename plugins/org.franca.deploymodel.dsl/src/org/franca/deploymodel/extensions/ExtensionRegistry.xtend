@@ -23,11 +23,12 @@ import org.eclipse.emf.ecore.EClassifier
 import org.franca.deploymodel.dsl.fDeploy.FDAbstractExtensionElement
 import org.franca.deploymodel.dsl.fDeploy.FDExtensionElement
 import org.franca.deploymodel.dsl.fDeploy.FDExtensionRoot
+import org.franca.deploymodel.dsl.fDeploy.FDeployPackage
+import org.franca.deploymodel.extensions.IFDeployExtension.AccessorArgumentStyle
 import org.franca.deploymodel.extensions.IFDeployExtension.Host
 
 import static extension com.google.common.collect.Iterables.*
 import static extension org.franca.deploymodel.extensions.ExtensionUtils.*
-import org.franca.deploymodel.extensions.IFDeployExtension.AccessorArgumentStyle
 
 /** 
  * This is the registry for deployment extensions.</p>
@@ -109,6 +110,10 @@ class ExtensionRegistry {
 		// add extension to the list of all extensions
 		extensions.add(^extension)
 		
+		for(root : extension.roots) {
+			root.hosts.forEach[addHostingClass(FDeployPackage.eINSTANCE.FDExtensionRoot)]
+			root.hostsOnlyInSubtree.forEach[addHostingClass(FDeployPackage.eINSTANCE.FDExtensionElement)]
+		}
 		val addHosts = extension.additionalHosts
 		for(clazz : addHosts.keySet) {
 			val hosts = addHosts.get(clazz)
@@ -123,12 +128,7 @@ class ExtensionRegistry {
 			}
 
 			// add to reverse mapping of hosts to hosting classes			
-			for(host : hosts) {
-				if (! hostingClasses.containsKey(host)) {
-					hostingClasses.put(host, newHashSet)
-				}
-				hostingClasses.get(host).add(clazz)
-			}
+			hosts.forEach[addHostingClass(clazz)]
 		}
 		
 		// add entries to map of argument-types for property accessors
@@ -146,9 +146,15 @@ class ExtensionRegistry {
 				} else {
 					accessorArgumentType.put(clazz, targetType)
 				}
-				
 			}
 		}
+	}
+
+	def private static addHostingClass(Host host, EClass clazz) {
+		if (! hostingClasses.containsKey(host)) {
+			hostingClasses.put(host, newHashSet)
+		}
+		hostingClasses.get(host).add(clazz)
 	}
 
 	/**
@@ -194,6 +200,10 @@ class ExtensionRegistry {
 	def static IFDeployExtension.RootDef findRoot(String rootTag) {
 		val roots = getExtensions().map[roots].flatten//.filter[tag!==null]
 		roots.findFirst[tag==rootTag]
+	}
+
+	def static boolean hasHostSubtree(IFDeployExtension.AbstractElementDef elem, Host host) {
+		elem.allHosts.contains(host)
 	}
 
 	// get metamodel ElementDef from model FDAbstractExtensionElement (which is an EObject)	
