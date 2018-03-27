@@ -41,6 +41,7 @@
             <module>../../plugins/org.franca.deploymodel.dsl</module>
             <module>../../plugins/org.franca.deploymodel.dsl.ide</module>
             <module>../../plugins/org.franca.deploymodel.dsl.ui</module>
+            <module>../../plugins/org.franca.deploymodel.ext.providers</module>
 			<module>../../plugins/org.franca.generators</module>
 			<module>../../plugins/org.franca.tools.contracts.tracevalidator</module>
             <module>../../plugins/org.franca.connectors.dbus</module>
