@@ -22,11 +22,13 @@ import org.franca.core.franca.FTypeCollection
 import org.franca.core.franca.FTypeDef
 import org.franca.core.franca.FUnionType
 import org.franca.deploymodel.core.FDPropertyHost
+import org.franca.deploymodel.dsl.fDeploy.FDAbstractExtensionElement
 import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance
 import org.franca.deploymodel.dsl.fDeploy.FDProvider
 import org.franca.deploymodel.extensions.IFDeployExtension
 
 import static extension org.franca.deploymodel.extensions.ExtensionRegistry.*
+import org.franca.deploymodel.dsl.fDeploy.FDeployPackage
 
 /**
  * This class defines how deployment properties are mapped to Franca IDL objects
@@ -114,10 +116,15 @@ class HostLogic {
 			// filter according to required context
 			val filtered =
 				if (context===Context.NON_FRANCA)
-					classes.filter[isNonFrancaMixinHost]
+					classes.filter[isNonFrancaMixinHost || FDeployPackage.eINSTANCE.FDAbstractExtensionElement.isSuperTypeOf(it)]
 				else
-					classes.filter[!isNonFrancaMixinHost] 
+					classes.filter[!isNonFrancaMixinHost]
 		
+			if (filtered.empty) {
+				// no classes hosting the properties in the given context, abort with null
+				return null
+			}
+			
 			// get the property-accessor argument types for each of these classes
 			val targetClasses = filtered.map[getAccessorArgumentType]
 
