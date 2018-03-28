@@ -7,7 +7,11 @@
  */
 package org.franca.deploymodel.extensions
 
+import com.google.common.collect.Iterables
+import com.google.common.collect.LinkedListMultimap
 import com.google.common.collect.Lists
+import com.google.common.collect.Multimap
+import com.google.common.collect.Sets
 import java.util.Collection
 import java.util.List
 import java.util.Map
@@ -27,9 +31,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDeployPackage
 import org.franca.deploymodel.extensions.IFDeployExtension.Host
 import org.franca.deploymodel.extensions.IFDeployExtension.HostMixinDef.AccessorArgumentStyle
 
-import static extension com.google.common.collect.Iterables.*
 import static extension org.franca.deploymodel.extensions.ExtensionUtils.*
-import org.franca.deploymodel.extensions.IFDeployExtension.HostMixinDef.AccessorScope
 
 /** 
  * This is the registry for deployment extensions.</p>
@@ -105,9 +107,15 @@ class ExtensionRegistry {
 	
 	static Map<Host, Set<EClass>> hostingClasses = newHashMap
 
+	static Map<EClass, IFDeployExtension> mixinExtensions = newHashMap
+
 	static Map<EClass, EClassifier> accessorArgumentType = newHashMap
 
-	static Set<EClass> isNonFrancaMixinHost = newHashSet
+	static Set<EClass> isNonFrancaMixin = newHashSet
+	
+	static Map<EClass, String> nonFrancaMixinRootPrefix = newHashMap
+
+	static Multimap<EClass, EClass> mixinChildren = LinkedListMultimap.create
 		
 	def private static void register(IFDeployExtension ^extension) {
 		// add extension to the list of all extensions
@@ -124,7 +132,7 @@ class ExtensionRegistry {
 			// add to global table of additional hosts
 			if (allAdditionalHosts.containsKey(clazz)) {
 				val previousHosts = allAdditionalHosts.get(clazz)
-				val joined = previousHosts.concat(hosts).unmodifiableIterable
+				val joined = Iterables.unmodifiableIterable(Iterables.concat(previousHosts, hosts))
 				allAdditionalHosts.put(clazz, joined)
 			} else {
 				allAdditionalHosts.put(clazz, hosts)
@@ -138,6 +146,9 @@ class ExtensionRegistry {
 		for(mixin : extension.mixins) {
 			val clazz = mixin.hostingClass
 
+			// store extension for mixin
+			mixinExtensions.put(clazz, extension)
+			
 			// determine argument type
 			if (mixin.accessorArgument === AccessorArgumentStyle.BY_TARGET_FEATURE) {
 				val targetType = clazz.classOfTargetFeature
@@ -152,9 +163,24 @@ class ExtensionRegistry {
 			}
 			
 			// remember all mixins which should be handled as Franca IDL extensions
-			if (mixin.accessorScope === AccessorScope.NON_FRANCA_IDL) {
-				isNonFrancaMixinHost.add(clazz)
+			if (mixin.isNonFrancaMixin) {
+				isNonFrancaMixin.add(clazz)
+
+				// store prefixes for root mixins
+				if (mixin.accessorRootPrefix!==null) {
+					val prefix = mixin.accessorRootPrefix
+					nonFrancaMixinRootPrefix.put(clazz, prefix)
+				}
 			}
+		}
+		
+		// find non-Franca child mixins and attach to root mixins
+		val children = extension.mixins.filter[isChildMixin].map[hostingClass].toSet
+		val roots = extension.mixins.filter[accessorRootPrefix!==null].map[hostingClass]
+		for(rootMixin : roots) {
+			val usedClasses = rootMixin.EStructuralFeatures.map[EType].toSet
+			val both = Sets.intersection(children, usedClasses)
+			mixinChildren.putAll(rootMixin, both)
 		}
 	}
 
@@ -262,7 +288,23 @@ class ExtensionRegistry {
 		}
 	}
 	
+	def static IFDeployExtension getMixinExtension(EClass clazz) {
+		mixinExtensions.get(clazz)
+	}
+
+	def static getNonFrancaMixinRoots() {
+		nonFrancaMixinRootPrefix.keySet
+	}
+	
+	def static String getNonFrancaMixinPrefix(EClass clazz) {
+		nonFrancaMixinRootPrefix.get(clazz)
+	}
+	
+	def static Iterable<EClass> getMixinClasses(EClass rootClass) {
+		Iterables.concat(mixinChildren.get(rootClass), newArrayList(rootClass)) 
+	}
+
 	def static boolean isNonFrancaMixinHost(EClass clazz) {
-		isNonFrancaMixinHost.contains(clazz)
+		isNonFrancaMixin.contains(clazz)
 	}
 }

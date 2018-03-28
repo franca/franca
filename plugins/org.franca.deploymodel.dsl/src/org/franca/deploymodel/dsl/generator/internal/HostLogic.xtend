@@ -8,6 +8,7 @@
 package org.franca.deploymodel.dsl.generator.internal
 
 import java.util.Set
+import org.eclipse.emf.ecore.EClass
 import org.eclipse.emf.ecore.EObject
 import org.franca.core.franca.FArgument
 import org.franca.core.franca.FAttribute
@@ -22,13 +23,12 @@ import org.franca.core.franca.FTypeCollection
 import org.franca.core.franca.FTypeDef
 import org.franca.core.franca.FUnionType
 import org.franca.deploymodel.core.FDPropertyHost
-import org.franca.deploymodel.dsl.fDeploy.FDAbstractExtensionElement
 import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance
 import org.franca.deploymodel.dsl.fDeploy.FDProvider
+import org.franca.deploymodel.dsl.fDeploy.FDeployPackage
 import org.franca.deploymodel.extensions.IFDeployExtension
 
 import static extension org.franca.deploymodel.extensions.ExtensionRegistry.*
-import org.franca.deploymodel.dsl.fDeploy.FDeployPackage
 
 /**
  * This class defines how deployment properties are mapped to Franca IDL objects
@@ -158,6 +158,19 @@ class HostLogic {
 			// check if host is relevant for elementDef or one of its sub-elements 
 			val hostDef = host.name.findHost
 			elementDef.hasHostSubtree(hostDef)
+		}
+	}
+
+	def static boolean isHostFor(FDPropertyHost host, EClass mixinRoot) {
+		if (host.builtIn!==null) {
+			// there are no RootDefs for built-in hosts
+			false
+		} else {
+			// check if host is relevant for mixinRoot or one of its children
+			val hostDef = host.name.findHost
+			val classes = mixinRoot.mixinClasses
+			val supportedHosts = classes.map[getAdditionalHosts].flatten.toSet
+			supportedHosts.contains(hostDef)
 		}
 	}
 

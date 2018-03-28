@@ -8,6 +8,8 @@
 package org.franca.deploymodel.dsl.generator
 
 import com.google.inject.Inject
+import org.eclipse.emf.ecore.EClass
+import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.generator.IFileSystemAccess
 import org.eclipse.xtext.generator.IFileSystemAccess2
@@ -15,6 +17,7 @@ import org.eclipse.xtext.generator.IGenerator2
 import org.eclipse.xtext.generator.IGeneratorContext
 import org.franca.deploymodel.core.FDPropertyHost
 import org.franca.deploymodel.dsl.fDeploy.FDEnumType
+import org.franca.deploymodel.dsl.fDeploy.FDExtensionRoot
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification
 import org.franca.deploymodel.dsl.generator.internal.HelperGenerator
@@ -29,6 +32,7 @@ import org.franca.deploymodel.dsl.generator.internal.TypeCollectionAccessorGener
 import static org.franca.deploymodel.extensions.ExtensionRegistry.*
 
 import static extension org.franca.deploymodel.dsl.generator.internal.GeneratorHelper.*
+import static extension org.franca.deploymodel.dsl.generator.internal.HostLogic.*
 
 /**
  * Generator for PropertyAccessor class from deployment specification.
@@ -88,6 +92,7 @@ class FDeployGenerator implements IGenerator2 {
 		
 		fsa.generateFile(path + "/" + spec.classname + ".java", header + code)
 	}
+
 	
 	def private generateCombinedClass(FDSpecification spec) '''
 		/**
@@ -110,14 +115,30 @@ class FDeployGenerator implements IGenerator2 {
 			«genProviderAcc.generate(spec)»
 
 			«FOR root : roots.keySet»
-				«genRootElementAcc.generate(spec, root)»
+				«genRootElementAcc.generate(spec,
+					FDExtensionRoot,
+					root.tag,
+					root.extension.shortDescription,
+					[isHostFor(root)]
+				)»
+				
 			«ENDFOR»
-
+			«FOR clazz : nonFrancaMixinRoots»
+				«val prefix = getNonFrancaMixinPrefix(clazz)»
+				«genRootElementAcc.generate(spec,
+					clazz.instanceClass as Class<? extends EObject>,
+					prefix,
+					getMixinExtension(clazz).shortDescription,
+					[isHostFor(clazz)]
+				)»
+				
+			«ENDFOR»
 			«genOverwriteAcc.generate(spec)»
 		}
 			
 	'''
-	
+
+
 	def private genEnumInterface(FDSpecification spec) '''
 		/**
 		 * Enumerations for deployment specification «spec.name».

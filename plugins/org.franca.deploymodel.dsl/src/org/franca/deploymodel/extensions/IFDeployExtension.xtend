@@ -105,27 +105,56 @@ interface IFDeployExtension {
 			BY_TARGET_FEATURE
 		}
 		
-		public enum AccessorScope {
-			FRANCA_IDL,
-			NON_FRANCA_IDL
-		}
-	
+		val public static CHILD_ELEMENT = "$CHILD_ELEMENT$"
+		
 		EClass clazz
 		AccessorArgumentStyle argumentStyle
-		AccessorScope accessorScope
+		String accessorPrefix
 		Collection<Host> hosts
 		
-		new(EClass clazz, AccessorArgumentStyle argumentStyle, AccessorScope scope, Collection<Host> hosts) {
+		/**
+		 * Constructor for mixin which provides additional hosts for Franca IDL concepts.</p>
+		 * 
+		 * Their properties will be added to existing IDataPropertyAccessor classes.</p>
+		 */
+		new(EClass clazz, AccessorArgumentStyle argumentStyle, Collection<Host> hosts) {
+			this(clazz, argumentStyle, null, hosts)
+		}
+		
+		/**
+		 * Constructor for mixin which provides additional hosts for non-Franca concepts.</p>
+		 * 
+		 * These mixins will get own PropertyAccessor classes (named <em>accessorPrefix</em>PropertyAccessor).</p> 
+		 * 
+		 * @param accessorPrefix prefix for property accessor class name, or CHILD_ELEMENT if this mixin
+		 *                       should be added to other property accessor based on class hierarchy  
+		 */
+		new(EClass clazz, AccessorArgumentStyle argumentStyle, String accessorPrefix, Collection<Host> hosts) {
 			this.clazz = clazz
 			this.argumentStyle = argumentStyle
-			this.accessorScope = scope
+			this.accessorPrefix = accessorPrefix
 			this.hosts = hosts
 		}
 		
 		def EClass getHostingClass() { clazz }
 		def AccessorArgumentStyle getAccessorArgument() { argumentStyle }
-		def AccessorScope getAccessorScope() { accessorScope }
-		def Collection<Host> getHosts() { hosts }
+		def Collection<Host> getHosts() { this.hosts }
+
+		def boolean isNonFrancaMixin() {
+			accessorPrefix!==null
+		}
+		
+		def String getAccessorRootPrefix() {
+			if (accessorPrefix===null || accessorPrefix==CHILD_ELEMENT) {
+				null
+			} else {
+				accessorPrefix
+			}
+		}
+		
+		def boolean isChildMixin() {
+			accessorPrefix==CHILD_ELEMENT
+		}
 	}
 	
 	def Collection<HostMixinDef> getMixins()

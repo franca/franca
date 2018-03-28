@@ -12,7 +12,6 @@ import org.eclipse.emf.ecore.EClass
 import org.franca.core.franca.FrancaPackage
 import org.franca.deploymodel.dsl.fDeploy.FDeployPackage
 import org.franca.deploymodel.extensions.IFDeployExtension.HostMixinDef.AccessorArgumentStyle
-import org.franca.deploymodel.extensions.IFDeployExtension.HostMixinDef.AccessorScope
 
 /**
  * Abstract base class for deployment extension implementations.
@@ -48,7 +47,17 @@ abstract class AbstractFDeployExtension implements IFDeployExtension {
 	/**
 	 * Helper to create a new HostMixinDef descriptor.
 	 */
-	def protected mixin(EClass clazz, AccessorArgumentStyle argStyle, AccessorScope scope, Collection<Host> hosts) {
-		new HostMixinDef(clazz, argStyle, scope, hosts)
+	def protected mixin(EClass clazz, AccessorArgumentStyle argStyle, Collection<Host> hosts) {
+		new HostMixinDef(clazz, argStyle, hosts)
+	}
+
+	/**
+	 * Helper to create a new HostMixinDef descriptor.
+	 * 
+	 * @param accessorPrefix prefix for property accessor class name, or CHILD_ELEMENT if this mixin
+	 *                       should be added to other property accessor based on class hierarchy  
+	 */
+	def protected mixin(EClass clazz, AccessorArgumentStyle argStyle, String accessorPrefix, Collection<Host> hosts) {
+		new HostMixinDef(clazz, argStyle, accessorPrefix, hosts)
 	}
 }

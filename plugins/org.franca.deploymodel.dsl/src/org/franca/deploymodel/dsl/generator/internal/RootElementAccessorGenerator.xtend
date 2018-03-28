@@ -9,13 +9,14 @@
 package org.franca.deploymodel.dsl.generator.internal
 
 import com.google.inject.Inject
+import org.eclipse.emf.ecore.EObject
 import org.franca.deploymodel.core.FDPropertyHost
 import org.franca.deploymodel.core.FDeployedRootElement
 import org.franca.deploymodel.dsl.fDeploy.FDDeclaration
 import org.franca.deploymodel.dsl.fDeploy.FDEnumType
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification
-import org.franca.deploymodel.extensions.IFDeployExtension
+import org.franca.deploymodel.extensions.ExtensionRegistry
 
 import static extension org.franca.deploymodel.dsl.generator.internal.GeneratorHelper.*
 import static extension org.franca.deploymodel.dsl.generator.internal.HostLogic.*
@@ -31,21 +32,21 @@ class RootElementAccessorGenerator {
 	@Inject extension ImportManager
 	@Inject CommonAccessorMethodGenerator helper
 
-	def generate(FDSpecification spec, IFDeployExtension.RootDef rootDef) {
+	def generate(FDSpecification spec, Class<? extends EObject> rootClass, String prefix, String extensionName, (FDPropertyHost)=>boolean checkHost) {
 		val context = new CodeContext
-		val rootTag = rootDef.tag.toFirstUpper
-		val deployed = 'FDeployedRootElement<FDExtensionRoot>'
+		val rootTag = prefix.toFirstUpper
+		val deployed = '''FDeployedRootElement<«rootClass.simpleName»>'''
 		val methods =
 			'''
 				«FOR d : spec.declarations»
-					«d.genProperties(rootDef, context)»
+					«d.genProperties(checkHost, context)»
 				«ENDFOR»
 			'''
 
 		'''
 			/**
-			 * Accessor for deployment properties for '«rootDef.tag»' roots
-			 * (which are defined by the '«rootDef.extension.shortDescription»' extension)
+			 * Accessor for deployment properties for '«prefix»' roots
+			 * (which are defined by the '«extensionName»' extension)
 			 * according to the '«spec.name»' specification.
 			 */
 			public static class «rootTag»PropertyAccessor
@@ -57,7 +58,8 @@ class RootElementAccessorGenerator {
 				«ENDIF»				
 			
 				«addNeededOtherType(FDeployedRootElement)»
-				public ProviderPropertyAccessor(«deployed» target) {
+				«addNeededFrancaType(rootClass)»
+				public «rootTag»PropertyAccessor(«deployed» target) {
 					«IF spec.base!==null»
 					super(target);
 					«ENDIF»
@@ -71,8 +73,8 @@ class RootElementAccessorGenerator {
 		'''
 	}
 	
-	def private genProperties(FDDeclaration decl, IFDeployExtension.RootDef rootDef, ICodeContext context) '''
-		«IF decl.properties.size > 0 && decl.host.isHostFor(rootDef)»
+	def private genProperties(FDDeclaration decl, (FDPropertyHost)=>boolean checkHost, ICodeContext context) '''
+		«IF decl.properties.size > 0 && checkHost.apply(decl.host)»
 			// host '«decl.host.getName»'
 			«FOR p : decl.properties»
 			«p.genProperty(decl.host, context)»
