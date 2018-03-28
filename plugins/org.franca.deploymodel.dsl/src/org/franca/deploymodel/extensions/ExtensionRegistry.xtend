@@ -29,6 +29,7 @@ import org.franca.deploymodel.extensions.IFDeployExtension.HostMixinDef.Accessor
 
 import static extension com.google.common.collect.Iterables.*
 import static extension org.franca.deploymodel.extensions.ExtensionUtils.*
+import org.franca.deploymodel.extensions.IFDeployExtension.HostMixinDef.AccessorScope
 
 /** 
  * This is the registry for deployment extensions.</p>
@@ -105,6 +106,8 @@ class ExtensionRegistry {
 	static Map<Host, Set<EClass>> hostingClasses = newHashMap
 
 	static Map<EClass, EClassifier> accessorArgumentType = newHashMap
+
+	static Set<EClass> isNonFrancaMixinHost = newHashSet
 		
 	def private static void register(IFDeployExtension ^extension) {
 		// add extension to the list of all extensions
@@ -133,9 +136,10 @@ class ExtensionRegistry {
 		
 		// add entries to map of argument-types for property accessors
 		for(mixin : extension.mixins) {
+			val clazz = mixin.hostingClass
+
 			// determine argument type
 			if (mixin.accessorArgument === AccessorArgumentStyle.BY_TARGET_FEATURE) {
-				val clazz = mixin.hostingClass
 				val targetType = clazz.classOfTargetFeature
 				if (accessorArgumentType.containsKey(clazz)) {
 					val targetType0 = accessorArgumentType.get(clazz)
@@ -145,6 +149,11 @@ class ExtensionRegistry {
 				} else {
 					accessorArgumentType.put(clazz, targetType)
 				}
+			}
+			
+			// remember all mixins which should be handled as Franca IDL extensions
+			if (mixin.accessorScope === AccessorScope.NON_FRANCA_IDL) {
+				isNonFrancaMixinHost.add(clazz)
 			}
 		}
 	}
@@ -251,5 +260,9 @@ class ExtensionRegistry {
 			// there is no mapping for this clazz, use it directly as argument type
 			clazz
 		}
+	}
+	
+	def static boolean isNonFrancaMixinHost(EClass clazz) {
+		isNonFrancaMixinHost.contains(clazz)
 	}
 }

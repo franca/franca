@@ -104,28 +104,28 @@ interface IFDeployExtension {
 			BY_RULE_CLASS,
 			BY_TARGET_FEATURE
 		}
+		
+		public enum AccessorScope {
+			FRANCA_IDL,
+			NON_FRANCA_IDL
+		}
 	
 		EClass clazz
 		AccessorArgumentStyle argumentStyle
+		AccessorScope accessorScope
 		Collection<Host> hosts
 		
-		new(EClass clazz, AccessorArgumentStyle argumentStyle, Collection<Host> hosts) {
+		new(EClass clazz, AccessorArgumentStyle argumentStyle, AccessorScope scope, Collection<Host> hosts) {
 			this.clazz = clazz
 			this.argumentStyle = argumentStyle
+			this.accessorScope = scope
 			this.hosts = hosts
 		}
 		
-		def EClass getHostingClass() {
-			clazz
-		}		
-		
-		def AccessorArgumentStyle getAccessorArgument() {
-			argumentStyle
-		} 
-
-		def Collection<Host> getHosts() {
-			hosts
-		}
+		def EClass getHostingClass() { clazz }
+		def AccessorArgumentStyle getAccessorArgument() { argumentStyle }
+		def AccessorScope getAccessorScope() { accessorScope }
+		def Collection<Host> getHosts() { hosts }
 	}
 	
 	def Collection<HostMixinDef> getMixins()

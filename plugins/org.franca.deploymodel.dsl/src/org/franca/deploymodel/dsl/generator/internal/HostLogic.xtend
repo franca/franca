@@ -38,12 +38,28 @@ import static extension org.franca.deploymodel.extensions.ExtensionRegistry.*
  */
 class HostLogic {
 	
+	/**
+	 * The context for which an argument type for a given host should be computed.</p>
+	 * 
+	 * NB: FRANCA_INTERFACE logically includes FRANCA_TYPE, but not vice versa.
+	 */
+	public enum Context {
+		/** hosts which can be applied to Franca IDL types, excluding interface-only hosts */
+		FRANCA_TYPE,
+		
+		/** hosts which can be applied to Franca IDL interfaces, this includes types! */
+		FRANCA_INTERFACE,
+		
+		/** everything outside of Franca IDL, i.e., deployment elements contributed by extensions */
+		NON_FRANCA
+	}
+	
 	val static Set<Class<? extends EObject>> interfaceSpecificClasses = #{ FInterface, FAttribute, FMethod, FBroadcast, FArgument }
 	
 	/**
 	 * Get the argument type for the property accessor method for a given deployment host.
 	 */
-	def static Class<? extends EObject> getArgumentType(FDPropertyHost host, boolean forInterfaces) {
+	def static Class<? extends EObject> getArgumentType(FDPropertyHost host, Context context) {
 		val builtIn = host.builtIn
 		val Class<? extends EObject> result =
 			if (builtIn!==null) {
@@ -74,14 +90,14 @@ class HostLogic {
 				}
 			} else {
 				// this is an extension host
-				host.getArgumentTypeForExtensionHost
+				host.getArgumentTypeForExtensionHost(context)
 			}
 		
 		if (result===null)
 			null
 		else {
 			// filter non-interface results
-			if ((!forInterfaces) && interfaceSpecificClasses.contains(result)) {
+			if ((context!==Context.FRANCA_INTERFACE) && interfaceSpecificClasses.contains(result)) {
 				null
 			} else {
 				result
@@ -89,18 +105,24 @@ class HostLogic {
 		}
 	}
 	
-	def static private Class<? extends EObject> getArgumentTypeForExtensionHost(FDPropertyHost host) {
+	def static private Class<? extends EObject> getArgumentTypeForExtensionHost(FDPropertyHost host, Context context) {
 		val hostDef = host.name.findHost
 		if (hostDef!==null) {
 			// get classes (aka grammar rules) which host properties of this hostDef 
 			val classes = getHostingClasses(hostDef)
+			
+			// filter according to required context
+			val filtered =
+				if (context===Context.NON_FRANCA)
+					classes.filter[isNonFrancaMixinHost]
+				else
+					classes.filter[!isNonFrancaMixinHost] 
 		
 			// get the property-accessor argument types for each of these classes
-			val targetClasses = classes.map[getAccessorArgumentType]
+			val targetClasses = filtered.map[getAccessorArgumentType]
 
 			// if there are multiple argument types, we select a common super-class
 			// see SuperclassFinder for details on this algorithm	
-
 			if (! targetClasses.empty) {
 				val sd = new SuperclassFinder
 				val superclass = sd.findCommonSuperclass(targetClasses)
@@ -117,7 +139,8 @@ class HostLogic {
 	} 
 
 	def static isInterfaceOnly(FDPropertyHost host) {
-		host.getArgumentType(false)===null
+		host.getArgumentType(Context.FRANCA_TYPE)===null &&
+		host.getArgumentType(Context.FRANCA_INTERFACE)!==null  
 	}
 
 	def static boolean isHostFor(FDPropertyHost host, IFDeployExtension.AbstractElementDef elementDef) {

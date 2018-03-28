@@ -82,7 +82,7 @@ class RootElementAccessorGenerator {
 	'''
 	
 	def private genProperty(FDPropertyDecl it, FDPropertyHost host, ICodeContext context) {
-		val argumentType = host.getArgumentType(false)
+		val argumentType = host.getArgumentType(HostLogic.Context.NON_FRANCA)
 		addNeededFrancaType(argumentType)
 		if (argumentType!==null) {
 			context.requireTargetMember

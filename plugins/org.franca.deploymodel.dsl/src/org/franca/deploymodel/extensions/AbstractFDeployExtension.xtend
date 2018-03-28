@@ -8,11 +8,11 @@
 package org.franca.deploymodel.extensions
 
 import java.util.Collection
-import java.util.Map
 import org.eclipse.emf.ecore.EClass
 import org.franca.core.franca.FrancaPackage
 import org.franca.deploymodel.dsl.fDeploy.FDeployPackage
 import org.franca.deploymodel.extensions.IFDeployExtension.HostMixinDef.AccessorArgumentStyle
+import org.franca.deploymodel.extensions.IFDeployExtension.HostMixinDef.AccessorScope
 
 /**
  * Abstract base class for deployment extension implementations.
@@ -48,7 +48,7 @@ abstract class AbstractFDeployExtension implements IFDeployExtension {
 	/**
 	 * Helper to create a new HostMixinDef descriptor.
 	 */
-	def protected mixin(EClass clazz, AccessorArgumentStyle argStyle, Collection<Host> hosts) {
-		new HostMixinDef(clazz, argStyle, hosts)
+	def protected mixin(EClass clazz, AccessorArgumentStyle argStyle, AccessorScope scope, Collection<Host> hosts) {
+		new HostMixinDef(clazz, argStyle, scope, hosts)
 	}
 }

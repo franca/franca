@@ -13,7 +13,6 @@ import org.franca.core.franca.FArgument
 import org.franca.core.franca.FArrayType
 import org.franca.core.franca.FAttribute
 import org.franca.core.franca.FField
-import org.franca.core.franca.FInterface
 import org.franca.deploymodel.core.FDPropertyHost
 import org.franca.deploymodel.dsl.fDeploy.FDAbstractExtensionElement
 import org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost
@@ -21,6 +20,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDDeclaration
 import org.franca.deploymodel.dsl.fDeploy.FDEnumType
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification
+import org.franca.deploymodel.extensions.ExtensionRegistry
 
 import static extension org.franca.deploymodel.dsl.generator.internal.GeneratorHelper.*
 import static extension org.franca.deploymodel.dsl.generator.internal.HostLogic.*
@@ -52,7 +52,8 @@ abstract class AccessMethodGenerator {
 
 
 	def private genProperties(FDDeclaration decl, boolean forInterfaces, ICodeContext context) {
-		val argtype = decl.host.getArgumentType(forInterfaces)
+		val hostContext = getHostContext(forInterfaces)
+		val argtype = decl.host.getArgumentType(hostContext)
 		if (decl.properties.size > 0 && argtype!==null) {
 			val isExtensionClass = FDAbstractExtensionElement.isAssignableFrom(argtype)
 			if (! isExtensionClass) {
@@ -81,11 +82,18 @@ abstract class AccessMethodGenerator {
 				«ENDIF»
 			'''
 		} else {
-			val argtype = host.getArgumentType(forInterfaces)
+			val hostContext = getHostContext(forInterfaces)
+			val argtype = host.getArgumentType(hostContext)
 			genProperty(pd, host, argtype, false, context)
 		}
 	}
 	
+	def private getHostContext(boolean forInterfaces) {
+		if (forInterfaces)
+			HostLogic.Context.FRANCA_INTERFACE
+		else
+			HostLogic.Context.FRANCA_TYPE
+	}
 
 	def private genProperty(
 		FDPropertyDecl it,
