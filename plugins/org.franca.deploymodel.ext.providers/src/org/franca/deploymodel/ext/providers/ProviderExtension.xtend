@@ -8,9 +8,16 @@
 package org.franca.deploymodel.ext.providers
 
 import java.util.Collection
+import org.eclipse.xtext.EcoreUtil2
+import org.eclipse.xtext.resource.IEObjectDescription
+import org.eclipse.xtext.scoping.impl.FilteringScope
+import org.franca.deploymodel.dsl.fDeploy.FDExtensionElement
+import org.franca.deploymodel.dsl.fDeploy.FDValue
 import org.franca.deploymodel.extensions.AbstractFDeployExtension
 
 import static org.franca.deploymodel.extensions.IFDeployExtension.AbstractElementDef.Nameable.*
+
+import static extension org.franca.deploymodel.ext.providers.ProviderUtils.*
 
 /**
  * Implementation of provider/instance deployment extension.</p>
@@ -28,15 +35,34 @@ class ProviderExtension extends AbstractFDeployExtension {
 		"providers and instances"
 	}
 
-	val providers = new Host("providersX")
-	val instances = new Host("instancesX")
+	val public static PROVIDER_TAG = "provider"
+	val public static INSTANCE_TAG = "instance"
+	
+	val providers = new Host("providers")
+	val instances = new Host("instances")
 	
 	override Collection<RootDef> getRoots() {
 		val root1 =
-			new RootDef(this, "providerX", MANDATORY_NAME, #[ providers ]) => [
-				addChild(new ElementDef("instanceX", fidl.FInterface, OPTIONAL_NAME, #[ instances ]))
+			new RootDef(this, PROVIDER_TAG, MANDATORY_NAME, #[ providers ]) => [
+				addChild(new ElementDef(INSTANCE_TAG, fidl.FInterface, OPTIONAL_NAME, #[ instances ]))
 			]
 
 		#[ root1 ]
+	}
+
+	override Collection<TypeDef> getTypes() {
+		#[
+			// the new deployment property type "Instance" can be used to refer to "instance"
+			// elements in deployment definitions 
+			new TypeDef("Instance",
+				[ all | new FilteringScope(all, [isInstanceReference]) ],
+				[ element | element.getDefaultInstanceValue ],
+				FDExtensionElement
+			)
+		]
+	}
+	
+	def private boolean isInstanceReference(IEObjectDescription obj) {
+		EcoreUtil2.isAssignableFrom(fdeploy.FDExtensionElement, obj.EClass)
 	}
 }

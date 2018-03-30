@@ -14,7 +14,6 @@ import org.franca.core.franca.FField;
 import org.franca.core.franca.FModelElement;
 import org.franca.core.franca.FTypeCollection;
 import org.franca.deploymodel.core.FDeployedInterface;
-import org.franca.deploymodel.core.FDeployedProvider;
 import org.franca.deploymodel.core.FDeployedTypeCollection;
 import org.franca.deploymodel.core.MappingGenericPropertyAccessor;
 import org.franca.deploymodel.dsl.fDeploy.FDCompoundOverwrites;
@@ -253,18 +252,6 @@ public class SpecTypeCollectionRef {
 		public IDataPropertyAccessor getOverwriteAccessor(FArrayType obj) {
 			return helper.getOverwriteAccessorAux(obj);
 		}
-	}
-
-	/**
-	 * Accessor for deployment properties for providers and interface instances
-	 * according to the 'org.example.spec.SpecTypeCollection' specification.
-	 */
-	public static class ProviderPropertyAccessor
-		implements Enums
-	{
-		public ProviderPropertyAccessor(FDeployedProvider target) {
-		}
-		
 	}
 
 	/**

@@ -7,6 +7,11 @@ specification a.b.c.MySpec18 {
 		ProviderInstanceProp : Instance;
 		ProviderInstanceArrayProp : Instance[];
 	}
+	
+	for instances {
+		InstanceInstanceProp : Instance;
+		InstanceInstanceArrayProp : Instance[];
+	}
 
 	for interfaces {
 		InterfaceInstanceProp : Instance;

@@ -56,7 +56,7 @@ specification org.example.spec.MySpec extends The_PlatformDeploySpec
 
 // XPECT proposals at 'org.example.spec.MySpec' --> The_PlatformDeploySpec, The_PlatformDeploySpec_WithAlias, org.example.spec.MySpec 
 define org.example.spec.MySpec 
-	for provider SomeProvider {
+	for provider as SomeProvider {
 		ProcessName = "foobar"
 		ProcessName2 = "foobar"
 	}

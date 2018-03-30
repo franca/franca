@@ -7,9 +7,12 @@
  *******************************************************************************/
 package org.franca.examples.deploy.generators
 
-import org.franca.deploymodel.core.FDeployedProvider
+import org.example.spec.IPBasedIPC.Enums.AccessControl
 import org.example.spec.SampleDeploySpec.ProviderPropertyAccessor
-import org.franca.deploymodel.dsl.fDeploy.FDProviderimport org.example.spec.SampleDeploySpec.Enums.AccessControl
+import org.franca.deploymodel.dsl.fDeploy.FDExtensionRoot
+import org.franca.deploymodel.ext.providers.FDeployedProvider
+
+import static extension org.franca.deploymodel.ext.providers.ProviderUtils.*
 
 /**
  * This is an example code generator for the non-interface related part of 
@@ -33,7 +36,7 @@ class ExampleRuntimeConfigGenerator {
 	 * This ProviderPropertyAccessor will be used to read the deployment
 	 * information stored for this provider.
 	 */
-	def generateRuntimeConfig (FDeployedProvider deployed) {
+	def generateRuntimeConfig(FDeployedProvider deployed) {
 		deploy = new ProviderPropertyAccessor(deployed)
 		generateProvider(deployed.provider)	
 	}
@@ -44,14 +47,14 @@ class ExampleRuntimeConfigGenerator {
 	 * definition. The PropertyAccessor ("deploy") is used for extracting
 	 * the deployment information in a type-safe way easily. 
 	 */
-	def generateProvider (FDProvider it) '''
-		RUNTIME CONFIGURATION FOR PROVIDER: «name»
+	def generateProvider(FDExtensionRoot provider) '''
+		RUNTIME CONFIGURATION FOR PROVIDER: «provider.name»
 		
-		Process name: «deploy.getProcessName(it)»
+		Process name: «deploy.getProcessName(provider)»
 		
 		Provided interfaces:
-		«FOR inst : instances»
-		- instance of «inst.target.name»
+		«FOR inst : provider.instances»
+		- instance of «inst.targetInterface.name»
 		  - address: «deploy.getIPAddress(inst)»:«deploy.getPort(inst)»
 		  - access:  «deploy.getAccessControl(inst).generate»
 		«ENDFOR»

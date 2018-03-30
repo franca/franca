@@ -1,0 +1,29 @@
+// deployment definition
+
+import "18-SpecPropertyInstanceType.fdepl"
+import "../fidl/01-EmptyInterface.fidl"
+
+define a.b.c.MySpec18 for provider as SomeProvider {
+	ProviderInstanceProp = Inst1
+	ProviderInstanceArrayProp = { Inst1, Inst2 }
+	
+	instance fidl.EmptyInterface as Inst1 {
+		InstanceInstanceProp = Inst2
+		InstanceInstanceArrayProp = { SomeProvider.Inst1, Inst2 }
+	}
+
+	instance fidl.EmptyInterface as Inst2 {
+		InstanceInstanceProp = Inst1
+		InstanceInstanceArrayProp = { OtherProvider.Inst1 }
+	}
+}
+
+define a.b.c.MySpec18 for provider as OtherProvider {
+	ProviderInstanceProp = SomeProvider.Inst1
+	ProviderInstanceArrayProp = { SomeProvider.Inst1 }
+	
+	instance fidl.EmptyInterface as Inst1 {
+		InstanceInstanceProp = SomeProvider.Inst2
+		InstanceInstanceArrayProp = { SomeProvider.Inst1 }
+	}
+}
