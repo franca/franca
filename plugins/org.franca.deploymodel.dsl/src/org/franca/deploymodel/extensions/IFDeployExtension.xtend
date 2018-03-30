@@ -9,17 +9,26 @@ package org.franca.deploymodel.extensions
 
 import java.util.Collection
 import org.eclipse.emf.ecore.EClass
+import org.eclipse.emf.ecore.EObject
+import org.eclipse.xtext.scoping.IScope
+import org.franca.deploymodel.dsl.fDeploy.FDElement
+import org.franca.deploymodel.dsl.fDeploy.FDValue
 
 /** 
- * TODO: Document deployment extensions.
+ * Extension point which can be used to specify deployment extensions.</p>
  * 
  * @author Klaus Birken (itemis AG)
  */
 interface IFDeployExtension {
 
+	/**
+	 * Definition of a new deployment host for this extension.</p>
+	 */
 	static class Host {
 		String name
+		
 		new(String name) { this.name = name }
+		
 		def String getName() { name }
 		
 		override String toString() {
@@ -27,8 +36,14 @@ interface IFDeployExtension {
 		}
  	}
 
+	/**
+	 * Short description of this extension to be used by the IDE's user interface.</p>
+	 */
 	def String getShortDescription()
 
+	/**
+	 * A common base class for deployment definition roots and elements.</p> 
+	 */
 	static abstract class AbstractElementDef {
 		public enum Nameable { NO_NAME, OPTIONAL_NAME, MANDATORY_NAME }
 
@@ -63,22 +78,9 @@ interface IFDeployExtension {
 		def Collection<ElementDef> getChildren() { children }
 	}
 
-	static class ElementDef extends AbstractElementDef {
-		AbstractElementDef parent
-
-		new(String tag, Nameable isNameable, Collection<Host> hosts) {
-			super(tag, isNameable, hosts)
-		}
-
-		new(String tag, EClass targetClass, Nameable isNameable, Collection<Host> hosts) {
-			super(tag, targetClass, isNameable, hosts)
-		}
-
-		def void setParent(AbstractElementDef parent) {
-			this.parent = parent
-		}
-	}
-
+	/**
+	 * Descriptor of a new root element for deployment definitions.</p>
+	 */
 	static class RootDef extends AbstractElementDef {
 		IFDeployExtension ^extension
 
@@ -96,6 +98,29 @@ interface IFDeployExtension {
 		}
 	}
 
+	/**
+	 * Descriptor of a new child element for deployment definitions.</p>
+	 */
+	static class ElementDef extends AbstractElementDef {
+		AbstractElementDef parent
+
+		new(String tag, Nameable isNameable, Collection<Host> hosts) {
+			super(tag, isNameable, hosts)
+		}
+
+		new(String tag, EClass targetClass, Nameable isNameable, Collection<Host> hosts) {
+			super(tag, targetClass, isNameable, hosts)
+		}
+
+		def void setParent(AbstractElementDef parent) {
+			this.parent = parent
+		}
+	}
+
+	/**
+	 * Called by the framework to get the list of new root elements
+	 * provided by this deployment definition extension.</p>
+	 */
 	def Collection<RootDef> getRoots()
 
 	
@@ -157,5 +182,54 @@ interface IFDeployExtension {
 		}
 	}
 	
+	/**
+	 * Called by the framework to get the list of new mixin elements
+	 * provided by this deployment extension.</p>
+	 */
 	def Collection<HostMixinDef> getMixins()
+
+	
+	static class TypeDef {
+		String name
+		(IScope)=>IScope scopeFunc
+		(FDElement)=>FDValue defaultCreator
+		Class<? extends EObject> runtimeType
+		
+		new(
+			String name,
+			(IScope)=>IScope scopeFunc,
+			(FDElement)=>FDValue defaultCreator, 
+			Class<? extends EObject> runtimeType
+		) {
+			this.name = name
+			this.scopeFunc = scopeFunc
+			this.defaultCreator = defaultCreator
+			this.runtimeType = runtimeType
+		}
+		
+		def String getName() {
+			name
+		}
+		
+		def IScope getScope(IScope all) {
+			if (scopeFunc===null)
+				IScope.NULLSCOPE
+			else
+				scopeFunc.apply(all)
+		}
+		
+		def FDValue createDefaultValue(FDElement element) {
+			defaultCreator?.apply(element)
+		}
+		
+		def Class<? extends EObject> getRuntimeType() {
+			runtimeType
+		}
+	}
+	
+	/**
+	 * Called by the framework to get the list of additional property types
+	 * provided by this deployment extension.</p>
+	 */
+	def Collection<TypeDef> getTypes()
 }

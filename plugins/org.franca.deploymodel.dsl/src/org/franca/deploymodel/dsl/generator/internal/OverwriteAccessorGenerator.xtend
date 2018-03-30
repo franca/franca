@@ -155,7 +155,7 @@ class OverwriteAccessorGenerator extends AccessMethodGenerator {
 	'''
 
 	def private genOverwriteAccess(FDPropertyDecl it, String objname) '''
-		«type.javaType» v = target.get«type.getter»(«objname», "«name»");
+		«type.javaType» v = target.get«type.getter»(«objname», «type.extraArgs»"«name»");
 		if (v!=null)
 			return v;
 	'''

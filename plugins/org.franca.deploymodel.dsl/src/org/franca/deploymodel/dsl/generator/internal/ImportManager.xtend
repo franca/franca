@@ -13,9 +13,10 @@ import java.util.Set
 import org.eclipse.emf.ecore.EObject
 import org.franca.core.franca.FInterface
 import org.franca.deploymodel.dsl.fDeploy.FDEnumType
-import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance
+import org.franca.deploymodel.dsl.fDeploy.FDExtensionType
 import org.franca.deploymodel.dsl.fDeploy.FDPredefinedTypeId
 import org.franca.deploymodel.dsl.fDeploy.FDTypeRef
+import org.franca.deploymodel.extensions.ExtensionRegistry
 
 @Singleton
 class ImportManager {
@@ -45,15 +46,17 @@ class ImportManager {
 						neededFrancaTypes.add(FInterface)
 						"FInterface"
 					}
-					case FDPredefinedTypeId::INSTANCE:  {
-						neededFrancaTypes.add(FDInterfaceInstance)
-						"FDInterfaceInstance"
-					}
 				}
 			} else {
 				val ct = typeRef.complex
 				switch (ct) {
 					FDEnumType: "String"
+					FDExtensionType: {
+						val typeDef = ExtensionRegistry.findType(ct.name)
+						val t = typeDef.runtimeType
+						neededFrancaTypes.add(t)
+						t.simpleName
+					}
 				}
 			}
 		if (typeRef.array===null)

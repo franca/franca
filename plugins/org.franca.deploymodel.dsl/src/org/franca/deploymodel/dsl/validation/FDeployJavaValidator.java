@@ -51,6 +51,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDEnumerationOverwrites;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumerator;
 import org.franca.deploymodel.dsl.fDeploy.FDExtensionElement;
 import org.franca.deploymodel.dsl.fDeploy.FDExtensionRoot;
+import org.franca.deploymodel.dsl.fDeploy.FDExtensionType;
 import org.franca.deploymodel.dsl.fDeploy.FDField;
 import org.franca.deploymodel.dsl.fDeploy.FDInteger;
 import org.franca.deploymodel.dsl.fDeploy.FDInterface;
@@ -815,6 +816,17 @@ public class FDeployJavaValidator extends AbstractFDeployValidator
 	// *****************************************************************************
 	// type system
 	
+	@Check
+	public void checkExtensionTyoe(FDExtensionType type) {
+		String name = type.getName();
+		IFDeployExtension.TypeDef typeDef = ExtensionRegistry.findType(name);
+		if (typeDef==null) {
+			// didn't find type by name
+			error("Invalid type '" + name + "', no matching deployment extension has been configured",
+					type, FDeployPackage.Literals.FD_EXTENSION_TYPE__NAME, -1);
+		}
+	}
+
 	@Check
 	public void checkPropertyFlagType(FDPropertyFlag flag) {
 		if (flag.getDefault()==null)

@@ -31,7 +31,7 @@ class CommonAccessorMethodGenerator extends AccessMethodGenerator {
 
 	def generateMethod(FDPropertyDecl it, Class<? extends EObject> argumentType) '''
 		public «type.javaType» «methodName»(«argumentType.simpleName» obj) {
-			return target.get«type.getter»(obj, "«name»");
+			return target.get«type.getter»(obj, «type.extraArgs»"«name»");
 		}
 	'''
 

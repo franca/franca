@@ -18,6 +18,7 @@ import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 import org.eclipse.xtext.resource.XtextResource
 import org.eclipse.xtext.util.CancelIndicator
 import org.franca.deploymodel.dsl.fDeploy.FDAbstractExtensionElement
+import org.franca.deploymodel.dsl.fDeploy.FDExtensionType
 import org.franca.deploymodel.dsl.fDeploy.FDModel
 import org.franca.deploymodel.dsl.fDeploy.FDeployPackage
 import org.franca.deploymodel.dsl.services.FDeployGrammarAccess
@@ -55,6 +56,16 @@ class FDeploySemanticHighlightingCalculator implements ISemanticHighlightingCalc
 			for(elem : elements) {
 				for(INode node : NodeModelUtils.findNodesForFeature(elem,
 					FDeployPackage.Literals.FD_ABSTRACT_EXTENSION_ELEMENT__TAG)) {
+					acceptor.addPosition(node.offset, node.length, FDeployHighlightingStyles.KEYWORD_ID)
+				}
+			}
+		}
+		// highlight all names of extension types as normal keywords
+		if (model!==null && model instanceof FDModel) {
+			val types = EcoreUtil2.getAllContentsOfType(model, FDExtensionType)
+			for(type : types) {
+				for(INode node : NodeModelUtils.findNodesForFeature(type,
+					FDeployPackage.Literals.FD_EXTENSION_TYPE__NAME)) {
 					acceptor.addPosition(node.offset, node.length, FDeployHighlightingStyles.KEYWORD_ID)
 				}
 			}

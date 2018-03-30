@@ -42,9 +42,9 @@ import org.franca.deploymodel.dsl.scoping.DeploySpecProvider
 import org.franca.deploymodel.dsl.scoping.DeploySpecProvider.DeploySpecEntry
 import org.franca.deploymodel.extensions.ExtensionRegistry
 import org.franca.deploymodel.extensions.IFDeployExtension
-import org.franca.deploymodel.extensions.IFDeployExtension.AbstractElementDef
 import org.franca.deploymodel.extensions.IFDeployExtension.ElementDef
 import org.franca.deploymodel.extensions.IFDeployExtension.RootDef
+import org.franca.deploymodel.extensions.IFDeployExtension.TypeDef
 
 /** 
  * see
@@ -202,7 +202,7 @@ class FDeployProposalProvider extends AbstractFDeployProposalProvider {
 			val obj = contentAssistContext.previousModel
 			if (obj instanceof FDAbstractExtensionElement) {
 				val elementDef = ExtensionRegistry.getElement(obj)
-				if (! elementDef.mayHaveName)
+				if (elementDef===null || ! elementDef.mayHaveName)
 					return
 			}
 		}
@@ -252,6 +252,20 @@ class FDeployProposalProvider extends AbstractFDeployProposalProvider {
 				acceptor.accept(createCompletionProposal(proposal, displayString, null, context));
 			}
 		}
+	}
+
+	override void completeFDExtensionType_Name(
+			EObject model,
+			Assignment assignment,
+			ContentAssistContext context,
+			ICompletionProposalAcceptor acceptor) {
+		val types = ExtensionRegistry.types
+		for(TypeDef type : types.keySet()) {
+			val proposal = type.name
+			val displayString = proposal + " (" + types.get(type).getShortDescription() + ")"
+			acceptor.accept(createCompletionProposal(proposal, displayString, null, context))
+		}
+		completeRuleCall(assignment.getTerminal as RuleCall, context, acceptor)
 	}
 
 	override void complete_FDTypeOverwrites(EObject elem, RuleCall ruleCall, ContentAssistContext context,

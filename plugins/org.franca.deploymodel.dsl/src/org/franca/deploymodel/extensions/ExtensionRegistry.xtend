@@ -46,6 +46,15 @@ class ExtensionRegistry {
 	
 	static List<IFDeployExtension> extensions = null
 
+	// auxiliary data structures (used as cache)
+	static Map<EClass, Iterable<Host>> allAdditionalHosts = newHashMap
+	static Map<Host, Set<EClass>> hostingClasses = newHashMap
+	static Map<EClass, IFDeployExtension> mixinExtensions = newHashMap
+	static Map<EClass, EClassifier> accessorArgumentType = newHashMap
+	static Set<EClass> isNonFrancaMixin = newHashSet
+	static Map<EClass, String> nonFrancaMixinRootPrefix = newHashMap
+	static Multimap<EClass, EClass> mixinChildren = LinkedListMultimap.create
+
 	/** 
 	 * Add extension to registry.</p>
 	 * 
@@ -58,7 +67,25 @@ class ExtensionRegistry {
 		if (extensions === null) {
 			extensions = Lists.newArrayList()
 		}
+		//println("DEPLOYEXTENSION STANDALONE ADD '" + extension.shortDescription + "'")
 		register(^extension)
+	}
+	
+	/**
+	 * Reset the registry and remove all extensions.</p>
+	 * 
+	 * This should be used by standalone tests which call addExtension() to
+	 * register an extension and test it.</p> 
+	 */
+	def static void reset() {
+		//println("DEPLOYEXTENSION STANDALONE CLEAR")
+		extensions.clear
+		allAdditionalHosts.clear
+		hostingClasses.clear
+		mixinExtensions.clear
+		accessorArgumentType.clear
+		isNonFrancaMixin.clear
+		mixinChildren.clear
 	}
 
 	/** 
@@ -103,24 +130,17 @@ class ExtensionRegistry {
 		}
 	}
 
-	static Map<EClass, Iterable<Host>> allAdditionalHosts = newHashMap
-	
-	static Map<Host, Set<EClass>> hostingClasses = newHashMap
-
-	static Map<EClass, IFDeployExtension> mixinExtensions = newHashMap
-
-	static Map<EClass, EClassifier> accessorArgumentType = newHashMap
-
-	static Set<EClass> isNonFrancaMixin = newHashSet
-	
-	static Map<EClass, String> nonFrancaMixinRootPrefix = newHashMap
-
-	static Multimap<EClass, EClass> mixinChildren = LinkedListMultimap.create
-		
 	def private static void register(IFDeployExtension ^extension) {
 		// add extension to the list of all extensions
+		val desc = extension.shortDescription
+		if (extensions.map[shortDescription].contains(desc)) {
+			System.err.println("ERROR: Deployment extension '" + desc + "' has already been registered!")
+			return
+		}
 		extensions.add(^extension)
 		
+		//println("DEPLOYEXTENSION REGISTERED '" + desc + "'")
+
 		for(root : extension.roots) {
 			root.hosts.forEach[addHostingClass(FDeployPackage.eINSTANCE.FDExtensionRoot)]
 			root.hostsOnlyInSubtree.forEach[addHostingClass(FDeployPackage.eINSTANCE.FDExtensionElement)]
@@ -307,4 +327,20 @@ class ExtensionRegistry {
 	def static boolean isNonFrancaMixinHost(EClass clazz) {
 		isNonFrancaMixin.contains(clazz)
 	}
+
+	def static Map<IFDeployExtension.TypeDef, IFDeployExtension> getTypes() {
+		val result = newHashMap
+		for(ext : getExtensions()) {
+			for(type : ext.types) {
+				result.put(type, ext)
+			} 
+		}
+		result
+	}
+
+	def static IFDeployExtension.TypeDef findType(String typeName) {
+		val types = getExtensions().map[types].flatten//.filter[tag!==null]
+		types.findFirst[name==typeName]
+	}
+
 }

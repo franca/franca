@@ -86,6 +86,9 @@
   <eClassifiers xsi:type="ecore:EClass" name="FDEnumerator">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDExtensionType" eSuperTypes="#//FDType">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FDRootElement" eSuperTypes="#//FDElement">
     <eStructuralFeatures xsi:type="ecore:EReference" name="spec" eType="#//FDSpecification"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>

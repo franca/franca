@@ -66,10 +66,10 @@ FDTypeRef:
 	(predefined=FDPredefinedTypeId | complex=FDType) (array='[]')?;
 
 enum FDPredefinedTypeId:
-	Integer | String | Boolean | Interface | Instance;
+	Integer | String | Boolean | Interface;
 
 FDType:
-	FDEnumType;
+	FDEnumType | FDExtensionType;
 
 FDEnumType:
 	'{' enumerators+=FDEnumerator (',' enumerators+=FDEnumerator)* '}';
@@ -77,6 +77,8 @@ FDEnumType:
 FDEnumerator:
 	name=ID;
 
+FDExtensionType:
+	name=ID;
 
 // **************************************************************
 // content definition (model part)

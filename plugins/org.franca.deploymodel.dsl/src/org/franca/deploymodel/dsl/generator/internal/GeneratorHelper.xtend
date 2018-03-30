@@ -10,11 +10,13 @@ package org.franca.deploymodel.dsl.generator.internal
 import java.util.List
 import org.eclipse.xtext.EcoreUtil2
 import org.franca.deploymodel.dsl.fDeploy.FDEnumType
+import org.franca.deploymodel.dsl.fDeploy.FDExtensionType
 import org.franca.deploymodel.dsl.fDeploy.FDModel
 import org.franca.deploymodel.dsl.fDeploy.FDPredefinedTypeId
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification
 import org.franca.deploymodel.dsl.fDeploy.FDTypeRef
+import org.franca.deploymodel.extensions.ExtensionRegistry
 
 class GeneratorHelper {
 
@@ -26,17 +28,29 @@ class GeneratorHelper {
 					case FDPredefinedTypeId::INTEGER:   "Integer"
 					case FDPredefinedTypeId::STRING:    "String"
 					case FDPredefinedTypeId::INTERFACE: "Interface"
-					case FDPredefinedTypeId::INSTANCE:  "InterfaceInstance"
 				}
 			} else {
-				switch (typeRef.complex) {
+				val ct = typeRef.complex
+				switch (ct) {
 					FDEnumType: "Enum"
+					FDExtensionType: "GenericReference"
 				}
 			}
 		if (typeRef.array===null)
 			single
 		else
 			single + "Array"
+	}
+	
+	def static getExtraArgs(FDTypeRef typeRef) {
+		val ct = typeRef.complex
+		if (ct!==null) {
+			if (ct instanceof FDExtensionType) {
+				val typeDef = ExtensionRegistry.findType(ct.name)
+				return '''«typeDef.runtimeType.simpleName».class, '''
+			}
+		}
+		""
 	}
 	
 	def static hasEnumType(FDPropertyDecl decl) {

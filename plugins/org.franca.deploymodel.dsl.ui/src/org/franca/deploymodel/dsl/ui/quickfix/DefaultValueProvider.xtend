@@ -10,6 +10,7 @@ package org.franca.deploymodel.dsl.ui.quickfix
 import org.franca.deploymodel.dsl.fDeploy.FDComplexValue
 import org.franca.deploymodel.dsl.fDeploy.FDElement
 import org.franca.deploymodel.dsl.fDeploy.FDEnumType
+import org.franca.deploymodel.dsl.fDeploy.FDExtensionType
 import org.franca.deploymodel.dsl.fDeploy.FDInterface
 import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance
 import org.franca.deploymodel.dsl.fDeploy.FDProvider
@@ -17,6 +18,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDTypeRef
 import org.franca.deploymodel.dsl.fDeploy.FDTypes
 import org.franca.deploymodel.dsl.fDeploy.FDValue
 import org.franca.deploymodel.dsl.fDeploy.FDeployFactory
+import org.franca.deploymodel.extensions.ExtensionRegistry
 
 import static org.franca.deploymodel.dsl.fDeploy.FDPredefinedTypeId.*
 
@@ -32,7 +34,7 @@ class DefaultValueProvider {
 	 */
 	def static FDComplexValue generateDefaultValue(FDElement element, FDTypeRef typeRef) {
 		var FDValue simple = null
-		if (typeRef.complex == null) {
+		if (typeRef.complex === null) {
 			switch (typeRef.predefined.value) {
 				case BOOLEAN_VALUE:
 					simple = FDeployFactory.eINSTANCE.createFDBoolean => [ value = "false" ]
@@ -85,12 +87,15 @@ class DefaultValueProvider {
 				simple = FDeployFactory.eINSTANCE.createFDGeneric => [
 					value = complex.enumerators.get(0)
 				]
+			} else if (complex instanceof FDExtensionType) {
+				val typeDef = ExtensionRegistry.findType(complex.name)
+				simple = typeDef.createDefaultValue(element)
 			}
 		}
 
-		if (simple!=null) {
+		if (simple!==null) {
 			val ret = FDeployFactory.eINSTANCE.createFDComplexValue
-			if (typeRef.array == null) {
+			if (typeRef.array === null) {
 				ret.single = simple
 			} else {
 				// this is an array-property (aka group), at least one element required

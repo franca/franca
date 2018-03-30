@@ -68,6 +68,7 @@ import org.franca.deploymodel.extensions.ExtensionRegistry
 import static extension org.eclipse.xtext.scoping.Scopes.*
 import static extension org.franca.core.FrancaModelExtensions.*
 import static extension org.franca.deploymodel.core.FDModelUtils.*
+import org.franca.deploymodel.dsl.fDeploy.FDExtensionType
 
 class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 
@@ -382,13 +383,11 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 			val type = typeRef.getComplex
 			if (type instanceof FDEnumType) {
 				return type.getEnumerators.scopeFor
-			}
-		} else {
-			if (typeRef.predefined==FDPredefinedTypeId::INSTANCE) {
-				return new SimpleScope(Scopes::selectCompatible(
-					delegateGetScope(ctxt, ref).allElements,
-					FDeployPackage::eINSTANCE.FDInterfaceInstance
-				))
+			} else if (type instanceof FDExtensionType) {
+				// get scope for possible value references for extension type
+				val typeDef = ExtensionRegistry.findType(type.name)
+				val delegate = ctxt.delegateGetScope(ref)
+				return typeDef.getScope(delegate)
 			}
 		}
 		IScope::NULLSCOPE

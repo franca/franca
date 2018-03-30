@@ -35,6 +35,13 @@ abstract class AbstractFDeployExtension implements IFDeployExtension {
 	}
 
 	/**
+	 * Empty default implementation of interface method.</p>
+	 */
+	override Collection<TypeDef> getTypes() {
+		#[ ]
+	}
+
+	/**
 	 * Helper to easily access elements of Franca IDL EMF package.</p> 
 	 */
 	def protected fidl()    { FrancaPackage.eINSTANCE }	

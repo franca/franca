@@ -205,7 +205,7 @@ class FDeployLabelProvider extends DefaultEObjectLabelProvider {
 	def String image(FDDeclaration element) {
 		val host = element.host
 		val builtin = host.builtIn
-		if (builtin==null) {
+		if (builtin===null) {
 			// this is a host from a deployment extension
 			// TODO: provide sensible default, or icon from extension 
 			return null
