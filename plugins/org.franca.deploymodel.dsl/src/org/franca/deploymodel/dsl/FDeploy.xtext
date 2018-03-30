@@ -84,31 +84,13 @@ FDExtensionType:
 // content definition (model part)
 
 FDRootElement:
-	FDExtensionRoot | FDProvider | FDTypes | FDInterface;
+	FDExtensionRoot | FDTypes | FDInterface;
 
 FDElement:
-	FDRootElement | FDInterfaceInstance |
+	FDRootElement |
 	FDExtensionElement |
 	FDAttribute | FDOperation | FDArgument |
 	FDTypeDefinition | FDField | FDEnumeration | FDEnumValue;
-
-FDProvider:
-	'define' spec=[FDSpecification|FQN]
-	'for' 'provider' name=FQN
-	'{'
-		('use' use+=[FDRootElement|FQN])*
-
-		// the own properties of this interface provider
-		properties=FDPropertySet
-		
-		// instances of interfaces
-		instances+=FDInterfaceInstance*
-	'}';
-
-FDInterfaceInstance:
-	'instance' target=[fidl::FInterface|FQN] ('as' name=FQN)? '{'
-		properties=FDPropertySet
-	'}';
 
 FDAbstractExtensionElement:
 	FDExtensionRoot | FDExtensionElement;

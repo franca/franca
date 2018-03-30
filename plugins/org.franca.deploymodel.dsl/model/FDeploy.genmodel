@@ -31,15 +31,12 @@
       <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDBuiltInPropertyHost/booleans"/>
       <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDBuiltInPropertyHost/byte_buffers"/>
       <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDBuiltInPropertyHost/fields"/>
-      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDBuiltInPropertyHost/providers"/>
-      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDBuiltInPropertyHost/instances"/>
     </genEnums>
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="FDeploy.ecore#//FDPredefinedTypeId">
       <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPredefinedTypeId/Integer"/>
       <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPredefinedTypeId/String"/>
       <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPredefinedTypeId/Boolean"/>
       <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPredefinedTypeId/Interface"/>
-      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPredefinedTypeId/Instance"/>
     </genEnums>
     <genDataTypes ecoreDataType="FDeploy.ecore#//FDPropertyHostType"/>
     <genClasses ecoreClass="FDeploy.ecore#//FDModel">
@@ -104,13 +101,6 @@
     <genClasses ecoreClass="FDeploy.ecore#//FDExtensionRoot"/>
     <genClasses ecoreClass="FDeploy.ecore#//FDExtensionElement">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute FDeploy.ecore#//FDExtensionElement/name"/>
-    </genClasses>
-    <genClasses ecoreClass="FDeploy.ecore#//FDProvider">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDProvider/instances"/>
-    </genClasses>
-    <genClasses ecoreClass="FDeploy.ecore#//FDInterfaceInstance">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDInterfaceInstance/target"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute FDeploy.ecore#//FDInterfaceInstance/name"/>
     </genClasses>
     <genClasses ecoreClass="FDeploy.ecore#//FDTypes">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDTypes/target"/>

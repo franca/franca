@@ -8,7 +8,6 @@
 package org.franca.deploymodel.dsl.generator
 
 import com.google.inject.Inject
-import org.eclipse.emf.ecore.EClass
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.generator.IFileSystemAccess
@@ -25,7 +24,6 @@ import org.franca.deploymodel.dsl.generator.internal.IDataGenerator
 import org.franca.deploymodel.dsl.generator.internal.ImportManager
 import org.franca.deploymodel.dsl.generator.internal.InterfaceAccessorGenerator
 import org.franca.deploymodel.dsl.generator.internal.OverwriteAccessorGenerator
-import org.franca.deploymodel.dsl.generator.internal.ProviderAccessorGenerator
 import org.franca.deploymodel.dsl.generator.internal.RootElementAccessorGenerator
 import org.franca.deploymodel.dsl.generator.internal.TypeCollectionAccessorGenerator
 
@@ -50,12 +48,10 @@ class FDeployGenerator implements IGenerator2 {
 	@Inject HelperGenerator genHelper
 	@Inject TypeCollectionAccessorGenerator genTCAcc
 	@Inject InterfaceAccessorGenerator genInterfaceAcc
-	@Inject ProviderAccessorGenerator genProviderAcc
 	@Inject RootElementAccessorGenerator genRootElementAcc
 	@Inject OverwriteAccessorGenerator genOverwriteAcc
 	
 	// the types of PropertyAccessor classes we can generate
-	final static String PA_PROVIDER = "Provider"
 	final static String PA_INTERFACE = "Interface"
 	final static String PA_TYPE_COLLECTION = "TypeCollection"
 	
@@ -111,8 +107,6 @@ class FDeployGenerator implements IGenerator2 {
 			«genTCAcc.generate(spec)»
 
 			«genInterfaceAcc.generate(spec)»
-
-			«genProviderAcc.generate(spec)»
 
 			«FOR root : roots.keySet»
 				«genRootElementAcc.generate(spec,
@@ -227,11 +221,10 @@ class FDeployGenerator implements IGenerator2 {
 		basename.toFirstUpper + type + "PropertyAccessor"
 	}
 
-	def getSupportingClass(String type) {
+	def private getSupportingClass(String type) {
 		switch (type) {
 			case PA_TYPE_COLLECTION: "FDeployedTypeCollection"
 			case PA_INTERFACE: "FDeployedInterface"
-			case PA_PROVIDER: "FDeployedProvider"
 			default: ""
 		}
 	}

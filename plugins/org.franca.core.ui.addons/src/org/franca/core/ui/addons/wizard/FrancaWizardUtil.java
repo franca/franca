@@ -34,7 +34,6 @@ import org.franca.core.franca.FrancaFactory;
 import org.franca.core.utils.FrancaIDLUtils;
 import org.franca.deploymodel.dsl.fDeploy.FDInterface;
 import org.franca.deploymodel.dsl.fDeploy.FDModel;
-import org.franca.deploymodel.dsl.fDeploy.FDProvider;
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification;
 import org.franca.deploymodel.dsl.fDeploy.FDTypes;
 import org.franca.deploymodel.dsl.fDeploy.FDeployFactory;
@@ -176,13 +175,6 @@ public class FrancaWizardUtil {
 			model.getImports().add(_import);
 		}
 		
-		if (providerName != null && !providerName.isEmpty()) {
-			FDProvider provider = FDeployFactory.eINSTANCE.createFDProvider();
-			provider.setName(providerName);
-			provider.setSpec(specification);
-			model.getDeployments().add(provider);
-		}
-
 		resource.getContents().add(model);
 
 		try {

@@ -31,11 +31,9 @@ import org.franca.deploymodel.dsl.fDeploy.FDEnumValue;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumeration;
 import org.franca.deploymodel.dsl.fDeploy.FDField;
 import org.franca.deploymodel.dsl.fDeploy.FDInterface;
-import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance;
 import org.franca.deploymodel.dsl.fDeploy.FDMethod;
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl;
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyFlag;
-import org.franca.deploymodel.dsl.fDeploy.FDProvider;
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification;
 import org.franca.deploymodel.dsl.fDeploy.FDStruct;
 import org.franca.deploymodel.dsl.fDeploy.FDStructOverwrites;
@@ -225,11 +223,7 @@ public class PropertyMappings {
 	 */
 	private static FDBuiltInPropertyHost getBuiltInMainHost(FDElement elem) {
 		// check built-in elements first
-		if (elem instanceof FDProvider) {
-			return PROVIDERS;
-		} else if (elem instanceof FDInterfaceInstance) {
-			return INSTANCES;
-		} else if (elem instanceof FDInterface) {
+		if (elem instanceof FDInterface) {
 			return INTERFACES;
 		} else if (elem instanceof FDTypes) {
 			return TYPE_COLLECTIONS;

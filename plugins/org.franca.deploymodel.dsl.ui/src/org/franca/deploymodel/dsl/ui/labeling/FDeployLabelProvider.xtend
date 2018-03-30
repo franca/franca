@@ -3,6 +3,7 @@
  */
 package org.franca.deploymodel.dsl.ui.labeling
 
+import com.google.inject.Inject
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider
 import org.eclipse.xtext.ui.label.DefaultEObjectLabelProvider
@@ -21,7 +22,6 @@ import org.franca.deploymodel.dsl.fDeploy.FDField
 import org.franca.deploymodel.dsl.fDeploy.FDGeneric
 import org.franca.deploymodel.dsl.fDeploy.FDInteger
 import org.franca.deploymodel.dsl.fDeploy.FDInterface
-import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance
 import org.franca.deploymodel.dsl.fDeploy.FDMethod
 import org.franca.deploymodel.dsl.fDeploy.FDProperty
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl
@@ -30,7 +30,6 @@ import org.franca.deploymodel.dsl.fDeploy.FDStruct
 import org.franca.deploymodel.dsl.fDeploy.FDTypedef
 import org.franca.deploymodel.dsl.fDeploy.FDUnion
 import org.franca.deploymodel.dsl.fDeploy.Import
-import com.google.inject.Inject
 
 /** 
  * Provides labels for a EObjects.
@@ -45,10 +44,6 @@ class FDeployLabelProvider extends DefaultEObjectLabelProvider {
 	}
 
 	def String text(FDMethod element) {
-		return element.getTarget().getName()
-	}
-
-	def String text(FDInterfaceInstance element) {
 		return element.getTarget().getName()
 	}
 
@@ -109,9 +104,6 @@ class FDeployLabelProvider extends DefaultEObjectLabelProvider {
 		if (FDModelUtils.isEnumerator(element)) {
 			return dm + FDModelUtils.getEnumerator(element).getName()
 		}
-		if (FDModelUtils.isInstanceRef(element)) {
-			return dm + FDModelUtils.getInstanceRef(element).getName()
-		}
 		return '''«dm»UNKNOWN''' // shouldn't happen
 	}
 
@@ -161,9 +153,6 @@ class FDeployLabelProvider extends DefaultEObjectLabelProvider {
 	def String image(FDGeneric element) {
 		if (FDModelUtils.isEnumerator(element)) {
 			return "enum.gif"
-		}
-		if (FDModelUtils.isInstanceRef(element)) {
-			return "interface.png" // TODO: replace by specific icon
 		}
 		return null // shouldn't happen
 	}

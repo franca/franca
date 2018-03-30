@@ -62,8 +62,6 @@
     <eLiterals name="booleans" value="19" literal="booleans"/>
     <eLiterals name="byte_buffers" value="20" literal="byte_buffers"/>
     <eLiterals name="fields" value="21" literal="fields"/>
-    <eLiterals name="providers" value="22" literal="providers"/>
-    <eLiterals name="instances" value="23" literal="instances"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FDTypeRef">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="predefined" eType="#//FDPredefinedTypeId"/>
@@ -76,7 +74,6 @@
     <eLiterals name="String" value="1" literal="String"/>
     <eLiterals name="Boolean" value="2" literal="Boolean"/>
     <eLiterals name="Interface" value="3" literal="Interface"/>
-    <eLiterals name="Instance" value="4" literal="Instance"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FDType"/>
   <eClassifiers xsi:type="ecore:EClass" name="FDEnumType" eSuperTypes="#//FDType">
@@ -111,14 +108,6 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FDExtensionRoot" eSuperTypes="#//FDRootElement #//FDAbstractExtensionElement"/>
   <eClassifiers xsi:type="ecore:EClass" name="FDExtensionElement" eSuperTypes="#//FDElement #//FDAbstractExtensionElement">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="FDProvider" eSuperTypes="#//FDRootElement">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="instances" upperBound="-1"
-        eType="#//FDInterfaceInstance" containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="FDInterfaceInstance" eSuperTypes="#//FDElement">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass ../../org.franca.core/model/franca.ecore#//FInterface"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FDTypes" eSuperTypes="#//FDRootElement">

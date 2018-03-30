@@ -18,7 +18,6 @@ import org.eclipse.xtext.naming.QualifiedName
 import org.eclipse.xtext.resource.EObjectDescription
 import org.eclipse.xtext.resource.IEObjectDescription
 import org.eclipse.xtext.scoping.IScope
-import org.eclipse.xtext.scoping.Scopes
 import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
 import org.eclipse.xtext.scoping.impl.FilteringScope
 import org.eclipse.xtext.scoping.impl.ImportUriGlobalScopeProvider
@@ -48,21 +47,17 @@ import org.franca.deploymodel.dsl.fDeploy.FDExtensionElement
 import org.franca.deploymodel.dsl.fDeploy.FDExtensionRoot
 import org.franca.deploymodel.dsl.fDeploy.FDField
 import org.franca.deploymodel.dsl.fDeploy.FDInterface
-import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance
 import org.franca.deploymodel.dsl.fDeploy.FDMethod
 import org.franca.deploymodel.dsl.fDeploy.FDModel
 import org.franca.deploymodel.dsl.fDeploy.FDOverwriteElement
-import org.franca.deploymodel.dsl.fDeploy.FDPredefinedTypeId
 import org.franca.deploymodel.dsl.fDeploy.FDProperty
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyFlag
-import org.franca.deploymodel.dsl.fDeploy.FDProvider
 import org.franca.deploymodel.dsl.fDeploy.FDStruct
 import org.franca.deploymodel.dsl.fDeploy.FDTypeOverwrites
 import org.franca.deploymodel.dsl.fDeploy.FDTypedef
 import org.franca.deploymodel.dsl.fDeploy.FDTypes
 import org.franca.deploymodel.dsl.fDeploy.FDUnion
-import org.franca.deploymodel.dsl.fDeploy.FDeployPackage
 import org.franca.deploymodel.extensions.ExtensionRegistry
 
 import static extension org.eclipse.xtext.scoping.Scopes.*
@@ -267,14 +262,6 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 	}
 
 	def scope_FDProperty_decl(FDExtensionElement owner, EReference ref) {
-		owner.getPropertyDecls
-	}
-
-	def scope_FDProperty_decl(FDProvider owner, EReference ref) {
-		owner.getPropertyDecls
-	}
-
-	def scope_FDProperty_decl(FDInterfaceInstance owner, EReference ref) {
 		owner.getPropertyDecls
 	}
 

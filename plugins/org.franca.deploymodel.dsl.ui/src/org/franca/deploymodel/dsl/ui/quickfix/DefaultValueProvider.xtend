@@ -12,8 +12,6 @@ import org.franca.deploymodel.dsl.fDeploy.FDElement
 import org.franca.deploymodel.dsl.fDeploy.FDEnumType
 import org.franca.deploymodel.dsl.fDeploy.FDExtensionType
 import org.franca.deploymodel.dsl.fDeploy.FDInterface
-import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance
-import org.franca.deploymodel.dsl.fDeploy.FDProvider
 import org.franca.deploymodel.dsl.fDeploy.FDTypeRef
 import org.franca.deploymodel.dsl.fDeploy.FDTypes
 import org.franca.deploymodel.dsl.fDeploy.FDValue
@@ -54,27 +52,6 @@ class DefaultValueProvider {
 							// use the interface for this deployment definition as default 
 							simple = FDeployFactory.eINSTANCE.createFDInterfaceRef => [ value = root.target ]
 						}
-						FDProvider: {
-							// try to find first instance in the provider definition, use its target interface
-							val someInterface = root.firstInstance?.target
-							simple = FDeployFactory.eINSTANCE.createFDInterfaceRef => [ value = someInterface ]
-						}
-					}
-				}
-				case INSTANCE_VALUE: {
-					// for properties of type "Instance" there is no proper default
-					// instead, we use some heuristics
-					val root = element.rootElement
-					if (root instanceof FDProvider) {
-						// this is a provider definition, use first instance definition (if any)
-						val first = root.firstInstance
-						if (first!=null) {
-							simple = FDeployFactory.eINSTANCE.createFDGeneric => [ value = first ]
-						} else {
-							// there is no first instance
-						}
-					} else {
-						// for all other deployment definitions, we cannot determine an instance
 					}
 				}
 				default: {
@@ -107,12 +84,5 @@ class DefaultValueProvider {
 		} else {
 			null
 		}
-	}
-
-	def private static FDInterfaceInstance getFirstInstance(FDProvider providerDef) {
-		if (providerDef.instances.empty)
-			null
-		else
-			providerDef.instances.get(0)
 	}
 }

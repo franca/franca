@@ -23,8 +23,6 @@ import org.franca.core.franca.FTypeCollection
 import org.franca.core.franca.FTypeDef
 import org.franca.core.franca.FUnionType
 import org.franca.deploymodel.core.FDPropertyHost
-import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance
-import org.franca.deploymodel.dsl.fDeploy.FDProvider
 import org.franca.deploymodel.dsl.fDeploy.FDeployPackage
 import org.franca.deploymodel.extensions.IFDeployExtension
 
@@ -67,8 +65,6 @@ class HostLogic {
 			if (builtIn!==null) {
 				// this is a built-in host, decide using a hard-coded mapping table 
 				switch (builtIn) {
-					case PROVIDERS:        null  // ignore
-					case INSTANCES:        null  // ignore
 					case TYPE_COLLECTIONS: FTypeCollection
 					case INTERFACES:       FInterface
 					case ATTRIBUTES:       FAttribute
@@ -173,25 +169,4 @@ class HostLogic {
 			supportedHosts.contains(hostDef)
 		}
 	}
-
-
-	// TODO: adapt this when extracting PROVIDERS/INSTANCES into a deployment extension
-	def static Class<? extends EObject> getFrancaTypeProvider(FDPropertyHost host) {
-		val builtIn = host.builtIn
-		if (builtIn===null) {
-			// this is an extension host, it cannot refer to a Franca metamodel object
-			return null
-		}
-			
-		switch (builtIn) {
-			case PROVIDERS:  FDProvider
-			case INSTANCES:  FDInterfaceInstance
-			default:         null // ignore all other hosts
- 		}
- 	}
-
-	def static isProviderHost(FDPropertyHost host) {
-		host.getFrancaTypeProvider!==null
-	}
-
 }

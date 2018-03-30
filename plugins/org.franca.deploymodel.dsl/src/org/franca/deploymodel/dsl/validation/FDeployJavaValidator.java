@@ -55,7 +55,6 @@ import org.franca.deploymodel.dsl.fDeploy.FDExtensionType;
 import org.franca.deploymodel.dsl.fDeploy.FDField;
 import org.franca.deploymodel.dsl.fDeploy.FDInteger;
 import org.franca.deploymodel.dsl.fDeploy.FDInterface;
-import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance;
 import org.franca.deploymodel.dsl.fDeploy.FDInterfaceRef;
 import org.franca.deploymodel.dsl.fDeploy.FDMethod;
 import org.franca.deploymodel.dsl.fDeploy.FDModel;
@@ -66,7 +65,6 @@ import org.franca.deploymodel.dsl.fDeploy.FDProperty;
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl;
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyFlag;
 import org.franca.deploymodel.dsl.fDeploy.FDPropertySet;
-import org.franca.deploymodel.dsl.fDeploy.FDProvider;
 import org.franca.deploymodel.dsl.fDeploy.FDRootElement;
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification;
 import org.franca.deploymodel.dsl.fDeploy.FDString;
@@ -327,13 +325,6 @@ public class FDeployJavaValidator extends AbstractFDeployValidator
 		}
 	}	
 
-	@Check
-	public void checkPropertiesComplete(FDProvider elem) {
-		// check own properties
-		FDSpecification spec = FDModelUtils.getRootElement(elem).getSpec();
-		checkSpecificationElementProperties(spec, elem, FDeployPackage.Literals.FD_ROOT_ELEMENT__NAME, spec.getName());
-	}
-	
 	@Check
 	public void checkPropertiesComplete(FDTypes elem) {
 		// check own properties
@@ -727,13 +718,6 @@ public class FDeployJavaValidator extends AbstractFDeployValidator
 	
 	// *****************************************************************************
 
-	@Check
-	public void checkPropertiesComplete (FDInterfaceInstance elem) {
-		// check own properties
-		FDSpecification spec = FDModelUtils.getRootElement(elem).getSpec();
-		checkSpecificationElementProperties(spec, elem, FDeployPackage.Literals.FD_INTERFACE_INSTANCE__TARGET, spec.getName());
-	}
-	
 	/**
 	 * Checks whether all of the mandatory properties of the given {@link FDSpecification} instance are present. 
 	 * 
@@ -890,12 +874,6 @@ public class FDeployJavaValidator extends AbstractFDeployValidator
 			case FDPredefinedTypeId.INTERFACE_VALUE:
 				if (! (value instanceof FDInterfaceRef)) {
 					error("Invalid type, expected reference to Franca interface",
-							src, literal, index);
-				}
-				break;
-			case FDPredefinedTypeId.INSTANCE_VALUE:
-				if (! (FDModelUtils.isInstanceRef(value))) {
-					error("Invalid type, expected reference to interface instance",
 							src, literal, index);
 				}
 				break;
