@@ -11,7 +11,6 @@ import com.google.inject.Inject
 import java.util.List
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EReference
-import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.naming.IQualifiedNameConverter
 import org.eclipse.xtext.naming.IQualifiedNameProvider
 import org.eclipse.xtext.naming.QualifiedName
@@ -45,6 +44,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDEnumeration
 import org.franca.deploymodel.dsl.fDeploy.FDEnumerationOverwrites
 import org.franca.deploymodel.dsl.fDeploy.FDExtensionElement
 import org.franca.deploymodel.dsl.fDeploy.FDExtensionRoot
+import org.franca.deploymodel.dsl.fDeploy.FDExtensionType
 import org.franca.deploymodel.dsl.fDeploy.FDField
 import org.franca.deploymodel.dsl.fDeploy.FDInterface
 import org.franca.deploymodel.dsl.fDeploy.FDMethod
@@ -53,17 +53,21 @@ import org.franca.deploymodel.dsl.fDeploy.FDOverwriteElement
 import org.franca.deploymodel.dsl.fDeploy.FDProperty
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyFlag
+import org.franca.deploymodel.dsl.fDeploy.FDRootElement
+import org.franca.deploymodel.dsl.fDeploy.FDSpecification
 import org.franca.deploymodel.dsl.fDeploy.FDStruct
 import org.franca.deploymodel.dsl.fDeploy.FDTypeOverwrites
 import org.franca.deploymodel.dsl.fDeploy.FDTypedef
 import org.franca.deploymodel.dsl.fDeploy.FDTypes
 import org.franca.deploymodel.dsl.fDeploy.FDUnion
+import org.franca.deploymodel.dsl.fDeploy.FDeployPackage
 import org.franca.deploymodel.extensions.ExtensionRegistry
+
+import static org.eclipse.xtext.EcoreUtil2.*
 
 import static extension org.eclipse.xtext.scoping.Scopes.*
 import static extension org.franca.core.FrancaModelExtensions.*
 import static extension org.franca.deploymodel.core.FDModelUtils.*
-import org.franca.deploymodel.dsl.fDeploy.FDExtensionType
 
 class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 
@@ -88,7 +92,7 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 	/** Evaluates the importedAliases of the FDModel containing the <i>ctxt</i> 
 	 * and adds the belonging <i>FDSpecification</i>s to the given scope. */
 	def joinImportedDeploySpecs(IScope scope, EObject ctxt){
-		val model = EcoreUtil2::getContainerOfType(ctxt, typeof(FDModel))
+		val model = getContainerOfType(ctxt, typeof(FDModel))
 		val importedAliases = model.imports.filter[importedSpec!==null].map[importedSpec]
 		val List<IEObjectDescription> fdSpecsScopeImports = <IEObjectDescription>newArrayList();
 		try { 
@@ -109,9 +113,9 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 			IScope::NULLSCOPE
 		} else {
 			// target class has been configured, collect all EObjects of that class which are visible from here
-			val root = EcoreUtil2::getContainerOfType(ctxt, typeof(FDExtensionRoot))
+			val root = getContainerOfType(ctxt, typeof(FDExtensionRoot))
 			val delegate = root.delegateGetScope(ref)
-			new FilteringScope(delegate, [EcoreUtil2.isAssignableFrom(elemDef.targetClass, it.EClass)])
+			new FilteringScope(delegate, [isAssignableFrom(elemDef.targetClass, it.EClass)])
 		}
 	}
 
