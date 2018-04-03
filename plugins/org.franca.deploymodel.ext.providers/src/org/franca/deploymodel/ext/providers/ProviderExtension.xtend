@@ -12,7 +12,6 @@ import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.resource.IEObjectDescription
 import org.eclipse.xtext.scoping.impl.FilteringScope
 import org.franca.deploymodel.dsl.fDeploy.FDExtensionElement
-import org.franca.deploymodel.dsl.fDeploy.FDValue
 import org.franca.deploymodel.extensions.AbstractFDeployExtension
 
 import static org.franca.deploymodel.extensions.IFDeployExtension.AbstractElementDef.Nameable.*
@@ -25,12 +24,21 @@ import static extension org.franca.deploymodel.ext.providers.ProviderUtils.*
  * This class registers new deployment hosts and generic deployment definition elements.
  * It also implies some logic for glueing the hosts and the new elements.</p>
  * 
- * It will be registered at the IDE via a normal Eclipse extension point.</p>
+ * It will be registered at the IDE via a standard Eclipse extension point.
+ * In standalone environments (e.g., unit tests or generators), it has to
+ * be registered by calling
+ * 
+ * <code>
+ * ExtensionRegistry.addExtension(new ProviderExtension).
+ * </code></p>
  * 
  * @author Klaus Birken (itemis AG) 
  */
 class ProviderExtension extends AbstractFDeployExtension {
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	override getShortDescription() {
 		"providers and instances"
 	}
@@ -41,7 +49,12 @@ class ProviderExtension extends AbstractFDeployExtension {
 	val providers = new Host("providers")
 	val instances = new Host("instances")
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	override Collection<RootDef> getRoots() {
+		// introduce one additional root element for deployment definitions
+		// the root element named "provider" will contain child elements named "instance"
 		val root1 =
 			new RootDef(this, PROVIDER_TAG, MANDATORY_NAME, #[ providers ]) => [
 				addChild(new ElementDef(INSTANCE_TAG, fidl.FInterface, OPTIONAL_NAME, #[ instances ]))
@@ -50,6 +63,9 @@ class ProviderExtension extends AbstractFDeployExtension {
 		#[ root1 ]
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	override Collection<TypeDef> getTypes() {
 		#[
 			// the new deployment property type "Instance" can be used to refer to "instance"

@@ -188,13 +188,30 @@ interface IFDeployExtension {
 	 */
 	def Collection<HostMixinDef> getMixins()
 
-	
+	/**
+	 * Descriptor for a new deployment property type.</p>
+	 * 
+	 * Use this to define additional types of properties, extending the built-in
+	 * type system of the deployment DSL (which supports Integer, String, Boolean, etc.).</p>  
+	 */
 	static class TypeDef {
 		String name
 		(IScope)=>IScope scopeFunc
 		(FDElement)=>FDValue defaultCreator
 		Class<? extends EObject> runtimeType
 		
+		/**
+		 * Define a new property type for the deployment DSL.</p>
+		 * 
+		 * Use this to define additional types of properties, extending the built-in
+		 * type system of the deployment DSL (which supports Integer, String, Boolean, etc.).</p>
+		 * 
+		 * @param name the type name used by the concrete syntax of deployment specifications
+		 * @param scopeFunc implementation of scoping for the new type
+		 * @param defaultCreator a function which provides a default value (based on a given FDElement context)
+		 * @param runtimeType the Java class which will be used to represent this type in the
+		 *        generated PropertyAccessor class
+		 */
 		new(
 			String name,
 			(IScope)=>IScope scopeFunc,

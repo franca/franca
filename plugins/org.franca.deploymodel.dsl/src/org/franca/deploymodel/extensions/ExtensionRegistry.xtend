@@ -76,6 +76,10 @@ class ExtensionRegistry {
 	 * 
 	 * This should be used by standalone tests which call addExtension() to
 	 * register an extension and test it.</p> 
+	 * 
+	 * Note that this method will remove <em>all</em> registered extensions.
+	 * Due to complex cached data structures in the registry it is not possible
+	 * to remove a single specific extension in the current implementation.</p> 
 	 */
 	def static void reset() {
 		//println("DEPLOYEXTENSION STANDALONE CLEAR")
@@ -100,6 +104,10 @@ class ExtensionRegistry {
 		return extensions
 	}
 
+	/**
+	 * Internal helper which initializes all deployment extensions
+	 * that have been registered as Eclipse extension points.</p> 
+	 */
 	def private static void initializeValidators() {
 		if (extensions === null) {
 			extensions = Lists.newArrayList()
@@ -130,6 +138,12 @@ class ExtensionRegistry {
 		}
 	}
 
+	/**
+	 * This is the central registration method for new extensions.</p>
+	 * 
+	 * All extensions will be registered here, either via the IDE's extension point
+	 * infrastructure or via method addExtension in the standalone case.</p>
+	 */
 	def private static void register(IFDeployExtension ^extension) {
 		// add extension to the list of all extensions
 		val desc = extension.shortDescription
@@ -260,7 +274,9 @@ class ExtensionRegistry {
 		elem.allHosts.contains(host)
 	}
 
-	// get metamodel ElementDef from model FDAbstractExtensionElement (which is an EObject)	
+	/**
+	 * Get metamodel ElementDef from model FDAbstractExtensionElement (which is an EObject)</p>
+	 */	
 	def static IFDeployExtension.AbstractElementDef getElement(FDAbstractExtensionElement elem) {
 		switch (elem) {
 			FDExtensionRoot: {
