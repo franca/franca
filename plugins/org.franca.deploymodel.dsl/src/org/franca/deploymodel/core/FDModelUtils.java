@@ -8,6 +8,7 @@
 package org.franca.deploymodel.core;
 
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.xtext.EcoreUtil2;
 import org.franca.core.franca.FType;
 import org.franca.core.franca.FTypeRef;
 import org.franca.deploymodel.dsl.fDeploy.FDArgument;
@@ -31,23 +32,17 @@ import org.franca.deploymodel.dsl.fDeploy.FDValue;
 public class FDModelUtils {
 
 	public static FDModel getModel(EObject obj) {
-		EObject x = obj;
-		while (x != null) {
-			if (x instanceof FDModel)
-				return (FDModel) x;
-			x = x.eContainer();
-		};
-		return null;
+		if (obj==null)
+			return null;
+		else
+			return EcoreUtil2.getContainerOfType(obj, FDModel.class);
 	}
 
 	public static FDRootElement getRootElement(FDElement obj) {
-		EObject x = obj;
-		while (x != null) {
-			if (x instanceof FDRootElement)
-				return (FDRootElement) x;
-			x = x.eContainer();
-		};
-		return null;
+		if (obj==null)
+			return null;
+		else
+			return EcoreUtil2.getContainerOfType(obj, FDRootElement.class);
 	}
 
 	/**
