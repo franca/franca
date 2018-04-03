@@ -18,6 +18,12 @@
    <feature id="org.franca.ui.addons.sdk" version="0.0.0">
       <category name="org.franca"/>
    </feature>
+   <feature id="org.franca.providers" version="0.0.0">
+      <category name="org.franca"/>
+   </feature>
+   <feature id="org.franca.providers.sdk" version="0.0.0">
+      <category name="org.franca"/>
+   </feature>
    <feature id="org.franca.dbus" version="0.0.0">
       <category name="org.franca"/>
    </feature>

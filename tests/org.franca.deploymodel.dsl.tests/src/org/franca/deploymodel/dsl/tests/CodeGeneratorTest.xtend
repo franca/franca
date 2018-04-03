@@ -84,7 +84,7 @@ class CodeGeneratorTest extends GeneratorTestBase {
 		val fsa = new InMemoryFileSystemAccess
 		generator.doGenerate(root.eResource, fsa, null)
 
-		assertEquals(4, fsa.textFiles.size)
+		assertEquals(3, fsa.textFiles.size)
 //		for(f : fsa.textFiles.keySet) {
 //			val gen = fsa.textFiles.get(f).toString
 //			gen.printMultiLine("Generated:")
@@ -109,7 +109,7 @@ class CodeGeneratorTest extends GeneratorTestBase {
 		val fsa = new InMemoryFileSystemAccess
 		generator.doGenerate(root.eResource, fsa, null)
 
-		assertEquals(4, fsa.textFiles.size)
+		assertEquals(3, fsa.textFiles.size)
 //		for(f : fsa.textFiles.keySet) {
 //			val gen = fsa.textFiles.get(f).toString
 //			gen.printMultiLine("Generated:")

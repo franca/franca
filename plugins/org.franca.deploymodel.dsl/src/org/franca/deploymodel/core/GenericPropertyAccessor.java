@@ -16,7 +16,6 @@ import org.franca.deploymodel.dsl.fDeploy.FDComplexValue;
 import org.franca.deploymodel.dsl.fDeploy.FDElement;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumerator;
 import org.franca.deploymodel.dsl.fDeploy.FDInteger;
-import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance;
 import org.franca.deploymodel.dsl.fDeploy.FDInterfaceRef;
 import org.franca.deploymodel.dsl.fDeploy.FDProperty;
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl;
@@ -147,25 +146,39 @@ public class GenericPropertyAccessor {
 	}
 
 
-	public FDInterfaceInstance getInterfaceInstance (FDElement elem, String property) {
+	@SuppressWarnings("unchecked")
+	public <RuntimeType extends EObject> RuntimeType getGenericReference(
+		FDElement elem,
+		Class<? extends EObject> runtimeType,
+		String property
+	) {
 		FDValue val = getSingleValue(elem, property);
-		if (val!=null && FDModelUtils.isInstanceRef(val)) {
-			return FDModelUtils.getInstanceRef(val);
+		if (val!=null) {
+			EObject ref = FDModelUtils.getGenericRef(val);
+			if (ref!=null && runtimeType.isInstance(ref)) {
+				// TODO: this cast will only work if RuntimeType and runtimeType are identical, is there a better way?
+				return (RuntimeType)ref;
+			}
 		}
 		return null;
 	}
 	
-	public List<FDInterfaceInstance> getInterfaceInstanceArray (FDElement elem, String property) {
+	@SuppressWarnings("unchecked")
+	public <RuntimeType extends EObject> List<RuntimeType> getGenericReferenceArray(
+		FDElement elem,
+		Class<? extends EObject> runtimeType,
+		String property
+	) {
 		FDValueArray valarray = getValueArray(elem, property);
 		if (valarray==null)
 			return null;
 		
-		List<FDInterfaceInstance> vals = Lists.newArrayList();
+		List<RuntimeType> vals = Lists.newArrayList();
 		for(FDValue v : valarray.getValues()) {
-			if (FDModelUtils.isInstanceRef(v)) {
-				vals.add(FDModelUtils.getInstanceRef(v));
-			} else {
-				return null;
+			EObject ref = FDModelUtils.getGenericRef(v);
+			if (ref!=null && runtimeType.isInstance(ref)) {
+				// TODO: this cast will only work if RuntimeType and runtimeType are identical, is there a better way?
+				vals.add((RuntimeType)ref);
 			}
 		}
 		return vals;

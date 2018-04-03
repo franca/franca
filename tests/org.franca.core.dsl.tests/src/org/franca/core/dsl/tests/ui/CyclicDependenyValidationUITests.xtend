@@ -2,11 +2,11 @@ package org.franca.core.dsl.tests.ui
 
 import java.util.Arrays
 import org.junit.Test
-
-import static org.junit.Assert.*
 import org.eclipse.xtext.junit4.ui.util.IResourcesSetupUtil
 
-class CyclicDependenyValidationUITests extends AbstractMarkerTest{
+import static org.junit.Assert.*
+
+class CyclicDependenyValidationUITests extends AbstractMarkerTest {
 	/** Check that on manipulation of one file all files that are in cyclic relation with modified file are validated. */
 	@Test
 	def void testBuilderValidatesEvenUntouchedFiles() {

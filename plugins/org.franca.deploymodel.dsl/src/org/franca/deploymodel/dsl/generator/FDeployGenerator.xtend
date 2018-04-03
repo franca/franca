@@ -8,24 +8,29 @@
 package org.franca.deploymodel.dsl.generator
 
 import com.google.inject.Inject
+import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.generator.IFileSystemAccess
+import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGenerator2
+import org.eclipse.xtext.generator.IGeneratorContext
+import org.franca.deploymodel.core.FDPropertyHost
 import org.franca.deploymodel.dsl.fDeploy.FDEnumType
+import org.franca.deploymodel.dsl.fDeploy.FDExtensionRoot
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl
-import org.franca.deploymodel.dsl.fDeploy.FDPropertyHost
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification
 import org.franca.deploymodel.dsl.generator.internal.HelperGenerator
 import org.franca.deploymodel.dsl.generator.internal.IDataGenerator
 import org.franca.deploymodel.dsl.generator.internal.ImportManager
 import org.franca.deploymodel.dsl.generator.internal.InterfaceAccessorGenerator
 import org.franca.deploymodel.dsl.generator.internal.OverwriteAccessorGenerator
-import org.franca.deploymodel.dsl.generator.internal.ProviderAccessorGenerator
+import org.franca.deploymodel.dsl.generator.internal.RootElementAccessorGenerator
 import org.franca.deploymodel.dsl.generator.internal.TypeCollectionAccessorGenerator
 
+import static org.franca.deploymodel.extensions.ExtensionRegistry.*
+
 import static extension org.franca.deploymodel.dsl.generator.internal.GeneratorHelper.*
-import org.eclipse.xtext.generator.IFileSystemAccess2
-import org.eclipse.xtext.generator.IGeneratorContext
+import static extension org.franca.deploymodel.dsl.generator.internal.HostLogic.*
 
 /**
  * Generator for PropertyAccessor class from deployment specification.
@@ -43,11 +48,10 @@ class FDeployGenerator implements IGenerator2 {
 	@Inject HelperGenerator genHelper
 	@Inject TypeCollectionAccessorGenerator genTCAcc
 	@Inject InterfaceAccessorGenerator genInterfaceAcc
-	@Inject ProviderAccessorGenerator genProviderAcc
+	@Inject RootElementAccessorGenerator genRootElementAcc
 	@Inject OverwriteAccessorGenerator genOverwriteAcc
 	
 	// the types of PropertyAccessor classes we can generate
-	final static String PA_PROVIDER = "Provider"
 	final static String PA_INTERFACE = "Interface"
 	final static String PA_TYPE_COLLECTION = "TypeCollection"
 	
@@ -62,7 +66,6 @@ class FDeployGenerator implements IGenerator2 {
 			
 			// generate some legacy classes for backward-compatibility
 			// (this is needed for Franca 0.9.1 and earlier)
-			fsa.generateLegacy(m, PA_PROVIDER)
 			fsa.generateLegacy(m, PA_INTERFACE)
 			fsa.generateLegacy(m, PA_TYPE_COLLECTION)
 		}
@@ -85,6 +88,7 @@ class FDeployGenerator implements IGenerator2 {
 		
 		fsa.generateFile(path + "/" + spec.classname + ".java", header + code)
 	}
+
 	
 	def private generateCombinedClass(FDSpecification spec) '''
 		/**
@@ -104,13 +108,31 @@ class FDeployGenerator implements IGenerator2 {
 
 			«genInterfaceAcc.generate(spec)»
 
-			«genProviderAcc.generate(spec)»
-
+			«FOR root : roots.keySet»
+				«genRootElementAcc.generate(spec,
+					FDExtensionRoot,
+					root.tag,
+					root.extension.shortDescription,
+					[isHostFor(root)]
+				)»
+				
+			«ENDFOR»
+			«FOR clazz : nonFrancaMixinRoots»
+				«val prefix = getNonFrancaMixinPrefix(clazz)»
+				«genRootElementAcc.generate(spec,
+					clazz.instanceClass as Class<? extends EObject>,
+					prefix,
+					getMixinExtension(clazz).shortDescription,
+					[isHostFor(clazz)]
+				)»
+				
+			«ENDFOR»
 			«genOverwriteAcc.generate(spec)»
 		}
 			
 	'''
-	
+
+
 	def private genEnumInterface(FDSpecification spec) '''
 		/**
 		 * Enumerations for deployment specification «spec.name».
@@ -199,11 +221,10 @@ class FDeployGenerator implements IGenerator2 {
 		basename.toFirstUpper + type + "PropertyAccessor"
 	}
 
-	def getSupportingClass(String type) {
+	def private getSupportingClass(String type) {
 		switch (type) {
 			case PA_TYPE_COLLECTION: "FDeployedTypeCollection"
 			case PA_INTERFACE: "FDeployedInterface"
-			case PA_PROVIDER: "FDeployedProvider"
 			default: ""
 		}
 	}

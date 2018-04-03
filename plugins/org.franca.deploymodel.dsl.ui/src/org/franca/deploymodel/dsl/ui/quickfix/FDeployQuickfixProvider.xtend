@@ -51,7 +51,7 @@ import static extension org.franca.deploymodel.dsl.ui.quickfix.FDeployQuickfixPr
 import static extension org.franca.deploymodel.dsl.validation.FrancaQuickFixConstants.*
 
 /** 
- * A collection of quick fixes for Franca Deployment Definitions.
+ * A collection of quick fixes for Franca deployment definitions.
  * 
  * @author Tamas Szabo, Klaus Birken (itemis AG)
  */

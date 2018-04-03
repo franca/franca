@@ -49,7 +49,7 @@ class FDeployValidatorAux {
 	def checkRootElement (FDRootElement it) {
 		// ensure that use-relation is non-cyclic 
 		val path = isReferenced[e | e.use] 
-		if (path!=null) {
+		if (path!==null) {
 			val idx = use.indexOf(path.get(0))
 			reporter.reportError("Cyclic use-relation in element '" + name + "'",
 				it, FD_ROOT_ELEMENT__USE, idx)
@@ -57,11 +57,13 @@ class FDeployValidatorAux {
 		
 		// ensure that all use-relations are covered by a compatible deployment spec
 		for(other : use) {
-			if (! spec.isCompatible(other.spec)) {
-				reporter.reportError("Use-relation '" + other.name + "' " +
-					"refers to deployment with incompatible specification " +
-					"'" + other.spec.name + "'",
-					it, FD_ROOT_ELEMENT__USE, use.indexOf(other))
+			if (spec!==null && other.spec!==null) {
+				if (! spec.isCompatible(other.spec)) {
+					reporter.reportError("Use-relation '" + other.name + "' " +
+						"refers to deployment with incompatible specification " +
+						"'" + other.spec.name + "'",
+						it, FD_ROOT_ELEMENT__USE, use.indexOf(other))
+				}
 			}
 		}
 	}
@@ -69,7 +71,7 @@ class FDeployValidatorAux {
 	// compatible means either same spec or a derived (i.e. more detailed) spec
 	def private isCompatible (FDSpecification spec1, FDSpecification spec2) {
 		// we cannot do this check if there are cycles in the extend-relation
-		if (spec2.cyclicBaseSpec != null) {
+		if (spec2.cyclicBaseSpec !== null) {
 			// return true to avoid an additional error message, the cyclic-check
 			// will issue an error.
 			return true
@@ -80,7 +82,7 @@ class FDeployValidatorAux {
 			if (spec1 == check)
 				return true
 			check = check.base
-		} while (check!=null)
+		} while (check!==null)
 		
 		return false
 	}
@@ -99,10 +101,10 @@ class FDeployValidatorAux {
 			visited.add(s)
 			last = s
 			s = s.base
-			if (s!=null && visited.contains(s)) {
+			if (s!==null && visited.contains(s)) {
 				return last
 			}
-		} while (s != null)
+		} while (s !== null)
 		return null
 	}
 
@@ -160,7 +162,7 @@ class FDeployValidatorAux {
 	 */
 	def private checkGroupArgumentType(Iterable<FDPropertyDecl> items) {
 		// group items according to the type of the accessor argument
-		val argtypeGroups = items.groupBy[HostLogic.getFrancaType(host, true)]
+		val argtypeGroups = items.groupBy[HostLogic.getArgumentType(host, HostLogic.Context.FRANCA_INTERFACE)]
 		
 		// report errors for properties with same of conflicting argument type 
 		val Map<Class<? extends EObject>, Iterable<Class<? extends EObject>>> colliding = newHashMap
@@ -214,7 +216,7 @@ class FDeployValidatorAux {
 	
 	def private isEnumType(FDPropertyDecl decl) {
 		val t = decl.type.complex
-		t!=null && (t instanceof FDEnumType)
+		t!==null && (t instanceof FDEnumType)
 	}
 	
 	def private getHost(FDPropertyDecl decl) {

@@ -15,14 +15,12 @@ import org.eclipse.xtext.ui.editor.contentassist.ConfigurableCompletionProposal
 import org.eclipse.xtext.ui.editor.model.DocumentPartitioner
 import org.eclipse.xtext.ui.editor.model.XtextDocument
 import org.eclipse.xtext.util.IResourceScopeCache
-import org.franca.deploymodel.dsl.tests.xpect.util.XpectContentAssistProcessorTestBuilder
 import org.junit.runner.RunWith
 import org.xpect.XpectImport
 import org.xpect.expectation.CommaSeparatedValuesExpectation
 import org.xpect.expectation.ICommaSeparatedValuesExpectation
 import org.xpect.parameter.ParameterParser
 import org.xpect.runner.Xpect
-import org.xpect.runner.XpectRunner
 import org.xpect.xtext.lib.setup.ThisResource
 import org.xpect.xtext.lib.setup.XtextStandaloneSetup
 import org.xpect.xtext.lib.setup.XtextWorkspaceSetup
@@ -33,7 +31,7 @@ import org.xpect.xtext.lib.tests.XtextTests
 /**
  * Xpect-based UI test class for DSL content-assist and proposal providers.   
  */
-@RunWith(XpectRunner)
+@RunWith(FDeployXpectRunner)
 @XpectImport(#[
 	IssuesByLineProvider,
 	ValidationTestModuleSetup,

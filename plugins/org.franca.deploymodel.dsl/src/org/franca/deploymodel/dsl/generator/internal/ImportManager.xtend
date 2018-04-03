@@ -7,49 +7,59 @@
 *******************************************************************************/
 package org.franca.deploymodel.dsl.generator.internal
 
-import java.util.HashSet
+import com.google.common.collect.Sets
+import com.google.inject.Singleton
 import java.util.Set
+import org.eclipse.emf.ecore.EObject
+import org.franca.core.franca.FInterface
 import org.franca.deploymodel.dsl.fDeploy.FDEnumType
+import org.franca.deploymodel.dsl.fDeploy.FDExtensionType
 import org.franca.deploymodel.dsl.fDeploy.FDPredefinedTypeId
 import org.franca.deploymodel.dsl.fDeploy.FDTypeRef
-import org.franca.deploymodel.dsl.fDeploy.FDeployPackage
+import org.franca.deploymodel.extensions.ExtensionRegistry
 
+@Singleton
 class ImportManager {
 
-	Set<String> neededFrancaTypes
+	Set<Class<? extends EObject>> neededFrancaTypes
+	Set<Class<?>> neededOtherTypes
+	
 	boolean needList
 	boolean needArrayList
 
 	def initImportManager() {
 		// initialize
-		neededFrancaTypes = new HashSet<String>()
+		neededFrancaTypes = newHashSet
+		neededOtherTypes = newHashSet
 		needList = false
 		needArrayList = false
 	}	
 
-	def getJavaType (FDTypeRef typeRef) {
+	def getJavaType(FDTypeRef typeRef) {
 		val single =
-			if (typeRef.complex==null) {
+			if (typeRef.complex===null) {
 				switch (typeRef.predefined) {
 					case FDPredefinedTypeId::BOOLEAN:    "Boolean"
 					case FDPredefinedTypeId::INTEGER:    "Integer"
 					case FDPredefinedTypeId::STRING:     "String"
 					case FDPredefinedTypeId::INTERFACE:  {
-						neededFrancaTypes.add("FInterface")
+						neededFrancaTypes.add(FInterface)
 						"FInterface"
-					}
-					case FDPredefinedTypeId::INSTANCE:  {
-						neededFrancaTypes.add("FDInterfaceInstance")
-						"FDInterfaceInstance"
 					}
 				}
 			} else {
 				val ct = typeRef.complex
 				switch (ct) {
 					FDEnumType: "String"
+					FDExtensionType: {
+						val typeDef = ExtensionRegistry.findType(ct.name)
+						val t = typeDef.runtimeType
+						neededFrancaTypes.add(t)
+						t.simpleName
+					}
 				}
 			}
-		if (typeRef.array==null)
+		if (typeRef.array===null)
 			single
 		else {
 			needList = true
@@ -57,8 +67,12 @@ class ImportManager {
 		}
 	}
 	
-	def void addNeededFrancaType(String type) {
-		neededFrancaTypes.add(type)
+	def void addNeededFrancaType(Class<? extends EObject> clazz) {
+		neededFrancaTypes.add(clazz)
+	}
+	
+	def void addNeededOtherType(Class<?> clazz) {
+		neededOtherTypes.add(clazz)
 	}
 	
 	def genListType (String type) {
@@ -75,7 +89,7 @@ class ImportManager {
 	}
 	
 	def getNeededFrancaTypes() {
-		this.neededFrancaTypes
+		this.neededFrancaTypes.map[simpleName]
 	}
 	
 	def genImports() '''
@@ -85,26 +99,10 @@ class ImportManager {
 		«ENDIF»
 		import java.util.Map;
 
-		«FOR p : neededFrancaTypes.map[fullImportPath].sort»
+		«FOR p : Sets.union(neededFrancaTypes, neededOtherTypes).map[canonicalName].filterNull.sort»
 		import «p»;
 		«ENDFOR»
 
 		import com.google.common.collect.Maps;
 	'''
-
-	def private getFullImportPath(String t) {
-		if (t.equals("EObject"))
-			"org.eclipse.emf.ecore.EObject"
-		else if (t.startsWith("FDeployed") || t=="MappingGenericPropertyAccessor")
-			"org.franca.deploymodel.core." + t
-		else if (t.isDeploymentType)
-			"org.franca.deploymodel.dsl.fDeploy." + t
-		else
-			"org.franca.core.franca." + t
-	}
-
-	def private isDeploymentType(String t) {
-		val all = FDeployPackage::eINSTANCE.EClassifiers.map[name]
-		all.contains(t)
-	}
 }

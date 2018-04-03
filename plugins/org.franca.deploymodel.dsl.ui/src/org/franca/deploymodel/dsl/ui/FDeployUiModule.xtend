@@ -8,6 +8,8 @@
 package org.franca.deploymodel.dsl.ui
 
 import org.eclipse.ui.plugin.AbstractUIPlugin
+import org.eclipse.xtext.ide.editor.syntaxcoloring.ISemanticHighlightingCalculator
+import org.franca.deploymodel.dsl.ide.highlighting.FDeploySemanticHighlightingCalculator
 
 /** 
  * Use this class to register components to be used within the IDE.
@@ -16,8 +18,14 @@ import org.eclipse.ui.plugin.AbstractUIPlugin
  * should be used.
  * @see FDeployUiModuleWithoutJDT
  */
-class FDeployUiModule extends org.franca.deploymodel.dsl.ui.AbstractFDeployUiModule {
+class FDeployUiModule extends AbstractFDeployUiModule {
 	new(AbstractUIPlugin plugin) {
 		super(plugin)
 	}
+
+	// inject own semantic highlighting
+	def Class<? extends ISemanticHighlightingCalculator> bindSemanticHighlightingCalculator() {
+		return FDeploySemanticHighlightingCalculator
+	}
+
 }

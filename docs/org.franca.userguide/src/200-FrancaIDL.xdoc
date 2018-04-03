@@ -572,8 +572,9 @@ ul[
 		There is no downcast for struct and union types.
 	]
 	item[For enumeration types: There is an implicit downcast for enumeration types
-		(i.e., an enumerator from a base enumeration can be used as representant of
+		 (i.e., an enumerator from a base enumeration can be used as representant of
 		 any derived enumeration).
+		 Thus, for enumerations, inheritance is not specialization, but generalization.
 		]
 	item[The code[Franca][typedef] mechanism is transparent for the type system
 		(i.e., types introduced by code[Franca][typedef] will be handled

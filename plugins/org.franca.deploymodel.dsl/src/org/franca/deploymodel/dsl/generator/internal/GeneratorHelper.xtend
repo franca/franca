@@ -7,42 +7,59 @@
 *******************************************************************************/
 package org.franca.deploymodel.dsl.generator.internal
 
+import java.util.List
+import org.eclipse.xtext.EcoreUtil2
 import org.franca.deploymodel.dsl.fDeploy.FDEnumType
+import org.franca.deploymodel.dsl.fDeploy.FDExtensionType
+import org.franca.deploymodel.dsl.fDeploy.FDModel
 import org.franca.deploymodel.dsl.fDeploy.FDPredefinedTypeId
-import org.franca.deploymodel.dsl.fDeploy.FDTypeRef
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification
+import org.franca.deploymodel.dsl.fDeploy.FDTypeRef
+import org.franca.deploymodel.extensions.ExtensionRegistry
 
 class GeneratorHelper {
 
 	def static getGetter(FDTypeRef typeRef) {
 		val single =
-			if (typeRef.complex==null) {
+			if (typeRef.complex===null) {
 				switch (typeRef.predefined) {
 					case FDPredefinedTypeId::BOOLEAN:   "Boolean"
 					case FDPredefinedTypeId::INTEGER:   "Integer"
 					case FDPredefinedTypeId::STRING:    "String"
 					case FDPredefinedTypeId::INTERFACE: "Interface"
-					case FDPredefinedTypeId::INSTANCE:  "InterfaceInstance"
 				}
 			} else {
-				switch (typeRef.complex) {
+				val ct = typeRef.complex
+				switch (ct) {
 					FDEnumType: "Enum"
+					FDExtensionType: "GenericReference"
 				}
 			}
-		if (typeRef.array==null)
+		if (typeRef.array===null)
 			single
 		else
 			single + "Array"
 	}
 	
+	def static getExtraArgs(FDTypeRef typeRef) {
+		val ct = typeRef.complex
+		if (ct!==null) {
+			if (ct instanceof FDExtensionType) {
+				val typeDef = ExtensionRegistry.findType(ct.name)
+				return '''«typeDef.runtimeType.simpleName».class, '''
+			}
+		}
+		""
+	}
+	
 	def static hasEnumType(FDPropertyDecl decl) {
 		val t = decl.type.complex
-		t!=null && (t instanceof FDEnumType)
+		t!==null && (t instanceof FDEnumType)
 	}
 
 	def static isEnum(FDPropertyDecl it) {
-		type.complex!=null && type.complex instanceof FDEnumType
+		type.complex!==null && type.complex instanceof FDEnumType
 	}
 
 	def static genListType(String type) '''List<«type»>'''
@@ -50,11 +67,21 @@ class GeneratorHelper {
 	def static getMethodName(FDPropertyDecl it) '''get«name.toFirstUpper»'''
 
 	def static getPackage (FDSpecification it) {
+		val List<String> parts = newArrayList
+		
+		// first part of package FQN is (optional) package specification on FDModel level
+		val model = EcoreUtil2.getContainerOfType(it, FDModel)
+		if (model!==null && model.name!==null) {
+			parts.add(model.name)
+		}
+		
+		// second part of package FQN is the prefix of the actual specification FQN
 		val sep = name.lastIndexOf(".")
 		if (sep>0)
-			name.substring(0, sep)
-		else
-			""
+			parts.add(name.substring(0, sep))
+			
+		// result is the concatenation of both parts
+		parts.join(".")
 	}
 
 	def static classname (FDSpecification it) {

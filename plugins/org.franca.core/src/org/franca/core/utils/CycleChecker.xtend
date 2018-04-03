@@ -28,9 +28,9 @@ class CycleChecker {
 	 * @returns the path along the successor relation to the target element
 	 */
 	def static <T> isReferencedBy (T which, Collection<T> startSet, (T) => Collection<T> getSuccessors) {
-		var Queue<T> work = newLinkedList
-		var Set<T> visited = newHashSet
-		var Map<T,T> predecessor = newHashMap
+		val Queue<T> work = newLinkedList
+		val Set<T> visited = newHashSet
+		val Map<T,T> predecessor = newHashMap
 		
 		// add start set to work queue
 		work.addAll(startSet)

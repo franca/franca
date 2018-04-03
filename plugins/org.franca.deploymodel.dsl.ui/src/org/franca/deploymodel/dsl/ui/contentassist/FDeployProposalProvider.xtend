@@ -32,12 +32,19 @@ import org.franca.core.franca.FTypeCollection
 import org.franca.core.franca.FUnionType
 import org.franca.core.utils.FrancaIDLUtils
 import org.franca.deploymodel.core.FDModelUtils
+import org.franca.deploymodel.dsl.fDeploy.FDAbstractExtensionElement
+import org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost
 import org.franca.deploymodel.dsl.fDeploy.FDModel
 import org.franca.deploymodel.dsl.fDeploy.FDOverwriteElement
 import org.franca.deploymodel.dsl.fDeploy.FDeployPackage
 import org.franca.deploymodel.dsl.fDeploy.Import
 import org.franca.deploymodel.dsl.scoping.DeploySpecProvider
 import org.franca.deploymodel.dsl.scoping.DeploySpecProvider.DeploySpecEntry
+import org.franca.deploymodel.extensions.ExtensionRegistry
+import org.franca.deploymodel.extensions.IFDeployExtension
+import org.franca.deploymodel.extensions.IFDeployExtension.ElementDef
+import org.franca.deploymodel.extensions.IFDeployExtension.RootDef
+import org.franca.deploymodel.extensions.IFDeployExtension.TypeDef
 
 /** 
  * see
@@ -187,8 +194,78 @@ class FDeployProposalProvider extends AbstractFDeployProposalProvider {
 
 	override void completeKeyword(Keyword keyword, ContentAssistContext contentAssistContext,
 		ICompletionProposalAcceptor acceptor) {
-		if(filteredKeywords.contains(keyword.getValue())) return;
+		if (filteredKeywords.contains(keyword.getValue()))
+			return;
+
+		// don't show "as" keyword for extension elements if they must not have a name
+		if (keyword.value=="as") {
+			val obj = contentAssistContext.previousModel
+			if (obj instanceof FDAbstractExtensionElement) {
+				val elementDef = ExtensionRegistry.getElement(obj)
+				if (elementDef===null || ! elementDef.mayHaveName)
+					return
+			}
+		}
+		
 		super.completeKeyword(keyword, contentAssistContext, acceptor)
+	}
+
+	override void complete_PROPERTY_HOST(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		// collect built-in property hosts
+		for(FDBuiltInPropertyHost host : FDBuiltInPropertyHost.values()) {
+			val proposal = host.literal
+			val displayString = proposal + " (built-in)"
+			acceptor.accept(createCompletionProposal(proposal, displayString, null, context));
+		}
+		
+		// collect hosts from all registered deployment extensions
+		val extensionHosts = ExtensionRegistry.hosts
+		for(IFDeployExtension.Host host : extensionHosts.keySet()) {
+			val proposal = host.name
+			val displayString = proposal + " (" + extensionHosts.get(host).getShortDescription() + ")"
+			acceptor.accept(createCompletionProposal(proposal, displayString, null, context));
+		}
+	}
+
+	override void completeFDExtensionRoot_Tag(
+			EObject model,
+			Assignment assignment,
+			ContentAssistContext context,
+			ICompletionProposalAcceptor acceptor) {
+		val roots = ExtensionRegistry.roots
+		for(RootDef root : roots.keySet()) {
+			val proposal = root.tag
+			val displayString = proposal + " (" + roots.get(root).getShortDescription() + ")"
+			acceptor.accept(createCompletionProposal(proposal, displayString, null, context))
+		}
+		completeRuleCall(assignment.getTerminal as RuleCall, context, acceptor)
+	}
+
+	override void complete_FDExtensionElement(EObject elem, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		if (elem instanceof FDAbstractExtensionElement) {
+			val elementDef = ExtensionRegistry.getElement(elem)
+			
+			// add one proposal for each child
+			for(ElementDef child : elementDef.getChildren()) {
+				val proposal = child.tag
+				val displayString = proposal + " (from extension)"
+				acceptor.accept(createCompletionProposal(proposal, displayString, null, context));
+			}
+		}
+	}
+
+	override void completeFDExtensionType_Name(
+			EObject model,
+			Assignment assignment,
+			ContentAssistContext context,
+			ICompletionProposalAcceptor acceptor) {
+		val types = ExtensionRegistry.types
+		for(TypeDef type : types.keySet()) {
+			val proposal = type.name
+			val displayString = proposal + " (" + types.get(type).getShortDescription() + ")"
+			acceptor.accept(createCompletionProposal(proposal, displayString, null, context))
+		}
+		completeRuleCall(assignment.getTerminal as RuleCall, context, acceptor)
 	}
 
 	override void complete_FDTypeOverwrites(EObject elem, RuleCall ruleCall, ContentAssistContext context,

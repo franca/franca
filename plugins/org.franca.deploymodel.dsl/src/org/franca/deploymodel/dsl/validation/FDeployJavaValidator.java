@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 itemis AG (http://www.itemis.de).
+ * Copyright (c) 2013 itemis AG (http://www.itemis.de).
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,25 +30,31 @@ import org.franca.core.franca.FType;
 import org.franca.core.franca.FTypeDef;
 import org.franca.core.franca.FUnionType;
 import org.franca.deploymodel.core.FDModelUtils;
+import org.franca.deploymodel.core.FDPropertyHost;
 import org.franca.deploymodel.core.PropertyMappings;
 import org.franca.deploymodel.dsl.FDMapper;
 import org.franca.deploymodel.dsl.FDSpecificationExtender;
+import org.franca.deploymodel.dsl.fDeploy.FDAbstractExtensionElement;
 import org.franca.deploymodel.dsl.fDeploy.FDArgument;
 import org.franca.deploymodel.dsl.fDeploy.FDArray;
 import org.franca.deploymodel.dsl.fDeploy.FDAttribute;
 import org.franca.deploymodel.dsl.fDeploy.FDBoolean;
 import org.franca.deploymodel.dsl.fDeploy.FDBroadcast;
+import org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost;
 import org.franca.deploymodel.dsl.fDeploy.FDComplexValue;
+import org.franca.deploymodel.dsl.fDeploy.FDDeclaration;
 import org.franca.deploymodel.dsl.fDeploy.FDElement;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumType;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumValue;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumeration;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumerationOverwrites;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumerator;
+import org.franca.deploymodel.dsl.fDeploy.FDExtensionElement;
+import org.franca.deploymodel.dsl.fDeploy.FDExtensionRoot;
+import org.franca.deploymodel.dsl.fDeploy.FDExtensionType;
 import org.franca.deploymodel.dsl.fDeploy.FDField;
 import org.franca.deploymodel.dsl.fDeploy.FDInteger;
 import org.franca.deploymodel.dsl.fDeploy.FDInterface;
-import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance;
 import org.franca.deploymodel.dsl.fDeploy.FDInterfaceRef;
 import org.franca.deploymodel.dsl.fDeploy.FDMethod;
 import org.franca.deploymodel.dsl.fDeploy.FDModel;
@@ -58,9 +64,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDPredefinedTypeId;
 import org.franca.deploymodel.dsl.fDeploy.FDProperty;
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl;
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyFlag;
-import org.franca.deploymodel.dsl.fDeploy.FDPropertyHost;
 import org.franca.deploymodel.dsl.fDeploy.FDPropertySet;
-import org.franca.deploymodel.dsl.fDeploy.FDProvider;
 import org.franca.deploymodel.dsl.fDeploy.FDRootElement;
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification;
 import org.franca.deploymodel.dsl.fDeploy.FDString;
@@ -77,6 +81,8 @@ import org.franca.deploymodel.dsl.fDeploy.FDValue;
 import org.franca.deploymodel.dsl.fDeploy.FDValueArray;
 import org.franca.deploymodel.dsl.fDeploy.FDeployPackage;
 import org.franca.deploymodel.dsl.validation.internal.ValidatorRegistry;
+import org.franca.deploymodel.extensions.ExtensionRegistry;
+import org.franca.deploymodel.extensions.IFDeployExtension;
 
 import com.google.common.collect.Lists;
 
@@ -131,7 +137,75 @@ public class FDeployJavaValidator extends AbstractFDeployValidator
 		ValidationHelpers.checkDuplicates(this, model.getSpecifications(),
 				FDeployPackage.Literals.FD_SPECIFICATION__NAME, "specification name");
 	}
+	
+	@Check
+	public void checkPropertyHosts(FDDeclaration decl) {
+		FDPropertyHost host = decl.getHost();
+		if (host.getBuiltIn() == null) {
+			// this is a host from an extension, check if it is valid
+			if (ExtensionRegistry.findHost(host.getName())==null) {
+				// didn't find host by name
+				error("Invalid property host '" + host.getName() + "'",
+						decl, FDeployPackage.Literals.FD_DECLARATION__HOST, -1);
+			}
+		}
+	}
 
+	@Check
+	public void checkExtensionRoot(FDExtensionRoot root) {
+		String tag = root.getTag();
+		IFDeployExtension.RootDef rootDef = ExtensionRegistry.findRoot(tag);
+		if (rootDef==null) {
+			// didn't find root by tag
+			error("Invalid root '" + tag + "', no matching deployment extension has been configured",
+					root, FDeployPackage.Literals.FD_ABSTRACT_EXTENSION_ELEMENT__TAG, -1);
+		} else {
+			if (root.getName()!=null && !rootDef.mayHaveName()) {
+				error("Root '" + tag + "' must not have a name",
+						root, FDeployPackage.Literals.FD_ROOT_ELEMENT__NAME, -1);
+			}
+			if (rootDef.mustHaveName() && root.getName()==null) {
+				error("Root '" + tag + "' must have a name",
+						root, FDeployPackage.Literals.FD_ABSTRACT_EXTENSION_ELEMENT__TAG, -1);
+			}
+		}
+	}
+
+	@Check
+	public void checkExtensionElement(FDExtensionElement elem) {
+		// check if this element is structurally allowed below its parent element
+		String tag = elem.getTag();
+		FDAbstractExtensionElement parent = (FDAbstractExtensionElement)elem.eContainer();
+		IFDeployExtension.AbstractElementDef parentDef = ExtensionRegistry.getElement(parent);
+		if (! hasChild(parentDef, tag)) {
+			// didn't find root by tag
+			error("Invalid element tag '" + tag + "' for parent '" + parentDef.getTag() + "'",
+				elem, FDeployPackage.Literals.FD_ABSTRACT_EXTENSION_ELEMENT__TAG, -1);
+			
+			// do no further checks
+			return;
+		}
+		
+		// this element is structurally allowed, check name
+		IFDeployExtension.AbstractElementDef elemDef = ExtensionRegistry.getElement(elem);
+		if (elem.getName()!=null && !elemDef.mayHaveName()) {
+			error("Element '" + tag + "' must not have a name",
+					elem, FDeployPackage.Literals.FD_EXTENSION_ELEMENT__NAME, -1);
+		}
+		if (elemDef.mustHaveName() && elem.getName()==null) {
+			error("Element '" + tag + "' must have a name",
+					elem, FDeployPackage.Literals.FD_ABSTRACT_EXTENSION_ELEMENT__TAG, -1);
+		}
+	}
+
+	private boolean hasChild(IFDeployExtension.AbstractElementDef elemDef, String tag) {
+		for(IFDeployExtension.AbstractElementDef c : elemDef.getChildren()) {
+			if (c.getTag().equals(tag))
+				return true;
+		}
+		return false;
+	}
+	
 	@Check
 	public void checkRootElementNamesUnique(FDModel model) {
 		ValidationHelpers.checkDuplicates(this, model.getDeployments(),
@@ -180,7 +254,11 @@ public class FDeployJavaValidator extends AbstractFDeployValidator
 	public void checkDuplicateProperties(FDPropertySet properties) {
 		ValidationHelpers.NameList names = ValidationHelpers.createNameList();
 		for(FDProperty p : properties.getItems()) {
-			names.add(p, p.getDecl().getName());
+			if (p.getDecl().eIsProxy()) {
+				// ignore unresolved properties
+			} else {
+				names.add(p, p.getDecl().getName());
+			}
 		}
 		ValidationHelpers.checkDuplicates(this, names,
 				FDeployPackage.Literals.FD_PROPERTY__DECL, "property");
@@ -217,12 +295,36 @@ public class FDeployJavaValidator extends AbstractFDeployValidator
 	// check for missing properties
 	
 	@Check
-	public void checkPropertiesComplete(FDProvider elem) {
+	public void checkPropertiesComplete(FDExtensionRoot elem) {
 		// check own properties
 		FDSpecification spec = FDModelUtils.getRootElement(elem).getSpec();
-		checkSpecificationElementProperties(spec, elem, FDeployPackage.Literals.FD_ROOT_ELEMENT__NAME, spec.getName());
+		checkSpecificationElementProperties(
+			spec, elem,
+			FDeployPackage.Literals.FD_ROOT_ELEMENT__NAME,
+			spec.getName()
+		);
+
+		// check child elements recursively
+		FDSpecificationExtender specHelper = new FDSpecificationExtender(spec);
+		for(FDExtensionElement child : elem.getElements()) {
+			checkExtensionElement(spec, child);
+		}
 	}
-	
+
+	private void checkExtensionElement(FDSpecification spec, FDExtensionElement elem) {
+		// check own properties
+		checkSpecificationElementProperties(
+			spec, elem,
+			FDeployPackage.Literals.FD_ABSTRACT_EXTENSION_ELEMENT__TAG,
+			spec.getName()
+		);
+
+		// check child elements recursively
+		for(FDExtensionElement child : elem.getElements()) {
+			checkExtensionElement(spec, child);
+		}
+	}	
+
 	@Check
 	public void checkPropertiesComplete(FDTypes elem) {
 		// check own properties
@@ -600,7 +702,7 @@ public class FDeployJavaValidator extends AbstractFDeployValidator
 		for(FEnumerator tc : enumerators) {
 			FDEnumValue c = (FDEnumValue) mapper.getFDElement(tc);
 			if (c==null) {
-				if (specHelper.isMandatory(FDPropertyHost.ENUMERATORS)) {
+				if (specHelper.isMandatory(FDPropertyHost.builtIn(FDBuiltInPropertyHost.ENUMERATORS))) {
 					error("Mandatory enumerator '" + tc.getName() + "' is missing for enumeration '" + ((FDEnumeration) parent).getTarget().getName() + "'", 
 							parent, feature, -1, ENUMERATOR_ENUM_QUICKFIX, ((FDEnumeration) parent).getTarget().getName(), tc.getName());
 					hasError |= true;
@@ -616,13 +718,6 @@ public class FDeployJavaValidator extends AbstractFDeployValidator
 	
 	// *****************************************************************************
 
-	@Check
-	public void checkPropertiesComplete (FDInterfaceInstance elem) {
-		// check own properties
-		FDSpecification spec = FDModelUtils.getRootElement(elem).getSpec();
-		checkSpecificationElementProperties(spec, elem, FDeployPackage.Literals.FD_INTERFACE_INSTANCE__TARGET, spec.getName());
-	}
-	
 	/**
 	 * Checks whether all of the mandatory properties of the given {@link FDSpecification} instance are present. 
 	 * 
@@ -706,6 +801,17 @@ public class FDeployJavaValidator extends AbstractFDeployValidator
 	// type system
 	
 	@Check
+	public void checkExtensionTyoe(FDExtensionType type) {
+		String name = type.getName();
+		IFDeployExtension.TypeDef typeDef = ExtensionRegistry.findType(name);
+		if (typeDef==null) {
+			// didn't find type by name
+			error("Invalid type '" + name + "', no matching deployment extension has been configured",
+					type, FDeployPackage.Literals.FD_EXTENSION_TYPE__NAME, -1);
+		}
+	}
+
+	@Check
 	public void checkPropertyFlagType(FDPropertyFlag flag) {
 		if (flag.getDefault()==null)
 			return;
@@ -768,12 +874,6 @@ public class FDeployJavaValidator extends AbstractFDeployValidator
 			case FDPredefinedTypeId.INTERFACE_VALUE:
 				if (! (value instanceof FDInterfaceRef)) {
 					error("Invalid type, expected reference to Franca interface",
-							src, literal, index);
-				}
-				break;
-			case FDPredefinedTypeId.INSTANCE_VALUE:
-				if (! (FDModelUtils.isInstanceRef(value))) {
-					error("Invalid type, expected reference to interface instance",
 							src, literal, index);
 				}
 				break;
