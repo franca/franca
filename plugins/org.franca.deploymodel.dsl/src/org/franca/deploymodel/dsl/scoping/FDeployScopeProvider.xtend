@@ -261,6 +261,61 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 
 	// *****************************************************************************
 
+	/**
+	 * Define scope for use-attribute of deployed type collections.</p>
+	 * 
+	 * Type collection deployments may only use other type collection deployments.</p>
+	 */
+	def IScope scope_FDRootElement_use(FDTypes elem, EReference ref) {
+		val IScope delegateScope = elem.delegateGetScope(ref)
+		new FilteringScope(delegateScope, [
+			isAssignableFrom(FDeployPackage.eINSTANCE.FDTypes, it.EClass)
+		])
+	}
+	
+	/**
+	 * Define scope for use-attribute of deployed interfaces.</p>
+	 * 
+	 * Interface deployments may only use type collection deployments
+	 * and other interface deployments.</p>
+	 */
+	def IScope scope_FDRootElement_use(FDInterface elem, EReference ref) {
+		val IScope delegateScope = elem.delegateGetScope(ref)
+		new FilteringScope(delegateScope, [
+			isAssignableFrom(FDeployPackage.eINSTANCE.FDTypes, it.EClass) ||
+			isAssignableFrom(FDeployPackage.eINSTANCE.FDInterface, it.EClass)
+		])
+	}	
+
+	/*
+	 * Checks if two deployment definition roots have compatible specifications.</p>
+	 * 
+	 * Compatibility means either both parent and child elements reference the
+	 * same specification or the child's specification is derived from the
+	 * parent's specification.</p>
+	 * 
+	 * As derived DSLs may use some extended logic for retrieving the specification
+	 * for a root element, this can be configured by providing a function argument.</p>
+	 */
+	def protected haveCompatibleSpecs(
+		FDRootElement parent,
+		FDRootElement child,
+		(FDRootElement)=>FDSpecification specGetter
+	) {
+		val parentSpec = specGetter.apply(parent)
+		var check = specGetter.apply(child)
+
+		while (check !== null) {
+			if (parentSpec == check)
+				return true
+			check = check.base
+		} 
+		false
+	}
+
+
+	// *****************************************************************************
+
 	def scope_FDProperty_decl(FDExtensionRoot owner, EReference ref) {
 		owner.getPropertyDecls
 	}
