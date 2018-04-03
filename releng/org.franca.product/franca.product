@@ -32,6 +32,7 @@
    <features>
       <feature id="org.franca.core"/>
       <feature id="org.franca.ui"/>
+      <feature id="org.franca.providers"/>
       <feature id="org.franca.dbus"/>
       <feature id="org.franca.dbus.ui"/>
       <feature id="org.franca.omgidl"/>
