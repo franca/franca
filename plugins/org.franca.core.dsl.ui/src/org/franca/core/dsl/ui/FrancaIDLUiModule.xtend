@@ -7,17 +7,19 @@
  */
 package org.franca.core.dsl.ui
 
+import com.google.inject.Binder
+import com.google.inject.name.Names
 import org.eclipse.ui.plugin.AbstractUIPlugin
+import org.eclipse.xtext.documentation.IEObjectDocumentationProvider
+import org.eclipse.xtext.ide.editor.syntaxcoloring.ISemanticHighlightingCalculator
 import org.eclipse.xtext.ui.editor.contentassist.PrefixMatcher
 import org.eclipse.xtext.ui.editor.contentassist.XtextContentAssistProcessor
 import org.eclipse.xtext.ui.editor.syntaxcoloring.AbstractAntlrTokenToAttributeIdMapper
 import org.eclipse.xtext.ui.editor.syntaxcoloring.IHighlightingConfiguration
+import org.franca.core.dsl.ide.highlighting.FrancaSemanticHighlightingCalculator
 import org.franca.core.dsl.ui.contentassist.FrancaProposalPrefixMatcher
 import org.franca.core.dsl.ui.highlighting.FrancaAntlrTokenToAttributeIdMapper
 import org.franca.core.dsl.ui.highlighting.FrancaHighlightingConfiguration
-import org.franca.core.dsl.ide.highlighting.FrancaSemanticHighlightingCalculator
-import com.google.inject.Binder
-import org.eclipse.xtext.ide.editor.syntaxcoloring.ISemanticHighlightingCalculator
 
 /** 
  * Use this class to register components to be used within the IDE.
@@ -26,7 +28,7 @@ import org.eclipse.xtext.ide.editor.syntaxcoloring.ISemanticHighlightingCalculat
  * FrancaIDLUiModuleWithoutJDT should be used.
  * @see FrancaIDLUiModuleWithoutJDT
  */
-class FrancaIDLUiModule extends org.franca.core.dsl.ui.AbstractFrancaIDLUiModule {
+class FrancaIDLUiModule extends AbstractFrancaIDLUiModule {
 	new(AbstractUIPlugin plugin) {
 		super(plugin)
 	}
@@ -34,7 +36,7 @@ class FrancaIDLUiModule extends org.franca.core.dsl.ui.AbstractFrancaIDLUiModule
 	override void configure(Binder binder) {
 		super.configure(binder)
 		binder.bind(String).annotatedWith(
-			com.google.inject.name.Names.named((XtextContentAssistProcessor.COMPLETION_AUTO_ACTIVATION_CHARS))).
+			Names.named((XtextContentAssistProcessor.COMPLETION_AUTO_ACTIVATION_CHARS))).
 			toInstance(":")
 	}
 
@@ -55,4 +57,8 @@ class FrancaIDLUiModule extends org.franca.core.dsl.ui.AbstractFrancaIDLUiModule
 	override Class<? extends PrefixMatcher> bindPrefixMatcher() {
 		return FrancaProposalPrefixMatcher
 	}
+
+	def Class<? extends IEObjectDocumentationProvider> bindIEObjectDocumentationProviderr() {
+        return FrancaIDLDocumentationProvider
+    }
 }
