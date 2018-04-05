@@ -84,6 +84,8 @@ import org.franca.deploymodel.dsl.validation.internal.ValidatorRegistry
 import org.franca.deploymodel.extensions.ExtensionRegistry
 import org.franca.deploymodel.extensions.IFDeployExtension
 
+import static org.franca.deploymodel.dsl.fDeploy.FDeployPackage.Literals.*
+
 /**
  * This class contains custom validation rules for the Franca deployment DSL.</p> 
  *
@@ -125,18 +127,16 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 	// *****************************************************************************
 	// basic checks
 	@Check def void checkSpecNamesUnique(FDModel model) {
-		ValidationHelpers::checkDuplicates(this, model.getSpecifications(),
-			FDeployPackage.Literals::FD_SPECIFICATION__NAME, "specification name")
+		ValidationHelpers::checkDuplicates(this, model.getSpecifications(), FD_SPECIFICATION__NAME, "specification name")
 	}
 
 	@Check def void checkPropertyHosts(FDDeclaration decl) {
 		var FDPropertyHost host = decl.getHost()
 		if (host.getBuiltIn() === null) {
 			// this is a host from an extension, check if it is valid
-			if (ExtensionRegistry::findHost(host.getName()) === null) {
+			if (ExtensionRegistry::findHost(host.name) === null) {
 				// didn't find host by name
-				error('''Invalid property host '«»«host.getName()»'«»'''.toString, decl,
-					FDeployPackage.Literals::FD_DECLARATION__HOST, -1)
+				error('''Invalid property host '«»«host.name»'«»''', decl, FD_DECLARATION__HOST, -1)
 			}
 		}
 	}
@@ -146,16 +146,16 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 		var IFDeployExtension.RootDef rootDef = ExtensionRegistry::findRoot(tag)
 		if (rootDef === null) {
 			// didn't find root by tag
-			error('''Invalid root '«»«tag»', no matching deployment extension has been configured'''.toString, root,
-				FDeployPackage.Literals::FD_ABSTRACT_EXTENSION_ELEMENT__TAG, -1)
+			error('''Invalid root '«»«tag»', no matching deployment extension has been configured''', root,
+				FD_ABSTRACT_EXTENSION_ELEMENT__TAG, -1)
 		} else {
-			if (root.getName() !== null && !rootDef.mayHaveName()) {
-				error('''Root '«»«tag»' must not have a name'''.toString, root,
-					FDeployPackage.Literals::FD_ROOT_ELEMENT__NAME, -1)
+			if (root.name !== null && !rootDef.mayHaveName()) {
+				error('''Root '«»«tag»' must not have a name''', root,
+					FD_ROOT_ELEMENT__NAME, -1)
 			}
-			if (rootDef.mustHaveName() && root.getName() === null) {
-				error('''Root '«»«tag»' must have a name'''.toString, root,
-					FDeployPackage.Literals::FD_ABSTRACT_EXTENSION_ELEMENT__TAG, -1)
+			if (rootDef.mustHaveName() && root.name === null) {
+				error('''Root '«»«tag»' must have a name''', root,
+					FD_ABSTRACT_EXTENSION_ELEMENT__TAG, -1)
 			}
 		}
 	}
@@ -167,20 +167,20 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 		var IFDeployExtension.AbstractElementDef parentDef = ExtensionRegistry::getElement(parent)
 		if (!hasChild(parentDef, tag)) {
 			// didn't find root by tag
-			error('''Invalid element tag '«»«tag»' for parent '«»«parentDef.getTag()»'«»'''.toString, elem,
-				FDeployPackage.Literals::FD_ABSTRACT_EXTENSION_ELEMENT__TAG, -1)
+			error('''Invalid element tag '«»«tag»' for parent '«»«parentDef.getTag()»'«»''', elem,
+				FD_ABSTRACT_EXTENSION_ELEMENT__TAG, -1)
 			// do no further checks
 			return;
 		}
 		// this element is structurally allowed, check name
 		var IFDeployExtension.AbstractElementDef elemDef = ExtensionRegistry::getElement(elem)
-		if (elem.getName() !== null && !elemDef.mayHaveName()) {
-			error('''Element '«»«tag»' must not have a name'''.toString, elem,
-				FDeployPackage.Literals::FD_EXTENSION_ELEMENT__NAME, -1)
+		if (elem.name !== null && !elemDef.mayHaveName()) {
+			error('''Element '«»«tag»' must not have a name''', elem,
+				FD_EXTENSION_ELEMENT__NAME, -1)
 		}
-		if (elemDef.mustHaveName() && elem.getName() === null) {
-			error('''Element '«»«tag»' must have a name'''.toString, elem,
-				FDeployPackage.Literals::FD_ABSTRACT_EXTENSION_ELEMENT__TAG, -1)
+		if (elemDef.mustHaveName() && elem.name === null) {
+			error('''Element '«»«tag»' must have a name''', elem,
+				FD_ABSTRACT_EXTENSION_ELEMENT__TAG, -1)
 		}
 	}
 
@@ -193,7 +193,7 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 
 	@Check def void checkRootElementNamesUnique(FDModel model) {
 		ValidationHelpers::checkDuplicates(this, model.getDeployments(),
-			FDeployPackage.Literals::FD_ROOT_ELEMENT__NAME, "definition name")
+			FD_ROOT_ELEMENT__NAME, "definition name")
 	}
 
 	@Check def void checkRootElement(FDRootElement elem) {
@@ -203,17 +203,15 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 	@Check def void checkMethodArgs(FDMethod method) {
 		if (method.getInArguments() !== null) {
 			for (FDArgument arg : method.getInArguments().getArguments()) {
-				if (!method.getTarget().getInArgs().contains(arg.getTarget())) {
-					error('''Invalid input argument '«»«arg.getTarget().getName()»'«»'''.toString, arg,
-						FDeployPackage.Literals::FD_ARGUMENT__TARGET, -1)
+				if (!method.target.getInArgs().contains(arg.target)) {
+					error('''Invalid input argument '«»«arg.target.name»'«»''', arg, FD_ARGUMENT__TARGET, -1)
 				}
 			}
 		}
 		if (method.getOutArguments() !== null) {
 			for (FDArgument arg : method.getOutArguments().getArguments()) {
-				if (!method.getTarget().getOutArgs().contains(arg.getTarget())) {
-					error('''Invalid output argument '«»«arg.getTarget().getName()»'«»'''.toString, arg,
-						FDeployPackage.Literals::FD_ARGUMENT__TARGET, -1)
+				if (!method.target.getOutArgs().contains(arg.target)) {
+					error('''Invalid output argument '«»«arg.target.name»'«»''', arg, FD_ARGUMENT__TARGET, -1)
 				}
 			}
 		}
@@ -222,9 +220,8 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 	@Check def void checkBroadcastArgs(FDBroadcast broadcast) {
 		if (broadcast.getOutArguments() !== null) {
 			for (FDArgument arg : broadcast.getOutArguments().getArguments()) {
-				if (!broadcast.getTarget().getOutArgs().contains(arg.getTarget())) {
-					error('''Invalid output argument '«»«arg.getTarget().getName()»'«»'''.toString, arg,
-						FDeployPackage.Literals::FD_ARGUMENT__TARGET, -1)
+				if (!broadcast.target.getOutArgs().contains(arg.target)) {
+					error('''Invalid output argument '«»«arg.target.name»'«»''', arg, FD_ARGUMENT__TARGET, -1)
 				}
 			}
 		}
@@ -233,20 +230,20 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 	@Check def void checkDuplicateProperties(FDPropertySet properties) {
 		var ValidationHelpers.NameList names = ValidationHelpers::createNameList()
 		for (FDProperty p : properties.getItems()) {
-			if (p.getDecl().eIsProxy()) { // ignore unresolved properties
+			if (p.decl.eIsProxy()) { // ignore unresolved properties
 			} else {
-				names.add(p, p.getDecl().getName())
+				names.add(p, p.decl.name)
 			}
 		}
-		ValidationHelpers::checkDuplicates(this, names, FDeployPackage.Literals::FD_PROPERTY__DECL, "property")
+		ValidationHelpers::checkDuplicates(this, names, FD_PROPERTY__DECL, "property")
 	}
 
 	// *****************************************************************************
 	// validate specifications
 	@Check def void checkPropertyName(FDPropertyDecl prop) {
-		if (!Character::isUpperCase(prop.getName().charAt(0))) {
+		if (!Character::isUpperCase(prop.name.charAt(0))) {
 			error("Property names must begin with an uppercase character",
-				FDeployPackage.Literals::FD_PROPERTY_DECL__NAME, UPPERCASE_PROPERTYNAME_QUICKFIX, prop.getName())
+				FD_PROPERTY_DECL__NAME, UPPERCASE_PROPERTYNAME_QUICKFIX, prop.name)
 		}
 	}
 
@@ -257,8 +254,8 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 	@Check def void checkBaseSpec(FDSpecification spec) {
 		var FDSpecification cycleSpec = deployValidator.getCyclicBaseSpec(spec)
 		if (cycleSpec !== null) {
-			error('''Inheritance cycle for specification «cycleSpec.getName()»'''.toString, cycleSpec,
-				FDeployPackage.Literals::FD_SPECIFICATION__BASE, -1)
+			error('''Inheritance cycle for specification «cycleSpec.name»''', cycleSpec,
+				FD_SPECIFICATION__BASE, -1)
 			return;
 		}
 	}
@@ -268,20 +265,20 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 	@Check def void checkPropertiesComplete(FDExtensionRoot elem) {
 		// check own properties
 		var FDSpecification spec = FDModelUtils::getRootElement(elem).getSpec()
-		checkSpecificationElementProperties(spec, elem, FDeployPackage.Literals::FD_ROOT_ELEMENT__NAME, spec.getName())
+		checkSpecificationElementProperties(spec, elem, FD_ROOT_ELEMENT__NAME, spec.name)
 		// check child elements recursively
 		var FDSpecificationExtender specHelper = new FDSpecificationExtender(spec)
-		for (FDExtensionElement child : elem.getElements()) {
+		for (FDExtensionElement child : elem.elements) {
 			checkExtensionElement(spec, child)
 		}
 	}
 
 	def private void checkExtensionElement(FDSpecification spec, FDExtensionElement elem) {
 		// check own properties
-		checkSpecificationElementProperties(spec, elem, FDeployPackage.Literals::FD_ABSTRACT_EXTENSION_ELEMENT__TAG,
-			spec.getName())
+		checkSpecificationElementProperties(spec, elem, FD_ABSTRACT_EXTENSION_ELEMENT__TAG, spec.name)
+		
 		// check child elements recursively
-		for (FDExtensionElement child : elem.getElements()) {
+		for (FDExtensionElement child : elem.elements) {
 			checkExtensionElement(spec, child)
 		}
 	}
@@ -289,13 +286,13 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 	@Check def void checkPropertiesComplete(FDTypes elem) {
 		// check own properties
 		var FDSpecification spec = FDModelUtils::getRootElement(elem).getSpec()
-		checkSpecificationElementProperties(spec, elem, FDeployPackage.Literals::FD_TYPES__TARGET, spec.getName())
+		checkSpecificationElementProperties(spec, elem, FD_TYPES__TARGET, spec.name)
 		// check child elements recursively
 		var FDSpecificationExtender specHelper = new FDSpecificationExtender(spec)
 		var PropertyDefChecker checker = new PropertyDefChecker(specHelper)
 		var FDMapper mapper = new FDMapper(elem)
-		var List<FType> targetTypes = elem.getTarget().getTypes()
-		checkLocalTypes(targetTypes, specHelper, checker, mapper, spec, FDeployPackage.Literals::FD_TYPES__TARGET)
+		var List<FType> targetTypes = elem.target.getTypes()
+		checkLocalTypes(targetTypes, specHelper, checker, mapper, spec, FD_TYPES__TARGET)
 		deployValidator.checkUsedTypes(elem, targetTypes, checker)
 	}
 
@@ -303,8 +300,8 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 		var int lowerLevelErrors = 0
 		// check own properties
 		var FDSpecification spec = FDModelUtils::getRootElement(elem).getSpec()
-		if (checkSpecificationElementProperties(spec, elem, FDeployPackage.Literals::FD_INTERFACE__TARGET,
-			spec.getName())) {
+		if (checkSpecificationElementProperties(spec, elem, FD_INTERFACE__TARGET,
+			spec.name)) {
 			lowerLevelErrors++
 		}
 
@@ -312,21 +309,21 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 		var FDSpecificationExtender specHelper = new FDSpecificationExtender(spec)
 		var PropertyDefChecker checker = new PropertyDefChecker(specHelper)
 		var FDMapper mapper = new FDMapper(elem)
-		var FInterface target = elem.getTarget()
+		var FInterface target = elem.target
 		for (FAttribute tc : target.getAttributes()) {
 			var FDAttribute c = (mapper.getFDElement(tc) as FDAttribute)
 			if (c === null) {
 				if (checker.mustBeDefined(tc)) {
-					error('''«DEPLOYMENT_ELEMENT_QUICKFIX_MESSAGE»'«»«tc.getName()»'«»'''.toString,
-						FDeployPackage.Literals::FD_INTERFACE__TARGET, DEPLOYMENT_ELEMENT_QUICKFIX, tc.getName(),
+					error('''«DEPLOYMENT_ELEMENT_QUICKFIX_MESSAGE»'«»«tc.name»'«»''',
+						FD_INTERFACE__TARGET, DEPLOYMENT_ELEMENT_QUICKFIX, tc.name,
 						FrancaQuickFixConstants::ATTRIBUTE.toString())
-					error('''«DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE»'«»«tc.getName()»'«»'''.toString,
-						FDeployPackage.Literals::FD_INTERFACE__TARGET, DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX,
-						tc.getName(), FrancaQuickFixConstants::ATTRIBUTE.toString())
+					error('''«DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE»'«»«tc.name»'«»''',
+						FD_INTERFACE__TARGET, DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX,
+						tc.name, FrancaQuickFixConstants::ATTRIBUTE.toString())
 					lowerLevelErrors++
 				}
-			} else if (checkSpecificationElementProperties(spec, c, FDeployPackage.Literals::FD_ATTRIBUTE__TARGET,
-				tc.getName())) {
+			} else if (checkSpecificationElementProperties(spec, c, FD_ATTRIBUTE__TARGET,
+				tc.name)) {
 				lowerLevelErrors++
 			}
 		}
@@ -335,24 +332,24 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 			if (c === null) {
 				if (checker.mustBeDefined(tc)) {
 					var String name = FrancaModelExtensions::getUniqueName(tc)
-					error('''«DEPLOYMENT_ELEMENT_QUICKFIX_MESSAGE»'«»«name»'«»'''.toString,
-						FDeployPackage.Literals::FD_INTERFACE__TARGET, DEPLOYMENT_ELEMENT_QUICKFIX, name,
+					error('''«DEPLOYMENT_ELEMENT_QUICKFIX_MESSAGE»'«»«name»'«»''',
+						FD_INTERFACE__TARGET, DEPLOYMENT_ELEMENT_QUICKFIX, name,
 						FrancaQuickFixConstants::METHOD.toString())
-					error('''«DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE»'«»«name»'«»'''.toString,
-						FDeployPackage.Literals::FD_INTERFACE__TARGET, DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, name,
+					error('''«DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE»'«»«name»'«»''',
+						FD_INTERFACE__TARGET, DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, name,
 						FrancaQuickFixConstants::METHOD.toString())
 					lowerLevelErrors++
 				}
 			} else {
 				var String name = FrancaModelExtensions::getUniqueName(tc)
-				if (checkSpecificationElementProperties(spec, c, FDeployPackage.Literals::FD_METHOD__TARGET, name)) {
+				if (checkSpecificationElementProperties(spec, c, FD_METHOD__TARGET, name)) {
 					lowerLevelErrors++
 				}
-				val checkIn = checkArgumentList(specHelper, checker, mapper, spec, tc.getInArgs(), c, "Input", FDeployPackage.Literals::FD_METHOD__TARGET)
-				val checkOut = checkArgumentList(specHelper, checker, mapper, spec, tc.getOutArgs(), c, "Output", FDeployPackage.Literals::FD_METHOD__TARGET)
+				val checkIn = checkArgumentList(specHelper, checker, mapper, spec, tc.getInArgs(), c, "Input", FD_METHOD__TARGET)
+				val checkOut = checkArgumentList(specHelper, checker, mapper, spec, tc.getOutArgs(), c, "Output", FD_METHOD__TARGET)
 				if (checkIn || checkOut) {
-					error('''«DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE»'«»«name»'«»'''.toString, c,
-						FDeployPackage.Literals::FD_METHOD__TARGET, DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, name,
+					error('''«DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE»'«»«name»'«»''', c,
+						FD_METHOD__TARGET, DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, name,
 						FrancaQuickFixConstants::METHOD.toString())
 					lowerLevelErrors++
 				}
@@ -363,31 +360,31 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 			if (c === null) {
 				if (checker.mustBeDefined(tc)) {
 					var String name = FrancaModelExtensions::getUniqueName(tc)
-					error('''«DEPLOYMENT_ELEMENT_QUICKFIX_MESSAGE»'«»«name»'«»'''.toString,
-						FDeployPackage.Literals::FD_INTERFACE__TARGET, DEPLOYMENT_ELEMENT_QUICKFIX, name,
+					error('''«DEPLOYMENT_ELEMENT_QUICKFIX_MESSAGE»'«»«name»'«»''',
+						FD_INTERFACE__TARGET, DEPLOYMENT_ELEMENT_QUICKFIX, name,
 						FrancaQuickFixConstants::BROADCAST.toString())
-					error('''«DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE»'«»«name»'«»'''.toString,
-						FDeployPackage.Literals::FD_INTERFACE__TARGET, DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, name,
+					error('''«DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE»'«»«name»'«»''',
+						FD_INTERFACE__TARGET, DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, name,
 						FrancaQuickFixConstants::BROADCAST.toString())
 					lowerLevelErrors++
 				}
 			} else {
 				var String name = FrancaModelExtensions::getUniqueName(tc)
-				if (checkSpecificationElementProperties(spec, c, FDeployPackage.Literals::FD_BROADCAST__TARGET,
+				if (checkSpecificationElementProperties(spec, c, FD_BROADCAST__TARGET,
 					name)) {
 					lowerLevelErrors++
 				}
 				if (checkArgumentList(specHelper, checker, mapper, spec, tc.getOutArgs(), c, "Output",
-					FDeployPackage.Literals::FD_BROADCAST__TARGET)) {
-					error('''«DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE»'«»«name»'«»'''.toString, c,
-						FDeployPackage.Literals::FD_BROADCAST__TARGET, DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, name,
+					FD_BROADCAST__TARGET)) {
+					error('''«DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE»'«»«name»'«»''', c,
+						FD_BROADCAST__TARGET, DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, name,
 						FrancaQuickFixConstants::BROADCAST.toString())
 					lowerLevelErrors++
 				}
 			}
 		}
 		if (checkLocalTypes(target.getTypes(), specHelper, checker, mapper, spec,
-			FDeployPackage.Literals::FD_INTERFACE__TARGET)) {
+			FD_INTERFACE__TARGET)) {
 			lowerLevelErrors++
 		}
 		if (deployValidator.checkUsedTypes(elem, target.getTypes(), checker)) {
@@ -396,8 +393,8 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 		// show a global quickfix on the root element, if any error on the detail level occurred
 		if (lowerLevelErrors > 0) {
 			// Recursive quickfix can be added for the top level FDInterface element
-			error('''«DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE»'«»«spec.getName()»'«»'''.toString, elem,
-				FDeployPackage.Literals::FD_INTERFACE__TARGET, DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, spec.getName(),
+			error('''«DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE»'«»«spec.name»'«»''', elem,
+				FD_INTERFACE__TARGET, DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, spec.name,
 				FrancaQuickFixConstants::INTERFACE.toString())
 		}
 	}
@@ -414,36 +411,36 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 				var FDArray c = (mapper.getFDElement(tc) as FDArray)
 				if (c === null) {
 					if (checker.mustBeDefined((tc as FArrayType))) {
-						error('''«DEPLOYMENT_ELEMENT_QUICKFIX_MESSAGE»'«»«tc.getName()»'«»'''.toString, parentFeature,
-							DEPLOYMENT_ELEMENT_QUICKFIX, tc.getName(), FrancaQuickFixConstants::ARRAY.toString())
-						error('''«DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE»'«»«tc.getName()»'«»'''.toString,
-							parentFeature, DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, tc.getName(),
+						error('''«DEPLOYMENT_ELEMENT_QUICKFIX_MESSAGE»'«»«tc.name»'«»''', parentFeature,
+							DEPLOYMENT_ELEMENT_QUICKFIX, tc.name, FrancaQuickFixConstants::ARRAY.toString())
+						error('''«DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE»'«»«tc.name»'«»''',
+							parentFeature, DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, tc.name,
 							FrancaQuickFixConstants::ARRAY.toString())
 						hasError = true
 					}
 				} else {
-					if (checkSpecificationElementProperties(spec, c, FDeployPackage.Literals::FD_ARRAY__TARGET, tc.getName()))
+					if (checkSpecificationElementProperties(spec, c, FD_ARRAY__TARGET, tc.name))
 						hasError = true
 				}
 			} else if (tc instanceof FStructType) {
 				var FDStruct c = (mapper.getFDElement(tc) as FDStruct)
 				if (c === null) {
 					if (checker.mustBeDefined((tc as FStructType))) {
-						error('''«DEPLOYMENT_ELEMENT_QUICKFIX_MESSAGE»'«»«tc.getName()»'«»'''.toString, parentFeature,
-							DEPLOYMENT_ELEMENT_QUICKFIX, tc.getName(), FrancaQuickFixConstants::STRUCT.toString())
-						error('''«DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE»'«»«tc.getName()»'«»'''.toString,
-							parentFeature, DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, tc.getName(),
+						error('''«DEPLOYMENT_ELEMENT_QUICKFIX_MESSAGE»'«»«tc.name»'«»''', parentFeature,
+							DEPLOYMENT_ELEMENT_QUICKFIX, tc.name, FrancaQuickFixConstants::STRUCT.toString())
+						error('''«DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE»'«»«tc.name»'«»''',
+							parentFeature, DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, tc.name,
 							FrancaQuickFixConstants::STRUCT.toString())
 						hasError = true
 					}
 				} else {
-					if (checkSpecificationElementProperties(spec, c, FDeployPackage.Literals::FD_STRUCT__TARGET, tc.getName()))
+					if (checkSpecificationElementProperties(spec, c, FD_STRUCT__TARGET, tc.name))
 						hasError = true
-					if (checkFieldsList(specHelper, checker, mapper, spec, ((tc as FStructType)).getElements(), c,
-						FDeployPackage.Literals::FD_STRUCT__TARGET, "Struct")) {
-						error('''«DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE»'«»«tc.getName()»'«»'''.toString, c,
-							FDeployPackage.Literals::FD_STRUCT__TARGET, DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX,
-							tc.getName(), FrancaQuickFixConstants::STRUCT.toString())
+					if (checkFieldsList(specHelper, checker, mapper, spec, ((tc as FStructType)).elements, c,
+						FD_STRUCT__TARGET, "Struct")) {
+						error('''«DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE»'«»«tc.name»'«»''', c,
+							FD_STRUCT__TARGET, DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX,
+							tc.name, FrancaQuickFixConstants::STRUCT.toString())
 						hasError = true
 					}
 				}
@@ -451,21 +448,21 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 				var FDUnion c = (mapper.getFDElement(tc) as FDUnion)
 				if (c === null) {
 					if (checker.mustBeDefined((tc as FUnionType))) {
-						error('''«DEPLOYMENT_ELEMENT_QUICKFIX_MESSAGE»'«»«tc.getName()»'«»'''.toString, parentFeature,
-							DEPLOYMENT_ELEMENT_QUICKFIX, tc.getName(), FrancaQuickFixConstants::UNION.toString())
-						error('''«DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE»'«»«tc.getName()»'«»'''.toString,
-							parentFeature, DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, tc.getName(),
+						error('''«DEPLOYMENT_ELEMENT_QUICKFIX_MESSAGE»'«»«tc.name»'«»''', parentFeature,
+							DEPLOYMENT_ELEMENT_QUICKFIX, tc.name, FrancaQuickFixConstants::UNION.toString())
+						error('''«DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE»'«»«tc.name»'«»''',
+							parentFeature, DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, tc.name,
 							FrancaQuickFixConstants::UNION.toString())
 						hasError = true
 					}
 				} else {
-					if (checkSpecificationElementProperties(spec, c, FDeployPackage.Literals::FD_UNION__TARGET, tc.getName()))
+					if (checkSpecificationElementProperties(spec, c, FD_UNION__TARGET, tc.name))
 						hasError = true
-					if (checkFieldsList(specHelper, checker, mapper, spec, ((tc as FUnionType)).getElements(), c,
-						FDeployPackage.Literals::FD_UNION__TARGET, "Union")) {
-						error('''«DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE»'«»«tc.getName()»'«»'''.toString, c,
-							FDeployPackage.Literals::FD_UNION__TARGET, DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX,
-							tc.getName(), FrancaQuickFixConstants::UNION.toString())
+					if (checkFieldsList(specHelper, checker, mapper, spec, ((tc as FUnionType)).elements, c,
+						FD_UNION__TARGET, "Union")) {
+						error('''«DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE»'«»«tc.name»'«»''', c,
+							FD_UNION__TARGET, DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX,
+							tc.name, FrancaQuickFixConstants::UNION.toString())
 						hasError = true
 					}
 				}
@@ -473,21 +470,21 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 				var FDEnumeration c = (mapper.getFDElement(tc) as FDEnumeration)
 				if (c === null) {
 					if (checker.mustBeDefined((tc as FEnumerationType))) {
-						error('''«DEPLOYMENT_ELEMENT_QUICKFIX_MESSAGE»'«»«tc.getName()»'«»'''.toString, parentFeature,
-							DEPLOYMENT_ELEMENT_QUICKFIX, tc.getName(), FrancaQuickFixConstants::ENUMERATION.toString())
-						error('''«DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE»'«»«tc.getName()»'«»'''.toString,
-							parentFeature, DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, tc.getName(),
+						error('''«DEPLOYMENT_ELEMENT_QUICKFIX_MESSAGE»'«»«tc.name»'«»''', parentFeature,
+							DEPLOYMENT_ELEMENT_QUICKFIX, tc.name, FrancaQuickFixConstants::ENUMERATION.toString())
+						error('''«DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE»'«»«tc.name»'«»''',
+							parentFeature, DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, tc.name,
 							FrancaQuickFixConstants::ENUMERATION.toString())
 						hasError = true
 					}
 				} else {
-					if (checkSpecificationElementProperties(spec, c, FDeployPackage.Literals::FD_ENUMERATION__TARGET, tc.getName()))
+					if (checkSpecificationElementProperties(spec, c, FD_ENUMERATION__TARGET, tc.name))
 						hasError = true
 					if (checkEnumeratorsList(specHelper, mapper, spec, ((tc as FEnumerationType)).getEnumerators(), c,
-						FDeployPackage.Literals::FD_ENUMERATION__TARGET)) {
-						error('''«DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE»'«»«tc.getName()»'«»'''.toString, c,
-							FDeployPackage.Literals::FD_ENUMERATION__TARGET, DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX,
-							tc.getName(), FrancaQuickFixConstants::ENUMERATION.toString())
+						FD_ENUMERATION__TARGET)) {
+						error('''«DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE»'«»«tc.name»'«»''', c,
+							FD_ENUMERATION__TARGET, DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX,
+							tc.name, FrancaQuickFixConstants::ENUMERATION.toString())
 						hasError = true
 					}
 				}
@@ -495,15 +492,15 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 				var FDTypedef c = (mapper.getFDElement(tc) as FDTypedef)
 				if (c === null) {
 					if (checker.mustBeDefined((tc as FTypeDef))) {
-						error('''«DEPLOYMENT_ELEMENT_QUICKFIX_MESSAGE»'«»«tc.getName()»'«»'''.toString, parentFeature,
-							DEPLOYMENT_ELEMENT_QUICKFIX, tc.getName(), FrancaQuickFixConstants::TYPEDEF.toString())
-						error('''«DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE»'«»«tc.getName()»'«»'''.toString,
-							parentFeature, DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, tc.getName(),
+						error('''«DEPLOYMENT_ELEMENT_QUICKFIX_MESSAGE»'«»«tc.name»'«»''', parentFeature,
+							DEPLOYMENT_ELEMENT_QUICKFIX, tc.name, FrancaQuickFixConstants::TYPEDEF.toString())
+						error('''«DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE»'«»«tc.name»'«»''',
+							parentFeature, DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, tc.name,
 							FrancaQuickFixConstants::TYPEDEF.toString())
 						hasError = true
 					}
 				} else {
-					if (checkSpecificationElementProperties(spec, c, FDeployPackage.Literals::FD_TYPEDEF__TARGET, tc.getName()))
+					if (checkSpecificationElementProperties(spec, c, FD_TYPEDEF__TARGET, tc.name))
 						hasError = true
 				}
 			}
@@ -526,23 +523,25 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 						var String opName = ""
 						var String opType = ""
 						var String quickfix = ""
-						if (parent instanceof FDMethod) {
-							opName = FrancaModelExtensions::getUniqueName(((parent as FDMethod)).getTarget())
-							opType = "method"
-							quickfix = METHOD_ARGUMENT_QUICKFIX
-						}
-						if (parent instanceof FDBroadcast) {
-							opName = FrancaModelExtensions::getUniqueName(((parent as FDBroadcast)).getTarget())
-							opType = "broadcast"
-							quickfix = BROADCAST_ARGUMENT_QUICKFIX
+						switch (parent) {
+							FDMethod: {
+								opName = FrancaModelExtensions::getUniqueName(parent.target)
+								opType = "method"
+								quickfix = METHOD_ARGUMENT_QUICKFIX
+							}
+							FDBroadcast: {
+								opName = FrancaModelExtensions::getUniqueName(parent.target)
+								opType = "broadcast"
+								quickfix = BROADCAST_ARGUMENT_QUICKFIX
+							}
 						}
 						error(
-							'''Mandatory argument '«»«tc.getName()»' is missing for «opType» '«»«opName»'«»'''.toString,
-							parent, feature, -1, quickfix, opName, tc.getName())
+							'''Mandatory argument '«»«tc.name»' is missing for «opType» '«»«opName»'«»''',
+							parent, feature, -1, quickfix, opName, tc.name)
 						hasError = true
 					}
 				} else {
-					if (checkSpecificationElementProperties(spec, c, FDeployPackage.Literals::FD_ARGUMENT__TARGET, tc.getName()))
+					if (checkSpecificationElementProperties(spec, c, FD_ARGUMENT__TARGET, tc.name))
 						hasError = true
 				}
 			}
@@ -561,18 +560,18 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 				var FDField c = (mapper.getFDElement(tc) as FDField)
 				if (c === null) {
 					if (checker.mustBeDefined(tc)) {
-						var String name = ""
+						var name = ""
 						if (parent instanceof FDUnion) {
-							name = ((parent as FDUnion)).getTarget().getName()
+							name = parent.target.name
 						} else if (parent instanceof FDStruct) {
-							name = ((parent as FDStruct)).getTarget().getName()
+							name = parent.target.name
 						}
-						error('''Mandatory field '«»«tc.getName()»' is missing for compound '«»«name»'«»'''.toString,
-							parent, feature, -1, COMPOUND_FIELD_QUICKFIX, name, tc.getName())
+						error('''Mandatory field '«»«tc.name»' is missing for compound '«»«name»'«»''',
+							parent, feature, -1, COMPOUND_FIELD_QUICKFIX, name, tc.name)
 						hasError = true
 					}
 				} else {
-					if (checkSpecificationElementProperties(spec, c, FDeployPackage.Literals::FD_FIELD__TARGET, tc.getName()))
+					if (checkSpecificationElementProperties(spec, c, FD_FIELD__TARGET, tc.name))
 						hasError = true
 				}
 			}
@@ -591,13 +590,13 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 				if (c === null) {
 					if (specHelper.isMandatory(FDPropertyHost::builtIn(FDBuiltInPropertyHost::ENUMERATORS))) {
 						error(
-							'''Mandatory enumerator '«»«tc.getName()»' is missing for enumeration '«»«((parent as FDEnumeration)).getTarget().getName()»'«»'''.
-								toString, parent, feature, -1, ENUMERATOR_ENUM_QUICKFIX,
-							((parent as FDEnumeration)).getTarget().getName(), tc.getName())
+							'''Mandatory enumerator '«»«tc.name»' is missing for enumeration '«»«((parent as FDEnumeration)).target.name»'«»''',
+							parent, feature, -1, ENUMERATOR_ENUM_QUICKFIX,
+							((parent as FDEnumeration)).target.name, tc.name)
 						hasError = true
 					}
 				} else {
-					if (checkSpecificationElementProperties(spec, c, FDeployPackage.Literals::FD_ENUM_VALUE__TARGET, tc.getName()))
+					if (checkSpecificationElementProperties(spec, c, FD_ENUM_VALUE__TARGET, tc.name))
 						hasError = true
 				}
 			}
@@ -620,12 +619,12 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 			for (FDPropertyDecl decl : decls) {
 				if (PropertyMappings::isMandatory(decl)) {
 					if (!contains(elem.getProperties().getItems(), decl)) {
-						missing.add(decl.getName())
+						missing.add(decl.name)
 					}
 				}
 			}
-			if (!missing.isEmpty()) {
-				error('''«MANDATORY_PROPERTY_QUICKFIX_MESSAGE»'«»«elementName»'«»'''.toString, elem, feature, -1,
+			if (!missing.empty) {
+				error('''«MANDATORY_PROPERTY_QUICKFIX_MESSAGE»'«»«elementName»'«»''', elem, feature, -1,
 					MANDATORY_PROPERTY_QUICKFIX, elementName)
 				// error(MANDATORY_PROPERTY_QUICKFIX_MESSAGE + "'" + elementName + "'", elem, feature, -1);
 				return true
@@ -635,7 +634,7 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 
 		def private boolean contains(List<FDProperty> properties, FDPropertyDecl decl) {
 			for (FDProperty p : properties) {
-				if (p.getDecl() === decl) {
+				if (p.decl === decl) {
 					return true
 				}
 			}
@@ -647,27 +646,23 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 		@Check def void checkOverwriteSections(FDTypeOverwrites elem) {
 			var EObject parent = elem.eContainer()
 			if (parent instanceof FDOverwriteElement) {
-				var FType targetType = FDModelUtils::getOverwriteTargetType((parent as FDOverwriteElement))
+				var FType targetType = FDModelUtils::getOverwriteTargetType(parent)
 				if (targetType === null) {
-					error("Cannot determine target type of overwrite section", parent,
-						FDeployPackage.Literals::FD_OVERWRITE_ELEMENT__OVERWRITES)
+					error("Cannot determine target type of overwrite section", parent, FD_OVERWRITE_ELEMENT__OVERWRITES)
 				} else {
 					if (elem instanceof FDPlainTypeOverwrites) { // FDPlainTypeOverwrites is always ok
 					} else {
 						if (targetType instanceof FStructType) {
 							if (!(elem instanceof FDStructOverwrites)) {
-								error("Invalid overwrite tag, use '#struct'", parent,
-									FDeployPackage.Literals::FD_OVERWRITE_ELEMENT__OVERWRITES)
+								error("Invalid overwrite tag, use '#struct'", parent, FD_OVERWRITE_ELEMENT__OVERWRITES)
 							}
 						} else if (targetType instanceof FUnionType) {
 							if (!(elem instanceof FDUnionOverwrites)) {
-								error("Invalid overwrite tag, use '#union'", parent,
-									FDeployPackage.Literals::FD_OVERWRITE_ELEMENT__OVERWRITES)
+								error("Invalid overwrite tag, use '#union'", parent, FD_OVERWRITE_ELEMENT__OVERWRITES)
 							}
 						} else if (targetType instanceof FEnumerationType) {
 							if (!(elem instanceof FDEnumerationOverwrites)) {
-								error("Invalid overwrite tag, use '#enumeration'", parent,
-									FDeployPackage.Literals::FD_OVERWRITE_ELEMENT__OVERWRITES)
+								error("Invalid overwrite tag, use '#enumeration'", parent, FD_OVERWRITE_ELEMENT__OVERWRITES)
 							}
 						}
 					}
@@ -678,12 +673,12 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 		// *****************************************************************************
 		// type system
 		@Check def void checkExtensionTyoe(FDExtensionType type) {
-			var String name = type.getName()
+			var String name = type.name
 			var IFDeployExtension.TypeDef typeDef = ExtensionRegistry::findType(name)
 			if (typeDef === null) {
 				// didn't find type by name
-				error('''Invalid type '«»«name»', no matching deployment extension has been configured'''.toString,
-					type, FDeployPackage.Literals::FD_EXTENSION_TYPE__NAME, -1)
+				error('''Invalid type '«»«name»', no matching deployment extension has been configured''',
+					type, FD_EXTENSION_TYPE__NAME, -1)
 			}
 		}
 
@@ -692,34 +687,37 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 			var FDPropertyDecl decl = (flag.eContainer() as FDPropertyDecl)
 			var FDTypeRef typeRef = decl.getType()
 			var FDComplexValue value = flag.getDefault()
-			if (value.getSingle() !== null) {
-				if(typeRef.getArray() !== null) error("Default must be an array!",
-					FDeployPackage.Literals::FD_PROPERTY_FLAG__DEFAULT) else checkValueType(typeRef, value.getSingle(),
-					flag, FDeployPackage.Literals::FD_PROPERTY_FLAG__DEFAULT, -1)
-			} else if (value.getArray() !== null) {
-				if (typeRef.getArray() === null) {
-					error("Default must be a single type, not an array!",
-						FDeployPackage.Literals::FD_PROPERTY_FLAG__DEFAULT)
+			if (value.single !== null) {
+				if (typeRef.array !== null)
+					error("Default must be an array!", FD_PROPERTY_FLAG__DEFAULT)
+				else
+					checkValueType(typeRef, value.single, flag, FD_PROPERTY_FLAG__DEFAULT, -1)
+			} else if (value.array !== null) {
+				if (typeRef.array === null) {
+					error("Default must be a single type, not an array!", FD_PROPERTY_FLAG__DEFAULT)
 				} else
-					checkValueArrayType(typeRef, value.getArray())
+					checkValueArrayType(typeRef, value.array)
 			}
 		}
 
 		@Check def void checkPropertyValueType(FDProperty prop) {
-			var FDTypeRef typeRef = prop.getDecl().getType()
+			var FDTypeRef typeRef = prop.decl.getType()
 			var FDComplexValue value = prop.getValue()
-			if (value.getSingle() !== null) {
-				if(typeRef.getArray() !== null) error("Invalid type, expected array!",
-					FDeployPackage.Literals::FD_PROPERTY__VALUE) else checkValueType(typeRef, value.getSingle(), prop,
-					FDeployPackage.Literals::FD_PROPERTY__VALUE, -1)
-			} else if (value.getArray() !== null) {
-				if(typeRef.getArray() === null) error("Invalid array type, expected single value!",
-					FDeployPackage.Literals::FD_PROPERTY__VALUE) else checkValueArrayType(typeRef, value.getArray())
+			if (value.single !== null) {
+				if (typeRef.array !== null)
+					error("Invalid type, expected array!", FD_PROPERTY__VALUE)
+				else
+					checkValueType(typeRef, value.single, prop, FD_PROPERTY__VALUE, -1)
+			} else if (value.array !== null) {
+				if (typeRef.array === null)
+					error("Invalid array type, expected single value!", FD_PROPERTY__VALUE)
+				else
+					checkValueArrayType(typeRef, value.array)
 			}
 		}
 
 		def private void checkValueType(FDTypeRef typeRef, FDValue value, EObject src, EReference literal, int index) {
-			if (typeRef.getComplex() === null) {
+			if (typeRef.complex === null) {
 				// this is a predefined type
 				val predefined = typeRef.predefined.value
 				switch (predefined) {
@@ -745,7 +743,7 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 					}
 				}
 			} else {
-				var FDType type = typeRef.getComplex()
+				var FDType type = typeRef.complex
 				if (type instanceof FDEnumType) {
 					if (!(FDModelUtils::isEnumerator(value))) {
 						error("Invalid type, expected enumerator", src, literal, index)
@@ -757,13 +755,15 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 		def private void checkValueArrayType(FDTypeRef typeRef, FDValueArray array) {
 			var int i = 0
 			for (FDValue value : array.getValues()) {
-				checkValueType(typeRef, value, array, FDeployPackage.Literals::FD_VALUE_ARRAY__VALUES, i)
+				checkValueType(typeRef, value, array, FD_VALUE_ARRAY__VALUES, i)
 				i++
 			}
 		}
 
 		// *****************************************************************************
+
 		// ValidationMessageReporter interface
+
 		override void reportError(String message, EObject object, EStructuralFeature feature) {
 			error(message, object, feature, ValidationMessageAcceptor::INSIGNIFICANT_INDEX)
 		}
