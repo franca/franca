@@ -44,11 +44,11 @@ import org.franca.deploymodel.dsl.fDeploy.FDStruct
 import org.franca.deploymodel.dsl.fDeploy.FDTypes
 import org.franca.deploymodel.dsl.fDeploy.FDUnion
 import org.franca.deploymodel.dsl.fDeploy.FDeployFactory
-import org.franca.deploymodel.dsl.validation.FDeployJavaValidator
+import org.franca.deploymodel.dsl.validation.FDeployValidator
 import org.franca.deploymodel.dsl.validation.FrancaQuickFixConstants
 
-import static extension org.franca.deploymodel.dsl.ui.quickfix.FDeployQuickfixProviderUtil.*
-import static extension org.franca.deploymodel.dsl.validation.FrancaQuickFixConstants.*
+import static org.franca.deploymodel.dsl.ui.quickfix.FDeployQuickfixProviderUtil.*
+import static org.franca.deploymodel.dsl.validation.FrancaQuickFixConstants.*
 
 /** 
  * A collection of quick fixes for Franca deployment definitions.
@@ -56,7 +56,7 @@ import static extension org.franca.deploymodel.dsl.validation.FrancaQuickFixCons
  * @author Tamas Szabo, Klaus Birken (itemis AG)
  */
 class FDeployQuickfixProvider extends DefaultQuickfixProvider {
-	@Fix(FDeployJavaValidator.UPPERCASE_PROPERTYNAME_QUICKFIX)
+	@Fix(FDeployValidator.UPPERCASE_PROPERTYNAME_QUICKFIX)
 	def void setUppercasePropertyName(Issue issue, IssueResolutionAcceptor acceptor) {
 		val data = issue.getData().get(0)
 		val description = '''Set first character to uppercase for property «data»'''
@@ -72,7 +72,7 @@ class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 			])
 	}
 
-	@Fix(FDeployJavaValidator.DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX)
+	@Fix(FDeployValidator.DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX)
 	def void applyRecursiveFix(Issue issue,
 		IssueResolutionAcceptor acceptor) {
 		val FrancaQuickFixConstants type = valueOf(issue.data.get(1))
@@ -90,7 +90,7 @@ class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 			])
 	}
 
-	@Fix(FDeployJavaValidator.DEPLOYMENT_ELEMENT_QUICKFIX)
+	@Fix(FDeployValidator.DEPLOYMENT_ELEMENT_QUICKFIX)
 	def void applyFixForInterface(Issue issue,
 		IssueResolutionAcceptor acceptor) {
 		val elementName = issue.data.get(0)
@@ -106,7 +106,7 @@ class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 			])
 	}
 
-	@Fix(FDeployJavaValidator.MANDATORY_PROPERTY_QUICKFIX)
+	@Fix(FDeployValidator.MANDATORY_PROPERTY_QUICKFIX)
 	def void applyFixForElement(Issue issue,
 		IssueResolutionAcceptor acceptor) {
 		val elementName = issue.data.get(0)
@@ -119,7 +119,7 @@ class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 			])
 	}
 
-	@Fix(FDeployJavaValidator.METHOD_ARGUMENT_QUICKFIX)
+	@Fix(FDeployValidator.METHOD_ARGUMENT_QUICKFIX)
 	def void applyFixForMethod(Issue issue,
 		IssueResolutionAcceptor acceptor) {
 		val opName = issue.data.get(0)
@@ -133,7 +133,7 @@ class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 			])
 	}
 
-	@Fix(FDeployJavaValidator.BROADCAST_ARGUMENT_QUICKFIX)
+	@Fix(FDeployValidator.BROADCAST_ARGUMENT_QUICKFIX)
 	def void applyFixForBroadcast(Issue issue,
 		IssueResolutionAcceptor acceptor) {
 		val String opName = issue.data.get(0)
@@ -147,7 +147,7 @@ class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 			])
 	}
 
-	@Fix(FDeployJavaValidator.COMPOUND_FIELD_QUICKFIX)
+	@Fix(FDeployValidator.COMPOUND_FIELD_QUICKFIX)
 	def void applyFixForCompound(Issue issue,
 		IssueResolutionAcceptor acceptor) {
 		val compoundName = issue.data.get(0)
@@ -163,7 +163,7 @@ class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 			])
 	}
 
-	@Fix(FDeployJavaValidator.ENUMERATOR_ENUM_QUICKFIX)
+	@Fix(FDeployValidator.ENUMERATOR_ENUM_QUICKFIX)
 	def void applyFixForEnumeration(Issue issue,
 		IssueResolutionAcceptor acceptor) {
 		val enumeratorName = issue.data.get(0)
