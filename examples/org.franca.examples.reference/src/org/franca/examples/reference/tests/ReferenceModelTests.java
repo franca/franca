@@ -54,7 +54,7 @@ public class ReferenceModelTests extends XtextTest {
     @Test
     public void test_60_Interface() {
     	testFile("60-Interface.fidl");
-    	assertConstraints(issues.nOfThemContain(10, "not covered by contract"));
+    	assertConstraints(issues.nOfThemContain(14, "not covered by contract"));
     }
 
     @Test
