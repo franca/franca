@@ -878,6 +878,18 @@ interface ExampleInterface {
 In the example, attribute e[controlRegister] cannot be explicitly read by the clients.
 However, it can be written, and updates might be received using the subscription mechanism.
 
+It is also possible to combine the flags e[noRead] and e[readonly].
+
+code[Franca][
+interface ExampleInterface {
+	attribute UInt32 countdown noRead readonly
+}
+]
+
+The combination of both flags might seem non-intuitive at first glance.
+Attributes with both flags set cannot be explicitly read or written by clients.
+However, clients will still receive updates on attribute value changes.
+
 section3:FIDL_Interface_Attribute_NoSubscriptions[Client subscriptions]
 
 As mentioned above, clients of an interface might register for updates of

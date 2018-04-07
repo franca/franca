@@ -10,14 +10,19 @@ package org.reference
 interface MyInterface60 {
 	version { major 1 minor 0 }
 	
-	attribute UInt16 a1 noSubscriptions
-	attribute UInt16 a2
+	attribute UInt16 a10 noSubscriptions
+	attribute UInt16 a11
 
-	attribute UInt16 a3 readonly noSubscriptions
-	attribute UInt16 a4 readonly
+	attribute UInt16 a20 readonly noSubscriptions
+	attribute UInt16 a21 noSubscriptions readonly
+	attribute UInt16 a22 readonly
 
-	attribute UInt16 a5 noRead noSubscriptions
-	attribute UInt16 a6 noRead
+	attribute UInt16 a30 noRead noSubscriptions
+	attribute UInt16 a31 noSubscriptions noRead
+	attribute UInt16 a32 noRead
+
+	attribute UInt16 a40 noRead readonly
+	attribute UInt16 a41 readonly noRead
 
 	method method1 {
 		in {
