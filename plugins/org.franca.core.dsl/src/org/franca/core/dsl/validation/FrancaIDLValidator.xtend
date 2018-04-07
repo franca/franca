@@ -165,16 +165,6 @@ class FrancaIDLValidator extends AbstractFrancaIDLValidator implements Validatio
 			"argument name")
 	}
 
-	@Check
-	def checkAttributeFlags(FAttribute attribute) {
-		if (attribute.isNoRead && attribute.isReadonly) {
-			error(
-				"Attribute '" + attribute.name + "' " +
-				"has conflicting flags 'readonly' and 'noRead'",
-				attribute, FMODEL_ELEMENT__NAME)
-		}
-	}
-
 	@Check def void checkConsistentInheritance(FInterface api) {
 		ValidationHelpers::checkDuplicates(this, FrancaHelpers::getAllAttributes(api),
 			FrancaPackage.Literals::FMODEL_ELEMENT__NAME, "attribute")
