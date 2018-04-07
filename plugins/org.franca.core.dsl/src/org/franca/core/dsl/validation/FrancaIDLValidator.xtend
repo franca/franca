@@ -165,6 +165,16 @@ class FrancaIDLValidator extends AbstractFrancaIDLValidator implements Validatio
 			"argument name")
 	}
 
+	@Check
+	def checkAttributeFlags(FAttribute attribute) {
+		if (attribute.isNoRead && attribute.isReadonly && attribute.isNoSubscriptions) {
+			error(
+				"Inconsistent flags of attribute '" + attribute.name + "', " +
+				" prohibiting any read or write access.",
+				attribute, FMODEL_ELEMENT__NAME)
+		}
+	}
+
 	@Check def void checkConsistentInheritance(FInterface api) {
 		ValidationHelpers::checkDuplicates(this, FrancaHelpers::getAllAttributes(api),
 			FrancaPackage.Literals::FMODEL_ELEMENT__NAME, "attribute")
