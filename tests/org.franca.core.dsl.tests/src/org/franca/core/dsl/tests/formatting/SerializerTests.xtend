@@ -5,19 +5,13 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package org.franca.core.dsl.tests
+package org.franca.core.dsl.tests.formatting
 
-import com.google.inject.Inject
 import java.math.BigInteger
-import org.eclipse.emf.common.util.URI
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl
-import org.eclipse.xtext.resource.SaveOptions
-import org.eclipse.xtext.serializer.ISerializer
 import org.eclipse.xtext.testing.InjectWith
 import org.franca.core.dsl.FrancaIDLTestsInjectorProvider
 import org.franca.core.dsl.tests.util.XtextRunner2_Franca
 import org.franca.core.franca.FBasicTypeId
-import org.franca.core.franca.FModel
 import org.franca.core.franca.FOperator
 import org.franca.core.franca.FrancaFactory
 import org.junit.Test
@@ -27,11 +21,7 @@ import static org.junit.Assert.*
 
 @RunWith(typeof(XtextRunner2_Franca))
 @InjectWith(typeof(FrancaIDLTestsInjectorProvider))
-class SerializerTests {
-	
-	@Inject extension ISerializer
-	
-	val SaveOptions options = SaveOptions.newBuilder.format.options
+class SerializerTests extends FormatterTestBase{
 	
 	@Test
 	def void testFloatConst() {
@@ -53,7 +43,7 @@ class SerializerTests {
 		] 
 		
 		// serialize to string
-		val result = fmodel.attachResource.serialize(options)
+		val result = fmodel.format
 		//println(result)
 		
 		// compare with expected
@@ -88,7 +78,7 @@ class SerializerTests {
 		] 
 		
 		// serialize to string
-		val result = fmodel.attachResource.serialize(options)
+		val result = fmodel.format
 		//println(result)
 		
 		// compare with expected
@@ -131,7 +121,7 @@ class SerializerTests {
 		] 
 		
 		// serialize to string
-		val result = fmodel.attachResource.serialize(options)
+		val result = fmodel.format
 		//println(result)
 		
 		// compare with expected
@@ -177,7 +167,7 @@ class SerializerTests {
 		] 
 		
 		// serialize to string
-		val result = fmodel.attachResource.serialize(options)
+		val result = fmodel.format
 		//println(result)
 		
 		// compare with expected
@@ -222,7 +212,7 @@ class SerializerTests {
 		] 
 		
 		// serialize to string
-		val result = fmodel.attachResource.serialize(options)
+		val result = fmodel.format
 		//println(result)
 		
 		// compare with expected
@@ -245,17 +235,5 @@ class SerializerTests {
 	def private f() {
 		FrancaFactory.eINSTANCE
 	}
-
-	/**
-	 * The new AbstractFormatter2 API only formats a model on serialization
-	 * if the model is contained in a resource.
-	 */
-	def private attachResource(FModel model) {
-		val rset = new ResourceSetImpl
-		val res = rset.createResource(URI.createURI("dummy.fidl"))
-		res.contents.add(model)
-		return model
-	}
-
 
 }
