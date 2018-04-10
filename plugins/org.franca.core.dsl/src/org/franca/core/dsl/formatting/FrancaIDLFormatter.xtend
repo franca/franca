@@ -17,22 +17,26 @@ import org.franca.core.franca.FAnnotationBlock
 import org.franca.core.franca.FArgument
 import org.franca.core.franca.FArrayType
 import org.franca.core.franca.FAttribute
+import org.franca.core.franca.FCompoundType
 import org.franca.core.franca.FConstantDef
 import org.franca.core.franca.FEnumerationType
 import org.franca.core.franca.FEnumerator
+import org.franca.core.franca.FField
 import org.franca.core.franca.FInterface
 import org.franca.core.franca.FMapType
 import org.franca.core.franca.FMethod
 import org.franca.core.franca.FModel
+import org.franca.core.franca.FStructType
 import org.franca.core.franca.FTypeCollection
 import org.franca.core.franca.FTypeDef
+import org.franca.core.franca.FUnaryOperation
+import org.franca.core.franca.FUnionType
 import org.franca.core.franca.FVersion
 
 import static com.google.common.collect.Iterables.*
 import static org.franca.core.franca.FrancaPackage.Literals.*
 
 import static extension org.eclipse.xtext.nodemodel.util.NodeModelUtils.*
-import org.franca.core.franca.FUnaryOperation
 
 /** 
  * This class contains a custom configuration for Franca IDL.
@@ -154,7 +158,7 @@ class FrancaIDLFormatter extends AbstractFormatter2 {
 		regionFor.keyword("enumeration").append[oneSpace]
 		interior(
 			regionFor.keyword("{").prepend[oneSpace].append[newLine],
-			regionFor.keyword("}"),//.append[newLine],
+			regionFor.keyword("}"),
 			[indent]
 		)
 		
@@ -165,8 +169,54 @@ class FrancaIDLFormatter extends AbstractFormatter2 {
 
 	def dispatch void format(FEnumerator it, extension IFormattableDocument document) {
 		comment?.format
-		value?.format
 		
+		if (value!==null) {
+			value.format
+			regionFor.keyword("=").surround[oneSpace]
+		}
+		
+		append[newLine]
+	}
+	
+	def dispatch void format(FStructType it, extension IFormattableDocument document) {
+		comment?.format
+		
+		regionFor.keyword("struct").append[oneSpace]
+		if (base!==null)
+			regionFor.keyword("extends").surround[oneSpace]
+
+		if (polymorphic)
+			regionFor.keyword("polymorphic").surround[oneSpace]
+
+		formatCompound(document)
+	}
+		
+	def dispatch void format(FUnionType it, extension IFormattableDocument document) {
+		comment?.format
+		
+		regionFor.keyword("union").append[oneSpace]
+		formatCompound(document)
+	}
+
+	def void formatCompound(FCompoundType it, extension IFormattableDocument document) {
+		if (elements.empty)
+			regionFor.keyword("{").prepend[oneSpace].append[oneSpace]
+		else{
+			interior(
+				regionFor.keyword("{").prepend[oneSpace].append[newLine],
+				regionFor.keyword("}"),
+				[indent]
+			)
+			
+			elements.forEach[format]
+		}
+
+		append[newLine]
+	}
+	
+	def dispatch void format(FField it, extension IFormattableDocument document) {
+		comment?.format
+		regionFor.feature(FMODEL_ELEMENT__NAME).prepend[oneSpace]
 		append[newLine]
 	}
 	
@@ -227,8 +277,8 @@ class FrancaIDLFormatter extends AbstractFormatter2 {
 		)
 	}
 
-	// TODO: implement for FBroadcast, FTypeRef, FStructType, FUnionType, FField,
-	// FDeclaration, FConstantDef, FCompoundInitializer, FFieldInitializer,
+	// TODO: implement for FBroadcast, FTypeRef,
+	// FDeclaration, FCompoundInitializer, FFieldInitializer,
 	// FBracketInitializer, FElementInitializer, FContract, FStateGraph, FState,
 	// FTransition, FTrigger, FGuard, FIfStatement, FAssignment, FBlock,
 	// FBinaryOperation, FUnaryOperation, FAnnotationBlock, FQualifiedElementRef

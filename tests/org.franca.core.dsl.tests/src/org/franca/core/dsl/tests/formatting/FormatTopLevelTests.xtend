@@ -10,8 +10,6 @@ package org.franca.core.dsl.tests.formatting
 import org.eclipse.xtext.testing.InjectWith
 import org.franca.core.dsl.FrancaIDLTestsInjectorProvider
 import org.franca.core.dsl.tests.util.XtextRunner2_Franca
-import org.franca.core.franca.FBasicTypeId
-import org.franca.core.franca.FrancaFactory
 import org.junit.Test
 import org.junit.runner.RunWith
 
