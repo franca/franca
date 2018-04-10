@@ -21,7 +21,7 @@ import static org.junit.Assert.*
 
 @RunWith(typeof(XtextRunner2_Franca))
 @InjectWith(typeof(FrancaIDLTestsInjectorProvider))
-class SerializerTests extends FormatterTestBase{
+class SpecialFormatsTests extends FormatterTestBase{
 	
 	@Test
 	def void testFloatConst() {
