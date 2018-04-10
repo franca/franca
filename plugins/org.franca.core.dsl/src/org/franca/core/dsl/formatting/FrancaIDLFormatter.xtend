@@ -50,10 +50,18 @@ class FrancaIDLFormatter extends AbstractFormatter2 {
 	def dispatch void format(FModel it, extension IFormattableDocument document) {
 		// TODO: format HiddenRegions around keywords, attributes, cross references, etc.
 		imports.forEach[format]
-		typeCollections.forEach[format]
-		interfaces.forEach[format]
 		
 		regionFor.feature(FMODEL__NAME).append[newLines=2]
+
+		// collect all type collection contents and format them
+		val content = concat(typeCollections, interfaces)
+		var isLast = true
+		for(item : content.sortBy[findActualNodeFor.offset].reverse) {
+			item.format
+			if (!isLast)
+				item.append[highPriority newLines=2]
+			isLast=false
+		}
 
 //		regionFor.keyword("{").prepend[newLines = 3]
 //		regionFor.keyword("}").append[newLines = 3]
@@ -76,7 +84,6 @@ class FrancaIDLFormatter extends AbstractFormatter2 {
 		
 		//prepend[newLines=2]
 		
-		regionFor.keyword("typeCollection").prepend[highPriority newLines=2]
 //		interior(
 //			regionFor.keyword("{").append[newLine],
 //			regionFor.keyword("}"),//.append[newLine],
@@ -108,7 +115,6 @@ class FrancaIDLFormatter extends AbstractFormatter2 {
 		
 		//prepend[newLines=2]
 		
-		regionFor.keyword("interface").prepend[highPriority newLines=2]
 //		interior(
 //			regionFor.keyword("{").append[newLine],
 //			regionFor.keyword("}"),//.append[newLine],
@@ -313,30 +319,28 @@ class FrancaIDLFormatter extends AbstractFormatter2 {
 		)
 	}
 
-	// TODO: implement for FBroadcast, FTypeRef,
+	// TODO: implement for FTypeRef,
 	// FDeclaration, FCompoundInitializer, FFieldInitializer,
 	// FBracketInitializer, FElementInitializer, FContract, FStateGraph, FState,
 	// FTransition, FTrigger, FGuard, FIfStatement, FAssignment, FBlock,
-	// FBinaryOperation, FUnaryOperation, FAnnotationBlock, FQualifiedElementRef
+	// FBinaryOperation, FQualifiedElementRef
 
-	def dispatch void format(FAnnotationBlock fCAnnotationBlock, extension IFormattableDocument document) {
-		val open = fCAnnotationBlock.regionFor.keyword(
-			ga.FAnnotationBlockAccess.lessThanSignAsteriskAsteriskKeyword_0)
-		val close = fCAnnotationBlock.regionFor.keyword(
-			ga.FAnnotationBlockAccess.asteriskAsteriskGreaterThanSignKeyword_2)
+	def dispatch void format(FAnnotationBlock it, extension IFormattableDocument document) {
+		val open = regionFor.keyword("<**")
+		val close = regionFor.keyword("**>")
 
 		interior(open, close)[highPriority indent]
-		open.prepend[lowPriority newLine]
+		//open.prepend[lowPriority newLine]
 		open.append[newLine]
-		fCAnnotationBlock.elements.forEach[format]
+		elements.forEach[format]
 		close.append[newLine]
-		fCAnnotationBlock.append[newLine]
+		append[newLine]
 	}
 
-	def dispatch void format(FAnnotation fCAnnotation, extension IFormattableDocument document) {
+	def dispatch void format(FAnnotation it, extension IFormattableDocument document) {
 		// prevent adding new line by suppress adding extra newline formatter call after terminal symbol	
-		val region = fCAnnotation.regionFor.ruleCall(
-			ga.FAnnotationAccess.rawTextANNOTATION_STRINGTerminalRuleCall_0)
+		val rc = ga.FAnnotationAccess.rawTextANNOTATION_STRINGTerminalRuleCall_0
+		val region = regionFor.ruleCall(rc)
 
 		if (region !== null) {
 			if (region.text.contains("\n"))
@@ -345,9 +349,8 @@ class FrancaIDLFormatter extends AbstractFormatter2 {
 				region.append[lowPriority newLine]
 
 			// pretty print the value "@tag: value"
-			fCAnnotation.regionFor.ruleCall(
-				ga.FAnnotationAccess.rawTextANNOTATION_STRINGTerminalRuleCall_0)?.append[noSpace]
+			regionFor.ruleCall(rc)?.append[noSpace]
 		} else
-			fCAnnotation.append[lowPriority newLine]
+			append[lowPriority newLine]
 	}
 }
