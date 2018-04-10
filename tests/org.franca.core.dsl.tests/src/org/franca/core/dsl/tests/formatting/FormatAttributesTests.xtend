@@ -17,17 +17,14 @@ import static org.junit.Assert.*
 
 @RunWith(typeof(XtextRunner2_Franca))
 @InjectWith(typeof(FrancaIDLTestsInjectorProvider))
-class FormatMethodsTests extends FormatterTestBase {
+class FormatAttributesTests extends FormatterTestBase {
 
 	@Test
 	def void test1() {
-		val input = '''method m1 { in {} } '''
+		val input = '''attribute  String   m1'''
 		
 		val expected = '''
-			method m1 {
-				in {
-				}
-			}
+			attribute String m1
 		'''
 		
 		assertEquals(expected.wrap, input.wrap.format)
@@ -35,13 +32,10 @@ class FormatMethodsTests extends FormatterTestBase {
 
 	@Test
 	def void test2() {
-		val input = '''method m1   fireAndForget  { in {} } '''
+		val input = '''attribute  String   m1  readonly'''
 		
 		val expected = '''
-			method m1 fireAndForget {
-				in {
-				}
-			}
+			attribute String m1 readonly
 		'''
 		
 		assertEquals(expected.wrap, input.wrap.format)
@@ -49,44 +43,14 @@ class FormatMethodsTests extends FormatterTestBase {
 
 	@Test
 	def void test3() {
-		val input = '''method m1  {  in  {  String  s1  } out   {  String   s2  Boolean s3 } }'''
+		val input = '''attribute  String   m1
+		noRead   noSubscriptions'''
 		
 		val expected = '''
-			method m1 {
-				in {
-					String s1
-				}
-				out {
-					String s2
-					Boolean s3
-				}
-			}
+			attribute String m1 noRead noSubscriptions
 		'''
 		
 		assertEquals(expected.wrap, input.wrap.format)
-	}
-
-	@Test
-	def void test4() {
-		val m1 = '''method m1 { in { String s1 } } '''
-		val m2 = '''method   m2 { out { Boolean  b } } '''
-		val input = '''«m1»«m2»'''
-		
-		val expected = '''
-			method m1 {
-				in {
-					String s1
-				}
-			}
-
-			method m2 {
-				out {
-					Boolean b
-				}
-			}
-		'''
-		
-		assertEquals(expected.wrap.chompEmpty, input.wrap.format)
 	}
 
 

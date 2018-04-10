@@ -17,15 +17,15 @@ import static org.junit.Assert.*
 
 @RunWith(typeof(XtextRunner2_Franca))
 @InjectWith(typeof(FrancaIDLTestsInjectorProvider))
-class FormatMethodsTests extends FormatterTestBase {
+class FormatBroadcastsTests extends FormatterTestBase {
 
 	@Test
 	def void test1() {
-		val input = '''method m1 { in {} } '''
+		val input = '''broadcast b1 { out   {   } } '''
 		
 		val expected = '''
-			method m1 {
-				in {
+			broadcast b1 {
+				out {
 				}
 			}
 		'''
@@ -35,11 +35,12 @@ class FormatMethodsTests extends FormatterTestBase {
 
 	@Test
 	def void test2() {
-		val input = '''method m1   fireAndForget  { in {} } '''
+		val input = '''broadcast b1   selective  { out   { String  s2 } }'''
 		
 		val expected = '''
-			method m1 fireAndForget {
-				in {
+			broadcast b1 selective {
+				out {
+					String s2
 				}
 			}
 		'''
@@ -49,13 +50,10 @@ class FormatMethodsTests extends FormatterTestBase {
 
 	@Test
 	def void test3() {
-		val input = '''method m1  {  in  {  String  s1  } out   {  String   s2  Boolean s3 } }'''
+		val input = '''broadcast b1   { out { String  s2   Boolean s3 } }'''
 		
 		val expected = '''
-			method m1 {
-				in {
-					String s1
-				}
+			broadcast b1 {
 				out {
 					String s2
 					Boolean s3
@@ -68,18 +66,18 @@ class FormatMethodsTests extends FormatterTestBase {
 
 	@Test
 	def void test4() {
-		val m1 = '''method m1 { in { String s1 } } '''
-		val m2 = '''method   m2 { out { Boolean  b } } '''
+		val m1 = '''broadcast b1 { out { String s1 } } '''
+		val m2 = '''broadcast   b2 { out { Boolean  b } } '''
 		val input = '''«m1»«m2»'''
 		
 		val expected = '''
-			method m1 {
-				in {
+			broadcast b1 {
+				out {
 					String s1
 				}
 			}
 
-			method m2 {
+			broadcast b2 {
 				out {
 					Boolean b
 				}
