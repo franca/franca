@@ -9,12 +9,15 @@ package org.franca.core.dsl.tests
 
 import com.google.inject.Inject
 import java.math.BigInteger
+import org.eclipse.emf.common.util.URI
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl
 import org.eclipse.xtext.resource.SaveOptions
 import org.eclipse.xtext.serializer.ISerializer
 import org.eclipse.xtext.testing.InjectWith
 import org.franca.core.dsl.FrancaIDLTestsInjectorProvider
 import org.franca.core.dsl.tests.util.XtextRunner2_Franca
 import org.franca.core.franca.FBasicTypeId
+import org.franca.core.franca.FModel
 import org.franca.core.franca.FOperator
 import org.franca.core.franca.FrancaFactory
 import org.junit.Test
@@ -26,7 +29,7 @@ import static org.junit.Assert.*
 @InjectWith(typeof(FrancaIDLTestsInjectorProvider))
 class SerializerTests {
 	
-	@Inject ISerializer serializer
+	@Inject extension ISerializer
 	
 	val SaveOptions options = SaveOptions.newBuilder.format.options
 	
@@ -50,7 +53,7 @@ class SerializerTests {
 		] 
 		
 		// serialize to string
-		val result = serializer.serialize(fmodel, options)
+		val result = fmodel.attachResource.serialize(options)
 		//println(result)
 		
 		// compare with expected
@@ -59,7 +62,8 @@ class SerializerTests {
 			
 			typeCollection TC1 {
 				const Float c1 = 12345.67f
-			}'''
+			}
+		'''
 
 		assertEquals(expected, result)		
 	}
@@ -84,7 +88,7 @@ class SerializerTests {
 		] 
 		
 		// serialize to string
-		val result = serializer.serialize(fmodel, options)
+		val result = fmodel.attachResource.serialize(options)
 		//println(result)
 		
 		// compare with expected
@@ -93,7 +97,8 @@ class SerializerTests {
 			
 			typeCollection TC1 {
 				const Double c1 = 12345.67d
-			}'''
+			}
+		'''
 
 		assertEquals(expected, result)		
 	}
@@ -126,7 +131,7 @@ class SerializerTests {
 		] 
 		
 		// serialize to string
-		val result = serializer.serialize(fmodel, options)
+		val result = fmodel.attachResource.serialize(options)
 		//println(result)
 		
 		// compare with expected
@@ -137,8 +142,8 @@ class SerializerTests {
 				enumeration Enum1 {
 					E1 = -123
 				}
-			
-			}'''
+			}
+		'''
 
 		assertEquals(expected, result)		
 	}
@@ -172,7 +177,7 @@ class SerializerTests {
 		] 
 		
 		// serialize to string
-		val result = serializer.serialize(fmodel, options)
+		val result = fmodel.attachResource.serialize(options)
 		//println(result)
 		
 		// compare with expected
@@ -183,8 +188,8 @@ class SerializerTests {
 				enumeration Enum1 {
 					E1 = -123
 				}
-			
-			}'''
+			}
+		'''
 
 		assertEquals(expected, result)		
 	}
@@ -217,7 +222,7 @@ class SerializerTests {
 		] 
 		
 		// serialize to string
-		val result = serializer.serialize(fmodel, options)
+		val result = fmodel.attachResource.serialize(options)
 		//println(result)
 		
 		// compare with expected
@@ -230,8 +235,8 @@ class SerializerTests {
 					^method
 					^broadcast
 				}
-			
-			}'''
+			}
+		'''
 
 		assertEquals(expected, result)		
 	}
@@ -240,4 +245,17 @@ class SerializerTests {
 	def private f() {
 		FrancaFactory.eINSTANCE
 	}
+
+	/**
+	 * The new AbstractFormatter2 API only formats a model on serialization
+	 * if the model is contained in a resource.
+	 */
+	def private attachResource(FModel model) {
+		val rset = new ResourceSetImpl
+		val res = rset.createResource(URI.createURI("dummy.fidl"))
+		res.contents.add(model)
+		return model
+	}
+
+
 }

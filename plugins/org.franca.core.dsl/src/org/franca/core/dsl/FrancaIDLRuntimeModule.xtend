@@ -6,7 +6,7 @@ package org.franca.core.dsl
 import com.google.inject.Binder
 import com.google.inject.name.Names
 import org.eclipse.xtext.conversion.IValueConverterService
-import org.eclipse.xtext.formatting.IFormatter
+import org.eclipse.xtext.formatting2.IFormatter2
 import org.eclipse.xtext.resource.IDefaultResourceDescriptionStrategy
 import org.eclipse.xtext.scoping.IGlobalScopeProvider
 import org.eclipse.xtext.scoping.IScopeProvider
@@ -38,15 +38,15 @@ class FrancaIDLRuntimeModule extends AbstractFrancaIDLRuntimeModule {
 	}
 
 	override Class<? extends IValueConverterService> bindIValueConverterService() {
-		return FrancaValueConverters
+		FrancaValueConverters
 	}
 
-	override Class<? extends IFormatter> bindIFormatter() {
-		return FrancaIDLFormatter
+	def Class<? extends IFormatter2> bindIFormatter2() {
+		FrancaIDLFormatter
 	}
-
+	
 	def Class<? extends IDefaultResourceDescriptionStrategy> bindIDefaultResourceDescriptionStrategy() {
-		return FrancaCoreResourceDescriptionStrategy
+		FrancaCoreResourceDescriptionStrategy
 	}
 
 }
