@@ -68,7 +68,7 @@ class FrancaIDLFormatter extends AbstractFormatter2 {
 		// collect all type collection contents and format them
 		val content = concat(typeCollections, interfaces)
 		var isLast = true
-		for(item : content.sortBy[findActualNodeFor.offset].reverse) {
+		for(item : content.sortBy[findActualNodeFor?.offset].reverse) {
 			item.format
 			if (!isLast)
 				item.append[highPriority newLines=2]
@@ -85,7 +85,7 @@ class FrancaIDLFormatter extends AbstractFormatter2 {
 		// collect all type collection contents and format them
 		val content = concat(constants, types)
 		var isFirst = true
-		for(item : content.sortBy[findActualNodeFor.offset]) {
+		for(item : content.sortBy[findActualNodeFor?.offset]) {
 			item.format
 			if (!isFirst || version!==null)
 				item.prepend[highPriority newLines=2]
@@ -111,7 +111,7 @@ class FrancaIDLFormatter extends AbstractFormatter2 {
 		// collect all interface contents and format them
 		val content = concat(attributes, methods, broadcasts, constants, types)
 		var isFirst = true
-		for(item : content.sortBy[findActualNodeFor.offset]) {
+		for(item : content.sortBy[findActualNodeFor?.offset]) {
 			item.format
 			if (!isFirst || version!==null)
 				item.prepend[highPriority newLines=2]
