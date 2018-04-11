@@ -68,7 +68,7 @@ class FormatTypesTests extends FormatterTestBase {
 			enumeration MyEnum {
 				E1 = 1
 				E2 = -1
-				E3 = 3+4
+				E3 = 3 + 4
 			}
 		'''
 		
