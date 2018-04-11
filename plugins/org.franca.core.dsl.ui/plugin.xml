@@ -156,6 +156,11 @@
             id="org.franca.core.dsl.ui.generatexmi"
             name="Export in XMI">
       </command>
+      <command
+            defaultHandler="org.franca.core.dsl.ui.FrancaIDLExecutableExtensionFactory:org.franca.core.dsl.ui.handlers.GenerateAutobahnHandler"
+            id="org.franca.core.dsl.ui.generate_autobahn"
+            name="Generate JS code for Autobahn-binding">
+      </command>
     </extension>
     <extension point="org.eclipse.ui.menus">
         <menuContribution
@@ -237,6 +242,14 @@
               </command>
               <command commandId="org.franca.core.dsl.ui.generatedot"
                     label="Generate dot-file from contract"
+                    style="push">
+                 <visibleWhen
+                       checkEnabled="false">
+                    <reference definitionId="org.franca.core.dsl.ui.fidl" />
+                 </visibleWhen>
+              </command>
+              <command commandId="org.franca.core.dsl.ui.generate_autobahn"
+                    label="Generate JS code for Autobahn-binding"
                     style="push">
                  <visibleWhen
                        checkEnabled="false">
