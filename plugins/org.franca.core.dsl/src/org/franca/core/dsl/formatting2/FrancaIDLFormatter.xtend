@@ -22,16 +22,22 @@ import org.franca.core.franca.FBroadcast
 import org.franca.core.franca.FCompoundInitializer
 import org.franca.core.franca.FCompoundType
 import org.franca.core.franca.FConstantDef
+import org.franca.core.franca.FContract
 import org.franca.core.franca.FElementInitializer
 import org.franca.core.franca.FEnumerationType
 import org.franca.core.franca.FEnumerator
+import org.franca.core.franca.FEventOnIf
 import org.franca.core.franca.FField
 import org.franca.core.franca.FFieldInitializer
 import org.franca.core.franca.FInterface
 import org.franca.core.franca.FMapType
 import org.franca.core.franca.FMethod
 import org.franca.core.franca.FModel
+import org.franca.core.franca.FState
+import org.franca.core.franca.FStateGraph
 import org.franca.core.franca.FStructType
+import org.franca.core.franca.FTransition
+import org.franca.core.franca.FTrigger
 import org.franca.core.franca.FTypeCollection
 import org.franca.core.franca.FTypeDef
 import org.franca.core.franca.FUnaryOperation
@@ -133,6 +139,7 @@ class FrancaIDLFormatter extends AbstractFormatter2 {
 			)
 		}
 
+		contract?.format
 	}
 
 	def dispatch void format(FVersion it, extension IFormattableDocument document) {
@@ -370,6 +377,51 @@ class FrancaIDLFormatter extends AbstractFormatter2 {
 		value.format
 	}
 
+	def dispatch void format(FContract it, extension IFormattableDocument document) {
+		regionFor.keyword("contract").prepend[newLines=2].append[oneSpace]
+
+		regionFor.keyword("PSM").prepend[newLine].append[oneSpace]
+		stdIndent(document)
+		
+		stateGraph.format
+	}
+	
+	def dispatch void format(FStateGraph it, extension IFormattableDocument document) {
+		regionFor.keyword("initial").append[oneSpace]
+		regionFor.feature(FSTATE_GRAPH__INITIAL).append[newLine]
+		
+		stdIndent(document)
+		states.forEach[format]
+	}
+
+	def dispatch void format(FState it, extension IFormattableDocument document) {
+		regionFor.keyword("state").append[oneSpace]
+
+		stdIndent(document)
+		transitions.forEach[format]
+	}
+
+	def dispatch void format(FTransition it, extension IFormattableDocument document) {
+		regionFor.keyword("on").append[oneSpace]
+		//stdIndent(document)
+		regionFor.keyword("->").surround[oneSpace]
+		trigger.format
+		guard?.format
+		append[newLine]
+	}
+	
+	def dispatch void format(FTrigger it, extension IFormattableDocument document) {
+		event.format
+	}
+	
+	def dispatch void format(FEventOnIf it, extension IFormattableDocument document) {
+		regionFor.keyword("call").append[oneSpace]
+		regionFor.keyword("respond").append[oneSpace]
+		regionFor.keyword("error").append[oneSpace]
+		regionFor.keyword("signal").append[oneSpace]
+		regionFor.keyword("set").append[oneSpace]
+		regionFor.keyword("update").append[oneSpace]
+	}
 	
 	def private void stdIndent(EObject it, extension IFormattableDocument document) {
 		interior(
@@ -379,10 +431,8 @@ class FrancaIDLFormatter extends AbstractFormatter2 {
 		)
 	}
 
-	// TODO: implement for FTypeRef,
-	// FDeclaration,
-	// FContract, FStateGraph, FState,
-	// FTransition, FTrigger, FGuard, FIfStatement, FAssignment, FBlock,
+	// TODO: implement for FTypeRef, FDeclaration,
+	// FGuard, FIfStatement, FAssignment, FBlock,
 	// FBinaryOperation, FQualifiedElementRef
 
 	def dispatch void format(FAnnotationBlock it, extension IFormattableDocument document) {
