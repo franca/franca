@@ -8,6 +8,7 @@
 package org.franca.generators.websocket
 
 import org.franca.core.franca.FAttribute
+import org.franca.core.franca.FBroadcast
 import org.franca.core.franca.FInterface
 import org.franca.core.franca.FMethod
 import org.franca.core.franca.FVersion
@@ -133,7 +134,7 @@ class ClientJSProxyGenerator {
 		_this.socket = new WebSocket(address);
 
 		_this.socket.onopen = function () {
-			// subscribing for all broadcasts
+			// subscribing to all broadcasts
 			«FOR broadcast : api.broadcasts»
 			_this.socket.send('[5, "broadcast:«broadcast.name»"]');
 			«ENDFOR»
@@ -224,11 +225,13 @@ class ClientJSProxyGenerator {
 		}
 		«ENDFOR»
 		«FOR broadcast : api.broadcasts»
-		if (topicURI === "broadcast:«broadcast.name»" && typeof(_this.signal«broadcast.name.toFirstUpper») === "function") {
-			_this.signal«broadcast.name.toFirstUpper»(data);
+		if (topicURI === "broadcast:«broadcast.name»" && typeof(«broadcast.callback») === "function") {
+			«broadcast.callback»(data);
 		}
 		«ENDFOR»
 	'''
+	
+	def private callback(FBroadcast it) '''_this.signal«name.toFirstUpper»'''
 	
 	def private genAutobahnHandling(FInterface api) '''
 		_this.connection = new autobahn.Connection({
@@ -243,6 +246,16 @@ class ClientJSProxyGenerator {
 			}
 			
 			_this.session = session;
+
+			// subscribing to all broadcasts
+			«FOR broadcast : api.broadcasts»
+			session.subscribe(_this.address + '.«broadcast.name»', function(args) {
+				if (typeof(«broadcast.callback») === "function") {
+					«broadcast.callback»(«FOR i : 0..broadcast.outArgs.size-1 SEPARATOR ", "»args[«i»]«ENDFOR»);
+				}
+				
+			});
+			«ENDFOR»
 		}
 
 		_this.connection.onclose = function(reason, details) {
