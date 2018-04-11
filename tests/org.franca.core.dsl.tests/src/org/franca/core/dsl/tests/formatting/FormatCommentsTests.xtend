@@ -85,4 +85,34 @@ class FormatCommentsTests extends FormatterTestBase {
 		assertEquals(expected, input.format)
 	}
 
+	@Test
+	def void test4() {
+		val input = '''
+		package a.b
+		<**
+			@description: Hello.
+				World. This is a quite long text in
+				several lines. @author: Kurt Goedel! @see: What?
+		**>
+		typeCollection TC1 { }
+		'''
+		
+		val expected = '''
+			package a.b
+			
+			<**
+				@description: Hello.
+					World. This is a quite long text in
+					several lines. 
+				@author: Kurt Goedel! 
+				@see: What?
+			**>
+			typeCollection TC1 {
+			}
+		'''
+		
+		assertEquals(expected, input.format)
+	}
+
+
 }

@@ -436,10 +436,7 @@ class FrancaIDLFormatter extends AbstractFormatter2 {
 		val region = regionFor.ruleCall(rc)
 
 		if (region !== null) {
-			if (region.text.contains("\n"))
-				region.append[lowPriority newLines=0]
-			else
-				region.append[lowPriority newLine]
+			region.append[lowPriority newLine]
 
 			// pretty print the value "@tag: value"
 			regionFor.ruleCall(rc)?.append[noSpace]
