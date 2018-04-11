@@ -59,30 +59,43 @@ public class FrancaGenerators {
 		String clientGenDir,
 		boolean genAutobahnClient
 	) {
-		ClientJSProxyGenerator genClientProxy = new ClientJSProxyGenerator();
-		ServerJSStubGenerator genServerStub = new ServerJSStubGenerator();
-		ServerJSBlueprintGenerator genServerBlueprint = new ServerJSBlueprintGenerator();
-		ClientJSBlueprintGenerator genClientBlueprint = new ClientJSBlueprintGenerator();
-		
 		// we pick the first interface only
 		FInterface api = model.getInterfaces().get(0);
 
-		String clientGenPath = clientGenDir + "/" + createPath(model);
-		String serverGenPath = serverGenDir + "/" + createPath(model);
-		
+		ClientJSProxyGenerator genClientProxy = new ClientJSProxyGenerator();
+		ClientJSBlueprintGenerator genClientBlueprint = new ClientJSBlueprintGenerator();
+
 		String clientStubContent = genClientProxy.generate(api,
 				genAutobahnClient ?
 					ClientJSProxyGenerator.Mode.AUTOBAHN :
 					ClientJSProxyGenerator.Mode.WAMP_RAW
 		).toString();
-		String serverStubContent = genServerStub.generate(api).toString();
 		String clientBlueprintContent = genClientBlueprint.generate(api).toString();
-		String serverBlueprintContent = genServerBlueprint.generate(api).toString();
+
+		String clientGenPath = clientGenDir + "/" + createPath(model);
+		boolean clientOK =
+			FileHelper.save(clientGenPath, genClientProxy.getFileName(api) + ".js", clientStubContent) &&
+			FileHelper.save(clientGenPath, genClientBlueprint.getFileName(api) + ".js", clientBlueprintContent);
 		
-		return FileHelper.save(clientGenPath, genClientProxy.getFileName(api) + ".js", clientStubContent)
-			&& FileHelper.save(serverGenPath, genServerStub.getFileName(api) + ".js", serverStubContent)
-			&& FileHelper.save(serverGenPath, genServerBlueprint.getFileName(api) + ".js", serverBlueprintContent)
-			&& FileHelper.save(clientGenPath, genClientBlueprint.getFileName(api) + ".js", clientBlueprintContent);
+		if (genAutobahnClient) {
+			// do not generate server side
+			return clientOK;
+		} else {
+			// generate server side
+			ServerJSStubGenerator genServerStub = new ServerJSStubGenerator();
+			ServerJSBlueprintGenerator genServerBlueprint = new ServerJSBlueprintGenerator();
+			
+			String serverGenPath = serverGenDir + "/" + createPath(model);
+			
+			String serverStubContent = genServerStub.generate(api).toString();
+			String serverBlueprintContent = genServerBlueprint.generate(api).toString();
+			
+			boolean serverOK =
+				FileHelper.save(serverGenPath, genServerStub.getFileName(api) + ".js", serverStubContent) &&
+				FileHelper.save(serverGenPath, genServerBlueprint.getFileName(api) + ".js", serverBlueprintContent);
+
+			return clientOK && serverOK;
+		}
 	}
 	
 
