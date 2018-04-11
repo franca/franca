@@ -20,14 +20,23 @@ import static org.junit.Assert.*
 class FormatBroadcastsTests extends FormatterTestBase {
 
 	@Test
+	def void test0() {
+		val input = '''broadcast   
+		 b1    {    } '''
+		
+		val expected = '''
+			broadcast b1 { }
+		'''
+		
+		assertEquals(expected.wrap, input.wrap.format)
+	}
+
+	@Test
 	def void test1() {
 		val input = '''broadcast b1 { out   {   } } '''
 		
 		val expected = '''
-			broadcast b1 {
-				out {
-				}
-			}
+			broadcast b1 { out { } }
 		'''
 		
 		assertEquals(expected.wrap, input.wrap.format)

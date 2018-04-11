@@ -265,14 +265,13 @@ class FrancaIDLFormatter extends AbstractFormatter2 {
 		if (fireAndForget)
 			regionFor.keyword("fireAndForget").surround[oneSpace]
 
+		regionFor.keyword("in").append[oneSpace]
+		regionFor.keyword("out").append[oneSpace]
 		if (inArgs.empty && outArgs.empty && errors===null && errorEnum===null) {
 			regionFor.keyword("{").prepend[oneSpace].append[oneSpace]
 			regionFor.keyword("}").prepend[oneSpace]
 			append[lowPriority setNewLines(1,1,2)]
 		} else {
-			regionFor.keyword("in").append[oneSpace]
-			regionFor.keyword("out").append[oneSpace]
-			
 			for(pair : regionFor.keywordPairs("{", "}")) {
 				interior(
 					pair.key.append[newLine].prepend[oneSpace],
@@ -300,17 +299,23 @@ class FrancaIDLFormatter extends AbstractFormatter2 {
 		regionFor.keyword("broadcast").append[oneSpace]
 		if (selective)
 			regionFor.keyword("selective").surround[oneSpace]
+
 		regionFor.keyword("out").append[oneSpace]
-		
-		for(pair : regionFor.keywordPairs("{", "}")) {
-			interior(
-				pair.key.append[newLine].prepend[oneSpace],
-				pair.value.append[lowPriority setNewLines(1,1,2)],
-				[indent]
-			)
+		if (outArgs.empty) {
+			regionFor.keyword("{").prepend[oneSpace].append[oneSpace]
+			regionFor.keyword("}").prepend[oneSpace]
+			append[lowPriority setNewLines(1,1,2)]
+		} else {
+			for(pair : regionFor.keywordPairs("{", "}")) {
+				interior(
+					pair.key.append[newLine].prepend[oneSpace],
+					pair.value.append[lowPriority setNewLines(1,1,2)],
+					[indent]
+				)
+			}
+			
+			outArgs.forEach[format]
 		}
-		
-		outArgs.forEach[format]
 	}
 
 	def dispatch void format(FArgument it, extension IFormattableDocument document) {
