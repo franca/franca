@@ -49,29 +49,8 @@ class ClientJSProxyGenerator {
 			«ENDFOR»
 			«ENDIF»
 			«FOR method : api.methods»
-			// call this method to invoke «method.name» on the server side
-			«getFileName(api)».prototype.«method.name» = function(«method.inArgs.genArgList("", ", ")») {
-				var cid = this.getNextCallID();
-				«IF mode==Mode.WAMP_RAW»
-				this.socket.send('[2, "invoke:«method.name»:' + cid + '", "invoke:«method.name»"«IF !method.inArgs.empty», ' + JSON.stringify({«FOR arg : method.inArgs SEPARATOR ", "»"«arg.name»" : «arg.name»«ENDFOR»})«ELSE»'«ENDIF» + ']');
-				«ELSE»
-				var _this = this;
-				this.session.call(this.address + '.«method.name»', [cid«FOR arg : method.inArgs», «arg.name»«ENDFOR»]).then(
-					function (res) {
-						«val replyMethod = "_this.reply"+method.name.toFirstUpper»
-						if (typeof(«replyMethod») === "function") {
-							«replyMethod»(cid«method.genReplyArgs»);
-						}
-					},
-					function (err) {
-						console.log("Call failed, error message: ", err);
-						_this.replyError();
-					}
-				);
-				«ENDIF»
-				return cid;
-			};
-
+				«method.gen(api, mode)»
+				
 			«ENDFOR»
 			«getFileName(api)».prototype.connect = function(address) {
 				var _this = this;
@@ -124,6 +103,31 @@ class ClientJSProxyGenerator {
 		«ENDIF»
 	'''
 
+	def private gen(FMethod method, FInterface api, Mode mode) '''
+		// call this method to invoke «method.name» on the server side
+		«getFileName(api)».prototype.«method.name» = function(«method.inArgs.genArgList("", ", ")») {
+			var cid = this.getNextCallID();
+			«IF mode==Mode.WAMP_RAW»
+			this.socket.send('[2, "invoke:«method.name»:' + cid + '", "invoke:«method.name»"«IF !method.inArgs.empty», ' + JSON.stringify({«FOR arg : method.inArgs SEPARATOR ", "»"«arg.name»" : «arg.name»«ENDFOR»})«ELSE»'«ENDIF» + ']');
+			«ELSE»
+			var _this = this;
+			this.session.call(this.address + '.«method.name»', [cid«FOR arg : method.inArgs», «arg.name»«ENDFOR»]).then(
+				function (res) {
+					«val replyMethod = "_this.reply"+method.name.toFirstUpper»
+					if (typeof(«replyMethod») === "function") {
+						«replyMethod»(cid«method.genReplyArgs»);
+					}
+				},
+				function (err) {
+					console.log("Call failed, error message: ", err);
+					_this.replyError();
+				}
+			);
+			«ENDIF»
+			return cid;
+		};
+	'''
+	
 	def private genWampSocketHandling(FInterface api) '''
 		// create WebSocket for this proxy	
 		_this.socket = new WebSocket(address);
