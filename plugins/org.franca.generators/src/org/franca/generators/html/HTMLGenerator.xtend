@@ -45,7 +45,7 @@ class HTMLGenerator {
 	
 		<h2>Interface «api.name»</h2>
 
-		«IF api.version!=null»
+		«IF api.version!==null»
 			<h3>Version «api.version.major».«api.version.minor»</h3>
 		«ENDIF»
 		«api.genComment(true)»
@@ -95,16 +95,16 @@ class HTMLGenerator {
 		<tr><th>Dir</th><th>Type</th><th>Name</th><th>Comment</th></tr>
 		«api.inArgs.generate("in")»
 		«api.outArgs.generate("out")»
-		«IF api.errorEnum!=null»
+		«IF api.errorEnum!==null»
 			<tr><td>error</td><td>«api.errorEnum.labelLinked»</td><td></td><td></td></tr>
 		«ENDIF»
-		«IF api.errors!=null»
-			«IF api.errors.base != null»
+		«IF api.errors!==null»
+			«IF api.errors.base !== null»
 				<tr><td>error</td><td>«api.errors.base.genExtends»</td><td></td><td></td></tr>
 			«ENDIF»
 			«FOR e : api.errors.enumerators»
 				<tr><td>error</td><td></td>
-				<td>«e.name»«IF e.value!=null» = «ExpressionEvaluator::evaluateIntegerOrParseString(e.value)»«ENDIF»</td>
+				<td>«e.name»«IF e.value!==null» = «ExpressionEvaluator::evaluateIntegerOrParseString(e.value)»«ENDIF»</td>
 				<td>«e.genComment(false)»</td></tr>
 			«ENDFOR»
 		«ENDIF»
@@ -149,7 +149,7 @@ class HTMLGenerator {
 	}
 	
 	def genExtends (FType base) {
-		if (base != null) {
+		if (base !== null) {
 			" extends " + base.labelLinked
 		} else {
 			""
@@ -178,7 +178,7 @@ class HTMLGenerator {
 			«FOR e : type.enumerators»
 				<tr>
 					<td>«e.name»</td>
-					<td>«IF e.value!=null»«ExpressionEvaluator::evaluateIntegerOrParseString(e.value)»«ENDIF»</td>
+					<td>«IF e.value!==null»«ExpressionEvaluator::evaluateIntegerOrParseString(e.value)»«ENDIF»</td>
 					<td>«e.genComment(false)»</td>
 				</tr>
 			«ENDFOR»
@@ -198,14 +198,14 @@ class HTMLGenerator {
 
 
 	def getLabel (FTypeRef type) {
-		if (type.derived!=null)
+		if (type.derived!==null)
 			type.derived.name
 		else
 			type.predefined.toString
 	}
 	
 	def getLabelLinked (FTypeRef type) {
-		if (type.derived!=null) {
+		if (type.derived!==null) {
 			type.derived.labelLinked
 		} else
 			type.predefined.toString
@@ -218,7 +218,7 @@ class HTMLGenerator {
 
 	
 	def private genComment (FModelElement it, boolean paragraph) {
-		if (comment!=null && (! comment.elements.empty)) {
+		if (comment!==null && (! comment.elements.empty)) {
 			var t = ''
 			if (paragraph)
 				t = t + '<p>'
