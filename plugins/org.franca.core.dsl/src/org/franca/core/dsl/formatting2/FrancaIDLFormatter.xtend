@@ -265,25 +265,32 @@ class FrancaIDLFormatter extends AbstractFormatter2 {
 		if (fireAndForget)
 			regionFor.keyword("fireAndForget").surround[oneSpace]
 
-		regionFor.keyword("in").append[oneSpace]
-		regionFor.keyword("out").append[oneSpace]
-		
-		for(pair : regionFor.keywordPairs("{", "}")) {
-			interior(
-				pair.key.append[newLine].prepend[oneSpace],
-				pair.value.append[lowPriority setNewLines(1,1,2)],
-				[indent]
-			)
-		}
+		if (inArgs.empty && outArgs.empty && errors===null && errorEnum===null) {
+			regionFor.keyword("{").prepend[oneSpace].append[oneSpace]
+			regionFor.keyword("}").prepend[oneSpace]
+			append[lowPriority setNewLines(1,1,2)]
+		} else {
+			regionFor.keyword("in").append[oneSpace]
+			regionFor.keyword("out").append[oneSpace]
+			
+			for(pair : regionFor.keywordPairs("{", "}")) {
+				interior(
+					pair.key.append[newLine].prepend[oneSpace],
+					pair.value.append[lowPriority setNewLines(1,1,2)],
+					[indent]
+				)
+			}
+	
+			inArgs.forEach[format]
+			outArgs.forEach[format]
 
-		inArgs.forEach[format]
-		outArgs.forEach[format]
-		
-		if (errors!==null || errorEnum!==null)
-			regionFor.keyword("error").append[oneSpace]
-		if (errors!==null)
-			errors.format
-		if (errorEnum!==null) {
+			if (errors!==null || errorEnum!==null)
+				regionFor.keyword("error").append[oneSpace]
+			if (errors !== null)
+				errors.format
+			if (errorEnum !== null && errors===null) {
+				regionFor.feature(FMETHOD__ERROR_ENUM).append[newLine]
+			}
 		}
 	}
 

@@ -20,14 +20,22 @@ import static org.junit.Assert.*
 class FormatMethodsTests extends FormatterTestBase {
 
 	@Test
+	def void test0() {
+		val input = '''method    m1    {} '''
+		
+		val expected = '''
+			method m1 { }
+		'''
+		
+		assertEquals(expected.wrap, input.wrap.format)
+	}
+
+	@Test
 	def void test1() {
 		val input = '''method m1 { in {} } '''
 		
 		val expected = '''
-			method m1 {
-				in {
-				}
-			}
+			method m1 { in { } }
 		'''
 		
 		assertEquals(expected.wrap, input.wrap.format)
@@ -38,10 +46,7 @@ class FormatMethodsTests extends FormatterTestBase {
 		val input = '''method m1   fireAndForget  { in {} } '''
 		
 		val expected = '''
-			method m1 fireAndForget {
-				in {
-				}
-			}
+			method m1 fireAndForget { in { } }
 		'''
 		
 		assertEquals(expected.wrap, input.wrap.format)
