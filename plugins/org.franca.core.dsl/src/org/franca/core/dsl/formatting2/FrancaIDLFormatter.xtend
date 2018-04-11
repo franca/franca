@@ -61,7 +61,6 @@ class FrancaIDLFormatter extends AbstractFormatter2 {
 	// TODO: implement for FQualifiedElementRef, FTypeRef, FDeclaration, FGuard, FIfStatement, FAssignment, FBlock
 
 	def dispatch void format(FModel it, extension IFormattableDocument document) {
-		// TODO: format HiddenRegions around keywords, attributes, cross references, etc.
 		imports.forEach[format]
 		
 		regionFor.feature(FMODEL__NAME).append[newLines=2]
@@ -75,10 +74,6 @@ class FrancaIDLFormatter extends AbstractFormatter2 {
 				item.append[highPriority newLines=2]
 			isLast = false
 		}
-
-//		regionFor.keyword("{").prepend[newLines = 3]
-//		regionFor.keyword("}").append[newLines = 3]
-//		append[newLine]
 	}
 
 	def dispatch void format(FTypeCollection it, extension IFormattableDocument document) {
@@ -94,14 +89,6 @@ class FrancaIDLFormatter extends AbstractFormatter2 {
 				item.prepend[highPriority newLines=2]
 			isFirst=false
 		}
-		
-		//prepend[newLines=2]
-		
-//		interior(
-//			regionFor.keyword("{").append[newLine],
-//			regionFor.keyword("}"),//.append[newLine],
-//			[indent]
-//		)
 
 		for(pair : regionFor.keywordPairs("{", "}")) {
 			interior(
@@ -110,7 +97,6 @@ class FrancaIDLFormatter extends AbstractFormatter2 {
 				[indent]
 			)
 		}
-
 	}
 
 	def dispatch void format(FInterface it, extension IFormattableDocument document) {
@@ -125,14 +111,6 @@ class FrancaIDLFormatter extends AbstractFormatter2 {
 				item.prepend[highPriority newLines=2]
 			isFirst=false
 		}
-		
-		//prepend[newLines=2]
-		
-//		interior(
-//			regionFor.keyword("{").append[newLine],
-//			regionFor.keyword("}"),//.append[newLine],
-//			[indent]
-//		)
 
 		for(pair : regionFor.keywordPairs("{", "}")) {
 			interior(
