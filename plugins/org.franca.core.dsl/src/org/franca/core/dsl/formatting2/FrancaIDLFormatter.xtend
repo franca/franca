@@ -17,12 +17,16 @@ import org.franca.core.franca.FAnnotationBlock
 import org.franca.core.franca.FArgument
 import org.franca.core.franca.FArrayType
 import org.franca.core.franca.FAttribute
+import org.franca.core.franca.FBracketInitializer
 import org.franca.core.franca.FBroadcast
+import org.franca.core.franca.FCompoundInitializer
 import org.franca.core.franca.FCompoundType
 import org.franca.core.franca.FConstantDef
+import org.franca.core.franca.FElementInitializer
 import org.franca.core.franca.FEnumerationType
 import org.franca.core.franca.FEnumerator
 import org.franca.core.franca.FField
+import org.franca.core.franca.FFieldInitializer
 import org.franca.core.franca.FInterface
 import org.franca.core.franca.FMapType
 import org.franca.core.franca.FMethod
@@ -142,6 +146,8 @@ class FrancaIDLFormatter extends AbstractFormatter2 {
 		regionFor.keyword("const").append[oneSpace]
 		regionFor.feature(FMODEL_ELEMENT__NAME).prepend[oneSpace]
 		regionFor.keyword("=").surround[oneSpace]
+		
+		rhs.format
 		
 		append[lowPriority setNewLines(1,1,2)]
 	}
@@ -329,7 +335,42 @@ class FrancaIDLFormatter extends AbstractFormatter2 {
 		regionFor.feature(FOPERATION__OP).append[noSpace]
 	}
 
+	def dispatch void format(FBracketInitializer it, extension IFormattableDocument document) {
+		regionFor.keyword("[").append[oneSpace]
+		regionFor.keyword("]").prepend[oneSpace]
 
+		for(comma : regionFor.keywords(",")) {
+			comma.prepend[noSpace].append[oneSpace]
+		}
+		
+		elements.forEach[format]
+	}
+
+	def dispatch void format(FElementInitializer it, extension IFormattableDocument document) {
+		first.format
+		second?.format
+	}
+
+	def dispatch void format(FCompoundInitializer it, extension IFormattableDocument document) {
+		interior(
+			regionFor.keyword("{").prepend[oneSpace].append[newLine],
+			regionFor.keyword("}").prepend[newLine].append[newLine],
+			[indent]
+		)
+
+		for(comma : regionFor.keywords(",")) {
+			comma.prepend[noSpace].append[newLine]
+		}
+
+		elements.forEach[format]
+	}
+
+	def dispatch void format(FFieldInitializer it, extension IFormattableDocument document) {
+		regionFor.keyword(":").prepend[oneSpace].append[oneSpace]
+		value.format
+	}
+
+	
 	def private void stdIndent(EObject it, extension IFormattableDocument document) {
 		interior(
 			regionFor.keyword("{").append[newLine],
@@ -339,8 +380,8 @@ class FrancaIDLFormatter extends AbstractFormatter2 {
 	}
 
 	// TODO: implement for FTypeRef,
-	// FDeclaration, FCompoundInitializer, FFieldInitializer,
-	// FBracketInitializer, FElementInitializer, FContract, FStateGraph, FState,
+	// FDeclaration,
+	// FContract, FStateGraph, FState,
 	// FTransition, FTrigger, FGuard, FIfStatement, FAssignment, FBlock,
 	// FBinaryOperation, FQualifiedElementRef
 
