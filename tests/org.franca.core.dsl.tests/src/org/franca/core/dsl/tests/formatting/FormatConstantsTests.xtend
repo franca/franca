@@ -20,6 +20,20 @@ import static org.junit.Assert.*
 class FormatConstantsTests extends FormatterTestBase {
 
 	@Test
+	def void testE1() {
+		val input = '''
+			const    Int16   a 
+			    =  1    +3*   5  
+		'''
+		
+		val expected = '''
+			const Int16 a = 1 + 3 * 5
+		'''
+		
+		assertEquals(expected.wrap, input.wrap.format)
+	}
+
+	@Test
 	def void testA1() {
 		val input = '''
 			array   MyArray  of  UInt8

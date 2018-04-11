@@ -17,6 +17,7 @@ import org.franca.core.franca.FAnnotationBlock
 import org.franca.core.franca.FArgument
 import org.franca.core.franca.FArrayType
 import org.franca.core.franca.FAttribute
+import org.franca.core.franca.FBinaryOperation
 import org.franca.core.franca.FBracketInitializer
 import org.franca.core.franca.FBroadcast
 import org.franca.core.franca.FCompoundInitializer
@@ -56,6 +57,8 @@ import static extension org.eclipse.xtext.nodemodel.util.NodeModelUtils.*
 class FrancaIDLFormatter extends AbstractFormatter2 {
 
 	@Inject extension FrancaIDLGrammarAccess ga
+
+	// TODO: implement for FQualifiedElementRef, FTypeRef, FDeclaration, FGuard, FIfStatement, FAssignment, FBlock
 
 	def dispatch void format(FModel it, extension IFormattableDocument document) {
 		// TODO: format HiddenRegions around keywords, attributes, cross references, etc.
@@ -342,6 +345,12 @@ class FrancaIDLFormatter extends AbstractFormatter2 {
 		regionFor.feature(FOPERATION__OP).append[noSpace]
 	}
 
+	def dispatch void format(FBinaryOperation it, extension IFormattableDocument document) {
+		regionFor.feature(FOPERATION__OP).surround[oneSpace]
+		left.format
+		right.format
+	}
+
 	def dispatch void format(FBracketInitializer it, extension IFormattableDocument document) {
 		regionFor.keyword("[").append[oneSpace]
 		regionFor.keyword("]").prepend[oneSpace]
@@ -430,10 +439,6 @@ class FrancaIDLFormatter extends AbstractFormatter2 {
 			[indent]
 		)
 	}
-
-	// TODO: implement for FTypeRef, FDeclaration,
-	// FGuard, FIfStatement, FAssignment, FBlock,
-	// FBinaryOperation, FQualifiedElementRef
 
 	def dispatch void format(FAnnotationBlock it, extension IFormattableDocument document) {
 		val open = regionFor.keyword("<**")
