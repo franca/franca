@@ -39,11 +39,15 @@ public class WebsocketGenTest {
 	
 	@Test
 	public void test01() {
-		genAndSave("org/example/SimpleUI.fidl");
+		genAndSave("org/example/SimpleUI.fidl", CLIENT_GEN_DIR, false);
 	}
 
 
-	private void genAndSave (String filename) {
+	private void genAndSave(
+		String filename,
+		String clientGenDir,
+		boolean genAutobahnClient
+	) {
 		// load example Franca IDL interface
     	URI root = URI.createURI("classpath:/");
     	URI loc = URI.createFileURI(filename);
@@ -53,7 +57,7 @@ public class WebsocketGenTest {
 		
 		// create HTML documentation from Franca model
 		assertTrue(FrancaGenerators.instance().genWebsocket(fmodel,
-				SERVER_GEN_DIR, CLIENT_GEN_DIR));
+				SERVER_GEN_DIR, clientGenDir, genAutobahnClient));
 	}
 
 }

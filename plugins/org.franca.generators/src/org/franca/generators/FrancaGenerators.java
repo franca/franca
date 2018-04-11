@@ -53,7 +53,12 @@ public class FrancaGenerators {
 		return true;
 	}
 	
-	public boolean genWebsocket (FModel model, String serverGenDir, String clientGenDir) {
+	public boolean genWebsocket(
+		FModel model,
+		String serverGenDir,
+		String clientGenDir,
+		boolean genAutobahnClient
+	) {
 		ClientJSProxyGenerator genClientProxy = new ClientJSProxyGenerator();
 		ServerJSStubGenerator genServerStub = new ServerJSStubGenerator();
 		ServerJSBlueprintGenerator genServerBlueprint = new ServerJSBlueprintGenerator();
@@ -65,7 +70,11 @@ public class FrancaGenerators {
 		String clientGenPath = clientGenDir + "/" + createPath(model);
 		String serverGenPath = serverGenDir + "/" + createPath(model);
 		
-		String clientStubContent = genClientProxy.generate(api).toString();
+		String clientStubContent = genClientProxy.generate(api,
+				genAutobahnClient ?
+					ClientJSProxyGenerator.Mode.AUTOBAHN :
+					ClientJSProxyGenerator.Mode.WAMP_RAW
+		).toString();
 		String serverStubContent = genServerStub.generate(api).toString();
 		String clientBlueprintContent = genClientBlueprint.generate(api).toString();
 		String serverBlueprintContent = genServerBlueprint.generate(api).toString();

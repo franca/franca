@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.CoreException
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.resource.Resource
+import org.eclipse.xtext.EcoreUtil2
 import org.franca.core.franca.FArrayType
 import org.franca.core.franca.FBroadcast
 import org.franca.core.franca.FCompoundType
@@ -55,6 +56,10 @@ class FrancaModelExtensions {
 	
 	def static getContract (EObject obj) {
 		getParentObject(obj, typeof(FContract))
+	}
+	
+	def static getEnumeration(FEnumerator e) {
+		EcoreUtil2.getContainerOfType(e, FEnumerationType)
 	}
 	
 	def private static <T extends EObject> getParentObject (EObject it, Class<T> clazz) {
