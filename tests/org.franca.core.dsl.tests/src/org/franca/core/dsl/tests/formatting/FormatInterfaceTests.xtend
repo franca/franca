@@ -36,4 +36,23 @@ class FormatInterfaceTests extends FormatterTestBase {
 		
 		assertEquals(expected, input.format)
 	}
+
+	@Test
+	def void test2() {
+		val input = '''
+		package a.b interface I0 {} interface
+		I1   extends  I0 {}'''
+		
+		val expected = '''
+			package a.b
+			
+			interface I0 {
+			}
+			
+			interface I1 extends I0 {
+			}
+		'''
+		
+		assertEquals(expected, input.format)
+	}
 }

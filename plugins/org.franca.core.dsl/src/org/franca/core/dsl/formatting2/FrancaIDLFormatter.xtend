@@ -80,6 +80,8 @@ class FrancaIDLFormatter extends AbstractFormatter2 {
 		comment?.format
 		version?.format
 		
+		regionFor.keyword("typeCollection").append[oneSpace]
+
 		// collect all type collection contents and format them
 		val content = concat(constants, types)
 		var isFirst = true
@@ -101,6 +103,10 @@ class FrancaIDLFormatter extends AbstractFormatter2 {
 
 	def dispatch void format(FInterface it, extension IFormattableDocument document) {
 		version.format
+
+		regionFor.keyword("interface").append[oneSpace]
+		if (base!==null)
+			regionFor.keyword("extends").surround[oneSpace]
 		
 		// collect all interface contents and format them
 		val content = concat(attributes, methods, broadcasts, constants, types)
