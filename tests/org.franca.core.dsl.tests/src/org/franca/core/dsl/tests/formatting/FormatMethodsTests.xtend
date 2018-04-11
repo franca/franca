@@ -89,6 +89,51 @@ class FormatMethodsTests extends FormatterTestBase {
 		assertEquals(expected.wrap.chompEmpty, input.wrap.format)
 	}
 
+	@Test
+	def void test5() {
+		val input = '''
+			method m1  { in {} error { A B C } } 
+		'''
+		
+		val expected = '''
+			method m1 {
+				in {
+				}
+				error {
+					A
+					B
+					C
+				}
+			}
+		'''
+		
+		assertEquals(expected.wrap, input.wrap.format)
+	}
+
+	@Test
+	def void test6() {
+		val input = '''
+			enumeration ERR { A B C }
+			method m1  { in {}   error   ERR } 
+		'''
+		
+		val expected = '''
+			enumeration ERR {
+				A
+				B
+				C
+			}
+			
+			method m1 {
+				in {
+				}
+				error ERR
+			}
+		'''
+		
+		assertEquals(expected.wrap.chompEmpty, input.wrap.format)
+	}
+
 
 	def private String wrap(String s) '''
 		package a.b

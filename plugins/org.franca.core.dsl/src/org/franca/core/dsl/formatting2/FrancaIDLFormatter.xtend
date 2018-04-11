@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package org.franca.core.dsl.formatting
+package org.franca.core.dsl.formatting2
 
 import com.google.inject.Inject
 import org.eclipse.emf.ecore.EObject
@@ -40,7 +40,7 @@ import static org.franca.core.franca.FrancaPackage.Literals.*
 import static extension org.eclipse.xtext.nodemodel.util.NodeModelUtils.*
 
 /** 
- * This class contains a custom configuration for Franca IDL.
+ * Custom formatter for Franca IDL.</p>
  */
 @SuppressWarnings("all")
 class FrancaIDLFormatter extends AbstractFormatter2 {
@@ -60,7 +60,7 @@ class FrancaIDLFormatter extends AbstractFormatter2 {
 			item.format
 			if (!isLast)
 				item.append[highPriority newLines=2]
-			isLast=false
+			isLast = false
 		}
 
 //		regionFor.keyword("{").prepend[newLines = 3]
@@ -275,9 +275,16 @@ class FrancaIDLFormatter extends AbstractFormatter2 {
 				[indent]
 			)
 		}
-		
+
 		inArgs.forEach[format]
 		outArgs.forEach[format]
+		
+		if (errors!==null || errorEnum!==null)
+			regionFor.keyword("error").append[oneSpace]
+		if (errors!==null)
+			errors.format
+		if (errorEnum!==null) {
+		}
 	}
 
 	def dispatch void format(FBroadcast it, extension IFormattableDocument document) {

@@ -17,7 +17,7 @@ Require-Bundle: org.eclipse.xtext.generator;resolution:=optional,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.franca.core.dsl,
  org.franca.core.dsl.cli,
- org.franca.core.dsl.formatting,
+ org.franca.core.dsl.formatting2,
  org.franca.core.dsl.parser.antlr,
  org.franca.core.dsl.parser.antlr.internal,
  org.franca.core.dsl.resource,
@@ -26,5 +26,6 @@ Export-Package: org.franca.core.dsl,
  org.franca.core.dsl.validation,
  org.franca.core.dsl.validation.util,
  org.franca.core.dsl.serializer,
- org.franca.core.dsl.generator
+ org.franca.core.dsl.generator,
+ org.franca.core.dsl.formatting2
 Import-Package: org.apache.log4j
