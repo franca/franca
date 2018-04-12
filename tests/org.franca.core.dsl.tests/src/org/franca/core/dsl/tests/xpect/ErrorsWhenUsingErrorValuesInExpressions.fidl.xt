@@ -23,15 +23,20 @@ interface InterfaceTest {
 			initial start
 			state start {
 				// XPECT errors --> "invalid type (is enumeration 'Errors', expected Boolean)" at "savedError"
+				// XPECT warnings --> "This transition's guard might overlap with other transitions with same trigger" at "[savedError]"
 				on error forceEnumError [savedError] -> start
 				// XPECT errors --> "invalid type (is enumeration 'Errors', expected Boolean)" at "savedError"
+				// XPECT warnings --> "This transition's guard might overlap with other transitions with same trigger" at "[!savedError]"
 				on error forceEnumError [!savedError] -> start
 				
 				// XPECT errors --> "operands must have compatible types" at "errordef.Error == TC.OtherErrors.OtherError"
+				// XPECT warnings --> "This transition's guard might overlap with other transitions with same trigger" at "[errordef.Error == TC.OtherErrors.OtherError]"
 				on error forceEnumError [errordef.Error == TC.OtherErrors.OtherError] -> start
 				// XPECT errors --> "operands must have compatible types" at "errordef.Error == otherError"
+				// XPECT warnings --> "This transition's guard might overlap with other transitions with same trigger" at "[errordef.Error == otherError]"
 				on error forceEnumError [errordef.Error == otherError] -> start
 				// XPECT errors --> "operands must have compatible types" at "errorval == otherError"
+				// XPECT warnings --> "This transition's guard might overlap with other transitions with same trigger" at "[errorval == otherError]"
 				on error forceEnumError [errorval == otherError] -> start				
 			}
 		}

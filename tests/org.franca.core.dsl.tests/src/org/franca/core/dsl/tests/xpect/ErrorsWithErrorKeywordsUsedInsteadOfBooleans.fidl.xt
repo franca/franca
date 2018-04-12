@@ -27,12 +27,16 @@ interface InterfaceTest {
 			initial start
 			state start {
 				// XPECT errors --> "mismatched input ']' expecting '.'" at "]"
+				// XPECT warnings --> "This transition's guard might overlap with other transitions with same trigger" at "[errordef]"
 				on error forceEnumError [errordef] -> start
 				// XPECT errors --> "invalid error enumerator (expected Boolean)" at "errorval"
+				// XPECT warnings --> "This transition's guard might overlap with other transitions with same trigger" at "[errorval]"
 				on error forceEnumError [errorval] -> start
 				// XPECT errors --> "mismatched input ']' expecting '.'" at "]"
+				// XPECT warnings --> "This transition's guard might overlap with other transitions with same trigger" at "[! errordef]"
 				on error forceEnumError [! errordef] -> start
 				// XPECT errors --> "invalid error enumerator (expected Boolean)" at "errorval"
+				// XPECT warnings --> "This transition's guard might overlap with other transitions with same trigger" at "[! errorval]"
 				on error forceEnumError [! errorval] -> start
 			}
 		}

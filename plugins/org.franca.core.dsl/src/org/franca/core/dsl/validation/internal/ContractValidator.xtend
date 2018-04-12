@@ -185,8 +185,11 @@ class ContractValidator {
 	}
 
 	def static private isAlwaysTrue(FGuard guard) {
-		val res = ExpressionEvaluator.evaluateBoolean(guard.condition)
-		res!==null && res
+		if (guard.condition===null)
+			false
+		else {
+			val res = ExpressionEvaluator.evaluateBoolean(guard.condition)
+			res!==null && res
+		}
 	}
-	
 }
