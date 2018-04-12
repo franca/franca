@@ -1,14 +1,15 @@
 package org.franca.examples.reference.tests;
 
-import org.eclipse.xtext.junit4.InjectWith;
-import org.eclipselabs.xtext.utils.unittesting.XtextRunner2;
-import org.eclipselabs.xtext.utils.unittesting.XtextTest;
+import org.eclipse.xtext.testing.InjectWith;
 import org.franca.core.dsl.FrancaIDLTestsInjectorProvider;
+import org.franca.core.dsl.tests.util.XtextRunner2_Franca;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-@RunWith(XtextRunner2.class)
+import com.itemis.xtext.testing.XtextTest;
+
+@RunWith(XtextRunner2_Franca.class)
 @InjectWith(FrancaIDLTestsInjectorProvider.class)
 public class ReferenceModelTests extends XtextTest {
 
@@ -53,7 +54,7 @@ public class ReferenceModelTests extends XtextTest {
     @Test
     public void test_60_Interface() {
     	testFile("60-Interface.fidl");
-    	assertConstraints(issues.nOfThemContain(10, "not covered by contract"));
+    	assertConstraints(issues.nOfThemContain(14, "not covered by contract"));
     }
 
     @Test
@@ -80,6 +81,7 @@ public class ReferenceModelTests extends XtextTest {
     @Test
     public void test_80_Contract() {
     	testFile("80-Contract.fidl");
+    	assertConstraints(issues.nOfThemContain(2, "This transition's guard might overlap with other transitions with same trigger"));
     }
 
 

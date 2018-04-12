@@ -15,7 +15,6 @@ import org.eclipse.xtext.conversion.ValueConverter;
 import org.eclipse.xtext.conversion.ValueConverterException;
 import org.eclipse.xtext.conversion.impl.AbstractNullSafeConverter;
 import org.eclipse.xtext.nodemodel.INode;
-import org.franca.core.franca.impl.FAnnotationAuxImpl;
 
 public class FrancaValueConverters extends Ecore2XtextTerminalConverters {
 

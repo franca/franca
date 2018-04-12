@@ -31,8 +31,8 @@ import org.franca.deploymodel.dsl.fDeploy.FDCompound;
 import org.franca.deploymodel.dsl.fDeploy.FDElement;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumValue;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumeration;
+import org.franca.deploymodel.dsl.fDeploy.FDExtensionElement;
 import org.franca.deploymodel.dsl.fDeploy.FDField;
-import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance;
 import org.franca.deploymodel.dsl.fDeploy.FDMethod;
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification;
 import org.franca.deploymodel.dsl.fDeploy.FDStruct;
@@ -46,9 +46,10 @@ import org.franca.deploymodel.dsl.fDeploy.FDeployFactory;
  * but the {@link FDElement}s these EObjects are mapped to by means of an {@link FDMapper}. <br/>
  * If the FDMapper does not provide an actual mapping for a given EObject, this PropertyAccessor will
  * create a Dummy-FDElement in order to access the default-value of it.
+
  * @author holzer
  */
-public class MappingGenericPropertyAccessor extends GenericPropertyAccessor{
+public class MappingGenericPropertyAccessor extends GenericPropertyAccessor {
 
 	/** The FDMapper providing the FDSpec for the given EObjects. */
 	protected FDMapper mapper;
@@ -90,12 +91,20 @@ public class MappingGenericPropertyAccessor extends GenericPropertyAccessor{
 		return super.getInterfaceArray(getFDElement(obj), property);
 	}
 
-	public FDInterfaceInstance getInterfaceInstance(EObject obj, String property) {
-		return super.getInterfaceInstance(getFDElement(obj), property);
+	public <RuntimeType extends EObject> RuntimeType getGenericReference(
+		EObject obj,
+		Class<? extends EObject> runtimeType,
+		String property
+	) {
+		return super.getGenericReference(getFDElement(obj), runtimeType, property);
 	}
 
-	public List<FDInterfaceInstance> getInterfaceInstanceArray(EObject obj, String property) {
-		return super.getInterfaceInstanceArray(getFDElement(obj), property);
+	public <RuntimeType extends EObject> List<RuntimeType> getGenericReferenceArray(
+		EObject obj,
+		Class<? extends EObject> runtimeType,
+		String property
+	) {
+		return super.getGenericReference(getFDElement(obj), runtimeType, property);
 	}
 
 	public String getEnum(EObject obj, String property) {

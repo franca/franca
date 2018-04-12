@@ -9,39 +9,38 @@
   <foreignModel>FDeploy.ecore</foreignModel>
   <genPackages prefix="FDeploy" basePackage="org.franca.deploymodel.dsl" disposableProviderFactory="true"
       ecorePackage="FDeploy.ecore#/">
-    <genEnums typeSafeEnumCompatible="false" ecoreEnum="FDeploy.ecore#//FDPropertyHost">
-      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/providers"/>
-      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/instances"/>
-      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/type_collections"/>
-      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/interfaces"/>
-      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/attributes"/>
-      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/methods"/>
-      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/broadcasts"/>
-      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/arguments"/>
-      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/struct_fields"/>
-      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/union_fields"/>
-      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/arrays"/>
-      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/structs"/>
-      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/unions"/>
-      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/enumerations"/>
-      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/enumerators"/>
-      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/typedefs"/>
-      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/strings"/>
-      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/numbers"/>
-      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/integers"/>
-      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/floats"/>
-      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/booleans"/>
-      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/byte_buffers"/>
-      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPropertyHost/fields"/>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="FDeploy.ecore#//FDBuiltInPropertyHost">
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDBuiltInPropertyHost/type_collections"/>
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDBuiltInPropertyHost/interfaces"/>
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDBuiltInPropertyHost/attributes"/>
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDBuiltInPropertyHost/methods"/>
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDBuiltInPropertyHost/broadcasts"/>
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDBuiltInPropertyHost/arguments"/>
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDBuiltInPropertyHost/struct_fields"/>
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDBuiltInPropertyHost/union_fields"/>
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDBuiltInPropertyHost/arrays"/>
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDBuiltInPropertyHost/structs"/>
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDBuiltInPropertyHost/unions"/>
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDBuiltInPropertyHost/enumerations"/>
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDBuiltInPropertyHost/enumerators"/>
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDBuiltInPropertyHost/typedefs"/>
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDBuiltInPropertyHost/strings"/>
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDBuiltInPropertyHost/numbers"/>
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDBuiltInPropertyHost/integers"/>
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDBuiltInPropertyHost/floats"/>
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDBuiltInPropertyHost/booleans"/>
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDBuiltInPropertyHost/byte_buffers"/>
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDBuiltInPropertyHost/fields"/>
     </genEnums>
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="FDeploy.ecore#//FDPredefinedTypeId">
       <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPredefinedTypeId/Integer"/>
       <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPredefinedTypeId/String"/>
       <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPredefinedTypeId/Boolean"/>
       <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPredefinedTypeId/Interface"/>
-      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPredefinedTypeId/Instance"/>
     </genEnums>
+    <genDataTypes ecoreDataType="FDeploy.ecore#//FDPropertyHostType"/>
     <genClasses ecoreClass="FDeploy.ecore#//FDModel">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute FDeploy.ecore#//FDModel/name"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDModel/imports"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDModel/specifications"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDModel/deployments"/>
@@ -80,6 +79,9 @@
     <genClasses ecoreClass="FDeploy.ecore#//FDEnumerator">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute FDeploy.ecore#//FDEnumerator/name"/>
     </genClasses>
+    <genClasses ecoreClass="FDeploy.ecore#//FDExtensionType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute FDeploy.ecore#//FDExtensionType/name"/>
+    </genClasses>
     <genClasses ecoreClass="FDeploy.ecore#//FDRootElement">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDRootElement/spec"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute FDeploy.ecore#//FDRootElement/name"/>
@@ -91,12 +93,14 @@
     <genClasses ecoreClass="FDeploy.ecore#//FDOverwriteElement">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDOverwriteElement/overwrites"/>
     </genClasses>
-    <genClasses ecoreClass="FDeploy.ecore#//FDProvider">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDProvider/instances"/>
+    <genClasses image="false" ecoreClass="FDeploy.ecore#//FDAbstractExtensionElement">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute FDeploy.ecore#//FDAbstractExtensionElement/tag"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDAbstractExtensionElement/elements"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDAbstractExtensionElement/target"/>
     </genClasses>
-    <genClasses ecoreClass="FDeploy.ecore#//FDInterfaceInstance">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDInterfaceInstance/target"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute FDeploy.ecore#//FDInterfaceInstance/name"/>
+    <genClasses ecoreClass="FDeploy.ecore#//FDExtensionRoot"/>
+    <genClasses ecoreClass="FDeploy.ecore#//FDExtensionElement">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute FDeploy.ecore#//FDExtensionElement/name"/>
     </genClasses>
     <genClasses ecoreClass="FDeploy.ecore#//FDTypes">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDTypes/target"/>

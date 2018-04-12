@@ -167,7 +167,7 @@ class ActualType {
 		if (isOfCompatiblePrimitiveType(reference))
 			return true
 		
-		if (reference.derived==null || this.derived==null)
+		if (reference.derived===null || this.derived===null)
 			return false
 
 		// both types must be implicit arrays or none of them

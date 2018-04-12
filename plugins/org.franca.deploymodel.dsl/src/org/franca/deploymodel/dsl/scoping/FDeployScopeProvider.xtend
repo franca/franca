@@ -11,15 +11,14 @@ import com.google.inject.Inject
 import java.util.List
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EReference
-import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.naming.IQualifiedNameConverter
 import org.eclipse.xtext.naming.IQualifiedNameProvider
 import org.eclipse.xtext.naming.QualifiedName
 import org.eclipse.xtext.resource.EObjectDescription
 import org.eclipse.xtext.resource.IEObjectDescription
 import org.eclipse.xtext.scoping.IScope
-import org.eclipse.xtext.scoping.Scopes
 import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
+import org.eclipse.xtext.scoping.impl.FilteringScope
 import org.eclipse.xtext.scoping.impl.ImportUriGlobalScopeProvider
 import org.eclipse.xtext.scoping.impl.SimpleScope
 import org.franca.core.franca.FArrayType
@@ -31,6 +30,7 @@ import org.franca.core.franca.FTypeDef
 import org.franca.core.franca.FUnionType
 import org.franca.deploymodel.core.FDModelUtils
 import org.franca.deploymodel.core.PropertyMappings
+import org.franca.deploymodel.dsl.fDeploy.FDAbstractExtensionElement
 import org.franca.deploymodel.dsl.fDeploy.FDArgument
 import org.franca.deploymodel.dsl.fDeploy.FDArgumentList
 import org.franca.deploymodel.dsl.fDeploy.FDArray
@@ -42,23 +42,28 @@ import org.franca.deploymodel.dsl.fDeploy.FDEnumType
 import org.franca.deploymodel.dsl.fDeploy.FDEnumValue
 import org.franca.deploymodel.dsl.fDeploy.FDEnumeration
 import org.franca.deploymodel.dsl.fDeploy.FDEnumerationOverwrites
+import org.franca.deploymodel.dsl.fDeploy.FDExtensionElement
+import org.franca.deploymodel.dsl.fDeploy.FDExtensionRoot
+import org.franca.deploymodel.dsl.fDeploy.FDExtensionType
 import org.franca.deploymodel.dsl.fDeploy.FDField
 import org.franca.deploymodel.dsl.fDeploy.FDInterface
-import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance
 import org.franca.deploymodel.dsl.fDeploy.FDMethod
 import org.franca.deploymodel.dsl.fDeploy.FDModel
 import org.franca.deploymodel.dsl.fDeploy.FDOverwriteElement
-import org.franca.deploymodel.dsl.fDeploy.FDPredefinedTypeId
 import org.franca.deploymodel.dsl.fDeploy.FDProperty
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyFlag
-import org.franca.deploymodel.dsl.fDeploy.FDProvider
+import org.franca.deploymodel.dsl.fDeploy.FDRootElement
+import org.franca.deploymodel.dsl.fDeploy.FDSpecification
 import org.franca.deploymodel.dsl.fDeploy.FDStruct
 import org.franca.deploymodel.dsl.fDeploy.FDTypeOverwrites
 import org.franca.deploymodel.dsl.fDeploy.FDTypedef
 import org.franca.deploymodel.dsl.fDeploy.FDTypes
 import org.franca.deploymodel.dsl.fDeploy.FDUnion
 import org.franca.deploymodel.dsl.fDeploy.FDeployPackage
+import org.franca.deploymodel.extensions.ExtensionRegistry
+
+import static org.eclipse.xtext.EcoreUtil2.*
 
 import static extension org.eclipse.xtext.scoping.Scopes.*
 import static extension org.franca.core.FrancaModelExtensions.*
@@ -87,13 +92,13 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 	/** Evaluates the importedAliases of the FDModel containing the <i>ctxt</i> 
 	 * and adds the belonging <i>FDSpecification</i>s to the given scope. */
 	def joinImportedDeploySpecs(IScope scope, EObject ctxt){
-		val model = EcoreUtil2::getContainerOfType(ctxt, typeof(FDModel))
-		val importedAliases = model.imports.filter[importedSpec!=null].map[importedSpec]
+		val model = getContainerOfType(ctxt, typeof(FDModel))
+		val importedAliases = model.imports.filter[importedSpec!==null].map[importedSpec]
 		val List<IEObjectDescription> fdSpecsScopeImports = <IEObjectDescription>newArrayList();
 		try { 
 			for(a:importedAliases){
 				val entry = deploySpecProvider.getEntry(a)
-				if(entry?.FDSpecification != null){
+				if(entry?.FDSpecification !== null){
 					fdSpecsScopeImports.add(new EObjectDescription(qnConverter.toQualifiedName(a),entry.FDSpecification,null));
 				}
 			}
@@ -101,7 +106,19 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 		return new SimpleScope(scope,fdSpecsScopeImports,false)
 	}
 
-	
+	def scope_FDAbstractExtensionElement_target(FDAbstractExtensionElement ctxt, EReference ref) {
+		val elemDef = ExtensionRegistry.getElement(ctxt)
+		if (elemDef.targetClass===null) {
+			// no target class, skip reference to target object
+			IScope::NULLSCOPE
+		} else {
+			// target class has been configured, collect all EObjects of that class which are visible from here
+			val root = getContainerOfType(ctxt, typeof(FDExtensionRoot))
+			val delegate = root.delegateGetScope(ref)
+			new FilteringScope(delegate, [isAssignableFrom(elemDef.targetClass, it.EClass)])
+		}
+	}
+
 	def scope_FDTypes_target(FDTypes ctxt, EReference ref) {	
 		return new FTypeCollectionScope(IScope::NULLSCOPE, false, importUriGlobalScopeProvider, ctxt.eResource, qualifiedNameProvider);
 	} 
@@ -212,7 +229,7 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 	def scope_FDField_target(FDCompoundOverwrites ctxt, EReference ref) {
 		val parent = ctxt.eContainer as FDOverwriteElement
 		val type = parent.getOverwriteTargetType
-		if (type!=null) {
+		if (type!==null) {
 			if (type instanceof FCompoundType) {
 				return type.elements.scopeFor
 			}
@@ -234,7 +251,7 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 	def scope_FDEnumValue_target(FDEnumerationOverwrites ctxt, EReference ref) {
 		val parent = ctxt.eContainer as FDOverwriteElement
 		val type = parent.getOverwriteTargetType
-		if (type!=null) {
+		if (type!==null) {
 			if (type instanceof FEnumerationType) {
 				return type.enumerators.scopeFor
 			}
@@ -243,11 +260,67 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 	}
 
 	// *****************************************************************************
-	def scope_FDProperty_decl(FDProvider owner, EReference ref) {
+
+	/**
+	 * Define scope for use-attribute of deployed type collections.</p>
+	 * 
+	 * Type collection deployments may only use other type collection deployments.</p>
+	 */
+	def IScope scope_FDRootElement_use(FDTypes elem, EReference ref) {
+		val IScope delegateScope = elem.delegateGetScope(ref)
+		new FilteringScope(delegateScope, [
+			isAssignableFrom(FDeployPackage.eINSTANCE.FDTypes, it.EClass)
+		])
+	}
+	
+	/**
+	 * Define scope for use-attribute of deployed interfaces.</p>
+	 * 
+	 * Interface deployments may only use type collection deployments
+	 * and other interface deployments.</p>
+	 */
+	def IScope scope_FDRootElement_use(FDInterface elem, EReference ref) {
+		val IScope delegateScope = elem.delegateGetScope(ref)
+		new FilteringScope(delegateScope, [
+			isAssignableFrom(FDeployPackage.eINSTANCE.FDTypes, it.EClass) ||
+			isAssignableFrom(FDeployPackage.eINSTANCE.FDInterface, it.EClass)
+		])
+	}	
+
+	/*
+	 * Checks if two deployment definition roots have compatible specifications.</p>
+	 * 
+	 * Compatibility means either both parent and child elements reference the
+	 * same specification or the child's specification is derived from the
+	 * parent's specification.</p>
+	 * 
+	 * As derived DSLs may use some extended logic for retrieving the specification
+	 * for a root element, this can be configured by providing a function argument.</p>
+	 */
+	def protected haveCompatibleSpecs(
+		FDRootElement parent,
+		FDRootElement child,
+		(FDRootElement)=>FDSpecification specGetter
+	) {
+		val parentSpec = specGetter.apply(parent)
+		var check = specGetter.apply(child)
+
+		while (check !== null) {
+			if (parentSpec == check)
+				return true
+			check = check.base
+		} 
+		false
+	}
+
+
+	// *****************************************************************************
+
+	def scope_FDProperty_decl(FDExtensionRoot owner, EReference ref) {
 		owner.getPropertyDecls
 	}
 
-	def scope_FDProperty_decl(FDInterfaceInstance owner, EReference ref) {
+	def scope_FDProperty_decl(FDExtensionElement owner, EReference ref) {
 		owner.getPropertyDecls
 	}
 
@@ -317,7 +390,7 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 	def scope_FDProperty_decl(FDTypeOverwrites owner, EReference ref) {
 		val parent = owner.eContainer as FDOverwriteElement
 		val type = parent.getOverwriteTargetType
-		if (type!=null) {
+		if (type!==null) {
 			parent.getPropertyDecls(type)
 		} else {
 			IScope::NULLSCOPE
@@ -352,17 +425,15 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 		EReference ref
 	) {
 		val typeRef = decl.getType
-		if (typeRef.getComplex != null) {
+		if (typeRef.getComplex !== null) {
 			val type = typeRef.getComplex
 			if (type instanceof FDEnumType) {
 				return type.getEnumerators.scopeFor
-			}
-		} else {
-			if (typeRef.predefined==FDPredefinedTypeId::INSTANCE) {
-				return new SimpleScope(Scopes::selectCompatible(
-					delegateGetScope(ctxt, ref).allElements,
-					FDeployPackage::eINSTANCE.FDInterfaceInstance
-				))
+			} else if (type instanceof FDExtensionType) {
+				// get scope for possible value references for extension type
+				val typeDef = ExtensionRegistry.findType(type.name)
+				val delegate = ctxt.delegateGetScope(ref)
+				return typeDef.getScope(delegate)
 			}
 		}
 		IScope::NULLSCOPE

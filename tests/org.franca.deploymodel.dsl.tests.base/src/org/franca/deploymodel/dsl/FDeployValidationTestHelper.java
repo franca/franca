@@ -9,7 +9,7 @@ package org.franca.deploymodel.dsl;
 
 import java.util.List;
 
-import org.eclipse.xtext.junit4.validation.ValidationTestHelper;
+import org.eclipse.xtext.testing.validation.ValidationTestHelper;
 import org.eclipse.xtext.validation.Issue;
 import org.franca.core.utils.ValidationIssueConverter;
 import org.franca.deploymodel.dsl.fDeploy.FDModel;

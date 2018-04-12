@@ -23,14 +23,21 @@ link[http://www.freedesktop.org/wiki/Software/dbus][at freedesktop.org].
 The Franca connector plugin for D-Bus is called e[org.franca.connectors.dbus].
 It requires the plugin e[model.emf.dbusxml], which is available as open-source
 project e[dbus-emf-model]
-link[http://code.google.com/a/eclipselabs.org/p/dbus-emf-model/][on Eclipse Labs].
-An update site is available for e[dbus-emf-model]:
+link[https://github.com/kbirken/dbus-emf-model][on Eclipse Labs].
+An update site is available for e[dbus-emf-model] (will not open in the browser, only in Eclipse IDE):
 
-link[http://dbus-emf-model.eclipselabs.org.codespot.com/git/update_site/releases/][
-	 http://dbus-emf-model.eclipselabs.org.codespot.com/git/update_site/releases/]
+link[http://kbirken.github.io/dbus-emf-model/releases/][
+	 http://kbirken.github.io/dbus-emf-model/releases/]
 
 If you install the e[Franca D-Bus support Feature] via e[Help > Install New Software...],
 the e[model.emf.dbusxml] plugin will be installed automatically from this update site.
  
 
+section:FrancaConnectors_OMG_IDL[Franca support for OMG IDL]
+
+todo[Describe OMG IDL connector]
+
+section:FrancaConnectors_Protobuf[Franca support for Google Protobuf]
+
+todo[Describe Google Protobuf connector]
 

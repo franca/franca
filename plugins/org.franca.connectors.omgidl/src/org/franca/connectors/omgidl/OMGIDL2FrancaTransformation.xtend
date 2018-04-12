@@ -85,9 +85,7 @@ class OMGIDL2FrancaTransformation {
 //	val static DEFAULT_NODE_NAME = "default"
 	
 	Map<EObject, EObject> map_IDL_Franca
-	Map<String, ModuleDef> map_Name_Module
 	List<InterfaceDef> baseInterfaces
-	List<FModel> models
 	int countOfSequence
 	@Inject extension TransformationLogger
 
@@ -119,7 +117,7 @@ class OMGIDL2FrancaTransformation {
 		baseInterfaces = newArrayList
 		
 		usingBaseTypedefs = false
-		baseTypedefs = if (baseTypes==null) null else baseTypes.types.filter(FTypeDef).toMap[name]
+		baseTypedefs = if (baseTypes===null) null else baseTypes.types.filter(FTypeDef).toMap[name]
 
 		// register global map IDL2Franca to local one 
 		map_IDL_Franca = map
@@ -128,7 +126,7 @@ class OMGIDL2FrancaTransformation {
 
 		// get module which will be transformed (all others are ignored)		
 		val module = src.relevantModule
-		if (module==null) {
+		if (module===null) {
 			model.name = URI.createFileURI(src.eResource.URI.trimFileExtension.lastSegment).lastSegment
 		} else {
 			model.name = module.nestedModuleName
@@ -143,7 +141,7 @@ class OMGIDL2FrancaTransformation {
 				src, IdlmmPackage::TRANSLATION_UNIT__IDENTIFIER,
 				"Empty OMG IDL translation unit, created empty Franca model")
 		} else {
-			if (module==null) {
+			if (module===null) {
 				// no module on top-level, or more than one module (special case)
 				val modules = src.contains.filter(ModuleDef)
 				if (modules.empty) {
@@ -165,7 +163,7 @@ class OMGIDL2FrancaTransformation {
 			val other = src.contains.findFirst[
 				! ((it instanceof ModuleDef) || (it instanceof InterfaceDef) || (it instanceof ForwardDef))
 			]
-			if (other!=null) {
+			if (other!==null) {
 				addIssue(IMPORT_ERROR,
 					src, IdlmmPackage::TRANSLATION_UNIT__CONTAINS,
 					"Members of OMG IDL translation unit should be of type either 'interface' or 'module'")
@@ -187,7 +185,7 @@ class OMGIDL2FrancaTransformation {
 		for (i: items) {
 			if (! map_IDL_Franca.containsKey(i)) {
 				val transformed = i.transformDefinition(model)
-				if (transformed!=null) {
+				if (transformed!==null) {
 					map_IDL_Franca.put(i, transformed)					
 				}
 			}
@@ -284,25 +282,25 @@ class OMGIDL2FrancaTransformation {
 		}
 	}
 
-	def private FModel transformModule(ModuleDef module, TranslationUnit src) {
-		var FModel model
-		// a module with the same name has already been processed
-		if (map_Name_Module.containsKey(module.identifier)) {
-			// get the already created FModel
-			model = map_IDL_Franca.get(map_Name_Module.get(module.identifier)) as FModel
-		} else {
-			model = factory.createFModel
-			model.name = module.identifier
-			val _model = model
-			src.includes.forEach[include | include.transformIncludeDeclaration(_model)]
-			map_Name_Module.put(module.identifier, module)
-			models.add(model)
-		}
-		if (!map_IDL_Franca.containsKey(module)){
-			map_IDL_Franca.put(module, model)
-		}
-		model
-	}
+//	def private FModel transformModule(ModuleDef module, TranslationUnit src) {
+//		var FModel model
+//		// a module with the same name has already been processed
+//		if (map_Name_Module.containsKey(module.identifier)) {
+//			// get the already created FModel
+//			model = map_IDL_Franca.get(map_Name_Module.get(module.identifier)) as FModel
+//		} else {
+//			model = factory.createFModel
+//			model.name = module.identifier
+//			val _model = model
+//			src.includes.forEach[include | include.transformIncludeDeclaration(_model)]
+//			map_Name_Module.put(module.identifier, module)
+//			models.add(model)
+//		}
+//		if (!map_IDL_Franca.containsKey(module)){
+//			map_IDL_Franca.put(module, model)
+//		}
+//		model
+//	}
 	
 	/* ---------------------- dispatch transform Contained ------------------------- */
 	def private dispatch FModelElement transformDefinition(InterfaceDef src, FModel target) {
@@ -347,7 +345,7 @@ class OMGIDL2FrancaTransformation {
 						// TODO: replace this after Franca IDL supports multiple interface inheritance
 						
 						var FInterface base2 = transformedBase
-						while (base2!=null) {
+						while (base2!==null) {
 							if (baseTransitive.contains(base2)) {
 								// we already handled this base interface
 								base2 = null
@@ -406,7 +404,7 @@ class OMGIDL2FrancaTransformation {
 	}
 
 	def private void addAnnotation(FModelElement elem, FAnnotationType tag, String text) {
-		if (elem.comment==null) {
+		if (elem.comment===null) {
 			elem.comment = factory.createFAnnotationBlock
 		}
 		factory.createFAnnotation => [
@@ -446,7 +444,7 @@ class OMGIDL2FrancaTransformation {
 	// catch-all for this dispatch method
 	def private dispatch FModelElement transformDefinition(Contained src, FModel target) {
 		val definition = src.transformDefinition
-		if (definition != null) {
+		if (definition !== null) {
 			target.getTypeCollection().addInTypeCollection(definition)
 		}
 		return definition
@@ -467,7 +465,7 @@ class OMGIDL2FrancaTransformation {
 			map_IDL_Franca.put(src, it)
 			name = src.identifier
 			readonly = src.isIsReadonly
-			if (src.sharedType == null) {
+			if (src.sharedType === null) {
 				type = src.containedType.transformIDLType
 			} else {
 				type = src.sharedType.transformIDLType
@@ -480,13 +478,13 @@ class OMGIDL2FrancaTransformation {
 			map_IDL_Franca.put(src, it)
 			name = src.identifier
 			fireAndForget = src.isIsOneway
-			if (src.sharedType!=null || !src.containedType.isVoid) {
+			if (src.sharedType!==null || !src.containedType.isVoid) {
 				// add operation's return value as first out argument with name _RESULT 
 				outArgs.add(
 					factory.createFArgument => [
 						name = "_RESULT"
 						type =
-							if (src.sharedType == null) {
+							if (src.sharedType === null) {
 								src.containedType.transformIDLType
 							} else {
 								src.sharedType.transformIDLType
@@ -536,7 +534,7 @@ class OMGIDL2FrancaTransformation {
 		factory.createFTypeDef => [
 			map_IDL_Franca.put(src, it)
 			name = src.identifier
-			if (src.sharedType == null) {
+			if (src.sharedType === null) {
 				actualType = src.containedType.transformIDLType
 			} else {
 				actualType = src.sharedType.transformIDLType
@@ -566,7 +564,7 @@ class OMGIDL2FrancaTransformation {
 			name = src.identifier
 			src.unionMembers.forEach[member | member.transformTyped(it)]
 		]
-		if (src.sharedDiscrim!=null) {
+		if (src.sharedDiscrim!==null) {
 			result.addSourceAnno("switch '" + src.sharedDiscrim.identifier + "'")
 		}
 		result
@@ -576,7 +574,7 @@ class OMGIDL2FrancaTransformation {
 		factory.createFConstantDef => [
 			map_IDL_Franca.put(src, it)
 			name = src.identifier
-			if (src.sharedType == null) {
+			if (src.sharedType === null) {
 				type = src.containedType.transformIDLType
 			} else {
 				type = src.sharedType.transformIDLType
@@ -620,7 +618,7 @@ class OMGIDL2FrancaTransformation {
 	}
 	
 	def private dispatch void transformTyped (Typed src, FTypedElement target) {
-		if (src.sharedType == null) {
+		if (src.sharedType === null) {
 			target.type = src.containedType.transformIDLType
 		} else {
 			target.type = src.sharedType.transformIDLType
@@ -633,7 +631,7 @@ class OMGIDL2FrancaTransformation {
 	def private dispatch void transformTyped(Field src, FStructType target) {
 		factory.createFField => [
 			name = src.identifier
-			if (src.sharedType != null) {
+			if (src.sharedType !== null) {
 				type = src.sharedType.transformIDLType
 			} else {
 				val ct = src.containedType
@@ -662,7 +660,7 @@ class OMGIDL2FrancaTransformation {
 	def private dispatch void transformTyped(UnionField src, FUnionType target) {
 		val result = factory.createFField => [
 			name = src.identifier
-			if (src.sharedType == null) {
+			if (src.sharedType === null) {
 				type = src.containedType.transformIDLType
 			} else {
 				type = src.sharedType.transformIDLType
@@ -672,7 +670,7 @@ class OMGIDL2FrancaTransformation {
 		if (src.isIsDefault) {
 			result.addSourceAnno("default")
 		} else {
-			if (src.label!=null && !src.label.empty) {
+			if (src.label!==null && !src.label.empty) {
 				val first = src.label.get(0)
 				if (first instanceof ConstantDefRef) {
 					result.addSourceAnno("case '" + first.constant.identifier + "'")
@@ -699,7 +697,7 @@ class OMGIDL2FrancaTransformation {
 	def private transformParameter(ParameterDef src) {
 		factory.createFArgument => [
 			name = src.identifier
-			if (src.sharedType == null) {
+			if (src.sharedType === null) {
 				type = src.containedType.transformIDLType
 			} else {
 				type = src.sharedType.transformIDLType
@@ -740,7 +738,7 @@ class OMGIDL2FrancaTransformation {
 				// This case identifies that the type is not yet transformed
 				default: {
 					val container = src.container
-					if (src instanceof Contained && map_IDL_Franca.get(container) != null) {
+					if (src instanceof Contained && map_IDL_Franca.get(container) !== null) {
 						derived = (src as Contained).transformDefinition(map_IDL_Franca.get(container)) as FType
 						map_IDL_Franca.put(src, derived)
 					} else {
@@ -777,7 +775,7 @@ class OMGIDL2FrancaTransformation {
 	}
 	
 	def private FTypeRef getBaseTypeOrSubstitute(String typename, FBasicTypeId subst) {
-		if (baseTypedefs!=null && baseTypedefs.containsKey(typename)) {
+		if (baseTypedefs!==null && baseTypedefs.containsKey(typename)) {
 			usingBaseTypedefs = true
 			factory.createFTypeRef => [
 				derived = baseTypedefs.get(typename)
@@ -803,7 +801,7 @@ class OMGIDL2FrancaTransformation {
 			derived = factory.createFArrayType => [
 				name = 'Sequence' + HYPHEN + countOfSequence
 				countOfSequence++
-				if (src.sharedType == null) {
+				if (src.sharedType === null) {
 					elementType = src.containedType.transformIDLType
 				} else {
 					elementType = src.sharedType.transformIDLType
@@ -829,7 +827,7 @@ class OMGIDL2FrancaTransformation {
 			derived = factory.createFArrayType => [
 						name = prefix + src.name + HYPHEN + dimensionSize
 						if (dimensionSize <= 1) {
-							if (src.sharedType == null) {
+							if (src.sharedType === null) {
 								elementType = src.containedType.transformIDLType
 							} else {
 								elementType = src.sharedType.transformIDLType
@@ -919,7 +917,7 @@ class OMGIDL2FrancaTransformation {
 			case '~' : null
 			default : null
 		}
-		if (op == null) {
+		if (op === null) {
 			addIssue(FEATURE_NOT_HANDLED_YET,
 			null, IdlmmPackage::EXPRESSION,
 			"OMG IDL Operatior '" + operator + "' in Expression not handled yet")
@@ -1013,7 +1011,7 @@ class OMGIDL2FrancaTransformation {
 			return object
 		}
 		var obj = object.eContainer
-		while (obj != null) {
+		while (obj !== null) {
 			if (obj instanceof TranslationUnit){
 				return obj
 			}
@@ -1027,7 +1025,7 @@ class OMGIDL2FrancaTransformation {
 			return object
 		}
 		var obj = object.eContainer
-		while (obj != null) {
+		while (obj !== null) {
 			if (obj instanceof ModuleDef){
 				return obj
 			}
@@ -1044,7 +1042,7 @@ class OMGIDL2FrancaTransformation {
 			return object
 		}
 		var  obj = object.eContainer
-		while (obj != null) {
+		while (obj !== null) {
 			if (obj instanceof InterfaceDef){
 				return obj
 			}
@@ -1064,7 +1062,7 @@ class OMGIDL2FrancaTransformation {
 	}
 	
 	def private getAnnotationBlock(FModelElement elem) {
-		if(elem.comment==null) {
+		if(elem.comment===null) {
 			elem.comment = FrancaFactory::eINSTANCE.createFAnnotationBlock
 		}
 		elem.comment

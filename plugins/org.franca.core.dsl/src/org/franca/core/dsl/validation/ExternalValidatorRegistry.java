@@ -18,8 +18,9 @@ public class ExternalValidatorRegistry {
 	/**
 	 * Add validator to registry.
 	 * 
-	 * This should only be used in standalone mode. For the IDE,
-	 * use the extension point (see above) for registration.
+	 * This should only be used in standalone mode. For the IDE, the following
+	 * extension point should be used for registration:
+	 *    org.franca.core.dsl.francaValidator
 	 * 
 	 * @param validator the external Franca IDL validator
 	 */
@@ -30,8 +31,9 @@ public class ExternalValidatorRegistry {
 	/**
 	 * Add validator to registry with a given check mode.
 	 * 
-	 * This should only be used in standalone mode. For the IDE,
-	 * use the extension point (see above) for registration.
+	 * This should only be used in standalone mode. For the IDE, the following
+	 * extension point should be used for registration:
+	 *    org.franca.core.dsl.francaValidator
 	 * 
 	 * @param validator the external Franca IDL validator
 	 * @param mode the proper check mode

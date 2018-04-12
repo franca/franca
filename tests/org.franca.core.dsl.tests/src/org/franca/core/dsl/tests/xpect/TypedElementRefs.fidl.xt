@@ -85,6 +85,7 @@ interface BIF2 {
 
 			state s2 {
 				// refer to argument in guard condition
+				// XPECT warnings --> "This transition's guard might overlap with other transitions with same trigger" at "[ m1_arg1==2 ]"
 				on call m1 [ m1_arg1==2 ] -> s1 {
 					// XPECT errors --> "Left-hand side of assignment must be a state variable" at "m1_arg1"
 					// refer to argument in RHS of assertion
@@ -95,21 +96,27 @@ interface BIF2 {
 				}
 
 				// XPECT errors --> "Couldn't resolve reference to FEvaluableElement 'm1.m1_ret1'." at "m1.m1_ret1"
+				// XPECT warnings --> "This transition's guard might overlap with other transitions with same trigger" at "[ m1.m1_ret1==2 ]"
 				on call m1 [ m1.m1_ret1==2 ] -> s1
 
 				// XPECT errors --> "Couldn't resolve reference to FEvaluableElement 'm2.m2_arg1'." at "m2.m2_arg1"
+				// XPECT warnings --> "This transition's guard might overlap with other transitions with same trigger" at "[ m2.m2_arg1==2 ]"
 				on call m1 [ m2.m2_arg1==2 ] -> s1
 
 				// XPECT errors --> "Couldn't resolve reference to FEvaluableElement 'm2.m2_ret1'." at "m2.m2_ret1"
+				// XPECT warnings --> "This transition's guard might overlap with other transitions with same trigger" at "[ m2.m2_ret1==2 ]"
 				on call m1 [ m2.m2_ret1==2 ] -> s1
 
 
+				// XPECT warnings --> "This transition's guard might overlap with other transitions with same trigger" at "[ m1_ret1==2 ]"
 				on respond m1 [ m1_ret1==2 ] -> s1
 
 				// XPECT errors --> "Couldn't resolve reference to FEvaluableElement 'm1.m1_arg1'." at "m1.m1_arg1"
+				// XPECT warnings --> "This transition's guard might overlap with other transitions with same trigger" at "[ m1.m1_arg1==2 ]"
 				on respond m1 [ m1.m1_arg1==2 ] -> s1
 
 				// XPECT errors --> "Couldn't resolve reference to FEvaluableElement 'm2.m2_arg1'." at "m2.m2_arg1"
+				// XPECT warnings --> "This transition's guard might overlap with other transitions with same trigger" at "[ m2.m2_arg1==2 ]"
 				on respond m1 [ m2.m2_arg1==2 ] -> s1
 
 			}

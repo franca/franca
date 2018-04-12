@@ -9,8 +9,10 @@ package org.franca.generators.websocket
 
 import org.franca.core.franca.FArgument
 import org.franca.core.franca.FEnumerationType
+import org.franca.core.franca.FEnumerator
 import org.franca.core.franca.FInterface
 import org.franca.core.franca.FType
+import org.franca.core.utils.ExpressionEvaluator
 
 import static extension org.franca.core.FrancaModelExtensions.*
 
@@ -22,7 +24,7 @@ class WebsocketGeneratorUtils {
 		var «t.name» = function(){
 			return {
 				«FOR e : t.enumerators SEPARATOR ','»
-				'«e.name»':«t.enumerators.indexOf(e)»
+				'«e.name»':«e.enumValue»
 				«ENDFOR»
 			}
 		}();
@@ -33,9 +35,18 @@ class WebsocketGeneratorUtils {
 		«ENDFOR»
 	'''
 	
+	def static getEnumValue(FEnumerator e) {
+		if (e.value!==null) {
+			ExpressionEvaluator::evaluateInteger(e.value)
+		} else {
+			val parent = e.enumeration
+			parent.enumerators.indexOf(e)
+		}
+	}
+
 	def static getPackage(FInterface api) {
 		val fmodel = api.model
-		if (fmodel==null) {
+		if (fmodel===null) {
 			""
 		} else {
 			fmodel.name

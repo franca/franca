@@ -7,17 +7,13 @@
  *******************************************************************************/
 package org.franca.core.dsl;
 
-import java.util.Map;
-
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.franca.core.framework.IImportedModelProvider;
 import org.franca.core.franca.FModel;
 import org.franca.core.utils.FileHelper;
 import org.franca.core.utils.ModelPersistenceHandler;
 
-import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 

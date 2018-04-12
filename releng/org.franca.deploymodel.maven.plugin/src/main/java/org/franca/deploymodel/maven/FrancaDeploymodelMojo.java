@@ -169,7 +169,7 @@ public class FrancaDeploymodelMojo extends AbstractMojo
 		// Generate the Franca deployment accessor classes.
 		getLog().debug("Generating deployment accessors for " + fdepl.getAbsolutePath());
 		fileSystemAccess.setOutputPath(outputDirectory.getAbsolutePath());
-		generator.doGenerate(fdeplResource, fileSystemAccess);
+		generator.doGenerate(fdeplResource, fileSystemAccess, null);
 	}
 
 	private List<File> getSourceRoots(List<String> projectSourceRoots) {

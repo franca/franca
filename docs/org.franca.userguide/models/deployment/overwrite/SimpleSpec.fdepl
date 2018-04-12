@@ -1,0 +1,6 @@
+
+specification examples.SimpleSpec {
+	for strings {
+		Encoding : {utf8, utf16, unicode}   (default: utf8);
+	}
+}

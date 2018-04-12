@@ -110,7 +110,7 @@ class TypesValidator {
 			if (type.isByteBuffer) {
 				for(e : rhs.elements) {
 					val idx = rhs.elements.indexOf(e)
-					if (e.second!=null) {
+					if (e.second!==null) {
 						reporter.reportError(
 								"invalid initializer (expected 0..255)",
 								rhs, FBRACKET_INITIALIZER__ELEMENTS, idx);
@@ -118,7 +118,7 @@ class TypesValidator {
 						val expr = e.first
 						if (expr instanceof FExpression) {
 							val res = ExpressionEvaluator.evaluateInteger(expr)
-							if (res==null) {
+							if (res===null) {
 								reporter.reportError(
 										"invalid byte buffer element",
 										rhs, FBRACKET_INITIALIZER__ELEMENTS, idx);
@@ -139,7 +139,7 @@ class TypesValidator {
 				val t = type.actualDerived as FMapType
 				for(e : rhs.elements) {
 					val idx = rhs.elements.indexOf(e)
-					if (e.second==null) {
+					if (e.second===null) {
 						reporter.reportError(
 								"invalid initializer for map element",
 								rhs, FBRACKET_INITIALIZER__ELEMENTS, idx);
@@ -165,7 +165,7 @@ class TypesValidator {
 	) {
 		for(e : rhs.elements) {
 			val idx = rhs.elements.indexOf(e)
-			if (e.second!=null) {
+			if (e.second!==null) {
 				reporter.reportError(
 						"invalid initializer for array element",
 						rhs, FBRACKET_INITIALIZER__ELEMENTS, idx);
@@ -272,7 +272,7 @@ class TypesValidator {
 			EObject loc, EStructuralFeature feat, int index)
 	{
 		val type = getCheckedExpressionType(reporter, expr, expected, loc, feat, index)
-		type!=null
+		type!==null
 	}
 	
 	/**
@@ -298,7 +298,7 @@ class TypesValidator {
 		val ts = new TypeSystem
 		val issues = new IssueCollector
 		val type = ts.checkType(expr, expected, issues, loc, feat)
-		if (type==null) {
+		if (type===null) {
 			if (issues.issues.empty) {
 				// no issues, usually this is due to an undefined reference (which will
 				// produce a generic validation error)

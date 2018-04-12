@@ -34,6 +34,26 @@
             </reference>
          </activeWhen>
       </handler>
+		<!-- copy qualified name -->
+		<handler
+			class="org.franca.deploymodel.dsl.ui.FDeployExecutableExtensionFactory:org.eclipse.xtext.ui.editor.copyqualifiedname.EditorCopyQualifiedNameHandler"
+			commandId="org.eclipse.xtext.ui.editor.copyqualifiedname.EditorCopyQualifiedName">
+			<activeWhen>
+				<reference definitionId="org.franca.deploymodel.dsl.FDeploy.Editor.opened" />
+			</activeWhen>
+		</handler>
+		<handler
+			class="org.franca.deploymodel.dsl.ui.FDeployExecutableExtensionFactory:org.eclipse.xtext.ui.editor.copyqualifiedname.OutlineCopyQualifiedNameHandler"
+			commandId="org.eclipse.xtext.ui.editor.copyqualifiedname.OutlineCopyQualifiedName">
+			<activeWhen>
+				<and>
+					<reference definitionId="org.franca.deploymodel.dsl.FDeploy.XtextEditor.opened" />
+					<iterate>
+						<adapt type="org.eclipse.xtext.ui.editor.outline.IOutlineNode" />
+					</iterate>
+				</and>
+			</activeWhen>
+		</handler>
     </extension>
     <extension point="org.eclipse.core.expressions.definitions">
         <definition id="org.franca.deploymodel.dsl.FDeploy.Editor.opened">
@@ -46,6 +66,16 @@
                 </with>        
             </and>
         </definition>
+		<definition id="org.franca.deploymodel.dsl.FDeploy.XtextEditor.opened">
+			<and>
+				<reference definitionId="isXtextEditorActive"/>
+				<with variable="activeEditor">
+					<test property="org.eclipse.xtext.ui.editor.XtextEditor.languageName"
+						value="org.franca.deploymodel.dsl.FDeploy"
+						forcePluginActivation="true"/>
+				</with>
+			</and>
+		</definition>
     </extension>
     <extension
             point="org.eclipse.ui.preferencePages">
@@ -96,6 +126,19 @@
             id="org.franca.deploymodel.dsl.FDeploy.validate"
             name="Validate">
       </command>
+	<!-- copy qualified name -->
+	<command
+			id="org.eclipse.xtext.ui.editor.copyqualifiedname.EditorCopyQualifiedName"
+			categoryId="org.eclipse.ui.category.edit"
+			description="Copy the qualified name for the selected element"
+			name="Copy Qualified Name">
+	</command>
+	<command
+			id="org.eclipse.xtext.ui.editor.copyqualifiedname.OutlineCopyQualifiedName"
+			categoryId="org.eclipse.ui.category.edit"
+			description="Copy the qualified name for the selected element"
+			name="Copy Qualified Name">
+	</command>
     </extension>
     <extension point="org.eclipse.ui.menus">
         <menuContribution
@@ -111,6 +154,36 @@
             </visibleWhen>
          </command>  
          </menuContribution>
+		<!-- copy qualified name -->
+		<menuContribution locationURI="popup:#TextEditorContext?after=copy">
+			<command commandId="org.eclipse.xtext.ui.editor.copyqualifiedname.EditorCopyQualifiedName"
+				style="push" tooltip="Copy Qualified Name">
+				<visibleWhen checkEnabled="false">
+					<reference definitionId="org.franca.deploymodel.dsl.FDeploy.Editor.opened" />
+				</visibleWhen>
+			</command>
+		</menuContribution>
+		<menuContribution locationURI="menu:edit?after=copy">
+			<command commandId="org.eclipse.xtext.ui.editor.copyqualifiedname.EditorCopyQualifiedName"
+				style="push" tooltip="Copy Qualified Name">
+				<visibleWhen checkEnabled="false">
+					<reference definitionId="org.franca.deploymodel.dsl.FDeploy.Editor.opened" />
+				</visibleWhen>
+			</command>
+		</menuContribution>
+		<menuContribution locationURI="popup:org.eclipse.xtext.ui.outline?after=additions">
+			<command commandId="org.eclipse.xtext.ui.editor.copyqualifiedname.OutlineCopyQualifiedName"
+				style="push" tooltip="Copy Qualified Name">
+				<visibleWhen checkEnabled="false">
+					<and>
+						<reference definitionId="org.franca.deploymodel.dsl.FDeploy.XtextEditor.opened" />
+						<iterate>
+							<adapt type="org.eclipse.xtext.ui.editor.outline.IOutlineNode" />
+						</iterate>
+					</and>
+				</visibleWhen>
+			</command>
+		</menuContribution>
     </extension>
     <extension point="org.eclipse.ui.menus">
 		<menuContribution locationURI="popup:#TextEditorContext?endof=group.find">
@@ -149,17 +222,34 @@
             uriExtension="fdepl">
         </resourceServiceProvider>
     </extension>
-
-
-
-   <extension
-         point="org.eclipse.xtext.builder.participant">
+	<!-- marker definitions for org.franca.deploymodel.dsl.FDeploy -->
+	<extension
+			id="fdeploy.check.fast"
+			name="FDeploy Problem"
+			point="org.eclipse.core.resources.markers">
+		<super type="org.eclipse.xtext.ui.check.fast"/>
+		<persistent value="true"/>
+	</extension>
+	<extension
+			id="fdeploy.check.normal"
+			name="FDeploy Problem"
+			point="org.eclipse.core.resources.markers">
+		<super type="org.eclipse.xtext.ui.check.normal"/>
+		<persistent value="true"/>
+	</extension>
+	<extension
+			id="fdeploy.check.expensive"
+			name="FDeploy Problem"
+			point="org.eclipse.core.resources.markers">
+		<super type="org.eclipse.xtext.ui.check.expensive"/>
+		<persistent value="true"/>
+	</extension>
+	<extension point="org.eclipse.xtext.builder.participant">
       <participant
-            class="org.franca.deploymodel.dsl.ui.FDeployExecutableExtensionFactory:org.eclipse.xtext.builder.IXtextBuilderParticipant">
-      </participant>
+			class="org.franca.deploymodel.dsl.ui.FDeployExecutableExtensionFactory:org.eclipse.xtext.builder.IXtextBuilderParticipant"
+			fileExtensions="fdepl"/>
    </extension>
-   <extension
-            point="org.eclipse.ui.preferencePages">
+	<extension point="org.eclipse.ui.preferencePages">
         <page
             category="org.franca.deploymodel.dsl.FDeploy"
             class="org.franca.deploymodel.dsl.ui.FDeployExecutableExtensionFactory:org.eclipse.xtext.builder.preferences.BuilderPreferencePage"
@@ -168,8 +258,7 @@
             <keywordReference id="org.franca.deploymodel.dsl.ui.keyword_FDeploy"/>
         </page>
     </extension>
-    <extension
-            point="org.eclipse.ui.propertyPages">
+	<extension point="org.eclipse.ui.propertyPages">
         <page
             category="org.franca.deploymodel.dsl.FDeploy"
             class="org.franca.deploymodel.dsl.ui.FDeployExecutableExtensionFactory:org.eclipse.xtext.builder.preferences.BuilderPreferencePage"
@@ -182,7 +271,27 @@
 	        <filter name="projectNature" value="org.eclipse.xtext.ui.shared.xtextNature"/>
         </page>
     </extension>
-
+	<extension point="org.eclipse.ui.menus">
+		<menuContribution locationURI="popup:#TextEditorContext?after=xtext.ui.openDeclaration">
+			<command
+				commandId="org.eclipse.xtext.ui.OpenGeneratedFileCommand"
+				id="org.franca.deploymodel.dsl.FDeploy.OpenGeneratedCode"
+				style="push">
+				<visibleWhen checkEnabled="false">
+					<reference definitionId="org.franca.deploymodel.dsl.FDeploy.Editor.opened" />
+				</visibleWhen>
+			</command>
+		</menuContribution>
+	</extension>
+	<extension point="org.eclipse.ui.handlers">
+		<handler
+			class="org.franca.deploymodel.dsl.ui.FDeployExecutableExtensionFactory:org.eclipse.xtext.ui.generator.trace.OpenGeneratedFileHandler"
+			commandId="org.eclipse.xtext.ui.OpenGeneratedFileCommand">
+			<activeWhen>
+				<reference definitionId="org.franca.deploymodel.dsl.FDeploy.Editor.opened" />
+			</activeWhen>
+		</handler>
+	</extension>
 	<!-- Quick Outline -->
 	<extension
 		point="org.eclipse.ui.handlers">
@@ -216,17 +325,38 @@
 			</command>
 		</menuContribution>
 	</extension>
-   <!-- quickfix marker resolution generator -->
+	<!-- quickfix marker resolution generator for org.franca.deploymodel.dsl.FDeploy -->
    <extension
          point="org.eclipse.ui.ide.markerResolution">
       <markerResolutionGenerator
-            class="org.franca.deploymodel.dsl.ui.FDeployExecutableExtensionFactory:org.eclipse.xtext.ui.editor.quickfix.MarkerResolutionGenerator">
+			class="org.franca.deploymodel.dsl.ui.FDeployExecutableExtensionFactory:org.eclipse.xtext.ui.editor.quickfix.MarkerResolutionGenerator"
+			markerType="org.franca.deploymodel.dsl.ui.fdeploy.check.fast">
+			<attribute
+				name="FIXABLE_KEY"
+				value="true">
+			</attribute>
+		</markerResolutionGenerator>
+		<markerResolutionGenerator
+			class="org.franca.deploymodel.dsl.ui.FDeployExecutableExtensionFactory:org.eclipse.xtext.ui.editor.quickfix.MarkerResolutionGenerator"
+			markerType="org.franca.deploymodel.dsl.ui.fdeploy.check.normal">
+			<attribute
+				name="FIXABLE_KEY"
+				value="true">
+			</attribute>
+		</markerResolutionGenerator>
+		<markerResolutionGenerator
+			class="org.franca.deploymodel.dsl.ui.FDeployExecutableExtensionFactory:org.eclipse.xtext.ui.editor.quickfix.MarkerResolutionGenerator"
+			markerType="org.franca.deploymodel.dsl.ui.fdeploy.check.expensive">
+			<attribute
+				name="FIXABLE_KEY"
+				value="true">
+			</attribute>
       </markerResolutionGenerator>
    </extension>
    	<!-- Rename Refactoring -->
 	<extension point="org.eclipse.ui.handlers">
 		<handler 
-			class="org.franca.deploymodel.dsl.ui.FDeployExecutableExtensionFactory:org.eclipse.xtext.ui.refactoring.ui.IRenameElementHandler"
+			class="org.franca.deploymodel.dsl.ui.FDeployExecutableExtensionFactory:org.eclipse.xtext.ui.refactoring.ui.DefaultRenameElementHandler"
 			commandId="org.eclipse.xtext.ui.refactoring.RenameElement">
 			<activeWhen>
 				<reference
@@ -276,5 +406,10 @@
             extensions="fdepl">
     </provider>
   </extension>
-
+	<extension point="org.eclipse.team.core.fileTypes">
+		<fileTypes
+			extension="fdepl"
+			type="text">
+		</fileTypes>
+	</extension>
 </plugin>

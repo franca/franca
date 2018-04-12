@@ -64,7 +64,7 @@ class CyclicDependenciesValidator {
 				for (node : cycle) {
 					var fqn = qnProvider.getFullyQualifiedName(node)
 					var msgForNode = ""
-					if (fqn==null) {
+					if (fqn===null) {
 						// skip intermediate nodes (e.g., FExpressions, FQualifiedElementRefs, ...)
 					} else {
 						msgForNode = fqn.toString
@@ -82,10 +82,10 @@ class CyclicDependenciesValidator {
 						msgPerNode.tail.forEach[msg.append("->").append(it)]
 						msg.append("->this")
 						var eAttribute = node.eClass.EAllAttributes.findFirst[it.name == "name"]
-						if(eAttribute==null){
+						if(eAttribute===null){
 							eAttribute = node.eClass.EAllAttributes.head
 						}
-						if(eAttribute!=null){
+						if(eAttribute!==null){
 							reporter.reportError(msg.toString, node, eAttribute);
 						} 
 					}
@@ -140,7 +140,7 @@ class CyclicDependenciesValidator {
 	}
 
 	def dispatch List<? extends EObject> dependencies(FEnumerator e) {
-		if (e.value==null)
+		if (e.value===null)
 			<EObject>newArrayList()
 		else
 			newArrayList(e.value)
@@ -186,7 +186,7 @@ class CyclicDependenciesValidator {
 	def dispatch List<? extends EObject> dependencies(FElementInitializer ai) {
 		val result = newArrayList
 		result.add(ai.first)
-		if (ai.second!=null)
+		if (ai.second!==null)
 			result.add(ai.second)
 		result
 	}
@@ -203,7 +203,7 @@ class CyclicDependenciesValidator {
 	
 	def dispatch List<? extends EObject> dependencies(FQualifiedElementRef e) {
 		val result = newArrayList
-		if (e.qualifier==null) {
+		if (e.qualifier===null) {
 			result.add(e.element)
 		} else {
 			var f = e.field
@@ -235,10 +235,10 @@ class CyclicDependenciesValidator {
 	/** Adds Edge e1->e2 to the Digraph and continues the traversal with addEdgesFor(e2). */
 	def protected Digraph<EObject> doAddEdgesForSubtree(Digraph<EObject> d, EObject e1, EObject e2,
 		Set<EObject> analyzedElements) {
-		if (e1 != null && e2 != null) {
+		if (e1 !== null && e2 !== null) {
 			d.addEdge(e1, e2)
 		}
-		if (e2 != null) {
+		if (e2 !== null) {
 			d.addEdgesForSubtree(e2, e2.dependencies, analyzedElements);
 		}
 		d

@@ -294,6 +294,14 @@ struct ExampleStruct1 {
 ]
 
 Any communication implementation should respect the element order given by the Franca IDL type definition.
+This is relevant only for usecases where an implicit agreement on the element order is required.
+E.g., for binary serialization and deserialization the element names will not be part of the serialized message.
+Thus, sender and receiver of a message have to agree on the element order.
+In other contexts this might not be relevant, e.g., when using a JSON-style serialization or for Franca IDL
+ref:FIDL_Constants_Complex[struct initializer expressions].
+
+However, as it is not known at interface definition time in which context the interface will be used,
+the interface designer has to take the element order into account. 
 
 section3:FIDL_Types_Struct_Inheritance[Struct inheritance]
 
@@ -479,10 +487,12 @@ struct Struct1 {
 const Struct1 s1 = { e1: true, e2: 1, e3: "foo" }
 ]
 
-If struct types get more complex (i.e., with nested struct types or arrays),
+If struct types are getting more complex (i.e., with nested struct types or arrays),
 the initializer expression is not easy to understand. Therefore, each struct
 element in the initializer expression has to be uniquely identified by the
 element name (e.g., code[e1] in the example).
+Note that explicitly naming the elements in the struct initializer allows
+to initialize the elements in any order. Each element has to occur exactly once.
 
 The syntax for union type constants is similar to struct types. However,
 as a union represents exactly one of its elements, the initializer expression
@@ -562,8 +572,9 @@ ul[
 		There is no downcast for struct and union types.
 	]
 	item[For enumeration types: There is an implicit downcast for enumeration types
-		(i.e., an enumerator from a base enumeration can be used as representant of
+		 (i.e., an enumerator from a base enumeration can be used as representant of
 		 any derived enumeration).
+		 Thus, for enumerations, inheritance is not specialization, but generalization.
 		]
 	item[The code[Franca][typedef] mechanism is transparent for the type system
 		(i.e., types introduced by code[Franca][typedef] will be handled
@@ -775,8 +786,8 @@ table:InheritanceSemantics[
 		td[All methods of the base interface are inherited by the derived interface.
 		   Methods can be overloaded, either in the same interface or via inheritance.
 		   I.e., methods with the same name can be defined as long as the signature
-		   of those methods is different. Both out- and in-arguments are taken into
-		   account to determine the method's signature. 
+		   of those methods is different. See ref:FIDL_Interface_Method_Overloading
+		   for more details on overloading.
 		   In versions prior to Franca 0.7.4, overloading of methods was not allowed.
 		]
 	]
@@ -785,8 +796,8 @@ table:InheritanceSemantics[
 		td[All broadcasts of the base interface are inherited by the derived interface.
 		   Broadcasts can be overloaded, either in the same interface or via inheritance.
 		   I.e., broadcasts with the same name can be defined as long as the signature
-		   of those methods is different. The broadcast's out-arguments are taken into
-		   account to determine its signature. 
+		   of those methods is different. See ref:FIDL_Interface_Broadcast_Overloading
+		   for more details on overloading.
 		   In versions prior to Franca 0.7.4, overloading of broadcasts was not allowed.
 		]
 	]
@@ -867,6 +878,18 @@ interface ExampleInterface {
 In the example, attribute e[controlRegister] cannot be explicitly read by the clients.
 However, it can be written, and updates might be received using the subscription mechanism.
 
+It is also possible to combine the flags e[noRead] and e[readonly].
+
+code[Franca][
+interface ExampleInterface {
+	attribute UInt32 countdown noRead readonly
+}
+]
+
+The combination of both flags might seem non-intuitive at first glance.
+Attributes with both flags set cannot be explicitly read or written by clients.
+However, clients will still receive updates on attribute value changes.
+
 section3:FIDL_Interface_Attribute_NoSubscriptions[Client subscriptions]
 
 As mentioned above, clients of an interface might register for updates of
@@ -928,6 +951,19 @@ interface LetterCount {
 	}
 }
 ]
+
+Argument names must be unique. This also applies across the e[in] and e[out] sections.
+Thus, the following example will not be valid:
+
+code[Franca][
+	method play {
+		// validation error: "Duplicate argument name 'track' used for in and out"
+		in { TrackInfo track }
+		out { UInt16 track }
+	}
+] 
+
+section3:FIDL_Interface_Method_RuntimeBehavior[Runtime semantics of method calls]
 
 The runtime behavior of a method call (e.g., blocking vs. non-blocking) is subject to
 implementation by the underlying target IPC stack. Thus, it will not be specified as part
@@ -1040,6 +1076,56 @@ interface Watchdog {
 
 This can be used to implement lightweight communication patterns.
 
+section3:FIDL_Interface_Method_Overloading[Method overloading]
+
+Franca IDL also allows method overloading, i.e., interfaces with two or more methods
+with the same name. This is allowed as long as the method signatures are different,
+i.e., the sets of combined e[in]- and e[out]-argument types must be different for each
+overloaded method. Note that only the types will be part of the signature, not the
+argument names. The following example shows a valid case of overloading:
+
+code[Franca][
+interface SomeInterface {
+  method callMe {
+    in { Boolean b }
+  }  
+
+  method callMe {
+    in { Boolean b }
+    out { String s }
+  }  
+}]
+
+Note that although the set of e[in]-arguments is identical, the second version of 
+method code[Franca][callMe] has an additional e[out]-argument. This is a sufficient
+distinction to allow overloading. It is also sufficient to have a difference in 
+
+In Franca contracts and deployment models it is necessary to uniquely reference
+single methods. In order to tell apart several overloaded methods with the same name,
+the method names can be extended by e[selectors], which are not part of the method name,
+but which can be used to discriminate overloaded methods.
+This is shown in the following example.
+
+code[Franca][
+interface SomeInterface {
+  method callMe:a {
+    in { Boolean b }
+  }  
+
+  method callMe:b {
+    in { Boolean b }
+    out { String s }
+  }  
+}]
+
+The selectors for each group of overloaded methods must be unique, which is essential
+for their purpose to discriminate the methods which otherwise have an identical name. 
+
+Overloading is also relevant in the context of interface inheritance. For methods
+of derived interfaces which overload methods from base interfaces the same rules
+apply as described previously. See ref:FIDL_Interface_Basic_Inheritance for more
+information on interface inheritance. 
+ 
 
 section2:FIDL_Interface_Broadcast[Broadcasts]
 
@@ -1093,9 +1179,57 @@ ul[
 ]
  
 
+section3:FIDL_Interface_Broadcast_Overloading[Broadcast overloading]
+
+Also for broadcasts Franca IDL allows overloading. For more details
+on restrictions, selectors and inheritance see ref:FIDL_Interface_Method_Overloading.
+The following example shows two overloaded broadcasts with selectors.
+
+code[Franca][
+	broadcast tsunamiDetected:a {
+		out { String location }
+	}
+	broadcast tsunamiDetected:b {
+		out { Double strength }
+	}
+]
+
+
 section2:FIDL_Interface_Manages[Interfaces managing interfaces]
 
-todo[In this section the manages-concept will be documented.]
+In some IPC mechanisms, e.g. D-Bus, we have the concept of linked interfaces.
+This usually takes the form that there is a root interface, for example a bluetooth 
+service. Then there are many interfaces which are controlled by the root interface.
+E.g., each physical bluetooth adapter provides some interface which has to be 
+controlled by the root bluetooth service. 
+
+Franca IDL allows to define this association between interfaces using the
+keyword code[Franca][manages]. A downstream tool (e.g., a code generator)
+could then generate appropriate code for being informed about the "children" in
+the implementation of the root.
+
+The following example shows two interfaces which specify the services code[Franca][SomeService]
+and code[Franca][OtherService]. The third interface code[Franca][BluetoothMaster] will
+control all connections based on one of the two former interface types. This relationship
+is modeled by the keyword code[Franca][manages] and a list of managed services.
+ 
+code[Franca][
+interface SomeService {
+	method getDirectory { }
+	method getFile { }
+} 
+
+interface OtherService {
+	method playMusic { }
+} 
+
+interface BluetoothMaster manages SomeService, OtherService {
+	attribute UInt16 connectedClients
+	method disconnectAll { }
+}
+]
+
+The code[Franca][manages]-keyword was introduced in Franca 0.8.8.
 
 
 section:FIDL_Contracts[Contracts]

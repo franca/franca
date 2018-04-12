@@ -103,7 +103,7 @@ class DeployModelBuilder {
 		var decl = getPropertyDecl(elem, spec, property)
 		
 		// detect if type is an enum or string
-		if (decl.type.complex==null) {
+		if (decl.type.complex===null) {
 			// we assume this is a string property
 			setPropertyGeneric(decl, elem,
 				[dflt | (dflt as FDString).value != value],
@@ -113,7 +113,7 @@ class DeployModelBuilder {
 			// we assume this is an enumeration property
 			val enumtype = decl.type.complex as FDEnumType
 			val evalue = enumtype.enumerators.findFirst(e | e.name == value)
-			if (evalue!=null) {
+			if (evalue!==null) {
 				setPropertyGeneric(decl, elem,
 					[dflt | dflt.getEnumerator != evalue],
 					[ | createFDValue(evalue) ]
@@ -145,7 +145,7 @@ class DeployModelBuilder {
 		
 		// find property declaration
 		val pdecl = propertyDecls.findFirst(d | d.name == property)
-		if (pdecl==null)
+		if (pdecl===null)
 			throw new Exception("DeployModelBuilder: No property '" + property +
 				"' in specification '"  + spec.name + "' for element " + elem.toString)
 
@@ -159,11 +159,11 @@ class DeployModelBuilder {
 	) {
 		//println("set property generic : " + decl.name)
 		// check if property type is array
-		if (decl.type.array!=null) {
+		if (decl.type.array!==null) {
 			// array: just add another value
 			// TODO: proper default handling (issue: comparison of arrays...)
 			var prop = getProperty(elem, decl)
-			if (prop.value.array==null) {
+			if (prop.value.array===null) {
 				// create on the fly
 				prop.value.array = FDeployFactory::eINSTANCE.createFDValueArray
 			}
@@ -171,7 +171,7 @@ class DeployModelBuilder {
 		} else {
 			// single value: check if value is equal to default value
 			var dflt = GenericPropertyAccessor::getDefault(decl)
-			if (dflt==null || isNonDefault.apply(dflt.single)) {
+			if (dflt===null || isNonDefault.apply(dflt.single)) {
 				var prop = getProperty(elem, decl)
 				prop.value.single = getNewValue.apply()
 			}
@@ -182,14 +182,14 @@ class DeployModelBuilder {
 	/** Create property object for element. */
 	def static getProperty (FDElement element, FDPropertyDecl decl) {
 		var prop = element.properties.items.findFirst[p|p.decl==decl]
-		if (prop==null) {
+		if (prop===null) {
 			// create on the fly
 			prop = FDeployFactory::eINSTANCE.createFDProperty
 			prop.decl = decl
 			element.properties.items.add(prop)
 		}
 		
-		if (prop.value==null) {
+		if (prop.value===null) {
 			// create on the fly
 			prop.value = FDeployFactory::eINSTANCE.createFDComplexValue
 		}

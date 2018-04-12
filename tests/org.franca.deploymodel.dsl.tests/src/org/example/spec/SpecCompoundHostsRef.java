@@ -20,7 +20,6 @@ import org.franca.core.franca.FStructType;
 import org.franca.core.franca.FTypeDef;
 import org.franca.core.franca.FUnionType;
 import org.franca.deploymodel.core.FDeployedInterface;
-import org.franca.deploymodel.core.FDeployedProvider;
 import org.franca.deploymodel.core.FDeployedTypeCollection;
 import org.franca.deploymodel.core.MappingGenericPropertyAccessor;
 import org.franca.deploymodel.dsl.fDeploy.FDCompoundOverwrites;
@@ -421,16 +420,6 @@ public class SpecCompoundHostsRef {
 		@Override
 		public IDataPropertyAccessor getOverwriteAccessor(FArrayType obj) {
 			return helper.getOverwriteAccessorAux(obj);
-		}
-	}
-
-	/**
-	 * Accessor for deployment properties for 'org.example.spec.SpecCompoundHosts' specification.
-	 */
-	public static class ProviderPropertyAccessor
-		implements Enums
-	{
-		public ProviderPropertyAccessor(FDeployedProvider target) {
 		}
 	}
 

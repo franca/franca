@@ -8,23 +8,27 @@
 package org.franca.deploymodel.dsl.tests
 
 import com.google.inject.Inject
-import org.eclipse.xtext.junit4.InjectWith
+import org.eclipse.xtext.resource.SaveOptions
 import org.eclipse.xtext.serializer.ISerializer
-import org.eclipselabs.xtext.utils.unittesting.XtextRunner2
+import org.franca.deploymodel.core.FDPropertyHost
+import org.eclipse.xtext.testing.InjectWith
+import org.franca.core.dsl.tests.util.XtextRunner2_Franca
 import org.franca.deploymodel.dsl.FDeployTestsInjectorProvider
+import org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost
 import org.franca.deploymodel.dsl.fDeploy.FDPredefinedTypeId
-import org.franca.deploymodel.dsl.fDeploy.FDPropertyHost
 import org.franca.deploymodel.dsl.fDeploy.FDeployFactory
 import org.junit.Test
 import org.junit.runner.RunWith
 
 import static org.junit.Assert.*
 
-@RunWith(typeof(XtextRunner2))
+@RunWith(typeof(XtextRunner2_Franca))
 @InjectWith(typeof(FDeployTestsInjectorProvider))
 class SerializerTests {
 	
 	@Inject ISerializer serializer
+
+	val SaveOptions options = SaveOptions.newBuilder.format.options
 
 	@Test
 	def void testEscapeKeywordsInSpecification() {
@@ -35,7 +39,7 @@ class SerializerTests {
 					name = "Spec1"
 					declarations.add(
 						f.createFDDeclaration => [
-							host = FDPropertyHost.STRINGS
+							host = FDPropertyHost.builtIn(FDBuiltInPropertyHost.STRINGS)
 							properties.add(
 								f.createFDPropertyDecl => [
 									name = "attribute"
@@ -75,11 +79,12 @@ class SerializerTests {
 		] 
 		
 		// serialize to string
-		val result = serializer.serialize(fmodel)
+		val result = serializer.serialize(fmodel, options)
 		//println(result)
 		
 		// compare with expected
 		val expected = '''
+
 			specification Spec1 {
 				for strings {
 					^attribute : Integer ;

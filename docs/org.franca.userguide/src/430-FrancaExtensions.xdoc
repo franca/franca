@@ -1,10 +1,213 @@
 chapter:FrancaExtensions[Franca extensions]
 
-section:FrancaExtensions_Validators[Adding validators]
+section:FrancaExtensions_Validators[Additional validators]
+
+In some environments using Franca, it is required to impose additional restrictions
+on the contents of IDL or deployment files. E.g., there might be company-specific
+naming conventions which should also be applied to names of Franca data types,
+interface names or deployment properties.
+This can be enforced by implementing an e[external validator] which checks the
+additional specific restrictions.
+
+For each additional validation rule in the validator, it can be chosen if a rule
+violation should be classified as info, warning or error.
+
+The following sections describe how to implement validators and register them.  
+In the Franca repository, there is an example project which provides running examples
+of IDL and deployment validators (project e[org.franca.examples.validators] in
+the e[examples folder]).
+
+section2:FrancaExtensions_Validators_IDL[Adding a validator for Franca IDL]
+
+A specific validator for Franca IDL models is an implementation of the
+Java interface e[IFrancaExternalValidator]. The actual validation rules are
+implemented by overriding the method e[validateModel]. The method arguments
+provide access to the model which should be validated and to a message acceptor
+which can be used for issuing warnings and errors.
+
+The following example shows an external validator which ensures that
+Franca method names do not contain underscores.  
+
+code[Java][
+public class MethodNameValidator implements IFrancaExternalValidator {
+	@Override
+	public void validateModel(FModel model, ValidationMessageAcceptor messageAcceptor) {
+		for(FInterface _interface : model.getInterfaces()) {
+			for(FMethod method : _interface.getMethods()) {
+				if (method.getName().contains("_")) {
+					messageAcceptor.acceptError(
+							"Method names must not contain underscores!", method,
+							FrancaPackage.Literals.FMODEL_ELEMENT__NAME,
+							ValidationMessageAcceptor.INSIGNIFICANT_INDEX, 
+							null);
+				}
+			}
+		}
+	}
+}
+]
+
+The API of e[ValidationMessageAcceptor] provides methods for issuing info, warning and
+error messages, depending on the severity of the violation.
+
+In order to register the new IDL validator class, it has to be configured as extension
+for the extension point e[org.franca.core.dsl.francaValidator]. This can be done either
+by using the e[Extensions] dialog in the Eclipse IDE or by manually editing the
+e[plugin.xml] file of the project where the e[IFrancaExternalValidator] implementation
+is located. The following excerpt from e[plugin.xml] shows how to register the
+e[MethodNameValidator] from the previous example.
+
+code[Config][
+<plugin>
+   <extension point="org.franca.core.dsl.francaValidator">
+      <validator
+            class="my.specific.validators.fidl.MethodNameValidator"
+            mode="FAST"
+            name="Method name validator">
+      </validator>
+   </extension>
+</plugin>
+]
+
+The property e[class] has to define the fully qualified class name of the validator class.
+This is a usual pattern for registration of Eclipse extensions.
+The e[name] property defines some descriptive text for the extension.
+Finally, the e[mode] property specifies the check mode:
+
+ul[
+	item[FAST or NORMAL: check will be executed each time the Franca IDL file is saved]
+	item[EXPENSIVE: check is triggered manually from the context menu of Franca files]
+]
+
+The new validation checks will then be executed automatically by the Eclipse IDE. 
+However, if Franca models are handled by standalone tools (without the Eclipse IDE),
+there is no extension point infrastructure and the additional validator will not be 
+registered. Hence, for standalone tools, the registration of additional validators has
+to be done programmatically. The class e[ExternalValidatorRegistry] in the package
+e[org.franca.core.dsl.validation] provides static methods for doing this,
+e.g. the method e[ExternalValidatorRegistry.addValidator()].
+
+Note that the e[ExternalValidatorRegistry] approach should only be used in standalone mode.
+In the Eclipse IDE the extension point approach has to be used, in order to avoid coupling
+and prevent initialization problems due to the on-demand loading of plug-ins.  
+
+
+section2:FrancaExtensions_Validators_Deployment[Adding a validator for deployment models]
+
+Adding a validator for Franca deployment models is similar as for IDL model validators.
+The following example shows a validator which ensures that the names of deployment
+specifications are not shorter than a hard-coded minimal length. Note that the interface
+which has to be implemented for new deployment validators is a different interface than
+in the IDL case.
+
+code[Java][
+public class SpecNameValidator implements IFDeployExternalValidator {
+
+	static final int SPEC_NAME_MINIMUM_LENGTH = 5;
+			
+	@Override
+	public void validateModel(FDModel model, ValidationMessageAcceptor messageAcceptor) {
+
+		for(FDSpecification spec : model.getSpecifications()) {
+			String name = spec.getName();
+			if (name.length() < SPEC_NAME_MINIMUM_LENGTH) {
+				messageAcceptor.acceptError(
+						"The name of the specification is too short (minimum is " +
+								SPEC_NAME_MINIMUM_LENGTH + " characters)!", spec,
+						FDeployPackage.Literals.FD_SPECIFICATION__NAME,
+						ValidationMessageAcceptor.INSIGNIFICANT_INDEX, 
+						null);
+			}
+		}
+	}
+}
+]
+
+The details of implementing validation rules are quite similar. Again, different kinds of
+messages can be issued based on the severity of the violation.
+As models can contain both deployment specifications and deployment definitions,
+specific deployment validation rules might check properties of both specifications and
+definitions as well. 
+
+In order to register the new deployment validator class, it has to be configured as extension
+for the extension point e[org.franca.deploymodel.dsl.deploymentValidator]. This can be done either
+by using the e[Extensions] dialog in the Eclipse IDE or by manually editing the
+e[plugin.xml] file of the project where the e[IFDeployExternalValidator] implementation
+is located. The following excerpt from e[plugin.xml] shows how to register the
+e[SpecNameValidator] from the previous example.
+
+code[Config][
+<plugin>
+   <extension point="org.franca.deploymodel.dsl.deploymentValidator">
+      <validator
+            class="org.franca.examples.validators.fdepl.SpecNameValidator"
+            mode="FAST"
+            name="Specification name validator">
+      </validator>
+   </extension>
+</plugin>
+]
+
+The registration in the standalone case (without the Eclipse IDE) is done using
+e[ExternalValidatorRegistry] in the package e[org.franca.deploymodel.dsl.validation].
+It provides static methods for registering external validators,
+e.g., the method e[ExternalValidatorRegistry.addValidator()].
+Note that two different registration classes for IDL and deployment validators are used.
+They share a common name and common method names, but are located in different packages. 
+
+Again, note that the e[ExternalValidatorRegistry] approach should only be used in standalone mode.
+In the Eclipse IDE the extension point approach has to be used, in order to avoid coupling
+and prevent initialization problems due to the on-demand loading of plug-ins.  
 
 
 section:FrancaExtensions_ImplicitDeploymentSpecs[Providing deployment specifications]
 
+Some downstream tools (e.g., code generators for Franca models) might use Franca deployment models
+as additional input format. These tools will usually bring their own deployment specification
+which defines the deployment properties needed as additional input by the tool.
 
+Usually these tool are packaged as Eclipse plug-ins. The deployment specification file
+then is just another resource in the plug-in jar. In order to allow users to refer to the
+deployment specification without knowing its exact URI, Franca provides an extension 
+point which can be used by the tool's plug-in to register the deployment specification
+with an abstract (logical) name. Franca will then take care via scoping to allow 
+importing this deployment specification. 
 
+Here is an example of using the e[deploySpecProvider] extension point in order 
+to register the deployment specification from file e[PlatformDeploySpec.fdepl]
+with the logical name e[CoolSpec]:
+
+code[Config][
+<plugin>
+   <extension point="org.franca.deploymodel.dsl.deploySpecProvider">
+      <model
+            FDSpecification="org.example.spec.PlatformDeploySpec"
+            alias="CoolSpec"
+            resource="model/platform/PlatformDeploySpec.fdepl">
+      </model>
+   </extension>
+</plugin>
+]
+
+The registration of the extension can be done either by using the e[Extensions] dialog
+in the Eclipse IDE or by manually editing the e[plugin.xml] file of the plug-in
+which wants to register the deployment specification.
+
+This deployment specification can then be imported in any deployment model by the 
+following import statement:
+
+code[FDeploy][
+import CoolSpec
+
+specification MySpec extends org.example.spec.PlatformDeploySpec {
+	// ...
+}
+
+define org.example.spec.PlatformDeploySpec for interface SomeAPI {
+	// ...
+}
+]
+
+In the example, the deployment specification imported by its alias is used as a
+base specification for code[FDeploy][MySpec] and for a deployment definition.
 

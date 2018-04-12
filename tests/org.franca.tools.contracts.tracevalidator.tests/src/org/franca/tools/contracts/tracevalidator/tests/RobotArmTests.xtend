@@ -7,10 +7,12 @@
  *******************************************************************************/
 package org.franca.tools.contracts.tracevalidator.tests
 
-import org.eclipse.xtext.junit4.InjectWith
-import org.eclipselabs.xtext.utils.unittesting.XtextRunner2
+import java.util.Set
+import org.eclipse.xtext.testing.InjectWith
 import org.franca.core.dsl.FrancaIDLTestsInjectorProvider
+import org.franca.core.dsl.tests.util.XtextRunner2_Franca
 import org.franca.core.franca.FMethod
+import org.franca.core.franca.FTransition
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -18,10 +20,8 @@ import org.junit.runner.RunWith
 import static org.junit.Assert.*
 
 import static extension org.franca.tools.contracts.tracevalidator.tests.TraceBuilder.*
-import java.util.Set
-import org.franca.core.franca.FTransition
 
-@RunWith(typeof(XtextRunner2))
+@RunWith(typeof(XtextRunner2_Franca))
 @InjectWith(typeof(FrancaIDLTestsInjectorProvider))
 class RobotArmTests extends ValidatorTestBase {
 

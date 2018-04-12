@@ -13,7 +13,7 @@ import "classpath:/org/example/idl/MediaPlayer.fidl"
  * the runtime network according to the SampleDeploySpec specification.
  */
 define org.example.spec.SampleDeploySpec
-	for provider ExampleServer
+	for provider as ExampleServer
 {
 	ProcessName = "server1.exe"
 	

@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
-
 <plugin>
-
     <extension
             point="org.eclipse.ui.editors">
         <editor
@@ -34,18 +32,29 @@
             </reference>
          </activeWhen>
       </handler>
+		<!-- copy qualified name -->
+		<handler
+			class="org.franca.core.dsl.ui.FrancaIDLExecutableExtensionFactory:org.eclipse.xtext.ui.editor.copyqualifiedname.EditorCopyQualifiedNameHandler"
+			commandId="org.eclipse.xtext.ui.editor.copyqualifiedname.EditorCopyQualifiedName">
+			<activeWhen>
+				<reference definitionId="org.franca.core.dsl.FrancaIDL.Editor.opened" />
+			</activeWhen>
+		</handler>
+		<handler
+			class="org.franca.core.dsl.ui.FrancaIDLExecutableExtensionFactory:org.eclipse.xtext.ui.editor.copyqualifiedname.OutlineCopyQualifiedNameHandler"
+			commandId="org.eclipse.xtext.ui.editor.copyqualifiedname.OutlineCopyQualifiedName">
+			<activeWhen>
+				<and>
+					<reference definitionId="org.franca.core.dsl.FrancaIDL.XtextEditor.opened" />
+					<iterate>
+						<adapt type="org.eclipse.xtext.ui.editor.outline.IOutlineNode" />
+					</iterate>
+				</and>
+			</activeWhen>
+		</handler>
         <handler
               class="org.franca.core.dsl.ui.FrancaIDLExecutableExtensionFactory:org.eclipse.xtext.ui.editor.findrefs.FindReferencesHandler"
               commandId="org.eclipse.xtext.ui.editor.FindReferences">
-           <activeWhen>
-              <reference
-                    definitionId="org.franca.core.dsl.FrancaIDL.Editor.opened">
-              </reference>
-           </activeWhen>
-        </handler>
-        <handler
-              class="org.franca.core.dsl.ui.FrancaIDLExecutableExtensionFactory:org.eclipse.xtext.ui.editor.outline.quickoutline.ShowQuickOutlineActionHandler"
-              commandId="org.eclipse.xtext.ui.editor.outline.QuickOutline">
            <activeWhen>
               <reference
                     definitionId="org.franca.core.dsl.FrancaIDL.Editor.opened">
@@ -64,6 +73,16 @@
                 </with>        
             </and>
         </definition>
+ 		<definition id="org.franca.core.dsl.FrancaIDL.XtextEditor.opened">
+			<and>
+				<reference definitionId="isXtextEditorActive"/>
+				<with variable="activeEditor">
+					<test property="org.eclipse.xtext.ui.editor.XtextEditor.languageName"
+						value="org.franca.core.dsl.FrancaIDL"
+						forcePluginActivation="true"/>
+				</with>
+			</and>
+		</definition>
     </extension>
     <extension
             point="org.eclipse.ui.preferencePages">
@@ -110,15 +129,23 @@
     <extension
          point="org.eclipse.ui.commands">
       <command
-            description="Trigger validation"
+			description="Trigger expensive validation"
             id="org.franca.core.dsl.FrancaIDL.validate"
             name="Validate">
       </command>
-      <command
-            description="Open the quick outline."
-            id="org.eclipse.xtext.ui.editor.outline.QuickOutline"
-            name="Quick Outline">
-      </command>
+	<!-- copy qualified name -->
+	<command
+			id="org.eclipse.xtext.ui.editor.copyqualifiedname.EditorCopyQualifiedName"
+			categoryId="org.eclipse.ui.category.edit"
+			description="Copy the qualified name for the selected element"
+			name="Copy Qualified Name">
+	</command>
+	<command
+			id="org.eclipse.xtext.ui.editor.copyqualifiedname.OutlineCopyQualifiedName"
+			categoryId="org.eclipse.ui.category.edit"
+			description="Copy the qualified name for the selected element"
+			name="Copy Qualified Name">
+	</command>
       <command
             defaultHandler="org.franca.core.dsl.ui.FrancaIDLExecutableExtensionFactory:org.franca.core.dsl.ui.handlers.GenerateContractDotHandler"
             id="org.franca.core.dsl.ui.generatedot"
@@ -129,6 +156,11 @@
             id="org.franca.core.dsl.ui.generatexmi"
             name="Export in XMI">
       </command>
+      <command
+            defaultHandler="org.franca.core.dsl.ui.FrancaIDLExecutableExtensionFactory:org.franca.core.dsl.ui.handlers.GenerateAutobahnHandler"
+            id="org.franca.core.dsl.ui.generate_autobahn"
+            name="Generate JS code for Autobahn-binding">
+      </command>
     </extension>
     <extension point="org.eclipse.ui.menus">
         <menuContribution
@@ -136,7 +168,7 @@
              <command
                  commandId="org.franca.core.dsl.FrancaIDL.validate"
                  style="push"
-                 tooltip="Trigger validation">
+                 tooltip="Trigger expensive validation">
             <visibleWhen checkEnabled="false">
                 <reference
                     definitionId="org.franca.core.dsl.FrancaIDL.Editor.opened">
@@ -144,63 +176,87 @@
             </visibleWhen>
          </command>  
          </menuContribution>
-        <menuContribution
-              locationURI="popup:#TextEditorContext?endof=group.find">
-           <command
-                 commandId="org.eclipse.xtext.ui.editor.FindReferences">
-              <visibleWhen
-                    checkEnabled="false">
-                 <reference
-                       definitionId="org.franca.core.dsl.FrancaIDL.Editor.opened">
+		<!-- copy qualified name -->
+		<menuContribution locationURI="popup:#TextEditorContext?after=copy">
+			<command commandId="org.eclipse.xtext.ui.editor.copyqualifiedname.EditorCopyQualifiedName"
+				style="push" tooltip="Copy Qualified Name">
+				<visibleWhen checkEnabled="false">
+					<reference definitionId="org.franca.core.dsl.FrancaIDL.Editor.opened" />
+				</visibleWhen>
+			</command>
+		</menuContribution>
+		<menuContribution locationURI="menu:edit?after=copy">
+			<command commandId="org.eclipse.xtext.ui.editor.copyqualifiedname.EditorCopyQualifiedName"
+				style="push" tooltip="Copy Qualified Name">
+				<visibleWhen checkEnabled="false">
+					<reference definitionId="org.franca.core.dsl.FrancaIDL.Editor.opened" />
+				</visibleWhen>
+			</command>
+		</menuContribution>
+		<menuContribution locationURI="popup:org.eclipse.xtext.ui.outline?after=additions">
+			<command commandId="org.eclipse.xtext.ui.editor.copyqualifiedname.OutlineCopyQualifiedName"
+				style="push" tooltip="Copy Qualified Name">
+				<visibleWhen checkEnabled="false">
+					<and>
+						<reference definitionId="org.franca.core.dsl.FrancaIDL.XtextEditor.opened" />
+						<iterate>
+							<adapt type="org.eclipse.xtext.ui.editor.outline.IOutlineNode" />
+						</iterate>
+					</and>
+				</visibleWhen>
+			</command>
+		</menuContribution>
+	</extension>
+	<extension point="org.eclipse.ui.menus">
+		<menuContribution locationURI="popup:#TextEditorContext?endof=group.find">
+           <command commandId="org.eclipse.xtext.ui.editor.FindReferences">
+				<visibleWhen checkEnabled="false">
+					<reference definitionId="org.franca.core.dsl.FrancaIDL.Editor.opened">
                  </reference>
               </visibleWhen>
            </command>
         </menuContribution>
-        <menuContribution
-              locationURI="popup:#TextEditorContext?after=group.open">
-           <command
-                 commandId="org.eclipse.xtext.ui.editor.outline.QuickOutline"
-                 style="push"
-                 tooltip="Open Quick Outline">
-              <visibleWhen
-                    checkEnabled="false">
-                 <reference
-                       definitionId="org.franca.core.dsl.FrancaIDL.Editor.opened">
-                 </reference>
-              </visibleWhen>
-           </command>
-        </menuContribution>
+	</extension>
+	<extension point="org.eclipse.ui.handlers">
+		<handler
+			class="org.franca.core.dsl.ui.FrancaIDLExecutableExtensionFactory:org.eclipse.xtext.ui.editor.findrefs.FindReferencesHandler"
+			commandId="org.eclipse.xtext.ui.editor.FindReferences">
+			<activeWhen>
+				<reference
+					definitionId="org.franca.core.dsl.FrancaIDL.Editor.opened">
+				</reference>
+			</activeWhen>
+		</handler>
+	</extension>
+	<extension point="org.eclipse.ui.menus">
         <menuContribution
               allPopups="false"
               locationURI="popup:org.eclipse.ui.popup.any">
-           <menu
-                 id="org.franca.core.dsl.ui.francamenu"
-                 label="Franca">
-              <command
-                    commandId="org.franca.core.dsl.ui.generatexmi"
+           <menu id="org.franca.core.dsl.ui.francamenu" label="Franca">
+              <command commandId="org.franca.core.dsl.ui.generatexmi"
                     label="Export in XMI format"
                     style="push">
-                 <visibleWhen
-                       checkEnabled="false">
-                    <reference
-                          definitionId="org.franca.core.dsl.ui.fidl">
-                    </reference>
+                 <visibleWhen checkEnabled="false">
+                    <reference definitionId="org.franca.core.dsl.ui.fidl" />
                  </visibleWhen>
               </command>
-              <command
-                    commandId="org.franca.core.dsl.ui.generatedot"
+              <command commandId="org.franca.core.dsl.ui.generatedot"
                     label="Generate dot-file from contract"
                     style="push">
                  <visibleWhen
                        checkEnabled="false">
-                    <reference
-                          definitionId="org.franca.core.dsl.ui.fidl">
-                    </reference>
+                    <reference definitionId="org.franca.core.dsl.ui.fidl" />
                  </visibleWhen>
               </command>
-              <separator
-                    name="additions">
-              </separator>
+              <command commandId="org.franca.core.dsl.ui.generate_autobahn"
+                    label="Generate JS code for Autobahn-binding"
+                    style="push">
+                 <visibleWhen
+                       checkEnabled="false">
+                    <reference definitionId="org.franca.core.dsl.ui.fidl" />
+                 </visibleWhen>
+              </command>
+              <separator name="additions" />
            </menu>
         </menuContribution>
     </extension>
@@ -222,9 +278,111 @@
         </resourceServiceProvider>
     </extension>
 
+	<!-- marker definitions for org.franca.core.dsl.FrancaIDL -->
+	<extension
+			id="francaidl.check.fast"
+			name="FrancaIDL Problem"
+			point="org.eclipse.core.resources.markers">
+		<super type="org.eclipse.xtext.ui.check.fast"/>
+		<persistent value="true"/>
+	</extension>
+	<extension
+			id="francaidl.check.normal"
+			name="FrancaIDL Problem"
+			point="org.eclipse.core.resources.markers">
+		<super type="org.eclipse.xtext.ui.check.normal"/>
+		<persistent value="true"/>
+	</extension>
+	<extension
+			id="francaidl.check.expensive"
+			name="FrancaIDL Problem"
+			point="org.eclipse.core.resources.markers">
+		<super type="org.eclipse.xtext.ui.check.expensive"/>
+		<persistent value="true"/>
+	</extension>
+	<extension point="org.eclipse.xtext.builder.participant">
+		<participant
+			class="org.franca.core.dsl.ui.FrancaIDLExecutableExtensionFactory:org.eclipse.xtext.builder.IXtextBuilderParticipant"
+			fileExtensions="fidl"/>
+	</extension>
+	<extension point="org.eclipse.ui.preferencePages">
+		<page
+			category="org.franca.core.dsl.FrancaIDL"
+			class="org.franca.core.dsl.ui.FrancaIDLExecutableExtensionFactory:org.eclipse.xtext.builder.preferences.BuilderPreferencePage"
+			id="org.franca.core.dsl.FrancaIDL.compiler.preferencePage"
+			name="Compiler">
+			<keywordReference id="org.franca.core.dsl.ui.keyword_FrancaIDL"/>
+		</page>
+	</extension>
+	<extension point="org.eclipse.ui.propertyPages">
+		<page
+			category="org.franca.core.dsl.FrancaIDL"
+			class="org.franca.core.dsl.ui.FrancaIDLExecutableExtensionFactory:org.eclipse.xtext.builder.preferences.BuilderPreferencePage"
+			id="org.franca.core.dsl.FrancaIDL.compiler.propertyPage"
+			name="Compiler">
+			<keywordReference id="org.franca.core.dsl.ui.keyword_FrancaIDL"/>
+			<enabledWhen>
+				<adapt type="org.eclipse.core.resources.IProject"/>
+			</enabledWhen>
+			<filter name="projectNature" value="org.eclipse.xtext.ui.shared.xtextNature"/>
+		</page>
+	</extension>
+	<extension point="org.eclipse.ui.menus">
+		<menuContribution locationURI="popup:#TextEditorContext?after=xtext.ui.openDeclaration">
+			<command
+				commandId="org.eclipse.xtext.ui.OpenGeneratedFileCommand"
+				id="org.franca.core.dsl.FrancaIDL.OpenGeneratedCode"
+				style="push">
+				<visibleWhen checkEnabled="false">
+					<reference definitionId="org.franca.core.dsl.FrancaIDL.Editor.opened" />
+				</visibleWhen>
+			</command>
+		</menuContribution>
+	</extension>
+	<extension point="org.eclipse.ui.handlers">
+		<handler
+			class="org.franca.core.dsl.ui.FrancaIDLExecutableExtensionFactory:org.eclipse.xtext.ui.generator.trace.OpenGeneratedFileHandler"
+			commandId="org.eclipse.xtext.ui.OpenGeneratedFileCommand">
+			<activeWhen>
+				<reference definitionId="org.franca.core.dsl.FrancaIDL.Editor.opened" />
+			</activeWhen>
+		</handler>
+	</extension>
 
 
 	<!-- Quick Outline -->
+	<extension
+		point="org.eclipse.ui.handlers">
+        <handler
+              class="org.franca.core.dsl.ui.FrancaIDLExecutableExtensionFactory:org.eclipse.xtext.ui.editor.outline.quickoutline.ShowQuickOutlineActionHandler"
+              commandId="org.eclipse.xtext.ui.editor.outline.QuickOutline">
+           <activeWhen>
+              <reference
+                    definitionId="org.franca.core.dsl.FrancaIDL.Editor.opened">
+              </reference>
+           </activeWhen>
+        </handler>
+	</extension>
+     <extension
+         point="org.eclipse.ui.commands">
+      <command
+            description="Open the quick outline."
+            id="org.eclipse.xtext.ui.editor.outline.QuickOutline"
+            name="Quick Outline">
+      </command>
+	</extension>
+	<extension point="org.eclipse.ui.menus">
+        <menuContribution
+              locationURI="popup:#TextEditorContext?after=group.open">
+           <command commandId="org.eclipse.xtext.ui.editor.outline.QuickOutline"
+                 style="push"
+                 tooltip="Open Quick Outline">
+              <visibleWhen checkEnabled="false">
+                 <reference definitionId="org.franca.core.dsl.FrancaIDL.Editor.opened"/>
+              </visibleWhen>
+           </command>
+        </menuContribution>
+	</extension>
 
   <extension point="org.eclipse.compare.contentViewers">
     <viewer id="org.franca.core.dsl.FrancaIDL.compare.contentViewers"
@@ -244,28 +402,42 @@
             extensions="fidl">
     </provider>
   </extension>
-   <!-- quickfix marker resolution generator -->
+	<!-- quickfix marker resolution generator for org.franca.core.dsl.FrancaIDL -->
    <extension
          point="org.eclipse.ui.ide.markerResolution">
       <markerResolutionGenerator
-            class="org.franca.core.dsl.ui.FrancaIDLExecutableExtensionFactory:org.eclipse.xtext.ui.editor.quickfix.MarkerResolutionGenerator">
+			class="org.franca.core.dsl.ui.FrancaIDLExecutableExtensionFactory:org.eclipse.xtext.ui.editor.quickfix.MarkerResolutionGenerator"
+			markerType="org.franca.core.dsl.ui.francaidl.check.fast">
+			<attribute
+				name="FIXABLE_KEY"
+				value="true">
+			</attribute>
+		</markerResolutionGenerator>
+		<markerResolutionGenerator
+			class="org.franca.core.dsl.ui.FrancaIDLExecutableExtensionFactory:org.eclipse.xtext.ui.editor.quickfix.MarkerResolutionGenerator"
+			markerType="org.franca.core.dsl.ui.francaidl.check.normal">
+			<attribute
+				name="FIXABLE_KEY"
+				value="true">
+			</attribute>
+		</markerResolutionGenerator>
+		<markerResolutionGenerator
+			class="org.franca.core.dsl.ui.FrancaIDLExecutableExtensionFactory:org.eclipse.xtext.ui.editor.quickfix.MarkerResolutionGenerator"
+			markerType="org.franca.core.dsl.ui.francaidl.check.expensive">
+			<attribute
+				name="FIXABLE_KEY"
+				value="true">
+			</attribute>
       </markerResolutionGenerator>
    </extension>
 
    <extension
          point="org.eclipse.core.expressions.definitions">
-      <definition
-            id="org.franca.core.dsl.ui.fidl">
-         <with
-               variable="selection">
-            <iterate
-                  ifEmpty="false">
-               <adapt
-                     type="org.eclipse.core.resources.IFile">
-                  <test
-                        property="org.eclipse.core.resources.name"
-                        value="*.fidl">
-                  </test>
+      <definition id="org.franca.core.dsl.ui.fidl">
+         <with variable="selection">
+            <iterate ifEmpty="false">
+               <adapt type="org.eclipse.core.resources.IFile">
+                  <test property="org.eclipse.core.resources.name" value="*.fidl"/>
                </adapt>
             </iterate>
          </with>
@@ -313,5 +485,28 @@
 	        <keywordReference id="org.franca.core.dsl.ui.keyword_FrancaIDL"/>
 	    </page>
 	</extension>
-
+	<extension point="org.eclipse.compare.contentViewers">
+		<viewer id="org.franca.core.dsl.FrancaIDL.compare.contentViewers"
+			class="org.franca.core.dsl.ui.FrancaIDLExecutableExtensionFactory:org.eclipse.xtext.ui.compare.InjectableViewerCreator"
+			extensions="fidl">
+		</viewer>
+	</extension>
+	<extension point="org.eclipse.compare.contentMergeViewers">
+		<viewer id="org.franca.core.dsl.FrancaIDL.compare.contentMergeViewers"
+			class="org.franca.core.dsl.ui.FrancaIDLExecutableExtensionFactory:org.eclipse.xtext.ui.compare.InjectableViewerCreator"
+			extensions="fidl" label="FrancaIDL Compare">
+		</viewer>
+	</extension>
+	<extension point="org.eclipse.ui.editors.documentProviders">
+		<provider id="org.franca.core.dsl.FrancaIDL.editors.documentProviders"
+			class="org.franca.core.dsl.ui.FrancaIDLExecutableExtensionFactory:org.eclipse.xtext.ui.editor.model.XtextDocumentProvider"
+			extensions="fidl">
+		</provider>
+	</extension>
+	<extension point="org.eclipse.team.core.fileTypes">
+		<fileTypes
+			extension="fidl"
+			type="text">
+		</fileTypes>
+	</extension>
 </plugin>

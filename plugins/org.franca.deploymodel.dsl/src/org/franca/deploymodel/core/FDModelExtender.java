@@ -11,7 +11,6 @@ import java.util.List;
 
 import org.franca.deploymodel.dsl.fDeploy.FDInterface;
 import org.franca.deploymodel.dsl.fDeploy.FDModel;
-import org.franca.deploymodel.dsl.fDeploy.FDProvider;
 import org.franca.deploymodel.dsl.fDeploy.FDRootElement;
 import org.franca.deploymodel.dsl.fDeploy.FDTypes;
 
@@ -35,23 +34,6 @@ public class FDModelExtender {
 //		initMappers();
 	}
 	
-
-	/**
-	 * Get a list of all interface providers defined by a Franca deployment model
-	 * @return the list of FDProviders
-	 */
-	public List<FDProvider> getFDProviders() {
-		List<FDProvider> results = Lists.newArrayList();
-		
-		for(FDRootElement elem : fdmodel.getDeployments()) {
-			if (elem instanceof FDProvider) {
-				results.add((FDProvider) elem);
-			}
-		}
-		
-		return results;
-	}
-
 	
 	/**
 	 * Get a list of all Franca IDL interfaces referenced by a Franca deployment model

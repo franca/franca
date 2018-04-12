@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2012 Harman International (http://www.harman.com).
+* Copyright (c) 2018 itemis AG (http://www.itemis.de).
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -7,144 +7,56 @@
 *******************************************************************************/
 module org.franca.core.dsl.GenerateFrancaIDL
 
-import org.eclipse.emf.mwe.utils.*
-import org.eclipse.xtext.generator.*
-import org.eclipse.xtext.ui.generator.*
-import org.franca.core.buildutil.*
+import org.eclipse.xtext.xtext.generator.*
+import org.eclipse.xtext.xtext.generator.model.project.*
+import org.eclipse.emf.mwe2.ecore.EcoreGenerator
 
-var grammarURI = "classpath:/org/franca/core/dsl/FrancaIDL.xtext"
-var file.extensions = "fidl"
+var rootPath = ".."
 var projectName = "org.franca.core.dsl"
-var runtimeProject = "../${projectName}"
 
 Workflow {
-	bean = StandaloneSetup {
-		scanClassPath  = true
-		platformUri = "${runtimeProject}/.."
-		registerGeneratedEPackage = "org.franca.core.franca.FrancaPackage"
-	
-		// registerGenModelFile = "platform:/resource/org.franca.core/model/franca.genmodel"
-	
-	}
-
-	component = DirectoryCleaner {
-		directory = "${runtimeProject}/src-gen"		
-	}
-
-	component = DirectoryCleaner {
-		directory = "${runtimeProject}.ui/src-gen"
-	}
-
-	component = Generator {
-		// Don't merge manifest files as they are checked out read-only by default.
-		// Note that this might make manual merges necessary, see MANIFEST.MF_gen
-		// I consider this a bug, see https://bugs.eclipse.org/bugs/show_bug.cgi?id=323108
-		mergeManifest = false
-		
-		pathRtProject = runtimeProject
-		pathUiProject = "${runtimeProject}.ui"
-		pathTestProject = "../../tests/${projectName}.tests.base"
-		projectNameRt = projectName
-		projectNameUi = "${projectName}.ui"
-		language = {
-			uri = grammarURI
-			fileExtensions = file.extensions
-
-			// Java API to access grammar elements (required by several other fragments)
-			fragment = grammarAccess.GrammarAccessFragment {}
-
-			// generates Java API for the generated EPackages
-			// fragment = ecore.EcoreGeneratorFragment {}
-
-			// the serialization component
-			fragment = parseTreeConstructor.ParseTreeConstructorFragment {}
-
-			// a custom ResourceFactory for use with EMF 
-			fragment = resourceFactory.ResourceFactoryFragment {
-				fileExtensions = file.extensions
-			}
-
-			// the Antlr parser
-			fragment = parser.antlr.XtextAntlrGeneratorFragment {
-				options = {
-					classSplitting = true
-					backtrack = false
+	component = XtextGenerator {
+		configuration = {
+			project = StandardProjectConfig {
+				baseName = projectName
+				rootPath = rootPath
+				runtimeTest = {
+					enabled = true
+					root = "../../tests/${projectName}.tests.base"
 				}
-			}
-
-			// the Ecore2Xtext specific terminal converter
-			fragment = ecore2xtext.Ecore2XtextValueConverterServiceFragment {}
-
-			// java-based API for validation 
-			fragment = validation.JavaValidatorFragment {
-				composedCheck = "org.eclipse.xtext.validation.ImportUriValidator"
-				// composedCheck = "org.eclipse.xtext.validation.NamesAreUniqueValidator"
-			}
-
-			// scoping and exporting API
-			fragment = scoping.ImportURIScopingFragment {
-            	generateXtendStub = true
-			}
-			//fragment = exporting.SimpleNamesFragment {}
-
-			// scoping and exporting API 
-			//fragment = scoping.ImportNamespacesScopingFragment {}
-			fragment = exporting.QualifiedNamesFragment {}
-			fragment = builder.BuilderIntegrationFragment {}
-
-
-			// formatter API 
-			fragment = ecore2xtext.FormatterFragment {}
-
-			// labeling API 
-			fragment = labeling.LabelProviderFragment {}
-
-			// outline API 
-            fragment = outline.OutlineTreeProviderFragment {}
-            fragment = outline.QuickOutlineFragment {}
-
-			// java-based API for content assistance 
-			fragment = contentAssist.ContentAssistFragment {}
-
-			// antlr parser generator tailored for content assist 
-			fragment = parser.antlr.XtextAntlrUiGeneratorFragment {
-				options = {
-					classSplitting = true
-					backtrack = false
+				genericIde = {
+					enabled = true
 				}
+				eclipsePlugin = {
+					enabled = true
+				}
+				eclipsePluginTest = {
+					enabled = true
+					root = "../../tests/${projectName}.tests.base"
+				}
+				createEclipseMetaData = true
 			}
-
-			// provides a compare view
-            fragment = compare.CompareFragment {
-                fileExtensions = file.extensions
-            }
-
-			fragment = builder.BuilderIntegrationFragment {}
-
-			// project wizard (optional) 
-
-			// fragment = projectWizard.SimpleProjectWizardFragment {
-			//		generatorProjectName = "${projectName}.generator" 
-			//		modelFileExtension = file.extensions
-			// }
-
-			// quickfix API 
-			fragment = quickfix.QuickfixProviderFragment {}
-
-			// rename refactoring
-			fragment = refactoring.RefactorElementNameFragment {}
+			code = {
+				encoding = "UTF-8"
+				fileHeader = "/*\n * generated by Xtext \${version}\n */"
+				// preferXtendStubs = false
+			}
+		}
+		language = StandardLanguage {
+			name = "${projectName}.FrancaIDL"
 			
-            // generates junit test support classes into Generator#pathTestProject
-            fragment = junit.Junit4Fragment {}
+			// the grammar is using a predefined ecore model
+			referencedResource = "platform:/resource/org.franca.core/model/franca.genmodel"
+			
+			fileExtensions = "fidl"
+
+			// use an XtextResourceSet throughout the process, which is able to resolve classpath:/ URIs.
+			resourceSet = org.eclipse.xtext.resource.XtextResourceSet:theResourceSet {}
+
+			formatter = {
+				generateStub = true
+				generateXtendStub = true
+			}
 		}
 	}
-
-	// During the maven build on Jenkins, the Xtext generator creates a Java ScopeProvider, although
-	// we configured a different behavior above (an Xtend ScopeProvider should be created).
-	// Thus, we remove this file (if any) in order to avoid the conflict during the compile phase
-	// of the maven build. 
-	component = FileRemover {
-		file = "${runtimeProject}/src/org/franca/core/dsl/scoping/FrancaIDLScopeProvider.java"
-	}
-
 }

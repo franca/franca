@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2018 itemis AG (http://www.itemis.de).
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************/
 package org.franca.deploymodel.dsl.tests.xpect.util;
 
 import java.io.IOException;
@@ -9,7 +16,7 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.xtext.junit4.ui.util.JavaProjectSetupUtil;
+import org.eclipse.xtext.ui.testing.util.JavaProjectSetupUtil;
 import org.xpect.setup.XpectSetupComponent;
 import org.xpect.xtext.lib.setup.FileSetupContext;
 import org.xpect.xtext.lib.setup.workspace.JavaProject;

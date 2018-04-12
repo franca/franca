@@ -1,3 +1,5 @@
+package org.example.spec
+
 // import the deployment specification
 import "../spec/SimpleSpec.fdepl"
 

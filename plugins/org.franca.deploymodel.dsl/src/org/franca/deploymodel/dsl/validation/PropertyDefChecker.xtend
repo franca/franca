@@ -19,11 +19,10 @@ import org.franca.core.franca.FStructType
 import org.franca.core.franca.FTypeDef
 import org.franca.core.franca.FTypeRef
 import org.franca.core.franca.FUnionType
+import org.franca.deploymodel.core.FDPropertyHost
 import org.franca.deploymodel.dsl.FDSpecificationExtender
-import org.franca.deploymodel.dsl.fDeploy.FDPropertyHost
 
-import static org.franca.deploymodel.dsl.fDeploy.FDPropertyHost.*
-
+import static org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost.*
 import static extension org.franca.core.framework.FrancaHelpers.*
 
 /**
@@ -48,8 +47,8 @@ class PropertyDefChecker {
 		if (specHelper.isMandatory(METHODS)) return true
 		if (inArgs.empty && outArgs.empty) return false
 		if (specHelper.isMandatory(ARGUMENTS)) return true
-		if (inArgs.findFirst[mustBeDefined()]!=null) return true
-		if (outArgs.findFirst[mustBeDefined()]!=null) return true
+		if (inArgs.findFirst[mustBeDefined()]!==null) return true
+		if (outArgs.findFirst[mustBeDefined()]!==null) return true
 		false
 	}
 	
@@ -57,7 +56,7 @@ class PropertyDefChecker {
 		if (specHelper.isMandatory(BROADCASTS)) return true
 		if (outArgs.empty) return false
 		if (specHelper.isMandatory(ARGUMENTS)) return true
-		if (outArgs.findFirst[mustBeDefined()]!=null) return true
+		if (outArgs.findFirst[mustBeDefined()]!==null) return true
 		false
 	}
 	
@@ -67,18 +66,18 @@ class PropertyDefChecker {
 	
 	def mustBeDefined (FStructType it) {
 		if (specHelper.isMandatory(STRUCTS)) return true
-		elements.mustBeDefined(STRUCT_FIELDS)
+		elements.mustBeDefined(FDPropertyHost.builtIn(STRUCT_FIELDS))
 	}
 	
 	def mustBeDefined (FUnionType it) {
 		if (specHelper.isMandatory(UNIONS)) return true
-		elements.mustBeDefined(UNION_FIELDS)
+		elements.mustBeDefined(FDPropertyHost.builtIn(UNION_FIELDS))
 	}
 
 	def mustBeDefined (List<FField> it, FDPropertyHost host) {
 		if (empty) return false
 		if (specHelper.isMandatory(host)) return true
-		if (findFirst[mustBeDefined]!=null) return true
+		if (findFirst[mustBeDefined]!==null) return true
 		false
 	}
 	

@@ -1,25 +1,12 @@
 package org.franca.connectors.protobuf.tests
 
-import com.google.inject.Inject
-import java.util.List
-import org.eclipse.emf.compare.Diff
-import org.eclipse.emf.compare.EMFCompare
-import org.eclipse.emf.compare.internal.spec.ResourceAttachmentChangeSpec
-import org.eclipse.emf.ecore.util.EcoreUtil
-import org.eclipse.xtext.generator.JavaIoFileSystemAccess
-import org.eclipse.xtext.junit4.InjectWith
-import org.eclipselabs.xtext.utils.unittesting.XtextRunner2
-import org.franca.connectors.protobuf.ProtobufConnector
+import org.eclipse.xtext.testing.InjectWith
 import org.franca.core.dsl.FrancaIDLTestsInjectorProvider
-import org.franca.core.dsl.FrancaPersistenceManager
-import org.junit.Ignore
+import org.franca.core.dsl.tests.util.XtextRunner2_Franca
 import org.junit.Test
 import org.junit.runner.RunWith
 
-import static org.junit.Assert.*
-import org.eclipse.emf.compare.scope.DefaultComparisonScope
-
-@RunWith(typeof(XtextRunner2))
+@RunWith(typeof(XtextRunner2_Franca))
 @InjectWith(typeof(FrancaIDLTestsInjectorProvider))
 class Protobuf2FrancaGate1Tests extends TestBase {
 

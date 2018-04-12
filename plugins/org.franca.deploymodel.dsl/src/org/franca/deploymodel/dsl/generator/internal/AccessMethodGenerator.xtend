@@ -8,10 +8,17 @@
 package org.franca.deploymodel.dsl.generator.internal
 
 import com.google.inject.Inject
+import org.eclipse.emf.ecore.EObject
+import org.franca.core.franca.FArgument
+import org.franca.core.franca.FArrayType
+import org.franca.core.franca.FAttribute
+import org.franca.core.franca.FField
+import org.franca.deploymodel.core.FDPropertyHost
+import org.franca.deploymodel.dsl.fDeploy.FDAbstractExtensionElement
+import org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost
 import org.franca.deploymodel.dsl.fDeploy.FDDeclaration
 import org.franca.deploymodel.dsl.fDeploy.FDEnumType
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl
-import org.franca.deploymodel.dsl.fDeploy.FDPropertyHost
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification
 
 import static extension org.franca.deploymodel.dsl.generator.internal.GeneratorHelper.*
@@ -21,7 +28,7 @@ abstract class AccessMethodGenerator {
 
 	@Inject extension ImportManager
 	
-	def generateAccessMethods (FDSpecification spec, boolean forInterfaces, ICodeContext context) '''
+	def generateAccessMethods(FDSpecification spec, boolean forInterfaces, ICodeContext context) '''
 		«FOR d : spec.declarations»
 			«d.genProperties(forInterfaces, context)»
 		«ENDFOR»
@@ -29,13 +36,13 @@ abstract class AccessMethodGenerator {
 
 	abstract def protected CharSequence genMethod(
 		FDPropertyDecl it,
-		String francaType,
+		Class<? extends EObject> argumentType,
 		boolean isData
 	)
 	
 	abstract def protected CharSequence genEnumMethod(
 		FDPropertyDecl it,
-		String francaType,
+		Class<? extends EObject> argumentType,
 		String enumType,
 		String returnType,
 		FDEnumType enumerator,
@@ -43,58 +50,73 @@ abstract class AccessMethodGenerator {
 	)
 
 
-	def private genProperties(FDDeclaration decl, boolean forInterfaces, ICodeContext context) '''
-		«IF decl.properties.size > 0 && decl.host.getFrancaType(forInterfaces)!=null»
-			// host '«decl.host.getName»'
-			«FOR p : decl.properties»
-			«p.genProperty(decl.host, forInterfaces, context)»
-			«ENDFOR»
-			
-		«ENDIF»
-	'''
+	def private genProperties(FDDeclaration decl, boolean forInterfaces, ICodeContext context) {
+		val hostContext = getHostContext(forInterfaces)
+		val argtype = decl.host.getArgumentType(hostContext)
+		if (decl.properties.size > 0 && argtype!==null) {
+			val isExtensionClass = FDAbstractExtensionElement.isAssignableFrom(argtype)
+			if (! isExtensionClass) {
+				return '''
+					// host '«decl.host.getName»'
+					«FOR p : decl.properties»
+					«p.genProperty(decl.host, forInterfaces, context)»
+					«ENDFOR»
+						
+				'''
+			}
+		}
+		""			
+	}
 	
 	def private genProperty(FDPropertyDecl pd, FDPropertyHost host, boolean forInterfaces, ICodeContext context) {
-		if (host==FDPropertyHost::ARRAYS) {
+		if (host.isBuiltIn(FDBuiltInPropertyHost::ARRAYS)) {
 			// special handling for ARRAYS,
 			// might be explicit array types or inline arrays
 			'''
-				«genProperty(pd, host, "FArrayType", false, context)»
-				«genProperty(pd, host, "FField", false, context)»
+				«genProperty(pd, host, FArrayType, false, context)»
+				«genProperty(pd, host, FField, false, context)»
 				«IF forInterfaces»
-				«genProperty(pd, host, "FAttribute", true, context)»
-				«genProperty(pd, host, "FArgument", true, context)»
+				«genProperty(pd, host, FAttribute, true, context)»
+				«genProperty(pd, host, FArgument, true, context)»
 				«ENDIF»
 			'''
 		} else {
-			val ftype = host.getFrancaTypeName(forInterfaces)
-			genProperty(pd, host, ftype, false, context)
+			val hostContext = getHostContext(forInterfaces)
+			val argtype = host.getArgumentType(hostContext)
+			genProperty(pd, host, argtype, false, context)
 		}
 	}
 	
+	def private getHostContext(boolean forInterfaces) {
+		if (forInterfaces)
+			HostLogic.Context.FRANCA_INTERFACE
+		else
+			HostLogic.Context.FRANCA_TYPE
+	}
 
 	def private genProperty(
 		FDPropertyDecl it,
 		FDPropertyHost host,
-		String francaType,
+		Class<? extends EObject> argumentType,
 		boolean forceInterfaceOnly,
 		ICodeContext context
 	) {
-		addNeededFrancaType(francaType)
+		addNeededFrancaType(argumentType)
 		val isOnlyForInterface = forceInterfaceOnly || host.isInterfaceOnly 
-		if (francaType!=null) {
+		if (argumentType!==null) {
 			context.requireTargetMember
 			if (isEnum) {
 				val enumType = name.toFirstUpper
 				val retType =
-					if (type.array==null) {
+					if (type.array===null) {
 						enumType
 					} else {
 						enumType.genListType.toString
 					}
 				val enumerator = type.complex as FDEnumType
-				genEnumMethod(francaType, enumType, retType, enumerator, !isOnlyForInterface)
+				genEnumMethod(argumentType, enumType, retType, enumerator, !isOnlyForInterface)
 			} else {
-				genMethod(francaType, !isOnlyForInterface)
+				genMethod(argumentType, !isOnlyForInterface)
 			}
 		} else
 			""
@@ -104,23 +126,26 @@ abstract class AccessMethodGenerator {
 	/**
 	 * Generate javadoc helptext for getOverwriteAccessor methods.
 	 * 
-	 * @param typename the typename of the method's parameter
+	 * @param argumentType the typename of the method's parameter
 	 * @param objname the name of the method's parameter
 	 */
-	def protected genHelpForGetOverwriteAccessor(String typename, String objname) '''
-		/**
-		 * Get an overwrite-aware accessor for deployment properties.</p>
-		 *
-		 * This accessor will return overwritten property values in the context 
-		 * of a Franca «typename» object. I.e., the «typename» «objname» has a datatype
-		 * which can be overwritten in the deployment definition (e.g., Franca array,
-		 * struct, union or enumeration). The accessor will return the overwritten values.
-		 * If the deployment definition didn't overwrite the value, this accessor will
-		 * delegate to its parent accessor.</p>
-		 *
-		 * @param «objname» a Franca «typename» which is the context for the accessor
-		 * @return the overwrite-aware accessor
-		 */
-	'''
+	def protected genHelpForGetOverwriteAccessor(Class<? extends EObject> argumentType, String objname) {
+		val typename = argumentType.simpleName
+		'''
+			/**
+			 * Get an overwrite-aware accessor for deployment properties.</p>
+			 *
+			 * This accessor will return overwritten property values in the context 
+			 * of a Franca «typename» object. I.e., the «typename» «objname» has a datatype
+			 * which can be overwritten in the deployment definition (e.g., Franca array,
+			 * struct, union or enumeration). The accessor will return the overwritten values.
+			 * If the deployment definition didn't overwrite the value, this accessor will
+			 * delegate to its parent accessor.</p>
+			 *
+			 * @param «objname» a Franca «typename» which is the context for the accessor
+			 * @return the overwrite-aware accessor
+			 */
+		'''
+	}
 
 }

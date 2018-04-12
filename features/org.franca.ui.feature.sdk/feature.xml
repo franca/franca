@@ -2,7 +2,7 @@
 <feature
       id="org.franca.ui.sdk"
       label="%featureName"
-      version="0.12.0.qualifier"
+      version="0.13.0.qualifier"
       provider-name="%providerName">
 
    <description>
@@ -30,7 +30,21 @@
          version="0.0.0"/>
 
    <plugin
+         id="org.franca.core.dsl.ide.source"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.franca.core.dsl.ui.source"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.franca.deploymodel.dsl.ide.source"
          download-size="0"
          install-size="0"
          version="0.0.0"

@@ -17,7 +17,7 @@ import org.franca.deploymodel.dsl.validation.IFDeployExternalValidator;
  * This is an example of an external validator for Franca deployment models.<p/>
  * 
  * It checks the name of a deployment specification and issues an error
- * if the name is shorter than a hardcoded minimum length.
+ * if the name is shorter than a hard-coded minimum length.
  */
 public class SpecNameValidator implements IFDeployExternalValidator {
 

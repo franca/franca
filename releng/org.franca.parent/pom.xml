@@ -8,7 +8,7 @@
 
 	<groupId>org.franca</groupId>
 	<artifactId>org.franca.parent</artifactId>
-	<version>0.12.0-SNAPSHOT</version>
+	<version>0.13.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<parent>
@@ -35,10 +35,13 @@
             <module>../../plugins/org.franca.core</module>
             <module>../../plugins/org.franca.core.edit</module>
             <module>../../plugins/org.franca.core.dsl</module>
+            <module>../../plugins/org.franca.core.dsl.ide</module>
             <module>../../plugins/org.franca.core.dsl.ui</module>
             <module>../../plugins/org.franca.core.ui.addons</module>
             <module>../../plugins/org.franca.deploymodel.dsl</module>
+            <module>../../plugins/org.franca.deploymodel.dsl.ide</module>
             <module>../../plugins/org.franca.deploymodel.dsl.ui</module>
+            <module>../../plugins/org.franca.deploymodel.ext.providers</module>
 			<module>../../plugins/org.franca.generators</module>
 			<module>../../plugins/org.franca.tools.contracts.tracevalidator</module>
             <module>../../plugins/org.franca.connectors.dbus</module>
@@ -71,6 +74,8 @@
             <module>../../features/org.franca.ui.feature.sdk</module>
             <module>../../features/org.franca.ui.addons.feature</module>
             <module>../../features/org.franca.ui.addons.feature.sdk</module>
+            <module>../../features/org.franca.providers.feature</module>
+            <module>../../features/org.franca.providers.feature.sdk</module>
             <module>../../features/org.franca.dbus.feature</module>
             <module>../../features/org.franca.dbus.feature.sdk</module>
             <module>../../features/org.franca.dbus.ui.feature</module>

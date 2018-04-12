@@ -7,11 +7,11 @@
  *******************************************************************************/
 package org.franca.deploymodel.dsl.tests
 
-import org.eclipse.xtext.junit4.InjectWith
-import org.eclipselabs.xtext.utils.unittesting.XtextRunner2
-import org.example.spec.SpecCompoundHostsRef.IDataPropertyAccessor
+import org.eclipse.xtext.testing.InjectWith
 import org.example.spec.SpecCompoundHostsRef.Enums.StringProp
+import org.example.spec.SpecCompoundHostsRef.IDataPropertyAccessor
 import org.example.spec.SpecCompoundHostsRef.InterfacePropertyAccessor
+import org.franca.core.dsl.tests.util.XtextRunner2_Franca
 import org.franca.core.franca.FField
 import org.franca.core.franca.FInterface
 import org.franca.core.franca.FStructType
@@ -29,7 +29,7 @@ import static org.junit.Assert.*
 
 import static extension org.franca.core.framework.FrancaHelpers.*
 
-@RunWith(typeof(XtextRunner2))
+@RunWith(typeof(XtextRunner2_Franca))
 @InjectWith(typeof(FDeployTestsInjectorProvider))
 class InterfaceDeployAccessorTest extends DeployAccessorTestBase {
 

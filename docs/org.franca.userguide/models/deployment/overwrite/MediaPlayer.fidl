@@ -1,0 +1,22 @@
+package examples
+
+<** @description : Simplified media playback interface. **> 
+interface MediaPlayer {
+	struct Person {
+		String firstname
+		String surname
+	}
+	
+	struct TrackInfo {
+		String title
+		String album
+		Person composer
+		Person interpret
+	}
+
+	attribute TrackInfo currentTrack
+	
+	method play {
+		in { TrackInfo track }
+	}
+}

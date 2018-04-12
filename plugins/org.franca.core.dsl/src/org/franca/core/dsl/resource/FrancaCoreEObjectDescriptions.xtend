@@ -18,7 +18,7 @@ class FrancaCoreEObjectDescriptions {
 	/** Default-Impl intended for internal reuse */
 	def internalCreateDefault(EObject o){
 		val qn = o.getFullyQualifiedName
-		if(qn!=null){
+		if(qn!==null){
 			return EObjectDescription::create(qn,o)			
 		}
 		return null
@@ -39,7 +39,7 @@ class FrancaCoreEObjectDescriptions {
 			return m.internalCreateDefault
 		}
 		val qn = m.getFullyQualifiedName
-		if(qn!=null){
+		if(qn!==null){
 			val importedResources = m.imports?.map[EcoreUtil2::getResource(m.eResource,importURI)].filterNull
 			val importUris = importedResources.map[URI].join(SEPARATOR_CHAR)
 			val keys = newHashMap(USER_KEY_IMPORT_URIS -> importUris)

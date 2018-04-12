@@ -84,7 +84,7 @@ class InitializerMapper {
 		var EObject i = e
 		do {
 			i = i.eContainer
-		} while (i!=null && !(i instanceof FInitializerExpression))
+		} while (i!==null && !(i instanceof FInitializerExpression))
 		i as FInitializerExpression
 	}
 	

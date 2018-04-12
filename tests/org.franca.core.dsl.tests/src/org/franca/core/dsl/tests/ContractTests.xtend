@@ -1,14 +1,14 @@
 package org.franca.core.dsl.tests
 
-import org.eclipse.xtext.junit4.InjectWith
-import org.eclipselabs.xtext.utils.unittesting.XtextRunner2
-import org.eclipselabs.xtext.utils.unittesting.XtextTest
+import com.itemis.xtext.testing.XtextTest
+import org.eclipse.xtext.testing.InjectWith
 import org.franca.core.dsl.FrancaIDLTestsInjectorProvider
+import org.franca.core.dsl.tests.util.XtextRunner2_Franca
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
-@RunWith(typeof(XtextRunner2))
+@RunWith(typeof(XtextRunner2_Franca))
 @InjectWith(typeof(FrancaIDLTestsInjectorProvider))
 class ContractTests extends XtextTest {//ValidationTestBase {
 
@@ -23,7 +23,8 @@ class ContractTests extends XtextTest {//ValidationTestBase {
 	def void validateValidExpressionsContainingErrorKeywords() {
 		testFile(basePath + "ValidUsageOfErrorKeywords.fidl")
 		assertConstraints(
-			issues.inLine(14).theOneAndOnlyContains("Method is not covered by contract, not needed?")
+			issues.oneOfThemContains("Method is not covered by contract, not needed?")
+				.nOfThemContain(4, "This transition's guard might overlap with other transitions with same trigger")
 		)
 	}
 	

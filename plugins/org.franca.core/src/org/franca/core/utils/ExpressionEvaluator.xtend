@@ -8,19 +8,20 @@
 package org.franca.core.utils;
 
 import java.math.BigInteger
-import org.franca.core.franca.FExpression
-import org.franca.core.franca.FIntegerConstant
 import org.franca.core.franca.FBinaryOperation
+import org.franca.core.franca.FBooleanConstant
+import org.franca.core.franca.FCompoundInitializer
+import org.franca.core.franca.FConstantDef
+import org.franca.core.franca.FCurrentError
+import org.franca.core.franca.FExpression
+import org.franca.core.franca.FField
+import org.franca.core.franca.FInitializerExpression
+import org.franca.core.franca.FIntegerConstant
+import org.franca.core.franca.FMethodErrorEnumRef
 import org.franca.core.franca.FOperator
 import org.franca.core.franca.FQualifiedElementRef
-import org.franca.core.franca.FConstantDef
-
-import org.franca.core.franca.FBooleanConstant
-import org.franca.core.franca.FUnaryOperation
-import org.franca.core.franca.FField
-import org.franca.core.franca.FCompoundInitializer
-import org.franca.core.franca.FInitializerExpression
 import org.franca.core.franca.FStringConstant
+import org.franca.core.franca.FUnaryOperation
 
 class ExpressionEvaluator {
 	
@@ -84,8 +85,8 @@ class ExpressionEvaluator {
 	}
 
 	def static private dispatch Object eval (FUnaryOperation it) {
-		val e = operand.eval
-		if (e==null)
+		val e = operand?.eval
+		if (e===null)
 			return null
 			
 		switch (op) {
@@ -97,9 +98,9 @@ class ExpressionEvaluator {
 	}
 
 	def static private dispatch Object eval (FBinaryOperation it) {
-		val e1 = left.eval
-		val e2 = right.eval
-		if (e1==null || e2==null)
+		val e1 = left?.eval
+		val e2 = right?.eval
+		if (e1===null || e2===null)
 			return null
 		
 		switch (op) {
@@ -122,7 +123,7 @@ class ExpressionEvaluator {
 	}
 
 	def static private dispatch Object eval (FQualifiedElementRef qe) {
-		if (qe.qualifier==null) {
+		if (qe.qualifier===null) {
 			val te = qe.element
 			// TODO: support array types
 			switch(te) {
@@ -139,6 +140,16 @@ class ExpressionEvaluator {
 			} else
 				null
 		}
+	}
+
+	def static private dispatch Object eval (FMethodErrorEnumRef ee) {
+		// cannot evaluate error enums right now
+		null		
+	}
+
+	def static private dispatch Object eval (FCurrentError ee) {
+		// cannot evaluate error enums right now
+		null		
 	}
 
 	def static private evalAux (FInitializerExpression expr) {

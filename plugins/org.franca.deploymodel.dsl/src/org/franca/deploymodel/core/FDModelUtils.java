@@ -8,6 +8,7 @@
 package org.franca.deploymodel.core;
 
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.xtext.EcoreUtil2;
 import org.franca.core.franca.FType;
 import org.franca.core.franca.FTypeRef;
 import org.franca.deploymodel.dsl.fDeploy.FDArgument;
@@ -17,7 +18,6 @@ import org.franca.deploymodel.dsl.fDeploy.FDElement;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumerator;
 import org.franca.deploymodel.dsl.fDeploy.FDField;
 import org.franca.deploymodel.dsl.fDeploy.FDGeneric;
-import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance;
 import org.franca.deploymodel.dsl.fDeploy.FDModel;
 import org.franca.deploymodel.dsl.fDeploy.FDOverwriteElement;
 import org.franca.deploymodel.dsl.fDeploy.FDRootElement;
@@ -32,52 +32,30 @@ import org.franca.deploymodel.dsl.fDeploy.FDValue;
 public class FDModelUtils {
 
 	public static FDModel getModel(EObject obj) {
-		EObject x = obj;
-		while (x != null) {
-			if (x instanceof FDModel)
-				return (FDModel) x;
-			x = x.eContainer();
-		};
-		return null;
+		if (obj==null)
+			return null;
+		else
+			return EcoreUtil2.getContainerOfType(obj, FDModel.class);
 	}
 
 	public static FDRootElement getRootElement(FDElement obj) {
-		EObject x = obj;
-		while (x != null) {
-			if (x instanceof FDRootElement)
-				return (FDRootElement) x;
-			x = x.eContainer();
-		};
-		return null;
+		if (obj==null)
+			return null;
+		else
+			return EcoreUtil2.getContainerOfType(obj, FDRootElement.class);
 	}
 
 	/**
-	 * Check if a property value is of type FDInterfaceInstance.
-	 * 
-	 * @param val the property value
-	 * @return true if the value is of type FDInterfaceInstance, false otherwise
-	 */
-	public static boolean isInstanceRef(FDValue val) {
-		if (val instanceof FDGeneric) {
-			return getInstanceRef(val) != null;
-		}
-		return false;
-	}
-
-	/**
-	 * Get the FDInterfaceInstance value of a property value.
+	 * Get the value of a property value, if it is a EObject reference.
 	 * 
 	 * This will return null if the property has a different type.
 	 * 
 	 * @param val the property value
-	 * @return the property value (if it is a FDInterfaceInstance) or null
+	 * @return the property value (i.e., the reference) or null
 	 */
-	public static FDInterfaceInstance getInstanceRef(FDValue val) {
+	public static EObject getGenericRef(FDValue val) {
 		if (val instanceof FDGeneric) {
-			EObject vgen = ((FDGeneric)val).getValue();
-			if (vgen!=null && (vgen instanceof FDInterfaceInstance)) {
-				return (FDInterfaceInstance)vgen;
-			}
+			return ((FDGeneric)val).getValue();
 		}
 		return null;
 	}

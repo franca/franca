@@ -68,16 +68,45 @@ todo[The ExpressionEvaluator will be described here.]
 
 section2:FrancaModelUtils_IntegerTypeConverter[Converting integer types with the IntegerTypeConverter]
 
-todo[The IntegerTypeConverter will be described here.]
+Some downstream tools only process primitive integer types and cannot handle ranged integer types.
+Franca provides the helper class code[Java][IntegerTypeConverter] which can do conversions from
+ranged integer types to predefined basic integer types and vice versa.
+ The following code snippet shows how to convert ranged integer types to primitive integers:
 
+code[Java][
+public void generateCode(FModel model) {
+	boolean haveUnsigned = true;
+	IntegerTypeConverter.removeRangedIntegers(model, haveUnsigned);
+	generateCode(model);
+}
+]
 
+The function code[Java][removeRangedIntegers] will choose the smallest primitive type
+which can still represent the given number range.  
+Therefore, for this conversion from ranged integers to predefined integers it can be configured
+if in the target type system e[unsigned] types are available or not. E.g., for converting
+a Franca model towards a Java platform the usage of unsigned types can be disallowed.
+
+The class code[Java][IntegerTypeConverter] provides a second static member function
+converting primitive integer types to ranged integers. There is a fixed mapping from
+each primitive type to the proper range of the ranged integer. This is a code example showing
+how to use this conversion function:
+
+code[Java][
+	FModel model = ...;
+	IntegerTypeConverter.removePredefinedIntegers(model);
+	processModel(model);
+]  
+
+This class can be used as a preprocessor for existing code generators or transformations. 
+For both utility functions, the input model is transformed in-place,
+i.e., its FTypeRef objects are converted directly.
 
 
 section:FrancaModelAPIReference_Section_FModel[API for Franca models, interfaces and type collections]
 
 %% ------------------------------------------------------------
-todo[The ModelAPI reference section will be updated soon.]
-
+todo[Some details of the ModelAPI reference section might be outdated.]
 
 This section describes the FModel class, which is the root class for each Franca model.
 			It also describes FTypeCollection as well as FInterface and all its elements (e.g.,

@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.CoreException
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.resource.Resource
+import org.eclipse.xtext.EcoreUtil2
 import org.franca.core.franca.FArrayType
 import org.franca.core.franca.FBroadcast
 import org.franca.core.franca.FCompoundType
@@ -57,6 +58,10 @@ class FrancaModelExtensions {
 		getParentObject(obj, typeof(FContract))
 	}
 	
+	def static getEnumeration(FEnumerator e) {
+		EcoreUtil2.getContainerOfType(e, FEnumerationType)
+	}
+	
 	def private static <T extends EObject> getParentObject (EObject it, Class<T> clazz) {
 		var x = it
 		
@@ -64,26 +69,26 @@ class FrancaModelExtensions {
 			x = x.eContainer
 			if (clazz.isInstance(x))
 				return x as T
-		} while (x!=null)
+		} while (x!==null)
 		
 		return null
 	}
 
 	def static getUniqueName(FMethod elem) {
-		if (elem.selector==null)
+		if (elem.selector===null)
 			elem.name
 		else
 			elem.name + ":" + elem.selector
 	}
 	
 	def static hasErrorResponse(FMethod elem) {
-		elem.errorEnum!=null || elem.errors!=null
+		elem.errorEnum!==null || elem.errors!==null
 	}
 
 	def static Iterable<FEnumerator> getAllErrorEnumerators(FMethod m) {
-		if (m.errorEnum!=null) {
+		if (m.errorEnum!==null) {
 			m.errorEnum.allElements.filter(typeof(FEnumerator))
-		} else if (m.errors!=null) {
+		} else if (m.errors!==null) {
 			m.errors.allElements.filter(typeof(FEnumerator))
 		} else {
 			newArrayList()
@@ -91,7 +96,7 @@ class FrancaModelExtensions {
 	}
 	
 	def static getUniqueName(FBroadcast elem) {
-		if (elem.selector==null)
+		if (elem.selector===null)
 			elem.name
 		else
 			elem.name + ":" + elem.selector
@@ -99,10 +104,10 @@ class FrancaModelExtensions {
 
 	def static getTriggeringMethod(FEventOnIf event) {
 		var FMethod result = null
-		if (event != null) {
+		if (event !== null) {
 			/*if (result == null)*/ result = event.call
-			if (result == null) result = event.error
-			if (result == null) result = event.respond
+			if (result === null) result = event.error
+			if (result === null) result = event.respond
 		}
 		return result;
 	}
@@ -150,7 +155,7 @@ class FrancaModelExtensions {
 		visited.add(elem)
 		result.add(elem)
 		var i = elem
-		while (base.apply(i) != null) {
+		while (base.apply(i) !== null) {
 			i = base.apply(i);
 			
 			// stop if hierarchy has a cycle, validation will tell this issue to the user 
@@ -215,7 +220,7 @@ class FrancaModelExtensions {
 	 * Get all non-anonymous type collections of a model.
 	 */
 	 def static getNamedTypedCollections(FModel model) {
-	 	model.typeCollections.filter[name!=null && !name.empty]
+	 	model.typeCollections.filter[name!==null && !name.empty]
 	 }
 
 
@@ -242,7 +247,7 @@ class FrancaModelExtensions {
 				visited.add(r)
 				
 				val m = r.getFModel
-				if (m!=null) {
+				if (m!==null) {
 					// add imported models to queue
 					for(imp : m.imports) {
 						val uri = imp.importURI
@@ -256,7 +261,7 @@ class FrancaModelExtensions {
 							// remember imported model
 							if (! visited.contains(res)) {
 								val importedModel = res.getFModel
-								if (importedModel!=null)
+								if (importedModel!==null)
 									imported.add(importedModel)
 	
 								// remember top-level import statement which lead to this import
@@ -283,7 +288,7 @@ class FrancaModelExtensions {
 	}
 
 	def private static getFModel(Resource res) {
-		if (res.contents==null || res.contents.empty) {
+		if (res.contents===null || res.contents.empty) {
 			null
 		} else {
 			val obj = res.contents.get(0)

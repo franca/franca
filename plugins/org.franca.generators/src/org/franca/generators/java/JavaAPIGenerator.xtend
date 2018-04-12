@@ -93,7 +93,7 @@ class JavaAPIGenerator {
 	}
 
 	def genCommentBlockActual (FAnnotationBlock it) '''
-		«IF it!=null»
+		«IF it!==null»
 		/**
 		«FOR e : elements»
 			«genAnnotationElement(e)»
@@ -116,7 +116,7 @@ class JavaAPIGenerator {
 
 	
 	def map2JavaType (FTypeRef it) {
-		if (derived!=null) {
+		if (derived!==null) {
 			"String /*" + derived.name + "*/"  // TODO			
 		} else {
 			switch (predefined) {

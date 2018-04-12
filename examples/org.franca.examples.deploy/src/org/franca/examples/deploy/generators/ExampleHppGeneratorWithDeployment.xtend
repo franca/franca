@@ -7,16 +7,18 @@
  *******************************************************************************/
 package org.franca.examples.deploy.generators
 
+import org.franca.core.franca.FAttribute
 import org.franca.core.franca.FInterface
 import org.franca.core.franca.FMethod
 import org.franca.core.franca.FTypeRef
 import org.franca.core.franca.FBasicTypeId
 import org.franca.deploymodel.core.FDeployedInterface
+
 import org.example.spec.SampleDeploySpec.InterfacePropertyAccessor
 import org.example.spec.SampleDeploySpec.Enums.CallSemantics
 import org.example.spec.SampleDeploySpec.Enums.Encoding
 
-import static extension org.franca.core.framework.FrancaHelpers.*import org.franca.core.franca.FAttribute
+import static extension org.franca.core.framework.FrancaHelpers.*
 
 /**
  * This is an example code generator for Franca interfaces with

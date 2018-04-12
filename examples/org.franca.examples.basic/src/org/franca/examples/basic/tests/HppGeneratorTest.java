@@ -12,9 +12,9 @@ import static org.junit.Assert.assertTrue;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.xtext.junit4.InjectWith;
-import org.eclipse.xtext.junit4.XtextRunner;
-import org.franca.core.dsl.FrancaIDLInjectorProvider;
+import org.eclipse.xtext.testing.InjectWith;
+import org.eclipse.xtext.testing.XtextRunner;
+import org.franca.core.dsl.tests.FrancaIDLInjectorProvider;
 import org.franca.core.dsl.FrancaPersistenceManager;
 import org.franca.core.franca.FInterface;
 import org.franca.core.franca.FModel;

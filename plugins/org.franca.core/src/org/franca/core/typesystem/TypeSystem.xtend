@@ -74,7 +74,7 @@ class TypeSystem {
 	 */
 	def ActualType getTypeOf(FQualifiedElementRef expr) {
 		val te = expr.getEvaluableElement
-		if (te==null)
+		if (te===null)
 			null
 		else
 			typeFor(te)	
@@ -100,7 +100,7 @@ class TypeSystem {
 
 	def private dispatch ActualType checkType (FUnaryOperation it, ActualType expected, EObject loc, EStructuralFeature feat) {
 		// handle incomplete expressions (which might occur during validation)
-		if (operand==null)
+		if (operand===null)
 			return null
 			
 		if (FOperator::NEGATION.equals(op)) {
@@ -127,7 +127,7 @@ class TypeSystem {
 
 	def private dispatch ActualType checkType (FBinaryOperation it, ActualType expected, EObject loc, EStructuralFeature feat) {
 		// handle incomplete expressions (which might occur during validation)
-		if (left==null || right==null) {
+		if (left===null || right===null) {
 			return null
 		}
 		
@@ -136,7 +136,7 @@ class TypeSystem {
 			val t1 = left.checkType(BOOLEAN_TYPE, it, FBINARY_OPERATION__LEFT)
 			val t2 = right.checkType(BOOLEAN_TYPE, it, FBINARY_OPERATION__RIGHT)
 			val ok = expected.checkIsBoolean(loc, feat)
-			if (t1!=null && t2!=null && ok) BOOLEAN_TYPE else null	
+			if (t1!==null && t2!==null && ok) BOOLEAN_TYPE else null	
 		} else if (FOperator::EQUAL.equals(op) || FOperator::UNEQUAL.equals(op)) {
 			// check that both operands have compatible type
 			val t1 = left.checkType(null, it, FBINARY_OPERATION__LEFT)
@@ -178,7 +178,7 @@ class TypeSystem {
 	}
 
 	def private checkOperandsType(ActualType t1, ActualType t2, EObject loc, EStructuralFeature feat) {
-		if (t1==null || t2==null) {
+		if (t1===null || t2===null) {
 			false
 		} else {
 			if (! t2.isCompatibleType(t1) && ! t1.isCompatibleType(t2)) {
@@ -192,15 +192,15 @@ class TypeSystem {
 
 	def private dispatch ActualType checkType(FQualifiedElementRef expr, ActualType expected, EObject loc, EStructuralFeature feat) {
 		val ee = expr.evaluableElement
-		if (ee==null || ee.eIsProxy)
+		if (ee===null || ee.eIsProxy)
 			return null
 
 		val result = typeFor(ee)
-		if (result==null) {
+		if (result===null) {
 			addIssue("expected typed expression", loc, feat)
 			null
 		} else {
-			if (expected==null) {
+			if (expected===null) {
 				result
 			} else {
 				check(result, expected, loc, feat)
@@ -209,7 +209,7 @@ class TypeSystem {
 	}
 
 	def private getEvaluableElement(FQualifiedElementRef expr) {
-		if (expr?.qualifier==null)
+		if (expr?.qualifier===null)
 			expr?.element
 		else
 			expr?.field	
@@ -217,11 +217,11 @@ class TypeSystem {
 
 	def private dispatch ActualType checkType(FMethodErrorEnumRef expr, ActualType expected, EObject loc, EStructuralFeature feat) {
 		val result = typeFor(expr.enumerator)
-		if (result==null) {
+		if (result===null) {
 			addIssue("expected error enumerator", loc, feat)
 			null
 		} else {
-			if (expected==null) {
+			if (expected===null) {
 				result
 			} else {
 				check(result, expected, loc, feat)
@@ -230,7 +230,7 @@ class TypeSystem {
 	}
 
 	def private dispatch ActualType checkType(FCurrentError expr, ActualType expected, EObject loc, EStructuralFeature feat) {
-		if (expected==null) {
+		if (expected===null) {
 			typeFor(expr)
 		} else {
 			if (expected.isEnumeration) {
@@ -261,7 +261,7 @@ class TypeSystem {
 	
 
 	def private checkIsBoolean (ActualType expected, EObject loc, EStructuralFeature feat) {
-		if (expected==null)
+		if (expected===null)
 			return true
 
 		val ok = expected.isBoolean
@@ -275,7 +275,7 @@ class TypeSystem {
 	}	
 
 	def private checkIsInteger (ActualType expected, EObject loc, EStructuralFeature feat) {
-		if (expected==null)
+		if (expected===null)
 			return true
 
 		val ok = expected.isInteger
@@ -289,7 +289,7 @@ class TypeSystem {
 	}	
 
 	def private checkIsFloat (ActualType expected, EObject loc, EStructuralFeature feat) {
-		if (expected==null)
+		if (expected===null)
 			return true
 
 		val ok = expected.isFloat
@@ -303,7 +303,7 @@ class TypeSystem {
 	}
 
 	def private checkIsDouble (ActualType expected, EObject loc, EStructuralFeature feat) {
-		if (expected==null)
+		if (expected===null)
 			return true
 
 		val ok = expected.isDouble
@@ -317,7 +317,7 @@ class TypeSystem {
 	}
 	
 	def private checkIsNumber (ActualType expected, EObject loc, EStructuralFeature feat) {
-		if (expected==null)
+		if (expected===null)
 			return true
 
 		val ok = expected.isNumber
@@ -331,7 +331,7 @@ class TypeSystem {
 	}
 	
 	def private checkIsString (ActualType expected, EObject loc, EStructuralFeature feat) {
-		if (expected==null)
+		if (expected===null)
 			return true
 
 		val ok = expected.isString
@@ -359,7 +359,7 @@ class TypeSystem {
 
 	def static isSameType (ActualType t1, ActualType t2) {
 		return t2.isOfCompatiblePrimitiveType(t1) ||
-			(t1.derived!=null /*&& t2.derived!=null*/ && t1.derived==t2.derived)
+			(t1.derived!==null /*&& t2.derived!=null*/ && t1.derived==t2.derived)
 	}
 
 	def private static getIntegerType (/*FIntegerConstant value*/) {
@@ -399,7 +399,7 @@ class TypeSystem {
 	}
 
 	def private addIssue (String mesg, EObject loc, EStructuralFeature feat) {
-		if (collector!=null)
+		if (collector!==null)
 			collector.addIssue(mesg, loc, feat)
 	}
 	

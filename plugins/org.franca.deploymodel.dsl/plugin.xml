@@ -4,6 +4,7 @@
 <plugin>
   <extension-point id="deploySpecProvider" name="Franca Deployment Specification Provider" schema="schema/deploySpecProvider.exsd"/>
   <extension-point id="deploymentValidator" name="Franca Deployment Model Validator" schema="schema/deploymentValidator.exsd"/>
+  <extension-point id="deploymentExtension" name="Franca Deployment Extension" schema="schema/deploymentExtension.exsd"/>
 
   <extension point="org.eclipse.emf.ecore.generated_package">
     <package 

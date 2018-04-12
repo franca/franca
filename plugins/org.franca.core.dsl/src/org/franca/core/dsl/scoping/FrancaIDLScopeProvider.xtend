@@ -59,7 +59,7 @@ class FrancaIDLScopeProvider extends AbstractDeclarativeScopeProvider {
 		val defaultScope = this.delegateGetScope(_interface, ref)
 
 		// add inherited types to the scope
-		if (_interface.base!=null) {
+		if (_interface.base!==null) {
 			val items = getAllElements(_interface.base).filter(FType)
 			items.scopeFor(defaultScope)
 		} else {
@@ -87,7 +87,7 @@ class FrancaIDLScopeProvider extends AbstractDeclarativeScopeProvider {
 		// add inherited constant definitions to the scope
 		val baseScopeWithInherited =
 			if (context instanceof FInterface) {
-				if (context.base!=null) {
+				if (context.base!==null) {
 					val items = getAllElements(context.base).filter(FConstantDef)
 					items.scopeFor(baseScope)
 				} else {
@@ -120,7 +120,7 @@ class FrancaIDLScopeProvider extends AbstractDeclarativeScopeProvider {
 		// add inherited constant definitions to the scope
 		val baseScopeWithInherited =
 			if (context instanceof FInterface) {
-				if (context.base!=null) {
+				if (context.base!==null) {
 					val items = getAllElements(context.base).filter(FConstantDef)
 					items.scopeFor(baseScope)
 				} else {
@@ -135,12 +135,12 @@ class FrancaIDLScopeProvider extends AbstractDeclarativeScopeProvider {
 	}
 
 
-	def private dump(IScope s, String tag) {
-		println("    " + tag)
-		for(e : s.allElements) {
-			println("        " + e.name + " = " + e.EObjectOrProxy)
-		}
-	}
+//	def private dump(IScope s, String tag) {
+//		println("    " + tag)
+//		for(e : s.allElements) {
+//			println("        " + e.name + " = " + e.EObjectOrProxy)
+//		}
+//	}
 
 	
 	def private IScope getScopeForTransitionContext(FTransition tr, IScope baseScope) {
@@ -148,17 +148,17 @@ class FrancaIDLScopeProvider extends AbstractDeclarativeScopeProvider {
 
 		// add state variables of the enclosing contract to this scope
 		val contract = FrancaModelExtensions.getContract(tr)
-		if (contract!=null) { 
+		if (contract!==null) { 
 			scopes.addAll(contract.variables)
 		}
 		
 		// add the trigger's parameters to this scope
 		val ev = tr.trigger.event
-		if (ev.call!=null) {
+		if (ev.call!==null) {
 			scopes.addAll(ev.call.inArgs)
-		} else if (ev.respond!=null) {
+		} else if (ev.respond!==null) {
 			scopes.addAll(ev.respond.outArgs)
-		} else if (ev.signal!=null) {
+		} else if (ev.signal!==null) {
 			scopes.addAll(ev.signal.outArgs)
 		}
 		
@@ -169,7 +169,7 @@ class FrancaIDLScopeProvider extends AbstractDeclarativeScopeProvider {
 
 	def IScope scope_FQualifiedElementRef_field(FQualifiedElementRef elem, EReference ref) {
 		val qualifier = elem.qualifier
-		if (qualifier == null) {
+		if (qualifier===null) {
 			return IScope.NULLSCOPE
 		}
 		
@@ -189,13 +189,13 @@ class FrancaIDLScopeProvider extends AbstractDeclarativeScopeProvider {
 		val List<EObject> scopes = Lists.newArrayList
 
 		val ev = tr.trigger.event
-		if (ev.error!=null) {
+		if (ev.error!==null) {
 			val method = ev.error
 			var errorTypeDefinition = method.errors
-			if (errorTypeDefinition == null) {
+			if (errorTypeDefinition === null) {
 				errorTypeDefinition = method.errorEnum
 			}
-			if (errorTypeDefinition != null) {
+			if (errorTypeDefinition !== null) {
 				val allEnums = errorTypeDefinition.allElements.filter(typeof(FEnumerator))
 				scopes += allEnums
 			}			
@@ -205,7 +205,7 @@ class FrancaIDLScopeProvider extends AbstractDeclarativeScopeProvider {
 
 	def IScope scope_FFieldInitializer_element(FCompoundInitializer initializer, EReference ref) {
 		val expected = InitializerMapper.getExpectedType(initializer)
-		if (expected.derived==null)
+		if (expected.derived===null)
 			return IScope.NULLSCOPE
 
 		val Iterable<? extends FModelElement> elements = getAllElements(expected.derived)
@@ -245,7 +245,7 @@ class FrancaIDLScopeProvider extends AbstractDeclarativeScopeProvider {
 				contract.getInterface
 //			}
 
-		if (api==null)
+		if (api===null)
 			IScope.NULLSCOPE
 		else
 			api.getAllMethods.scopeFor([ QualifiedName.create(getUniqueName) ], IScope.NULLSCOPE)
@@ -264,7 +264,7 @@ class FrancaIDLScopeProvider extends AbstractDeclarativeScopeProvider {
 				contract.getInterface
 //			}
 
-		if (api==null)
+		if (api===null)
 			IScope.NULLSCOPE
 		else
 			api.getAllBroadcasts.scopeFor([ QualifiedName.create(getUniqueName) ], IScope.NULLSCOPE)
@@ -287,7 +287,7 @@ class FrancaIDLScopeProvider extends AbstractDeclarativeScopeProvider {
 				contract.getInterface
 //			}
 
-		if (api==null)
+		if (api===null)
 			IScope.NULLSCOPE
 		else
 			api.getAllAttributes.scopeFor
@@ -295,7 +295,7 @@ class FrancaIDLScopeProvider extends AbstractDeclarativeScopeProvider {
 	
 	def private FContract getContract(EObject obj) {
 		var i = obj
-		while (i!=null && !(i instanceof FContract)) {
+		while (i!==null && !(i instanceof FContract)) {
 			i = i.eContainer
 		}
 		return i as FContract

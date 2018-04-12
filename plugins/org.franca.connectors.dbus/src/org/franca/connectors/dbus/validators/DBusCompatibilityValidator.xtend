@@ -51,12 +51,12 @@ class DBusCompatibilityValidator implements IFrancaExternalValidator {
 	static var warningsAsErrors = false
 
 	/** Deactivate this validator. */
-	def static setActive (boolean flag) {
+	def static setActive(boolean flag) {
 		active = flag
 	}	
 
 	/** Report errors instead of warnings. */
-	def static setWarningsAsErrors (boolean flag) {
+	def static setWarningsAsErrors(boolean flag) {
 		warningsAsErrors = flag
 	}	
 
@@ -78,14 +78,14 @@ class DBusCompatibilityValidator implements IFrancaExternalValidator {
 		all.filter(typeof(FBroadcast)).check(issues)
 	}
 
-	def private check (Iterable<? extends EObject> items, ValidationMessageAcceptor issues) {
+	def private check(Iterable<? extends EObject> items, ValidationMessageAcceptor issues) {
 		for(i : items)
 			i.checkItem(issues)
 	}
 
-	def private dispatch checkItem (FTypeRef item, ValidationMessageAcceptor issues) {
+	def private dispatch checkItem(FTypeRef item, ValidationMessageAcceptor issues) {
 		val t = item.actualPredefined
-		if (t!=null) {
+		if (t!==null) {
 			if (t==FBasicTypeId::INT8) {
 				issues.warning(
 					"Int8 type is not supported by D-Bus",
@@ -99,11 +99,11 @@ class DBusCompatibilityValidator implements IFrancaExternalValidator {
 		}
 	}
 
-	def private dispatch checkItem (FEnumerator item, ValidationMessageAcceptor issues) {
-		if (item.value!=null) {
+	def private dispatch checkItem(FEnumerator item, ValidationMessageAcceptor issues) {
+		if (item.value!==null) {
 			try {
 				val v = item.value.evaluateIntegerOrParseString
-				if (v!=null) {
+				if (v!==null) {
 					if (v.signum == -1) {
 						issues.warning(
 							"Enumerator values must not be negative",
@@ -118,7 +118,7 @@ class DBusCompatibilityValidator implements IFrancaExternalValidator {
 		}
 	}
 
-	def private dispatch checkItem (FMapType item, ValidationMessageAcceptor issues) {
+	def private dispatch checkItem(FMapType item, ValidationMessageAcceptor issues) {
 		val key = item.keyType
 		if (! key.isProperDictKey) {
 			issues.warning(
@@ -127,8 +127,8 @@ class DBusCompatibilityValidator implements IFrancaExternalValidator {
 		}
 	}
 
-	def private dispatch checkItem (FStructType item, ValidationMessageAcceptor issues) {
-		if (item.base!=null) {
+	def private dispatch checkItem(FStructType item, ValidationMessageAcceptor issues) {
+		if (item.base!==null) {
 			issues.info(
 				"Inheritance for struct types has to be emulated in D-Bus",
 				item, FSTRUCT_TYPE__BASE)
@@ -141,22 +141,22 @@ class DBusCompatibilityValidator implements IFrancaExternalValidator {
 		}
 	}
 
-	def private dispatch checkItem (FUnionType item, ValidationMessageAcceptor issues) {
-		if (item.base!=null) {
+	def private dispatch checkItem(FUnionType item, ValidationMessageAcceptor issues) {
+		if (item.base!==null) {
 			issues.warning(
 				"Inheritance for unions is not supported by D-Bus",
 				item, FUNION_TYPE__BASE)
 		}
 	}
 
-	def private dispatch checkItem (FInterface item, ValidationMessageAcceptor issues) {
-		if (item.base!=null) {
+	def private dispatch checkItem(FInterface item, ValidationMessageAcceptor issues) {
+		if (item.base!==null) {
 			issues.warning(
 				"Inheritance for interfaces is not supported in D-Bus",
 				item, FINTERFACE__BASE)
 		}
 
-		if (item.managedInterfaces!=null && item.managedInterfaces.size>0) {
+		if (item.managedInterfaces!==null && item.managedInterfaces.size>0) {
 			issues.warning(
 				"Managed interfaces are not supported in D-Bus",
 				item, FINTERFACE__MANAGED_INTERFACES)

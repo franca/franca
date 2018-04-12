@@ -26,59 +26,75 @@ interface InterfaceTest {
 			initial start
 			state start {
 				// XPECT errors --> "invalid type (is enumeration 'Errors', expected Boolean)" at "TC.Errors.Error"
+				// XPECT warnings --> "This transition's guard might overlap with other transitions with same trigger" at "[TC.Errors.Error]"
 				on error forceEnumError [TC.Errors.Error] -> start
 				
 				// XPECT errors --> "Couldn't resolve reference to FEvaluableElement 'TC.Errors'." at "TC.Errors"
+				// XPECT warnings --> "This transition's guard might overlap with other transitions with same trigger" at "[TC.Errors]"
 				on error forceEnumError [TC.Errors] -> start
 				
 				// XPECT errors --> "Couldn't resolve reference to FEvaluableElement 'TC'." at "TC"
+				// XPECT warnings --> "This transition's guard might overlap with other transitions with same trigger" at "[TC]"
 				on error forceEnumError [TC] -> start
 				
 				// XPECT errors --> "mismatched input ']' expecting '.'" at "]"
+				// XPECT warnings --> "This transition's guard might overlap with other transitions with same trigger" at "[errordef]"
 				on error forceEnumError [errordef] -> start
 
 
 				// XPECT errors --> "invalid type (is enumeration 'Errors', expected Boolean)" at "TC.Errors.Error"
+				// XPECT warnings --> "This transition's guard might overlap with other transitions with same trigger" at "[!TC.Errors.Error]"
 				on error forceEnumError [!TC.Errors.Error] -> start
 				
 				// XPECT errors --> "Couldn't resolve reference to FEvaluableElement 'TC.Errors'." at "TC.Errors"
+				// XPECT warnings --> "This transition's guard might overlap with other transitions with same trigger" at "[!TC.Errors]"
 				on error forceEnumError [!TC.Errors] -> start
 				
 				// XPECT errors --> "Couldn't resolve reference to FEvaluableElement 'TC'." at "TC"
+				// XPECT warnings --> "This transition's guard might overlap with other transitions with same trigger" at "[!TC]"
 				on error forceEnumError [!TC] -> start
 				
 				// XPECT errors --> "mismatched input ']' expecting '.'" at "]"
+				// XPECT warnings --> "This transition's guard might overlap with other transitions with same trigger" at "[!errordef]"
 				on error forceEnumError [!errordef] -> start
 								
 				// XPECT errors --> "Couldn't resolve reference to FEvaluableElement 'TC'." at "TC"
+				// XPECT warnings --> "This transition's guard might overlap with other transitions with same trigger" at "[errorval == TC]"
 				on error forceEnumError [errorval == TC] -> start
 
 				/* XPECT errors ---
 					"Couldn't resolve reference to FEvaluableElement 'TC'." at "TC"
 					"mismatched input '==' expecting '.'" at "=="
 				--- */
+				// XPECT warnings --> "This transition's guard might overlap with other transitions with same trigger" at "[errordef == TC]"
 				on error forceEnumError [errordef == TC] -> start
 				
 				// XPECT errors --> "Couldn't resolve reference to FEvaluableElement 'TC'." at "TC"
-
+				// XPECT warnings --> "This transition's guard might overlap with other transitions with same trigger" at "[errordef.Error == TC]"
 				on error forceEnumError [errordef.Error == TC] -> start
-				// XPECT errors --> "Couldn't resolve reference to FEvaluableElement 'TC.Errors'." at "TC.Errors"
 
+				// XPECT errors --> "Couldn't resolve reference to FEvaluableElement 'TC.Errors'." at "TC.Errors"
+				// XPECT warnings --> "This transition's guard might overlap with other transitions with same trigger" at "[errorval == TC.Errors]"
 				on error forceEnumError [errorval == TC.Errors] -> start
-				// XPECT errors --> "Couldn't resolve reference to FEvaluableElement 'TC.Errors'." at "TC.Errors"
 
+				// XPECT errors --> "Couldn't resolve reference to FEvaluableElement 'TC.Errors'." at "TC.Errors"
+				// XPECT warnings --> "This transition's guard might overlap with other transitions with same trigger" at "[errordef.Error == TC.Errors]"
 				on error forceEnumError [errordef.Error == TC.Errors] -> start
 
 				// XPECT errors --> "Couldn't resolve reference to FEvaluableElement 'TC.OtherErrors'." at "TC.OtherErrors"
+				// XPECT warnings --> "This transition's guard might overlap with other transitions with same trigger" at "[errorval == TC.OtherErrors]"
 				on error forceEnumError [errorval == TC.OtherErrors] -> start
 
 				// XPECT errors --> "Couldn't resolve reference to FEvaluableElement 'TC.OtherErrors'." at "TC.OtherErrors"
+				// XPECT warnings --> "This transition's guard might overlap with other transitions with same trigger" at "[errordef.Error == TC.OtherErrors]"
 				on error forceEnumError [errordef.Error == TC.OtherErrors] -> start
 
 				// XPECT errors --> "mismatched input '==' expecting '.'" at "=="
+				// XPECT warnings --> "This transition's guard might overlap with other transitions with same trigger" at "[errordef == otherError]"
 				on error forceEnumError [errordef == otherError] -> start
 
 				// XPECT errors --> "mismatched input '==' expecting '.'" at "=="
+				// XPECT warnings --> "This transition's guard might overlap with other transitions with same trigger" at "[errordef == savedError]"
 				on error forceEnumError [errordef == savedError] -> start
 				
 				// this would be valid if some sort of reflection would be valid:
@@ -86,12 +102,14 @@ interface InterfaceTest {
 					"Couldn't resolve reference to FEvaluableElement 'TC.Errors'." at "TC.Errors"
 					"mismatched input '==' expecting '.'" at "=="
 				--- */
+				// XPECT warnings --> "This transition's guard might overlap with other transitions with same trigger" at "[errordef == TC.Errors]"
 				on error forceEnumError [errordef == TC.Errors] -> start
 
 				/* XPECT errors ---
 					"Couldn't resolve reference to FEvaluableElement 'TC.OtherErrors'." at "TC.OtherErrors"
 					"mismatched input '==' expecting '.'" at "=="
 				--- */
+				// XPECT warnings --> "This transition's guard might overlap with other transitions with same trigger" at "[errordef == TC.OtherErrors]"
 				on error forceEnumError [errordef == TC.OtherErrors] -> start
 
 			}

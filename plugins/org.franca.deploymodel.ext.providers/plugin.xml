@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension point="org.franca.deploymodel.dsl.deploymentExtension">
+      <validator
+            class="org.franca.deploymodel.ext.providers.ProviderExtension"
+            name="Provider/Instances deployment extension">
+      </validator>
+   </extension>
+</plugin>

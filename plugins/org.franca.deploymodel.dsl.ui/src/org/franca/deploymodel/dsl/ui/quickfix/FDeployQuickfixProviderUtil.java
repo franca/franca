@@ -27,32 +27,20 @@ import org.franca.deploymodel.dsl.fDeploy.FDArgument;
 import org.franca.deploymodel.dsl.fDeploy.FDArgumentList;
 import org.franca.deploymodel.dsl.fDeploy.FDArray;
 import org.franca.deploymodel.dsl.fDeploy.FDAttribute;
-import org.franca.deploymodel.dsl.fDeploy.FDBoolean;
 import org.franca.deploymodel.dsl.fDeploy.FDBroadcast;
-import org.franca.deploymodel.dsl.fDeploy.FDComplexValue;
 import org.franca.deploymodel.dsl.fDeploy.FDElement;
-import org.franca.deploymodel.dsl.fDeploy.FDEnumType;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumValue;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumeration;
 import org.franca.deploymodel.dsl.fDeploy.FDField;
-import org.franca.deploymodel.dsl.fDeploy.FDGeneric;
-import org.franca.deploymodel.dsl.fDeploy.FDInteger;
 import org.franca.deploymodel.dsl.fDeploy.FDInterface;
-import org.franca.deploymodel.dsl.fDeploy.FDInterfaceInstance;
-import org.franca.deploymodel.dsl.fDeploy.FDInterfaceRef;
 import org.franca.deploymodel.dsl.fDeploy.FDMethod;
-import org.franca.deploymodel.dsl.fDeploy.FDPredefinedTypeId;
 import org.franca.deploymodel.dsl.fDeploy.FDProperty;
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl;
-import org.franca.deploymodel.dsl.fDeploy.FDString;
 import org.franca.deploymodel.dsl.fDeploy.FDStruct;
 import org.franca.deploymodel.dsl.fDeploy.FDTypeDefinition;
-import org.franca.deploymodel.dsl.fDeploy.FDTypeRef;
 import org.franca.deploymodel.dsl.fDeploy.FDTypedef;
 import org.franca.deploymodel.dsl.fDeploy.FDTypes;
 import org.franca.deploymodel.dsl.fDeploy.FDUnion;
-import org.franca.deploymodel.dsl.fDeploy.FDValue;
-import org.franca.deploymodel.dsl.fDeploy.FDValueArray;
 import org.franca.deploymodel.dsl.fDeploy.FDeployFactory;
 
 public class FDeployQuickfixProviderUtil {
@@ -121,8 +109,8 @@ public class FDeployQuickfixProviderUtil {
 			}
 		}
 		if (attributeTarget != null) {
-			FDAttribute attribute = FDeployFactory.eINSTANCE
-					.createFDAttribute();
+			FDAttribute attribute = FDeployFactory.eINSTANCE.createFDAttribute();
+			init(attribute);
 			attribute.setTarget(attributeTarget);
 			deploymentInterface.getAttributes().add(attribute);
 			return attribute;
@@ -167,8 +155,7 @@ public class FDeployQuickfixProviderUtil {
 
 		FBroadcast broadcastTarget = null;
 
-		for (FBroadcast broadcast : deploymentInterface.getTarget()
-				.getBroadcasts()) {
+		for (FBroadcast broadcast : deploymentInterface.getTarget().getBroadcasts()) {
 			if (FrancaModelExtensions.getUniqueName(broadcast).equals(elementName)) {
 				broadcastTarget = broadcast;
 			}

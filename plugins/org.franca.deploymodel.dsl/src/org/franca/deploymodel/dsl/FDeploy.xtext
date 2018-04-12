@@ -23,6 +23,7 @@ import "http://www.eclipse.org/emf/2002/Ecore" as ecore
 // model root
 
 FDModel:
+	('package' name=FQN)?
 	(imports+=Import)*
 	(specifications+=FDSpecification)*
 	(deployments+=FDRootElement)*
@@ -41,9 +42,12 @@ FDSpecification:
 	'}';
 
 FDDeclaration: 
-	'for' host=FDPropertyHost '{'
+	'for' host=PROPERTY_HOST '{'
 		properties+=FDPropertyDecl*
 	'}';
+
+PROPERTY_HOST returns FDPropertyHostType:
+	ID;
 
 FDPropertyDecl:
 	name=ID ':' type=FDTypeRef
@@ -55,18 +59,6 @@ FDPropertyFlag:
 	'default:' default=FDComplexValue;
 
 
-enum FDPropertyHost:
-	providers | instances |
-	type_collections | interfaces |
-	attributes | methods | broadcasts |
-	arguments |
-	struct_fields | union_fields | fields |
-	arrays | structs | unions |
-	enumerations | enumerators |
-	typedefs |
-	strings | numbers | integers | floats | booleans | byte_buffers;
-
-
 // **************************************************************
 // deployment model type system
 
@@ -74,10 +66,10 @@ FDTypeRef:
 	(predefined=FDPredefinedTypeId | complex=FDType) (array='[]')?;
 
 enum FDPredefinedTypeId:
-	Integer | String | Boolean | Interface | Instance;
+	Integer | String | Boolean | Interface;
 
 FDType:
-	FDEnumType;
+	FDEnumType | FDExtensionType;
 
 FDEnumType:
 	'{' enumerators+=FDEnumerator (',' enumerators+=FDEnumerator)* '}';
@@ -85,34 +77,44 @@ FDEnumType:
 FDEnumerator:
 	name=ID;
 
+FDExtensionType:
+	name=ID;
 
 // **************************************************************
 // content definition (model part)
 
 FDRootElement:
-	FDProvider | FDTypes | FDInterface;
+	FDExtensionRoot | FDTypes | FDInterface;
 
 FDElement:
-	FDRootElement | FDInterfaceInstance |
+	FDRootElement |
+	FDExtensionElement |
 	FDAttribute | FDOperation | FDArgument |
 	FDTypeDefinition | FDField | FDEnumeration | FDEnumValue;
 
-FDProvider:
+FDAbstractExtensionElement:
+	FDExtensionRoot | FDExtensionElement;
+	
+FDExtensionRoot:
 	'define' spec=[FDSpecification|FQN]
-	'for' 'provider' name=FQN
+	'for' tag=ID (target=[ecore::EObject|FQN])? ('as' name=FQN)?
 	'{'
 		('use' use+=[FDRootElement|FQN])*
 
-		// the own properties of this interface provider
+		// the own properties of this root element
 		properties=FDPropertySet
 		
-		// instances of interfaces
-		instances+=FDInterfaceInstance*
+		// child elements of this root
+		elements+=FDExtensionElement*
 	'}';
 
-FDInterfaceInstance:
-	'instance' target=[fidl::FInterface|FQN] ('as' name=FQN)? '{'
+FDExtensionElement:
+	tag=ID (target=[ecore::EObject|FQN])? ('as' name=FQN)? '{'
+		// own properties
 		properties=FDPropertySet
+		
+		// child elements
+		elements+=FDExtensionElement*
 	'}';
 
 FDTypes:

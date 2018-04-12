@@ -50,7 +50,7 @@ class Franca2IdlConverter {
 		'''
 		«typeCollection.generateComment»
 		/// @remark This has been generated from Franca type collection '«typename»'.
-		«IF typeCollection.version!=null»
+		«IF typeCollection.version!==null»
 		«typeCollection.version.transformVersion»
 		«ENDIF»
 		interface «typename» {
@@ -78,18 +78,18 @@ class Franca2IdlConverter {
 	'''
 		«fInterface.generateComment»
 		/// @remark This has been generated from Franca interface '«fInterface.name»'.
-		«IF fInterface.version!=null»
+		«IF fInterface.version!==null»
 		«fInterface.version.transformVersion»
 		«ENDIF»
-		interface «fInterface.name»«IF baseInterface!=null»:«baseInterface»«ENDIF» {
+		interface «fInterface.name»«IF baseInterface!==null»:«baseInterface»«ENDIF» {
 			«fInterface.attributes?.map[transformAttribute].join('\n')»
 			«fInterface.methods?.map[transformMethod].join('\n')»
 			«types»
 			«constants»
 		};
-		«IF broadcasts!=null && broadcasts!=''»
+		«IF broadcasts!==null && broadcasts!=''»
 		/// @remark This client interface has been generated from Franca interface '«fInterface.name»'.
-		«IF fInterface.version!=null»
+		«IF fInterface.version!==null»
 		«fInterface.version.transformVersion»
 		«ENDIF»
 		interface «fInterface.name»_client {
@@ -114,7 +114,7 @@ class Franca2IdlConverter {
 					var baseStruct = type.base?.name
 					'''
 					«type.generateComment»
-					struct «type.name» «IF baseStruct!=null»:«baseStruct» «ENDIF»{
+					struct «type.name» «IF baseStruct!==null»:«baseStruct» «ENDIF»{
 						«fieldContent»
 					};
 					''' 
@@ -125,7 +125,7 @@ class Franca2IdlConverter {
 					
 					'''
 					«type.generateComment»
-					union «type.name» «IF baseUnion!=null»:«baseUnion» «ENDIF»{
+					union «type.name» «IF baseUnion!==null»:«baseUnion» «ENDIF»{
 						«fieldContent»
 					};
 					''' 
@@ -136,7 +136,7 @@ class Franca2IdlConverter {
 					
 					'''
 					«type.generateComment»
-					enum «type.name» «IF baseEnum!=null»:«baseEnum» «ENDIF»{
+					enum «type.name» «IF baseEnum!==null»:«baseEnum» «ENDIF»{
 						«content»
 					};
 					''' 	
@@ -173,8 +173,8 @@ class Franca2IdlConverter {
 	 * Join a pair of strings. Use separator even if there is no second item of pair.
 	 */
 	def private static String joinPair(Pair<String, String> pair, CharSequence separator) {
-		val sep = if (separator==null) "" else separator
-		if (pair.value==null || pair.value.empty)
+		val sep = if (separator===null) "" else separator
+		if (pair.value===null || pair.value.empty)
 			pair.key + sep
 		else
 			pair.key + sep + pair.value
@@ -183,10 +183,10 @@ class Franca2IdlConverter {
 	def private transformEnumerator(FEnumerator enumerator) {
 		var name = enumerator.name
 		var value = enumerator.value
-		val part1 = '''«name»«IF value!=null» = «NodeModelUtils.getTokenText(NodeModelUtils.getNode(enumerator.value))»«ENDIF»'''
+		val part1 = '''«name»«IF value!==null» = «NodeModelUtils.getTokenText(NodeModelUtils.getNode(enumerator.value))»«ENDIF»'''
 		
 		val comment = enumerator.transformCommentCompact
-		val part2 = if (comment==null || comment.empty) null else "  ///< " + comment 
+		val part2 = if (comment===null || comment.empty) null else "  ///< " + comment 
 		Pair.of(part1, part2)
 	}
 	
@@ -196,7 +196,7 @@ class Franca2IdlConverter {
 		val isArray1 = field.array
 		
 		val comment = field.transformCommentCompact
-		'''«type»«IF isArray1»[ ]«ENDIF» «name»;«IF comment!=null && !comment.empty»  ///< «comment»«ENDIF»'''
+		'''«type»«IF isArray1»[ ]«ENDIF» «name»;«IF comment!==null && !comment.empty»  ///< «comment»«ENDIF»'''
 	}
 		
 		
@@ -237,7 +237,7 @@ class Franca2IdlConverter {
 	
 	def private transformParamComment(FArgument arg, String tag) {
 		val txt = arg.transformCommentCompact
-		if (txt==null || txt.empty)
+		if (txt===null || txt.empty)
 			null
 		else
 			"@param " + arg.name + " " + tag + txt.toFirstUpper
@@ -256,7 +256,7 @@ class Franca2IdlConverter {
 	}
 
 	def private transformType2TypeString(FTypeRef ref) {
-		if (ref.derived == null) {
+		if (ref.derived === null) {
 			ref.transformBasicType
 			}
 		else {
@@ -304,10 +304,6 @@ class Franca2IdlConverter {
 		element.generateComment("", newArrayList)
 	}
 	
-	def private generateComment(FModelElement element, String tag) {
-		element.generateComment(tag, newArrayList)
-	}
-	
 	def private generateComment(FModelElement element, Iterable<String> additionalLines) {
 		element.generateComment("", additionalLines)
 	}
@@ -344,7 +340,7 @@ class Franca2IdlConverter {
 		val others = element.comment?.elements?.filter[type!=FAnnotationType.DESCRIPTION]
 		val remainder = others?.map[
 			val t = type?.name()
-			if (t!=null)
+			if (t!==null)
 				t.toLowerCase + "='" + toSingleLine + "'"
 			else
 				rawText.toSingleLine.replace("@", "").toFirstUpper
@@ -368,7 +364,7 @@ class Franca2IdlConverter {
 	 */
 	def private Iterable<String> transformComment(FModelElement element){
  		val result = element.comment?.elements?.map[plainText]?.flatten
- 		if (result!=null)
+ 		if (result!==null)
  			result
  		else
  			newArrayList

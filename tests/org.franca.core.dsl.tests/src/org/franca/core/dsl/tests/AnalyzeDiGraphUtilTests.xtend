@@ -3,10 +3,9 @@ package org.franca.core.dsl.tests
 import com.google.common.collect.ArrayListMultimap
 import com.google.common.collect.Multimap
 import com.google.inject.Inject
-import org.eclipse.xtext.junit4.InjectWith
-import org.eclipse.xtext.xbase.lib.IntegerRange
-import org.eclipselabs.xtext.utils.unittesting.XtextRunner2
+import org.eclipse.xtext.testing.InjectWith
 import org.franca.core.dsl.FrancaIDLTestsInjectorProvider
+import org.franca.core.dsl.tests.util.XtextRunner2_Franca
 import org.franca.core.dsl.validation.util.DiGraphAnalyzationUtil
 import org.franca.core.utils.digraph.Digraph
 import org.junit.Test
@@ -14,7 +13,7 @@ import org.junit.runner.RunWith
 
 import static org.junit.Assert.*
 
-@RunWith(typeof(XtextRunner2))
+@RunWith(typeof(XtextRunner2_Franca))
 @InjectWith(typeof(FrancaIDLTestsInjectorProvider))
 class DiGraphAnalyzationUtilsTests extends ValidationTestBase {
 	@Inject extension DiGraphAnalyzationUtil 
