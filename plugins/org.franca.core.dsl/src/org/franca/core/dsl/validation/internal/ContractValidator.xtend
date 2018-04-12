@@ -174,8 +174,13 @@ class ContractValidator {
 	}
 
 	def static void checkGuard(ValidationMessageReporter reporter, FGuard guard) {
-		TypesValidator.checkExpression(reporter, guard.getCondition(), TypeSystem.BOOLEAN_TYPE, guard,
-			FGUARD__CONDITION)
+		val ok = TypesValidator.checkExpression(reporter, guard.getCondition(),
+			TypeSystem.BOOLEAN_TYPE, guard, FGUARD__CONDITION)
+			
+		if (ok) {
+			if (guard.isAlwaysTrue) {
+				reporter.reportWarning("Guard condition always evaluates to true", guard, FGUARD__CONDITION)
+			}
 		}
 	}
 
