@@ -8,6 +8,7 @@
 package org.franca.core.dsl.validation.internal
 
 import java.util.List
+import java.util.Set
 import org.eclipse.emf.common.util.TreeIterator
 import org.eclipse.emf.ecore.util.EcoreUtil
 import org.franca.core.FrancaModelExtensions
@@ -25,12 +26,16 @@ import org.franca.core.franca.FGuard
 import org.franca.core.franca.FInterface
 import org.franca.core.franca.FMethod
 import org.franca.core.franca.FQualifiedElementRef
+import org.franca.core.franca.FState
 import org.franca.core.franca.FTransition
 import org.franca.core.franca.FTrigger
 import org.franca.core.typesystem.ActualType
 import org.franca.core.typesystem.TypeSystem
+import org.franca.core.utils.ExpressionEvaluator
 
 import static org.franca.core.franca.FrancaPackage.Literals.*
+
+import static extension org.franca.core.contracts.FEventUtils.*
 
 class ContractValidator {
 
@@ -55,7 +60,7 @@ class ContractValidator {
 		while (contents.hasNext()) {
 			val tt = contents.next
 			if (tt instanceof FTransition) {
-				var FEventOnIf ev = tt.trigger.event
+				val ev = tt.trigger.event
 
 				// during editing the model, there might not be an event right now
 				if (ev !== null) {
@@ -94,12 +99,51 @@ class ContractValidator {
 		}
 	}
 
+	def static void checkState(ValidationMessageReporter reporter, FState state) {
+		val Set<FTransition> visited = newHashSet
+		for(tr : state.transitions) {
+			if (! visited.contains(tr)) {
+				val ev = tr.trigger.event
+				val sameTrigger = state.transitions.filter[trigger.event.isEqual(ev)]
+				visited.addAll(sameTrigger)
+				if (sameTrigger.size > 1) {
+					// this is a group of transitions with same trigger, check order
+					var hadWithoutGuard = false
+					for(i : sameTrigger) {
+						if (hadWithoutGuard) {
+							// there was a previous transition without guard
+							reporter.reportError(
+								"This transition will never fire, it is shadowed by a previous transition", i, FTRANSITION__TRIGGER)
+						} else {
+							// we can only check for existence of guards,
+							// a SMT solver would be needed to check actual overlap-freeness
+							if (i.guard===null || i.guard.isAlwaysTrue) {
+								hadWithoutGuard = true
+								if (sameTrigger.last==i)
+									reporter.reportWarning(
+										"This transition overlaps with previous transitions with same trigger", i, FTRANSITION__TRIGGER)
+								else
+									reporter.reportWarning(
+										"This transition shadows subsequent transitions with same trigger", i, FTRANSITION__TRIGGER)
+							} else {
+								reporter.reportWarning(
+									"This transition's guard might overlap with other transitions with same trigger",
+									i, FTRANSITION__GUARD
+								)
+							}
+						}
+					} 
+				}
+			}
+		}
+	}
+	
 	def static void checkTrigger(ValidationMessageReporter reporter, FTrigger trigger) {
 		val FEventOnIf event = trigger.event
 		
 		// while editing there might be no event right now
 		if (event !== null) {
-			var FMethod method = event.respond
+			val FMethod method = event.respond
 			if (method !== null && method.isFireAndForget) {
 				reporter.reportError("Fire-and-forget method will not send response message", trigger,
 					FTRIGGER__EVENT)
@@ -111,7 +155,7 @@ class ContractValidator {
 		val TypeSystem ts = new TypeSystem
 		val FQualifiedElementRef lhs = assignment.lhs
 		if (lhs.element !== null) {
-			var FEvaluableElement te = lhs.element
+			val FEvaluableElement te = lhs.element
 			if (!(te instanceof FDeclaration)) {
 				reporter.reportError("Left-hand side of assignment must be a state variable", assignment,
 					FASSIGNMENT__LHS)
@@ -132,5 +176,12 @@ class ContractValidator {
 	def static void checkGuard(ValidationMessageReporter reporter, FGuard guard) {
 		TypesValidator.checkExpression(reporter, guard.getCondition(), TypeSystem.BOOLEAN_TYPE, guard,
 			FGUARD__CONDITION)
+		}
 	}
+
+	def static private isAlwaysTrue(FGuard guard) {
+		val res = ExpressionEvaluator.evaluateBoolean(guard.condition)
+		res!==null && res
+	}
+	
 }

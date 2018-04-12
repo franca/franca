@@ -51,6 +51,7 @@ import org.franca.core.franca.FInterface
 import org.franca.core.franca.FMethod
 import org.franca.core.franca.FModel
 import org.franca.core.franca.FQualifiedElementRef
+import org.franca.core.franca.FState
 import org.franca.core.franca.FStructType
 import org.franca.core.franca.FTrigger
 import org.franca.core.franca.FType
@@ -270,6 +271,10 @@ class FrancaIDLValidator extends AbstractFrancaIDLValidator implements Validatio
 	// *****************************************************************************
 	@Check def void checkContract(FContract contract) {
 		ContractValidator::checkContract(this, contract)
+	}
+
+	@Check def void checkState(FState s) {
+		ContractValidator::checkState(this, s)
 	}
 
 	@Check def void checkTrigger(FTrigger trigger) {
