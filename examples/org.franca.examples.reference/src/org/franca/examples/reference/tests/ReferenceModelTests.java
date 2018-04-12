@@ -81,6 +81,7 @@ public class ReferenceModelTests extends XtextTest {
     @Test
     public void test_80_Contract() {
     	testFile("80-Contract.fidl");
+    	assertConstraints(issues.nOfThemContain(2, "This transition's guard might overlap with other transitions with same trigger"));
     }
 
 
