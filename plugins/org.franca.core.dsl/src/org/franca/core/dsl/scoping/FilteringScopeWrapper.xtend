@@ -50,7 +50,7 @@ class FilteringScopeWrapper implements IScope {
 	
 	def private isEvaluable(IEObjectDescription desc) {
 		val clazz = desc?.EObjectOrProxy?.eClass?.instanceClass
-		if (clazz==null)
+		if (clazz===null)
 			false 
 		else
 			clazz.isEvaluable

@@ -9,9 +9,6 @@ package org.franca.deploymodel.dsl
 
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.naming.DefaultDeclarativeQualifiedNameProvider
-import org.eclipse.xtext.nodemodel.util.NodeModelUtils
-import org.franca.deploymodel.dsl.fDeploy.FDInterface
-import org.franca.deploymodel.dsl.fDeploy.FDTypes
 
 class FDeployDeclarativeNameProvider extends DefaultDeclarativeQualifiedNameProvider {
 	

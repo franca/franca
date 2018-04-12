@@ -46,7 +46,7 @@ class WebsocketGeneratorUtils {
 
 	def static getPackage(FInterface api) {
 		val fmodel = api.model
-		if (fmodel==null) {
+		if (fmodel===null) {
 			""
 		} else {
 			fmodel.name

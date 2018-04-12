@@ -102,7 +102,7 @@ class FDeployProposalProvider extends AbstractFDeployProposalProvider {
 		val List<URI> proposedURIs = newArrayList
 		var FDModel fdmodel = null
 		if (model instanceof FDModel) {
-			fdmodel = model as FDModel
+			fdmodel = model
 		} else if (model instanceof Import) {
 			fdmodel = model.eContainer as FDModel
 		}

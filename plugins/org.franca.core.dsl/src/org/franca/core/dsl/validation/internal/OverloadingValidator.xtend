@@ -73,7 +73,7 @@ class OverloadingValidator {
 		// ensure that non-overloaded items do not have selectors
 		val overloaded = groups.values.flatten.toSet
 		for(i : local) {
-			if (getSelector.apply(i)!=null && ! overloaded.contains(i)) {
+			if (getSelector.apply(i)!==null && ! overloaded.contains(i)) {
 				reporter.reportWarning(
 					"The " + type + " '" + i.name + "' " +
 					"is not overloading another " + type + ", " +
@@ -106,7 +106,7 @@ class OverloadingValidator {
 			return
 		
 		// issue warnings for all overloaded items without a selector 
-		val withoutSelector = items.filter[getSelector.apply(it) == null].toSet
+		val withoutSelector = items.filter[getSelector.apply(it) === null].toSet
 		val localItems = items.filter[local.contains(it)].toSet
 		val localWithoutSelector = localItems.filter[withoutSelector.contains(it)]
 		for(i : localWithoutSelector) {
@@ -120,7 +120,7 @@ class OverloadingValidator {
 		val names = createNameList
 		for(i : items) {
 			val sel = getSelector.apply(i)
-			if (sel!=null)
+			if (sel!==null)
 			names.add(i, sel)
 		}
 		checkDuplicates(reporter, names, selectorFeature, "selector in overloaded " + type)
@@ -139,7 +139,7 @@ class OverloadingValidator {
 		val Map<String, List<T>> clusters = Maps::newHashMap
 		val Set<FInterface> visited = Sets::newHashSet
 		var fi = api
-		while (fi!=null && !visited.contains(fi)) {
+		while (fi!==null && !visited.contains(fi)) {
 			visited.add(fi)
 			for(T m : getItems.apply(fi)) {
 				val name = m.name
@@ -160,7 +160,7 @@ class OverloadingValidator {
 				// it's a real group of duplicate items,
 				// check that at least one item is from leaf interface
 				val hit = items.findFirst[leafItems.contains(n)]
-				if (hit!=null) {
+				if (hit!==null) {
 					groups.put(n, items)
 				} 
 			}
