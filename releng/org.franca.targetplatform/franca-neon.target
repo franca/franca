@@ -61,7 +61,7 @@
       <repository location="http://www.xpect-tests.org/updatesite/nightly/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="org.eclipse.eclemma.feature.feature.group" version="3.0.1.201711142128"/>
+      <unit id="org.eclipse.eclemma.feature.feature.group" version="3.1.0.201805281015"/>
       <repository location="http://update.eclemma.org/"/>
     </location>
   </locations>
