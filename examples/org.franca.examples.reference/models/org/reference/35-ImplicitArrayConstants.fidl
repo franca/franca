@@ -53,10 +53,11 @@ typeCollection MyTypeCollection35 {
 	const Double[] ad1 = [ 3.1415d ]
 
 	// implicit array of ByteBuffer
-	const ByteBuffer abb1 = [
+	const ByteBuffer abb1 = [ 1, 2, 3 ]
+	const ByteBuffer[] abb2 = [
 		[ ],
-		[ 22, 33, 44 ],
-		[ 1, 2, 3, 4, 5 ]
+		[ 1, 2 ],
+		[ 0, 255 ]
 	]
 
 	// implicit array of complex types
