@@ -21,7 +21,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<emf.version>(2.10,2.12)</emf.version>
 		<maven.version>3.5.2</maven.version>
-		<franca.version>0.13.0-SNAPSHOT</franca.version>
+		<franca.version>0.13.1-SNAPSHOT</franca.version>
 		<xtext.version>2.11.0</xtext.version>
 	</properties>
 
