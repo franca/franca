@@ -12,6 +12,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDElement
 import org.franca.deploymodel.dsl.fDeploy.FDEnumType
 import org.franca.deploymodel.dsl.fDeploy.FDExtensionType
 import org.franca.deploymodel.dsl.fDeploy.FDInterface
+import org.franca.deploymodel.dsl.fDeploy.FDProperty
 import org.franca.deploymodel.dsl.fDeploy.FDRootElement
 import org.franca.deploymodel.dsl.fDeploy.FDTypeRef
 import org.franca.deploymodel.dsl.fDeploy.FDTypes
@@ -28,7 +29,12 @@ class DefaultValueProvider extends AbstractDefaultValueProvider {
 	 * Note that some types will not have a generic default value, we try to compute
 	 * a proper default value depending on the context. If this is not possible, null is returned.
 	 */
-	override FDComplexValue generateDefaultValue(FDRootElement root, FDElement element, FDTypeRef typeRef) {
+	override FDComplexValue generateDefaultValue(
+		FDRootElement root,
+		FDElement element,
+		FDProperty property,
+		FDTypeRef typeRef
+	) {
 		var FDValue simple = null
 		if (typeRef.complex === null) {
 			switch (typeRef.predefined.value) {

@@ -1,0 +1,15 @@
+package org.example.idl
+
+<** @description : Simple example interface used for testing configurable quickfixes. **> 
+interface QuickfixDemo {
+	
+	struct S1 { Int16 f1 }
+	struct S2 { Int16 f1 }
+	struct S3 { Int16 f1 }
+
+	method m1 { }
+	method m2 { }
+	method m3 { }
+	
+	attribute UInt16 a1
+}

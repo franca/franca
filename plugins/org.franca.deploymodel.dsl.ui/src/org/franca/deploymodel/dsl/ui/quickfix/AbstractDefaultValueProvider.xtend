@@ -1,12 +1,40 @@
+/** 
+ * Copyright (c) 2018 itemis AG (http://www.itemis.de).
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.franca.deploymodel.dsl.ui.quickfix
 
+import org.eclipse.emf.ecore.EClass
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.xtext.EcoreUtil2
 import org.franca.core.franca.FInterface
 import org.franca.deploymodel.dsl.fDeploy.FDComplexValue
+import org.franca.deploymodel.dsl.fDeploy.FDElement
+import org.franca.deploymodel.dsl.fDeploy.FDRootElement
 import org.franca.deploymodel.dsl.fDeploy.FDValue
 import org.franca.deploymodel.dsl.fDeploy.FDeployFactory
 
 abstract class AbstractDefaultValueProvider implements IDefaultValueProvider {
+
+	/**
+	 * Helper to get index of FDElement in descendants of given FDRootElement.</p>
+	 */	
+	def protected int indexOf(FDRootElement root, FDElement elem) {
+		val all = EcoreUtil2.eAllOfType(root, FDElement)
+		all.indexOf(elem)
+	}
+	
+	/**
+	 * Helper to get index of FDElement in descendants of given FDRootElement,
+	 * restricted to FDElements of a specific EClass.</p>
+	 */	
+	def protected int indexOf(FDRootElement root, FDElement elem, EClass clazz) {
+		val all = EcoreUtil2.eAllOfType(root, FDElement).filter[clazz.isInstance(it)].toList
+		all.indexOf(elem)
+	}
 	
 	/**
 	 * Helper method which creates a value of type boolean.</p>

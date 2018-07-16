@@ -1,0 +1,19 @@
+package org.example.spec
+
+/**
+ * This is a sample specification used for testing configurable quickfixes.
+ */
+specification QuickfixSpec
+{
+	for structs {
+		StructProp : String;
+	}
+
+	for methods {
+		MethodProp : Integer;
+	}
+	
+	for attributes {
+		AttrProp : Integer[];
+	}
+}

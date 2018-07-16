@@ -412,4 +412,7 @@
 			type="text">
 		</fileTypes>
 	</extension>
+
+  <extension-point id="defaultValueProvider" name="Franca Default Value Provider" schema="schema/defaultValueProvider.exsd"/>
+
 </plugin>
