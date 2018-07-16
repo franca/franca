@@ -6,6 +6,12 @@
 	<artifactId>franca-deploymodel-maven-plugin</artifactId>
 	<version>${franca.version}</version>
 	<packaging>maven-plugin</packaging>
+	<parent>
+		<groupId>org.franca</groupId>
+		<artifactId>org.franca.parent</artifactId>
+		<version>0.13.1-SNAPSHOT</version>
+		<relativePath>../../releng/org.franca.parent/pom.xml</relativePath>
+	</parent>
 
 	<name>Franca Deploy Model Generator Maven Plugin</name>
 
@@ -15,7 +21,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<emf.version>(2.10,2.12)</emf.version>
 		<maven.version>3.5.2</maven.version>
-		<franca.version>0.13.0-SNAPSHOT</franca.version>
+		<franca.version>0.13.1-SNAPSHOT</franca.version>
 		<xtext.version>2.11.0</xtext.version>
 	</properties>
 

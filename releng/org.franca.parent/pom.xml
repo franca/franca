@@ -90,6 +90,7 @@
             <module>../../features/org.franca.protobuf.ui.feature.sdk</module>
 			<module>../../releng/org.franca.updatesite</module>
 			<module>../../releng/org.franca.product</module>
+            <module>../../releng/org.franca.deploymodel.maven.plugin</module>
 			
     </modules>
 
