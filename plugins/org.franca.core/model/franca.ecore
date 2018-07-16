@@ -8,6 +8,8 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="imports" upperBound="-1"
         eType="#//Import" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="tags" upperBound="-1" eType="#//FTag"
+        containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="interfaces" upperBound="-1"
         eType="#//FInterface" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="typeCollections" upperBound="-1"
@@ -20,6 +22,7 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="importedNamespace" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="importURI" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FTag" eSuperTypes="#//FModelElement"/>
   <eClassifiers xsi:type="ecore:EClass" name="FTypeCollection" eSuperTypes="#//FModelElement">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="A collection of Franca type definitions.&#xD;&#xA;The type collection is named and should be versioned (optional).&#xD;&#xA;Types defined by a FTypeCollection can be referenced from&#xD;&#xA;other FTypeCollections and FInterfaces.&#xD;&#xA;"/>

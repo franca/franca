@@ -22,7 +22,16 @@ FModel returns FModel:
 	{FModel}
 	'package' name=FQN
 	(imports+=Import)*
-	( typeCollections+=FTypeCollection | interfaces+=FInterface	)*;
+	( tags+=FTag | typeCollections+=FTypeCollection | interfaces+=FInterface )*;
+
+// **************************************************************
+// user-defined tag
+
+FTag returns FTag:
+	{FTag}
+	(comment=FAnnotationBlock)?
+	'tag' 'String' (name=ID)?
+;
 
 // **************************************************************
 // type collection and interface

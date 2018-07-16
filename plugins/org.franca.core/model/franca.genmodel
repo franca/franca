@@ -56,6 +56,7 @@
           ecoreFeature="ecore:EAttribute franca.ecore#//FModel/name"/>
       <genFeatures property="None" children="true" createChild="true" propertyDescription="the list of import statements for this model"
           ecoreFeature="ecore:EReference franca.ecore#//FModel/imports"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference franca.ecore#//FModel/tags"/>
       <genFeatures property="None" children="true" createChild="true" propertyDescription="the list of interfaces which are defined in this model"
           ecoreFeature="ecore:EReference franca.ecore#//FModel/interfaces"/>
       <genFeatures property="None" children="true" createChild="true" propertyDescription="the list of type collections in this model"
@@ -67,6 +68,7 @@
       <genFeatures createChild="false" propertyDescription="the URI of the imported resource"
           ecoreFeature="ecore:EAttribute franca.ecore#//Import/importURI"/>
     </genClasses>
+    <genClasses ecoreClass="franca.ecore#//FTag"/>
     <genClasses ecoreClass="franca.ecore#//FTypeCollection">
       <genFeatures property="None" children="true" createChild="true" propertyDescription="the version of this entity. The Apache major/minor scheme is applied."
           ecoreFeature="ecore:EReference franca.ecore#//FTypeCollection/version"/>
