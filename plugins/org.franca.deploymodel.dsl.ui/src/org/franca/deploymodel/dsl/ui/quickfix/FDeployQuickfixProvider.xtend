@@ -275,7 +275,7 @@ class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 			if (!hasPropertyDeclaration(element.properties.items, decl) && PropertyMappings.isMandatory(decl)) {
 				var prop = FDeployFactory.eINSTANCE.createFDProperty
 				prop.setDecl(decl)
-				var FDComplexValue defaultVal = DefaultValueProvider.generateDefaultValue(element, decl.type)
+				var FDComplexValue defaultVal = ExtensibleDefaultValueProvider.generateDefaultValue(root, element, decl.type)
 				if (defaultVal !== null) {
 					prop.setValue(defaultVal)
 					element.properties.items.add(prop)
