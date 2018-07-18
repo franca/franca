@@ -183,6 +183,7 @@
     <genClasses ecoreClass="FDeploy.ecore#//FDValue"/>
     <genClasses ecoreClass="FDeploy.ecore#//FDInteger">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute FDeploy.ecore#//FDInteger/value"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute FDeploy.ecore#//FDInteger/formattedValue"/>
     </genClasses>
     <genClasses ecoreClass="FDeploy.ecore#//FDString">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute FDeploy.ecore#//FDString/value"/>

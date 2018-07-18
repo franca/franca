@@ -37,8 +37,11 @@ class ExampleDefaultValueProvider extends AbstractDefaultValueProvider {
 			// retrieve index of element in list of descendants of root 
 			val index = root.indexOf(element, FDeployPackage.eINSTANCE.FDMethod)
 			
-			// create new default value with new number, depending on index (use offset of 100)
-			val v = createIntegerValue(index+100)
+			// create new default value with new number, depending on index (use offset of 256)
+			val i = index+256
+			
+			// use helper function with second argument in order to enforce a special format (here: hexadecimal)
+			val v = createIntegerValue(i, "0x" + Integer.toHexString(i))
 			
 			// wrap as single value
 			return createSingle(v)

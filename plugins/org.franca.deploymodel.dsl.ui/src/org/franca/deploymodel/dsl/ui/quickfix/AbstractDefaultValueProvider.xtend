@@ -44,14 +44,24 @@ abstract class AbstractDefaultValueProvider implements IDefaultValueProvider {
 	}
 
 	/**
-	 * Helper method which creates a value of type boolean.</p>
+	 * Helper method which creates a value of type integer.</p>
 	 */
 	def protected FDValue createIntegerValue(int v) {
-		FDeployFactory.eINSTANCE.createFDInteger => [ value = v ]
+		FDeployFactory.eINSTANCE.createFDInteger => [ value = v; it.formattedValue = null ]
 	}
 
 	/**
-	 * Helper method which creates a value of type boolean.</p>
+	 * Helper method which creates a value of type integer.</p>
+	 * 
+	 * @param v the actual integer value
+	 * @param formatted the value as formatted string (e.g., as hex format)
+	 */
+	def protected FDValue createIntegerValue(int v, String formatted) {
+		FDeployFactory.eINSTANCE.createFDInteger => [ value = v; it.formattedValue = formatted ]
+	}
+
+	/**
+	 * Helper method which creates a value of type String.</p>
 	 */
 	def protected FDValue createStringValue(String v) {
 		FDeployFactory.eINSTANCE.createFDString => [ value = v ]
