@@ -21,38 +21,32 @@ define org.example.spec.QuickfixSpec for interface org.example.idl.QuickfixDemo
 
 	attribute a1 {
 		AttrProp = {
-			47, 11
+			47, 0b1011
 		}
 	}
 
 	method m1 {
-		MethodProp = 0x100
-	}
-
-	method m2 {
 		MethodProp = 0x101
 	}
 
-	method m3 {
+	method m2 {
 		MethodProp = 0x102
+	}
+
+	method m3 {
+		MethodProp = 0x103
 	}
 
 	struct S1 {
 		StructProp = "S1_0"
-		f1 {
-		}
 	}
 
 	struct S2 {
 		StructProp = "S2_1"
-		f1 {
-		}
 	}
 
 	struct S3 {
 		StructProp = "S3_2"
-		f1 {
-		}
 	}
 
 }
