@@ -271,17 +271,17 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 
 		// check child elements recursively
 		for (FDExtensionElement child : elem.elements) {
-			checkExtensionElement(spec, child)
+			checkExtensionElementProperties(spec, child)
 		}
 	}
 
-	def private void checkExtensionElement(FDSpecification spec, FDExtensionElement elem) {
+	def private void checkExtensionElementProperties(FDSpecification spec, FDExtensionElement elem) {
 		// check own properties
 		checkSpecificationElementProperties(spec, elem, FD_ABSTRACT_EXTENSION_ELEMENT__TAG, spec.name)
 		
 		// check child elements recursively
 		for (FDExtensionElement child : elem.elements) {
-			checkExtensionElement(spec, child)
+			checkExtensionElementProperties(spec, child)
 		}
 	}
 
