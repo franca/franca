@@ -40,6 +40,8 @@ import org.franca.deploymodel.dsl.fDeploy.FDEnumeration
 import org.franca.deploymodel.dsl.fDeploy.FDInterface
 import org.franca.deploymodel.dsl.fDeploy.FDMethod
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl
+import org.franca.deploymodel.dsl.fDeploy.FDRootElement
+import org.franca.deploymodel.dsl.fDeploy.FDSpecification
 import org.franca.deploymodel.dsl.fDeploy.FDStruct
 import org.franca.deploymodel.dsl.fDeploy.FDTypes
 import org.franca.deploymodel.dsl.fDeploy.FDUnion
@@ -49,6 +51,7 @@ import org.franca.deploymodel.dsl.validation.FrancaQuickFixConstants
 
 import static org.franca.deploymodel.dsl.ui.quickfix.FDeployQuickfixProviderUtil.*
 import static org.franca.deploymodel.dsl.validation.FrancaQuickFixConstants.*
+import static org.franca.deploymodel.core.FDModelUtils.*
 
 /** 
  * A collection of quick fixes for Franca deployment definitions.
@@ -265,7 +268,7 @@ class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 	 * @param isRecursive true if the fix should be applied recursively, false otherwise
 	 */
 	def private void applyFixForElementInternal(FDElement element, boolean isRecursive) {
-		val root = FDModelUtils.getRootElement(element)
+		val root = FDModelUtils.getTopmostRootElement(element)
 		if (root === null) {
 			throw new RuntimeException('''Cannot find root element for element «element»''')
 		}
