@@ -671,7 +671,7 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 
 		// *****************************************************************************
 		// type system
-		@Check def void checkExtensionTyoe(FDExtensionType type) {
+		@Check def void checkExtensionType(FDExtensionType type) {
 			val name = type.name
 			val IFDeployExtension.TypeDef typeDef = ExtensionRegistry::findType(name)
 			if (typeDef === null) {
