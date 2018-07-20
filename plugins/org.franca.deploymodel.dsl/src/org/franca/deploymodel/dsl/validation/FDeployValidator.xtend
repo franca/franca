@@ -614,7 +614,7 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 	 * @param elementName the name of the element for the quickfix message
 	 * @return true if there was an error (missing property), false otherwise
 	 */
-	def private boolean checkSpecificationElementProperties(FDSpecification spec, FDElement elem,
+	def protected boolean checkSpecificationElementProperties(FDSpecification spec, FDElement elem,
 		EStructuralFeature feature, String elementName) {
 		var List<FDPropertyDecl> decls = PropertyMappings::getAllPropertyDecls(spec, elem)
 		var List<String> missing = Lists::newArrayList()
