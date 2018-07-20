@@ -141,7 +141,7 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 		}
 	}
 
-	@Check def void checkExtensionRoot(FDExtensionRoot root) {
+	@Check def void checkExtensionRootAvailable(FDExtensionRoot root) {
 		var String tag = root.getTag()
 		var IFDeployExtension.RootDef rootDef = ExtensionRegistry::findRoot(tag)
 		if (rootDef === null) {
@@ -160,7 +160,7 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 		}
 	}
 
-	@Check def void checkExtensionElement(FDExtensionElement elem) {
+	@Check def void checkExtensionElementHierarchy(FDExtensionElement elem) {
 		// check if this element is structurally allowed below its parent element
 		var String tag = elem.getTag()
 		var FDAbstractExtensionElement parent = (elem.eContainer() as FDAbstractExtensionElement)
