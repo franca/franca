@@ -13,4 +13,7 @@ specification SimpleSpec
 		ArrayProp : Integer;
 	}
 
+	for maps {
+		MaxElements : Integer;
+	}
 }

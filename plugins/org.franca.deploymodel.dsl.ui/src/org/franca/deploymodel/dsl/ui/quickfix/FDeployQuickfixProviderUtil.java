@@ -18,6 +18,7 @@ import org.franca.core.franca.FBroadcast;
 import org.franca.core.franca.FEnumerationType;
 import org.franca.core.franca.FEnumerator;
 import org.franca.core.franca.FField;
+import org.franca.core.franca.FMapType;
 import org.franca.core.franca.FMethod;
 import org.franca.core.franca.FStructType;
 import org.franca.core.franca.FType;
@@ -33,6 +34,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDEnumValue;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumeration;
 import org.franca.deploymodel.dsl.fDeploy.FDField;
 import org.franca.deploymodel.dsl.fDeploy.FDInterface;
+import org.franca.deploymodel.dsl.fDeploy.FDMap;
 import org.franca.deploymodel.dsl.fDeploy.FDMethod;
 import org.franca.deploymodel.dsl.fDeploy.FDProperty;
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl;
@@ -350,6 +352,50 @@ public class FDeployQuickfixProviderUtil {
 			return union;
 		}
 		
+		return null;
+	}
+	
+	public static FDMap getOrCreateMap(FDTypes types,
+			String elementName) {
+		for (FDTypeDefinition s : types.getTypes()) {
+			if (s instanceof FDMap
+					&& ((FDMap) s).getTarget().getName().equals(elementName)) {
+				return (FDMap) s;
+			}
+		}
+
+		FMapType mapTarget = getTypeForElement(FMapType.class,
+				elementName, types.getTarget().getTypes());
+		if (mapTarget != null) {
+			FDMap map = FDeployFactory.eINSTANCE.createFDMap();
+			init(map);
+			map.setTarget(mapTarget);
+			types.getTypes().add(map);
+			return map;
+		}
+
+		return null;
+	}
+
+	public static FDMap getOrCreateMap(FDInterface deploymentInterface,
+			String elementName) {
+		for (FDTypeDefinition s : deploymentInterface.getTypes()) {
+			if (s instanceof FDMap
+					&& ((FDMap) s).getTarget().getName().equals(elementName)) {
+				return (FDMap) s;
+			}
+		}
+
+		FMapType mapTarget = getTypeForElement(FMapType.class,
+				elementName, deploymentInterface.getTarget().getTypes());
+		if (mapTarget != null) {
+			FDMap map = FDeployFactory.eINSTANCE.createFDMap();
+			init(map);
+			map.setTarget(mapTarget);
+			deploymentInterface.getTypes().add(map);
+			return map;
+		}
+
 		return null;
 	}
 	

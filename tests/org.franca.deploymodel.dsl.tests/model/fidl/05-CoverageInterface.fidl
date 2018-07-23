@@ -115,7 +115,35 @@ interface CoverageInterface {
 		aStruct someStruct
 		aUnion someUnion
 	}
-	
+
+	map aMapKey01 { Int8 to Int16 }
+	map aMapKey02 { UInt8 to Int16 }
+	map aMapKey03 { Int16 to Int16 }
+	map aMapKey04 { UInt16 to Int16 }
+	map aMapKey05 { Int32 to Int16 }
+	map aMapKey06 { UInt32 to Int16 }
+	map aMapKey07 { Int64 to Int16 }
+	map aMapKey08 { UInt64 to Int16 }
+	map aMapKey09 { Boolean to Int16 }
+	map aMapKey10 { Float to Int16 }
+	map aMapKey11 { Double to Int16 }
+	map aMapKey12 { String to Int16 }
+	map aMapKey13 { ByteBuffer to Int16 }
+
+	map aMapValue01 { Int16 to Int8 }
+	map aMapValue02 { Int16 to UInt8 }
+	map aMapValue03 { Int16 to Int16 }
+	map aMapValue04 { Int16 to UInt16 }
+	map aMapValue05 { Int16 to Int32 }
+	map aMapValue06 { Int16 to UInt32 }
+	map aMapValue07 { Int16 to Int64 }
+	map aMapValue08 { Int16 to UInt64 }
+	map aMapValue09 { Int16 to Boolean }
+	map aMapValue10 { Int16 to Float }
+	map aMapValue11 { Int16 to Double }
+	map aMapValue12 { Int16 to String }
+	map aMapValue13 { Int16 to ByteBuffer }
+
 	typedef aTypedef is Int16
 
 }

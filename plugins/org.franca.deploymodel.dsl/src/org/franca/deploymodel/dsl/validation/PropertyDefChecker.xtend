@@ -14,6 +14,7 @@ import org.franca.core.franca.FAttribute
 import org.franca.core.franca.FBroadcast
 import org.franca.core.franca.FEnumerationType
 import org.franca.core.franca.FField
+import org.franca.core.franca.FMapType
 import org.franca.core.franca.FMethod
 import org.franca.core.franca.FStructType
 import org.franca.core.franca.FTypeDef
@@ -23,6 +24,7 @@ import org.franca.deploymodel.core.FDPropertyHost
 import org.franca.deploymodel.dsl.FDSpecificationExtender
 
 import static org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost.*
+
 import static extension org.franca.core.framework.FrancaHelpers.*
 
 /**
@@ -107,6 +109,10 @@ class PropertyDefChecker {
 		specHelper.isMandatory(host) || specHelper.isMandatory(FIELDS) || type.mustBeDefined(array)
 	}
 
+	def mustBeDefined (FMapType it) {
+		specHelper.isMandatory(MAPS)
+	}
+	
 
 	// *****************************************************************************
 

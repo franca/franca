@@ -24,6 +24,7 @@ import org.franca.core.franca.FEnumerationType
 import org.franca.core.franca.FEnumerator
 import org.franca.core.franca.FField
 import org.franca.core.franca.FInterface
+import org.franca.core.franca.FMapType
 import org.franca.core.franca.FMethod
 import org.franca.core.franca.FModelElement
 import org.franca.core.franca.FStructType
@@ -40,8 +41,6 @@ import org.franca.deploymodel.dsl.fDeploy.FDEnumeration
 import org.franca.deploymodel.dsl.fDeploy.FDInterface
 import org.franca.deploymodel.dsl.fDeploy.FDMethod
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl
-import org.franca.deploymodel.dsl.fDeploy.FDRootElement
-import org.franca.deploymodel.dsl.fDeploy.FDSpecification
 import org.franca.deploymodel.dsl.fDeploy.FDStruct
 import org.franca.deploymodel.dsl.fDeploy.FDTypes
 import org.franca.deploymodel.dsl.fDeploy.FDUnion
@@ -51,7 +50,6 @@ import org.franca.deploymodel.dsl.validation.FrancaQuickFixConstants
 
 import static org.franca.deploymodel.dsl.ui.quickfix.FDeployQuickfixProviderUtil.*
 import static org.franca.deploymodel.dsl.validation.FrancaQuickFixConstants.*
-import static org.franca.deploymodel.core.FDModelUtils.*
 
 /** 
  * A collection of quick fixes for Franca deployment definitions.
@@ -390,6 +388,13 @@ class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 					elements.add(getOrCreateEnumeration(deploymentInterface, elementName))
 				}
 
+			} else if (tc instanceof FMapType) {
+				if (elementName === null) {
+					elements.add(getOrCreateMap(deploymentInterface, tc.name))
+				} else if (type === MAP && tc.name.equals(elementName)) {
+					elements.add(getOrCreateMap(deploymentInterface, elementName))
+				}
+
 			} else if (tc instanceof FTypeDef) {
 				if (elementName === null) {
 					elements.add(getOrCreateTypedef(deploymentInterface, tc.name))
@@ -422,6 +427,7 @@ class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 				case STRUCT: getOrCreateStruct(types, elementName)
 				case ENUMERATION: getOrCreateEnumeration(types, elementName)
 				case UNION: getOrCreateUnion(types, elementName)
+				case MAP: getOrCreateMap(types, elementName)
 				case TYPEDEF: getOrCreateTypedef(types, elementName)
 				default: null
 			}

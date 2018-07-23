@@ -59,4 +59,7 @@ define org.example.spec.SimpleSpec for interface org.example.idl.SimpleInterface
 		}
 	}
 
+	map MapA {
+		MaxElements = 700
+	}
 }

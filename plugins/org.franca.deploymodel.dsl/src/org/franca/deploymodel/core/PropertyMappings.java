@@ -7,6 +7,29 @@
  *******************************************************************************/
 package org.franca.deploymodel.core;
 
+import static org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost.ARGUMENTS;
+import static org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost.ARRAYS;
+import static org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost.ATTRIBUTES;
+import static org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost.BOOLEANS;
+import static org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost.BROADCASTS;
+import static org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost.BYTE_BUFFERS;
+import static org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost.ENUMERATIONS;
+import static org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost.ENUMERATORS;
+import static org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost.FIELDS;
+import static org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost.FLOATS;
+import static org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost.INTEGERS;
+import static org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost.INTERFACES;
+import static org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost.MAPS;
+import static org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost.METHODS;
+import static org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost.NUMBERS;
+import static org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost.STRINGS;
+import static org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost.STRUCTS;
+import static org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost.STRUCT_FIELDS;
+import static org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost.TYPEDEFS;
+import static org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost.TYPE_COLLECTIONS;
+import static org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost.UNIONS;
+import static org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost.UNION_FIELDS;
+
 import java.util.List;
 import java.util.Set;
 
@@ -14,6 +37,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.franca.core.framework.FrancaHelpers;
 import org.franca.core.franca.FArrayType;
 import org.franca.core.franca.FEnumerationType;
+import org.franca.core.franca.FMapType;
 import org.franca.core.franca.FStructType;
 import org.franca.core.franca.FType;
 import org.franca.core.franca.FTypeRef;
@@ -31,6 +55,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDEnumValue;
 import org.franca.deploymodel.dsl.fDeploy.FDEnumeration;
 import org.franca.deploymodel.dsl.fDeploy.FDField;
 import org.franca.deploymodel.dsl.fDeploy.FDInterface;
+import org.franca.deploymodel.dsl.fDeploy.FDMap;
 import org.franca.deploymodel.dsl.fDeploy.FDMethod;
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl;
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyFlag;
@@ -47,8 +72,6 @@ import org.franca.deploymodel.extensions.IFDeployExtension.AbstractElementDef;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-
-import static org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost.*;
 
 public class PropertyMappings {
 
@@ -253,6 +276,8 @@ public class PropertyMappings {
 			return ENUMERATIONS;
 		} else if (elem instanceof FDEnumValue) {
 			return ENUMERATORS;
+		} else if (elem instanceof FDMap) {
+			return MAPS;
 		} else if (elem instanceof FDTypedef) {
 			return TYPEDEFS;
 		}
@@ -275,6 +300,8 @@ public class PropertyMappings {
 			return UNIONS;
 		} else if (type instanceof FEnumerationType) {
 			return ENUMERATIONS;
+		} else if (type instanceof FMapType) {
+			return MAPS;
 		}
 		return null;
 	}

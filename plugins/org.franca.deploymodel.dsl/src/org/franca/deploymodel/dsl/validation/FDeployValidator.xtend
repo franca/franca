@@ -24,6 +24,7 @@ import org.franca.core.franca.FEnumerationType
 import org.franca.core.franca.FEnumerator
 import org.franca.core.franca.FField
 import org.franca.core.franca.FInterface
+import org.franca.core.franca.FMapType
 import org.franca.core.franca.FMethod
 import org.franca.core.franca.FStructType
 import org.franca.core.franca.FType
@@ -56,6 +57,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDField
 import org.franca.deploymodel.dsl.fDeploy.FDInteger
 import org.franca.deploymodel.dsl.fDeploy.FDInterface
 import org.franca.deploymodel.dsl.fDeploy.FDInterfaceRef
+import org.franca.deploymodel.dsl.fDeploy.FDMap
 import org.franca.deploymodel.dsl.fDeploy.FDMethod
 import org.franca.deploymodel.dsl.fDeploy.FDModel
 import org.franca.deploymodel.dsl.fDeploy.FDOverwriteElement
@@ -489,6 +491,21 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 							tc.name, FrancaQuickFixConstants::ENUMERATION.toString())
 						hasError = true
 					}
+				}
+			} else if (tc instanceof FMapType) {
+				val FDMap c = (mapper.getFDElement(tc) as FDMap)
+				if (c === null) {
+					if (checker.mustBeDefined(tc)) {
+						error('''«DEPLOYMENT_ELEMENT_QUICKFIX_MESSAGE»'«»«tc.name»'«»''', parentFeature,
+							DEPLOYMENT_ELEMENT_QUICKFIX, tc.name, FrancaQuickFixConstants::MAP.toString())
+						error('''«DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE»'«»«tc.name»'«»''',
+							parentFeature, DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, tc.name,
+							FrancaQuickFixConstants::MAP.toString())
+						hasError = true
+					}
+				} else {
+					if (checkSpecificationElementProperties(spec, c, FD_MAP__TARGET, tc.name))
+						hasError = true
 				}
 			} else if (tc instanceof FTypeDef) {
 				val FDTypedef c = (mapper.getFDElement(tc) as FDTypedef)
