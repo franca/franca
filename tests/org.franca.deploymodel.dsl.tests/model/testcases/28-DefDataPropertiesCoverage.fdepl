@@ -441,82 +441,134 @@ define a.b.c.MySpec03 for interface fidl.CoverageInterface {
 
 	map aMapKey01 {
 		PropMap = 0
+		key { PropInteger = 0 PropNumber = 0 }
+		value { PropInteger = 0 PropNumber = 0 }
 	}
 	map aMapKey02 {
 		PropMap = 0
+		key { PropInteger = 0 PropNumber = 0 }
+		value { PropInteger = 0 PropNumber = 0 }
 	}
 	map aMapKey03 {
 		PropMap = 0
+		key { PropInteger = 0 PropNumber = 0 }
+		value { PropInteger = 0 PropNumber = 0 }
 	}
 	map aMapKey04 {
 		PropMap = 0
+		key { PropInteger = 0 PropNumber = 0 }
+		value { PropInteger = 0 PropNumber = 0 }
 	}
 	map aMapKey05 {
 		PropMap = 0
+		key { PropInteger = 0 PropNumber = 0 }
+		value { PropInteger = 0 PropNumber = 0 }
 	}
 	map aMapKey06 {
 		PropMap = 0
+		key { PropInteger = 0 PropNumber = 0 }
+		value { PropInteger = 0 PropNumber = 0 }
 	}
 	map aMapKey07 {
 		PropMap = 0
+		key { PropInteger = 0 PropNumber = 0 }
+		value { PropInteger = 0 PropNumber = 0 }
 	}
 	map aMapKey08 {
 		PropMap = 0
+		key { PropInteger = 0 PropNumber = 0 }
+		value { PropInteger = 0 PropNumber = 0 }
 	}
 	map aMapKey09 {
 		PropMap = 0
+		key { PropBoolean = 0 }
+		value { PropInteger = 0 PropNumber = 0 }
 	}
 	map aMapKey10 {
 		PropMap = 0
+		key { PropFloat = 0 PropNumber = 0 }
+		value { PropInteger = 0 PropNumber = 0 }
 	}
 	map aMapKey11 {
 		PropMap = 0
+		key { PropFloat = 0 PropNumber = 0 }
+		value { PropInteger = 0 PropNumber = 0 }
 	}
 	map aMapKey12 {
 		PropMap = 0
+		key { PropString = 0 }
+		value { PropInteger = 0 PropNumber = 0 }
 	}
 	map aMapKey13 {
 		PropMap = 0
+		key { PropByteBuffer = 0 }
+		value { PropInteger = 0 PropNumber = 0 }
 	}
 
 	map aMapValue01 {
 		PropMap = 0
+		key { PropInteger = 0 PropNumber = 0 }
+		value { PropInteger = 0 PropNumber = 0 }
 	}
 	map aMapValue02 {
 		PropMap = 0
+		key { PropInteger = 0 PropNumber = 0 }
+		value { PropInteger = 0 PropNumber = 0 }
 	}
 	map aMapValue03 {
 		PropMap = 0
+		key { PropInteger = 0 PropNumber = 0 }
+		value { PropInteger = 0 PropNumber = 0 }
 	}
 	map aMapValue04 {
 		PropMap = 0
+		key { PropInteger = 0 PropNumber = 0 }
+		value { PropInteger = 0 PropNumber = 0 }
 	}
 	map aMapValue05 {
 		PropMap = 0
+		key { PropInteger = 0 PropNumber = 0 }
+		value { PropInteger = 0 PropNumber = 0 }
 	}
 	map aMapValue06 {
 		PropMap = 0
+		key { PropInteger = 0 PropNumber = 0 }
+		value { PropInteger = 0 PropNumber = 0 }
 	}
 	map aMapValue07 {
 		PropMap = 0
+		key { PropInteger = 0 PropNumber = 0 }
+		value { PropInteger = 0 PropNumber = 0 }
 	}
 	map aMapValue08 {
 		PropMap = 0
+		key { PropInteger = 0 PropNumber = 0 }
+		value { PropInteger = 0 PropNumber = 0 }
 	}
 	map aMapValue09 {
 		PropMap = 0
+		key { PropInteger = 0 PropNumber = 0 }
+		value { PropBoolean = 0 }
 	}
 	map aMapValue10 {
 		PropMap = 0
+		key { PropInteger = 0 PropNumber = 0 }
+		value { PropFloat = 0 PropNumber = 0 }
 	}
 	map aMapValue11 {
 		PropMap = 0
+		key { PropInteger = 0 PropNumber = 0 }
+		value { PropFloat = 0 PropNumber = 0 }
 	}
 	map aMapValue12 {
 		PropMap = 0
+		key { PropInteger = 0 PropNumber = 0 }
+		value { PropString = 0 }
 	}
 	map aMapValue13 {
 		PropMap = 0
+		key { PropInteger = 0 PropNumber = 0 }
+		value { PropByteBuffer = 0 }
 	}
 
 	typedef aTypedef {
