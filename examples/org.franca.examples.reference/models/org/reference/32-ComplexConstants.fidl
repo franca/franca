@@ -128,7 +128,12 @@ typeCollection MyTypeCollection32 {
 	const U1 uni3 = { e3 : str3->e5 }
 	const U2 uni4 = { e2 : false}
 	const U3 uni5 = { e5 : { e1 : uni2->e2,  e2 : 1, e3 : "foo" } }
-
+	
+	// TODO: new requirements for union casts, see issue #262 
+//	const UInt16 s = uni3->e1 // should give a warning: "union element e1 is not initialized"
+//	const U3 u3 = uni4 // this should be possible
+//	const U2 u2 = uni5 // should give an error (as with enumerations)
+	
 	// map constants
 	const M1 m0 = [ ]
 	const M1 m1 = [ 1 => "one", 2 => "two" ]

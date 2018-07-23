@@ -25,6 +25,9 @@ public enum FrancaQuickFixConstants {
 	STRUCT,
 	UNION,
 	ENUMERATION,
+	MAP,
+	MAP_KEY,
+	MAP_VALUE,
 	TYPEDEF
 	
 }

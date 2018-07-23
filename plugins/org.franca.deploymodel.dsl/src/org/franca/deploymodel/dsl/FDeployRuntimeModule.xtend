@@ -11,7 +11,9 @@ import org.eclipse.xtext.conversion.IValueConverterService
 import org.eclipse.xtext.formatting.IFormatter
 import org.eclipse.xtext.scoping.IGlobalScopeProvider
 import org.eclipse.xtext.scoping.impl.ImportUriGlobalScopeProvider
+import org.eclipse.xtext.serializer.tokens.IValueSerializer
 import org.franca.deploymodel.dsl.formatting.FDeployFormatter
+import org.franca.deploymodel.dsl.serializer.FDeployValueSerializer
 import org.franca.deploymodel.dsl.valueconverter.FDeployValueConverters
 
 /** 
@@ -34,5 +36,9 @@ class FDeployRuntimeModule extends AbstractFDeployRuntimeModule {
 
 	override Class<? extends IValueConverterService> bindIValueConverterService() {
 		FDeployValueConverters
+	}
+
+	def Class<? extends IValueSerializer> bindIValueSerializer() {
+		FDeployValueSerializer
 	}
 }

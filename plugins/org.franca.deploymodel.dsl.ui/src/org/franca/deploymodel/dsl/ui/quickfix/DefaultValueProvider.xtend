@@ -12,17 +12,16 @@ import org.franca.deploymodel.dsl.fDeploy.FDElement
 import org.franca.deploymodel.dsl.fDeploy.FDEnumType
 import org.franca.deploymodel.dsl.fDeploy.FDExtensionType
 import org.franca.deploymodel.dsl.fDeploy.FDInterface
+import org.franca.deploymodel.dsl.fDeploy.FDProperty
+import org.franca.deploymodel.dsl.fDeploy.FDRootElement
 import org.franca.deploymodel.dsl.fDeploy.FDTypeRef
 import org.franca.deploymodel.dsl.fDeploy.FDTypes
 import org.franca.deploymodel.dsl.fDeploy.FDValue
-import org.franca.deploymodel.dsl.fDeploy.FDeployFactory
 import org.franca.deploymodel.extensions.ExtensionRegistry
 
 import static org.franca.deploymodel.dsl.fDeploy.FDPredefinedTypeId.*
 
-import static extension org.franca.deploymodel.core.FDModelUtils.*
-
-class DefaultValueProvider {
+class DefaultValueProvider extends AbstractDefaultValueProvider {
 	
 	/**
 	 * Provide a default value for each of the property types in a deployment model.<p/>
@@ -30,27 +29,31 @@ class DefaultValueProvider {
 	 * Note that some types will not have a generic default value, we try to compute
 	 * a proper default value depending on the context. If this is not possible, null is returned.
 	 */
-	def static FDComplexValue generateDefaultValue(FDElement element, FDTypeRef typeRef) {
+	override FDComplexValue generateDefaultValue(
+		FDRootElement root,
+		FDElement element,
+		FDProperty property,
+		FDTypeRef typeRef
+	) {
 		var FDValue simple = null
 		if (typeRef.complex === null) {
 			switch (typeRef.predefined.value) {
 				case BOOLEAN_VALUE:
-					simple = FDeployFactory.eINSTANCE.createFDBoolean => [ value = "false" ]
+					simple = createBooleanValue(false)
 				case INTEGER_VALUE:
-					simple = FDeployFactory.eINSTANCE.createFDInteger => [ value = 0 ]
+					simple = createIntegerValue(0)
 				case STRING_VALUE:
-					simple = FDeployFactory.eINSTANCE.createFDString => [ value = "" ]
+					simple = createStringValue("")
 				case INTERFACE_VALUE: {
 					// for properties of type "Interface" there is no proper default
 					// instead, we use some heuristics
-					val root = element.rootElement
 					switch (root) {
 						FDTypes: {
 							// a definition for a TypeCollection doesn't have an interface, no default
 						}
 						FDInterface: {
 							// use the interface for this deployment definition as default 
-							simple = FDeployFactory.eINSTANCE.createFDInterfaceRef => [ value = root.target ]
+							simple = createInterfaceRefValue(root.target)
 						}
 					}
 				}
@@ -61,28 +64,24 @@ class DefaultValueProvider {
 		} else {
 			val complex = typeRef.complex
 			if (complex instanceof FDEnumType) {
-				simple = FDeployFactory.eINSTANCE.createFDGeneric => [
-					value = complex.enumerators.get(0)
-				]
+				simple = createEObjectValue(complex.enumerators.get(0))
 			} else if (complex instanceof FDExtensionType) {
 				val typeDef = ExtensionRegistry.findType(complex.name)
 				simple = typeDef.createDefaultValue(element)
 			}
 		}
 
-		if (simple!==null) {
-			val ret = FDeployFactory.eINSTANCE.createFDComplexValue
+		// prepare return value
+		if (simple === null) {
+			// no value could be computed, just return null
+			null
+		} else {
 			if (typeRef.array === null) {
-				ret.single = simple
+				createSingle(simple)
 			} else {
 				// this is an array-property (aka group), at least one element required
-				val arrayVal = FDeployFactory.eINSTANCE.createFDValueArray
-				arrayVal.values.add(simple)
-				ret.array = arrayVal	
+				createGroup(simple)
 			}
-			ret
-		} else {
-			null
 		}
 	}
 }

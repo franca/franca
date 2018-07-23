@@ -1,0 +1,46 @@
+// XPECT_SETUP org.franca.core.dsl.tests.xpect.FrancaIDLXpectTests END_SETUP
+package a.b.c
+
+// tests for validating constant initializers (mostly type-system tests)
+
+typeCollection TC_ByteBuffers {
+
+	// XPECT errors --> "byte buffer element must be UInt8" at "-1"
+	const ByteBuffer bb1 = [ -1, 0, 255 ]
+
+	// XPECT errors --> "byte buffer element must be UInt8" at "256"
+	const ByteBuffer bb2 = [ 0, 255, 256 ]
+
+	// XPECT errors --> "invalid byte buffer element, expected integer expression" at "true"
+	const ByteBuffer bb3 = [ 0, 255, true ]
+
+	// XPECT errors --> "invalid byte buffer element, expected integer expression" at ""foo""
+	const ByteBuffer bb4 = [ 0, "foo", 255 ]
+
+	// XPECT errors --> "invalid byte buffer element, expected expression" at "[3, 3]"
+	const ByteBuffer bb5 = [ 1, 2, [3, 3], 4 ]
+}
+
+typeCollection TC_Maps {
+	
+	map M1 { UInt8 to String }
+	
+	// XPECT errors --> "invalid type (is Boolean, expected UInt8)" at "true"
+	const M1 m1 = [ 7 => "foo", true => "bar" ]
+	
+	// XPECT errors --> "invalid type (is String, expected UInt8)" at ""zap""
+	const M1 m2 = [ 7 => "foo", "zap" => "bar" ]
+	
+	// XPECT errors --> "invalid type (is Boolean, expected String)" at "true"
+	const M1 m3 = [ 7 => "foo", 9 => true ]
+
+	// XPECT errors --> "invalid type (is Integer, expected String)" at "77"
+	const M1 m4 = [ 7 => "foo", 9 => 77 ]
+	
+	// XPECT errors --> "invalid initializer for map element" at "9"
+	const M1 m5 = [ 7 => "foo", 9 ]
+	
+	// XPECT errors --> "invalid initializer for map element" at "[ ]"
+	const M1 m6 = [ 7 => "foo", [ ] ]
+	
+}

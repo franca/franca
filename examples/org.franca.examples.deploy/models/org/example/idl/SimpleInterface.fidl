@@ -19,4 +19,6 @@ interface SimpleInterface {
 
 	array StringArray of String
 	struct StructB { StringArray field }
+	
+	map MapA { String to String }
 }

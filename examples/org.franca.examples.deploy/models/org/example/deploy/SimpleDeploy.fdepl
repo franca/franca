@@ -59,4 +59,16 @@ define org.example.spec.SimpleSpec for interface org.example.idl.SimpleInterface
 		}
 	}
 
+	map MapA {
+		MaxElements = 0
+		key {
+			Encoding = utf8
+			KeyProp = false
+		}
+		value {
+			Encoding = utf8
+			ValProp = false
+		}
+	}
+
 }

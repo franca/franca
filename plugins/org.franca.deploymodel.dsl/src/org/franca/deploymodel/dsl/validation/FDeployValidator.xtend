@@ -24,6 +24,7 @@ import org.franca.core.franca.FEnumerationType
 import org.franca.core.franca.FEnumerator
 import org.franca.core.franca.FField
 import org.franca.core.franca.FInterface
+import org.franca.core.franca.FMapType
 import org.franca.core.franca.FMethod
 import org.franca.core.franca.FStructType
 import org.franca.core.franca.FType
@@ -31,7 +32,6 @@ import org.franca.core.franca.FTypeDef
 import org.franca.core.franca.FUnionType
 import org.franca.deploymodel.core.FDModelUtils
 import org.franca.deploymodel.core.FDPropertyHost
-import org.franca.deploymodel.core.PropertyMappings
 import org.franca.deploymodel.dsl.FDMapper
 import org.franca.deploymodel.dsl.FDSpecificationExtender
 import org.franca.deploymodel.dsl.fDeploy.FDAbstractExtensionElement
@@ -56,6 +56,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDField
 import org.franca.deploymodel.dsl.fDeploy.FDInteger
 import org.franca.deploymodel.dsl.fDeploy.FDInterface
 import org.franca.deploymodel.dsl.fDeploy.FDInterfaceRef
+import org.franca.deploymodel.dsl.fDeploy.FDMap
 import org.franca.deploymodel.dsl.fDeploy.FDMethod
 import org.franca.deploymodel.dsl.fDeploy.FDModel
 import org.franca.deploymodel.dsl.fDeploy.FDOverwriteElement
@@ -83,6 +84,7 @@ import org.franca.deploymodel.extensions.ExtensionRegistry
 import org.franca.deploymodel.extensions.IFDeployExtension
 
 import static org.franca.deploymodel.dsl.fDeploy.FDeployPackage.Literals.*
+import org.franca.deploymodel.core.PropertyMappings
 
 /**
  * This class contains custom validation rules for the Franca deployment DSL.</p> 
@@ -100,6 +102,10 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 	public static final String COMPOUND_FIELD_QUICKFIX_MESSAGE = "Field is missing for compound "
 	public static final String ENUMERATOR_ENUM_QUICKFIX = "ENUMERATOR_ENUM_QUICKFIX"
 	public static final String ENUMERATOR_ENUM_QUICKFIX_MESSAGE = "Enumerator element is missing for enum "
+	public static final String MAP_KEY_QUICKFIX = "MAP_KEY_QUICKFIX"
+	public static final String MAP_KEY_QUICKFIX_MESSAGE = "Map key section is missing for map "
+	public static final String MAP_VALUE_QUICKFIX = "MAP_VALUE_QUICKFIX"
+	public static final String MAP_VALUE_QUICKFIX_MESSAGE = "Map value section is missing for map "
 	public static final String MANDATORY_PROPERTY_QUICKFIX = "MANDATORY_PROPERTIES_QUICKFIX"
 	public static final String MANDATORY_PROPERTY_QUICKFIX_MESSAGE = "Mandatory properties are missing for element "
 	public static final String DEPLOYMENT_ELEMENT_QUICKFIX = "DEPLOYMENT_ELEMENT_QUICKFIX"
@@ -111,6 +117,7 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 	package FDeployValidatorAux deployValidator = new FDeployValidatorAux(this)
 
 	// *****************************************************************************
+
 	/** 
 	 * Call external validators (those which have been installed via the Eclipse
 	 * 'deploymentValidator' extension point).
@@ -124,6 +131,7 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 
 	// *****************************************************************************
 	// basic checks
+
 	@Check def void checkSpecNamesUnique(FDModel model) {
 		ValidationHelpers::checkDuplicates(this, model.getSpecifications(), FD_SPECIFICATION__NAME, "specification name")
 	}
@@ -139,7 +147,7 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 		}
 	}
 
-	@Check def void checkExtensionRoot(FDExtensionRoot root) {
+	@Check def void checkExtensionRootAvailable(FDExtensionRoot root) {
 		var String tag = root.getTag()
 		var IFDeployExtension.RootDef rootDef = ExtensionRegistry::findRoot(tag)
 		if (rootDef === null) {
@@ -158,7 +166,7 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 		}
 	}
 
-	@Check def void checkExtensionElement(FDExtensionElement elem) {
+	@Check def void checkExtensionElementHierarchy(FDExtensionElement elem) {
 		// check if this element is structurally allowed below its parent element
 		var String tag = elem.getTag()
 		var FDAbstractExtensionElement parent = (elem.eContainer() as FDAbstractExtensionElement)
@@ -238,6 +246,7 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 
 	// *****************************************************************************
 	// validate specifications
+
 	@Check def void checkPropertyName(FDPropertyDecl prop) {
 		if (!Character::isUpperCase(prop.name.charAt(0))) {
 			error("Property names must begin with an uppercase character",
@@ -268,17 +277,17 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 
 		// check child elements recursively
 		for (FDExtensionElement child : elem.elements) {
-			checkExtensionElement(spec, child)
+			checkExtensionElementProperties(spec, child)
 		}
 	}
 
-	def private void checkExtensionElement(FDSpecification spec, FDExtensionElement elem) {
+	def private void checkExtensionElementProperties(FDSpecification spec, FDExtensionElement elem) {
 		// check own properties
 		checkSpecificationElementProperties(spec, elem, FD_ABSTRACT_EXTENSION_ELEMENT__TAG, spec.name)
 		
 		// check child elements recursively
 		for (FDExtensionElement child : elem.elements) {
-			checkExtensionElement(spec, child)
+			checkExtensionElementProperties(spec, child)
 		}
 	}
 
@@ -487,6 +496,65 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 						hasError = true
 					}
 				}
+			} else if (tc instanceof FMapType) {
+				val FDMap c = (mapper.getFDElement(tc) as FDMap)
+				if (c === null) {
+					if (checker.mustBeDefined(tc)) {
+						error('''«DEPLOYMENT_ELEMENT_QUICKFIX_MESSAGE»'«»«tc.name»'«»''', parentFeature,
+							DEPLOYMENT_ELEMENT_QUICKFIX, tc.name, FrancaQuickFixConstants::MAP.toString())
+						error('''«DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE»'«»«tc.name»'«»''',
+							parentFeature, DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, tc.name,
+							FrancaQuickFixConstants::MAP.toString())
+						hasError = true
+					}
+				} else {
+					// check map properties
+					if (checkSpecificationElementProperties(spec, c, FD_MAP__TARGET, tc.name))
+						hasError = true
+
+					var contentError = false
+					if (checker.mustBeDefined(tc.keyType)) {
+						if (c.key===null) {
+							error('''«MAP_KEY_QUICKFIX_MESSAGE»'«»«tc.name»'«»''', c,
+								FD_MAP__TARGET, MAP_KEY_QUICKFIX, tc.name,
+								FrancaQuickFixConstants::MAP_KEY.toString())
+							contentError = true
+						} else {
+							// check properties of map key type
+							val missing = collectMissingProperties(spec, c.key)
+							if (!missing.empty) {
+								error('''«MANDATORY_PROPERTY_QUICKFIX_MESSAGE»'«»«tc.name» key type'«»''', c, FD_MAP__KEY, -1,
+									MANDATORY_PROPERTY_QUICKFIX, tc.name,
+									FrancaQuickFixConstants::MAP_KEY.toString())
+								hasError = true
+							}
+						}
+					}	
+
+					if (checker.mustBeDefined(tc.valueType)) {
+						if (c.value===null) {
+							error('''«MAP_VALUE_QUICKFIX_MESSAGE»'«»«tc.name»'«»''', c,
+								FD_MAP__TARGET, MAP_VALUE_QUICKFIX, tc.name,
+								FrancaQuickFixConstants::MAP_VALUE.toString())
+							contentError = true
+						} else {
+							// check properties of map value type
+							val missing = collectMissingProperties(spec, c.value)
+							if (!missing.empty) {
+								error('''«MANDATORY_PROPERTY_QUICKFIX_MESSAGE»'«»«tc.name» value type'«»''', c, FD_MAP__VALUE, -1,
+									MANDATORY_PROPERTY_QUICKFIX, tc.name,
+									FrancaQuickFixConstants::MAP_VALUE.toString())
+								hasError = true
+							}
+						}
+					}	
+					
+					if (contentError) {
+						error('''«DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE»'«»«tc.name»'«»''', c,
+							FD_MAP__TARGET, DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, tc.name,
+							FrancaQuickFixConstants::MAP.toString())
+					}
+				}
 			} else if (tc instanceof FTypeDef) {
 				val FDTypedef c = (mapper.getFDElement(tc) as FDTypedef)
 				if (c === null) {
@@ -514,265 +582,276 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 	def private boolean checkArgumentList(FDSpecificationExtender specHelper, PropertyDefChecker checker,
 		FDMapper mapper, FDSpecification spec, List<FArgument> args, FDElement parent, String tag,
 		EStructuralFeature feature) {
-			var boolean hasError = false
-			for (FArgument tc : args) {
-				var FDArgument c = (mapper.getFDElement(tc) as FDArgument)
-				if (c === null) {
-					if (checker.mustBeDefined(tc)) {
-						var String opName = ""
-						var String opType = ""
-						var String quickfix = ""
-						switch (parent) {
-							FDMethod: {
-								opName = FrancaModelExtensions::getUniqueName(parent.target)
-								opType = "method"
-								quickfix = METHOD_ARGUMENT_QUICKFIX
-							}
-							FDBroadcast: {
-								opName = FrancaModelExtensions::getUniqueName(parent.target)
-								opType = "broadcast"
-								quickfix = BROADCAST_ARGUMENT_QUICKFIX
-							}
+		var boolean hasError = false
+		for (FArgument tc : args) {
+			var FDArgument c = (mapper.getFDElement(tc) as FDArgument)
+			if (c === null) {
+				if (checker.mustBeDefined(tc)) {
+					var String opName = ""
+					var String opType = ""
+					var String quickfix = ""
+					switch (parent) {
+						FDMethod: {
+							opName = FrancaModelExtensions::getUniqueName(parent.target)
+							opType = "method"
+							quickfix = METHOD_ARGUMENT_QUICKFIX
 						}
-						error(
-							'''Mandatory argument '«»«tc.name»' is missing for «opType» '«»«opName»'«»''',
-							parent, feature, -1, quickfix, opName, tc.name)
-						hasError = true
-					}
-				} else {
-					if (checkSpecificationElementProperties(spec, c, FD_ARGUMENT__TARGET, tc.name))
-						hasError = true
-				}
-			}
-			return hasError
-		}
-
-		/** 
-		 * Checks the field list of {@link FDUnion}s and {@link FDStruct}s.
-		 * @return true if an error is present, false otherwise
-		 */
-		def private boolean checkFieldsList(FDSpecificationExtender specHelper, PropertyDefChecker checker,
-			FDMapper mapper, FDSpecification spec, List<FField> fields, FDElement parent, EStructuralFeature feature,
-			String tag) {
-			var boolean hasError = false
-			for (FField tc : fields) {
-				var FDField c = (mapper.getFDElement(tc) as FDField)
-				if (c === null) {
-					if (checker.mustBeDefined(tc)) {
-						var name = ""
-						if (parent instanceof FDUnion) {
-							name = parent.target.name
-						} else if (parent instanceof FDStruct) {
-							name = parent.target.name
-						}
-						error('''Mandatory field '«»«tc.name»' is missing for compound '«»«name»'«»''',
-							parent, feature, -1, COMPOUND_FIELD_QUICKFIX, name, tc.name)
-						hasError = true
-					}
-				} else {
-					if (checkSpecificationElementProperties(spec, c, FD_FIELD__TARGET, tc.name))
-						hasError = true
-				}
-			}
-			return hasError
-		}
-
-		/** 
-		 * Checks the enumerator list of {@link FDEnumerator}s.
-		 * @return true if an error is present, false otherwise
-		 */
-		def private boolean checkEnumeratorsList(FDSpecificationExtender specHelper, FDMapper mapper,
-			FDSpecification spec, List<FEnumerator> enumerators, FDElement parent, EStructuralFeature feature) {
-			var boolean hasError = false
-			for (FEnumerator tc : enumerators) {
-				var FDEnumValue c = (mapper.getFDElement(tc) as FDEnumValue)
-				if (c === null) {
-					if (specHelper.isMandatory(FDPropertyHost::builtIn(FDBuiltInPropertyHost::ENUMERATORS))) {
-						error(
-							'''Mandatory enumerator '«»«tc.name»' is missing for enumeration '«»«((parent as FDEnumeration)).target.name»'«»''',
-							parent, feature, -1, ENUMERATOR_ENUM_QUICKFIX,
-							((parent as FDEnumeration)).target.name, tc.name)
-						hasError = true
-					}
-				} else {
-					if (checkSpecificationElementProperties(spec, c, FD_ENUM_VALUE__TARGET, tc.name))
-						hasError = true
-				}
-			}
-			return hasError
-		}
-
-		// *****************************************************************************
-		/** 
-		 * Checks whether all of the mandatory properties of the given {@link FDSpecification} instance are present. 
-		 * @param spec the deployment specification element
-		 * @param elem the given element
-		 * @param feature the corresponding feature instance
-		 * @param elementName the name of the element for the quickfix message
-		 * @return true if there was an error (missing property), false otherwise
-		 */
-		def private boolean checkSpecificationElementProperties(FDSpecification spec, FDElement elem,
-			EStructuralFeature feature, String elementName) {
-			var List<FDPropertyDecl> decls = PropertyMappings::getAllPropertyDecls(spec, elem)
-			var List<String> missing = Lists::newArrayList()
-			for (FDPropertyDecl decl : decls) {
-				if (PropertyMappings::isMandatory(decl)) {
-					if (!contains(elem.getProperties().getItems(), decl)) {
-						missing.add(decl.name)
-					}
-				}
-			}
-			if (!missing.empty) {
-				error('''«MANDATORY_PROPERTY_QUICKFIX_MESSAGE»'«»«elementName»'«»''', elem, feature, -1,
-					MANDATORY_PROPERTY_QUICKFIX, elementName)
-				// error(MANDATORY_PROPERTY_QUICKFIX_MESSAGE + "'" + elementName + "'", elem, feature, -1);
-				return true
-			}
-			return false
-		}
-
-		def private boolean contains(List<FDProperty> properties, FDPropertyDecl decl) {
-			for (FDProperty p : properties) {
-				if (p.decl === decl) {
-					return true
-				}
-			}
-			return false
-		}
-
-		// *****************************************************************************
-		// overwrite sections in deployment definitions 
-		@Check def void checkOverwriteSections(FDTypeOverwrites elem) {
-			var EObject parent = elem.eContainer()
-			if (parent instanceof FDOverwriteElement) {
-				var FType targetType = FDModelUtils::getOverwriteTargetType(parent)
-				if (targetType === null) {
-					error("Cannot determine target type of overwrite section", parent, FD_OVERWRITE_ELEMENT__OVERWRITES)
-				} else {
-					if (elem instanceof FDPlainTypeOverwrites) { // FDPlainTypeOverwrites is always ok
-					} else {
-						if (targetType instanceof FStructType) {
-							if (!(elem instanceof FDStructOverwrites)) {
-								error("Invalid overwrite tag, use '#struct'", parent, FD_OVERWRITE_ELEMENT__OVERWRITES)
-							}
-						} else if (targetType instanceof FUnionType) {
-							if (!(elem instanceof FDUnionOverwrites)) {
-								error("Invalid overwrite tag, use '#union'", parent, FD_OVERWRITE_ELEMENT__OVERWRITES)
-							}
-						} else if (targetType instanceof FEnumerationType) {
-							if (!(elem instanceof FDEnumerationOverwrites)) {
-								error("Invalid overwrite tag, use '#enumeration'", parent, FD_OVERWRITE_ELEMENT__OVERWRITES)
-							}
+						FDBroadcast: {
+							opName = FrancaModelExtensions::getUniqueName(parent.target)
+							opType = "broadcast"
+							quickfix = BROADCAST_ARGUMENT_QUICKFIX
 						}
 					}
-				}
-			}
-		}
-
-		// *****************************************************************************
-		// type system
-		@Check def void checkExtensionTyoe(FDExtensionType type) {
-			val name = type.name
-			val IFDeployExtension.TypeDef typeDef = ExtensionRegistry::findType(name)
-			if (typeDef === null) {
-				// didn't find type by name
-				error('''Invalid type '«»«name»', no matching deployment extension has been configured''',
-					type, FD_EXTENSION_TYPE__NAME, -1)
-			}
-		}
-
-		@Check def void checkPropertyFlagType(FDPropertyFlag flag) {
-			if(flag.getDefault() === null) return;
-			val FDPropertyDecl decl = (flag.eContainer() as FDPropertyDecl)
-			val FDTypeRef typeRef = decl.getType()
-			val FDComplexValue value = flag.getDefault()
-			if (value.single !== null) {
-				if (typeRef.array !== null)
-					error("Default must be an array!", FD_PROPERTY_FLAG__DEFAULT)
-				else
-					checkValueType(typeRef, value.single, flag, FD_PROPERTY_FLAG__DEFAULT, -1)
-			} else if (value.array !== null) {
-				if (typeRef.array === null) {
-					error("Default must be a single type, not an array!", FD_PROPERTY_FLAG__DEFAULT)
-				} else
-					checkValueArrayType(typeRef, value.array)
-			}
-		}
-
-		@Check def void checkPropertyValueType(FDProperty prop) {
-			val FDTypeRef typeRef = prop.decl.getType()
-			val FDComplexValue value = prop.getValue()
-			if (value.single !== null) {
-				if (typeRef.array !== null)
-					error("Invalid type, expected array!", FD_PROPERTY__VALUE)
-				else
-					checkValueType(typeRef, value.single, prop, FD_PROPERTY__VALUE, -1)
-			} else if (value.array !== null) {
-				if (typeRef.array === null)
-					error("Invalid array type, expected single value!", FD_PROPERTY__VALUE)
-				else
-					checkValueArrayType(typeRef, value.array)
-			}
-		}
-
-		def private void checkValueType(FDTypeRef typeRef, FDValue value, EObject src, EReference literal, int index) {
-			if (typeRef.complex === null) {
-				// this is a predefined type
-				val predefined = typeRef.predefined.value
-				switch (predefined) {
-					case FDPredefinedTypeId.INTEGER_VALUE: {
-						if (! (value instanceof FDInteger)) {
-							error("Invalid type, expected Integer constant", src, literal, index)
-						}
-					}
-					case FDPredefinedTypeId.STRING_VALUE: {
-						if (! (value instanceof FDString)) {
-							error("Invalid type, expected String constant", src, literal, index)
-						}
-					}
-					case FDPredefinedTypeId.BOOLEAN_VALUE: {
-						if (! (value instanceof FDBoolean)) {
-							error("Invalid type, expected 'true' or 'false'", src, literal, index)
-						}
-					}
-					case FDPredefinedTypeId.INTERFACE_VALUE: {
-						if (! (value instanceof FDInterfaceRef)) {
-							error("Invalid type, expected reference to Franca interface", src, literal, index)
-						}
-					}
+					error(
+						'''Mandatory argument '«»«tc.name»' is missing for «opType» '«»«opName»'«»''',
+						parent, feature, -1, quickfix, opName, tc.name)
+					hasError = true
 				}
 			} else {
-				val type = typeRef.complex
-				if (type instanceof FDEnumType) {
-					if (!(FDModelUtils::isEnumerator(value))) {
-						error("Invalid type, expected enumerator", src, literal, index)
+				if (checkSpecificationElementProperties(spec, c, FD_ARGUMENT__TARGET, tc.name))
+					hasError = true
+			}
+		}
+		return hasError
+	}
+
+	/** 
+	 * Checks the field list of {@link FDUnion}s and {@link FDStruct}s.
+	 * @return true if an error is present, false otherwise
+	 */
+	def private boolean checkFieldsList(FDSpecificationExtender specHelper, PropertyDefChecker checker,
+		FDMapper mapper, FDSpecification spec, List<FField> fields, FDElement parent, EStructuralFeature feature,
+		String tag) {
+		var boolean hasError = false
+		for (FField tc : fields) {
+			var FDField c = (mapper.getFDElement(tc) as FDField)
+			if (c === null) {
+				if (checker.mustBeDefined(tc)) {
+					var name = ""
+					if (parent instanceof FDUnion) {
+						name = parent.target.name
+					} else if (parent instanceof FDStruct) {
+						name = parent.target.name
+					}
+					error('''Mandatory field '«»«tc.name»' is missing for compound '«»«name»'«»''',
+						parent, feature, -1, COMPOUND_FIELD_QUICKFIX, name, tc.name)
+					hasError = true
+				}
+			} else {
+				if (checkSpecificationElementProperties(spec, c, FD_FIELD__TARGET, tc.name))
+					hasError = true
+			}
+		}
+		return hasError
+	}
+
+	/** 
+	 * Checks the enumerator list of {@link FDEnumerator}s.
+	 * @return true if an error is present, false otherwise
+	 */
+	def private boolean checkEnumeratorsList(FDSpecificationExtender specHelper, FDMapper mapper,
+		FDSpecification spec, List<FEnumerator> enumerators, FDElement parent, EStructuralFeature feature) {
+		var boolean hasError = false
+		for (FEnumerator tc : enumerators) {
+			var FDEnumValue c = (mapper.getFDElement(tc) as FDEnumValue)
+			if (c === null) {
+				if (specHelper.isMandatory(FDPropertyHost::builtIn(FDBuiltInPropertyHost::ENUMERATORS))) {
+					error(
+						'''Mandatory enumerator '«»«tc.name»' is missing for enumeration '«»«((parent as FDEnumeration)).target.name»'«»''',
+						parent, feature, -1, ENUMERATOR_ENUM_QUICKFIX,
+						((parent as FDEnumeration)).target.name, tc.name)
+					hasError = true
+				}
+			} else {
+				if (checkSpecificationElementProperties(spec, c, FD_ENUM_VALUE__TARGET, tc.name))
+					hasError = true
+			}
+		}
+		return hasError
+	}
+
+	// *****************************************************************************
+
+	/** 
+	 * Checks whether all of the mandatory properties of the given {@link FDSpecification} instance are present.</p>
+	 *  
+	 * @param spec the deployment specification
+	 * @param elem the given element
+	 * @param feature the corresponding feature instance
+	 * @param elementName the name of the element for the quickfix message
+	 * @return true if there was an error (missing property), false otherwise
+	 */
+	def protected boolean checkSpecificationElementProperties(
+		FDSpecification spec,
+		FDElement elem,
+		EStructuralFeature feature,
+		String elementName
+	) {
+		val missing = collectMissingProperties(spec, elem)
+		if (!missing.empty) {
+			error('''«MANDATORY_PROPERTY_QUICKFIX_MESSAGE»'«»«elementName»'«»''', elem, feature, -1,
+				MANDATORY_PROPERTY_QUICKFIX, elementName)
+			// error(MANDATORY_PROPERTY_QUICKFIX_MESSAGE + "'" + elementName + "'", elem, feature, -1);
+			return true
+		}
+		return false
+	}
+	
+	def private List<String> collectMissingProperties(FDSpecification spec, FDElement elem) {
+		var List<FDPropertyDecl> decls = PropertyMappings.getAllPropertyDecls(spec, elem)
+		var List<String> missing = Lists::newArrayList()
+		for (FDPropertyDecl decl : decls) {
+			if (PropertyMappings.isMandatory(decl)) {
+				if (!contains(elem.getProperties().getItems(), decl)) {
+					missing.add(decl.name)
+				}
+			}
+		}
+		return missing
+	}
+
+	def private boolean contains(List<FDProperty> properties, FDPropertyDecl decl) {
+		for (FDProperty p : properties) {
+			if (p.decl === decl) {
+				return true
+			}
+		}
+		return false
+	}
+
+	// *****************************************************************************
+	// overwrite sections in deployment definitions 
+
+	@Check def void checkOverwriteSections(FDTypeOverwrites elem) {
+		var EObject parent = elem.eContainer()
+		if (parent instanceof FDOverwriteElement) {
+			var FType targetType = FDModelUtils::getOverwriteTargetType(parent)
+			if (targetType === null) {
+				error("Cannot determine target type of overwrite section", parent, FD_OVERWRITE_ELEMENT__OVERWRITES)
+			} else {
+				if (elem instanceof FDPlainTypeOverwrites) { // FDPlainTypeOverwrites is always ok
+				} else {
+					if (targetType instanceof FStructType) {
+						if (!(elem instanceof FDStructOverwrites)) {
+							error("Invalid overwrite tag, use '#struct'", parent, FD_OVERWRITE_ELEMENT__OVERWRITES)
+						}
+					} else if (targetType instanceof FUnionType) {
+						if (!(elem instanceof FDUnionOverwrites)) {
+							error("Invalid overwrite tag, use '#union'", parent, FD_OVERWRITE_ELEMENT__OVERWRITES)
+						}
+					} else if (targetType instanceof FEnumerationType) {
+						if (!(elem instanceof FDEnumerationOverwrites)) {
+							error("Invalid overwrite tag, use '#enumeration'", parent, FD_OVERWRITE_ELEMENT__OVERWRITES)
+						}
 					}
 				}
 			}
 		}
+	}
 
-		def private void checkValueArrayType(FDTypeRef typeRef, FDValueArray array) {
-			var i = 0
-			for (FDValue value : array.getValues()) {
-				checkValueType(typeRef, value, array, FD_VALUE_ARRAY__VALUES, i)
-				i++
+	// *****************************************************************************
+	// type system
+
+	@Check def void checkExtensionType(FDExtensionType type) {
+		val name = type.name
+		val IFDeployExtension.TypeDef typeDef = ExtensionRegistry::findType(name)
+		if (typeDef === null) {
+			// didn't find type by name
+			error('''Invalid type '«»«name»', no matching deployment extension has been configured''',
+				type, FD_EXTENSION_TYPE__NAME, -1)
+		}
+	}
+
+	@Check def void checkPropertyFlagType(FDPropertyFlag flag) {
+		if(flag.getDefault() === null) return;
+		val FDPropertyDecl decl = (flag.eContainer() as FDPropertyDecl)
+		val FDTypeRef typeRef = decl.getType()
+		val FDComplexValue value = flag.getDefault()
+		if (value.single !== null) {
+			if (typeRef.array !== null)
+				error("Default must be an array!", FD_PROPERTY_FLAG__DEFAULT)
+			else
+				checkValueType(typeRef, value.single, flag, FD_PROPERTY_FLAG__DEFAULT, -1)
+		} else if (value.array !== null) {
+			if (typeRef.array === null) {
+				error("Default must be a single type, not an array!", FD_PROPERTY_FLAG__DEFAULT)
+			} else
+				checkValueArrayType(typeRef, value.array)
+		}
+	}
+
+	@Check def void checkPropertyValueType(FDProperty prop) {
+		val FDTypeRef typeRef = prop.decl.getType()
+		val FDComplexValue value = prop.getValue()
+		if (value.single !== null) {
+			if (typeRef.array !== null)
+				error("Invalid type, expected array!", FD_PROPERTY__VALUE)
+			else
+				checkValueType(typeRef, value.single, prop, FD_PROPERTY__VALUE, -1)
+		} else if (value.array !== null) {
+			if (typeRef.array === null)
+				error("Invalid array type, expected single value!", FD_PROPERTY__VALUE)
+			else
+				checkValueArrayType(typeRef, value.array)
+		}
+	}
+
+	def private void checkValueType(FDTypeRef typeRef, FDValue value, EObject src, EReference literal, int index) {
+		if (typeRef.complex === null) {
+			// this is a predefined type
+			val predefined = typeRef.predefined.value
+			switch (predefined) {
+				case FDPredefinedTypeId.INTEGER_VALUE: {
+					if (! (value instanceof FDInteger)) {
+						error("Invalid type, expected Integer constant", src, literal, index)
+					}
+				}
+				case FDPredefinedTypeId.STRING_VALUE: {
+					if (! (value instanceof FDString)) {
+						error("Invalid type, expected String constant", src, literal, index)
+					}
+				}
+				case FDPredefinedTypeId.BOOLEAN_VALUE: {
+					if (! (value instanceof FDBoolean)) {
+						error("Invalid type, expected 'true' or 'false'", src, literal, index)
+					}
+				}
+				case FDPredefinedTypeId.INTERFACE_VALUE: {
+					if (! (value instanceof FDInterfaceRef)) {
+						error("Invalid type, expected reference to Franca interface", src, literal, index)
+					}
+				}
+			}
+		} else {
+			val type = typeRef.complex
+			if (type instanceof FDEnumType) {
+				if (!(FDModelUtils::isEnumerator(value))) {
+					error("Invalid type, expected enumerator", src, literal, index)
+				}
 			}
 		}
+	}
 
-		// *****************************************************************************
-
-		// ValidationMessageReporter interface
-
-		override void reportError(String message, EObject object, EStructuralFeature feature) {
-			error(message, object, feature, ValidationMessageAcceptor::INSIGNIFICANT_INDEX)
+	def private void checkValueArrayType(FDTypeRef typeRef, FDValueArray array) {
+		var i = 0
+		for (FDValue value : array.getValues()) {
+			checkValueType(typeRef, value, array, FD_VALUE_ARRAY__VALUES, i)
+			i++
 		}
+	}
 
-		override void reportError(String message, EObject object, EStructuralFeature feature, int idx) {
-			error(message, object, feature, idx)
-		}
+	// *****************************************************************************
+	// ValidationMessageReporter interface
 
-		override void reportWarning(String message, EObject object, EStructuralFeature feature) {
-			warning(message, object, feature, ValidationMessageAcceptor::INSIGNIFICANT_INDEX)
-		}
+	override void reportError(String message, EObject object, EStructuralFeature feature) {
+		error(message, object, feature, ValidationMessageAcceptor::INSIGNIFICANT_INDEX)
+	}
 
+	override void reportError(String message, EObject object, EStructuralFeature feature, int idx) {
+		error(message, object, feature, idx)
+	}
+
+	override void reportWarning(String message, EObject object, EStructuralFeature feature) {
+		warning(message, object, feature, ValidationMessageAcceptor::INSIGNIFICANT_INDEX)
+	}
 }

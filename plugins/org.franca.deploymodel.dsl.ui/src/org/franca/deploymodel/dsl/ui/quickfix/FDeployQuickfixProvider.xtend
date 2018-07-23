@@ -24,6 +24,7 @@ import org.franca.core.franca.FEnumerationType
 import org.franca.core.franca.FEnumerator
 import org.franca.core.franca.FField
 import org.franca.core.franca.FInterface
+import org.franca.core.franca.FMapType
 import org.franca.core.franca.FMethod
 import org.franca.core.franca.FModelElement
 import org.franca.core.franca.FStructType
@@ -38,6 +39,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDComplexValue
 import org.franca.deploymodel.dsl.fDeploy.FDElement
 import org.franca.deploymodel.dsl.fDeploy.FDEnumeration
 import org.franca.deploymodel.dsl.fDeploy.FDInterface
+import org.franca.deploymodel.dsl.fDeploy.FDMap
 import org.franca.deploymodel.dsl.fDeploy.FDMethod
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl
 import org.franca.deploymodel.dsl.fDeploy.FDStruct
@@ -110,13 +112,39 @@ class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 	def void applyFixForElement(Issue issue,
 		IssueResolutionAcceptor acceptor) {
 		val elementName = issue.data.get(0)
+		val detail = if (issue.data.size>1) issue.data.get(1) else null
 		val description = '''Add all missing mandatory properties for element '«elementName»'«»'''
 		acceptor.accept(issue, description, description, "",
 			[ EObject obj, IModificationContext context |
-				if (obj instanceof FDElement) {
-					applyFixForElementInternal(obj, false)
+				val mapped = mapActualElement(obj, detail)
+				if (mapped!==null) {
+					applyFixForElementInternal(mapped, false)
 				}
 			])
+	}
+	
+	def private FDElement mapActualElement(EObject obj, String detail) {
+		if (obj instanceof FDElement) {
+			if (detail===null) {
+				obj
+			} else {
+				if (detail==MAP_KEY.toString) {
+					if (obj instanceof FDMap)
+						obj.key
+					else null
+				} else if (detail==MAP_VALUE.toString) {
+					if (obj instanceof FDMap)
+						obj.value
+					else null					
+				} else {
+					// unknown detail
+					null
+				}
+				
+			}
+		} else {
+			null
+		}
 	}
 
 	@Fix(FDeployValidator.METHOD_ARGUMENT_QUICKFIX)
@@ -168,11 +196,37 @@ class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 		IssueResolutionAcceptor acceptor) {
 		val enumeratorName = issue.data.get(0)
 		val enumName = issue.data.get(1)
-		val description = '''Add all enumerator '«enumName»' for enumeration '«enumeratorName»'«»'''
+		val description = '''Add enumerator '«enumName»' for enumeration '«enumeratorName»'«»'''
 		acceptor.accept(issue, description, description, "",
 			[ EObject obj, IModificationContext context |
 				if (obj instanceof FDEnumeration) {
 					applyFixForEnumerationInternal(obj, false, enumName)
+				}
+			])
+	}
+
+	@Fix(FDeployValidator.MAP_KEY_QUICKFIX)
+	def void applyFixForMapKey(Issue issue,
+		IssueResolutionAcceptor acceptor) {
+		val mapName = issue.data.get(0)
+		val description = '''Add key section for map type '«mapName»'«»'''
+		acceptor.accept(issue, description, description, "",
+			[ EObject obj, IModificationContext context |
+				if (obj instanceof FDMap) {
+					applyFixForMapKeyInternal(obj, false)
+				}
+			])
+	}
+
+	@Fix(FDeployValidator.MAP_VALUE_QUICKFIX)
+	def void applyFixForMapValue(Issue issue,
+		IssueResolutionAcceptor acceptor) {
+		val mapName = issue.data.get(0)
+		val description = '''Add value section for map type '«mapName»'«»'''
+		acceptor.accept(issue, description, description, "",
+			[ EObject obj, IModificationContext context |
+				if (obj instanceof FDMap) {
+					applyFixForMapValueInternal(obj, false)
 				}
 			])
 	}
@@ -257,6 +311,27 @@ class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 		}
 	}
 
+	def private void applyFixForMapInternal(FDMap map, boolean isRecursive) {
+		applyFixForMapKeyInternal(map, isRecursive)
+		applyFixForMapValueInternal(map, isRecursive)
+	}
+
+	def private void applyFixForMapKeyInternal(FDMap map, boolean isRecursive) {
+		val fdMapKey = FDeployFactory.eINSTANCE.createFDMapKey.init
+		map.key = fdMapKey
+		if (isRecursive) {
+			applyFixForElementInternal(fdMapKey, isRecursive)
+		}
+	}
+
+	def private void applyFixForMapValueInternal(FDMap map, boolean isRecursive) {
+		val fdMapValue = FDeployFactory.eINSTANCE.createFDMapValue.init
+		map.value = fdMapValue
+		if (isRecursive) {
+			applyFixForElementInternal(fdMapValue, isRecursive)
+		}
+	}
+
 	/** 
 	 * Applies quick fix for an {@link FDElement}: adds the mandatory properties and 
 	 * in case of a recursive fix {@link FDMethod}s, {@link FDUnion}s, {@link FDStruct}s and {@link FDEnumeration}s 
@@ -265,7 +340,7 @@ class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 	 * @param isRecursive true if the fix should be applied recursively, false otherwise
 	 */
 	def private void applyFixForElementInternal(FDElement element, boolean isRecursive) {
-		val root = FDModelUtils.getRootElement(element)
+		val root = FDModelUtils.getTopmostRootElement(element)
 		if (root === null) {
 			throw new RuntimeException('''Cannot find root element for element «element»''')
 		}
@@ -275,7 +350,8 @@ class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 			if (!hasPropertyDeclaration(element.properties.items, decl) && PropertyMappings.isMandatory(decl)) {
 				var prop = FDeployFactory.eINSTANCE.createFDProperty
 				prop.setDecl(decl)
-				var FDComplexValue defaultVal = DefaultValueProvider.generateDefaultValue(element, decl.type)
+				var FDComplexValue defaultVal =
+					ExtensibleDefaultValueProvider.generateDefaultValue(root, element, prop, decl.type)
 				if (defaultVal !== null) {
 					prop.setValue(defaultVal)
 					element.properties.items.add(prop)
@@ -299,6 +375,7 @@ class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 				FDUnion: applyFixForUnionInternal(element, isRecursive)
 				FDStruct: applyFixForStructInternal(element, isRecursive)
 				FDEnumeration: applyFixForEnumerationInternal(element, isRecursive)
+				FDMap: applyFixForMapInternal(element, isRecursive)
 				default: { } // ignore
 			}
 		}
@@ -386,6 +463,13 @@ class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 					elements.add(getOrCreateEnumeration(deploymentInterface, elementName))
 				}
 
+			} else if (tc instanceof FMapType) {
+				if (elementName === null) {
+					elements.add(getOrCreateMap(deploymentInterface, tc.name))
+				} else if (type === MAP && tc.name.equals(elementName)) {
+					elements.add(getOrCreateMap(deploymentInterface, elementName))
+				}
+
 			} else if (tc instanceof FTypeDef) {
 				if (elementName === null) {
 					elements.add(getOrCreateTypedef(deploymentInterface, tc.name))
@@ -418,6 +502,7 @@ class FDeployQuickfixProvider extends DefaultQuickfixProvider {
 				case STRUCT: getOrCreateStruct(types, elementName)
 				case ENUMERATION: getOrCreateEnumeration(types, elementName)
 				case UNION: getOrCreateUnion(types, elementName)
+				case MAP: getOrCreateMap(types, elementName)
 				case TYPEDEF: getOrCreateTypedef(types, elementName)
 				default: null
 			}

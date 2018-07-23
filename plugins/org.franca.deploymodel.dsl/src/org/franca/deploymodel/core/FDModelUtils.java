@@ -46,6 +46,20 @@ public class FDModelUtils {
 	}
 
 	/**
+	 * In languages derived from FDeploy, there might be nested root elements.</p>
+	 * 
+	 * @param an element of a deployment definition
+	 * @return the topmost root element
+	 */
+	public static FDRootElement getTopmostRootElement(FDElement obj) {
+		FDRootElement found = null;
+		for (EObject e = obj; e != null; e = e.eContainer())
+			if (e instanceof FDRootElement)
+				found = (FDRootElement)e;
+		return found;
+	}
+
+	/**
 	 * Get the value of a property value, if it is a EObject reference.
 	 * 
 	 * This will return null if the property has a different type.

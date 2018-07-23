@@ -1,0 +1,52 @@
+package org.example.spec
+
+// import the deployment specification
+import "../spec/QuickfixSpec.fdepl"
+
+// import the actual Franca interfaces we want to deploy 
+import "classpath:/org/example/idl/QuickfixDemo.fidl"
+
+
+/**
+ * One example deployment of the QuickfixDemo interface according to
+ * specification QuickfixSpec.</p>
+ * 
+ * In order to test the DefaultValue extension point, remove the contents
+ * of this deployment definition and invoke a quickfix on the interface name.
+ * The newly created properties will have default values provided by the
+ * extension.</p> 
+ */
+define org.example.spec.QuickfixSpec for interface org.example.idl.QuickfixDemo
+{
+
+	attribute a1 {
+		AttrProp = {
+			47, 0b1011
+		}
+	}
+
+	method m1 {
+		MethodProp = 0x101
+	}
+
+	method m2 {
+		MethodProp = 0x102
+	}
+
+	method m3 {
+		MethodProp = 0x103
+	}
+
+	struct S1 {
+		StructProp = "S1_0"
+	}
+
+	struct S2 {
+		StructProp = "S2_1"
+	}
+
+	struct S3 {
+		StructProp = "S3_2"
+	}
+
+}

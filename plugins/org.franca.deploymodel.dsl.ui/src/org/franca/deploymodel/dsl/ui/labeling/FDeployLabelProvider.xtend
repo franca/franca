@@ -22,6 +22,7 @@ import org.franca.deploymodel.dsl.fDeploy.FDField
 import org.franca.deploymodel.dsl.fDeploy.FDGeneric
 import org.franca.deploymodel.dsl.fDeploy.FDInteger
 import org.franca.deploymodel.dsl.fDeploy.FDInterface
+import org.franca.deploymodel.dsl.fDeploy.FDMap
 import org.franca.deploymodel.dsl.fDeploy.FDMethod
 import org.franca.deploymodel.dsl.fDeploy.FDProperty
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl
@@ -76,6 +77,10 @@ class FDeployLabelProvider extends DefaultEObjectLabelProvider {
 	}
 
 	def String text(FDUnion element) {
+		return element.getTarget().getName()
+	}
+
+	def String text(FDMap element) {
 		return element.getTarget().getName()
 	}
 
@@ -238,6 +243,9 @@ class FDeployLabelProvider extends DefaultEObjectLabelProvider {
 			}
 			case ARRAYS: {
 				return "arrays.png"
+			}
+			case MAPS: {
+				return "map.png"
 			}
 		}
 		return null

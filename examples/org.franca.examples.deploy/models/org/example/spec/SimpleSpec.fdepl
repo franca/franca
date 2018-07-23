@@ -13,4 +13,15 @@ specification SimpleSpec
 		ArrayProp : Integer;
 	}
 
+	for maps {
+		MaxElements : Integer;
+	}
+	
+	for map_keys {
+		KeyProp : Boolean;
+	}
+
+	for map_values {
+		ValProp : Boolean;
+	}
 }

@@ -24,6 +24,7 @@ import org.eclipse.xtext.scoping.impl.SimpleScope
 import org.franca.core.franca.FArrayType
 import org.franca.core.franca.FCompoundType
 import org.franca.core.franca.FEnumerationType
+import org.franca.core.franca.FMapType
 import org.franca.core.franca.FStructType
 import org.franca.core.franca.FType
 import org.franca.core.franca.FTypeDef
@@ -47,6 +48,9 @@ import org.franca.deploymodel.dsl.fDeploy.FDExtensionRoot
 import org.franca.deploymodel.dsl.fDeploy.FDExtensionType
 import org.franca.deploymodel.dsl.fDeploy.FDField
 import org.franca.deploymodel.dsl.fDeploy.FDInterface
+import org.franca.deploymodel.dsl.fDeploy.FDMap
+import org.franca.deploymodel.dsl.fDeploy.FDMapKey
+import org.franca.deploymodel.dsl.fDeploy.FDMapValue
 import org.franca.deploymodel.dsl.fDeploy.FDMethod
 import org.franca.deploymodel.dsl.fDeploy.FDModel
 import org.franca.deploymodel.dsl.fDeploy.FDOverwriteElement
@@ -137,6 +141,10 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 
 	def scope_FDEnumeration_target(FDTypes ctxt, EReference ref) {
 		ctxt.getScopes(typeof(FEnumerationType))
+	}
+
+	def scope_FDMap_target(FDTypes ctxt, EReference ref) {
+		ctxt.getScopes(typeof(FMapType))
 	}
 
 	def scope_FDTypedef_target(FDTypes ctxt, EReference ref) {
@@ -259,6 +267,11 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 		IScope.NULLSCOPE
 	}
 
+	def scope_FDMap_target(FDInterface ctxt, EReference ref) {
+		ctxt.getScopes(typeof(FMapType))
+	}
+
+
 	// *****************************************************************************
 
 	/**
@@ -369,6 +382,18 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 	}
 
 	def scope_FDProperty_decl(FDEnumValue owner, EReference ref) {
+		owner.getPropertyDecls
+	}
+
+	def scope_FDProperty_decl(FDMap owner, EReference ref) {
+		owner.getPropertyDecls
+	}
+
+	def scope_FDProperty_decl(FDMapKey owner, EReference ref) {
+		owner.getPropertyDecls
+	}
+
+	def scope_FDProperty_decl(FDMapValue owner, EReference ref) {
 		owner.getPropertyDecls
 	}
 

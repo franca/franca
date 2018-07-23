@@ -31,6 +31,7 @@ import static org.franca.core.franca.FrancaPackage.Literals.*
 
 import static extension org.franca.core.FrancaModelExtensions.*
 import static org.franca.core.typesystem.ActualType.*
+import org.franca.core.franca.FBasicTypeId
 
 class TypesValidator {
 
@@ -120,7 +121,7 @@ class TypesValidator {
 							val res = ExpressionEvaluator.evaluateInteger(expr)
 							if (res===null) {
 								reporter.reportError(
-										"invalid byte buffer element",
+										"invalid byte buffer element, expected integer expression",
 										rhs, FBRACKET_INITIALIZER__ELEMENTS, idx);
 							} else {
 								if (res.signum<0 || res.compareTo(BigInteger.valueOf(255))>0) {
@@ -129,6 +130,11 @@ class TypesValidator {
 											rhs, FBRACKET_INITIALIZER__ELEMENTS, idx);
 								}
 							}
+						} else {
+							// this is a nested FInitializer (e.g., a nested array like "[ 1, 2, [3, 3] ]") 
+							reporter.reportError(
+								"invalid byte buffer element, expected expression",
+								rhs, FBRACKET_INITIALIZER__ELEMENTS, idx);
 						}
 					}
 				}
