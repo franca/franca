@@ -91,7 +91,8 @@ FDElement:
 	FDRootElement |
 	FDExtensionElement |
 	FDAttribute | FDOperation | FDArgument |
-	FDTypeDefinition | FDField | FDEnumeration | FDEnumValue;
+	FDTypeDefinition | FDField | FDEnumeration | FDEnumValue |
+	FDMapKey | FDMapValue;
 
 FDAbstractExtensionElement:
 	FDExtensionRoot | FDExtensionElement;
@@ -229,6 +230,19 @@ FDEnumValue:
 
 FDMap:
 	'map' target=[fidl::FMapType|FQN] '{'
+		properties=FDPropertySet
+		(key=FDMapKey)?		
+		(value=FDMapValue)?		
+	'}';
+
+FDMapKey:
+	'key' '{'
+		properties=FDPropertySet
+		//(overwrites=FDTypeOverwrites)?
+	'}';
+	
+FDMapValue:
+	'value' '{'
 		properties=FDPropertySet
 		//(overwrites=FDTypeOverwrites)?
 	'}';

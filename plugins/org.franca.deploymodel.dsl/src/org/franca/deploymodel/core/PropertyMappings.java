@@ -20,6 +20,8 @@ import static org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost.FLOATS;
 import static org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost.INTEGERS;
 import static org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost.INTERFACES;
 import static org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost.MAPS;
+import static org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost.MAP_KEYS;
+import static org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost.MAP_VALUES;
 import static org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost.METHODS;
 import static org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost.NUMBERS;
 import static org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost.STRINGS;
@@ -56,6 +58,8 @@ import org.franca.deploymodel.dsl.fDeploy.FDEnumeration;
 import org.franca.deploymodel.dsl.fDeploy.FDField;
 import org.franca.deploymodel.dsl.fDeploy.FDInterface;
 import org.franca.deploymodel.dsl.fDeploy.FDMap;
+import org.franca.deploymodel.dsl.fDeploy.FDMapKey;
+import org.franca.deploymodel.dsl.fDeploy.FDMapValue;
 import org.franca.deploymodel.dsl.fDeploy.FDMethod;
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl;
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyFlag;
@@ -130,6 +134,12 @@ public class PropertyMappings {
 				typeRef = te.getType();
 				if (te.isArray())
 					isInlineArray = true;
+			} else if (elem instanceof FDMapKey) {
+				FMapType mt = ((FDMap)(elem.eContainer())).getTarget();
+				typeRef = mt.getKeyType();
+			} else if (elem instanceof FDMapValue) {
+				FMapType mt = ((FDMap)(elem.eContainer())).getTarget();
+				typeRef = mt.getValueType();
 			}
 			if (typeRef != null) {
 				if (FrancaHelpers.isInteger(typeRef))
@@ -278,6 +288,10 @@ public class PropertyMappings {
 			return ENUMERATORS;
 		} else if (elem instanceof FDMap) {
 			return MAPS;
+		} else if (elem instanceof FDMapKey) {
+			return MAP_KEYS;
+		} else if (elem instanceof FDMapValue) {
+			return MAP_VALUES;
 		} else if (elem instanceof FDTypedef) {
 			return TYPEDEFS;
 		}

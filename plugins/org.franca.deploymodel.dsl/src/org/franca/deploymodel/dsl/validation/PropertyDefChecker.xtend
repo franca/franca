@@ -110,10 +110,9 @@ class PropertyDefChecker {
 	}
 
 	def mustBeDefined (FMapType it) {
-		specHelper.isMandatory(MAPS)
+		specHelper.isMandatory(MAPS) || keyType.mustBeDefined() || valueType.mustBeDefined
 	}
 	
-
 	// *****************************************************************************
 
 	def private mustBeDefined (FTypeRef it, boolean isInlineArray) {
@@ -125,7 +124,7 @@ class PropertyDefChecker {
 		mustBeDefined
 	}
 
-	def private mustBeDefined (FTypeRef it) {
+	def public mustBeDefined (FTypeRef it) {
 		if (isString) {
 			if (specHelper.isMandatory(STRINGS))
 				return true

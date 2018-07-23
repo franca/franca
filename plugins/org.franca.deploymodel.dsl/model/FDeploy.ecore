@@ -63,6 +63,8 @@
     <eLiterals name="byte_buffers" value="20" literal="byte_buffers"/>
     <eLiterals name="fields" value="21" literal="fields"/>
     <eLiterals name="maps" value="22" literal="maps"/>
+    <eLiterals name="map_keys" value="23" literal="map_keys"/>
+    <eLiterals name="map_values" value="24" literal="map_values"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FDTypeRef">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="predefined" eType="#//FDPredefinedTypeId"/>
@@ -179,7 +181,13 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FDMap" eSuperTypes="#//FDTypeDefinition">
     <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="ecore:EClass ../../org.franca.core/model/franca.ecore#//FMapType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="key" eType="#//FDMapKey"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="value" eType="#//FDMapValue"
+        containment="true"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDMapKey" eSuperTypes="#//FDElement"/>
+  <eClassifiers xsi:type="ecore:EClass" name="FDMapValue" eSuperTypes="#//FDElement"/>
   <eClassifiers xsi:type="ecore:EClass" name="FDTypeOverwrites" eSuperTypes="#//FDElement"/>
   <eClassifiers xsi:type="ecore:EClass" name="FDPlainTypeOverwrites" eSuperTypes="#//FDTypeOverwrites"/>
   <eClassifiers xsi:type="ecore:EClass" name="FDEnumerationOverwrites" eSuperTypes="#//FDTypeOverwrites">

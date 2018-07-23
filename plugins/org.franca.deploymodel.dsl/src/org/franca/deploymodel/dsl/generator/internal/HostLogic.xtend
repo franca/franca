@@ -80,6 +80,8 @@ class HostLogic {
 					case ENUMERATIONS:     FEnumerationType
 					case ENUMERATORS:      FEnumerator
 					case MAPS:             FMapType
+					case MAP_KEYS:         FMapType
+					case MAP_VALUES:       FMapType
 					case TYPEDEFS:         FTypeDef
 					//case NUMBERS:        // generic handling
 					//case FLOATS:         // generic handling

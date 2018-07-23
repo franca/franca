@@ -49,6 +49,8 @@ import org.franca.deploymodel.dsl.fDeploy.FDExtensionType
 import org.franca.deploymodel.dsl.fDeploy.FDField
 import org.franca.deploymodel.dsl.fDeploy.FDInterface
 import org.franca.deploymodel.dsl.fDeploy.FDMap
+import org.franca.deploymodel.dsl.fDeploy.FDMapKey
+import org.franca.deploymodel.dsl.fDeploy.FDMapValue
 import org.franca.deploymodel.dsl.fDeploy.FDMethod
 import org.franca.deploymodel.dsl.fDeploy.FDModel
 import org.franca.deploymodel.dsl.fDeploy.FDOverwriteElement
@@ -384,6 +386,14 @@ class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 	}
 
 	def scope_FDProperty_decl(FDMap owner, EReference ref) {
+		owner.getPropertyDecls
+	}
+
+	def scope_FDProperty_decl(FDMapKey owner, EReference ref) {
+		owner.getPropertyDecls
+	}
+
+	def scope_FDProperty_decl(FDMapValue owner, EReference ref) {
 		owner.getPropertyDecls
 	}
 

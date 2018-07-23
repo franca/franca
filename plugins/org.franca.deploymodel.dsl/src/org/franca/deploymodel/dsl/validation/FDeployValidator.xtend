@@ -32,7 +32,6 @@ import org.franca.core.franca.FTypeDef
 import org.franca.core.franca.FUnionType
 import org.franca.deploymodel.core.FDModelUtils
 import org.franca.deploymodel.core.FDPropertyHost
-import org.franca.deploymodel.core.PropertyMappings
 import org.franca.deploymodel.dsl.FDMapper
 import org.franca.deploymodel.dsl.FDSpecificationExtender
 import org.franca.deploymodel.dsl.fDeploy.FDAbstractExtensionElement
@@ -85,6 +84,7 @@ import org.franca.deploymodel.extensions.ExtensionRegistry
 import org.franca.deploymodel.extensions.IFDeployExtension
 
 import static org.franca.deploymodel.dsl.fDeploy.FDeployPackage.Literals.*
+import org.franca.deploymodel.core.PropertyMappings
 
 /**
  * This class contains custom validation rules for the Franca deployment DSL.</p> 
@@ -504,8 +504,42 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 						hasError = true
 					}
 				} else {
+					// check map properties
 					if (checkSpecificationElementProperties(spec, c, FD_MAP__TARGET, tc.name))
 						hasError = true
+
+					var contentError = false
+					if (checker.mustBeDefined(tc.keyType)) {
+						if (c.key===null) {
+							error('''«DEPLOYMENT_ELEMENT_QUICKFIX_MESSAGE»'«»«tc.name» key'«»''', c,
+								FD_MAP__TARGET, DEPLOYMENT_ELEMENT_QUICKFIX, tc.name,
+								FrancaQuickFixConstants::MAP_KEY.toString())
+							contentError = true
+						} else {
+							// check properties of map key type
+							if (checkSpecificationElementProperties(spec, c.key, c, FD_MAP__KEY, tc.name + " key type"))
+								hasError = true
+						}
+					}	
+
+					if (checker.mustBeDefined(tc.valueType)) {
+						if (c.value===null) {
+							error('''«DEPLOYMENT_ELEMENT_QUICKFIX_MESSAGE»'«»«tc.name» value'«»''', c,
+								FD_MAP__TARGET, DEPLOYMENT_ELEMENT_QUICKFIX, tc.name,
+								FrancaQuickFixConstants::MAP_VALUE.toString())
+							contentError = true
+						} else {
+							// check properties of map value type
+							if (checkSpecificationElementProperties(spec, c.value, c, FD_MAP__VALUE, tc.name + " value type"))
+								hasError = true
+						}
+					}	
+					
+					if (contentError) {
+						error('''«DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX_MESSAGE»'«»«tc.name»'«»''', c,
+							FD_MAP__TARGET, DEPLOYMENT_ELEMENT_RECURSIVE_QUICKFIX, tc.name,
+							FrancaQuickFixConstants::MAP.toString())
+					}
 				}
 			} else if (tc instanceof FTypeDef) {
 				val FDTypedef c = (mapper.getFDElement(tc) as FDTypedef)
@@ -623,25 +657,23 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 	}
 
 	// *****************************************************************************
+
 	/** 
-	 * Checks whether all of the mandatory properties of the given {@link FDSpecification} instance are present. 
-	 * @param spec the deployment specification element
+	 * Checks whether all of the mandatory properties of the given {@link FDSpecification} instance are present.</p>
+	 *  
+	 * @param spec the deployment specification
 	 * @param elem the given element
 	 * @param feature the corresponding feature instance
 	 * @param elementName the name of the element for the quickfix message
 	 * @return true if there was an error (missing property), false otherwise
 	 */
-	def protected boolean checkSpecificationElementProperties(FDSpecification spec, FDElement elem,
-		EStructuralFeature feature, String elementName) {
-		var List<FDPropertyDecl> decls = PropertyMappings::getAllPropertyDecls(spec, elem)
-		var List<String> missing = Lists::newArrayList()
-		for (FDPropertyDecl decl : decls) {
-			if (PropertyMappings::isMandatory(decl)) {
-				if (!contains(elem.getProperties().getItems(), decl)) {
-					missing.add(decl.name)
-				}
-			}
-		}
+	def protected boolean checkSpecificationElementProperties(
+		FDSpecification spec,
+		FDElement elem,
+		EStructuralFeature feature,
+		String elementName
+	) {
+		val missing = collectMissingProperties(spec, elem)
 		if (!missing.empty) {
 			error('''«MANDATORY_PROPERTY_QUICKFIX_MESSAGE»'«»«elementName»'«»''', elem, feature, -1,
 				MANDATORY_PROPERTY_QUICKFIX, elementName)
@@ -649,6 +681,46 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 			return true
 		}
 		return false
+	}
+	
+	/** 
+	 * Checks whether all of the mandatory properties of the given {@link FDSpecification} instance are present.</p>
+	 *  
+	 * @param spec the deployment specification
+	 * @param elem the given element
+	 * @param reportedElem the element for which the error should be reported (usually the parent of elem) 
+	 * @param feature the corresponding feature instance
+	 * @param elementName the name of the element for the quickfix message
+	 * @return true if there was an error (missing property), false otherwise
+	 */
+	def protected boolean checkSpecificationElementProperties(
+		FDSpecification spec,
+		FDElement elem,
+		FDElement reportedElem,
+		EStructuralFeature feature,
+		String elementName
+	) {
+		val missing = collectMissingProperties(spec, elem)
+		if (!missing.empty) {
+			error('''«MANDATORY_PROPERTY_QUICKFIX_MESSAGE»'«»«elementName»'«»''', reportedElem, feature, -1,
+				MANDATORY_PROPERTY_QUICKFIX, elementName)
+			// error(MANDATORY_PROPERTY_QUICKFIX_MESSAGE + "'" + elementName + "'", reportedElem, feature, -1);
+			return true
+		}
+		return false
+	}
+	
+	def private List<String> collectMissingProperties(FDSpecification spec, FDElement elem) {
+		var List<FDPropertyDecl> decls = PropertyMappings.getAllPropertyDecls(spec, elem)
+		var List<String> missing = Lists::newArrayList()
+		for (FDPropertyDecl decl : decls) {
+			if (PropertyMappings.isMandatory(decl)) {
+				if (!contains(elem.getProperties().getItems(), decl)) {
+					missing.add(decl.name)
+				}
+			}
+		}
+		return missing
 	}
 
 	def private boolean contains(List<FDProperty> properties, FDPropertyDecl decl) {

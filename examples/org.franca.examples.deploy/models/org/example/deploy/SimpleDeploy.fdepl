@@ -61,5 +61,13 @@ define org.example.spec.SimpleSpec for interface org.example.idl.SimpleInterface
 
 	map MapA {
 		MaxElements = 700
+		key {
+			Encoding = unicode
+			KeyProp = true
+		}
+		value {
+			Encoding = utf8
+			ValProp = false
+		}
 	}
 }

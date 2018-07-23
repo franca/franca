@@ -32,6 +32,8 @@
       <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDBuiltInPropertyHost/byte_buffers"/>
       <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDBuiltInPropertyHost/fields"/>
       <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDBuiltInPropertyHost/maps"/>
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDBuiltInPropertyHost/map_keys"/>
+      <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDBuiltInPropertyHost/map_values"/>
     </genEnums>
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="FDeploy.ecore#//FDPredefinedTypeId">
       <genEnumLiterals ecoreEnumLiteral="FDeploy.ecore#//FDPredefinedTypeId/Integer"/>
@@ -161,7 +163,11 @@
     </genClasses>
     <genClasses ecoreClass="FDeploy.ecore#//FDMap">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDMap/target"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDMap/key"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FDeploy.ecore#//FDMap/value"/>
     </genClasses>
+    <genClasses ecoreClass="FDeploy.ecore#//FDMapKey"/>
+    <genClasses ecoreClass="FDeploy.ecore#//FDMapValue"/>
     <genClasses ecoreClass="FDeploy.ecore#//FDTypeOverwrites"/>
     <genClasses ecoreClass="FDeploy.ecore#//FDPlainTypeOverwrites"/>
     <genClasses ecoreClass="FDeploy.ecore#//FDEnumerationOverwrites">
