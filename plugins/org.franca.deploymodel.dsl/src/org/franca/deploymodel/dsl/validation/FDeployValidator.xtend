@@ -102,6 +102,10 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 	public static final String COMPOUND_FIELD_QUICKFIX_MESSAGE = "Field is missing for compound "
 	public static final String ENUMERATOR_ENUM_QUICKFIX = "ENUMERATOR_ENUM_QUICKFIX"
 	public static final String ENUMERATOR_ENUM_QUICKFIX_MESSAGE = "Enumerator element is missing for enum "
+	public static final String MAP_KEY_QUICKFIX = "MAP_KEY_QUICKFIX"
+	public static final String MAP_KEY_QUICKFIX_MESSAGE = "Map key section is missing for map "
+	public static final String MAP_VALUE_QUICKFIX = "MAP_VALUE_QUICKFIX"
+	public static final String MAP_VALUE_QUICKFIX_MESSAGE = "Map value section is missing for map "
 	public static final String MANDATORY_PROPERTY_QUICKFIX = "MANDATORY_PROPERTIES_QUICKFIX"
 	public static final String MANDATORY_PROPERTY_QUICKFIX_MESSAGE = "Mandatory properties are missing for element "
 	public static final String DEPLOYMENT_ELEMENT_QUICKFIX = "DEPLOYMENT_ELEMENT_QUICKFIX"
@@ -511,27 +515,37 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 					var contentError = false
 					if (checker.mustBeDefined(tc.keyType)) {
 						if (c.key===null) {
-							error('''«DEPLOYMENT_ELEMENT_QUICKFIX_MESSAGE»'«»«tc.name» key'«»''', c,
-								FD_MAP__TARGET, DEPLOYMENT_ELEMENT_QUICKFIX, tc.name,
+							error('''«MAP_KEY_QUICKFIX_MESSAGE»'«»«tc.name»'«»''', c,
+								FD_MAP__TARGET, MAP_KEY_QUICKFIX, tc.name,
 								FrancaQuickFixConstants::MAP_KEY.toString())
 							contentError = true
 						} else {
 							// check properties of map key type
-							if (checkSpecificationElementProperties(spec, c.key, c, FD_MAP__KEY, tc.name + " key type"))
+							val missing = collectMissingProperties(spec, c.key)
+							if (!missing.empty) {
+								error('''«MANDATORY_PROPERTY_QUICKFIX_MESSAGE»'«»«tc.name» key type'«»''', c, FD_MAP__KEY, -1,
+									MANDATORY_PROPERTY_QUICKFIX, tc.name,
+									FrancaQuickFixConstants::MAP_KEY.toString())
 								hasError = true
+							}
 						}
 					}	
 
 					if (checker.mustBeDefined(tc.valueType)) {
 						if (c.value===null) {
-							error('''«DEPLOYMENT_ELEMENT_QUICKFIX_MESSAGE»'«»«tc.name» value'«»''', c,
-								FD_MAP__TARGET, DEPLOYMENT_ELEMENT_QUICKFIX, tc.name,
+							error('''«MAP_VALUE_QUICKFIX_MESSAGE»'«»«tc.name»'«»''', c,
+								FD_MAP__TARGET, MAP_VALUE_QUICKFIX, tc.name,
 								FrancaQuickFixConstants::MAP_VALUE.toString())
 							contentError = true
 						} else {
 							// check properties of map value type
-							if (checkSpecificationElementProperties(spec, c.value, c, FD_MAP__VALUE, tc.name + " value type"))
+							val missing = collectMissingProperties(spec, c.value)
+							if (!missing.empty) {
+								error('''«MANDATORY_PROPERTY_QUICKFIX_MESSAGE»'«»«tc.name» value type'«»''', c, FD_MAP__VALUE, -1,
+									MANDATORY_PROPERTY_QUICKFIX, tc.name,
+									FrancaQuickFixConstants::MAP_VALUE.toString())
 								hasError = true
+							}
 						}
 					}	
 					
@@ -678,33 +692,6 @@ class FDeployValidator extends AbstractFDeployValidator implements ValidationMes
 			error('''«MANDATORY_PROPERTY_QUICKFIX_MESSAGE»'«»«elementName»'«»''', elem, feature, -1,
 				MANDATORY_PROPERTY_QUICKFIX, elementName)
 			// error(MANDATORY_PROPERTY_QUICKFIX_MESSAGE + "'" + elementName + "'", elem, feature, -1);
-			return true
-		}
-		return false
-	}
-	
-	/** 
-	 * Checks whether all of the mandatory properties of the given {@link FDSpecification} instance are present.</p>
-	 *  
-	 * @param spec the deployment specification
-	 * @param elem the given element
-	 * @param reportedElem the element for which the error should be reported (usually the parent of elem) 
-	 * @param feature the corresponding feature instance
-	 * @param elementName the name of the element for the quickfix message
-	 * @return true if there was an error (missing property), false otherwise
-	 */
-	def protected boolean checkSpecificationElementProperties(
-		FDSpecification spec,
-		FDElement elem,
-		FDElement reportedElem,
-		EStructuralFeature feature,
-		String elementName
-	) {
-		val missing = collectMissingProperties(spec, elem)
-		if (!missing.empty) {
-			error('''«MANDATORY_PROPERTY_QUICKFIX_MESSAGE»'«»«elementName»'«»''', reportedElem, feature, -1,
-				MANDATORY_PROPERTY_QUICKFIX, elementName)
-			// error(MANDATORY_PROPERTY_QUICKFIX_MESSAGE + "'" + elementName + "'", reportedElem, feature, -1);
 			return true
 		}
 		return false
