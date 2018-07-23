@@ -17,6 +17,7 @@ import org.franca.core.franca.FEnumerationType
 import org.franca.core.franca.FEnumerator
 import org.franca.core.franca.FField
 import org.franca.core.franca.FInterface
+import org.franca.core.franca.FMapType
 import org.franca.core.franca.FMethod
 import org.franca.core.franca.FStructType
 import org.franca.core.franca.FTypeCollection
@@ -78,6 +79,7 @@ class HostLogic {
 					case FIELDS:           FField
 					case ENUMERATIONS:     FEnumerationType
 					case ENUMERATORS:      FEnumerator
+					case MAPS:             FMapType
 					case TYPEDEFS:         FTypeDef
 					//case NUMBERS:        // generic handling
 					//case FLOATS:         // generic handling
