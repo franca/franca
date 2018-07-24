@@ -14,24 +14,30 @@
       <unit id="org.eclipse.equinox.executable.feature.group" version="3.6.300.v20161122-1740"/>
       <unit id="org.eclipse.emf.common" version="2.12.0.v20160420-0247"/>
       <unit id="org.eclipse.emf.sdk.feature.group" version="2.12.0.v20160526-0356"/>
-      <repository id="neon" location="http://download.eclipse.org/releases/neon"/>
+      <repository id="neon" location="http://download.eclipse.org/releases/neon/201705151400/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.emf.compare.feature.group" version="3.0.1.201408191310"/>
-      <repository location="http://download.eclipse.org/modeling/emf/compare/updates/releases/3.0"/>
+      <repository location="http://download.eclipse.org/modeling/emf/compare/updates/releases/3.0/R201408191310"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="de.itemis.xtext.antlr.sdk.feature.group" version="2.1.1.v201405091103"/>
       <unit id="de.itemis.xtext.antlr.feature.feature.group" version="2.1.1.v201405091103"/>
-      <repository location="http://download.itemis.com/updates/releases/"/>
+      <repository location="http://download.itemis.com/updates/releases/2.1.1/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.xtext.sdk.feature.group" version="2.11.0.v20170201-0242"/>
       <unit id="org.eclipse.xtend.sdk.feature.group" version="2.11.0.v20170201-0242"/>
+      <repository location="http://download.eclipse.org/modeling/tmf/xtext/updates/releases/2.11.0/"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.9.0.v201605261103"/>
       <unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="2.9.0.v201605261103"/>
+      <repository location="http://download.eclipse.org/modeling/emft/mwe/updates/releases/2.9.0/"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.xtext.ui.testing" version="2.12.0.v20170519-0809"/>
-      <repository location="http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/"/>
+      <repository location="http://download.eclipse.org/modeling/tmf/xtext/updates/releases/2.12.0/"/>
     </location>
     <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
       <unit id="de.cau.cs.kieler.klighd.sdk.feature.feature.group" version="0.42.2.201708311633"/>
@@ -53,7 +59,7 @@
     </location>
 	<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 		<unit id="com.itemis.xtext.testing.feature.feature.group" version="0.2.0.201612011358"/>
-		<repository location="https://dl.bintray.com/itemis/generic/xtext-testing/updates"/>
+		<repository location="https://dl.bintray.com/itemis/generic/xtext-testing/releases/0.2.0.201612011358/"/>
 	</location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.jdt.junit.runners.feature.feature.group" version="0.1.0.201411181552"/>
