@@ -12,7 +12,7 @@ with requirements source
 environment en
 
 // required installable units from the Neon platform 
-location neon "http://download.eclipse.org/releases/neon" {
+location neon "http://download.eclipse.org/releases/neon/201705151400" {
 	org.eclipse.sdk.feature.group
 	org.eclipse.pde.feature.group
 	
@@ -30,7 +30,7 @@ location neon "http://download.eclipse.org/releases/neon" {
 //	org.eclipse.emf.compare.feature.group [3.2.1,4.0.0)
 }
 
-location "http://download.eclipse.org/modeling/emf/compare/updates/releases/3.0" {
+location "http://download.eclipse.org/modeling/emf/compare/updates/releases/3.0/R201408191310" {
 	// we cannot use EMFCompare after 3.1 (up to at least 3.2.1) because of an NPE in 
 	// ComparisonUtil.isContainedInFeatureMap (used e.g. by Franca2DBusTests).
 	// introduced by commit https://github.com/eclipse/emf.compare/commit/85470799137798914a00adb5a19789c6074bdbb6#diff-6f326c3cf977c5f7b073f7d184de2a65
@@ -39,20 +39,26 @@ location "http://download.eclipse.org/modeling/emf/compare/updates/releases/3.0"
 
 
 // ANTLR parser, needed for Xtext
-location "http://download.itemis.com/updates/releases/" {
+location "http://download.itemis.com/updates/releases/2.1.1/" {
 	de.itemis.xtext.antlr.sdk.feature.group [2.1.1,3.0.0)
 	de.itemis.xtext.antlr.feature.feature.group [2.1.1,3.0.0)
 }
 
-// Xtext and Xtend and related EMF stuff
-location "http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/" {
+// Xtext and Xtend
+location "http://download.eclipse.org/modeling/tmf/xtext/updates/releases/2.11.0/" {
 	org.eclipse.xtext.sdk.feature.group [2.11.0,2.12.0)
 	org.eclipse.xtend.sdk.feature.group [2.11.0,2.12.0)
+}
 
+// mwe2 workflow DSL
+location "http://download.eclipse.org/modeling/emft/mwe/updates/releases/2.9.0/" {
 	org.eclipse.emf.mwe2.language.sdk.feature.group [2.9.0,3.0.0)
 	org.eclipse.emf.mwe2.runtime.sdk.feature.group [2.9.0,3.0.0)
+}
 
-	// needed for UI tests on Eclipse (no 2.11.x version available)
+// Xtext UI tests on Eclipse 
+location "http://download.eclipse.org/modeling/tmf/xtext/updates/releases/2.12.0/" {
+	// (no 2.11.x version available)
 	org.eclipse.xtext.ui.testing [2.12.0,2.13.0)
 }
 
@@ -91,7 +97,7 @@ location "http://franca.github.io/franca/update_site/thirdparty" {
 //}
 
 // xtext-testing, needed for tests (formerly org.eclipselabs.xtext.utils.unittesting)
-location "https://dl.bintray.com/itemis/generic/xtext-testing/updates" {
+location "https://dl.bintray.com/itemis/generic/xtext-testing/releases/0.2.0.201612011358/" {
 	com.itemis.xtext.testing.feature.feature.group [0.2.0,0.3.0)
 }
 
