@@ -682,7 +682,7 @@ code[FDeploy][
 import "deployspecs/SampleDeploySpec.fdepl"
 import "../franca/demo1.fidl"
 
-define SampleDeploySpec for provider ExampleServer {
+define SampleDeploySpec for provider as ExampleServer {
 	ProcessName = "server1.exe"
 	
 	instance org.franca.examples.demo.PlayerAPI {
