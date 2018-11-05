@@ -3,9 +3,9 @@
 <repository name='&quot;Franca thirdparty update site&quot;'
     type='org.eclipse.equinox.internal.p2.artifact.repository.CompositeArtifactRepository' version='1.0.0'>
   <properties size='1'>
-    <property name='p2.timestamp' value='1247705606'/>
+    <property name='p2.timestamp' value='1247705608'/>
   </properties>
-  <children size='8'>
+  <children size='9'>
       <child location='gef4/0.1.0.201312280305'/>
       <child location='idl4emf/1.1.0.201609141744'/>
       <child location='idl4emf/1.1.0.201703291002'/>
@@ -13,6 +13,7 @@
       <child location='protobuf-dt/1.6.0.201705261156'/>
       <child location='xdoc4franca/0.1.5'/>
       <child location='xdoc4franca/0.2.0'/>
+      <child location='xdoc4franca/0.3.0'/>
       <child location='xtext-utils/0.9.3.201204261440'/>
   </children>
 </repository>
