@@ -21,7 +21,7 @@
 		<emf.version>(2.10,2.12)</emf.version>
 		<maven.version>3.5.2</maven.version>
 		<franca.version>${version}</franca.version>
-		<xtext.version>2.11.0</xtext.version>
+		<xtext.version>2.14.0</xtext.version>
 	</properties>
 
 	<dependencies>
