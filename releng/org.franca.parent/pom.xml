@@ -678,17 +678,17 @@
 	</licenses>
 	<inceptionYear>2012</inceptionYear>
 	<issueManagement>
-		<system>GoogleCode Issue Tracker</system>
-		<url>http://code.google.com/a/eclipselabs.org/p/franca/issues/list</url>
+		<system>github issue tracker</system>
+		<url>https://github.com/franca/franca/issues</url>
 	</issueManagement>
 	<organization>
 		<name>Eclipselabs</name>
 		<url>http://code.google.com/a/eclipselabs.org/hosting/</url>
 	</organization>
 	<scm>
-		<connection>scm:git:https://code.google.com/a/eclipselabs.org/franca</connection>
-		<developerConnection>scm:git:https://code.google.com/a/eclipselabs.org/franca</developerConnection>
-		<url>http://code.google.com/a/eclipselabs.org/p/franca/source/browse</url>
+		<connection>scm:git:https://github.com/franca/franca</connection>
+		<developerConnection>scm:git:https://github.com/franca/franca</developerConnection>
+		<url>https://github.com/franca/franca</url>
 	</scm>
 	<ciManagement>
 		<system>Cloudbees Jenkins</system>
@@ -715,14 +715,6 @@
 			<roles>
 				<role>team</role>
 			</roles>
-		</developer>
-		<developer>
-	        <id>weik</id>
-	        <name>Steffen Weik</name>
-	        <email>steffenweik77@gmail.com</email>
-	        <organization>itemis</organization>
-	        <organizationUrl>http://www.itemis.com</organizationUrl>
-	        <roles><role>team</role></roles>
 		</developer>
 		<developer>
 			<id>szabta89</id>
