@@ -19,19 +19,10 @@
       <password>bSeQ8vjSFpQsHxjBdYhqMeYru0px6eVxLu5sgLCj6PdY</password>
     </server>
   </servers>
-  <mirrors>
-	  <mirror>
-	    <id>builds.itemis.de</id>
-	    <name>itemis</name>
-	    <url>https://builds.itemis.de/nexus/content/groups/public/</url>
-	    <mirrorOf>*</mirrorOf>
-	  </mirror>
-  </mirrors>
   <profiles>                                                                                       
   </profiles>
   <activeProfiles>
   </activeProfiles>
   <pluginGroups/>
-
 </settings>
   
