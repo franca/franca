@@ -17,7 +17,7 @@ Require-Bundle: org.franca.deploymodel.dsl;visibility:=reexport,
  org.antlr.runtime,
  org.eclipse.jdt.core;resolution:=optional,
  org.eclipse.xtend.lib;resolution:=optional,
- org.eclipse.xtext.xbase.lib
+ org.eclipse.xtext.xbase.lib;bundle-version="2.14.0"
 Import-Package: org.apache.log4j,
  org.franca.deploymodel.dsl.ide.contentassist.antlr
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
