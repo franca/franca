@@ -30,6 +30,11 @@ else
   unlet b:current_syntax
 endif
 
+" Structured comments
+syn keyword fCommentTagKeyword   contained description author deprecated source-uri source-alias see experimental param
+syn match   fCommentTag          '@\w\+' contained transparent contains=fCommentTagKeyword
+syn region  fStructuredComment   start='<\*\*' end='\*\*>' contains=fTodo,fCommentTag
+
 " Keywords codelanguage-def[Franca]
 syn keyword fBoolean             true false  skipwhite
 syn keyword fType                Int8 UInt8 Int16 UInt16 Int32 UInt32 Int64 UInt64 Boolean String Float Double ByteBuffe  skipwhite
@@ -62,7 +67,10 @@ hi def link fBoolean 	Boolean
 hi def link fType       Type
 hi def link fTodo       Todo
 hi def link fStructure  Structure
+hi def link fStructuredComment   Comment
 hi def link syntaxElementKeyword Keyword
+hi def link fCommentTag          PreProc
+hi def link fCommentTagKeyword   PreProc
 
 let b:current_syntax = "fidl"
 
