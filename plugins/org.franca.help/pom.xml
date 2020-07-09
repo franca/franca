@@ -35,7 +35,6 @@
 								<goals>
 									<goal>javadoc</goal>
 								</goals>
-						<!-- Workaround for https://bugs.eclipse.org/bugs/show_bug.cgi?id=453601 -->
 						<phase>verify</phase>
 						<configuration>
 						<buildDirectory>${project.build.directory}</buildDirectory>
