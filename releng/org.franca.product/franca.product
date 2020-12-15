@@ -3,25 +3,24 @@
 
 <product name="Franca IDE" uid="org.franca.product" id="org.franca.product.ui.FrancaIDE" application="org.eclipse.ui.ide.workbench" version="0.13.2.qualifier" useFeatures="true" includeLaunchers="true">
 
-
    <configIni use="default">
    </configIni>
 
    <launcherArgs>
-      <vmArgs>-Xms128m -Xmx512m -XX:MaxPermSize=128m</vmArgs>
-      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
+      <vmArgs>-Xms128m -Xmx512m
+      </vmArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
+      </vmArgsMac>
    </launcherArgs>
 
    <windowImages i16="/org.franca.product/icons/eclipse16.gif" i32="/org.franca.product/icons/eclipse32.gif" i48="/org.franca.product/icons/eclipse48.gif"/>
 
    <launcher>
       <macosx icon="/icons/Eclipse.icns"/>
-      <solaris/>
       <win useIco="false">
          <bmp/>
       </win>
    </launcher>
-
 
    <vm>
    </vm>
