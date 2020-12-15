@@ -124,7 +124,7 @@ class PropertyDefChecker {
 		mustBeDefined
 	}
 
-	def public mustBeDefined (FTypeRef it) {
+	def mustBeDefined (FTypeRef it) {
 		if (isString) {
 			if (specHelper.isMandatory(STRINGS))
 				return true

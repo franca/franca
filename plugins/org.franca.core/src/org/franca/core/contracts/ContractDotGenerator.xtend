@@ -44,7 +44,7 @@ class ContractDotGenerator {
 		«ENDIF»
 	'''
 	
-	def public String genLabel (FTransition it) {
+	def String genLabel (FTransition it) {
 		trigger.event.getEventLabel + 
 		if (guard===null)
 			''

@@ -44,7 +44,7 @@ class HostLogic {
 	 * 
 	 * NB: FRANCA_INTERFACE logically includes FRANCA_TYPE, but not vice versa.
 	 */
-	public enum Context {
+	enum Context {
 		/** hosts which can be applied to Franca IDL types, excluding interface-only hosts */
 		FRANCA_TYPE,
 		

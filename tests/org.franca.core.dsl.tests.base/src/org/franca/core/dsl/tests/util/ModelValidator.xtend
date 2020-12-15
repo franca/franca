@@ -27,7 +27,7 @@ class ModelValidator {
 		}
 
 		for(Resource res : toBeValidated) {
-			if (validator==null) {
+			if (validator===null) {
 				throw new RuntimeException("ModelValidator not properly initialized, no ResourceValidator available")
 			}
 			try {

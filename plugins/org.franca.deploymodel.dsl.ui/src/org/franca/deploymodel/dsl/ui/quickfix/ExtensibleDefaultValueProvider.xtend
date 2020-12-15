@@ -25,9 +25,9 @@ import org.franca.deploymodel.dsl.fDeploy.FDTypeRef
  */
 class ExtensibleDefaultValueProvider {
 
-	val static final String EXTENSION_POINT_ID = "org.franca.deploymodel.dsl.ui.defaultValueProvider"
+	val static String EXTENSION_POINT_ID = "org.franca.deploymodel.dsl.ui.defaultValueProvider"
 
-	private static List<IDefaultValueProvider> extensions = null
+	static List<IDefaultValueProvider> extensions = null
 
 	/**
 	 * Provide a default value for any of the property types in a deployment model.<p/>

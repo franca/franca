@@ -112,8 +112,8 @@ class ComparisonHtmlReportGenerator extends ComparisonReportGeneratorBase {
 	protected def dispatch String generateModelElement(Object o, int depth) '''<tr> «td(depth)»  <td>«o.toString»</td> </tr>'''
 	protected def dispatch String generateModelElement(EObject o, int depth) '''<tr> «td(depth)» <td>«o.simpleName»</td> </tr>'''
 
-	override def generateRef(Object value) {
-		if(value==null)  
+	override generateRef(Object value) {
+		if(value===null)  
 			return 'null'
 			
 		if(value instanceof EObject) 

@@ -31,7 +31,6 @@ import static org.franca.core.franca.FrancaPackage.Literals.*
 
 import static extension org.franca.core.FrancaModelExtensions.*
 import static org.franca.core.typesystem.ActualType.*
-import org.franca.core.franca.FBasicTypeId
 
 class TypesValidator {
 

@@ -18,7 +18,7 @@ import static extension org.franca.generators.websocket.WebsocketGeneratorUtils.
 
 class ClientJSProxyGenerator {
 
-	public enum Mode { WAMP_RAW, AUTOBAHN }
+	enum Mode { WAMP_RAW, AUTOBAHN }
 	
 	def getFileName(FInterface api) {
 		api.name.toFirstUpper + "Proxy"

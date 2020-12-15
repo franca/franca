@@ -34,7 +34,7 @@ class FrancaIDLLabelProvider extends DefaultEObjectLabelProvider {
 	}
 
 	def String text(FVersion element) {
-		return '''v«((element as FVersion)).getMajor()».«((element as FVersion)).getMinor()»'''
+		return '''v«element.getMajor()».«element.getMinor()»'''
 	}
 
 	def String text(FAnnotationBlock element) {
@@ -42,7 +42,7 @@ class FrancaIDLLabelProvider extends DefaultEObjectLabelProvider {
 	}
 
 	def String text(FAnnotation element) {
-		return '''«((element as FAnnotation)).getType().toString().replaceFirst("@", "")»:«((element as FAnnotation)).getComment()»'''
+		return '''«element.getType().toString().replaceFirst("@", "")»:«element.getComment()»'''
 	}
 
 	def String image(FInterface element) {

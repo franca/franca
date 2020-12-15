@@ -57,7 +57,7 @@ class FDeployProposalProvider extends AbstractFDeployProposalProvider {
 	@Inject package DeploySpecProvider deploySpecProvider
 	@Inject package ContainerUtil containerUtil
 
-	val final static extensionsForImportURIScope = #["fidl", "fdepl"]
+	val static extensionsForImportURIScope = #["fidl", "fdepl"]
 
 	/** 
 	 * Avoid generic proposal "importURI". 
@@ -114,7 +114,7 @@ class FDeployProposalProvider extends AbstractFDeployProposalProvider {
 		for (IContainer iContainer : visibleContainers) {
 			var Iterable<IResourceDescription> resourceDescriptions = iContainer.getResourceDescriptions()
 			for (var Iterator<IResourceDescription> iterator = resourceDescriptions.iterator(); iterator.hasNext();) {
-				var IResourceDescription desc = (iterator.next() as IResourceDescription)
+				var IResourceDescription desc = iterator.next()
 				var URI uri = desc.getURI()
 				if (!uri.equals(fromURI) && extensionsForImportURIScope.contains(uri.fileExtension)) {
 					proposedURIs.add(desc.getURI())
@@ -272,7 +272,7 @@ class FDeployProposalProvider extends AbstractFDeployProposalProvider {
 		ICompletionProposalAcceptor acceptor) {
 		var FType targetType = null
 		if (elem instanceof FDOverwriteElement) {
-			targetType = FDModelUtils::getOverwriteTargetType((elem as FDOverwriteElement))
+			targetType = FDModelUtils::getOverwriteTargetType(elem)
 		}
 		if (targetType === null) {
 			showKeywords(false, false, false, false)

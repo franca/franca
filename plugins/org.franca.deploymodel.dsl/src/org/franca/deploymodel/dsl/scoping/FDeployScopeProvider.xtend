@@ -76,10 +76,10 @@ import static extension org.franca.deploymodel.core.FDModelUtils.*
 class FDeployScopeProvider extends AbstractDeclarativeScopeProvider {
 
 	@Inject
-	private IQualifiedNameProvider qualifiedNameProvider
+	IQualifiedNameProvider qualifiedNameProvider
 
 	@Inject
-	private ImportUriGlobalScopeProvider importUriGlobalScopeProvider
+	ImportUriGlobalScopeProvider importUriGlobalScopeProvider
 	
 	@Inject DeploySpecProvider deploySpecProvider;
 	@Inject IQualifiedNameConverter qnConverter;

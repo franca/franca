@@ -26,7 +26,7 @@ class InheritedEnumeratorScope extends AbstractScope {
 		val enumerations = enumerators.map[eContainer as FEnumerationType].toSet
 		val tcName = qualifiedNameProvider.getFullyQualifiedName(currentContext)
 		val packageName = qualifiedNameProvider.getFullyQualifiedName(currentContext.eContainer)
-		for(enumeration : enumerations.filter[base!=null]) {
+		for(enumeration : enumerations.filter[base!==null]) {
 			val parent = enumeration.base
 			val baseEnumerators = getAllElements(parent)
 			val name = qualifiedNameProvider.getFullyQualifiedName(enumeration)

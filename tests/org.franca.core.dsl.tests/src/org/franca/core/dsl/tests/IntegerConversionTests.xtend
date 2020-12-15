@@ -73,7 +73,7 @@ class IntegerConversionTests extends XtextTest {
 		var nPredefinedTypes = 0
 		for(tref : typerefs) {
 			assertNull(tref.interval)
-			if (tref.predefined!=null)
+			if (tref.predefined!==null)
 				nPredefinedTypes = nPredefinedTypes + 1
 		}
 		assertEquals(11, nPredefinedTypes)
@@ -92,9 +92,9 @@ class IntegerConversionTests extends XtextTest {
 		var nPredefined = 0
 		var nInterval = 0
 		for(f : struct.elements) {
-			if (f.type.predefined!=null && f.type.predefined!=FBasicTypeId::UNDEFINED)
+			if (f.type.predefined!==null && f.type.predefined!=FBasicTypeId::UNDEFINED)
 				nPredefined = nPredefined + 1
-			if (f.type.interval!=null)
+			if (f.type.interval!==null)
 				nInterval = nInterval + 1
 		}
 		assertEquals(8, nInterval)    // these should have been converted
@@ -112,9 +112,9 @@ class IntegerConversionTests extends XtextTest {
 		var nPredefined = 0
 		var nInterval = 0
 		for(tref : typerefs) {
-			if (tref.predefined!=null && tref.predefined!=FBasicTypeId::UNDEFINED)
+			if (tref.predefined!==null && tref.predefined!=FBasicTypeId::UNDEFINED)
 				nPredefined = nPredefined + 1
-			if (tref.interval!=null)
+			if (tref.interval!==null)
 				nInterval = nInterval + 1
 		}
 		assertEquals(11, nInterval)   // these should have been converted

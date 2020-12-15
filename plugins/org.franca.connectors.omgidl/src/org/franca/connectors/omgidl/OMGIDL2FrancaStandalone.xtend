@@ -23,9 +23,9 @@ import org.franca.core.franca.FModel
  */
 class OMGIDL2FrancaStandalone extends AbstractCommandLineTool {
 	
-	static final Logger logger = Logger.getLogger(typeof(OMGIDL2FrancaStandalone))
+	val static Logger logger = Logger.getLogger(typeof(OMGIDL2FrancaStandalone))
 
-	private static final String TOOL_VERSION = "0.4.3";
+	val static String TOOL_VERSION = "0.4.3";
 
 	/**
 	 * The main function for this standalone tool.</p>
@@ -73,7 +73,7 @@ class OMGIDL2FrancaStandalone extends AbstractCommandLineTool {
 				
 				val conn = new OMGIDLConnector(baseModel)
 				val omgidl = conn.loadModel(filename) as OMGIDLModelContainer
-				if (omgidl==null) {
+				if (omgidl===null) {
 					logger.error("Couldn't load input model from file!")
 					return -2
 				} else {

@@ -56,7 +56,7 @@ class FrancaNameProvider {
 			default: {
 				val modelElementName = obj.eGet(FMODEL_ELEMENT__NAME)
 				// while editing the model the modelElementName might not be set
-				if (modelElementName != null) {
+				if (modelElementName !== null) {
 					sb.append(modelElementName.toString)
 				}
 			}
@@ -81,9 +81,9 @@ class FrancaNameProvider {
 	 *       be regarded as conflicting during method overloading.
 	 */
 	def private static String getNameStrict (FTypeRef type) {
-		if (type.derived!=null) {
+		if (type.derived!==null) {
 			type.derived.name
-		} else if (type.interval!=null) {
+		} else if (type.interval!==null) {
 			"Integer"
 		} else {
 			if (type.isInteger)
@@ -101,9 +101,9 @@ class FrancaNameProvider {
 	 *       will be mapped to an actual implementation type.
 	 */
 	def private static String getName (FTypeRef type) {
-		if (type.derived!=null) {
+		if (type.derived!==null) {
 			type.derived.name
-		} else if (type.interval!=null) {
+		} else if (type.interval!==null) {
 			"Integer"
 		} else {
 			type.predefined.literal

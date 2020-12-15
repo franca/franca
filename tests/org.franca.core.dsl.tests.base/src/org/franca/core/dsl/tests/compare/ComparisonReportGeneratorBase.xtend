@@ -25,7 +25,7 @@ abstract class ComparisonReportGeneratorBase implements IComparisonReportGenerat
 	}
 	
 	protected def String generateRefValue(ReferenceChange rc, Side side) {
-		if(rc.match.right==null) return 'null'
+		if(rc.match.right===null) return 'null'
 		val value = switch(side) {
 			case LEFT: rc.match.left
 			case RIGHT: rc.match.right
@@ -33,9 +33,9 @@ abstract class ComparisonReportGeneratorBase implements IComparisonReportGenerat
 		value.generateRef
 	}
 	
-	protected def generateAttrib(Object value) { if(value!=null) value.toString else 'null' }
+	protected def generateAttrib(Object value) { if(value!==null) value.toString else 'null' }
 	protected def generateRef(Object value) {
-		if(value==null)  
+		if(value===null)  
 			return 'null'
 			
 		if(value instanceof EObject) 
@@ -48,5 +48,5 @@ abstract class ComparisonReportGeneratorBase implements IComparisonReportGenerat
 	}
 	
 	protected def dispatch String getName(Object o)  '''«o.class.simpleName»'''
-	protected def dispatch String getName(EObject o) '''«IF o.eContainer !=null»«o.eContainer.name».«ENDIF»«o.simpleName»'''
+	protected def dispatch String getName(EObject o) '''«IF o.eContainer !== null»«o.eContainer.name».«ENDIF»«o.simpleName»'''
 }

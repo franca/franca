@@ -126,8 +126,7 @@ class ExtensionRegistry {
 					try {
 						var Object o = ce.createExecutableExtension("class")
 						if (o instanceof IFDeployExtension) {
-							var IFDeployExtension dExt = (o as IFDeployExtension)
-							register(dExt)
+							register(o)
 						}
 					} catch (CoreException e) {
 						e.printStackTrace()
@@ -231,10 +230,7 @@ class ExtensionRegistry {
 	def private static EClassifier getClassOfTargetFeature(EClass clazz) {
 		val targetFeature = clazz.EAllReferences.findFirst[name=="target"]
 		if (targetFeature!==null) {
-			if (targetFeature.EType instanceof EClassifier)
-				targetFeature.EType
-			else
-				null
+			targetFeature.EType
 		} else {
 			null
 		}

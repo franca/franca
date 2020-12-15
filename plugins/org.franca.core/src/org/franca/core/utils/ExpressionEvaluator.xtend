@@ -14,7 +14,6 @@ import org.franca.core.franca.FCompoundInitializer
 import org.franca.core.franca.FConstantDef
 import org.franca.core.franca.FCurrentError
 import org.franca.core.franca.FExpression
-import org.franca.core.franca.FField
 import org.franca.core.franca.FInitializerExpression
 import org.franca.core.franca.FIntegerConstant
 import org.franca.core.franca.FMethodErrorEnumRef
@@ -134,7 +133,7 @@ class ExpressionEvaluator {
 //			println("field = " + qe.field.toString)
 			val q = qe.qualifier.eval
 			if (q instanceof FCompoundInitializer) {
-				val f = qe.field as FField
+				val f = qe.field
 				val fi = q.elements.findFirst[element==f]
 				fi.value.evalAux
 			} else

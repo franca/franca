@@ -45,7 +45,7 @@ interface IFDeployExtension {
 	 * A common base class for deployment definition roots and elements.</p> 
 	 */
 	static abstract class AbstractElementDef {
-		public enum Nameable { NO_NAME, OPTIONAL_NAME, MANDATORY_NAME }
+		enum Nameable { NO_NAME, OPTIONAL_NAME, MANDATORY_NAME }
 
 		String tag
 		EClass targetClass
@@ -102,7 +102,7 @@ interface IFDeployExtension {
 	 * Descriptor of a new child element for deployment definitions.</p>
 	 */
 	static class ElementDef extends AbstractElementDef {
-		AbstractElementDef parent
+		//AbstractElementDef parent
 
 		new(String tag, Nameable isNameable, Collection<Host> hosts) {
 			super(tag, isNameable, hosts)
@@ -113,7 +113,7 @@ interface IFDeployExtension {
 		}
 
 		def void setParent(AbstractElementDef parent) {
-			this.parent = parent
+			//this.parent = parent
 		}
 	}
 
@@ -125,7 +125,7 @@ interface IFDeployExtension {
 
 	
 	static class HostMixinDef {
-		public enum AccessorArgumentStyle {
+		enum AccessorArgumentStyle {
 			BY_RULE_CLASS,
 			BY_TARGET_FEATURE
 		}

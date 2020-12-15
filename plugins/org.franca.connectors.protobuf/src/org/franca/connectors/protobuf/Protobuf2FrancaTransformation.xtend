@@ -127,7 +127,7 @@ class Protobuf2FrancaTransformation {
 		needsDescriptorImport = false
 		
 		val res = src.eResource
-		if (res!=null) {
+		if (res!==null) {
 			logger.info("Transforming " + res.URI.toString)
 		}
 		
@@ -136,8 +136,8 @@ class Protobuf2FrancaTransformation {
 		val packages = src.elements.filter(Package)
 		name = packages.head?.name ?: "dummy_package"
 
-		val options = src.elements.filter(Option)
-//		if (options.findFirst[needsInterface]!=null) {
+//		val options = src.elements.filter(Option)
+//		if (options.findFirst[needsInterface]!==null) {
 //			interfaces += factory.createFInterface => [name = "FileOption"]
 //		}
 
@@ -182,7 +182,7 @@ class Protobuf2FrancaTransformation {
 						if (elem instanceof NativeOption) {
 							val v = elem.value
 							val t = elem.source.target
-							if (v!=null && t!=null) {
+							if (v!==null && t!==null) {
 								if (v instanceof StringLink) {
 									if (t instanceof MessageField) {
 										logger.info("Option: " + t.name + " = " + v.target)
@@ -216,7 +216,7 @@ class Protobuf2FrancaTransformation {
 
 	def private add(FTypeCollection tc, EObject src, FType target) {
 		tc.types += target
-		if (src!=null)
+		if (src!==null)
 			externalTypes.put(src, target)	
 	}
 	
@@ -276,7 +276,7 @@ class Protobuf2FrancaTransformation {
 
 	def private boolean isFromDescriptorProto(ExtensibleType type) {
 		val res = type.eResource
-		res!=null && res.URI.lastSegment == DESCRIPTOR_BASENAME+".proto"
+		res!==null && res.URI.lastSegment == DESCRIPTOR_BASENAME+".proto"
 	}
 	
 	def private create factory.createFStructType createFakeBaseStruct() {

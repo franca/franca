@@ -7,8 +7,6 @@
 *******************************************************************************/
 package org.franca.generators.websocket
 
-import java.util.List
-import org.franca.core.franca.FArgument
 import org.franca.core.franca.FInterface
 
 import static org.franca.generators.websocket.WebsocketGeneratorUtils.*

@@ -25,14 +25,14 @@ class ImportManager {
 	Set<Class<?>> neededOtherTypes
 	
 	boolean needList
-	boolean needArrayList
+	//boolean needArrayList
 
 	def initImportManager() {
 		// initialize
 		neededFrancaTypes = newHashSet
 		neededOtherTypes = newHashSet
 		needList = false
-		needArrayList = false
+		//needArrayList = false
 	}	
 
 	def getJavaType(FDTypeRef typeRef) {
@@ -81,7 +81,7 @@ class ImportManager {
 	}
 
 	def setNeedArrayList() {
-		this.needArrayList = true
+		//this.needArrayList = true
 	}
 
 	def needList() {

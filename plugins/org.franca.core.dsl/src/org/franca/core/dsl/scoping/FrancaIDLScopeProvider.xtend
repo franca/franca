@@ -48,7 +48,7 @@ import static extension org.franca.core.framework.FrancaHelpers.*
 class FrancaIDLScopeProvider extends AbstractDeclarativeScopeProvider {
 
 	@Inject
-	private IQualifiedNameProvider qualifiedNameProvider
+	IQualifiedNameProvider qualifiedNameProvider
 
 	
 	def IScope scope_FAssignment_lhs(FContract contract, EReference ref) {

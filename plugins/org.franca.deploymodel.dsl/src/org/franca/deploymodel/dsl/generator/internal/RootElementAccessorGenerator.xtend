@@ -16,7 +16,6 @@ import org.franca.deploymodel.dsl.fDeploy.FDDeclaration
 import org.franca.deploymodel.dsl.fDeploy.FDEnumType
 import org.franca.deploymodel.dsl.fDeploy.FDPropertyDecl
 import org.franca.deploymodel.dsl.fDeploy.FDSpecification
-import org.franca.deploymodel.extensions.ExtensionRegistry
 
 import static extension org.franca.deploymodel.dsl.generator.internal.GeneratorHelper.*
 import static extension org.franca.deploymodel.dsl.generator.internal.HostLogic.*

@@ -16,18 +16,17 @@ import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext
 import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor
 import org.eclipse.xtext.ui.editor.contentassist.ReplacementTextApplier
 import org.franca.core.utils.FrancaIDLUtils
-import org.eclipse.core.resources.FileInfoMatcherDescription
 import org.franca.core.franca.Import
 import org.franca.core.franca.FModel
 
 class FrancaIDLProposalProvider extends AbstractFrancaIDLProposalProvider {
 
 	@Inject
-	private IResourceDescription.Manager descriptionManager;
+	IResourceDescription.Manager descriptionManager;
 	@Inject
-	private IContainer.Manager containerManager;
+	IContainer.Manager containerManager;
 	@Inject
-	private ResourceDescriptionsProvider provider;
+	ResourceDescriptionsProvider provider;
 
 	override completeImport_ImportURI(EObject model, Assignment assignment, ContentAssistContext context,
 		ICompletionProposalAcceptor acceptor) {
@@ -113,8 +112,7 @@ class FrancaIDLProposalProvider extends AbstractFrancaIDLProposalProvider {
 		var proposal = createCompletionProposal('''«name.toString»''',display,null, context)
 
 		if (proposal instanceof ConfigurableCompletionProposal) {
-			var c = proposal as ConfigurableCompletionProposal
-			c.textApplier = new ReplacementTextApplier() {
+			proposal.textApplier = new ReplacementTextApplier() {
 				override getActualReplacementString(ConfigurableCompletionProposal proposal) {
 					proposal.replacementLength = proposal.replaceContextLength
 					'''"«name.toString»"'''

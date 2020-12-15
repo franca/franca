@@ -34,7 +34,7 @@ import org.franca.core.franca.FType
 import org.franca.core.utils.FileHelper
 import org.franca.core.utils.digraph.Digraph
 
-public class ProtobufConnector extends AbstractFrancaConnector {
+class ProtobufConnector extends AbstractFrancaConnector {
 
 	static final Logger logger = Logger.getLogger(typeof(ProtobufConnector))
 
@@ -64,7 +64,7 @@ public class ProtobufConnector extends AbstractFrancaConnector {
 			logInfo("Loaded Protobuf model from file " + filename + " (consists of " + units.size() + " files)");
 		}
 		for(Protobuf unit : units.keySet()) {
-			val res = unit.eResource
+			//val res = unit.eResource
 			//logInfo("loadModel: " + res.getURI() + " is " + units.get(unit));
 		}
 		return new ProtobufModelContainer(units);
@@ -105,7 +105,7 @@ public class ProtobufConnector extends AbstractFrancaConnector {
 		val inputModels = ListExtensions.reverseView(proto.models)
 
 		// first check if we need to transform "descriptor.proto"
-		if (inputModels.findFirst[trafo.needsDescriptorInclude(it)]!=null) {
+		if (inputModels.findFirst[trafo.needsDescriptorInclude(it)]!==null) {
 			val provider = protobufInjector.getInstance(ProtoDescriptorProvider);
 			val descriptorProto = provider.primaryDescriptor
 			val descriptorModel = descriptorProto.resource.contents.get(0) as Protobuf
@@ -182,10 +182,10 @@ public class ProtobufConnector extends AbstractFrancaConnector {
 	
 	val Map<Protobuf, String> part2import = newLinkedHashMap
 	
-	var private Injector injectorProtobuf = null;
+	var Injector injectorProtobuf = null;
 
 	def private getProtobufInjector() {
-		if (injectorProtobuf==null) {
+		if (injectorProtobuf===null) {
 			injectorProtobuf = new ProtobufStandaloneSetup().createInjectorAndDoEMFRegistration
 		}
 		injectorProtobuf
@@ -248,13 +248,13 @@ public class ProtobufConnector extends AbstractFrancaConnector {
 				val importURI = URI.createURI(import_.importURI)
 	
 				var list = modelURIs.get(key)
-				if (list == null) {
+				if (list === null) {
 					list = <URI>newArrayList
 					modelURIs.put(key, list)
 				}
 				list.add(importURI)
 				val importResource = resourceSet.getResource(importURI, true)
-				if (importResource != null) {
+				if (importResource !== null) {
 					if (! importResource.contents.empty) {
 						val pmodel = importResource.contents.head as Protobuf
 						val trimmed = importURIOriginal.toFileString.trimExtension(importingURI.fileExtension)

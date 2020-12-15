@@ -24,10 +24,10 @@ class Protobuf2FrancaStandalone extends AbstractCommandLineTool {
 	
 	static final Logger logger = Logger.getLogger(typeof(Protobuf2FrancaStandalone))
 
-	private static final String TOOL_VERSION = "0.2.1";
+	static final String TOOL_VERSION = "0.2.1";
 
 	// specific option values
-	private static final String NORMALIZE_IDS = "n";
+	//static final String NORMALIZE_IDS = "n";
 
 	/**
 	 * The main function for this standalone tool.</p>
@@ -68,7 +68,7 @@ class Protobuf2FrancaStandalone extends AbstractCommandLineTool {
 				val normalizeIds = line.hasOption(StandaloneOptions.NORMALIZE_IDS)
 				val conn = new ProtobufConnector(normalizeIds)
 				val protobuf = conn.loadModel(filename) as ProtobufModelContainer
-				if (protobuf==null) {
+				if (protobuf===null) {
 					logger.error("Couldn't load input model from file!")
 					return -2
 				} else {

@@ -21,7 +21,6 @@ import org.csu.idl.idlmm.TranslationUnit
 import org.csu.idl.xtext.loader.ExtendedIDLLoader
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
-import org.eclipse.emf.ecore.resource.Resource
 import org.franca.core.dsl.FrancaPersistenceManager
 import org.franca.core.framework.AbstractFrancaConnector
 import org.franca.core.framework.FrancaModelContainer
@@ -32,10 +31,6 @@ import org.franca.core.franca.FModel
 import org.franca.core.franca.FTypeCollection
 import org.franca.core.utils.FileHelper
 import org.franca.core.utils.digraph.Digraph
-import org.eclipse.xtext.util.EmfFormatter
-import org.eclipse.emf.ecore.util.EcoreUtil
-import org.eclipse.xtext.EcoreUtil2
-import org.csu.idl.idlmm.impl.StructDefImpl
 
 class OMGIDLConnector extends AbstractFrancaConnector {
 
@@ -124,7 +119,7 @@ class OMGIDLConnector extends AbstractFrancaConnector {
 				if (!importedModels.containsKey("OMGIDLBase.fidl")) {
 					// FModel baseModelCopy = EcoreUtil.copy(baseModel);
 					baseModel.eResource().getContents().clear()
-					var Resource rbm = baseModel.eResource()
+					//var Resource rbm = baseModel.eResource()
 					importedModels.put("OMGIDLBase.fidl", baseModel)
 				}
 
