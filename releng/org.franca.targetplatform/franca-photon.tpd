@@ -1,30 +1,30 @@
 //
 // Use the "Target Platform Definition DSL" tool for working with this file.
 //
-// P2 Repository for installation: http://mbarbero.github.io/fr.obeo.releng.targetplatform/p2/
+// P2 Repository for installation: https://dl.bintray.com/mbarbero/fr.obeo.releng.targetplatform/latest
 // Homepage: https://github.com/mbarbero/fr.obeo.releng.targetplatform 
 //
 
-target "Franca Target Platform - Eclipse 4.6"
+target "Franca Target Platform - Eclipse 4.8"
 
 with requirements source
 
 environment en
 
-// required installable units from the Neon platform 
-location neon "http://download.eclipse.org/releases/neon/201705151400" {
+// required installable units from the Photon platform 
+location photon "http://download.eclipse.org/releases/photon/201806271001" {
 	org.eclipse.sdk.feature.group
 	org.eclipse.pde.feature.group
 	
-	org.eclipse.emf.transaction.sdk.feature.group [1.10.0,2.0.0)
+	org.eclipse.emf.transaction.sdk.feature.group [1.12.0,2.0.0)
 	org.eclipse.emf.eef.sdk-feature.feature.group [1.5.1,1.6.0)
 	org.eclipse.gef.sdk.feature.group [3.11.0,3.12.0)
 	org.eclipse.zest.sdk.feature.group [1.7.0,2.0.0)
-	org.eclipse.swt [3.105.3,4.0.0)
+	org.eclipse.swt [3.107.0,4.0.0)
 
-	org.eclipse.equinox.executable.feature.group [3.6.300,4.0.0)
-	org.eclipse.emf.common [2.12.0,3.0.0)
-	org.eclipse.emf.sdk.feature.group [2.12.0,3.0.0)
+	org.eclipse.equinox.executable.feature.group [3.8.0,4.0.0)
+	org.eclipse.emf.common [2.14.0,3.0.0)
+	org.eclipse.emf.sdk.feature.group [2.14.0,3.0.0)
 	
 	// TODO: after the bug in EMFCompare has been fixed (see below), we could get emf.compare from here
 //	org.eclipse.emf.compare.feature.group [3.2.1,4.0.0)
@@ -37,17 +37,17 @@ location "http://download.eclipse.org/modeling/emf/compare/updates/releases/3.0/
 	org.eclipse.emf.compare.feature.group [3.0.1,3.1.0)
 }
 
-
 // ANTLR parser, needed for Xtext
-location "http://download.itemis.com/updates/releases/2.1.1/" {
+location "http://download.itemis.com/updates/releases/2.1.1" {
 	de.itemis.xtext.antlr.sdk.feature.group [2.1.1,3.0.0)
 	de.itemis.xtext.antlr.feature.feature.group [2.1.1,3.0.0)
 }
 
 // Xtext and Xtend
-location "http://download.eclipse.org/modeling/tmf/xtext/updates/releases/2.11.0/" {
-	org.eclipse.xtext.sdk.feature.group [2.11.0,2.12.0)
-	org.eclipse.xtend.sdk.feature.group [2.11.0,2.12.0)
+location "http://download.eclipse.org/modeling/tmf/xtext/updates/releases/2.14.0/" {
+	// Xtext and Xtend
+	org.eclipse.xtext.sdk.feature.group [2.14.0,2.16.0)
+	org.eclipse.xtend.sdk.feature.group [2.14.0,2.16.0)
 }
 
 // mwe2 workflow DSL
@@ -57,9 +57,8 @@ location "http://download.eclipse.org/modeling/emft/mwe/updates/releases/2.9.0/"
 }
 
 // Xtext UI tests on Eclipse 
-location "http://download.eclipse.org/modeling/tmf/xtext/updates/releases/2.12.0/" {
-	// (no 2.11.x version available)
-	org.eclipse.xtext.ui.testing [2.12.0,2.13.0)
+location "http://download.eclipse.org/modeling/tmf/xtext/updates/releases/2.14.0/" {
+	org.eclipse.xtext.ui.testing [2.14.0,2.15.0)
 }
 
 
@@ -69,8 +68,8 @@ location "http://rtsys.informatik.uni-kiel.de/~kieler/updatesite/release_pragmat
 }
 
 // ELK (Eclipse Layout Kernel), needed for UI add-ons (base for klighd)
-location "http://build.eclipse.org/modeling/elk/updates/0.2.2" {
-	org.eclipse.elk.sdk.feature.feature.group [0.2.2,0.3.0)
+location "https://download.eclipse.org/elk/updates/releases/0.2.3" {
+	org.eclipse.elk.sdk.feature.feature.group [0.2.3,0.3.0)
 }
 
 
@@ -87,8 +86,8 @@ location "http://franca.github.io/franca/update_site/thirdparty" {
 	com.google.eclipse.protobuf.feature.group [1.5.2,2.0.0)
 	
 	// xdoc, needed for documentation (xdoc4franca fork)
-	// we use 0.2.0, which has been built against Xtext 2.11 and Neon
-	org.eclipse.xtext.xdoc.feature.feature.group [0.2.0,1.0.0)
+	// we use 0.3.0, which has been built against Xtext 2.14 and Photon
+	org.eclipse.xtext.xdoc.feature.feature.group [0.3.0,1.0.0)
 }
 
 // etrice, needed for eTrice connector

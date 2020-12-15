@@ -2,7 +2,7 @@
 <feature
       id="org.franca.protobuf.ui.sdk"
       label="%featureName"
-      version="0.13.1.qualifier"
+      version="0.13.2.qualifier"
       provider-name="%providerName">
 
    <description>

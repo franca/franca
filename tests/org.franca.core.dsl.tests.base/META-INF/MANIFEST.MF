@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-Vendor: itemis AG
 Bundle-Localization: plugin
-Bundle-Version: 0.13.1.qualifier
+Bundle-Version: 0.13.2.qualifier
 Bundle-SymbolicName: org.franca.core.dsl.tests.base;singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.core.runtime,
@@ -15,7 +15,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.franca.core.dsl.ui;bundle-version="0.13.0",
  org.eclipse.core.resources;bundle-version="3.7.100",
  com.google.guava,
- org.eclipse.xtext.xbase.lib,
+ org.eclipse.xtext.xbase.lib;bundle-version="2.14.0",
  org.eclipse.xtend.lib,
  org.eclipse.xtend.lib.macro,
  org.eclipse.emf.compare;bundle-version="3.0.1",
