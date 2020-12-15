@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Franca OMG IDL connector tests
 Bundle-SymbolicName: org.franca.connectors.omgidl.tests
-Bundle-Version: 0.13.1.qualifier
+Bundle-Version: 0.13.2.qualifier
 Bundle-Activator: org.franca.connectors.omgidl.tests.Activator
 Bundle-Vendor: itemis AG
 Require-Bundle: org.eclipse.ui,
