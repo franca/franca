@@ -3,7 +3,7 @@ sudo: false
 
 # currently we use Java 8
 language: java
-jdk: oraclejdk8
+jdk: openjdk8
 
 # activate caching to speed up build
 cache:
