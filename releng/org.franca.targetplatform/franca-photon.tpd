@@ -68,8 +68,8 @@ location "http://rtsys.informatik.uni-kiel.de/~kieler/updatesite/release_pragmat
 }
 
 // ELK (Eclipse Layout Kernel), needed for UI add-ons (base for klighd)
-location "http://build.eclipse.org/modeling/elk/updates/0.2.2" {
-	org.eclipse.elk.sdk.feature.feature.group [0.2.2,0.3.0)
+location "https://download.eclipse.org/elk/updates/releases/0.2.3" {
+	org.eclipse.elk.sdk.feature.feature.group [0.2.3,0.3.0)
 }
 
 

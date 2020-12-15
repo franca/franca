@@ -41,8 +41,8 @@
       <repository location="http://rtsys.informatik.uni-kiel.de/~kieler/updatesite/release_pragmatics_2017-02-04"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="org.eclipse.elk.sdk.feature.feature.group" version="0.2.2.201709150813"/>
-      <repository location="http://build.eclipse.org/modeling/elk/updates/0.2.2"/>
+      <unit id="org.eclipse.elk.sdk.feature.feature.group" version="0.2.3.201803080404"/>
+      <repository location="https://download.eclipse.org/elk/updates/releases/0.2.3/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="model.emf.dbusxml.feature.feature.group" version="0.8.1.201606031239"/>
