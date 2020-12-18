@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/org.eclipse.xtext.xdoc.feature_0.4.0.202012181535.jar" id="org.eclipse.xtext.xdoc.feature" version="0.4.0.202012181535">
+      <category name="Xdoc"/>
+   </feature>
+   <category-def name="Xdoc" label="Xdoc"/>
+</site>
