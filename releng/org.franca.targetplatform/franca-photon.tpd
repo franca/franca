@@ -100,9 +100,13 @@ location "https://dl.bintray.com/itemis/generic/xtext-testing/releases/0.2.0.201
 	com.itemis.xtext.testing.feature.feature.group [0.2.0,0.3.0)
 }
 
+// junit-runners, needed for Xpect
+location "http://meysholdt.github.io/eclipse_jdt_junit_runners/updatesite/" {
+	org.eclipse.jdt.junit.runners.feature.feature.group [0.1.0,0.1.1)
+}
+
 // Xpect, needed for tests
-location "http://www.xpect-tests.org/updatesite/nightly/" {
-	org.eclipse.jdt.junit.runners.feature.feature.group [0.1.0,1.0.0)
+location "http://www.xpect-tests.org/updatesite/nightly/local/" {
 	org.xpect.sdk.feature.group [0.2.0,1.0.0)
 }
 
