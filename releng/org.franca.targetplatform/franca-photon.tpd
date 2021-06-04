@@ -88,6 +88,10 @@ location "http://franca.github.io/franca/update_site/thirdparty" {
 	// xdoc, needed for documentation (xdoc4franca fork)
 	// we use 0.3.0, which has been built against Xtext 2.14 and Photon
 	org.eclipse.xtext.xdoc.feature.feature.group [0.3.0,1.0.0)
+
+	// xtext-testing, needed for tests (formerly org.eclipselabs.xtext.utils.unittesting)
+	// (former location: "https://dl.bintray.com/itemis/generic/xtext-testing/releases/0.2.0.201612011358/")
+	com.itemis.xtext.testing.feature.feature.group [0.2.0,0.3.0)
 }
 
 // etrice, needed for eTrice connector
@@ -95,10 +99,9 @@ location "http://franca.github.io/franca/update_site/thirdparty" {
 //	org.eclipse.etrice.feature.feature.group [0.2.0,0.3.0)
 //}
 
-// xtext-testing, needed for tests (formerly org.eclipselabs.xtext.utils.unittesting)
-location "https://dl.bintray.com/itemis/generic/xtext-testing/releases/0.2.0.201612011358/" {
-	com.itemis.xtext.testing.feature.feature.group [0.2.0,0.3.0)
-}
+//location "https://dl.bintray.com/itemis/generic/xtext-testing/releases/0.2.0.201612011358/" {
+//	com.itemis.xtext.testing.feature.feature.group [0.2.0,0.3.0)
+//}
 
 // junit-runners, needed for Xpect
 location "http://meysholdt.github.io/eclipse_jdt_junit_runners/updatesite/" {
