@@ -31,10 +31,10 @@
       <repository location="http://download.eclipse.org/modeling/emft/mwe/updates/releases/2.9.0/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="org.eclipse.xtext.ui.testing" version="2.14.0.v20180523-0437"/>
-      <unit id="org.eclipse.xtext.sdk.feature.group" version="2.14.0.v20180523-0937"/>
-      <unit id="org.eclipse.xtend.sdk.feature.group" version="2.14.0.v20180523-0937"/>
-      <repository location="http://download.eclipse.org/modeling/tmf/xtext/updates/releases/2.14.0/"/>
+      <unit id="org.eclipse.xtext.ui.testing" version="2.15.0.v20180916-1016"/>
+      <unit id="org.eclipse.xtext.sdk.feature.group" version="2.15.0.v20180916-1232"/>
+      <unit id="org.eclipse.xtend.sdk.feature.group" version="2.15.0.v20180916-1232"/>
+      <repository location="http://download.eclipse.org/modeling/tmf/xtext/updates/releases/2.15.0/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="de.cau.cs.kieler.klighd.sdk.feature.feature.group" version="0.42.2.201708311633"/>
