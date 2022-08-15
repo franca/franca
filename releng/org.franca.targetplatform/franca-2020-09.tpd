@@ -112,5 +112,5 @@ location "http://meysholdt.github.io/eclipse_jdt_junit_runners/updatesite/" {
 
 // eclemma, needed for test coverage check 
 location "http://update.eclemma.org/" {
-	org.eclipse.eclemma.feature.feature.group [3.1.4,4.0.0)
+	org.eclipse.eclemma.feature.feature.group [3.1.6,4.0.0)
 }
