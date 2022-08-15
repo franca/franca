@@ -11,7 +11,7 @@ with requirements source
 
 environment en
 
-// required installable units from the Photon platform 
+// required installable units from the 2020-09 platform 
 location photon "http://download.eclipse.org/releases/2020-09/202009161000" {
 	org.eclipse.sdk.feature.group
 	org.eclipse.pde.feature.group
