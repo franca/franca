@@ -74,7 +74,7 @@ location "https://download.eclipse.org/elk/updates/releases/0.7.0/" {
 
 // dbusxml, needed for D-Bus connector
 location "http://kbirken.github.io/dbus-emf-model/releases/" {
-	model.emf.dbusxml.feature.feature.group [0.8.1,1.0.0)
+	model.emf.dbusxml.feature.feature.group [0.9.0,1.0.0)
 }
 
 location "http://franca.github.io/franca/update_site/thirdparty" {

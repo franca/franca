@@ -42,7 +42,7 @@
       <repository location="https://download.eclipse.org/elk/updates/releases/0.7.0/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="model.emf.dbusxml.feature.feature.group" version="0.8.1.201606031239"/>
+      <unit id="model.emf.dbusxml.feature.feature.group" version="0.9.0.202208132004"/>
       <repository location="http://kbirken.github.io/dbus-emf-model/releases/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
