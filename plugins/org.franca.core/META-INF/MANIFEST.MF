@@ -20,15 +20,17 @@ Export-Package: org.franca.core,
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore;visibility:=reexport,
  org.eclipse.emf.mwe.utils;resolution:=optional,
+ org.eclipse.emf.ecore.xmi;visibility:=reexport,
+ org.eclipse.emf.codegen;resolution:=optional,
+ org.eclipse.emf.codegen.ecore;resolution:=optional,
+ org.eclipse.emf.mwe2.launch;resolution:=optional,
  org.apache.log4j,
  org.apache.commons.logging;visibility:=reexport,
- org.eclipse.emf.mwe2.launch;resolution:=optional,
  org.eclipse.emf.mwe2.lib;resolution:=optional,
  org.eclipse.xtend.lib,
  com.google.guava,
  org.eclipse.xtext.xbase.lib,
  org.apache.commons.lang,
- org.eclipse.xtend.typesystem.emf,
- org.eclipse.emf.codegen.ecore;resolution:=optional
+ org.eclipse.xtend.typesystem.emf
 Bundle-ActivationPolicy: lazy
 Import-Package: org.apache.commons.logging
