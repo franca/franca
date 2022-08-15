@@ -7,8 +7,11 @@ import java.util.List;
 import org.eclipse.emf.compare.Comparison;
 import org.eclipse.emf.compare.Diff;
 import org.eclipse.emf.compare.EMFCompare;
-import org.eclipse.emf.compare.internal.spec.ResourceAttachmentChangeSpec;
+import org.eclipse.emf.compare.FeatureMapChange;
+import org.eclipse.emf.compare.ResourceAttachmentChange;
+import org.eclipse.emf.compare.scope.DefaultComparisonScope;
 import org.eclipse.emf.compare.scope.IComparisonScope;
+import org.eclipse.emf.compare.utils.EMFComparePrettyPrinter;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.xtext.testing.InjectWith;
 import org.eclipse.xtext.testing.XtextRunner;
@@ -23,6 +26,7 @@ import org.junit.runner.RunWith;
 import com.google.inject.Inject;
 
 import model.emf.dbusxml.NodeType;
+import model.emf.dbusxml.PropertyType;
 
 @RunWith(XtextRunner.class)
 @InjectWith(FrancaIDLTestsInjectorProvider.class)
@@ -46,16 +50,23 @@ public class RoundtripTests {
 		ResourceSet rset1 = dbus.model().eResource().getResourceSet();
 		ResourceSet rset2 = dbus2.eResource().getResourceSet();
 
-		IComparisonScope scope = EMFCompare.createDefaultScope(rset1, rset2);
+		IComparisonScope scope = new DefaultComparisonScope(rset1, rset2, null);
 		Comparison comparison = EMFCompare.builder().build().compare(scope);
 		 
 		List<Diff> differences = comparison.getDifferences();
 		int nDiffs = 0;
 		for (Diff diff : differences) {
-			if (! (diff instanceof ResourceAttachmentChangeSpec)) {
+			if (diff instanceof ResourceAttachmentChange) {
+				// ignore differences in ResourceURIs (we expect them to be different)
+			} else if (diff instanceof FeatureMapChange) {
+				// ignore differences regarding FeatureMaps
+			} else {
 				System.out.println(diff.toString());
 				nDiffs++;
 			}
+		}
+		if (nDiffs>0) {
+			EMFComparePrettyPrinter.printComparison(comparison, System.out);
 		}
 		assertEquals(0, nDiffs);
 	}
