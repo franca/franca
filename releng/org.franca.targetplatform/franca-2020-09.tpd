@@ -28,13 +28,6 @@ location photon "http://download.eclipse.org/releases/2020-09/202009161000" {
 	org.eclipse.emf.compare.feature.group [3.3.12,4.0.0)
 }
 
-//location "http://download.eclipse.org/modeling/emf/compare/updates/releases/3.0/R201408191310" {
-//	// we cannot use EMFCompare after 3.1 (up to at least 3.2.1) because of an NPE in 
-//	// ComparisonUtil.isContainedInFeatureMap (used e.g. by Franca2DBusTests).
-//	// introduced by commit https://github.com/eclipse/emf.compare/commit/85470799137798914a00adb5a19789c6074bdbb6#diff-6f326c3cf977c5f7b073f7d184de2a65
-//	org.eclipse.emf.compare.feature.group [3.0.1,3.1.0)
-//}
-
 // ANTLR parser, needed for Xtext
 location "http://download.itemis.com/updates/releases/2.1.1" {
 	de.itemis.xtext.antlr.sdk.feature.group [2.1.1,3.0.0)
