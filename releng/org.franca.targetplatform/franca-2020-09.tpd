@@ -106,7 +106,6 @@ location "http://www.xpect-tests.org/updatesite/nightly/local/" {
 // JDT JUnit Runners, needed for Xpect
 location "http://meysholdt.github.io/eclipse_jdt_junit_runners/updatesite/" {
 	org.eclipse.jdt.junit.runners.feature.feature.group [0.1.0,1.0.0)
-	org.xpect.sdk.feature.group [0.2.0,1.0.0)
 }
 
 
