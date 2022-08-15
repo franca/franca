@@ -6,7 +6,7 @@ var projectName = "org.franca.core"
 var runtimeProject = "../${projectName}"
 
 /**
- * This Workflow will generate the EMF Java Api based on genmodel
+ * This Workflow will generate the EMF Java API based on genmodel
  */
 Workflow {
 
