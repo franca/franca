@@ -20,7 +20,7 @@
 
 	<properties>
 		<eclipse-site>http://download.eclipse.org/releases/${platform-version-name}</eclipse-site>
-		<platform-version-name>photon</platform-version-name>
+		<platform-version-name>2020-09</platform-version-name>
 		<project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
 		<tycho-version>1.7.0</tycho-version>
 		<junit-version>4.13.1</junit-version>
