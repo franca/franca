@@ -344,7 +344,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
-					<version>2.15</version>
+					<version>2.22.2</version>
 					<configuration>
 						<argLine>-Xmx1024m ${surefireArgLine}</argLine>
 					</configuration>
@@ -352,7 +352,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-assembly-plugin</artifactId>
-					<version>2.2-beta-4</version>
+					<version>2.6</version>
 				</plugin>
 				<!--  If you are releasing your artifacts on OSSRH, you need to make one more configuration change  -->
 				<plugin>
