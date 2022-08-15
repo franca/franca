@@ -192,7 +192,7 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.7.6.201602180812</version>
+				<version>0.8.7</version>
 				<configuration>
 					<excludes>
 						<exclude>**/*.ecore</exclude>
@@ -303,7 +303,7 @@
 									<pluginExecutionFilter>
 										<groupId>org.jacoco</groupId>
 										<artifactId>jacoco-maven-plugin</artifactId>
-										<versionRange>[0.7.6,)</versionRange>
+										<versionRange>[0.8.7,)</versionRange>
 										<goals>
 											<goal>prepare-agent</goal>
 										</goals>
@@ -723,14 +723,6 @@
 			<roles>
 				<role>team</role>
 			</roles>
-		</developer>
-		<developer>
-			<id>szabta89</id>
-			<name>Tamas Szabo</name>
-			<email>tamas.szabo@itemis.de</email>
-			<organization>itemis</organization>
-			<organizationUrl>http://www.itemis.com</organizationUrl>
-			<roles><role>team</role></roles>
 		</developer>
 	</developers>
 </project>
