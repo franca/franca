@@ -2,7 +2,7 @@
 <feature
       id="org.franca.dbus.ui"
       label="%featureName"
-      version="0.13.2.qualifier"
+      version="0.14.0.qualifier"
       provider-name="%providerName">
 
    <description>

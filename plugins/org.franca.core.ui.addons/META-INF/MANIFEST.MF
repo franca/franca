@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Franca UI Add-ons
 Bundle-SymbolicName: org.franca.core.ui.addons;singleton:=true
-Bundle-Version: 0.13.2.qualifier
+Bundle-Version: 0.14.0.qualifier
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.xtext.ui,

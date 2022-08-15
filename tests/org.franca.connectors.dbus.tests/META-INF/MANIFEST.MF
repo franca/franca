@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Franca D-Bus connector tests
 Bundle-SymbolicName: org.franca.connectors.dbus.tests
-Bundle-Version: 0.13.2.qualifier
+Bundle-Version: 0.14.0.qualifier
 Bundle-Vendor: itemis AG
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
