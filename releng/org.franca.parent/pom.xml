@@ -422,7 +422,7 @@
 				<plugin>
 					<groupId>org.fornax.toolsupport</groupId>
 					<artifactId>fornax-oaw-m2-plugin</artifactId>
-					<version>3.5.1</version>
+					<version>3.6.0</version>
 				</plugin>
 				<plugin>
 					<groupId>org.eclipse.xtend</groupId>
