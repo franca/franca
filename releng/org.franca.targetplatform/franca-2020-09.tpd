@@ -99,7 +99,7 @@ location "http://franca.github.io/franca/update_site/thirdparty" {
 //}
 
 // Xpect, needed for tests
-location "http://www.xpect-tests.org/updatesite/nightly/" {
+location "http://www.xpect-tests.org/updatesite/nightly/local/" {
 	org.xpect.sdk.feature.group [0.2.0,1.0.0)
 }
 
