@@ -1,12 +1,12 @@
 package org.franca.connectors.protobuf.tests
 
 import org.eclipse.xtext.testing.InjectWith
+import org.eclipse.xtext.testing.XtextRunner
 import org.franca.core.dsl.FrancaIDLTestsInjectorProvider
-import org.franca.core.dsl.tests.util.XtextRunner2_Franca
 import org.junit.Test
 import org.junit.runner.RunWith
 
-@RunWith(typeof(XtextRunner2_Franca))
+@RunWith(typeof(XtextRunner))
 @InjectWith(typeof(FrancaIDLTestsInjectorProvider))
 class Protobuf2FrancaGate1Tests extends TestBase {
 

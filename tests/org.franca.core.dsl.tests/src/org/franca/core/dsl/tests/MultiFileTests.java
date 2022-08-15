@@ -9,11 +9,11 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.resource.IResourceServiceProvider;
 import org.eclipse.xtext.testing.InjectWith;
+import org.eclipse.xtext.testing.XtextRunner;
 import org.eclipse.xtext.validation.CheckMode;
 import org.eclipse.xtext.validation.Issue;
 import org.franca.core.dsl.FrancaIDLTestsInjectorProvider;
 import org.franca.core.dsl.FrancaPersistenceManager;
-import org.franca.core.dsl.tests.util.XtextRunner2_Franca;
 import org.franca.core.franca.FInterface;
 import org.franca.core.franca.FModel;
 import org.junit.Before;
@@ -23,7 +23,7 @@ import org.junit.runner.RunWith;
 import com.google.inject.Inject;
 import com.itemis.xtext.testing.XtextTest;
 
-@RunWith(XtextRunner2_Franca.class)
+@RunWith(XtextRunner.class)
 @InjectWith(FrancaIDLTestsInjectorProvider.class)
 public class MultiFileTests extends XtextTest {
 

@@ -1,15 +1,15 @@
 package org.franca.examples.reference.tests;
 
 import org.eclipse.xtext.testing.InjectWith;
+import org.eclipse.xtext.testing.XtextRunner;
 import org.franca.core.dsl.FrancaIDLTestsInjectorProvider;
-import org.franca.core.dsl.tests.util.XtextRunner2_Franca;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.itemis.xtext.testing.XtextTest;
 
-@RunWith(XtextRunner2_Franca.class)
+@RunWith(XtextRunner.class)
 @InjectWith(FrancaIDLTestsInjectorProvider.class)
 public class ReferenceModelTests extends XtextTest {
 

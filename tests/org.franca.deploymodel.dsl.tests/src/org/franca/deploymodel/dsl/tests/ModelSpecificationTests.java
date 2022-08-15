@@ -1,7 +1,7 @@
 package org.franca.deploymodel.dsl.tests;
 
 import org.eclipse.xtext.testing.InjectWith;
-import org.franca.core.dsl.tests.util.XtextRunner2_Franca;
+import org.eclipse.xtext.testing.XtextRunner;
 import org.franca.deploymodel.dsl.FDeployTestsInjectorProvider;
 import org.franca.deploymodel.ext.providers.ProviderExtension;
 import org.franca.deploymodel.extensions.ExtensionRegistry;
@@ -11,7 +11,7 @@ import org.junit.runner.RunWith;
 
 import com.itemis.xtext.testing.XtextTest;
 
-@RunWith(XtextRunner2_Franca.class)
+@RunWith(XtextRunner.class)
 @InjectWith(FDeployTestsInjectorProvider.class)
 public class ModelSpecificationTests extends XtextTest {
 

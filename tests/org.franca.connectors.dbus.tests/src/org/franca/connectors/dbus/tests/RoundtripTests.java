@@ -11,11 +11,11 @@ import org.eclipse.emf.compare.internal.spec.ResourceAttachmentChangeSpec;
 import org.eclipse.emf.compare.scope.IComparisonScope;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.xtext.testing.InjectWith;
+import org.eclipse.xtext.testing.XtextRunner;
 import org.franca.connectors.dbus.DBusConnector;
 import org.franca.connectors.dbus.DBusModelContainer;
 import org.franca.core.dsl.FrancaIDLTestsInjectorProvider;
 import org.franca.core.dsl.FrancaPersistenceManager;
-import org.franca.core.dsl.tests.util.XtextRunner2_Franca;
 import org.franca.core.franca.FModel;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,7 +24,7 @@ import com.google.inject.Inject;
 
 import model.emf.dbusxml.NodeType;
 
-@RunWith(XtextRunner2_Franca.class)
+@RunWith(XtextRunner.class)
 @InjectWith(FrancaIDLTestsInjectorProvider.class)
 public class RoundtripTests {
 

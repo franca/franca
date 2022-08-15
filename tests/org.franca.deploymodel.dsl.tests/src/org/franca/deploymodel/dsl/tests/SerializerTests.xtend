@@ -12,7 +12,7 @@ import org.eclipse.xtext.resource.SaveOptions
 import org.eclipse.xtext.serializer.ISerializer
 import org.franca.deploymodel.core.FDPropertyHost
 import org.eclipse.xtext.testing.InjectWith
-import org.franca.core.dsl.tests.util.XtextRunner2_Franca
+import org.eclipse.xtext.testing.XtextRunner
 import org.franca.deploymodel.dsl.FDeployTestsInjectorProvider
 import org.franca.deploymodel.dsl.fDeploy.FDBuiltInPropertyHost
 import org.franca.deploymodel.dsl.fDeploy.FDPredefinedTypeId
@@ -22,7 +22,7 @@ import org.junit.runner.RunWith
 
 import static org.junit.Assert.*
 
-@RunWith(typeof(XtextRunner2_Franca))
+@RunWith(typeof(XtextRunner))
 @InjectWith(typeof(FDeployTestsInjectorProvider))
 class SerializerTests {
 	

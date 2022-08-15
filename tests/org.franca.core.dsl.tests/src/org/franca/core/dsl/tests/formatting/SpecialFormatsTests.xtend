@@ -9,8 +9,8 @@ package org.franca.core.dsl.tests.formatting
 
 import java.math.BigInteger
 import org.eclipse.xtext.testing.InjectWith
+import org.eclipse.xtext.testing.XtextRunner
 import org.franca.core.dsl.FrancaIDLTestsInjectorProvider
-import org.franca.core.dsl.tests.util.XtextRunner2_Franca
 import org.franca.core.franca.FBasicTypeId
 import org.franca.core.franca.FOperator
 import org.franca.core.franca.FrancaFactory
@@ -19,7 +19,7 @@ import org.junit.runner.RunWith
 
 import static org.junit.Assert.*
 
-@RunWith(typeof(XtextRunner2_Franca))
+@RunWith(typeof(XtextRunner))
 @InjectWith(typeof(FrancaIDLTestsInjectorProvider))
 class SpecialFormatsTests extends FormatterTestBase{
 	

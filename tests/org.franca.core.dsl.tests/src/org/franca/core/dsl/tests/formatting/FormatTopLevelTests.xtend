@@ -8,15 +8,15 @@
 package org.franca.core.dsl.tests.formatting
 
 import org.eclipse.xtext.testing.InjectWith
+import org.eclipse.xtext.testing.XtextRunner
 import org.franca.core.dsl.FrancaIDLTestsInjectorProvider
-import org.franca.core.dsl.tests.util.XtextRunner2_Franca
 import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 
 import static org.junit.Assert.*
 
-@RunWith(typeof(XtextRunner2_Franca))
+@RunWith(typeof(XtextRunner))
 @InjectWith(typeof(FrancaIDLTestsInjectorProvider))
 class FormatTopLevelTests extends FormatterTestBase {
 

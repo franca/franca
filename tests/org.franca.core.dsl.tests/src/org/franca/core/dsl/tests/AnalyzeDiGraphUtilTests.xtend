@@ -4,8 +4,8 @@ import com.google.common.collect.ArrayListMultimap
 import com.google.common.collect.Multimap
 import com.google.inject.Inject
 import org.eclipse.xtext.testing.InjectWith
+import org.eclipse.xtext.testing.XtextRunner
 import org.franca.core.dsl.FrancaIDLTestsInjectorProvider
-import org.franca.core.dsl.tests.util.XtextRunner2_Franca
 import org.franca.core.dsl.validation.util.DiGraphAnalyzationUtil
 import org.franca.core.utils.digraph.Digraph
 import org.junit.Test
@@ -13,7 +13,7 @@ import org.junit.runner.RunWith
 
 import static org.junit.Assert.*
 
-@RunWith(typeof(XtextRunner2_Franca))
+@RunWith(typeof(XtextRunner))
 @InjectWith(typeof(FrancaIDLTestsInjectorProvider))
 class DiGraphAnalyzationUtilsTests extends ValidationTestBase {
 	@Inject extension DiGraphAnalyzationUtil 

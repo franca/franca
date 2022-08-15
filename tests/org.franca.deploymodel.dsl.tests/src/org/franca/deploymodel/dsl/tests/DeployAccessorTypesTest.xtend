@@ -8,10 +8,10 @@
 package org.franca.deploymodel.dsl.tests
 
 import org.eclipse.xtext.testing.InjectWith
+import org.eclipse.xtext.testing.XtextRunner
 import org.example.spec.SpecCompoundHostsRef.Enums.StringEnumArrayProp
 import org.example.spec.SpecCompoundHostsRef.Enums.StringProp
 import org.example.spec.SpecCompoundHostsRef.InterfacePropertyAccessor
-import org.franca.core.dsl.tests.util.XtextRunner2_Franca
 import org.franca.core.franca.FArrayType
 import org.franca.core.franca.FEnumerationType
 import org.franca.core.franca.FInterface
@@ -31,7 +31,7 @@ import static org.junit.Assert.*
 
 import static extension org.franca.core.framework.FrancaHelpers.*
 
-@RunWith(typeof(XtextRunner2_Franca))
+@RunWith(typeof(XtextRunner))
 @InjectWith(typeof(FDeployTestsInjectorProvider))
 class DeployAccessorTypesTest extends DeployAccessorTestBase {
 

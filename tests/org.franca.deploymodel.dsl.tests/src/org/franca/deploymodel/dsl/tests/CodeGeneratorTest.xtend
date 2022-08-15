@@ -15,7 +15,7 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.generator.IGenerator2
 import org.eclipse.xtext.generator.InMemoryFileSystemAccess
 import org.eclipse.xtext.testing.InjectWith
-import org.franca.core.dsl.tests.util.XtextRunner2_Franca
+import org.eclipse.xtext.testing.XtextRunner
 import org.franca.deploymodel.dsl.FDeployTestsInjectorProvider
 import org.franca.deploymodel.dsl.tests.memcompiler.ClassAnalyzer
 import org.franca.deploymodel.dsl.tests.memcompiler.InMemoryFileSystemAccessCompiler
@@ -25,7 +25,7 @@ import org.junit.runner.RunWith
 
 import static org.junit.Assert.*
 
-@RunWith(typeof(XtextRunner2_Franca))
+@RunWith(typeof(XtextRunner))
 @InjectWith(typeof(FDeployTestsInjectorProvider))
 class CodeGeneratorTest extends GeneratorTestBase {
 

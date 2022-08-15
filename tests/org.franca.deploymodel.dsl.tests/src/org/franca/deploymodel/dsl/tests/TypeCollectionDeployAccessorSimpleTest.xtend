@@ -8,9 +8,9 @@
 package org.franca.deploymodel.dsl.tests
 
 import org.eclipse.xtext.testing.InjectWith
+import org.eclipse.xtext.testing.XtextRunner
 import org.example.spec.SpecTypeCollectionRef.Enums.PropEnum
 import org.example.spec.SpecTypeCollectionRef.TypeCollectionPropertyAccessor
-import org.franca.core.dsl.tests.util.XtextRunner2_Franca
 import org.franca.core.franca.FTypeCollection
 import org.franca.deploymodel.core.FDeployedTypeCollection
 import org.franca.deploymodel.dsl.FDeployTestsInjectorProvider
@@ -22,7 +22,7 @@ import org.junit.runner.RunWith
 
 import static org.junit.Assert.*
 
-@RunWith(typeof(XtextRunner2_Franca))
+@RunWith(typeof(XtextRunner))
 @InjectWith(typeof(FDeployTestsInjectorProvider))
 class TypeCollectionDeployAccessorSimpleTest extends DeployAccessorTestBase {
 

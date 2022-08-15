@@ -8,8 +8,8 @@
 package org.franca.tools.contracts.tracevalidator.tests
 
 import org.eclipse.xtext.testing.InjectWith
+import org.eclipse.xtext.testing.XtextRunner
 import org.franca.core.dsl.FrancaIDLTestsInjectorProvider
-import org.franca.core.dsl.tests.util.XtextRunner2_Franca
 import org.franca.core.franca.FMethod
 import org.junit.Before
 import org.junit.Test
@@ -19,7 +19,7 @@ import static org.junit.Assert.*
 
 import static extension org.franca.tools.contracts.tracevalidator.tests.TraceBuilder.*
 
-@RunWith(typeof(XtextRunner2_Franca))
+@RunWith(typeof(XtextRunner))
 @InjectWith(typeof(FrancaIDLTestsInjectorProvider))
 class SimpleTests extends ValidatorTestBase {
 

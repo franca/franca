@@ -12,11 +12,11 @@ import static org.junit.Assert.assertNotNull;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.testing.InjectWith;
+import org.eclipse.xtext.testing.XtextRunner;
 import org.franca.connectors.dbus.DBusConnector;
 import org.franca.connectors.dbus.DBusModelContainer;
 import org.franca.core.dsl.FrancaIDLTestsInjectorProvider;
 import org.franca.core.dsl.FrancaPersistenceManager;
-import org.franca.core.dsl.tests.util.XtextRunner2_Franca;
 import org.franca.core.framework.FrancaModelMapper;
 import org.franca.core.franca.FArgument;
 import org.franca.core.franca.FAttribute;
@@ -36,7 +36,7 @@ import model.emf.dbusxml.NodeType;
 import model.emf.dbusxml.PropertyType;
 import model.emf.dbusxml.SignalType;
 
-@RunWith(XtextRunner2_Franca.class)
+@RunWith(XtextRunner.class)
 @InjectWith(FrancaIDLTestsInjectorProvider.class)
 public class Franca2DBusAdapterTests {
 

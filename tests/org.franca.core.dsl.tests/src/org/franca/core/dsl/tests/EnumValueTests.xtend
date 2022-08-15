@@ -12,9 +12,9 @@ import com.itemis.xtext.testing.XtextTest
 import java.math.BigInteger
 import org.eclipse.emf.common.util.URI
 import org.eclipse.xtext.testing.InjectWith
+import org.eclipse.xtext.testing.XtextRunner
 import org.franca.core.dsl.FrancaIDLTestsInjectorProvider
 import org.franca.core.dsl.FrancaPersistenceManager
-import org.franca.core.dsl.tests.util.XtextRunner2_Franca
 import org.franca.core.franca.FBinaryOperation
 import org.franca.core.franca.FConstantDef
 import org.franca.core.franca.FEnumerationType
@@ -28,7 +28,7 @@ import org.junit.runner.RunWith
 
 import static org.junit.Assert.*
 
-@RunWith(typeof(XtextRunner2_Franca))
+@RunWith(typeof(XtextRunner))
 @InjectWith(typeof(FrancaIDLTestsInjectorProvider))
 class EnumValueTests extends XtextTest {
 
