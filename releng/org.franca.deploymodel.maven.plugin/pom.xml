@@ -21,6 +21,8 @@
 		<maven.version>3.5.2</maven.version>
 		<franca.version>${project.version}</franca.version>
 		<xtext.version>2.14.0</xtext.version>
+		<maven.compiler.source>8</maven.compiler.source>
+		<maven.compiler.target>8</maven.compiler.target>		
 	</properties>
 
 	<dependencies>
@@ -89,7 +91,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-plugin-plugin</artifactId>
-				<version>3.5.2</version>
+				<version>3.6.4</version>
 				<configuration>
 					<goalPrefix>franca-deploymodel</goalPrefix>
 					<skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
