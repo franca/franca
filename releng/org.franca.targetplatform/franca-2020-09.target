@@ -34,12 +34,12 @@
       <repository location="http://download.eclipse.org/modeling/tmf/xtext/updates/releases/2.23.0/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="de.cau.cs.kieler.klighd.feature.feature.group" version="1.1.1.v20200611"/>
-      <repository location="https://kieler.github.io/KLighD/v1.1.1/"/>
+      <unit id="de.cau.cs.kieler.klighd.sdk.feature.feature.group" version="0.42.2.201708311633"/>
+      <repository location="http://rtsys.informatik.uni-kiel.de/~kieler/updatesite/release_pragmatics_2017-02-04"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="org.eclipse.elk.sdk.feature.feature.group" version="0.7.0"/>
-      <repository location="https://download.eclipse.org/elk/updates/releases/0.7.0/"/>
+      <unit id="org.eclipse.elk.sdk.feature.feature.group" version="0.2.3.201803080404"/>
+      <repository location="https://download.eclipse.org/elk/updates/releases/0.2.3/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="model.emf.dbusxml.feature.feature.group" version="0.9.0.202208132004"/>

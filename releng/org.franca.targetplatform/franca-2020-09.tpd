@@ -59,17 +59,24 @@ location "http://download.eclipse.org/modeling/tmf/xtext/updates/releases/2.23.0
 	org.eclipse.xtext.ui.testing [2.23.0,2.24.0)
 }
 
-
 // KIELER klighd, needed for UI add-ons (PSM diagrams)
-location "https://kieler.github.io/KLighD/v1.1.1/" {
-	de.cau.cs.kieler.klighd.feature.feature.group [1.1.1,2.0.0)
-	
+location "http://rtsys.informatik.uni-kiel.de/~kieler/updatesite/release_pragmatics_2017-02-04" {
+	de.cau.cs.kieler.klighd.feature.feature.group [0.42.5,1.0.0)
 }
+// this would be a more recent version, but requires updates due to API changes
+//location "https://kieler.github.io/KLighD/v1.1.1/" {
+//	de.cau.cs.kieler.klighd.feature.feature.group [1.1.1,2.0.0)
+//}
+
 
 // ELK (Eclipse Layout Kernel), needed for UI add-ons (base for klighd)
-location "https://download.eclipse.org/elk/updates/releases/0.7.0/" {
-	org.eclipse.elk.sdk.feature.feature.group [0.7.0,0.8.0)
+location "https://download.eclipse.org/elk/updates/releases/0.2.3/" {
+	org.eclipse.elk.sdk.feature.feature.group [0.2.3,1.0.0)
 }
+// this would be a more recent version, but requires updates due to API changes
+//location "https://download.eclipse.org/elk/updates/releases/0.7.0/" {
+//	org.eclipse.elk.sdk.feature.feature.group [0.7.0,0.8.0)
+//}
 
 
 // dbusxml, needed for D-Bus connector
