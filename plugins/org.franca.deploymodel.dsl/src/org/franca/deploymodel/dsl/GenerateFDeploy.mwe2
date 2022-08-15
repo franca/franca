@@ -20,15 +20,27 @@ Workflow {
 			project = StandardProjectConfig {
 				baseName = projectName
 				rootPath = rootPath
+				runtime = {
+					enabled = true
+					manifest = {
+						merge = false
+					}
+				}
 				runtimeTest = {
 					enabled = true
 					root = "../../tests/${projectName}.tests.base"
 				}
 				genericIde = {
 					enabled = true
+					manifest = {
+						merge = false
+					}
 				}
 				eclipsePlugin = {
 					enabled = true
+					manifest = {
+						merge = false
+					}
 				}
 				eclipsePluginTest = {
 					enabled = true
