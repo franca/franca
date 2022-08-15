@@ -15,9 +15,10 @@ jobs:
           distribution: 'adopt'
       - name: Build with Maven
         uses: GabrielBB/xvfb-action@v1.6
-        run: |
-          cd releng/org.franca.parent
-          mvn --batch-mode --update-snapshots clean verify
+        with:
+          run: |
+            cd releng/org.franca.parent
+            mvn --batch-mode --update-snapshots clean verify
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@v2
         with:
