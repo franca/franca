@@ -119,13 +119,6 @@
 						</artifact>
 					</target>
 					<filters>
-					<!--
-						<filter>
-							<type>eclipse-plugin</type>
-							<id>some.plugin.id</id>
-							<removeAll />
-						</filter>
-					 -->
 					</filters>
 					<environments>
 						<environment>
