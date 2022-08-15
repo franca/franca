@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
-<!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
 <target name="Franca Target Platform - Eclipse 4.17" sequenceNumber="1608306370">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
@@ -53,12 +52,12 @@
       <repository location="http://franca.github.io/franca/update_site/thirdparty"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="org.xpect.sdk.feature.group" version="0.2.0.201706301756"/>
-      <repository location="http://www.xpect-tests.org/updatesite/nightly/local/"/>
-    </location>
-    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.jdt.junit.runners.feature.feature.group" version="0.1.0.201411181552"/>
       <repository location="http://meysholdt.github.io/eclipse_jdt_junit_runners/updatesite/"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.xpect.sdk.feature.group" version="0.2.0.201706301756"/>
+      <repository location="http://www.xpect-tests.org/updatesite/nightly/local/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.eclemma.feature.feature.group" version="3.1.6.202206011447"/>

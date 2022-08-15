@@ -56,9 +56,10 @@ component (acting as dynamic test case executor) and a server component (acting 
 ## Franca and CommonAPI
 
 If you want to generate C++ code directly from Franca interface specifications,
-[CommonAPI C++](https://genivi.github.io/capicxx-core-tools/) might be the proper solution.
+[CommonAPI C++](https://github.com/COVESA/capicxx-core-tools/) might be the proper solution.
 It is designed to decouple generated API from the actual IPC stack and cooperates seamlessly with Franca.
-CommonAPI was created in the context of the [GENIVI](http://genivi.org) initiative.
+CommonAPI was created in the context of the [GENIVI Alliance](http://genivi.org) initiative.
+In summer of 2021, GENIVI has been transformed into [COVESA](https://www.covesa.global).
 
 ## Forum
 
