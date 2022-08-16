@@ -15,7 +15,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.franca.core;bundle-version="0.13.0",
  org.franca.core.dsl;bundle-version="0.13.0",
  org.csu.idl.idlmm;bundle-version="1.1.0",
- org.csu.idl.xtext;bundle-version="1.1.1"
+ org.csu.idl.xtext;bundle-version="1.1.1",
+ org.eclipse.jface.text;bundle-version="3.16.400"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: org.franca.connectors.omgidl
