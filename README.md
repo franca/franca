@@ -68,7 +68,7 @@ Franca forum at Google Groups, see http://groups.google.com/group/franca-framewo
 
 ## Misc
 
-There is an [online Franca presentation](https://projects.itemis.de/html/web-presentations/kbi/std/franca_std/) available.
+There is an [online Franca user guide](https://info.itemis.com/en/franca-user-guide) available.
 This can also be used nicely from smartphones and tablets.
 
 The Franca framework has been built using the open source projects [EMF](http://www.eclipse.org/emf),
