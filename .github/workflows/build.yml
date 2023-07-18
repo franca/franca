@@ -24,3 +24,4 @@ jobs:
           report_paths: '**/target/surefire-reports/*.xml'
           fail_on_failure: true
           summary: true
+          detailed_summary: true
