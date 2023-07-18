@@ -75,6 +75,4 @@ The Franca framework has been built using the open source projects [EMF](http://
 [Xtext](http://www.xtext.org) and [Xtend](http://xtend-lang.org).
 Thanks to all committers of those projects for their great and helpful contributions!
 
-Build status on develop:
-![Build Status]
-(https://github.com/franca/franca/actions/workflows/build.yml/badge.svg?branch=develop)
+Build status on develop: ![Build Status](https://github.com/franca/franca/actions/workflows/build.yml/badge.svg?branch=develop)
