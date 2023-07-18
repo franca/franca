@@ -1,4 +1,4 @@
-# Welcome to Franca! [![Build Status](https://travis-ci.org/franca/franca.svg?branch=master)](https://travis-ci.org/franca/franca)
+# Welcome to Franca! ![Build Status](https://github.com/franca/franca/actions/workflows/build.yml/badge.svg)
 
 Franca is a powerful framework for definition and transformation of software interfaces.
 It is used for integrating software components from different suppliers, which are built based on various runtime frameworks, platforms and IPC mechanisms. The core of it is _Franca IDL_ (Interface Definition Language), which is a textual language for specification of APIs.
@@ -75,4 +75,5 @@ The Franca framework has been built using the open source projects [EMF](http://
 [Xtext](http://www.xtext.org) and [Xtend](http://xtend-lang.org).
 Thanks to all committers of those projects for their great and helpful contributions!
 
-Build status on develop: [![Build Status](https://travis-ci.org/franca/franca.svg?branch=develop)](https://travis-ci.org/franca/franca)
+![Build Status on develop]
+(https://github.com/franca/franca/actions/workflows/build.yml/badge.svg?branch=develop)
