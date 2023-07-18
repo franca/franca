@@ -14,7 +14,7 @@ jobs:
           java-version: '11'
           distribution: 'adopt'
       - name: Build with Maven
-        uses: GabrielBB/xvfb-action@v1.6
+        uses: coactions/setup-xvfb@v1
         with:
           run: mvn -f releng/org.franca.parent --batch-mode --update-snapshots clean verify
       - name: Publish Test Report
