@@ -18,9 +18,9 @@ jobs:
         with:
           run: mvn -f releng/org.franca.parent --batch-mode --update-snapshots clean verify
       - name: Publish Test Report
-        uses: mikepenz/action-junit-report@v2
+        uses: mikepenz/action-junit-report@v3
         with:
           check_name: "Test Results"
-          report_paths: 'tests/*/target/surefire-reports/*.xml, examples/*/target/surefire-reports/*.xml'
+          report_paths: '**/target/surefire-reports/*.xml'
           fail_on_failure: true
           summary: true
