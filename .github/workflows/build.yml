@@ -21,6 +21,6 @@ jobs:
         uses: mikepenz/action-junit-report@v2
         with:
           check_name: "Test Results"
-          report_paths: 'build/tests/*/target/surefire-reports/*.xml, build/examples/*/target/surefire-reports/*.xml'
+          report_paths: 'tests/*/target/surefire-reports/*.xml, examples/*/target/surefire-reports/*.xml'
           fail_on_failure: true
           summary: true
