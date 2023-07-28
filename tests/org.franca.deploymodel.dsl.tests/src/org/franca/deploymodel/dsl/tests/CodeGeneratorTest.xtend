@@ -9,17 +9,15 @@ package org.franca.deploymodel.dsl.tests
 
 import com.google.inject.Inject
 import java.util.ArrayList
-import java.util.Arrays
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.generator.IGenerator2
 import org.eclipse.xtext.generator.InMemoryFileSystemAccess
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
+import org.eclipse.xtext.xbase.testing.OnTheFlyJavaCompiler2
 import org.franca.deploymodel.dsl.FDeployTestsInjectorProvider
-import org.franca.deploymodel.dsl.tests.memcompiler.ClassAnalyzer
-import org.franca.deploymodel.dsl.tests.memcompiler.InMemoryFileSystemAccessCompiler
-import org.junit.Ignore
+import org.franca.core.franca.FField
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -28,6 +26,8 @@ import static org.junit.Assert.*
 @RunWith(typeof(XtextRunner))
 @InjectWith(typeof(FDeployTestsInjectorProvider))
 class CodeGeneratorTest extends GeneratorTestBase {
+	@Inject
+	OnTheFlyJavaCompiler2 javaCompiler;
 
 	@Inject
 	IGenerator2 generator;
@@ -47,7 +47,6 @@ class CodeGeneratorTest extends GeneratorTestBase {
 	 * Asserts that Franca generates a TypeCollectionPropertyAccessor 
 	 * for a given "specification" given in an fdepl file. 
 	 */
-	@Ignore
 	@Test
 	def void test_40_DefTypeCollection() {
 		val root = loadModel("testcases/40-SpecSimple.fdepl", "fidl/10-TypeCollection.fidl");
@@ -62,18 +61,40 @@ class CodeGeneratorTest extends GeneratorTestBase {
 			}
 		} 
 		*/
-		val nameOfTheClassUnderTest = "SpecSimple40TypeCollectionPropertyAccessor"
+
+		// generate PropertyAccessor code for the given deployment specification 
+		val nameOfTheClassUnderTest = "SpecSimple40"
 		val fsa = new InMemoryFileSystemAccess
 		generator.doGenerate(root.eResource, fsa, null)
-		val compiler = new InMemoryFileSystemAccessCompiler(fsa);
-		val expectedJavaClasses = compiler.expectedJavaClasses
-		assertTrue("Missing generated java-file for " + nameOfTheClassUnderTest, expectedJavaClasses.contains(nameOfTheClassUnderTest))
-		val theClass = compiler.getJavaClass(nameOfTheClassUnderTest)
+		
+		// compile the generated code in-memory		
+		val file = fsa.textFiles.entrySet.findFirst[it.key.contains(nameOfTheClassUnderTest + ".java")]
+		assertNotNull(file)
+		val theClass = javaCompiler.compileToClass(nameOfTheClassUnderTest, file.value.toString)
 		assertNotNull("No class for " + nameOfTheClassUnderTest, theClass)
-		val classInfo = new ClassAnalyzer(theClass)
-		assertTrue("The generated java class lacks some methods " + Arrays::toString(classInfo.allMethods), 
-			classInfo.allMethodNames.containsAll(newArrayList("getStringPropMandatory","getFieldPropMandatory"))
-		)
+
+		// check inner classes of the generated class
+		val nameOfIPAClass = "InterfacePropertyAccessor"
+		val inner1 = theClass.classes.findFirst[name.endsWith(nameOfIPAClass)]
+		assertNotNull("No inner class for " + nameOfIPAClass, inner1)
+		inner1.checkMethod("getStringPropMandatory", typeof(EObject), typeof(String))
+		inner1.checkMethod("getFieldPropMandatory", typeof(FField), typeof(Integer))
+
+		val nameOfTCPAClass = "TypeCollectionPropertyAccessor"
+		val inner2 = theClass.classes.findFirst[name.endsWith(nameOfTCPAClass)]
+		assertNotNull("No inner class for " + nameOfTCPAClass, inner2)
+		inner2.checkMethod("getStringPropMandatory", typeof(EObject), typeof(String))
+		inner2.checkMethod("getFieldPropMandatory", typeof(FField), typeof(Integer))
+	}
+	
+	def private void checkMethod(Class<?> clazz, String expectedName, Class<?> expParamType, Class<?> expReturnType) {
+		val method = clazz.methods.findFirst[m | m.name == expectedName]
+		assertNotNull("Missing method '" + expectedName + "' in class '" + clazz.simpleName + "'", method)
+
+		assertEquals("Wrong number of parameters in method '" + expectedName + "'", 1, method.parameterCount)
+		assertEquals("Wrong type of first parameter in method '" + expectedName + "'", expParamType, method.parameterTypes.get(0))
+
+		assertEquals("Wrong return type in method '" + expectedName + "'", expReturnType, method.returnType)		
 	}
 	
 	@Test
